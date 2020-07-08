@@ -392,15 +392,16 @@ namespace aspect
                * With the inward node being above or below for the bottom and top rows of ghost nodes,
                * or to the left and right for the right and left columns of ghost nodes.
                */
+               // I redid the indexing here, at some point I should double check that these still work without issue.
               for (int j=0; j<ny; j++)
                 {
                 /*
-                * Nx*j will give us the row we're in, and one is added as FastScape starts from 1 not zero.
-                * If we're on the right, the multiple of the row will always represent the last node.
-                * Adding one to this row value then gives us the start of the next row, or the left side node.
+                * Nx*j will give us the row we're in, and one is subtracted as FastScape starts from 1 not zero.
+                * If we're on the left, the multiple of the row will always represent the last node.
+                * Subtracting one to the row above this gives us the last node of the previous row.
                 */
-                  const int index_right = nx*(j+1);
-                  const int index_left = nx*j+1;
+                  const int index_left = nx*j;
+                  const int index_right = nx*(j+1)-1;
                   double slope = 0;
 
                   /*
@@ -408,14 +409,14 @@ namespace aspect
                   * add one to go to the node to the right, and for the right side
                   * we subtract one to go to the inner node to the left.
                   */
-                  vz[index_right-1] = vz[index_right-2];
-                  vz[index_left-1] =  vz[index_left];
+                  vz[index_right] = vz[index_right-1];
+                  vz[index_left] =  vz[index_left+1];
 
-                  vy[index_right-1] = vy[index_right-2];
-                  vy[index_left-1] = vy[index_left];
+                  vy[index_right] = vy[index_right-1];
+                  vy[index_left] = vy[index_left+1];
 
-                  vx[index_right-1] = vx[index_right-2];
-                  vx[index_left-1] = vx[index_left];
+                  vx[index_right] = vx[index_right-1];
+                  vx[index_left] = vx[index_left+1];
 
                   if (current_timestep == 1 || left_flux == 0)
                     {
@@ -426,40 +427,40 @@ namespace aspect
                       * so we need to consider the slope over 2 dx.
                       */
                       slope = left_flux/kdd;
-                      h[index_left-1] = h[index_left] + slope*2*dx;
+                      h[index_left] = h[index_left+1] + slope*2*dx;
                     }
                   else
                     {
                      /*
                       * If we have flux through a boundary, we need to update the height to keep the correct slope.
                       * Because the corner nodes always show a slope of zero, this will update them according to
-                      * the nodes next to them. If we're at a corner node, look instead one row above or below.
+                      * the closest non-ghost node. If we're at a corner node, look instead up a row and inward.
                       */
                       if (j == 0)
-                        slope = left_flux/kdd - std::tan(slopep[index_left+nx]*numbers::PI/180.);
+                        slope = left_flux/kdd - std::tan(slopep[index_left+nx+1]*numbers::PI/180.);
                       else if (j==(ny-1))
-                        slope = left_flux/kdd - std::tan(slopep[index_left-nx]*numbers::PI/180.);
+                        slope = left_flux/kdd - std::tan(slopep[index_left-nx+1]*numbers::PI/180.);
                       else
                         slope = left_flux/kdd - std::tan(slopep[index_left]*numbers::PI/180.);
 
-                      h[index_left-1] = h[index_left-1] + slope*2*dx;
+                      h[index_left] = h[index_left] + slope*2*dx;
                     }
 
                   if (current_timestep == 1 || right_flux == 0)
                     {
                       slope = right_flux/kdd;
-                      h[index_right-1] = h[index_right-2] + slope*2*dx;
+                      h[index_right] = h[index_right-1] + slope*2*dx;
                     }
                   else
                     {
                       if (j == 0)
-                        slope = right_flux/kdd - std::tan(slopep[index_right+nx-2]*numbers::PI/180.);
+                        slope = right_flux/kdd - std::tan(slopep[index_right+nx-1]*numbers::PI/180.);
                       else if (j==(ny-1))
-                        slope = right_flux/kdd - std::tan(slopep[index_right-nx-2]*numbers::PI/180.);
+                        slope = right_flux/kdd - std::tan(slopep[index_right-nx-1]*numbers::PI/180.);
                       else
-                        slope = right_flux/kdd - std::tan(slopep[index_right-2]*numbers::PI/180.);
+                        slope = right_flux/kdd - std::tan(slopep[index_right]*numbers::PI/180.);
 
-                      h[index_right-1] = h[index_right-1] + slope*2*dx;
+                      h[index_right] = h[index_right] + slope*2*dx;
                     }
 
                   /*
@@ -474,92 +475,92 @@ namespace aspect
                       int side = index_left;
                       
                       // Indexing depending on which side the ghost node is being set to.
-                      int jj = 0;
+                      int jj = 1;
 
                       /* 
                       * If nodes on both sides are going the same direction, then set the respective
                       * ghost nodes to equal these sides. By doing this, the ghost nodes at the opposite
                       * side of flow will work as a mirror mimicing what is happening at the other boundary.
                       */
-                      if (vx[index_right-2] > 0 && vx[index_left] >= 0)
+                      if (vx[index_right-1] > 0 && vx[index_left+1] >= 0)
                         {
                           side = index_right;
-                          jj = 2;
+                          jj = -1;
                         }
-                      else if (vx[index_right-2] <= 0 && vx[index_left] < 0)
+                      else if (vx[index_right-1] <= 0 && vx[index_left+1] < 0)
                         {
                           side = index_left;
-                          jj = 0;
+                          jj = 1;
                         }
                       else
                         continue;
 
-                      vz[index_right-1] = vz[side-jj];
-                      vz[index_left-1] = vz[side-jj];
+                      vz[index_right] = vz[side+jj];
+                      vz[index_left] = vz[side+jj];
 
-                      vy[index_right-1] = vy[side-jj];
-                      vy[index_left-1] = vy[side-jj];
+                      vy[index_right] = vy[side+jj];
+                      vy[index_left] = vy[side+jj];
 
-                      vx[index_right-1] = vx[side-jj];
-                      vx[index_left-1] = vx[side-jj];
+                      vx[index_right] = vx[side+jj];
+                      vx[index_left] = vx[side+jj];
 
-                      h[index_right-1] = h[side-jj];
-                      h[index_left-1] = h[side-jj];
+                      h[index_right] = h[side+jj];
+                      h[index_left] = h[side+jj];
                     }
                 }
 
               // Now do the same for the top and bottom ghost nodes.
               for (int j=0; j<nx; j++)
                 {
-                  // The bottom row indexes are 1 to nx.
-                  const int index_bot = j+1;
+                  // The bottom row indexes are 0 to nx-1.
+                  const int index_bot = j;
                   
-                  // Adding 1 to nx multiplied by (total rows - 1) gives us the start of
+                  // Nx multiplied by (total rows - 1) gives us the start of
                   // the top row, and j then gives us the position in the row.
-                  const int index_top = nx*(ny-1)+j+1;
+                  const int index_top = nx*(ny-1)+j;
                   double slope = 0;
 
-                  vz[index_bot-1] = vz[index_bot+nx-1];
-                  vz[index_top-1] = vz[index_top-nx-1];
+                  vz[index_bot] = vz[index_bot+nx];
+                  vz[index_top] = vz[index_top-nx];
 
-                  vy[index_bot-1] = vy[index_bot+nx-1];
-                  vy[index_top-1] =  vy[index_top-nx-1];
+                  vy[index_bot] = vy[index_bot+nx];
+                  vy[index_top] =  vy[index_top-nx];
 
-                  vx[index_bot-1] = vx[index_bot+nx-1];
-                  vx[index_top-1] =  vx[index_top-nx-1];
+                  vx[index_bot] = vx[index_bot+nx];
+                  vx[index_top] =  vx[index_top-nx];
 
                   if (current_timestep == 1 || top_flux == 0)
                     {
                       slope = top_flux/kdd;
-                      h[index_top-1] = h[index_top-nx-1] + slope*2*dx;
+                      h[index_top] = h[index_top-nx] + slope*2*dx;
                     }
                   else
                     {
                       if (j == 0)
-                        slope = top_flux/kdd - std::tan(slopep[index_top-nx]*numbers::PI/180.);
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx+1]*numbers::PI/180.);
                       else if (j==(nx-1))
-                        slope = top_flux/kdd - std::tan(slopep[index_top-nx-2]*numbers::PI/180.);
-                      else
                         slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*numbers::PI/180.);
+                      else
+                        slope = top_flux/kdd - std::tan(slopep[index_top-nx]*numbers::PI/180.);
 
-                      h[index_top-1] = h[index_top-1] + slope*2*dx;
+                      h[index_top] = h[index_top] + slope*2*dx;
                     }
 
                   if (current_timestep == 1 || bottom_flux == 0)
                     {
                       slope = bottom_flux/kdd;
-                      h[index_bot-1] = h[index_bot+nx-1] + slope*2*dx;
+                      h[index_bot] = h[index_bot+nx] + slope*2*dx;
                     }
                   else
                     {
                       if (j == 0)
-                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*numbers::PI/180.);
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx+1]*numbers::PI/180.);
                       else if (j==(nx-1))
-                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-2]*numbers::PI/180.);
-                      else
                         slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*numbers::PI/180.);
+                      else
+                        slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*numbers::PI/180.);
 
-                      h[index_bot-1] = h[index_bot-1] + slope*2*dx;
+                      h[index_bot] = h[index_bot] + slope*2*dx;
                     }
 
                   if (bottom == 0 && top == 0)
@@ -580,17 +581,17 @@ namespace aspect
                       else
                         continue;
 
-                      vz[index_bot-1] = vz[side+jj-1];
-                      vz[index_top-1] = vz[side+jj-1];
+                      vz[index_bot] = vz[side+jj];
+                      vz[index_top] = vz[side+jj];
 
-                      vy[index_bot-1] = vy[side+jj-1];
-                      vy[index_top-1] =  vy[side+jj-1];
+                      vy[index_bot] = vy[side+jj];
+                      vy[index_top] =  vy[side+jj];
 
-                      vx[index_bot-1] = vx[side+jj-1];
-                      vx[index_top-1] =  vx[side+jj-1];
+                      vx[index_bot] = vx[side+jj];
+                      vx[index_top] =  vx[side+jj];
 
-                      h[index_bot-1] = h[side+jj-1];
-                      h[index_top-1] = h[side+jj-1];
+                      h[index_bot] = h[side+jj];
+                      h[index_top] = h[side+jj];
                     }
                 }
                 
