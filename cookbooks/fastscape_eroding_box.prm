@@ -3,9 +3,9 @@
 set Dimension                              = 3
 
 set Use years in output instead of seconds = true
-set End time                               = 2e5
-set Maximum time step                      = 20000 #5e6
-set Output directory                       = eroding_plateau
+set End time                               = 2.5e5
+set Maximum time step                      = 50000 #5e6
+set Output directory                       = eroding_box
 
 set Pressure normalization                 = no #surface
 set Surface pressure                       = 0
@@ -15,18 +15,17 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X extent = 50e3
+    set X extent = 100e3
     set Y extent = 100e3
     set Z extent = 25e3
-    set X repetitions = 2
+    set X repetitions = 4
     set Y repetitions = 4
-    set X periodic = true
   end
   
   subsection Initial topography model
     set Model name = function
     subsection Function
-      set Function expression = if(y>50e3, 1000, 0)          
+      set Function expression = if(y>20e3 && y<80e3 && x>20e3 && x<80e3, 2500, 0)          
     end
   end
 end
@@ -40,37 +39,53 @@ subsection Initial temperature model
   end
 end
 
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = initial temperature
 end
 
-
 # X boundaries are periodic, and the rest are tangential.
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, front, back
+  set Tangential velocity boundary indicators = bottom, front, back, left, right
 end
 
 # Here we setup the top boundary with fastscape.
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top : fastscape
   
-    # We set fastscape as 2 levels more resolved than ASPECT's initial global resolution.
     subsection Fastscape
-      set Additional fastscape refinement = 2
-      set Vertical exaggeration = 1
-      set Maximum timestep = 2000
-      set Number of steps = 10
+      # As the highest resolution at the surface is 4 in the mesh refiniment function, we set this the same.
+      set Surface resolution = 4
+
+      # Because we only have 1 level of refinement at the surface we set this to 0.
+      # If we had multiple resolutions, e.g. 3 different cell sizes at the surface,
+      # this would be set to 2 (number of cell sizes at surface - 1).
+      set Resolution difference = 0
+
+      # We set fastscape as 1 levels more resolved than ASPECT's initial global surface resolution.
+      set Additional fastscape refinement = 1
+
+      # Number of FastScape timesteps we want per ASPECT timestep.
+      set Number of steps = 5
+
+      # Set the maximum allowable FastScape timestep. If the (ASPECT timestep)/(Number of steps)
+      # is greater than this value, then the number of steps is automatically doubled.
+      # This is continued until the FastScape timestep is less than this value.
+      set Maximum timestep = 10000
+
+      # Seed number for initial topography noise
       set Fastscape seed = 1000
 
-      # The bottom boundary is fixed, but all other boundaries are left open,
-      # making the left and right boundaries periodic.
+      #Because no boundaries are periodic, no flux, and no advection we don't need ghost nodes.
+      set Use ghost nodes = false
+      set Vertical exaggeration = 1
+
+      # Fix all boundaries in FastScape.
       subsection Boundary conditions
         set Bottom = 1
-        set Right  = 0
-        set Top    = 0
-        set Left   = 0
+        set Right  = 1
+        set Top    = 1
+        set Left   = 1
       end
    
       # We use both SPL and diffusion. The bedrock deposition
@@ -80,13 +95,17 @@ subsection Mesh deformation
       subsection Erosional parameters
         set Drainage area exponent = 0.4
         set Bedrock diffusivity = 1e-2
-        set Multi-direction slope exponent = 1
         set Bedrock river incision rate = 1e-4
         set Slope exponent = 1
         set Bedrock deposition coefficient = 1
+
+        # A negative value indicates varied flow. 10 is steepest descent, and 1 is uniform distribution.
+        set Multi-direction slope exponent = -1
        end
-    
    end
+
+   set Additional tangential mesh velocity boundary indicators = left, right, front, back
+
 end
 
 subsection Gravity model
@@ -131,13 +150,13 @@ subsection Mesh refinement
     subsection Maximum refinement function
       set Coordinate system   = cartesian
       set Variable names      = x,y,z
-      set Function expression = if(z>=20e3, 4, 3)
+      set Function expression = if(z>=23000, 4, 2)
   end
   
       subsection Minimum refinement function
       set Coordinate system   = cartesian
       set Variable names      = x,y,z
-      set Function expression = if(z>=20e3, 4, 3)
+      set Function expression = if(z>=23000, 4, 2)
   end
 end
 
@@ -148,5 +167,6 @@ subsection Postprocess
     set Time between graphical output = 0
     set List of output variables      = strain rate
     set Interpolate output = true
+    set Write higher order output = true
   end
 end
