@@ -21,11 +21,18 @@
 
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
+#include <aspect/revision.h>
+#include <aspect/config.h>
 
 #include <deal.II/base/utilities.h>
 #include <deal.II/base/mpi.h>
 #include <deal.II/base/multithread_info.h>
 #include <deal.II/base/revision.h>
+
+#ifdef ASPECT_TRACK_USAGE_DATA
+#include <cpp-httplib/httplib.h>
+#endif
+
 #include <csignal>
 #include <string>
 
@@ -547,6 +554,52 @@ void signal_handler(int signal)
 
 
 
+/**
+ * Contact google analytics and transmit version information.
+ */
+#ifdef ASPECT_TRACK_USAGE_DATA
+void track_usage()
+{
+  std::string analytics = "v=1&aip=1&t=event&tid=UA-143241305-3&cid=1&ec=application&ea=start&an=aspect";
+  analytics += "&av=" + std::string(ASPECT_PACKAGE_VERSION);
+  analytics += "&cd1=" + std::string(DEAL_II_PACKAGE_VERSION);
+  analytics += "&cd2=" + std::to_string(DEAL_II_TRILINOS_VERSION_MAJOR) + "." + std::to_string(DEAL_II_TRILINOS_VERSION_MINOR) + "." + std::to_string(DEAL_II_TRILINOS_VERSION_SUBMINOR);
+  analytics += "&cd3=" + std::to_string(DEAL_II_P4EST_VERSION_MAJOR) + "." + std::to_string(DEAL_II_P4EST_VERSION_MINOR) + "." + std::to_string(DEAL_II_P4EST_VERSION_SUBMINOR);
+
+  const unsigned int n_ranks = dealii::Utilities::MPI::n_mpi_processes(MPI_COMM_WORLD);
+
+  analytics += "&cm1=" + std::to_string(n_ranks);
+
+  if (n_ranks == 1)
+    analytics += "&cd4=1";
+  else if (n_ranks > 1 && n_ranks <= 10)
+    analytics += "&cd4=2-10";
+  else if (n_ranks > 10 && n_ranks <= 100)
+    analytics += "&cd4=11-100";
+  else if (n_ranks > 100 && n_ranks <= 1000)
+    analytics += "&cd4=101-1000";
+  else if (n_ranks > 1000 && n_ranks <= 10000)
+    analytics += "&cd4=1001-10000";
+  else if (n_ranks > 10000 && n_ranks <= 100000)
+    analytics += "&cd4=10001-100000";
+  else if (n_ranks > 100000)
+    analytics += "&cd4=100001+";
+
+#ifdef DEBUG
+  analytics += "&cd5=debug";
+#else
+  analytics += "&cd5=optimized";
+#endif
+
+  analytics += "&cd6=" + std::to_string(DEAL_II_COMPILER_VECTORIZATION_LEVEL);
+
+  httplib::Client cli("www.google-analytics.com", 80);
+  auto res = cli.Post("/collect", analytics, "HTTP/1.1");
+}
+#endif
+
+
+
 template<int dim>
 void
 run_simulator(const std::string &raw_input_as_string,
@@ -741,6 +794,12 @@ int main (int argc, char *argv[])
           // Output header, except for a clean output for xml or plugin graph
           if (!output_xml && !output_plugin_graph && !validate_only)
             print_aspect_header(std::cout);
+
+#ifdef ASPECT_TRACK_USAGE_DATA
+          // Track usage, but only if we really want to run a model
+          if (!output_xml && !output_plugin_graph && !validate_only && !output_help && !output_version)
+            track_usage();
+#endif
 
           if (output_help)
             print_help();

@@ -143,6 +143,11 @@ if(ASPECT_WITH_WORLD_BUILDER)
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
 endif()
 
+SET(ASPECT_TRACK_USAGE_DATA ON CACHE BOOL "Whether to allow ASPECT to transmit version information and basic usage data. See PRIVACY.md for detailed information on the collected data.")
+
+IF(ASPECT_TRACK_USAGE_DATA)
+  INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/cpp-httplib/include/")
+ENDIF()
 
 # load in version info and export it
 FILE(STRINGS "${CMAKE_SOURCE_DIR}/VERSION" ASPECT_PACKAGE_VERSION LIMIT_COUNT 1)

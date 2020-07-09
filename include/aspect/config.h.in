@@ -32,5 +32,6 @@
 #cmakedefine ASPECT_WITH_WORLD_BUILDER
 #cmakedefine ASPECT_USE_FP_EXCEPTIONS
 #cmakedefine ASPECT_USE_PETSC
+#cmakedefine ASPECT_TRACK_USAGE_DATA
 
 #endif
