@@ -76,7 +76,7 @@ subsection Mesh deformation
       # Seed number for initial topography noise
       set Fastscape seed = 1000
 
-      #Because no boundaries are periodic, no flux, and no advection we don't need ghost nodes.
+      # Because no boundaries are periodic, no flux, and no advection we don't need ghost nodes.
       set Use ghost nodes = false
       set Vertical exaggeration = 1
 
