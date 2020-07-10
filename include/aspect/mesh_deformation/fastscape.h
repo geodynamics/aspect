@@ -25,12 +25,12 @@ namespace aspect
 
   namespace MeshDeformation
   {
-/**
- * Define FastScape functions as C functions. Must use exact same function/variable name
- * and type as used in FastScape. All function names must be made lowercase, and an
- * underscore added at the end. Types must be defined as pointers, and sent to
- * fastscape as a reference.
- */    
+    /**
+     * Define FastScape functions as C functions. Must use exact same function/variable name
+     * and type as used in FastScape. All function names must be made lowercase, and an
+     * underscore added at the end. Types must be defined as pointers, and sent to
+     * fastscape as a reference.
+     */
 #ifdef __cplusplus
     extern"C" {
 #endif

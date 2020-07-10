@@ -27,50 +27,50 @@
 
 namespace aspect
 {
-  namespace MeshRefinement
+namespace MeshRefinement
+{
+
+  /**
+   * A class that implements a mesh refinement criterion based on the
+   * absolute value of the compositional fields. Every cell that contains a
+   * value exceeding a threshold given in the input file is marked for
+   * refinement.
+   *
+   * @ingroup MeshRefinement
+   */
+  template <int dim>
+  class CompositionThreshold : public Interface<dim>,
+    public SimulatorAccess<dim>
   {
+    public:
+      /**
+       * After cells have been marked for coarsening/refinement, apply
+       * additional criteria independent of the error estimate.
+       */
+      void
+      tag_additional_cells () const override;
 
-    /**
-     * A class that implements a mesh refinement criterion based on the
-     * absolute value of the compositional fields. Every cell that contains a
-     * value exceeding a threshold given in the input file is marked for
-     * refinement.
-     *
-     * @ingroup MeshRefinement
-     */
-    template <int dim>
-    class CompositionThreshold : public Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * After cells have been marked for coarsening/refinement, apply
-         * additional criteria independent of the error estimate.
-         */
-        void
-        tag_additional_cells () const override;
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      void
+      parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
-
-      private:
-        /**
-         * The thresholds that should be used for the individual
-         * compositional fields.
-         */
-        std::vector<double> composition_thresholds;
-    };
-  }
+    private:
+      /**
+       * The thresholds that should be used for the individual
+       * compositional fields.
+       */
+      std::vector<double> composition_thresholds;
+  };
+}
 }
 
 #endif

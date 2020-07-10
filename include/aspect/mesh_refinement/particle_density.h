@@ -27,43 +27,43 @@
 
 namespace aspect
 {
-  namespace MeshRefinement
-  {
+namespace MeshRefinement
+{
 
-    /**
-     * A mesh refinement criterion that computes
-     * refinement indicators based on the density
-     * of particles. In practice this plugin
-     * equilibrates the number of particles per cell,
-     * leading to fine cells in high particle density regions
-     * and coarse cells in low particle density regions.
-     * This plugin is mostly useful for models with inhomogeneous
-     * particle density, e.g. when tracking an initial interface
-     * with a high particle density, or when the spatial particle
-     * density denotes the region of interest. Additionally, this
-     * plugin tends to balance the computational load between
-     * processes in parallel computations, because the particle
-     * and mesh density is more aligned.
-     *
-     * @ingroup MeshRefinement
-     */
-    template <int dim>
-    class ParticleDensity : public Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * Execute this mesh refinement criterion.
-         *
-         * @param[out] error_indicators A vector that for every active cell of
-         * the current mesh (which may be a partition of a distributed mesh)
-         * provides an error indicator. This vector will already have the
-         * correct size when the function is called.
-         */
-        void
-        execute (Vector<float> &error_indicators) const override;
-    };
-  }
+  /**
+   * A mesh refinement criterion that computes
+   * refinement indicators based on the density
+   * of particles. In practice this plugin
+   * equilibrates the number of particles per cell,
+   * leading to fine cells in high particle density regions
+   * and coarse cells in low particle density regions.
+   * This plugin is mostly useful for models with inhomogeneous
+   * particle density, e.g. when tracking an initial interface
+   * with a high particle density, or when the spatial particle
+   * density denotes the region of interest. Additionally, this
+   * plugin tends to balance the computational load between
+   * processes in parallel computations, because the particle
+   * and mesh density is more aligned.
+   *
+   * @ingroup MeshRefinement
+   */
+  template <int dim>
+  class ParticleDensity : public Interface<dim>,
+    public SimulatorAccess<dim>
+  {
+    public:
+      /**
+       * Execute this mesh refinement criterion.
+       *
+       * @param[out] error_indicators A vector that for every active cell of
+       * the current mesh (which may be a partition of a distributed mesh)
+       * provides an error indicator. This vector will already have the
+       * correct size when the function is called.
+       */
+      void
+      execute (Vector<float> &error_indicators) const override;
+  };
+}
 }
 
 #endif

@@ -27,52 +27,52 @@
 
 namespace aspect
 {
-  namespace MeshRefinement
+namespace MeshRefinement
+{
+
+  /**
+   * A class that implements a mesh refinement criterion based on the
+   * artificial viscosity of the temperature or compositional fields.
+   *
+   * @ingroup MeshRefinement
+   */
+  template <int dim>
+  class ArtificialViscosity : public Interface<dim>,
+    public SimulatorAccess<dim>
   {
+    public:
+      /**
+       * @copydoc Interface<dim>::execute()
+       */
+      void
+      execute (Vector<float> &error_indicators) const override;
 
-    /**
-     * A class that implements a mesh refinement criterion based on the
-     * artificial viscosity of the temperature or compositional fields.
-     *
-     * @ingroup MeshRefinement
-     */
-    template <int dim>
-    class ArtificialViscosity : public Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * @copydoc Interface<dim>::execute()
-         */
-        void
-        execute (Vector<float> &error_indicators) const override;
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      void
+      parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
+    private:
 
-      private:
+      /**
+       * Scaling factor for the temperature indicator.
+       */
+      double temperature_scaling_factor;
 
-        /**
-         * Scaling factor for the temperature indicator.
-         */
-        double temperature_scaling_factor;
-
-        /**
-         * The scaling factors for each compositional field.
-         */
-        std::vector<double> composition_scaling_factors;
-    };
-  }
+      /**
+       * The scaling factors for each compositional field.
+       */
+      std::vector<double> composition_scaling_factors;
+  };
+}
 }
 
 #endif

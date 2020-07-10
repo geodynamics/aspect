@@ -27,53 +27,53 @@
 
 namespace aspect
 {
-  namespace MeshRefinement
+namespace MeshRefinement
+{
+
+  /**
+   * A class that implements a mesh refinement criterion based on the
+   * compaction length, a typical length scale in models with melt
+   * migration. The user can specify a desired ratio between the
+   * compaction length and the size of the mesh cells, and every cell
+   * where this ratio is smaller than specified is marked for refinement.
+   * This means that there will always be a given (minimum) number of
+   * mesh cells per compaction length.
+   *
+   * @ingroup MeshRefinement
+   */
+  template <int dim>
+  class CompactionLength : public Interface<dim>,
+    public SimulatorAccess<dim>
   {
+    public:
+      /**
+       * After cells have been marked for coarsening/refinement, apply
+       * additional criteria independent of the error estimate.
+       */
+      void
+      tag_additional_cells () const override;
 
-    /**
-     * A class that implements a mesh refinement criterion based on the
-     * compaction length, a typical length scale in models with melt
-     * migration. The user can specify a desired ratio between the
-     * compaction length and the size of the mesh cells, and every cell
-     * where this ratio is smaller than specified is marked for refinement.
-     * This means that there will always be a given (minimum) number of
-     * mesh cells per compaction length.
-     *
-     * @ingroup MeshRefinement
-     */
-    template <int dim>
-    class CompactionLength : public Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * After cells have been marked for coarsening/refinement, apply
-         * additional criteria independent of the error estimate.
-         */
-        void
-        tag_additional_cells () const override;
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      void
+      parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
-
-      private:
-        /**
-         * The desired ratio between compaction length and size of the mesh cells,
-         * in other words, how many cells the mesh should have per compaction length.
-         */
-        double cells_per_compaction_length;
-    };
-  }
+    private:
+      /**
+       * The desired ratio between compaction length and size of the mesh cells,
+       * in other words, how many cells the mesh should have per compaction length.
+       */
+      double cells_per_compaction_length;
+  };
+}
 }
 
 #endif

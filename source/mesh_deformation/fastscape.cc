@@ -358,14 +358,6 @@ namespace aspect
                   // Set boundary conditions
                   fastscape_set_bc_(&bc);
 
-                  // Initialize random noise, as this is applied here ghost node noise will match whatever is on the edges.
-                  std::srand(fs_seed);
-                  for (int i=0; i<array_size; i++)
-                    {
-                      const double h_seed = (std::rand()%2000)/100;
-                      h[i] = h[i] + h_seed;
-                    }
-
                   // Initialize topography
                   fastscape_init_h_(h.get());
 
@@ -612,9 +604,18 @@ namespace aspect
                * In the first timestep, h will be given from other processors.
                * In later timesteps, we copy h directly from fastscape.
                */
+              std::srand(fs_seed);
               for (int i=0; i<array_size; i++)
                 {
                   h_old[i] = h[i];
+
+                  // Initialize random noise after h_old is set, so aspect sees this initial topography change.
+                  if (current_timestep == 1)
+                    {
+                      // + or - 5 meters of topography.
+                      const double h_seed = (std::rand()%100)/10 - 5;
+                      h[i] = h[i] + h_seed;
+                    }
                 }
 
               // Get current fastscape timestep.

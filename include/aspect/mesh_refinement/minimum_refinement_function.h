@@ -31,65 +31,65 @@
 
 namespace aspect
 {
-  namespace MeshRefinement
+namespace MeshRefinement
+{
+
+  /**
+   * A class that implements a minimum refinement level based on a
+   * functional description provided in the input file.
+   *
+   * @ingroup MeshRefinement
+   */
+  template <int dim>
+  class MinimumRefinementFunction : public Interface<dim>,
+    public SimulatorAccess<dim>
   {
+    public:
+      /**
+       * At the beginning of each time step, update the time for the
+       * ParsedFunction.
+       */
+      void
+      update () override;
 
-    /**
-     * A class that implements a minimum refinement level based on a
-     * functional description provided in the input file.
-     *
-     * @ingroup MeshRefinement
-     */
-    template <int dim>
-    class MinimumRefinementFunction : public Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        /**
-         * At the beginning of each time step, update the time for the
-         * ParsedFunction.
-         */
-        void
-        update () override;
+      /**
+       * After cells have been marked for coarsening/refinement, apply
+       * additional criteria independent of the error estimate.
+       *
+       */
+      void
+      tag_additional_cells () const override;
 
-        /**
-         * After cells have been marked for coarsening/refinement, apply
-         * additional criteria independent of the error estimate.
-         *
-         */
-        void
-        tag_additional_cells () const override;
+      /**
+       * Declare the parameters this class takes through input files.
+       */
+      static
+      void
+      declare_parameters (ParameterHandler &prm);
 
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
+      /**
+       * Read the parameters this class declares from the parameter file.
+       */
+      void
+      parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        void
-        parse_parameters (ParameterHandler &prm) override;
+    private:
+      /**
+       * The coordinate representation to evaluate the function. Possible
+       * choices are depth, cartesian and spherical.
+       */
+      Utilities::Coordinates::CoordinateSystem coordinate_system;
 
-      private:
-        /**
-         * The coordinate representation to evaluate the function. Possible
-         * choices are depth, cartesian and spherical.
-         */
-        Utilities::Coordinates::CoordinateSystem coordinate_system;
+      /**
+       * A function object representing the minimum refinement level. The
+       * function always depends on 3 variables, although in the case of the
+       * 'depth' coordinate system only the first is used to evaluate the
+       * function.
+       */
+      Functions::ParsedFunction<dim> min_refinement_level;
 
-        /**
-         * A function object representing the minimum refinement level. The
-         * function always depends on 3 variables, although in the case of the
-         * 'depth' coordinate system only the first is used to evaluate the
-         * function.
-         */
-        Functions::ParsedFunction<dim> min_refinement_level;
-
-    };
-  }
+  };
+}
 }
 
 #endif
