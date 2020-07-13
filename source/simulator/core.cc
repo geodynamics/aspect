@@ -1749,6 +1749,36 @@ namespace aspect
       // Possibly store data of plugins associated with cells
       signals.pre_refinement_store_user_data(triangulation);
 
+
+      {
+        // Communicate refinement flags on ghost cells from the owner of the
+        // cell. This is necessary to get consistent refinement, as mesh
+        // smoothing would undo some of the requested coarsening/refinement.
+
+        auto pack
+        = [] (const typename DoFHandler<dim>::active_cell_iterator &cell) -> unsigned int
+        {
+          if (cell->refine_flag_set())
+            return 1;
+          if (cell->coarsen_flag_set())
+            return 2;
+          return 0;
+        };
+        auto unpack
+        = [] (const typename DoFHandler<dim>::active_cell_iterator &cell, const unsigned int &flag) -> void
+        {
+          cell->clear_coarsen_flag();
+          cell->clear_refine_flag();
+          if (flag==1)
+            cell->set_refine_flag();
+          else if (flag==2)
+            cell->set_coarsen_flag();
+        };
+
+        GridTools::exchange_cell_data_to_ghosts<unsigned int, DoFHandler<dim>>
+                                                                            (dof_handler, pack, unpack);
+
+      }
       triangulation.prepare_coarsening_and_refinement();
       system_trans.prepare_for_coarsening_and_refinement(x_system);
 

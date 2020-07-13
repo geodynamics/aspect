@@ -98,16 +98,16 @@ Number of mesh deformation degrees of freedom: 1522
      Topography min/max: -2422 m, 1244 m
      RMS, max velocity:  0.001 m/year, 0.00243 m/year
 
-Number of active cells: 727 (on 5 levels)
-Number of degrees of freedom: 10,016 (6,146+797+3,073)
+Number of active cells: 736 (on 5 levels)
+Number of degrees of freedom: 10,146 (6,226+807+3,113)
 
-Number of mesh deformation degrees of freedom: 1594
+Number of mesh deformation degrees of freedom: 1614
 
 
 
 *** Timestep 6:  t=6.07945e+06 years
    Solving mesh velocity system... 1 iterations.
-   Solving temperature system... 23 iterations.
+   Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+15 iterations.
 
@@ -129,17 +129,17 @@ Number of mesh deformation degrees of freedom: 1594
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 33 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+15 iterations.
+   Solving Stokes system... 0+14 iterations.
 
    Postprocessing:
      Topography min/max: -2237 m, 1217 m
      RMS, max velocity:  0.000948 m/year, 0.00224 m/year
 
-*** Timestep 9:  t=9.66252e+06 years
+*** Timestep 9:  t=9.66251e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+14 iterations.
+   Solving Stokes system... 0+15 iterations.
 
    Postprocessing:
      Topography min/max: -389.5 m, 207.8 m
@@ -155,10 +155,10 @@ Number of mesh deformation degrees of freedom: 1594
      Topography min/max: -385.9 m, 736.4 m
      RMS, max velocity:  0.000439 m/year, 0.00111 m/year
 
-Number of active cells: 808 (on 5 levels)
-Number of degrees of freedom: 11,147 (6,842+884+3,421)
+Number of active cells: 829 (on 5 levels)
+Number of degrees of freedom: 11,433 (7,018+906+3,509)
 
-Number of mesh deformation degrees of freedom: 1768
+Number of mesh deformation degrees of freedom: 1812
 
 
 
