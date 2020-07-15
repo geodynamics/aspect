@@ -507,12 +507,12 @@ CONFIGURE_FILE(
 # but can fail on some machines with old cmake, therefore it is disabled by
 # default. Also cotire currently has issues with cmake generator expressions
 # used in deal.II for cmake version 3.9 and above. Disable cotire for cmake >=
-# 3.9. Starting with cmake 3.15 there is native support inside cmake and we can
+# 3.9. Starting with cmake 3.16 there is native support inside cmake and we can
 # use that.
 IF(CMAKE_VERSION VERSION_LESS 3.9)
-  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.15.")
-ELSEIF(CMAKE_VERSION VERSION_GREATER 3.15)
-  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake versions older than 3.9 or newer than 3.9.")
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake 3.8 and older versions, or 3.16 and newer versions.")
+ELSEIF(NOT CMAKE_VERSION VERSION_LESS 3.16)
+  SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions.")
 ELSE()
   SET(ASPECT_PRECOMPILE_HEADERS OFF)
 ENDIF()
@@ -534,7 +534,7 @@ IF (ASPECT_PRECOMPILE_HEADERS)
     # and therefore the whole precompilation
     cotire(aspect)
 
-  ELSEIF (CMAKE_VERSION VERSION_GREATER 3.15)
+  ELSEIF (NOT CMAKE_VERSION VERSION_LESS 3.16)
     MESSAGE(STATUS "Precompiling common header files.")
     # Use the native cmake support to precompile some common headers
     # from ASPECT and deal.II that are frequently included, but rarely changed.
@@ -547,7 +547,7 @@ IF (ASPECT_PRECOMPILE_HEADERS)
       <deal.II/particles/particle_handler.h>)
 
   ELSE()
-    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake versions less than 3.9 and greater than 3.15.")
+    MESSAGE(FATAL_ERROR "ASPECT_PRECOMPILE_HEADERS is currently only supported for CMake 3.8 and older versions or 3.16 and newer versions.")
   ENDIF()
 
 ELSE()
