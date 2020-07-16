@@ -631,7 +631,7 @@ namespace aspect
            * vector of the particles.
            *
            * @deprecated This function will be replaced by
-           * ParticlePropertyInformation::get_position_by_fieldname(name)
+           * ParticlePropertyInformation::get_position_by_field_name(name)
            */
           DEAL_II_DEPRECATED
           unsigned int
