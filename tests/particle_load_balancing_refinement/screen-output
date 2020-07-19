@@ -23,8 +23,8 @@ Number of degrees of freedom: 554 (258+38+129+129)
    Postprocessing:
      Writing particle output: output-particle_load_balancing_refinement/particles/particles-00001
 
-Number of active cells: 10 (on 3 levels)
-Number of degrees of freedom: 246 (114+18+57+57)
+Number of active cells: 22 (on 4 levels)
+Number of degrees of freedom: 511 (238+35+119+119)
 
 Termination requested by criterion: end time
 

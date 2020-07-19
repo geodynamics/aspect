@@ -32,18 +32,18 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0.08147 K, 0.1773 K, 0.5327 K
      Compositions min/max/mass: 0.04343/1.054/0.1693 // -4.415/100.6/78.14
 
-Number of active cells: 256 (on 5 levels)
-Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
+Number of active cells: 262 (on 6 levels)
+Number of degrees of freedom: 5,934 (2,254+299+1,127+1,127+1,127)
 
 *** Timestep 3:  t=0.0662913 seconds
    Solving temperature system... 16 iterations.
-   Solving Alice system ... 14 iterations.
+   Solving Alice system ... 13 iterations.
    Solving Bob system ... 19 iterations.
 
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00003
      Temperature min/avg/max:   0.08667 K, 0.1773 K, 0.522 K
-     Compositions min/max/mass: 0.02777/1.057/0.1695 // -4.441/100.3/77
+     Compositions min/max/mass: 0.03012/1.057/0.1695 // -4.439/100.3/77
 
 *** Timestep 4:  t=0.08 seconds
    Solving temperature system... 13 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Postprocessing:
      Writing graphical output:  output-refinement_artificial_viscosity_2/solution/solution-00004
      Temperature min/avg/max:   0.08818 K, 0.1773 K, 0.5161 K
-     Compositions min/max/mass: 0.02209/1.053/0.1695 // -6.034/100.2/76.28
+     Compositions min/max/mass: 0.0258/1.053/0.1695 // -6.034/100.3/76.28
 
 Termination requested by criterion: end time
 
