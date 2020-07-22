@@ -194,17 +194,21 @@ namespace aspect
     timestep_number (numbers::invalid_unsigned_int),
     nonlinear_iteration (numbers::invalid_unsigned_int),
 
+    // We need to disable eliminate_refined_boundary_islands as this leads to
+    // a deadlock for deal.II <= 9.2.0 as described in
+    // https://github.com/geodynamics/aspect/issues/3604 when an
+    // refined_island is at a periodic boundary. This flag is not too
+    // important as it does not improve accuracy. Otherwise, these flags
+    // correspond to smoothing_on_refinement|smoothing_on_coarsening.
     triangulation (mpi_communicator,
-                   (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
-                    ?
-                    typename Triangulation<dim>::MeshSmoothing
-                    (Triangulation<dim>::smoothing_on_refinement |
-                     Triangulation<dim>::smoothing_on_coarsening |
-                     Triangulation<dim>::limit_level_difference_at_vertices)
-                    :
-                    typename Triangulation<dim>::MeshSmoothing
-                    (Triangulation<dim>::smoothing_on_refinement |
-                     Triangulation<dim>::smoothing_on_coarsening))
+                   typename Triangulation<dim>::MeshSmoothing
+                   (
+                     Triangulation<dim>::limit_level_difference_at_vertices |
+                     (Triangulation<dim>::eliminate_unrefined_islands |
+                      Triangulation<dim>::eliminate_refined_inner_islands |
+                      // Triangulation<dim>::eliminate_refined_boundary_islands |
+                      Triangulation<dim>::do_not_produce_unrefined_islands)
+                   )
                    ,
                    (parameters.stokes_solver_type == Parameters<dim>::StokesSolverType::block_gmg
                     ?
