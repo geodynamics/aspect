@@ -41,6 +41,8 @@
 
 namespace aspect
 {
+  using namespace dealii;
+
   namespace RigidShearBenchmark
   {
     /**
@@ -62,8 +64,6 @@ namespace aspect
      */
     namespace AnalyticSolutions
     {
-      using namespace dealii;
-
       /**
        * The exact solution for the Rigid Shear benchmark.
        */
@@ -76,7 +76,7 @@ namespace aspect
           virtual void vector_value(const Point<dim> &p,
                                     Vector<double> &values) const
           {
-            const double pi = dealii::numbers::PI;
+            const double pi = numbers::PI;
             values[0] = std::sin(pi*p[0]) * std::cos(pi*p[1]);
             values[1] = -std::cos(pi*p[0]) * std::sin(pi*p[1]);
             values[2] = 2.0 * pi * std::cos(pi*p[0]) * std::cos(pi*p[1]);
@@ -212,7 +212,7 @@ namespace aspect
         update_particle_property (const unsigned int data_position,
                                   const Vector<double> &/*solution*/,
                                   const std::vector<Tensor<1,dim> > &/*gradients*/,
-                                  typename ParticleHandler<dim>::particle_iterator &particle) const
+                                  typename Particles::ParticleHandler<dim>::particle_iterator &particle) const
         {
           const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
                                          get_particle_world().
