@@ -82,6 +82,7 @@ pipeline {
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_RUN_ALL_TESTS='ON' \
         -D ASPECT_PRECOMPILE_HEADERS='ON' \
+        -D ASPECT_UNITY_BUILD='OFF' \
         ..
         '''
 

@@ -511,10 +511,13 @@ CONFIGURE_FILE(
 # use that.
 IF(CMAKE_VERSION VERSION_LESS 3.9)
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files using cotire to speedup compile time. Currently only supported for cmake 3.8 and older versions, or 3.16 and newer versions.")
+  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
 ELSEIF(NOT CMAKE_VERSION VERSION_LESS 3.16)
   SET(ASPECT_PRECOMPILE_HEADERS ON CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions.")
+  SET(ASPECT_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
 ELSE()
-  SET(ASPECT_PRECOMPILE_HEADERS OFF)
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions." FORCE)
+  SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)
@@ -553,6 +556,23 @@ IF (ASPECT_PRECOMPILE_HEADERS)
 ELSE()
   MESSAGE(STATUS "Disabling precompiling headers.")
 ENDIF()
+
+
+IF (ASPECT_UNITY_BUILD)
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD TRUE)
+    MESSAGE(STATUS "Combining source files into unity build.")
+  ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
+    MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
+  ENDIF()
+ELSE()
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD FALSE)
+  ENDIF()
+
+  MESSAGE(STATUS "Disabling unity build.")
+ENDIF()
+
 
 # Find the deal.II parameter GUI and install helper script
 FIND_PROGRAM(PARAMETER_GUI_EXECUTABLE
