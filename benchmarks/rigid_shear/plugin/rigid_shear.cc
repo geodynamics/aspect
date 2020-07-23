@@ -209,19 +209,19 @@ namespace aspect
 
         virtual
         void
-        update_one_particle_property (const unsigned int data_position,
-                                      const Point<dim> &position,
-                                      const Vector<double> &/*solution*/,
-                                      const std::vector<Tensor<1,dim> > &/*gradients*/,
-                                      const ArrayView<double> &particle_properties) const
+        update_particle_property (const unsigned int data_position,
+                                  const Vector<double> &/*solution*/,
+                                  const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                  typename ParticleHandler<dim>::particle_iterator &particle) const
         {
           const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
                                          get_particle_world().
                                          get_property_manager();
           const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
 
+          const Point<dim> position = particle->get_location();
           const double g_y = -4.0 * numbers::PI * numbers::PI * std::cos(numbers::PI * position[0]) / std::sin(numbers::PI * position[0]);
-          particle_properties[data_position] = particle_properties[density_index]*g_y;
+          particle->get_properties()[data_position] = particle->get_properties()[density_index]*g_y;
         }
 
         aspect::Particle::Property::UpdateTimeFlags

@@ -39,11 +39,10 @@ namespace aspect
 
       template <int dim>
       void
-      MeltParticle<dim>::update_one_particle_property(const unsigned int data_position,
-                                                      const Point<dim> &,
-                                                      const Vector<double> &solution,
-                                                      const std::vector<Tensor<1,dim> > &,
-                                                      const ArrayView<double> &data) const
+      MeltParticle<dim>::update_particle_property(const unsigned int data_position,
+                                                  const Vector<double> &solution,
+                                                  const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         AssertThrow(this->introspection().compositional_name_exists("porosity"),
                     ExcMessage("Particle property melt particle only works if"
@@ -51,9 +50,9 @@ namespace aspect
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
         if (solution[this->introspection().component_indices.compositional_fields[porosity_idx]] > threshold_for_melt_presence)
-          data[data_position] = 1.0;
+          particle->get_properties()[data_position] = 1.0;
         else
-          data[data_position] =  0.0;
+          particle->get_properties()[data_position] = 0.0;
       }
 
       template <int dim>

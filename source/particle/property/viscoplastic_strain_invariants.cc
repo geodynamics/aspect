@@ -77,11 +77,10 @@ namespace aspect
 
       template <int dim>
       void
-      ViscoPlasticStrainInvariant<dim>::update_one_particle_property(const unsigned int data_position,
-                                                                     const Point<dim> &,
-                                                                     const Vector<double> &solution,
-                                                                     const std::vector<Tensor<1,dim> > &gradients,
-                                                                     const ArrayView<double> &data) const
+      ViscoPlasticStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
+                                                                 const Vector<double> &solution,
+                                                                 const std::vector<Tensor<1,dim> > &gradients,
+                                                                 typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // Current timestep
         const double dt = this->get_timestep();
@@ -93,7 +92,6 @@ namespace aspect
 
         // Calculate strain rate from velocity gradients
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-
 
         // Put compositional fields into single variable
         std::vector<double> composition(this->n_compositional_fields());
@@ -119,6 +117,7 @@ namespace aspect
          * In this case old_strain will first be given the plastic strain, and then,
          * if there is no plastic yielding it will update to the viscous strain instead.
          */
+        auto &data = particle->get_properties();
         double old_strain = data[data_position];
         if (n_components == 2 && plastic_yielding == false)
           old_strain = data[data_position+(n_components-1)];

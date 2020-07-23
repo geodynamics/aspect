@@ -61,14 +61,14 @@ namespace aspect
                                             std::vector<double> &particle_properties) const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::update_one_particle_property()
+          * @copydoc aspect::Particle::Property::Interface::update_particle_property()
           **/
+          virtual
           void
-          update_one_particle_property (const unsigned int data_position,
-                                        const Point<dim> &position,
-                                        const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim> > &gradients,
-                                        const ArrayView<double> &particle_properties) const override;
+          update_particle_property (const unsigned int data_position,
+                                    const Vector<double> &solution,
+                                    const std::vector<Tensor<1,dim> > &gradients,
+                                    typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
           * @copydoc aspect::Particle::Property::Interface::need_update()
