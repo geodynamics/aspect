@@ -6,26 +6,26 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 0:  t=0 seconds
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 6+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.21139
 
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 4+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.11084
 
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00839642
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00839651
 
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000331128
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000331133
 
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 2.43263e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 2.43695e-05
 
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.23115e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 1.28987e-06
 
 
    Postprocessing:
@@ -35,7 +35,7 @@ Number of degrees of freedom: 948 (578+81+289)
 
 *** Timestep 1:  t=0.0001 seconds
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.44221e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.67884e-08
 
 
    Postprocessing:

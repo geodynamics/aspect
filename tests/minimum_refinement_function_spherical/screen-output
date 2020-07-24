@@ -29,8 +29,8 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 357 (on 5 levels)
-Number of degrees of freedom: 5,205 (3,194+414+1,597)
+Number of active cells: 351 (on 5 levels)
+Number of degrees of freedom: 5,127 (3,146+408+1,573)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -44,13 +44,13 @@ Number of degrees of freedom: 5,205 (3,194+414+1,597)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 573 (on 6 levels)
-Number of degrees of freedom: 8,325 (5,114+654+2,557)
+Number of active cells: 567 (on 6 levels)
+Number of degrees of freedom: 8,247 (5,066+648+2,533)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+19 iterations.
+   Solving Stokes system... 200+18 iterations.
 
    Postprocessing:
 
@@ -74,8 +74,8 @@ Number of degrees of freedom: 8,325 (5,114+654+2,557)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 573 (on 6 levels)
-Number of degrees of freedom: 8,325 (5,114+654+2,557)
+Number of active cells: 567 (on 6 levels)
+Number of degrees of freedom: 8,247 (5,066+648+2,533)
 
 Termination requested by criterion: end time
 

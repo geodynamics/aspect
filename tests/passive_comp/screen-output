@@ -6,7 +6,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 55+0 iterations.
+   Solving Stokes system... 54+0 iterations.
 
    Postprocessing:
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 27 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 4+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00001
@@ -52,7 +52,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00002
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            -2.204e-06 K, 0.0003337 K, 0.001549 K
+     Temperature min/avg/max:            -2.203e-06 K, 0.0003337 K, 0.001549 K
      Heat fluxes through boundary parts: 218 W, 167.5 W
      Writing depth average:              output-passive_comp/depth_average
 
@@ -60,12 +60,12 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 3+0 iterations.
+   Solving Stokes system... 2+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-passive_comp/solution/solution-00003
      RMS, max velocity:                  5.11e-08 m/s, 6.3e-08 m/s
-     Temperature min/avg/max:            -3.129e-06 K, 0.0004743 K, 0.002085 K
+     Temperature min/avg/max:            -3.128e-06 K, 0.0004743 K, 0.002085 K
      Heat fluxes through boundary parts: 180.9 W, 182 W
      Writing depth average:              output-passive_comp/depth_average
 

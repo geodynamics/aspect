@@ -35,8 +35,8 @@ Number of degrees of freedom: 12,463 (5,852+759+2,926+2,926)
      Number of advected particles:        3213
      Particle count per cell min/avg/max: 2, 4, 51
 
-Number of active cells: 973 (on 8 levels)
-Number of degrees of freedom: 17,743 (8,336+1,071+4,168+4,168)
+Number of active cells: 976 (on 8 levels)
+Number of degrees of freedom: 17,794 (8,360+1,074+4,180+4,180)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 17,743 (8,336+1,071+4,168+4,168)
    Solving Stokes system... 58+0 iterations.
 
    Postprocessing:
-     Number of advected particles:        3343
+     Number of advected particles:        3349
      Particle count per cell min/avg/max: 2, 3, 100
 
 *** Timestep 1:  t=7e+09 years
@@ -52,7 +52,7 @@ Number of degrees of freedom: 17,743 (8,336+1,071+4,168+4,168)
    Solving Stokes system... 60+0 iterations.
 
    Postprocessing:
-     Number of advected particles:        3389
+     Number of advected particles:        3395
      Particle count per cell min/avg/max: 2, 3, 100
 
 Termination requested by criterion: end time
