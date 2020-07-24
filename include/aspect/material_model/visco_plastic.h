@@ -254,11 +254,19 @@ namespace aspect
          * A function that returns whether the material is plastically yielding at
          * the given pressure, temperature, composition, and strain rate.
          */
+        DEAL_II_DEPRECATED
         bool
         is_yielding ( const double &pressure,
                       const double &temperature,
                       const std::vector<double> &composition,
                       const SymmetricTensor<2,dim> &strain_rate) const;
+
+        /**
+        * A function that returns whether the material is plastically yielding at
+        * the given pressure, temperature, composition, and strain rate.
+        */
+        bool
+        is_yielding (const MaterialModelInputs<dim> &in) const;
 
       private:
 
