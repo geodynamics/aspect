@@ -36,15 +36,13 @@ namespace aspect
 
       template <int dim>
       void
-      IntegratedStrainInvariant<dim>::update_one_particle_property(const unsigned int data_position,
-                                                                   const Point<dim> &,
-                                                                   const Vector<double> &,
-                                                                   const std::vector<Tensor<1,dim> > &gradients,
-                                                                   const ArrayView<double> &data) const
+      IntegratedStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
+                                                               const Vector<double> &/*solution*/,
+                                                               const std::vector<Tensor<1,dim> > &gradients,
+                                                               typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-
-
         // Integrated strain invariant from prior time step
+        auto &data = particle->get_properties();
         double old_strain = data[data_position];
 
         // Current timestep
