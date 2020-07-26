@@ -8,16 +8,15 @@
 # 8: Iterations for Stokes solver
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
-# 11: Visualization file name
-# 12: RMS velocity (m/year)
-# 13: Max. velocity (m/year)
-# 14: Minimal temperature (K)
-# 15: Average temperature (K)
-# 16: Maximal temperature (K)
-# 17: Average nondimensional temperature (K)
-# 18: Outward heat flux through boundary with indicator 0 ("bottom") (W)
-# 19: Outward heat flux through boundary with indicator 1 ("top") (W)
-# 20: Outward heat flux through boundary with indicator 2 ("left") (W)
-# 21: Outward heat flux through boundary with indicator 3 ("right") (W)
-0 0.000000000000e+00 0.000000000000e+00 192 1891 833  0 17 19 18 output-steinberger_compressible/solution/solution-00000 5.81712054e-01 1.11601495e+00 2.73000000e+02 2.25420782e+03 4.25000000e+03 4.98166413e-01  1.53467059e+06 -3.98504362e+06 0.00000000e+00 0.00000000e+00 
-1 1.000000000000e+05 1.000000000000e+05 192 1891 833 14 14 16 16 output-steinberger_compressible/solution/solution-00001 5.74179075e-01 1.10692129e+00 2.73000000e+02 2.25311298e+03 4.25000000e+03 4.97891119e-01 -2.97567366e+06 -1.23285884e+06 0.00000000e+00 0.00000000e+00 
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Average nondimensional temperature (K)
+# 17: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 18: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 19: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 20: Outward heat flux through boundary with indicator 3 ("right") (W)
+0 0.000000000000e+00 0.000000000000e+00 192 1891 833  0 14 16 16 5.81595047e-01 1.11573147e+00 2.73000000e+02 2.25420782e+03 4.25000000e+03 4.98166413e-01  1.52865396e+06 -3.98502633e+06 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 192 1891 833 14 12 14 14 5.74183299e-01 1.10692077e+00 2.73000000e+02 2.25311246e+03 4.25000000e+03 4.97890989e-01 -2.97253786e+06 -1.23299291e+06 0.00000000e+00 0.00000000e+00 
