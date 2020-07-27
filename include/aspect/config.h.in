@@ -27,7 +27,7 @@
 // optional features:
 #cmakedefine ASPECT_HAVE_LINK_H
 #cmakedefine ASPECT_WITH_LIBDAP
-#cmakedefine ASPECT_WITH_WORLD_BUILDER
+#cmakedefine ASPECT_WITH_NETCDF
 #cmakedefine ASPECT_WITH_PERPLEX
 #cmakedefine ASPECT_WITH_WORLD_BUILDER
 #cmakedefine ASPECT_USE_FP_EXCEPTIONS
