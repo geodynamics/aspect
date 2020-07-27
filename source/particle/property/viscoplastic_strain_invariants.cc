@@ -32,9 +32,9 @@ namespace aspect
 
       template <int dim>
       ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
-      :
-      n_components(0),
-      material_inputs(1,0)
+        :
+        n_components(0),
+        material_inputs(1,0)
       {}
 
       template <int dim>
