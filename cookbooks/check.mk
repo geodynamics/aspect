@@ -75,6 +75,6 @@ main: dummy $(mainprms)
 # example/: dummy
 #	@$(def); run_prm $@ test.prm
 
-free-surface-with-crust/: dummy
+free_surface_with_crust/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@
