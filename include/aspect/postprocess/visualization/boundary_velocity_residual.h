@@ -23,6 +23,7 @@
 #define _aspect_postprocess_visualization_velocity_residual_h
 
 #include <aspect/postprocess/visualization.h>
+#include <aspect/boundary_velocity/gplates.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -47,18 +48,15 @@ namespace aspect
        * base class. See there for their meaning.
        */
       template <int dim>
-      class VelocityResidual
+      class BoundaryVelocityResidual
         : public DataPostprocessorVector<dim>,
-		  public Utilities::AsciiDataBoundary<dim>,
+		  public SimulatorAccess<dim>,
           public Interface<dim>
       {
         public:
-    	  VelocityResidual ();
+    	  BoundaryVelocityResidual ();
 
           void initialize () override;
-
-//          // avoid -Woverloaded-virtual:
-          using Utilities::AsciiDataBoundary<dim>::initialize;
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -79,6 +77,64 @@ namespace aspect
 
         private:
           bool use_spherical_unit_vectors;
+
+          bool use_gps_data;
+
+          /**
+		   * Pointer to the gplates boundary velocity model
+		   */
+          std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup <dim> >  gplates_lookup;
+
+          /**
+		   * Pointer to the  ascii boundary velocity model
+		   */
+          std::unique_ptr<Utilities::AsciiDataLookup<dim>> ascii_data_lookup;
+
+          /**
+           * Directory in which the data files are present.
+           */
+          std::string ascii_data_directory;
+
+          /**
+           * Filename of data file. The file names can contain the specifiers %s
+           * and/or %c (in this order), meaning the name of the boundary and the
+           * number of the data file time step.
+           */
+          std::string ascii_data_file_name;
+
+          /**
+           * Scale the data by a scalar factor. Can be used to transform the
+           * unit of the data (if they are not specified in SI units (m/s or
+           * m/yr depending on the "Use years in output instead of seconds"
+           * parameter).
+           */
+          double ascii_scale_factor;
+
+          /**
+           * Directory in which the data files are present.
+           */
+          std::string gplates_data_directory;
+
+          /**
+           * Filename of data file. The file names can contain the specifiers %s
+           * and/or %c (in this order), meaning the name of the boundary and the
+           * number of the data file time step.
+           */
+          std::string gplates_data_file_name;
+
+          /**
+           * Scale the data by a scalar factor. Can be used to transform the
+           * unit of the data (if they are not specified in SI units (m/s or
+           * m/yr depending on the "Use years in output instead of seconds"
+           * parameter).
+           */
+          double gplates_scale_factor;
+
+          /**
+           * Parsed user input of point1 and point2 in gplates
+           */
+          Tensor<1,2> pointone;
+          Tensor<1,2> pointtwo;
 
       };
     }
