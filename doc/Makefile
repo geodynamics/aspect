@@ -22,7 +22,7 @@ change-files = $(shell find modules/changes/ -type f -not -name '.*')
 aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
 aspect-doc-prms-out = $(aspect-doc-prms:=.out)
 
-aspect-cookbook-prms = $(shell find -L manual/cookbooks/ -not -path \*/doc/\* -name \*.prm 2>/dev/null)
+aspect-cookbook-prms = $(shell find -L manual/cookbooks/ -not -path \*/doc/\* -not -path \*output\* -name \*.prm 2>/dev/null)
 aspect-cookbook-file-names = $(notdir $(aspect-cookbook-prms))
 aspect-cookbook-dir-names = $(dir $(aspect-cookbook-prms))
 aspect-cookbook-file-names-out = $(addsuffix .out, $(aspect-cookbook-file-names))

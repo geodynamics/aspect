@@ -32,8 +32,8 @@ ENDIF ()
 
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
-SET(TARGET "simpler-with-crust")
+SET(TARGET "simpler_with_crust")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED simpler-with-crust.cc)
+ADD_LIBRARY(${TARGET} SHARED simpler_with_crust.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})

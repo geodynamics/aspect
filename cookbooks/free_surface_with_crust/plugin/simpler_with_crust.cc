@@ -35,8 +35,7 @@ namespace aspect
     /**
      * A material model similar to the "simpler" material model, but where the
      * viscosity has two different values dependent on whether we are above or
-     * below a line at a certain z-value, i.e., with a
-     * crust.
+     * below a line at a certain z-value, i.e., representing a crustal layer.
      *
      * @ingroup MaterialModels
      */
@@ -44,14 +43,31 @@ namespace aspect
     class SimplerWithCrust : public Interface<dim>
     {
       public:
-
+        /**
+         * Return whether the model is compressible or not. This model is
+         * incompressible.
+         */
         virtual bool is_compressible () const;
 
+        /**
+         * Return a reference value typical of the viscosities that appear in
+         * this model. This value is not actually used in the material
+         * description itself, but is used in scaling variables to the same
+         * numerical order of magnitude when solving linear systems.
+         * Specifically, the reference viscosity appears in the factor scaling
+         * the pressure against the velocity. It is also used in computing
+         * dimension-less quantities. You may want to take a look at the
+         * Kronbichler, Heister, Bangerth 2012 paper that describes the
+         * design of ASPECT for a description of this pressure scaling.
+         */
         virtual double reference_viscosity () const;
 
+        /**
+         * Function to compute the material properties in @p out given the
+         * inputs in @p in.
+         */
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
-
 
         /**
          * @name Functions used in dealing with run-time parameters
@@ -75,15 +91,16 @@ namespace aspect
          */
 
       private:
-        double reference_rho;
-        double reference_T;
+        double reference_density;
+        double reference_temperature;
         double eta_L;
         double eta_U;
         double jump_height;
-        double thermal_alpha;
+        double thermal_expansion_coefficient;
         double reference_specific_heat;
-        double k_value;
+        double thermal_conductivity;
     };
+
 
 
     template <int dim>
@@ -94,6 +111,8 @@ namespace aspect
       return false;
     }
 
+
+
     template <int dim>
     double
     SimplerWithCrust<dim>::
@@ -103,23 +122,26 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     SimplerWithCrust<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out ) const
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+             typename Interface<dim>::MaterialModelOutputs &out ) const
     {
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           const double z = in.position[i][1];
+
           if (z>jump_height)
             out.viscosities[i] = eta_U;
           else
             out.viscosities[i] = eta_L;
 
-          out.densities[i] = reference_rho * (1.0 - thermal_alpha * (in.temperature[i] - reference_T));
-          out.thermal_expansion_coefficients[i] = thermal_alpha;
+          out.densities[i] = reference_density * (1.0 - thermal_expansion_coefficient * (in.temperature[i] - reference_temperature));
+          out.thermal_expansion_coefficients[i] = thermal_expansion_coefficient;
           out.specific_heat[i] = reference_specific_heat;
-          out.thermal_conductivities[i] = k_value;
+          out.thermal_conductivities[i] = thermal_conductivity;
           out.compressibilities[i] = 0.0;
           out.entropy_derivative_pressure[i] = 0.0;
           out.entropy_derivative_temperature[i] = 0.0;
@@ -127,6 +149,7 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
         }
     }
+
 
 
     template <int dim>
@@ -144,12 +167,12 @@ namespace aspect
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
                              "in the density formula. Units: $K$.");
-          prm.declare_entry ("Lower viscosity", "5e24",
+          prm.declare_entry ("Lower viscosity", "1e20",
                              Patterns::Double (0),
-                             "The value of the viscosity $\\eta$L. Units: $kg/m/s$.");
-          prm.declare_entry ("Upper viscosity", "5e24",
+                             "The value of the viscosity $\\eta_L$ in the lower layer. Units: $Pa s$.");
+          prm.declare_entry ("Upper viscosity", "1e23",
                              Patterns::Double (0),
-                             "The value of the viscosity in the top section $\\eta$U. Units: $kg/m/s$.");
+                             "The value of the viscosity $\\eta_U$ in the upper layer. Units: $Pa s$.");
           prm.declare_entry ("Jump height", "100000",
                              Patterns::Double (0),
                              "The height at which the viscosity changes. Units: m.");
@@ -159,11 +182,11 @@ namespace aspect
                              "Units: $W/m/K$.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
-                             "The value of the specific heat $cp$. "
+                             "The value of the specific heat capacity $c_p$. "
                              "Units: $J/kg/K$.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
-                             "The value of the thermal expansion coefficient $\\beta$. "
+                             "The value of the thermal expansion coefficient $\\alpha$. "
                              "Units: $1/K$.");
 
         }
@@ -182,14 +205,14 @@ namespace aspect
       {
         prm.enter_subsection("Simpler with crust model");
         {
-          reference_rho              = prm.get_double ("Reference density");
-          reference_T                = prm.get_double ("Reference temperature");
+          reference_density          = prm.get_double ("Reference density");
+          reference_temperature      = prm.get_double ("Reference temperature");
           eta_L                      = prm.get_double ("Lower viscosity");
           eta_U                      = prm.get_double ("Upper viscosity");
           jump_height                = prm.get_double ("Jump height");
-          k_value                    = prm.get_double ("Thermal conductivity");
+          thermal_conductivity       = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
-          thermal_alpha              = prm.get_double ("Thermal expansion coefficient");
+          thermal_expansion_coefficient = prm.get_double ("Thermal expansion coefficient");
         }
         prm.leave_subsection();
       }
@@ -213,6 +236,6 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(SimplerWithCrust,
                                    "simpler with crust",
                                    "A material model that is like the ``simpler'' model but "
-                                   "has a jump in the viscosity.")
+                                   "has a jump in the viscosity at a specified depth.")
   }
 }

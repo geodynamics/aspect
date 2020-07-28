@@ -1,0 +1,4 @@
+# This model loads an additional shared library, which provides another
+# material model that is not part of the main ASPECT code, but instead
+# lies in in a subdirectory of this cookbook folder.
+set Additional shared libraries            = ./plugin/libsimpler_with_crust.so
