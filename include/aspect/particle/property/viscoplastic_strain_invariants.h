@@ -91,6 +91,16 @@ namespace aspect
         private:
           unsigned int n_components;
 
+          /**
+           * An object that is used to compute the particle property. Since the
+           * object is expensive to create and is needed often it is kept as a
+           * member variable. Because it is changed inside a const member function
+           * (update_particle_property) it has to be mutable, but since it is
+           * only used inside that function and always set before being used
+           * that is not a problem. This implementation is not thread safe,
+           * but it is currently not used in a threaded context.
+           */
+          mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
       };
     }
   }

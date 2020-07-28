@@ -32,6 +32,9 @@ namespace aspect
 
       template <int dim>
       ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
+        :
+        n_components(0),
+        material_inputs(1,0)
       {}
 
       template <int dim>
@@ -42,6 +45,7 @@ namespace aspect
                     ExcMessage("This initial condition only makes sense in combination with the visco_plastic material model."));
 
         n_components = 0;
+        material_inputs = MaterialModel::MaterialModelInputs<dim>(1,this->n_compositional_fields());
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
@@ -90,25 +94,24 @@ namespace aspect
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
 
+        material_inputs.pressure[0] = solution[this->introspection().component_indices.pressure];
+        material_inputs.temperature[0] = solution[this->introspection().component_indices.temperature];
+        material_inputs.position[0] = particle->get_location();
+
         // Calculate strain rate from velocity gradients
-        const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+        material_inputs.strain_rate[0] = symmetrize (grad_u);
 
         // Put compositional fields into single variable
-        std::vector<double> composition(this->n_compositional_fields());
         for (unsigned int i = 0; i < this->n_compositional_fields(); i++)
           {
-            composition[i] = solution[this->introspection().component_indices.compositional_fields[i]];
+            material_inputs.composition[0][i] = solution[this->introspection().component_indices.compositional_fields[i]];
           }
 
         // Find out plastic yielding by calling function in material model.
         const MaterialModel::ViscoPlastic<dim> &viscoplastic
           = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
 
-        bool plastic_yielding = false;
-        plastic_yielding = viscoplastic.is_yielding(solution[this->introspection().component_indices.pressure],
-                                                    solution[this->introspection().component_indices.temperature],
-                                                    composition,
-                                                    strain_rate);
+        const bool plastic_yielding = viscoplastic.is_yielding(material_inputs);
 
 
         /* Next take the integrated strain invariant from the prior time step. When
@@ -124,7 +127,7 @@ namespace aspect
 
 
         // Calculate strain rate second invariant
-        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(strain_rate))));
+        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(material_inputs.strain_rate[0]))));
 
         // New strain is the old strain plus dt*edot_ii
         const double new_strain = old_strain + dt*edot_ii;

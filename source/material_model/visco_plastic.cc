@@ -67,6 +67,31 @@ namespace aspect
       return plastic_yielding;
     }
 
+
+
+    template <int dim>
+    bool
+    ViscoPlastic<dim>::
+    is_yielding(const MaterialModelInputs<dim> &in) const
+    {
+      Assert(in.n_evaluation_points() == 1, ExcInternalError());
+
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[0], get_volumetric_composition_mask());
+
+      /* The following returns whether or not the material is plastically yielding
+       * as documented in evaluate.
+       */
+      const std::pair<std::vector<double>, std::vector<bool>> calculate_viscosities =
+                                                             calculate_isostrain_viscosities(volume_fractions, in.pressure[0], in.temperature[0], in.composition[0], in.strain_rate[0], viscous_flow_law, yield_mechanism);
+
+      std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
+      const bool plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(), max_composition)];
+
+      return plastic_yielding;
+    }
+
+
+
     template <int dim>
     PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
       :
