@@ -973,6 +973,20 @@ namespace aspect
                              "The melting temperature of one of the components in the melting "
                              "model, the Mg mantle endmember."
                              "Units: K.");
+          prm.declare_entry ("Fe number of moles", "0.48",
+                             Patterns::Double(),
+                             "The number of moles of Fe atoms mixing on a pseudosite in the "
+                             "mantle lattice, This is needed because we use an empirical model "
+                             "fitting the full Boukare model, and can be changed to reflect "
+                             "partition coefficients from other sources."
+                             "Units: none.");
+          prm.declare_entry ("Mg number of moles", "0.62",
+                             Patterns::Double(),
+                             "The number of moles of Mg atoms mixing on a pseudosite in the "
+                             "mantle lattice, This is needed because we use an empirical model "
+                             "fitting the full Boukare model, and can be changed to reflect "
+                             "partition coefficients from other sources."
+                             "Units: none.");
           prm.declare_entry ("Reference temperature", "298.15",
                              Patterns::Double(),
                              "Reference temperature used to compute the material properties"
@@ -1096,6 +1110,8 @@ namespace aspect
           melting_time_scale                = prm.get_double ("Melting time scale for operator splitting");
           Fe_mantle_melting_temperature     = prm.get_double ("Fe mantle melting temperature");
           Mg_mantle_melting_temperature     = prm.get_double ("Mg mantle melting temperature");
+          Fe_number_of_moles                = prm.get_double ("Fe number of moles");
+          Mg_number_of_moles                = prm.get_double ("Mg number of moles");
 
           reference_temperature             = prm.get_double ("Reference temperature");
           reference_pressure                = prm.get_double ("Reference pressure");

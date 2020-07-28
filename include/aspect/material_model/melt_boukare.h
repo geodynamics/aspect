@@ -179,6 +179,11 @@ namespace aspect
         const double molar_FeO_in_Fe_mantle_endmember = 0.908;
         const double molar_SiO2_in_Fe_mantle_endmember = 0.092;
 
+        // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
+        double Fe_number_of_moles;
+        double Mg_number_of_moles;
+
+
         // names of the endmembers
         unsigned int febdg_idx;
         unsigned int mgbdg_idx;
@@ -323,9 +328,6 @@ namespace aspect
 
         const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
         const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
-
-        const double Fe_number_of_moles = 0.48;                 // number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full boukare model)
-        const double Mg_number_of_moles = 0.62;
     };
 
   }
