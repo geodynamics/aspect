@@ -23,22 +23,22 @@
 
 if test ! -d source -o ! -d include ; then
   echo "*** This script must be run from the top-level directory of ASPECT."
-  exit
+  exit 1
 fi
 
 if test ! -f contrib/utilities/astyle.rc ; then
   echo "*** No style file doc/astyle.rc found."
-  exit
+  exit 1
 fi
 
 if test -z "`which astyle`" ; then
   echo "*** No astyle program found."
-  exit
+  exit 1
 fi
 
 if test "`astyle --version 2>&1`" != "Artistic Style Version 2.04" ; then
   echo "*** Found a version of astyle different than the required version 2.04."
-  exit
+  exit 1
 fi
 
 
@@ -75,3 +75,5 @@ tab_to_space()
 }
 export -f tab_to_space
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 
+
+exit 0
