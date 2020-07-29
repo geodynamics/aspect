@@ -19,7 +19,8 @@ set End time                               = 2
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600 
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 50
+# number of nonlinear iterations reduced from 50 to 10 to speed up test.
+set Max nonlinear iterations               = 10
 set Maximum time step                      = 1
 
 set Pressure normalization                 = surface
