@@ -1,50 +1,44 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Vectorization over 4 doubles = 256 bits (AVX), VECTORIZATION_LEVEL=2
------------------------------------------------------------------------------
------------------------------------------------------------------------------
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
 Number of active cells: 300 (on 4 levels)
 Number of degrees of freedom: 4,782 (2,928+390+1,464)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 20+0 iterations.
 
 Number of active cells: 480 (on 4 levels)
 Number of degrees of freedom: 7,200 (4,416+576+2,208)
 
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 18+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_2d_gmg/solution/solution-00000
-     RMS, max velocity:                  0.0744 m/year, 0.116 m/year
+     RMS, max velocity:                  0.0795 m/year, 0.125 m/year
      Temperature min/avg/max:            973 K, 2463 K, 4273 K
-     Heat fluxes through boundary parts: 4.316e+05 W, 2.932e+06 W
-     Writing depth average:              output-shell_2d_gmg/depth_average.gnuplot
+     Heat fluxes through boundary parts: 1.16e+06 W, 2.184e+06 W
+     Writing depth average:              output-shell_2d_gmg/depth_average
 
 *** Timestep 1:  t=100000 years
    Solving temperature system... 8 iterations.
-   Solving Stokes system... 12+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.0798 m/year, 0.125 m/year
+     RMS, max velocity:                  0.0856 m/year, 0.135 m/year
      Temperature min/avg/max:            973 K, 2463 K, 4273 K
-     Heat fluxes through boundary parts: -3.968e+05 W, 3.787e+06 W
-     Writing depth average:              output-shell_2d_gmg/depth_average.gnuplot
+     Heat fluxes through boundary parts: -3.236e+05 W, 4.077e+06 W
+     Writing depth average:              output-shell_2d_gmg/depth_average
 
 Termination requested by criterion: end time
 
 
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
