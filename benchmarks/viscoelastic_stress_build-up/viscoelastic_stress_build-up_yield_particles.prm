@@ -1,0 +1,77 @@
+# This parameter file modifies the benchmark viscoelastic_stress_build-up.prm
+# to use the Visco Plastic material model and include a constant
+# yield stress of 100 MPa. Without the imposed yield stress, the viscoelastic
+# stress will build up to ~ 200 MPa. However, the imposed yield stress will
+# truncate the viscoelastic stresses at the yield stress magnitude. 
+# For additional information on the model setup and analytical solution,
+# see viscoelastic_stress_build-up.prm, which is located in this folder.
+#
+# The results can be observed by viewing the compositional field values
+# representing the horizontal (stress_xx) or vertical (stress_yy) components
+# of the viscoelastic stress tensor or the equivalent values on particles,
+# which are used to store and track the viscoelastic stresses. This parameter
+# file differs from viscoelastic_stress_build-up_yield.prm only in the use
+# of active particles to track the elastic stresses. 
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
+
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 100
+set End time                               = 100e3
+set Output directory                       = output_viscoelastic_stress_build-up_yield_particles
+
+# Number and name of compositional fields
+ subsection Compositional fields
+   set Compositional field methods = particles, particles, particles
+   set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy
+ end
+
+# Material model
+subsection Material model
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5e-23
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Include viscoelasticity     = true
+
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 1e3
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = harmonic
+
+    set Angles of internal friction = 0.
+    set Cohesions                   = 100.e6
+
+    set Densities                   = 2800
+
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, particles, temperature statistics, velocity statistics, visualization
+
+  subsection Particles
+    set Number of particles = 1e5
+    set Minimum particles per cell  = 25
+    set Maximum particles per cell  = 35
+    set Load balancing strategy     = remove and add particles
+    set List of particle properties = initial composition, elastic stress
+    set Interpolation scheme        = bilinear least squares
+    set Update ghost particles      = true
+    set Particle generator name     = random uniform
+    set Time between data output    = 0 
+    set Data output format          = vtu
+  end
+
+ end
