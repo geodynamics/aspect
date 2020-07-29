@@ -2,6 +2,7 @@
 
 pipeline {
   agent {
+    // first build a docker image for running the tests from the repo
     dockerfile {
       dir 'contrib/ci'
       // We mount /repos into the docker image. This allows us to cache
@@ -65,9 +66,35 @@ pipeline {
       }
     }
 
-    stage('Build') {
+    stage('Unity Build') {
       options {
         timeout(time: 30, unit: 'MINUTES')
+      }
+      steps {
+        sh '''
+        # running cmake for unity build...
+        mkdir build-gcc-unity
+        cd build-gcc-unity
+
+        # Set up build system and compile ASPECT
+        cmake \
+        -G Ninja \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        ..
+        '''
+
+        sh '''
+        # executing unity build...
+        cd build-gcc-unity
+        ninja
+        '''
+      }
+    }
+
+    stage('Build') {
+      options {
+        timeout(time: 45, unit: 'MINUTES')
       }
       steps {
         sh '''
@@ -83,7 +110,6 @@ pipeline {
         -D ASPECT_UNITY_BUILD=OFF \
         -D ASPECT_USE_PETSC='OFF' \
         -D ASPECT_RUN_ALL_TESTS='ON' \
-        -D ASPECT_UNITY_BUILD='OFF' \
         ..
         '''
 
