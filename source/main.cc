@@ -207,7 +207,8 @@ void validate_shared_lib_list (const bool before_loading_shared_libs)
   // find everything that is interesting
   std::set<std::string> dealii_shared_lib_names;
   for (const auto &p : shared_lib_names)
-    if (p.find ("libdeal_II") != std::string::npos)
+    if (p.find ("libdeal_II") != std::string::npos ||
+        p.find ("libdeal.ii") != std::string::npos)
       dealii_shared_lib_names.insert (p);
 
   // produce an error if we load deal.II more than once
