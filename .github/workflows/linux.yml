@@ -37,6 +37,7 @@ jobs:
     - name: doc
       run: |
         cd doc
+        export OMPI_MCA_btl="self,vader"
         ./update_parameters.sh $GITHUB_WORKSPACE/build/aspect
         make manual.pdf
     - name: archive
