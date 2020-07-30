@@ -388,6 +388,9 @@ FOREACH(_test ${_tests})
               -P ${CMAKE_SOURCE_DIR}/run_test.cmake
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     SET_TESTS_PROPERTIES(${_testname} PROPERTIES TIMEOUT ${TEST_TIME_LIMIT})
+    IF(NOT "${_mpi_count}" STREQUAL "1")
+      SET_TESTS_PROPERTIES(${_testname} PROPERTIES PROCESSORS ${_mpi_count})
+    ENDIF()
   ENDIF()
 ENDFOREACH()
 
