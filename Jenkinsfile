@@ -105,7 +105,6 @@ pipeline {
         cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
-        -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=OFF \
         -D ASPECT_UNITY_BUILD=OFF \
         -D ASPECT_USE_PETSC='OFF' \
@@ -158,7 +157,7 @@ pipeline {
         sh '''
         # prebuilding tests...
         cd build-gcc-fast/tests
-        ninja -k 0 tests || true
+        #ninja -k 0 tests || true
         '''
 
         // Output the test results using ctest. Since
