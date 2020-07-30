@@ -168,7 +168,8 @@ pipeline {
         sh '''
         # generating test results...
         cd build-gcc-fast
-        ctest \
+	export NP=`grep -c ^processor /proc/cpuinfo`
+        ctest -j $NP \
         --no-compress-output \
         --test-action Test \
         --output-on-failure
