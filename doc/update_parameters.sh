@@ -20,9 +20,9 @@ fi
 echo Creating parameters.tex
 rm -f output/parameters.tex
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
-    || (echo "Running ASPECT for parameters.tex failed" ; exit 1)
+    || { echo "Running ASPECT for parameters.tex failed"; exit 1; }
 cp output/parameters.tex doc/manual/ \
-    || (echo "ERROR: could not copy parameters.tex" ; exit 1)
+    || { echo "ERROR: could not copy parameters.tex"; exit 1; }
 
 echo Patching parameters.tex
 cd doc/manual
@@ -70,7 +70,7 @@ cd ../..
 echo Creating parameters.xml
 rm -f output/parameters.xml
 $ASPECT --output-xml doc/manual/empty.prm >doc/parameter_view/parameters.bak 2>/dev/null \
-    || (echo "Running ASPECT for parameters.xml failed" ; exit 1)
+    || { echo "Running ASPECT for parameters.xml failed"; exit 1; }
 
 echo Patching parameters.xml
 cd doc/parameter_view
@@ -88,10 +88,11 @@ cd ../..
 # connection graph between all plugins and the core of ASPECT
 echo Creating plugin graph
 $ASPECT --output-plugin-graph doc/manual/empty.prm >plugin_graph.dot 2>/dev/null \
-    || (echo "Running ASPECT for the plugin graph failed" ; exit 1)
+    || { echo "Running ASPECT for the plugin graph failed"; exit 1; }
 neato plugin_graph.dot -Tpdf -o plugin_graph.pdf \
-    || (echo "Can't run neato" ; exit 1)
+    || { echo "Can't run neato" ; exit 1; }
 mv plugin_graph.pdf plugin_graph.dot doc/manual/ || echo "ERROR: could not copy plugin_graph.*"
 
 popd
 echo done
+exit 0
