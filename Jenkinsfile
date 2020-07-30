@@ -29,8 +29,9 @@ pipeline {
 
     stage ("Check Permissions") {
       when {
+        // check for "ready to test" if it is a PR and not by one of the people listed
         allOf {
-          not {branch 'master'}
+          changeRequest()
           not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
           not {changeRequest authorEmail: "timo.heister@gmail.com"}
           not {changeRequest authorEmail: "bangerth@colostate.edu"}
