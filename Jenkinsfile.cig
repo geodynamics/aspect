@@ -137,9 +137,10 @@ pipeline {
       steps {
         sh '''
         export BUILDDIR=`pwd`/build-gcc-fast
-        cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        export NP=`grep -c ^processor /proc/cpuinfo`
+        cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j $NP
         cd ..
-        cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j $NP
         '''
       }
     }
