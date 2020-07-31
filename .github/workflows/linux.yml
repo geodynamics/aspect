@@ -20,7 +20,7 @@ jobs:
       run: |
         mkdir build-no-unity
         cd build-no-unity
-        cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF ..
+        cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF -D CMAKE_CXX_FLAGS='-Werror' ..
         make -j 2
         ./aspect --test
 
@@ -54,7 +54,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON ..
+        cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON -D CMAKE_CXX_FLAGS='-Werror' ..
         make -j 2
         ./aspect --test
     - name: doc
