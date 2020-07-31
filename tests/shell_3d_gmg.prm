@@ -3,9 +3,9 @@
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
-set End time                               = 1.5e5
+set End time                               = 0.0
 set Output directory                       = output-shell_simple_3d
-
+set Nonlinear solver scheme                = no Advection, single Stokes
 
 subsection Material model
   set Model name = simple
@@ -91,5 +91,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
+    set Linear solver tolerance = 1e-4
   end
 end

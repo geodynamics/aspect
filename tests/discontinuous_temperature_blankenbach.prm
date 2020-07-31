@@ -4,7 +4,7 @@
 # Boussinesq approximation temperature equations. This test crashed due to
 # oscillations before the fix, but now gives accurate results.
 
-set End time                               = 1.0
+set End time                               = 0.002 # 1.0 for full benchmark
 set Use years in output instead of seconds = false
 set CFL number = 5.0
 

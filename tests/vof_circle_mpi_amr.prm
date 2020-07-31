@@ -4,7 +4,7 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0.25
+set End time                               = 0.04
 set Use years in output instead of seconds = false
 set CFL number                             = 0.5
 set Output directory                       = output
@@ -20,8 +20,8 @@ subsection Compositional fields
 end
 
 subsection Mesh refinement
-  set Minimum refinement level           = 2
-  set Initial global refinement          = 3
+  set Minimum refinement level           = 1
+  set Initial global refinement          = 1
   set Initial adaptive refinement        = 2
   set Time steps between mesh refinement = 1
   set Run postprocessors on initial refinement = true

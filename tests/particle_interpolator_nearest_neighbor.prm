@@ -5,7 +5,7 @@
 # MPI: 2
 
 set Dimension                              = 2
-set End time                               = 700
+set End time                               = 30
 set Use years in output instead of seconds = false
 
 subsection Geometry model

@@ -20,7 +20,7 @@ set Nonlinear solver scheme                = iterated Advection and Stokes
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is.
 set Use years in output instead of seconds = false
-set End time                               = 0.5
+set End time                               = 0.1
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
