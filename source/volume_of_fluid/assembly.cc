@@ -98,6 +98,8 @@ namespace aspect
           neighbor_i_d_values (face_quadrature.size(), numbers::signaling_nan<double>())
         {}
 
+
+
         template <int dim>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem (const VolumeOfFluidSystem &scratch)
           :
@@ -135,6 +137,8 @@ namespace aspect
         {}
       }
 
+
+
       namespace CopyData
       {
         template <int dim>
@@ -158,6 +162,8 @@ namespace aspect
             }
         }
 
+
+
         template<int dim>
         VolumeOfFluidSystem<dim>::VolumeOfFluidSystem(const VolumeOfFluidSystem &data)
           :
@@ -178,6 +184,8 @@ namespace aspect
       }
     }
   }
+
+
 
 
   template <int dim>
@@ -248,6 +256,8 @@ namespace aspect
     sim.system_rhs.compress(VectorOperation::add);
   }
 
+
+
   template <int dim>
   void VolumeOfFluidHandler<dim>::copy_local_to_global_volume_of_fluid_system (const internal::Assembly::CopyData::VolumeOfFluidSystem<dim> &data)
   {
@@ -281,6 +291,8 @@ namespace aspect
       }
   }
 }
+
+
 
 namespace aspect
 {

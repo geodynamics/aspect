@@ -42,6 +42,8 @@ namespace aspect
       composition_index(composition_index)
   {}
 
+
+
   template <int dim>
   VolumeOfFluidHandler<dim>::VolumeOfFluidHandler (Simulator<dim> &simulator,
                                                    ParameterHandler &prm)
@@ -58,6 +60,8 @@ namespace aspect
     this->get_signals().post_set_initial_state.connect(std::bind(&aspect::VolumeOfFluidHandler<dim>::set_initial_volume_fractions,
                                                                  std::ref(*this)));
   }
+
+
 
   template <int dim>
   void
@@ -86,6 +90,8 @@ namespace aspect
                                                 1));
       }
   }
+
+
 
   template <int dim>
   void
@@ -145,6 +151,8 @@ namespace aspect
     }
     prm.leave_subsection();
   }
+
+
 
   template <int dim>
   void
@@ -246,6 +254,8 @@ namespace aspect
     prm.leave_subsection();
   }
 
+
+
   template <int dim>
   void
   VolumeOfFluidHandler<dim>::initialize (ParameterHandler &/*prm*/)
@@ -292,11 +302,15 @@ namespace aspect
       }
   }
 
+
+
   template <int dim>
   unsigned int VolumeOfFluidHandler<dim>::get_n_fields() const
   {
     return n_volume_of_fluid_fields;
   }
+
+
 
   template <int dim>
   const std::string VolumeOfFluidHandler<dim>::name_for_field_index(unsigned int field) const
@@ -306,11 +320,15 @@ namespace aspect
     return volume_of_fluid_field_names[field];
   }
 
+
+
   template <int dim>
   double VolumeOfFluidHandler<dim>::get_volume_fraction_threshold() const
   {
     return volume_fraction_threshold;
   }
+
+
 
   template <int dim>
   const VolumeOfFluidField<dim> &VolumeOfFluidHandler<dim>::field_struct_for_field_index(unsigned int field) const
@@ -320,6 +338,8 @@ namespace aspect
     return data[field];
   }
 
+
+
   template <int dim>
   unsigned int VolumeOfFluidHandler<dim>::field_index_for_name(const std::string &composition_fieldname) const
   {
@@ -328,6 +348,8 @@ namespace aspect
       return n_volume_of_fluid_fields;
     return volume_of_fluid_composition_map_index.at(composition_index);
   }
+
+
 
   template <int dim>
   void VolumeOfFluidHandler<dim>::do_volume_of_fluid_update (const typename Simulator<dim>::AdvectionField &advection_field)
@@ -365,6 +387,8 @@ namespace aspect
     update_volume_of_fluid_composition(advection_field, volume_of_fluid_field, sim.solution);
   }
 }
+
+
 
 namespace aspect
 {
