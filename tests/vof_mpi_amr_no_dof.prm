@@ -1,4 +1,4 @@
-# MPI: 9
+# MPI: 4
 
 # Test for linear interface under constant velocity
 # Error should be at machine precision
