@@ -4,7 +4,8 @@ on: [push, pull_request]
 
 jobs:
   linux-nounity:
-    name: linux build with unity build
+    #linux build with unity/precomiled headers disabled
+    name: no-unity
     runs-on: [ubuntu-18.04]
 
     steps:
@@ -24,7 +25,8 @@ jobs:
         ./aspect --test
 
   linux:
-    name: linux build including indent and documentation
+    #linux build including indent and documentation
+    name: indent+documentation
     runs-on: [ubuntu-18.04]
 
     steps:
