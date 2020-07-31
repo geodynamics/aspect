@@ -28,9 +28,9 @@ namespace aspect
     {
       using namespace dealii;
 
-      template<>
-      double compute_fluid_fraction<2> (const Tensor<1, 2> normal,
-                                        const double d)
+
+      double compute_fluid_fraction (const Tensor<1, 2> normal,
+                                     const double d)
       {
         const int dim = 2;
 
@@ -69,9 +69,10 @@ namespace aspect
         return 0.5 + dtest / (1.0 - mpos);
       }
 
-      template<>
-      double compute_interface_location<2> (const Tensor<1, 2> normal,
-                                            const double vol)
+
+
+      double compute_interface_location (const Tensor<1, 2> normal,
+                                         const double vol)
       {
         const int dim = 2;
 
@@ -112,12 +113,12 @@ namespace aspect
           {
             return norm1 * (1 - mpos) * (vol - 0.5);
           }
-
       }
 
-      template<>
-      double compute_fluid_fraction<3> (const Tensor<1, 3> normal,
-                                        const double d)
+
+
+      double compute_fluid_fraction (const Tensor<1, 3> normal,
+                                     const double d)
       {
         // Calculations done by Scardovelli and Zaleski in
         // doi:10.1006/jcph.2000.6567,
@@ -128,7 +129,7 @@ namespace aspect
         //Simplify calculation by reducing to case of d<=0
         if (d>0.0)
           {
-            return 1.0-compute_fluid_fraction<dim>(-normal, -d);
+            return 1.0-compute_fluid_fraction(-normal, -d);
           }
 
         //Get 1-Norm
@@ -211,9 +212,10 @@ namespace aspect
         return 0.5*(2.0*dtest+1.0-m12)/nnormal[2];
       }
 
-      template<>
-      double compute_interface_location<3> (const Tensor<1, 3, double> normal,
-                                            const double vol)
+
+
+      double compute_interface_location (const Tensor<1, 3, double> normal,
+                                         const double vol)
       {
         // Calculations done by Scardovelli and Zaleski in
         // doi:10.1006/jcph.2000.6567,
@@ -222,7 +224,7 @@ namespace aspect
         // Simplify to vol<0.5 case
         if (vol>0.5)
           {
-            return -compute_interface_location<dim>(-normal, 1.0-vol);
+            return -compute_interface_location(-normal, 1.0-vol);
           }
 
         //Get 1-Norm
@@ -332,12 +334,13 @@ namespace aspect
         return -0.5+m1*vol+0.5*m12;
       }
 
-      template<>
-      void xFEM_Heaviside<2>(const unsigned int degree,
-                             const Tensor<1, 2> normal,
-                             const double d,
-                             const std::vector<Point<2>> &points,
-                             std::vector<double> &values)
+
+
+      void xFEM_Heaviside(const unsigned int degree,
+                          const Tensor<1, 2> normal,
+                          const double d,
+                          const std::vector<Point<2>> &points,
+                          std::vector<double> &values)
       {
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
@@ -430,22 +433,24 @@ namespace aspect
           }
       }
 
-      template<>
-      void xFEM_Heaviside<3>(const unsigned int /*degree*/,
-                             const Tensor<1, 3> /*normal*/,
-                             const double /*d*/,
-                             const std::vector<Point<3>> &/*points*/,
-                             std::vector<double> &/*values*/)
+
+
+      void xFEM_Heaviside(const unsigned int /*degree*/,
+                          const Tensor<1, 3> /*normal*/,
+                          const double /*d*/,
+                          const std::vector<Point<3>> &/*points*/,
+                          std::vector<double> &/*values*/)
       {
         AssertThrow(false, ExcNotImplemented());
       }
 
-      template<>
-      void xFEM_Heaviside_derivative_d<2>(const unsigned int degree,
-                                          const Tensor<1, 2> normal,
-                                          const double d,
-                                          const std::vector<Point<2>> &points,
-                                          std::vector<double> &values)
+
+
+      void xFEM_Heaviside_derivative_d(const unsigned int degree,
+                                       const Tensor<1, 2> normal,
+                                       const double d,
+                                       const std::vector<Point<2>> &points,
+                                       std::vector<double> &values)
       {
         const int basis_count=4;
         std::vector<double> coeffs(basis_count);
@@ -537,15 +542,17 @@ namespace aspect
           }
       }
 
-      template<>
-      void xFEM_Heaviside_derivative_d<3>(const unsigned int /*degree*/,
-                                          const Tensor<1, 3> /*normal*/,
-                                          const double /*d*/,
-                                          const std::vector<Point<3>> &/*points*/,
-                                          std::vector<double> &/*values*/)
+
+
+      void xFEM_Heaviside_derivative_d(const unsigned int /*degree*/,
+                                       const Tensor<1, 3> /*normal*/,
+                                       const double /*d*/,
+                                       const std::vector<Point<3>> &/*points*/,
+                                       std::vector<double> &/*values*/)
       {
         AssertThrow(false, ExcNotImplemented());
       }
+
 
 
       template<int dim>

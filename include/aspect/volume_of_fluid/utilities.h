@@ -40,8 +40,9 @@ namespace aspect
        *
        * Currently only works assuming constant Jacobian determinant.
        */
-      template<int dim>
-      double compute_fluid_fraction (const Tensor<1, dim, double> normal,
+      double compute_fluid_fraction (const Tensor<1, 2> normal,
+                                     const double d);
+      double compute_fluid_fraction (const Tensor<1, 3> normal,
                                      const double d);
 
       /**
@@ -51,8 +52,9 @@ namespace aspect
        *
        * Currently only works assuming constant Jacobian determinant.
        */
-      template<int dim>
-      double compute_interface_location (const Tensor<1, dim, double> normal,
+      double compute_interface_location (const Tensor<1, 2> normal,
+                                         const double volume_fraction);
+      double compute_interface_location (const Tensor<1, 3> normal,
                                          const double volume_fraction);
 
       /**
@@ -68,12 +70,17 @@ namespace aspect
        * @param points Locations to evaluate the constructed polynomial
        * @param values Values of the constructed polynomial at the specified points
        */
-      template<int dim>
       void xFEM_Heaviside(const unsigned int degree,
-                          const Tensor<1, dim, double> normal,
+                          const Tensor<1, 2> normal,
                           const double d,
-                          const std::vector<Point<dim>> &points,
+                          const std::vector<Point<2>> &points,
                           std::vector<double> &values);
+      void xFEM_Heaviside(const unsigned int degree,
+                          const Tensor<1, 3> normal,
+                          const double d,
+                          const std::vector<Point<3>> &points,
+                          std::vector<double> &values);
+
       /**
        * Obtain values at points for a polynomial function that is equivalent to
        * the function $\frac{d}{dd}H(d-normal*xhat)$ on the unit cell when
@@ -87,11 +94,15 @@ namespace aspect
        * @param points Locations to evaluate the constructed polynomial
        * @param values Values of the constructed polynomial at the specified points
        */
-      template<int dim>
       void xFEM_Heaviside_derivative_d(const unsigned int degree,
-                                       const Tensor<1, dim, double> normal,
+                                       const Tensor<1, 2> normal,
                                        const double d,
-                                       const std::vector<Point<dim>> &points,
+                                       const std::vector<Point<2>> &points,
+                                       std::vector<double> &values);
+      void xFEM_Heaviside_derivative_d(const unsigned int degree,
+                                       const Tensor<1, 3> normal,
+                                       const double d,
+                                       const std::vector<Point<3>> &points,
                                        std::vector<double> &values);
 
 
