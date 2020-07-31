@@ -3,8 +3,30 @@ name: linux
 on: [push, pull_request]
 
 jobs:
+  linux-nounity:
+    #linux build with unity/precomiled headers disabled
+    name: no-unity
+    runs-on: [ubuntu-18.04]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup
+      run: |
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.2.0-backports
+        sudo apt-get update
+        sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
+    - name: compile
+      run: |
+        mkdir build-no-unity
+        cd build-no-unity
+        cmake -D ASPECT_PRECOMPILE_HEADERS=OFF -D ASPECT_UNITY_BUILD=OFF ..
+        make -j 2
+        ./aspect --test
+
   linux:
-    name: linux build
+    #linux build including indent and documentation
+    name: indent+documentation
     runs-on: [ubuntu-18.04]
 
     steps:
@@ -34,6 +56,7 @@ jobs:
         cd build
         cmake -D ASPECT_PRECOMPILE_HEADERS=ON -D ASPECT_UNITY_BUILD=ON ..
         make -j 2
+        ./aspect --test
     - name: doc
       run: |
         cd doc
