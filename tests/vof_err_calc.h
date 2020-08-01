@@ -306,14 +306,14 @@ namespace aspect
                   grad_t[di] = (dL - dH);
                   d_t += (0.5 / dim) * (dH + dL);
                 }
-              const double solution_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction<dim> (grad_t, d_t);
+              const double solution_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction (grad_t, d_t);
               volume_of_fluid_reinit += solution_fluid_fraction_at_point*(fe_err.JxW (i) / cell_vol);
               for (unsigned int di = 0; di < dim; ++di)
                 {
                   xU[di] -= 0.5;
                 }
               const double dot = normal * xU;
-              const double computed_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction<dim> (h * normal,
+              const double computed_fluid_fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction (h * normal,
                                                               (d_compute - dot));
               const double diff = abs (solution_fluid_fraction_at_point - computed_fluid_fraction_at_point);
               val += diff * fe_err.JxW (i);

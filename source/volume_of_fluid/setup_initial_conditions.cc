@@ -207,7 +207,7 @@ namespace aspect
                     d += (0.5/dim)*(dH+dL);
                   }
                 // Use the basic fluid fraction formula to compute an approximation to the fluid fraction
-                const double fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction<dim> (grad, d);
+                const double fraction_at_point = VolumeOfFluid::Utilities::compute_fluid_fraction (grad, d);
                 volume_of_fluid_val += fraction_at_point * fe_init.JxW (i);
                 cell_vol += fe_init.JxW (i);
               }
