@@ -66,56 +66,30 @@ pipeline {
       }
     }
 
-    stage('Unity Build') {
+    stage('Build') {
       options {
         timeout(time: 30, unit: 'MINUTES')
       }
       steps {
         sh '''
-        # running cmake for unity build...
-        mkdir build-gcc-unity
-        cd build-gcc-unity
-
-        # Set up build system and compile ASPECT
-        cmake \
-        -G Ninja \
-        -D ASPECT_UNITY_BUILD=ON \
-        -D ASPECT_PRECOMPILE_HEADERS=ON \
-        ..
-        '''
-
-        sh '''
-        # executing unity build...
-        cd build-gcc-unity
-        ninja
-        '''
-      }
-    }
-
-    stage('Build') {
-      options {
-        timeout(time: 60, unit: 'MINUTES')
-      }
-      steps {
-        sh '''
         # running cmake...
-        mkdir build-gcc-fast
-        cd build-gcc-fast
+        mkdir build
+        cd build
 
         cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
-        -D ASPECT_PRECOMPILE_HEADERS=OFF \
-        -D ASPECT_UNITY_BUILD=OFF \
-        -D ASPECT_USE_PETSC='OFF' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_USE_PETSC=OFF \
         -D ASPECT_RUN_ALL_TESTS='ON' \
         ..
         '''
 
         sh '''
         # compiling...
-        cd build-gcc-fast
+        cd build
         ninja
         '''
       }
@@ -123,7 +97,7 @@ pipeline {
 
     stage('Build Documentation') {
       steps {
-        sh 'cd doc && ./update_parameters.sh ./build-gcc-fast/aspect'
+        sh 'cd doc && ./update_parameters.sh ./build/aspect'
         sh 'cd doc && make manual.pdf || touch ~/FAILED-DOC'
         archiveArtifacts artifacts: 'doc/manual/manual.log', allowEmptyArchive: true
         sh 'if [ -f ~/FAILED-DOC ]; then exit 1; fi'
@@ -136,10 +110,11 @@ pipeline {
       }
       steps {
         sh '''
-        export BUILDDIR=`pwd`/build-gcc-fast
-        cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        export BUILDDIR=`pwd`/build
+        export NP=`grep -c ^processor /proc/cpuinfo`
+        cd cookbooks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j $NP
         cd ..
-        cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j8
+        cd benchmarks && make -f check.mk CHECK=--validate BUILD=$BUILDDIR -j $NP
         '''
       }
     }
@@ -157,7 +132,7 @@ pipeline {
         // most efficient way to build the tests).
         sh '''
         # prebuilding tests...
-        cd build-gcc-fast/tests
+        cd build/tests
         ninja -k 0 tests || true
         '''
 
@@ -168,7 +143,7 @@ pipeline {
         // does not support running ctest with -j.
         sh '''
         # generating test results...
-        cd build-gcc-fast
+        cd build
         ctest \
         --no-compress-output \
         --test-action Test \
@@ -181,12 +156,12 @@ pipeline {
           xunit testTimeMargin: '3000',
           thresholdMode: 1,
           thresholds: [failed(), skipped()],
-          tools: [CTest(pattern: 'build-gcc-fast/Testing/**/*.xml')]
+          tools: [CTest(pattern: 'build/Testing/**/*.xml')]
 
           // Update the reference test output with the new test results
           sh '''
           # generating reference output...
-          cd build-gcc-fast
+          cd build
           ninja generate_reference_output
           '''
 
