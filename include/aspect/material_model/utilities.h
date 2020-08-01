@@ -293,8 +293,8 @@ namespace aspect
       * for each composition have to be averaged based on the fractions of each
       * phase field present. This function performs this type of averaging.
       * The averaging is based on the choice in @p operation. Averaging is conducted
-      * over the phase functions given in @phase_function_values, with
-      * @parameter_values containing values of all individual phases. Unlike the average_value
+      * over the phase functions given in @p phase_function_values, with
+      * @p parameter_values containing values of all individual phases. Unlike the average_value
       * function defined for compositions, averaging in this function is calculated based
       * on phase functions and the change of variables on the trajectory of phase boundaries.
       * Thus on a single phase boundary, values of variables change gradually from one phase
