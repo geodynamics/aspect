@@ -14,6 +14,7 @@
 include $ASPECT_SOURCE_DIR/cookbooks/continental_extension.prm
 
 set Timing output frequency                = 100
+set End time                               = 1e4
 
 #### Parameters describing the model
 

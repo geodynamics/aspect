@@ -4,31 +4,20 @@ Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
 *** Timestep 0:  t=0 years
-   Solving temperature system... 0 iterations.
-   Solving Stokes system... 36+0 iterations.
+   Solving Stokes system... 28+0 iterations.
 
 Number of active cells: 2,112 (on 3 levels)
 Number of degrees of freedom: 89,938 (65,142+3,082+21,714)
 
 *** Timestep 0:  t=0 years
-   Solving temperature system... 0 iterations.
-   Solving Stokes system... 41+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-shell_3d_gmg/solution/solution-00000
-     RMS, max velocity:                  0.00196 m/year, 0.0054 m/year
+     RMS, max velocity:                  0.00203 m/year, 0.00684 m/year
      Temperature min/avg/max:            973 K, 1462 K, 1973 K
-     Heat fluxes through boundary parts: -4.778e+12 W, 8.522e+12 W
+     Heat fluxes through boundary parts: -4.777e+12 W, 8.853e+12 W
      Writing depth average:              output-shell_3d_gmg/depth_average
-
-*** Timestep 1:  t=150000 years
-   Solving temperature system... 12 iterations.
-   Solving Stokes system... 32+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                  0.00196 m/year, 0.0054 m/year
-     Temperature min/avg/max:            973 K, 1462 K, 1973 K
-     Heat fluxes through boundary parts: -4.124e+12 W, 8.999e+12 W
 
 Termination requested by criterion: end time
 

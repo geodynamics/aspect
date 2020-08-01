@@ -5,20 +5,16 @@
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
 # 7: Number of degrees of freedom for all compositions
-# 8: Number of nonlinear iterations
-# 9: Iterations for temperature solver
-# 10: Iterations for composition solver 1
-# 11: Iterations for composition solver 2
-# 12: Iterations for Stokes solver
-# 13: Velocity iterations in Stokes preconditioner
-# 14: Schur complement iterations in Stokes preconditioner
-# 15: Minimal value for composition porosity
-# 16: Maximal value for composition porosity
-# 17: Global mass for composition porosity
-# 18: Minimal value for composition peridotite
-# 19: Maximal value for composition peridotite
-# 20: Global mass for composition peridotite
-# 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 8450  2 0  0  0  30  33  3881  2.77758877e-12 2.00000000e-01 1.25663562e+08  0.00000000e+00  0.00000000e+00  0.00000000e+00 output-rising_melt_blob_freezing/solution/solution-00000 
-1 1.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 10 0 92 65 318 338 30842 -9.51797095e-04 8.64298284e-02 5.57009879e+07 -1.25150679e-01 -1.39152432e-12 -6.96203920e+07 output-rising_melt_blob_freezing/solution/solution-00001 
-2 2.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 10 0 99 66 299 319 45630 -1.12110922e-03 3.42803134e-02 2.44445115e+07 -1.78427618e-01  3.73321621e-04 -9.99103184e+07 output-rising_melt_blob_freezing/solution/solution-00002 
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Minimal value for composition porosity
+# 12: Maximal value for composition porosity
+# 13: Global mass for composition porosity
+# 14: Minimal value for composition peridotite
+# 15: Maximal value for composition peridotite
+# 16: Global mass for composition peridotite
+# 17: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 8450 0 0 0 2.77758877e-12 2.00000000e-01 1.25663562e+08  0.00000000e+00  0.00000000e+00  0.00000000e+00 output-rising_melt_blob_freezing/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 0 0 0 1.37182196e-12 9.87779025e-02 6.20639153e+07 -1.26527622e-01 -1.40576681e-12 -7.09592634e+07 output-rising_melt_blob_freezing/solution/solution-00001 
+2 2.000000000000e+00 1.000000000000e+00 1024 9539 4225 8450 0 0 0 6.77528481e-13 4.87853701e-02 3.06527168e+07 -1.89018287e-01 -2.10006029e-12 -1.06005299e+08 output-rising_melt_blob_freezing/solution/solution-00002 

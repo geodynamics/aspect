@@ -54,85 +54,21 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Heating rate (average/total):  0.3906 W/kg, 0.7812 W
      Writing graphical output:      output-segregation_heating/solution/solution-00001
 
-*** Timestep 2:  t=0.2 seconds
-   Solving temperature system... 5 iterations.
-   Solving porosity system ... 2 iterations.
+*** Timestep 2:  t=0.1 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.09535e-07, 9.00825e-09, 0, 6.52636e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 8.09535e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.71433e-16, 1.2433e-16, 0, 7.71337e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.71337e-13
 
 
    Postprocessing:
      Temperature min/avg/max:       1600 K, 1600 K, 1600 K
      Heating rate (average/total):  0.3906 W/kg, 0.7812 W
      Writing graphical output:      output-segregation_heating/solution/solution-00002
-
-*** Timestep 3:  t=0.3 seconds
-   Solving temperature system... 5 iterations.
-   Solving porosity system ... 2 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-   Solving fluid velocity system... 3 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10039e-06, 1.1847e-08, 0, 8.72267e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.10039e-06
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
-     Writing graphical output:      output-segregation_heating/solution/solution-00003
-
-*** Timestep 4:  t=0.4 seconds
-   Solving temperature system... 5 iterations.
-   Solving porosity system ... 2 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-   Solving fluid velocity system... 4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.21036e-06, 1.27598e-08, 0, 8.92896e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.21036e-06
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
-     Writing graphical output:      output-segregation_heating/solution/solution-00004
-
-*** Timestep 5:  t=0.5 seconds
-   Solving temperature system... 5 iterations.
-   Solving porosity system ... 2 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-   Solving fluid velocity system... 4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.21571e-06, 1.28495e-08, 0, 8.04954e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.21571e-06
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
-     Writing graphical output:      output-segregation_heating/solution/solution-00005
-
-*** Timestep 6:  t=0.5 seconds
-   Solving temperature system... 1 iterations.
-   Solving porosity system ... 0 iterations.
-   Skipping peridotite composition solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-   Solving fluid velocity system... 4 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.10955e-12, 1.29794e-14, 0, 9.9592e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.10955e-12
-
-
-   Postprocessing:
-     Temperature min/avg/max:       1600 K, 1600 K, 1600 K
-     Heating rate (average/total):  0.3906 W/kg, 0.7812 W
-     Writing graphical output:      output-segregation_heating/solution/solution-00006
 
 Termination requested by criterion: end time
 

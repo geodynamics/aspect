@@ -8,6 +8,9 @@
 set Dimension                              = 2
 set Nonlinear solver scheme                = iterated Advection and Stokes
 
+# We only want to test if one line is written per iteration
+set Max nonlinear iterations               = 2
+
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is.
 set Use years in output instead of seconds = false
@@ -129,7 +132,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial global refinement                = 2
+  set Initial global refinement                = 1
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end

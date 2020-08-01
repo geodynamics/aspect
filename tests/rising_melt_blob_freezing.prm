@@ -17,14 +17,20 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 2
 set Use years in output instead of seconds = true
-set Adiabatic surface temperature          = 1600 
-set Nonlinear solver scheme                = iterated Advection and Stokes
+set Adiabatic surface temperature          = 1600
+# Do not solve for Stokes to speed up test
+# (see rising_melt_blob for the same test that solves Stokes) 
+set Nonlinear solver scheme                = single Advection, no Stokes
 # number of nonlinear iterations reduced from 50 to 10 to speed up test.
 set Max nonlinear iterations               = 10
 set Maximum time step                      = 1
 
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
+
+subsection Prescribed Stokes solution
+  set Model name = function
+end
 
 subsection Material model
 
@@ -39,7 +45,7 @@ end
 set Use operator splitting                     = true
 subsection Solver parameters
   subsection Operator splitting parameters
-    set Reaction time step                     = 0.005
+    set Reaction time step                     = 0.05
     set Reaction time steps per advection step = 1
   end
 end
@@ -54,16 +60,11 @@ subsection Geometry model
   end
 end
 
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0, 1, 2, 3
-end
 
 subsection Melt settings
   set Include melt transport = true
+# Set to false in order to prescribe Stokes solution
+  set Use discontinuous compaction pressure = false
 end
 
 subsection Compositional fields
