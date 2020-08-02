@@ -43,15 +43,4 @@ There are two common cases where this situation happens. First, your code (or so
 In any case, when trying to find the source of the error, recall that the location where you are getting this error is simply the first place in the program where there is a check that a number (e.g., an element of a solution vector) is in fact finite, but that the actual error that computed the number may have happened far earlier. To find this location, you may want to add checks for finiteness in places of your program visited before the place where this error is produced. One way to check for finiteness is to use the 'AssertIsFinite' macro.
 
 Stacktrace:
-#0  ASPECT_DIR/build-gcc-fast/aspect: dealii::TrilinosWrappers::MPI::Vector::add(double, dealii::TrilinosWrappers::MPI::Vector const&)
-#1  ASPECT_DIR/build-gcc-fast/aspect: dealii::TrilinosWrappers::MPI::Vector::add_and_dot(double, dealii::TrilinosWrappers::MPI::Vector const&, dealii::TrilinosWrappers::MPI::Vector const&)
-#2  ASPECT_DIR/build-gcc-fast/aspect: dealii::SolverGMRES<dealii::TrilinosWrappers::MPI::Vector>::modified_gram_schmidt(dealii::internal::SolverGMRESImplementation::TmpVectors<dealii::TrilinosWrappers::MPI::Vector> const&, unsigned int, unsigned int, dealii::TrilinosWrappers::MPI::Vector&, dealii::Vector<double>&, bool&, boost::signals2::signal<void (int), boost::signals2::optional_last_value<void>, int, std::less<int>, boost::function<void (int)>, boost::function<void (boost::signals2::connection const&, int)>, boost::signals2::mutex> const&)
-#3  ASPECT_DIR/build-gcc-fast/aspect: void dealii::SolverGMRES<dealii::TrilinosWrappers::MPI::Vector>::solve<dealii::TrilinosWrappers::SparseMatrix, dealii::TrilinosWrappers::PreconditionILU>(dealii::TrilinosWrappers::SparseMatrix const&, dealii::TrilinosWrappers::MPI::Vector&, dealii::TrilinosWrappers::MPI::Vector const&, dealii::TrilinosWrappers::PreconditionILU const&)
-#4  ASPECT_DIR/build-gcc-fast/aspect: aspect::Simulator<2>::solve_advection(aspect::Simulator<2>::AdvectionField const&)
-#5  ASPECT_DIR/build-gcc-fast/aspect: aspect::Simulator<2>::assemble_and_solve_temperature(bool, double*)
-#6  ASPECT_DIR/build-gcc-fast/aspect: aspect::Simulator<2>::solve_single_advection_iterated_stokes()
-#7  ASPECT_DIR/build-gcc-fast/aspect: aspect::Simulator<2>::solve_timestep()
-#8  ASPECT_DIR/build-gcc-fast/aspect: aspect::Simulator<2>::run()
-#9  ASPECT_DIR/build-gcc-fast/aspect: void run_simulator<2>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool, bool, bool)
-#10  ASPECT_DIR/build-gcc-fast/aspect: main
-
+(rest of the output replaced by default.sh script)

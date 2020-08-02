@@ -31,5 +31,12 @@ while ( <STDIN> )
 	$skip=1;
     }
 
+    if ($_ =~ m/^Stacktrace:/)
+    {
+	print "$_";
+	print "(rest of the output replaced by default.sh script)\n";
+	last;
+    }
+
     print "$_";
 }
