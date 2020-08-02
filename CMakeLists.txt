@@ -33,7 +33,7 @@ FILE(GLOB_RECURSE TARGET_SRC
 FIND_FILE(HELPER_PATH helper_functions.cc HINTS "${CMAKE_SOURCE_DIR}/source/simulator")
 LIST(REMOVE_ITEM TARGET_SRC ${HELPER_PATH})
 LIST(INSERT TARGET_SRC 0 ${HELPER_PATH})
-   
+
 # Set up include directories. Put the ASPECT header files
 # to the front of the list, whereas the 'catch' headers can
 # be preempted by the system
@@ -134,7 +134,7 @@ if(ASPECT_WITH_WORLD_BUILDER)
   FOREACH(_source_file ${wb_files})
     # exclude the world builder files from including precompiled headers, they
     # do not include ASPECT's dependencies at all.
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE ) 
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
     # exclude the world builder from unity builds (avoids compilation errors):
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
@@ -209,7 +209,7 @@ IF (("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}") AND ASPECT_RUN_ALL_TE
 ENDIF()
 
 
-SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING 
+SET(ASPECT_TEST_GENERATOR "Unix Makefiles" CACHE STRING
   "Generator to use for the test cmake project. Using ninja instead of make is not recommended.")
 
 
@@ -603,7 +603,7 @@ FIND_PROGRAM(PARAMETER_GUI_EXECUTABLE
 MARK_AS_ADVANCED(CLEAR PARAMETER_GUI_EXECUTABLE)
 
 # did the user specify something that doesn't exist?
-IF (PARAMETER_GUI_EXECUTABLE 
+IF (PARAMETER_GUI_EXECUTABLE
         AND
     (NOT EXISTS ${PARAMETER_GUI_EXECUTABLE} OR IS_DIRECTORY ${PARAMETER_GUI_EXECUTABLE}))
   MESSAGE(STATUS "Warning: PARAMETER_GUI_EXECUTABLE '${PARAMETER_GUI_EXECUTABLE}' does not exist")
@@ -638,7 +638,7 @@ INSTALL(TARGETS aspect
 SET_PROPERTY(TARGET aspect PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # headers:
-INSTALL(DIRECTORY include/ 
+INSTALL(DIRECTORY include/
   DESTINATION include
   COMPONENT includes
   FILES_MATCHING PATTERN "*.h")

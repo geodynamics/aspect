@@ -21,8 +21,8 @@ fi
 
 cd $SRC_PATH
 git diff tests/ >$OUT
-if [ -s $OUT ]; then 
-  echo "generated patch file: $OUT"; 
+if [ -s $OUT ]; then
+  echo "generated patch file: $OUT";
   echo "modified files:"
   git diff --name-only tests/
 else
