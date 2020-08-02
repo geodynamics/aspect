@@ -99,10 +99,6 @@ namespace aspect
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         material_model_inputs.composition[q][c] = composition_values[c][q];
 
-    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-    material_model_inputs.cell = &cell;
-    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
     material_model_inputs.current_cell = cell;
   }
 

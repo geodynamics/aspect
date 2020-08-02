@@ -256,9 +256,6 @@ namespace aspect
     }
 
 
-    // We still use the cell reference in the different constructors, although it is deprecated.
-    // Make sure we don't get any compiler warnings.
-    DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
@@ -270,7 +267,6 @@ namespace aspect
       velocity(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
       strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell (nullptr),
       current_cell(),
       requested_properties(MaterialProperties::all_properties)
     {}
@@ -287,7 +283,6 @@ namespace aspect
       velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(&current_cell),
       current_cell(input_data.template get_cell<DoFHandler<dim> >()),
       requested_properties(MaterialProperties::all_properties)
     {
@@ -328,7 +323,6 @@ namespace aspect
       velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
-      cell(cell_x.state() == IteratorState::valid ? &current_cell : nullptr),
       current_cell (cell_x),
       requested_properties(MaterialProperties::all_properties)
     {
@@ -348,7 +342,6 @@ namespace aspect
       velocity(source.velocity),
       composition(source.composition),
       strain_rate(source.strain_rate),
-      cell(source.cell),
       current_cell(source.current_cell),
       requested_properties(source.requested_properties)
     {
@@ -392,10 +385,6 @@ namespace aspect
           for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
             this->composition[i][c] = composition_values[c][i];
         }
-
-      DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-      this->cell = cell_x.state() == IteratorState::valid ? &cell_x : nullptr;
-      DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
       this->current_cell = cell_x;
     }
