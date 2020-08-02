@@ -20,7 +20,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
 
 IF (CMP0058)
- cmake_policy(CMP0058 NEW) 
+ cmake_policy(CMP0058 NEW)
 ENDIF()
 
 SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
@@ -77,7 +77,7 @@ ENDFUNCTION()
 # TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
 # using Trilinos.
 # 2. "WORLD BUILDER" - only run with World Builder.
-# 3. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false 
+# 3. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
 FUNCTION(SHOULD_ENABLE_TEST _filename)
 
   FILE(STRINGS ${_filename} _input_lines

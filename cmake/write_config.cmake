@@ -45,7 +45,7 @@ _detailed(
 #        ASPECT_UNITY_BUILD:        ${ASPECT_UNITY_BUILD}
 #
 #        CMAKE_INSTALL_PREFIX:      ${CMAKE_INSTALL_PREFIX}
-#        CMAKE_SOURCE_DIR:          ${CMAKE_SOURCE_DIR} 
+#        CMAKE_SOURCE_DIR:          ${CMAKE_SOURCE_DIR}
 #        CMAKE_BINARY_DIR:          ${CMAKE_BINARY_DIR}
 #        CMAKE_CXX_COMPILER:        ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION} on platform ${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_PROCESSOR}
 #                                   ${CMAKE_CXX_COMPILER}
