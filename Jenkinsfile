@@ -80,7 +80,7 @@ pipeline {
         cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
-        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O1' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
