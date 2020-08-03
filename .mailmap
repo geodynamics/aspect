@@ -1,0 +1,187 @@
+# This file is up-to-date if the command git log --format="%aN <%aE>" | sort -u
+# gives no duplicates.
+
+# Format:
+# Proper Name <good.email@address>
+# Proper Name <good@email.address> <old.or.incorrect@email.address>
+#
+# You can have several lines for the same person if more than one incorrect
+# email address is in use. Do not list everybody here, but a single entry is
+# here when the person did not set their name correctly.
+#
+# Also see https://git-scm.com/docs/git-check-mailmap
+
+Anne Glerum <a.c.glerum@uu.nl>
+
+Arushi Saxena <al.arushievil@gmail.com>
+Arushi Saxena <al.arushievil@gmail.com> <asaxena@memphis.edu>
+
+Wolfgang Bangerth <bangerth@colostate.edu>
+Wolfgang Bangerth <bangerth@colostate.edu> <bangerth@math.tamu.edu>
+
+Bart Niday <wniday@uoregon.edu>
+Bart Niday <wniday@uoregon.edu> <29292740+bartniday@users.noreply.github.com>
+Bart Niday <wniday@uoregon.edu> <bartniday@Barts-iMac.local>
+
+Benjamin Smith <bjs2@clemson.edu>
+Benjamin Smith <bjs2@clemson.edu> <bjs2@heidelberg.ces.clemson.edu>
+Benjamin Smith <bjs2@clemson.edu> <bjs2@g.clemson.edu>
+
+Cedric Thieulot <c.thieulot@uu.nl>
+
+Daniel Sandiford <sonderfjord@gmail.com>
+
+Derek Neuharth <djneuh@gfz-potsdam.de>
+Derek Neuharth <djneuh@gfz-potsdam.de> <neuh5852@vandals.uidaho.edu>
+
+Diandian Peng <peng3@h2ologin2.ncsa.illinois.edu>
+Diandian Peng <peng3@h2ologin2.ncsa.illinois.edu> <peng3@h2ologin3.ncsa.illinois.edu>
+
+Diogo Lourenco <diogolorenco@gmail.com>
+Diogo Lourenco <diogolorenco@gmail.com> <diogo.lourenco@erdw.ethz.ch>
+
+D. Sarah Stamps <stamps.dsarah@gmail.com>
+D. Sarah Stamps <stamps.dsarah@gmail.com> <gbg4dss@login1.stampede.tacc.utexas.edu>
+D. Sarah Stamps <stamps.dsarah@gmail.com> <q@as-macbook-pro.bodega>
+D. Sarah Stamps <stamps.dsarah@gmail.com> <q@as-MacBook-Pro.local>
+D. Sarah Stamps <stamps.dsarah@gmail.com> <dstamps@mit.edu>
+
+Eric Heien <emheien@ucdavis.edu>
+Eric Heien <emheien@ucdavis.edu> <github@heien.org>
+
+Eva Bredow <eva.bredow@gfz-potsdam.de>
+Eva Bredow <eva.bredow@gfz-potsdam.de> <Eva@linux-f5x7.site>
+
+Fiona Clerc <fionaclerc@users.noreply.github.com>
+Fiona Clerc <fionaclerc@users.noreply.github.com> <37747437+fionaclerc@users.noreply.github.com>
+
+Fred Richards <freddrichards@mac.com>
+
+Rene Gassmoeller <rene.gassmoeller@mailbox.org>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <R.Gassmoeller@gmx.de>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <R.Gassmoeller@mailbox.org>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <Rene.Gassmoeller@mailbox.org>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <r.gassmoeller@gmail.com>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <r.gassmoeller@mailbox.org>
+Rene Gassmoeller <rene.gassmoeller@mailbox.org> <rengas@gfz-potsdam.de>
+
+Grant Euen <egrant93@vt.edu>
+
+Hannah Mark <hannah.f.mark@gmail.com>
+
+Haoyuan Li <hylli@ucdavis.edu>
+Haoyuan Li <hylli@ucdavis.edu> <hylli@ucdavis.com>
+
+Harsha Lokavarapu <hlokavarapu@gmail.com>
+Harsha Lokavarapu <lokavarapuh@gmail.com> <hlokavarapu@gmail.com>
+
+Ian Rose <ian.r.rose@gmail.com>
+Ian Rose <ian.r.rose@gmail.com> <ian.rose@berkeley.edu>
+
+Jacky Austermann <jaustermann@fas.harvard.edu>
+Jacky Austermann <jaustermann@fas.harvard.edu> <ja3170@columbia.edu>
+Jacky Austermann <jaustermann@fas.harvard.edu> <ja3170@holmes.cm.cluster>
+Jacky Austermann <jaustermann@fas.harvard.edu> <ja3170@node143.cm.cluster>
+Jacky Austermann <jaustermann@fas.harvard.edu> <ja3170@watson.cm.cluster>
+
+John Naliboff <john.naliboff@gmail.com>
+John Naliboff <john.naliboff@gmail.com> <jbnaliboff@Johns-MacBook-Pro-3.local>
+John Naliboff <john.naliboff@gmail.com> <jbnaliboff@ucdavis.edu>
+
+Jeroen Van-Hunen <Jeroen@er1-10-245-9-205.wlan.dur.ac.uk>
+Jeroen Van-Hunen <Jeroen@er1-10-245-9-205.wlan.dur.ac.uk> <Jeroen@Jeroens-Air-2.lan>
+Jeroen Van-Hunen <Jeroen@er1-10-245-9-205.wlan.dur.ac.uk> <Jeroen@Jeroens-MacBook-Air-2.local>
+
+Jonathan Perry-Houts <jperryh2@uoregon.edu>
+Jonathan Perry-Houts <jperryh2@uoregon.edu> <jonathan@invertedearth.net>
+
+Jon Kay <Jonpkay@gmail.com>
+
+Juliane Dannberg <judannberg@gmail.com>
+Juliane Dannberg <judannberg@gmail.com> <dannberg@gfz-potsdam.de>
+
+
+Kimberly Moore <kimmoore84@gmail.com>
+Kimberly Moore <kimmoore84@gmail.com> <kmoore@rclogin03.rc.fas.harvard.edu>
+Kimberly Moore <kimmoore84@gmail.com> <kmoore@rclogin10.rc.fas.harvard.edu>
+
+Marine Lasbleis <marine.lasbleis@gmail.com>
+Marine Lasbleis <marine.lasbleis@gmail.com> <marine.lasbleis@univ-nantes.fr>
+
+Lev Karatun <lev.karatun@gmail.com>
+
+Thomas C Clevenger <tcleven@clemson.edu>
+
+Lorraine Hwang <ljhwang@ucdavis.edu>
+
+Louise Kellogg <kellogg@ucdavis.edu>
+
+Ludovic Jeanniot <ludovic.jeanniot@gmail.com>
+Ludovic Jeanniot <ludovic.jeanniot@gmail.com> <jeanniot@gaia.cm.cluster>
+Ludovic Jeanniot <ludovic.jeanniot@gmail.com> <jeanniot@tvzessen-HP-Z640-Workstation>
+Ludovic Jeanniot <ludovic.jeanniot@gmail.com> <estothen67@orange.fr>
+
+Mack Gregory <gregorymack04@gmail.com>
+Mack Gregory <gregorymack04@gmail.com> <mgr@ucdavis.edu>
+
+Magali Billen <mibillen@ucdavis.edu>
+
+Marie Kajan <marie.kajan@gmail.com>
+Marie Kajan <marie.kajan@gmail.com> <40248606+mnkajan@users.noreply.github.com>
+
+Markus Buerg <buerg@math.tamu.edu>
+
+Matthew Weller <mbweller@gmail.com>
+Matthew Weller <mbweller@gmail.com> <mbweller@IG-A03492.ig.utexas.edu>
+
+Max Rudolph <maxrudolph@ucdavis.edu>
+Max Rudolph <maxrudolph@ucdavis.edu> <maxwellr@gmail.com>
+Max Rudolph <maxrudolph@ucdavis.edu> <rmaxwell@pdx.edu>
+Max Rudolph <maxrudolph@ucdavis.edu> <maxwellr@gmail.com>
+
+Menno Fraters <menno.fraters@outlook.com>
+Menno Fraters <menno.fraters@outlook.com> <menno.fraters@hotmail.com>
+
+Kimee Moore <kimmoore84@gmail.com>
+
+Emmanuel Njinju <njinju85@vt.edu>
+
+E. G. Puckett <egpuckett@ucdavis.edu>
+
+Ryan Grove <rrgrove6@gmail.com>
+Ryan Grove <rrgrove6@gmail.com> <rgrove@clemson.edu>
+
+Sam Cox <sam.cox144@gmail.com>
+Sam Cox <sam.cox144@gmail.com> <spc29@le.ac.uk>
+Sam Cox <sam.cox144@gmail.com> <spco@users.noreply.github.com>
+
+Sanja Panovska <spanovska@ucsd.edu>
+
+Scott Tarlow <scott_tarlow@yahoo.com>
+
+Sophie Coulson <slcoulson@g.harvard.edu>
+Sophie Coulson <slcoulson@g.harvard.edu> <scoulson@Sophies-Macbook-3.local>
+
+Shangxin Liu <sxliu@vt.edu>
+
+Sibiao Liu <sibiao@gfz-potsdam.de>
+Sibiao Liu <sibiao@gfz-potsdam.de> <36626697+sibiaoliu@users.noreply.github.com>
+
+Siqi Zhang <siqi.zhang@mq.edu.au>
+Siqi Zhang <siqi.zhang@mq.edu.au> <SiqiZhang@users.noreply.github.com>
+
+Raja Onarison <trajaona@vt.edu>
+Raja Onarison <trajaona@vt.edu> <trajaona@Geos000374339.local>
+Raja Onarison <trajaona@vt.edu> <trajaona@ip2-208.tvmax-fiber-2.hou.ygnition.net>
+Raja Onarison <trajaona@vt.edu> <trajaona@ip3-6.tvmax-fiber-2.hou.ygnition.net>
+
+Harry Levinson <hrlevinson@ucdavis.edu>
+
+Tyler Esser <tjesser@ucdavis.edu>
+
+William Durkin <wjd73@cornell.edu>
+
+Yimin Jin <muteminer@126.com>
+
+Ying He <helincy@gmail.com>
+Ying He <helincy@gmail.com> <yingucd@gmail.com>
