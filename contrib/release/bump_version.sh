@@ -13,12 +13,12 @@ VER=$1
 echo "changing version info to '$VER':"
 
 echo "VERSION ..."
-echo "$VER" >../VERSION
+echo "$VER" >../../VERSION
 
 echo "manual.tex ..."
-sed -i "s/^.* %VERSION-INFO%\$/$VER %VERSION-INFO%/g" manual/manual.tex 
+sed -i "s/^.* %VERSION-INFO%\$/$VER %VERSION-INFO%/g" ../../doc/manual/manual.tex
 
 echo "global.h ..."
-sed -i "s|version \(.*\)\\\\n\" //VERSION-INFO|version $VER\\\\n\" //VERSION-INFO|g" ../include/aspect/global.h
+sed -i "s|version \(.*\)\\\\n\" //VERSION-INFO|version $VER\\\\n\" //VERSION-INFO|g" ../../include/aspect/global.h
 
-git add ../VERSION manual/manual.tex ../include/aspect/global.h
+git add ../../VERSION ../../doc/manual/manual.tex ../../include/aspect/global.h
