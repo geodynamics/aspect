@@ -462,9 +462,7 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
-
           vtk_flags.write_higher_order_cells = write_higher_order_output;
-
 
           data_out.set_flags(vtk_flags);
           // Write as many files as processes. For this case we support writing in a
