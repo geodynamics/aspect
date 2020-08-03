@@ -28,11 +28,14 @@ SET(TARGET "aspect")
 FILE(GLOB_RECURSE TARGET_SRC
      "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
 
-# special treatment of some files for unity builds:
-LIST(APPEND UNITY_LAST_FILES
-	"source/simulator/core.cc;source/volume_of_fluid/handler.cc")
+# Special treatment of some files for unity builds. We move the following
+# files to the end of the list of all .cc files (TARGET_SRC). This ordering is
+# required to not have specializations (for example helper_functions.cc)
+# appear after explicit class instantiation (for example core.cc) of the same
+# class that happen to be included in the same unity cxx file.
+SET(UNITY_LAST_FILES
+  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
 
-# Fine the files listed above and move them to the end of the list:
 FOREACH(_source_file ${UNITY_LAST_FILES})
   SET(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
   LIST(FIND TARGET_SRC ${_full_name} _index)
