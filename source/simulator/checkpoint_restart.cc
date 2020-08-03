@@ -278,11 +278,8 @@ namespace aspect
       parallel::distributed::SolutionTransfer<dim, LinearAlgebra::BlockVector>
       system_trans (dof_handler);
 
-#if DEAL_II_VERSION_GTE(9,1,0)
       system_trans.prepare_for_serialization (x_system);
-#else
-      system_trans.prepare_serialization (x_system);
-#endif
+
 
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
@@ -296,11 +293,9 @@ namespace aspect
 
           x_fs_system[0] = &mesh_deformation->mesh_displacements;
 
-#if DEAL_II_VERSION_GTE(9,1,0)
+
           mesh_deformation_trans->prepare_for_serialization(x_fs_system);
-#else
-          mesh_deformation_trans->prepare_serialization(x_fs_system);
-#endif
+
         }
 
       signals.pre_checkpoint_store_user_data(triangulation);
@@ -390,7 +385,7 @@ namespace aspect
                        parameters.output_directory + "restart.mesh.info.old");
             move_file (parameters.output_directory + "restart.resume.z",
                        parameters.output_directory + "restart.resume.z.old");
-#if DEAL_II_VERSION_GTE(9,1,0)
+
             move_file (parameters.output_directory + "restart.mesh_fixed.data",
                        parameters.output_directory + "restart.mesh_fixed.data.old");
 
@@ -399,7 +394,7 @@ namespace aspect
                 move_file (parameters.output_directory + "restart.mesh_variable.data",
                            parameters.output_directory + "restart.mesh_variable.data.old");
               }
-#endif
+
           }
 
         move_file (parameters.output_directory + "restart.mesh.new",
@@ -408,7 +403,7 @@ namespace aspect
                    parameters.output_directory + "restart.mesh.info");
         move_file (parameters.output_directory + "restart.resume.z.new",
                    parameters.output_directory + "restart.resume.z");
-#if DEAL_II_VERSION_GTE(9,1,0)
+
         move_file (parameters.output_directory + "restart.mesh.new_fixed.data",
                    parameters.output_directory + "restart.mesh_fixed.data");
 
@@ -417,7 +412,7 @@ namespace aspect
             move_file (parameters.output_directory + "restart.mesh.new_variable.data",
                        parameters.output_directory + "restart.mesh_variable.data");
           }
-#endif
+
 
         // from now on, we know that if we get into this
         // function again that a snapshot has previously
