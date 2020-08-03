@@ -383,11 +383,13 @@ namespace aspect
       // minus the mesh deformation boundary indicators.
       std::set< types::boundary_id > x_no_flux_boundary_indicators = tangential_mesh_boundary_indicators;
       for (std::set<types::boundary_id>::const_iterator p = x_no_flux_boundary_indicators.begin();
-           p != x_no_flux_boundary_indicators.end(); ++p)
-        if (mesh_deformation_boundary_indicators_set.find(*p) != mesh_deformation_boundary_indicators_set.end())
-          {
+           p != x_no_flux_boundary_indicators.end();)
+        {
+          if (mesh_deformation_boundary_indicators_set.find(*p) != mesh_deformation_boundary_indicators_set.end())
             p = x_no_flux_boundary_indicators.erase(p);
-          }
+          else
+            ++p;
+        }
 
       sim.signals.pre_compute_no_normal_flux_constraints(sim.triangulation);
       // Make the no flux boundary constraints
