@@ -1,0 +1,130 @@
+# A test based on the particle version of the SolKz benchmark that (1) tests to 
+# ensure that additional particles are added to the model during the computation
+# with multiple properties on the particles and (2) tests to ensure that the 
+# particle methodology when used with the Quadratic Least Squares Particle 
+# Interpolation algorithm correctly computes the particle version of the Solkz 
+# benchmark.
+
+set Additional shared libraries            = ./libparticle_interpolator_quadratic_add_particles.so
+
+############### Global parameters
+
+set Dimension                              = 2
+
+set Start time                             = 0
+set End time                               = 0
+
+set Output directory                       = output
+
+set Pressure normalization                 = volume
+
+############### Parameters describing the model
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+subsection Material model
+  set Model name = SolKzCompositionalMaterial
+end
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+############### Parameters describing the temperature field
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+############### Parameters describing the discretization
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+  set Use locally conservative discretization = false
+  set Use discontinuous composition discretization = true
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
+end
+
+############### Parameters describing the compositional field
+# Note: The compositional field is what drives the flow
+# in this example
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = density_comp, viscosity_comp
+  set Compositional field methods = particles, particles
+  set Mapped particle properties = density_comp:function[0], viscosity_comp:function[1]
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926, eta_b=1e6
+    set Function expression = -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
+  end
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = particles, SolKzPostprocessor
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = none
+    set List of particle properties = function
+    set Integration scheme = rk2
+    set Interpolation scheme = quadratic least squares
+    set Minimum particles per cell = 10
+    set Maximum particles per cell = 16384
+    set Load balancing strategy = remove and add particles
+    set Update ghost particles = true
+
+    subsection Function
+      set Number of components = 2
+      set Variable names      = x, z
+      set Function constants  = pi=3.1415926, eta_b=1e6
+      set Function expression =  -1 * sin(2*z) * cos(3*pi*x); exp(log(eta_b)*z)
+    end
+
+    set Particle generator name = reference cell
+
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 3
+      end
+    end
+
+    subsection Interpolator
+      subsection Quadratic least squares
+        set Use limiter = true
+        set Global particle property minimum = -1, 1
+        set Global particle property maximum = 1, 1e6
+      end
+    end
+  end
+end

@@ -1,0 +1,120 @@
+# This is a variation of the particle_interpolator_bilinear_3d
+# test that includes a time varying solution with active particles.
+# In particular this test was introduced to check for the accuracy
+# of the quadratic_least_squares interpolator in 3D
+
+
+set Dimension                              = 3 
+set Start time                             = 0
+set End time                               = .1
+set Use years in output instead of seconds = false
+set Output directory = temp_output    
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top, front, back
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z  
+    set Function expression = (1-z)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity                           = 1
+    set Thermal expansion coefficient                  = 0.01
+    set Viscosity                                      = 1
+    set Reference density                              = 1
+    set Reference temperature                          = 0
+    set Density differential for compositional field 1 = 1
+  end
+end
+
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = particles, velocity statistics, composition statistics, temperature statistics
+
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties
+    set Time between graphical output = 0
+  end
+
+  subsection Particles
+    set Data output format       = none
+    set List of particle properties = initial composition
+    set Interpolation scheme = quadratic least squares
+    set Update ghost particles   = true
+    set Particle generator name = reference cell
+
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 3
+      end
+    end
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Compositional field methods = particles
+end
+
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z 
+    set Function expression = if(y<0.2*x, 1, 0) ; if(y>0.8, 1, 0)
+  end
+end
