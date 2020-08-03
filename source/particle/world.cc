@@ -138,11 +138,7 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if !DEAL_II_VERSION_GTE(9,1,0)
-        particle_handler->register_store_callback_function(false);
-#else
         particle_handler->register_store_callback_function();
-#endif
       });
 
       signals.post_refinement_load_user_data.connect(
@@ -154,11 +150,7 @@ namespace aspect
       signals.pre_checkpoint_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-#if !DEAL_II_VERSION_GTE(9,1,0)
-        particle_handler->register_store_callback_function(false);
-#else
         particle_handler->register_store_callback_function();
-#endif
       });
 
       signals.post_resume_load_user_data.connect(
@@ -228,11 +220,7 @@ namespace aspect
 
               types::particle_index local_start_index = 0.0;
 
-#if DEAL_II_VERSION_GTE(9,1,0)
               const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, DEAL_II_PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#else
-              const int ierr = MPI_Scan(&particles_to_add_locally, &local_start_index, 1, PARTICLE_INDEX_MPI_TYPE, MPI_SUM, this->get_mpi_communicator());
-#endif
               AssertThrowMPI(ierr);
 
               local_start_index -= particles_to_add_locally;
@@ -320,11 +308,7 @@ namespace aspect
     World<dim>::cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                             const typename parallel::distributed::Triangulation<dim>::CellStatus status)
     {
-#if DEAL_II_VERSION_GTE(9,2,0)
       if (cell->is_active() && !cell->is_locally_owned())
-#else
-      if (cell->active() && !cell->is_locally_owned())
-#endif
         return 0;
 
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
