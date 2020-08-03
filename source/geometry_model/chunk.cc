@@ -934,6 +934,15 @@ namespace aspect
 {
   namespace GeometryModel
   {
+    namespace internal
+    {
+#define INSTANTIATE(dim) \
+  template class ChunkGeometry<dim>;
+      ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
+    }
+
     ASPECT_REGISTER_GEOMETRY_MODEL(Chunk,
                                    "chunk",
                                    "A geometry which can be described as a chunk of a spherical shell, "
