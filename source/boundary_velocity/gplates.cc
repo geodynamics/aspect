@@ -866,12 +866,12 @@ namespace aspect
                              "plate reconstruction.");
           prm.declare_entry ("Point one", "1.570796,0.0",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians."
-                             "This value is not utilized in the 3D geometry models, and could therefore be set to the default or any user-defined quantity.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
+                             "phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.");
           prm.declare_entry ("Point two", "1.570796,1.570796",
                              Patterns::Anything (),
-                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians."
-                             "This value is not utilized in the 3D geometry models, and could therefore be set to the default or any user-defined quantity.");
+                             "Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and "
+                             "phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.");
           prm.declare_entry ("Lithosphere thickness", "100000.",
                              Patterns::Double (0.),
                              "Determines the depth of the lithosphere, so that the GPlates velocities can be applied at the sides of the model "
