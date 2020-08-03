@@ -351,8 +351,6 @@ namespace aspect
     }
 
 
-    DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
 
     template <int dim>
     void
