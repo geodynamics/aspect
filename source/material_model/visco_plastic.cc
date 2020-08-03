@@ -670,8 +670,6 @@ namespace aspect
           Rheology::Elasticity<dim>::declare_parameters (prm);
 
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293.", Patterns::Double (0.),
-                             "For calculating density by thermal expansivity. Units: $\\si{K}$");
           prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
                              "Stabilizes strain dependent viscosity. Units: $1 / s$");
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
