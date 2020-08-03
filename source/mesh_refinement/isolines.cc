@@ -23,10 +23,10 @@
 #include <aspect/mesh_refinement/isolines.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
-
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <math.h>
+#include <algorithm>
 
 namespace aspect
 {
@@ -44,7 +44,7 @@ namespace aspect
                           "does not have the the correct size."));
         for (unsigned int index = 0; index < values.size(); ++index)
           {
-            if (values[index] < min_values[index] || values[index] < max_values[index])
+            if (values[index] < min_values[index] || values[index] > max_values[index])
               {
                 // ouside this isoline, no need to search futher
                 return false;
@@ -52,6 +52,28 @@ namespace aspect
           }
         // If we made it this far, then we are inside the conditions, so return true.
         return true;
+      }
+      
+      Property convert_string_property(const std::vector<std::string>& compositions, const std::string field_name){
+        bool found = false;
+        Property property;
+        if (field_name == "Temperature"){
+          property.name = PropertyName::Temperature;
+          property.index = 0;
+          found = true;
+        }
+        else{
+          auto p = std::find(compositions.begin(), compositions.end(), field_name);
+          if (p != compositions.end()){
+            property.name = PropertyName::Composition;
+            property.index = std::distance(compositions.begin(), p);
+            found = true;
+          }
+        }
+        Assert(found == true,
+               ExcMessage("Internal error: Vector of fields passed to the convert_string_property function "
+                          "does not match field name entries."));
+        return property;
       }
     }
 
@@ -64,9 +86,11 @@ namespace aspect
     void
     Isolines<dim>::tag_additional_cells () const
     {
+      
+      if (this->get_dof_handler().n_locally_owned_dofs() == 0)
+        return;
 
       const Quadrature<dim> quadrature(this->get_fe().base_element(this->introspection().base_elements.temperature).get_unit_support_points());
-      std::vector<types::global_dof_index> local_dof_indices (this->get_fe().dofs_per_cell);
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature,
@@ -85,7 +109,7 @@ namespace aspect
        * 2.2. Use the flags to set either tag a cell for coarsening or refinement
        */
 
-
+      unsigned i = 0;
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
           if (cell->is_locally_owned())
@@ -102,7 +126,7 @@ namespace aspect
                 {
                   for (auto &isoline : isolines)
                     {
-                      // setup the vector to theck
+                      // setup the vector to check
                       std::vector<double> values(isoline.min_values.size());
                       for (unsigned int index = 0; index < isoline.properties.size(); ++index)
                         {
@@ -148,10 +172,11 @@ namespace aspect
 
               // if both coarsen and refine are true, give preference to refinement
               if (coarsen == true && refine == true)
-                {
-                  coarsen = false;
-                  clear_refine = false;
-                }
+                coarsen = false;
+              if (refine == true)
+                clear_refine = false;
+              if (coarsen == true)
+                clear_coarsen = false;
 
               // Perform the actual placement of the coarsening and refinement flags
               // We want to make sure that the refiment never goes below the minimum
@@ -174,6 +199,7 @@ namespace aspect
                   cell->clear_refine_flag ();
                 }
             }
+        ++i;
         }
     }
 
@@ -190,9 +216,12 @@ namespace aspect
           /**
            * TODO
            */
-          prm.declare_entry ("isolines", "depth",
+          prm.declare_entry ("Isolines", "depth",
                              Patterns::Anything(),
-                             "Todo");
+                             "A list of isotherms separated by semi-colins (;). Each isotherm entry consists of "
+                             "multiple entries separted by a comma. The first two entries indicate the minimum and maximum "
+                             "refinement levels respecitvely. last two values are the mimum and maximum "
+                             "temperatue respectively between which the mimumun and maximum refinement are enforced.");
 
         }
         prm.leave_subsection();
@@ -222,18 +251,40 @@ namespace aspect
       {
         prm.enter_subsection("Isolines");
         {
-          /*isolines = Utilities::parse_map_to_double_array (prm.get("Isolines"), // input_string
-                                                           list_of_composition_names, // list_of_keys
-                                                           has_background_field, // expects_background_field
-                                                           "Isoterms", // property_name
-                                                           true, // allow_multiple_values_per_key
-                                                           2, // n_values_per_key: check is 2 is correct (min, max)
-                                                           true); // allow missing keys: check whether we want true or false*/
-          /**
-           * Fill in the isolines variable
-           */
-
-
+          // Split the list by comma delimited components.
+          const std::vector<std::string> isoline_entries = dealii::Utilities::split_string_list(prm.get("Isolines"), ';');
+          for (auto &isoline_entry : isoline_entries){
+              aspect::MeshRefinement::Internal::Isoline isoline;  // a new object of isoline
+              std::vector<aspect::MeshRefinement::Internal::Property> properties;  // a vector of Property
+              std::vector<double> min_value_inputs;
+              std::vector<double> max_value_inputs;
+              const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isoline_entry, ',');
+              //todo: maybe fix 'max' and 'min' level
+              isoline.min_refinement = Utilities::string_to_int(field_entries[0]);
+              isoline.max_refinement = Utilities::string_to_int(field_entries[1]);
+              AssertThrow(isoline.min_refinement <= isoline.max_refinement,
+                          ExcMessage("todo"));
+              for (auto field_entry = field_entries.begin()+2; field_entry < field_entries.end(); ++field_entry)
+              {
+                AssertThrow(Patterns::Map(Patterns::Anything(),
+                                          Patterns::List(Patterns::Double(), 0, std::numeric_limits<unsigned int>::max(), "|")
+                                          ).match(*field_entry),
+                            ExcMessage("todo"));
+                std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
+                // todo, see that field is in list
+                // todo, figure out what to do with background fields?
+                properties.push_back(aspect::MeshRefinement::Internal::convert_string_property(compositions, key_and_value[0]));
+                const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
+                AssertThrow(values.size() == 2, ExcMessage("todo"))  // a min value and a max value
+                min_value_inputs.push_back(Utilities::string_to_double(values[0]));
+                max_value_inputs.push_back(Utilities::string_to_double(values[1]));
+                AssertThrow(min_value_inputs.back() < max_value_inputs.back(), ExcMessage("todo"));
+              }
+              isoline.min_values = min_value_inputs;
+              isoline.max_values = max_value_inputs;
+              isoline.properties = properties;
+              isolines.push_back(isoline);  // add this isoline
+          }
         }
         prm.leave_subsection();
       }

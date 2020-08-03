@@ -62,6 +62,7 @@ namespace aspect
           std::vector<Property> properties;
       };
 
+      Property convert_string_property(const std::vector<std::string>&, const std::string);
 
     }
 
@@ -102,6 +103,7 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm) override;
+
 
       private:
         /**
