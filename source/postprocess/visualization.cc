@@ -462,9 +462,9 @@ namespace aspect
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
-#if DEAL_II_VERSION_GTE(9,1,0)
+
           vtk_flags.write_higher_order_cells = write_higher_order_output;
-#endif
+
 
           data_out.set_flags(vtk_flags);
           // Write as many files as processes. For this case we support writing in a
@@ -1049,13 +1049,6 @@ namespace aspect
           filter_output = prm.get_bool("Filter output");
           pointwise_stress_and_strain = prm.get_bool("Point-wise stress and strain");
           write_higher_order_output = prm.get_bool("Write higher order output");
-
-#if DEAL_II_VERSION_GTE(9,1,0)
-#else
-          AssertThrow(write_higher_order_output == false, ExcMessage("The 'Write higher order output' functionality is only "
-                                                                     "available for deal.II version 9.1.0 or newer. Please update "
-                                                                     "your deal.II version if you need this option."));
-#endif
 
           if (write_higher_order_output == true)
             {
