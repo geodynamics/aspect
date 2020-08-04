@@ -229,7 +229,7 @@ subsection Material model
     # The reference temperature $T_0$. Units: \\si{\\kelvin}.
     set Reference temperature         = 293
 
-    # The value of the thermal conductivity $k$. Units: \\si{\\watt\\meter\\kelvin}.
+    # The value of the thermal conductivity $k$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.
     set Thermal conductivity          = 4.7#1e-6
 
     # The value of the thermal expansion coefficient $\beta$. Units: \\si{\\per\\kelvin}.

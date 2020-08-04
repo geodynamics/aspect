@@ -356,7 +356,7 @@ namespace aspect
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: \\si{\\meter\\squared$m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
           prm.declare_entry ("Depletion density change", "0.0",
                              Patterns::Double (),
                              "The density contrast between material with a depletion of 1 and a "

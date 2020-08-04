@@ -494,7 +494,7 @@ namespace aspect
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: \\si{\\meter\\squared$m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
           prm.declare_entry ("Melt extraction depth", "1000.0",
                              Patterns::Double (0.),
                              "Depth above that melt will be extracted from the model, "
