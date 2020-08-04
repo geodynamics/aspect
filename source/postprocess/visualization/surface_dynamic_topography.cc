@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 #include <aspect/simulator.h>
-#include <aspect/postprocess/visualization/dynamic_topography.h>
+#include <aspect/postprocess/visualization/surface_dynamic_topography.h>
 #include <aspect/postprocess/dynamic_topography.h>
 
 namespace aspect
@@ -28,18 +28,16 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
-      DynamicTopography<dim>::
-      DynamicTopography ()
+      SurfaceDynamicTopography<dim>::
+      SurfaceDynamicTopography ()
         :
-        DataPostprocessorScalar<dim> ("dynamic_topography",
+        DataPostprocessorScalar<dim> ("surface_dynamic_topography",
                                       update_quadrature_points)
       {}
 
-
-
       template <int dim>
       void
-      DynamicTopography<dim>::
+      SurfaceDynamicTopography<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                             std::vector<Vector<double> > &computed_quantities) const
       {
@@ -98,7 +96,7 @@ namespace aspect
        */
       template <int dim>
       std::list<std::string>
-      DynamicTopography<dim>::required_other_postprocessors() const
+      SurfaceDynamicTopography<dim>::required_other_postprocessors() const
       {
         return std::list<std::string> (1, "dynamic topography");
       }
@@ -114,8 +112,8 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(DynamicTopography,
-                                                  "dynamic topography",
+      ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SurfaceDynamicTopography,
+                                                  "surface dynamic topography",
                                                   "A visualization output object that generates output "
                                                   "for the dynamic topography at the top and bottom of the model space. The approach to determine the "
                                                   "dynamic topography requires us to compute the stress tensor and "
@@ -137,18 +135,11 @@ namespace aspect
                                                   "in backward advection calculations will not reverse the instantaneous topography "
                                                   "because the reverse flow will be divided by the reverse surface gravity."
                                                   "\n\n"
-                                                  "Strictly speaking, the dynamic topography is of course a "
-                                                  "quantity that is only of interest at the surface. However, "
-                                                  "we compute it everywhere to make things fit into the framework "
-                                                  "within which we produce data for visualization. You probably "
-                                                  "only want to visualize whatever data this postprocessor generates "
-                                                  "at the surface of your domain and simply ignore the rest of the "
-                                                  "data generated."
-                                                  "\n\n"
-                                                  "Alternatively, consider using the "
-                                                  "\"surface dynamic topography\" visualization postprocessor "
-                                                  "to only output the dynamic topography at the boundary of "
-                                                  "the domain.")
+                                                  "In contrast to the `dynamic topography' visualization postprocessor, this "
+                                                  "plugin really only evaluates the dynamic topography at faces of cells "
+                                                  "that are adjacent to `bottom' and `top' boundaries, and only outputs "
+                                                  "information on the surface of the domain, rather than padding the "
+                                                  "information with zeros in the interior of the domain.")
     }
   }
 }
