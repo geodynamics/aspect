@@ -183,7 +183,8 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "Reference density $\\rho_0$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
           prm.declare_entry ("Ra", "1e4",
                              Patterns::Double (0),
                              "");
@@ -196,7 +197,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $cp$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("b", "6.907755279",
                              Patterns::Double (0),
                              "");

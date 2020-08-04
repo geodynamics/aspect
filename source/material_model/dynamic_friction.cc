@@ -143,12 +143,12 @@ namespace aspect
 
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\si{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double (0.)),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $W/m/K$.");
+                             "If only one value is given, then all use the same value. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "
@@ -159,34 +159,37 @@ namespace aspect
           {
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0.),
-                               "The value of the minimum viscosity cutoff $\\eta_min$. Units: $Pa\\;s$.");
+                               "The value of the minimum viscosity cutoff $\\eta_min$. "
+                               "Units: \\si{\\pascal\\second}.");
             prm.declare_entry ("Maximum viscosity", "1e24",
                                Patterns::Double (0.),
-                               "The value of the maximum viscosity cutoff $\\eta_max$. Units: $Pa\\;s$.");
+                               "The value of the maximum viscosity cutoff $\\eta_max$. "
+                               "Units: \\si{\\pascal\\second}.");
             prm.declare_entry ("Reference strain rate", "1e-15",
                                Patterns::Double (0.),
                                "The value of the initial strain rate prescribed during the "
-                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: $1/s$.");
+                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: \\si{\\per\\second}.");
             prm.declare_entry ("Coefficients of static friction", "0.5",
                                Patterns::List(Patterns::Double (0.)),
                                "List of coefficients of static friction for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: $dimensionless$");
+                               "If only one value is given, then all use the same value. Units: dimensionless");
             prm.declare_entry ("Coefficients of dynamic friction", "0.4",
                                Patterns::List(Patterns::Double (0.)),
                                "List of coefficients of dynamic friction for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: $dimensionless$");
+                               "If only one value is given, then all use the same value. Units: dimensionless");
             prm.declare_entry ("Cohesions", "4.e6",
                                Patterns::List(Patterns::Double (0.)),
                                "List of cohesions for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: $Pa$");
+                               "If only one value is given, then all use the same value. Units: \\si{\\pascal}");
             prm.declare_entry ("Background Viscosities", "1.e20",
                                Patterns::List(Patterns::Double (0.)),
                                "List of background viscosities for mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: $Pa \\, s $");
+                               "If only one value is given, then all use the same value. "
+                               "Units: \\si{\\pascal\\second}");
           }
           prm.leave_subsection();
         }

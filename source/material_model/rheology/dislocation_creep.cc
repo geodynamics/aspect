@@ -68,7 +68,7 @@ namespace aspect
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
-                           "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
+                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::List(Patterns::Double (0.)),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
@@ -78,12 +78,14 @@ namespace aspect
                            Patterns::List(Patterns::Double (0.)),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value.  Units: $J / mol$");
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\joule\\per\\mole}");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::List(Patterns::Double (0.)),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value.  Units: $m^3 / mol$");
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\meter\\cubed\\per\\mole}");
       }
 
 

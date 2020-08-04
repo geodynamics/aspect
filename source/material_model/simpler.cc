@@ -83,11 +83,11 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density formula. Units: $\\si{K}$.");
+                             "in the density formula. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           Rheology::ConstantViscosity::declare_parameters(prm,5e24);
         }
         prm.leave_subsection();

@@ -112,7 +112,7 @@ namespace aspect
 
         /**
          * Defining a minimum strain rate stabilizes the viscosity calculation,
-         * which involves a division by the strain rate. Units: $1/s$.
+         * which involves a division by the strain rate. Units: \\si{\\per\\second}.
          */
         std::vector<double> min_strain_rate;
         std::vector<double> min_visc;
@@ -484,7 +484,7 @@ namespace aspect
                            Patterns::List(Patterns::Double(0)),
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one values is given, then all use the same value.  Units: $1 / K$");
+                           "If only one values is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
         prm.declare_entry ("List of reference densities", "2700",
                            Patterns::List (Patterns::Double(0)),
                            "A list of reference densities equal to the number of "
@@ -519,26 +519,26 @@ namespace aspect
         {
           // Reference and minimum/maximum values
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
-                             "For calculating density by thermal expansivity. Units: $K$");
+                             "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
           prm.declare_entry ("Minimum strain rate", "1.96e-40", Patterns::List(Patterns::Double(0)),
-                             "Stabilizes strain dependent viscosity. Units: $1 / s$");
+                             "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
           prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
-                             "Lower cutoff for effective viscosity. Units: $Pa s$");
+                             "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0)),
-                             "Upper cutoff for effective viscosity. Units: $Pa s$");
+                             "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0)),
                              "Scaling coefficient for effective viscosity.");
           prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0)),
                              "Reference viscosity for nondimensionalization. Units $Pa s$");
           prm.declare_entry ("Reference compressibility", "4e-12", Patterns::Double (0),
-                             "The value of the reference compressibility. Units: $1/Pa$.");
+                             "The value of the reference compressibility. Units: \\si{\\per\\pascal}.");
 
           // averaging parameters
           prm.declare_entry ("Viscosity averaging p", "-1",
                              Patterns::Double(),
                              "This is the p value in the generalized weighed average eqation: "
                              " mean = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}. "
-                             " Units: $Pa s$");
+                             " Units: \\si{\\pascal\\second}");
 
           // finite difference versus analytical
           prm.declare_entry ("Use analytical derivative", "true",
@@ -666,4 +666,3 @@ namespace aspect
                                    "have been implemented for this material model.")
   }
 }
-

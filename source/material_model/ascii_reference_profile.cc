@@ -166,7 +166,7 @@ namespace aspect
                              Patterns::List (Patterns::Double(0.)),
                              "A list of depths where the viscosity changes. Values must "
                              "monotonically increase. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Viscosity prefactors", "10., 0.1, 1., 10.",
                              Patterns::List (Patterns::Double(0.)),
                              "A list of prefactors for the viscosity that determine the viscosity "

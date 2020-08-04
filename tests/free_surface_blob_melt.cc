@@ -187,15 +187,17 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "Reference density $\\rho_0$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: $K$.");
+                             "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$. This viscosity may be "
-                             "modified by both temperature and compositional dependencies. Units: $kg/m/s$.");
+                             "modified by both temperature and compositional dependencies. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
                              Patterns::Double (0),
                              "A linear dependency of viscosity on the first compositional field. "
@@ -220,15 +222,15 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Density differential for compositional field 1", "0",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
@@ -238,8 +240,8 @@ namespace aspect
                              "one with its linear dependence on the temperature. If there are compositional "
                              "fields, then the density only depends on the first one in such a way that "
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
-                             "change in composition}$.");
+                             "This parameter describes the value of $\\Delta \\rho$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}/unit change in composition.");
         }
         prm.leave_subsection();
       }
@@ -311,5 +313,3 @@ namespace aspect
                                    "'simple' model, but has melt outputs.")
   }
 }
-
-

@@ -52,7 +52,7 @@ namespace aspect
       {
         prm.declare_entry ("Viscosity", std::to_string(default_viscosity),
                            Patterns::Double (0.),
-                           "The value of the viscosity $\\eta$. Units: $kg/m/s$ or $Pa s$.");
+                           "The value of the viscosity $\\eta$. Units: \\si{\\pascal\\second}.");
       }
 
 

@@ -12,7 +12,7 @@ subsection Adiabatic conditions model
   set Model name = function
 
   subsection Function
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0; 0; 1
     set Variable names      = depth
   end
@@ -32,7 +32,7 @@ subsection Boundary temperature model
 end
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
 
 
   subsection Box
@@ -71,10 +71,10 @@ subsection Material model
   subsection Nondimensional model
     set Di                      = 0.0
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: $kg/m^3$.
+    # Reference density $\rho_0$. Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.
     set Reference density       = 1
 
-    # The value of the specific heat $cp$. Units: $J/kg/K$.
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.
     set Reference specific heat = 1
 
     # Whether to use the TALA instead of the ALA approximation.
@@ -82,7 +82,7 @@ subsection Material model
     set Viscosity temperature prefactor = 0.0
     set Viscosity depth prefactor = 0.0
     set gamma                   = 1.0
-  end 
+  end
 end
 
 
@@ -110,7 +110,7 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, heating statistics
 end
 
-subsection Termination criteria  
+subsection Termination criteria
   set Termination criteria      = steady state velocity
 
   subsection Steady state velocity

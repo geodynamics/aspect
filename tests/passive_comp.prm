@@ -117,14 +117,14 @@ subsection Geometry model
 
 
   subsection Spherical shell
-    # Inner radius of the spherical shell. Units: m.
+    # Inner radius of the spherical shell. Units: \\si{\\meter}.
     set Inner radius  = 3481000
 
     # Opening angle in degrees of the section of the shell that we want to
     # build. Units: degrees.
     set Opening angle = 360
 
-    # Outer radius of the spherical shell. Units: m.
+    # Outer radius of the spherical shell. Units: \\si{\\meter}.
     set Outer radius  = 6336000
   end
 
@@ -223,19 +223,19 @@ subsection Material model
 
 
   subsection Simple model
-    # Reference density $\rho_0$. Units: $kg/m^3$.
+    # Reference density $\rho_0$. Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.
     set Reference density             = 3300
 
-    # The reference temperature $T_0$. Units: $K$.
+    # The reference temperature $T_0$. Units: \\si{\\kelvin}.
     set Reference temperature         = 293
 
-    # The value of the thermal conductivity $k$. Units: $W/m/K$.
+    # The value of the thermal conductivity $k$. Units: \\si{\\watt\\meter\\kelvin}.
     set Thermal conductivity          = 4.7#1e-6
 
-    # The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+    # The value of the thermal expansion coefficient $\beta$. Units: \\si{\\per\\kelvin}.
     set Thermal expansion coefficient = 4e-5
 
-    # The value of the constant viscosity. Units: $kg/m/s$.
+    # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
     set Viscosity                     = 1e22
   end
 

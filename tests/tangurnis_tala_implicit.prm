@@ -3,7 +3,7 @@
 
 set Additional shared libraries            = ./code/libtangurnis.so
 
-# At the top, state that the program should be run for a two-dimensional 
+# At the top, state that the program should be run for a two-dimensional
 # simulation
 set Dimension = 2
 
@@ -149,14 +149,14 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    # Extent of the box in x-direction. Units: m.
+    # Extent of the box in x-direction. Units: \\si{\\meter}.
     set X extent = 1
 
-    # Extent of the box in y-direction. Units: m.
+    # Extent of the box in y-direction. Units: \\si{\\meter}.
     set Y extent = 1
 
     # Extent of the box in z-direction. This value is ignored if the
-    # simulation is in 2d Units: m.
+    # simulation is in 2d Units: \\si{\\meter}.
     set Z extent = 1
   end
 end

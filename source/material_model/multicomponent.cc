@@ -93,17 +93,18 @@ namespace aspect
 
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\si{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $Pa \\, s$");
+                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
                              "List of thermal conductivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: $W/m/K$.");
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "

@@ -134,7 +134,7 @@ end
 subsection Heating model
   # shear heating: 1/2 eta*e(u): ... need  -> 1/2 e(u): ..  * Di/Ra
   # adiabatic heating: alpha T (u . \nabla p)
-  # 
+  #
 
   set List of model names = adiabatic heating, shear heating#, constant heating
 
@@ -144,7 +144,7 @@ subsection Heating model
 
   subsection Adiabatic heating
     # A flag indicating whether the adiabatic heating should be simplified
-    # from $\alpha T (\mathbf u \cdot \nabla p)$ 
+    # from $\alpha T (\mathbf u \cdot \nabla p)$
     # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. alpha=thermal exp
 
     # have \alpha rho T w
@@ -174,17 +174,17 @@ subsection Material model
   subsection Nondimensional model
     set Di                      = 0.25
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: $kg/m^3$.
+    # Reference density $\rho_0$. Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.
     set Reference density       = 1
 
-    # The value of the specific heat $cp$. Units: $J/kg/K$.
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.
     set Reference specific heat = 1
 
     # Whether to use the TALA instead of the ALA approximation.
     set Use TALA                = false
     set gamma                   = 1.0
-  end 
-  
+  end
+
 
 end
 

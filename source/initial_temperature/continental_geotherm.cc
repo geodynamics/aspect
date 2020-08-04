@@ -109,14 +109,14 @@ namespace aspect
                              "List of the 3 thicknesses of the lithospheric layers "
                              "'upper\\_crust', 'lower\\_crust' and 'mantle\\_lithosphere'. "
                              "If only one thickness is given, then the same thickness is used "
-                             "for all layers. Units: $m$");
+                             "for all layers. Units: \\si{meter}");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0.),
-                             "The value of the surface temperature. Units: $\\si{K}$.");
+                             "The value of the surface temperature. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Lithosphere-Asthenosphere boundary isotherm", "1673.15",
                              Patterns::Double (0.),
                              "The value of the isotherm that is assumed at the Lithosphere-"
-                             "Asthenosphere boundary. Units: $\\si{K}$.");
+                             "Asthenosphere boundary. Units: \\si{\\kelvin}.");
         }
         prm.leave_subsection();
       }

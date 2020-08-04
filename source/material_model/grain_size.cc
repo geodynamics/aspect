@@ -950,34 +950,36 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0.),
-                             "The reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "The reference density $\\rho_0$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\si{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
+                             "The value of the constant viscosity. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $cp$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Reference compressibility", "4e-12",
                              Patterns::Double (0.),
                              "The value of the reference compressibility. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Phase transition depths", "",
                              Patterns::List (Patterns::Double (0.)),
                              "A list of depths where phase transitions occur. Values must "
                              "monotonically increase. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Phase transition temperatures", "",
                              Patterns::List (Patterns::Double (0.)),
                              "A list of temperatures where phase transitions occur. Higher or lower "
@@ -985,7 +987,7 @@ namespace aspect
                              "depths than given in Phase transition depths, depending on the "
                              "Clapeyron slope given in Phase transition Clapeyron slopes. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: $\\si{K}$.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("Phase transition widths", "",
                              Patterns::List (Patterns::Double (0.)),
                              "A list of widths for each phase transition. This is only use to specify "
@@ -993,7 +995,7 @@ namespace aspect
                              "has crossed a phase transition and should accordingly be chosen similar "
                              "to the maximum cell width expected at the phase transition."
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Phase transition Clapeyron slopes", "",
                              Patterns::List (Patterns::Double()),
                              "A list of Clapeyron slopes for each phase transition. A positive "
@@ -1003,15 +1005,15 @@ namespace aspect
                              "temperature is smaller than the one given in Phase transition temperatures. "
                              "For negative slopes the other way round. "
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: $Pa/K$.");
+                             "Units: \\si{\\pascal\\per\\kelvin}.");
           prm.declare_entry ("Grain growth activation energy", "3.5e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for grain growth $E_g$. "
-                             "Units: $J/mol$.");
+                             "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Grain growth activation volume", "8e-6",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for grain growth $V_g$. "
-                             "Units: $m^3/mol$.");
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Grain growth exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The exponent of the grain growth law $p_g$. This is an experimentally determined "
@@ -1022,13 +1024,13 @@ namespace aspect
                              "The prefactor for the Ostwald ripening grain growth law $G_0$. "
                              "This is dependent on water content, which is assumed to be "
                              "50 H/$10^6$ Si for the default value. "
-                             "Units: $m^{p_g}/s$.");
+                             "Units: \\si{\\meter}$^{p_g}$\\si{\\per\\second}.");
           prm.declare_entry ("Minimum grain size", "5e-6",
                              Patterns::Double (0.),
                              "The minimum allowable grain size. The grain size will be limited to be "
                              "larger than this value. This can be used to damp out oscillations, or "
                              "to limit the viscosity variation due to grain size. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Reciprocal required strain", "10.",
                              Patterns::List (Patterns::Double (0.)),
                              "This parameter ($\\lambda$) gives an estimate of the strain necessary "
@@ -1037,7 +1039,7 @@ namespace aspect
                              Patterns::List (Patterns::Double (0.)),
                              "The grain size $d_{ph}$ to that a phase will be reduced to when crossing a phase transition. "
                              "When set to zero, grain size will not be reduced. "
-                             "Units: $\\si{m}$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Use paleowattmeter", "true",
                              Patterns::Bool (),
                              "A flag indicating whether the computation should be use the "
@@ -1047,11 +1049,11 @@ namespace aspect
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
                              Patterns::List (Patterns::Double (0.)),
                              "The average specific grain boundary energy $\\gamma$. "
-                             "Units: $J/m^2$.");
+                             "Units: \\si{\\joule\\per\\meter\\squared}.");
           prm.declare_entry ("Work fraction for boundary area change", "0.1",
                              Patterns::List (Patterns::Double (0.)),
                              "The fraction $\\chi$ of work done by dislocation creep to change the grain boundary area. "
-                             "Units: $J/m^2$.");
+                             "Units: \\si{\\joule\\per\\meter\\squared}.");
           prm.declare_entry ("Geometric constant", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The geometric constant $c$ used in the paleowattmeter grain size reduction law. "
@@ -1078,15 +1080,15 @@ namespace aspect
           prm.declare_entry ("Dislocation activation energy", "4.8e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for dislocation creep $E_{dis}$. "
-                             "Units: $J/mol$.");
+                             "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Dislocation activation volume", "1.1e-5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for dislocation creep $V_{dis}$. "
-                             "Units: $m^3/mol$.");
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Dislocation creep prefactor", "4.5e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the dislocation creep law $A_{dis}$. "
-                             "Units: $Pa^{-n_{dis}}/s$.");
+                             "Units: \\si{\\pascal}$^{-n_{dis}}$\\si{\\per\\second}.");
           prm.declare_entry ("Diffusion creep exponent", "1.",
                              Patterns::List (Patterns::Double (0.)),
                              "The power-law exponent $n_{diff}$ for diffusion creep. "
@@ -1094,15 +1096,15 @@ namespace aspect
           prm.declare_entry ("Diffusion activation energy", "3.35e5",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation energy for diffusion creep $E_{diff}$. "
-                             "Units: $J/mol$.");
+                             "Units: \\si{\\joule\\per\\mole}.");
           prm.declare_entry ("Diffusion activation volume", "4e-6",
                              Patterns::List (Patterns::Double (0.)),
                              "The activation volume for diffusion creep $V_{diff}$. "
-                             "Units: $m^3/mol$.");
+                             "Units: \\si{\\meter\\cubed\\per\\mole}.");
           prm.declare_entry ("Diffusion creep prefactor", "7.4e-15",
                              Patterns::List (Patterns::Double (0.)),
                              "The prefactor for the diffusion creep law $A_{diff}$. "
-                             "Units: $m^{p_{diff}} Pa^{-n_{diff}}/s$.");
+                             "Units: \\si{\\meter}$^{p_{diff}}$\\si{\\pascal}$^{-n_{diff}}$\\si{\\per\\second}.");
           prm.declare_entry ("Diffusion creep grain size exponent", "3.",
                              Patterns::List (Patterns::Double (0.)),
                              "The diffusion creep grain size exponent $p_{diff}$ that determines the "
@@ -1149,7 +1151,7 @@ namespace aspect
                              "The minimum grain size that is used for the material model. This parameter "
                              "is introduced to limit local viscosity contrasts, but still allows for a widely "
                              "varying viscosity over the whole mantle range. "
-                             "Units: $\\si{m}$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Lower mantle grain size scaling", "1.0",
                              Patterns::Double (0.),
                              "A scaling factor for the grain size in the lower mantle. In models where the "

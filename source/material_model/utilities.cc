@@ -882,20 +882,20 @@ namespace aspect
                            Patterns::Anything(),
                            "A list of depths where phase transitions occur. Values must "
                            "monotonically increase. "
-                           "Units: $m$.");
+                           "Units: \\si{\\meter}.");
         prm.declare_entry ("Phase transition widths", "",
                            Patterns::Anything(),
                            "A list of widths for each phase transition, in terms of depth. The phase functions "
                            "are scaled with these values, leading to a jump between phases "
                            "for a value of zero and a gradual transition for larger values. "
                            "List must have the same number of entries as Phase transition depths. "
-                           "Units: $m$.");
+                           "Units: \\si{\\meter}.");
         prm.declare_entry ("Phase transition pressures", "",
                            Patterns::Anything(),
                            "A list of pressures where phase transitions occur. Values must "
                            "monotonically increase. Define transition by depth instead of "
                            "pressure must be set to false to use this parameter. "
-                           "Units: $Pa$.");
+                           "Units: \\si{\\pascal}.");
         prm.declare_entry ("Phase transition pressure widths", "",
                            Patterns::Anything(),
                            "A list of widths for each phase transition, in terms of pressure. The phase functions "
@@ -904,7 +904,7 @@ namespace aspect
                            "List must have the same number of entries as Phase transition pressures. "
                            "Define transition by depth instead of pressure must be set to false "
                            "to use this parameter. "
-                           "Units: $Pa$.");
+                           "Units: \\si{\\pascal}.");
         prm.declare_entry ("Define transition by depth instead of pressure", "true",
                            Patterns::Bool (),
                            "Whether to list phase transitions by depth or pressure. If this parameter is true, "
@@ -919,7 +919,7 @@ namespace aspect
                            "depths than given in Phase transition depths, depending on the "
                            "Clapeyron slope given in Phase transition Clapeyron slopes. "
                            "List must have the same number of entries as Phase transition depths. "
-                           "Units: $\\si{K}$.");
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Phase transition Clapeyron slopes", "",
                            Patterns::Anything(),
                            "A list of Clapeyron slopes for each phase transition. A positive "
@@ -929,7 +929,7 @@ namespace aspect
                            "temperature is smaller than the one given in Phase transition temperatures. "
                            "For negative slopes the other way round. "
                            "List must have the same number of entries as Phase transition depths. "
-                           "Units: $Pa/K$.");
+                           "Units: \\si{\\pascal\\per\\kelvin}.");
       }
 
 

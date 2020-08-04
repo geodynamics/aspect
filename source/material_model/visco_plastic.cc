@@ -671,13 +671,13 @@ namespace aspect
 
           // Reference and minimum/maximum values
           prm.declare_entry ("Minimum strain rate", "1.0e-20", Patterns::Double (0.),
-                             "Stabilizes strain dependent viscosity. Units: $1 / s$");
+                             "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
-                             "Reference strain rate for first time step. Units: $1 / s$");
+                             "Reference strain rate for first time step. Units: \\si{\\per\\second}");
           prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double (0.),
-                             "Lower cutoff for effective viscosity. Units: $Pa \\, s$");
+                             "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double (0.),
-                             "Upper cutoff for effective viscosity. Units: $Pa \\, s$");
+                             "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double (0.),
                              "Reference viscosity for nondimensionalization. "
                              "To understand how pressure scaling works, take a look at "
@@ -698,14 +698,15 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa \\, s$");
+                             "Units: \\si{\\pascal\\second}");
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivities", "0.8e-6",
                              Patterns::List(Patterns::Double (0.)),
                              "List of thermal diffusivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $m^2/s$");
+                             "If only one value is given, then all use the same value.  "
+                             "Units: \\si{\\meter\\squared\\per\\second}");
           prm.declare_entry ("Define thermal conductivities","false",
                              Patterns::Bool (),
                              "Whether to directly define thermal conductivities for each compositional field "
@@ -715,7 +716,8 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities, for background material and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $W/(m K)$");
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
 
           // Rheological parameters
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
@@ -762,8 +764,8 @@ namespace aspect
                              "Note that this is a linear approximation of the real adiabatic gradient, which "
                              "is okay for the upper mantle, but is not really accurate for the lower mantle. "
                              "Using a pressure gradient of 32436 Pa/m, then a value of "
-                             "0.3 $K/km$ = 0.0003 $K/m$ = 9.24e-09 $K/Pa$ gives an earth-like adiabat."
-                             "Units: $K/Pa$");
+                             "0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat."
+                             "Units: \\si{\\kelvin\\per\\pascal}");
 
           prm.declare_entry ("Include viscoelasticity", "false",
                              Patterns::Bool (),

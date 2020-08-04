@@ -386,7 +386,7 @@ namespace aspect
           prm.declare_entry ("Thermal expansion coefficient in initial temperature scaling", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Use thermal expansion coefficient from material model", "false",
                              Patterns::Bool (),
                              "Option to take the thermal expansion coefficient from the "

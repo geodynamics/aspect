@@ -366,13 +366,15 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "Reference density $\\rho_0$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: $\\si{K}$.");
+                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
-                             "The value of the constant viscosity. Units: $kg/m/s$.");
+                             "The value of the constant viscosity. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Composition viscosity prefactor", "1.0",
                              Patterns::Double (0.),
                              "A linear dependency of viscosity on composition. Dimensionless prefactor.");
@@ -382,23 +384,23 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "2.38",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_s$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Thermal expansion coefficient of melt", "6.8e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\alpha_f$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Compressibility", "5.124e-12",
                              Patterns::Double (0.),
                              "The value of the compressibility $\\kappa$. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Density differential for compositional field 1", "0.",
                              Patterns::Double(),
                              "If compositional fields are used, then one would frequently want "
@@ -408,33 +410,33 @@ namespace aspect
                              "one with its linear dependence on the temperature. If there are compositional "
                              "fields, then the density only depends on the first one in such a way that "
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                             "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
-                             "change in composition}$.");
+                             "This parameter describes the value of $\\Delta \\rho$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}/unit change in composition.");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the solidus "
                              "of peridotite. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("A2", "1.329e-7",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of peridotite. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("A3", "-5.1e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of peridotite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("B1", "1475.0",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the lherzolite "
                              "liquidus used for calculating the fraction "
                              "of peridotite-derived melt. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("B2", "8.0e-8",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
@@ -442,7 +444,7 @@ namespace aspect
                              "the  lherzolite liquidus used for "
                              "calculating the fraction of peridotite-"
                              "derived melt. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("B3", "-3.2e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
@@ -450,25 +452,25 @@ namespace aspect
                              "the  lherzolite liquidus used for "
                              "calculating the fraction of peridotite-"
                              "derived melt. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("C1", "1780.0",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the liquidus "
                              "of peridotite. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("C2", "4.50e-8",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
                              "in the quadratic function that approximates "
                              "the liquidus of peridotite. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("C3", "-2.0e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
                              "in the quadratic function that approximates "
                              "the liquidus of peridotite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("r1", "0.5",
                              Patterns::Double (),
                              "Constant in the linear function that "
@@ -480,7 +482,7 @@ namespace aspect
                              "Prefactor of the linear pressure term "
                              "in the linear function that approximates "
                              "the clinopyroxene reaction coefficient. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("beta", "1.5",
                              Patterns::Double (),
                              "Exponent of the melting temperature in "
@@ -490,7 +492,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
-                             "Units: $J/(kg K)$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Mass fraction cpx", "0.15",
                              Patterns::Double (),
                              "Mass fraction of clinopyroxene in the "
@@ -501,7 +503,7 @@ namespace aspect
                              "Constant parameter in the quadratic "
                              "function that approximates the solidus "
                              "of pyroxenite. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("D2", "1.329e-7",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
@@ -511,30 +513,30 @@ namespace aspect
                              "value given in Sobolev, 2011, because they use "
                              "the potential temperature whereas we use the "
                              "absolute temperature. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("D3", "-5.1e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of pyroxenite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("E1", "663.8",
                              Patterns::Double (),
                              "Prefactor of the linear depletion term "
                              "in the quadratic function that approximates "
                              "the melt fraction of pyroxenite. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("E2", "-611.4",
                              Patterns::Double (),
                              "Prefactor of the quadratic depletion term "
                              "in the quadratic function that approximates "
                              "the melt fraction of pyroxenite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("Pyroxenite melting entropy change", "-400.",
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of pyroxenite. "
-                             "Units: $J/(kg K)$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Maximum pyroxenite melt fraction", "0.5429",
                              Patterns::Double (),
                              "Maximum melt fraction of pyroxenite "

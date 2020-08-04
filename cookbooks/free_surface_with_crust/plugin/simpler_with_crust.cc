@@ -162,32 +162,35 @@ namespace aspect
         {
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
-                             "Reference density $\\rho_0$. Units: $kg/m^3$.");
+                             "Reference density $\\rho_0$. "
+                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density formula. Units: $K$.");
+                             "in the density formula. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Lower viscosity", "1e20",
                              Patterns::Double (0),
-                             "The value of the viscosity $\\eta_L$ in the lower layer. Units: $Pa s$.");
+                             "The value of the viscosity $\\eta_L$ in the lower layer. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Upper viscosity", "1e23",
                              Patterns::Double (0),
-                             "The value of the viscosity $\\eta_U$ in the upper layer. Units: $Pa s$.");
+                             "The value of the viscosity $\\eta_U$ in the upper layer. "
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Jump height", "100000",
                              Patterns::Double (0),
-                             "The height at which the viscosity changes. Units: m.");
+                             "The height at which the viscosity changes. Units: \\si{\\meter}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat capacity $c_p$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\alpha$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
 
         }
         prm.leave_subsection();

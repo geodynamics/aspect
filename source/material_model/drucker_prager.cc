@@ -197,7 +197,7 @@ namespace aspect
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density calculation. Units: $\\si{K}$.");
+                             "in the density calculation. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference viscosity", "1e22",
                              Patterns::Double (0.),
                              "The reference viscosity that is used for pressure scaling. "
@@ -219,24 +219,24 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa \\, s$");
+                             "Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.enter_subsection ("Viscosity");
           {
 
             prm.declare_entry ("Minimum viscosity", "1e19",
                                Patterns::Double (0.),
-                               "The value of the minimum viscosity cutoff $\\eta_min$. Units: $Pa\\;s$.");
+                               "The value of the minimum viscosity cutoff $\\eta_min$. Units: \\si{\\pascal\\second}.");
             prm.declare_entry ("Maximum viscosity", "1e24",
                                Patterns::Double (0.),
-                               "The value of the maximum viscosity cutoff $\\eta_max$. Units: $Pa\\;s$.");
+                               "The value of the maximum viscosity cutoff $\\eta_max$. Units: \\si{\\pascal\\second}.");
             prm.declare_entry ("Reference strain rate", "1e-15",
                                Patterns::Double (0.),
                                "The value of the initial strain rate prescribed during the "
-                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: $1/s$.");
+                               "first nonlinear iteration $\\dot{\\epsilon}_ref$. Units: \\si{\\per\\second}.");
             prm.declare_entry ("Angle of internal friction", "0.",
                                Patterns::Double (0.),
                                "The value of the angle of internal friction $\\phi$. "
@@ -245,7 +245,7 @@ namespace aspect
                                "harder to solve numerically. Units: degrees.");
             prm.declare_entry ("Cohesion", "2e7",
                                Patterns::Double (0.),
-                               "The value of the cohesion $C$. Units: $Pa$.");
+                               "The value of the cohesion $C$. Units: \\si{\\pascal}.");
           }
           prm.leave_subsection();
         }

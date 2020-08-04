@@ -2,12 +2,12 @@
 # work in:
 set Dimension                              = 2
 
-# We can use a large CFL number because we are only interested in the 
+# We can use a large CFL number because we are only interested in the
 # steady state solution.
 set CFL number = 5.0
 set Additional shared libraries            = ./libking.so
 
-# This is the non-dimensionalized surface temperature, which is the 
+# This is the non-dimensionalized surface temperature, which is the
 # ratio of the dimensional surface temperature T_surf = 273 K and
 # the temperature change across the domain DeltaT = 3000 K.
 set Adiabatic surface temperature          = 0.091
@@ -38,13 +38,13 @@ subsection Termination criteria
   end
 end
 
-# In this section we define the adiabatic profiles of temperature, 
-# pressure and density. The temperature and density profiles are 
+# In this section we define the adiabatic profiles of temperature,
+# pressure and density. The temperature and density profiles are
 # equivalent to the reference profiles bar(T) and bar(rho) defined
-# in the King 2010 benchmark. 
+# in the King 2010 benchmark.
 # gamma is the grueneisen parameter, which defines the compressibility
 # of the material, and we have to choose the same value for gamma as
-# in the material model below. 
+# in the material model below.
 subsection Adiabatic conditions model
   set Model name = function
 
@@ -63,26 +63,26 @@ end
 
 
 # The benchmark is defined in terms of the nondimensional numbers
-# Di (dissipation number) and Ra (Rayleigh number). 
-# As ASPECT uses physical properties instead of these dimensionless 
-# numbers in its equations, we replicate the benchmark formulation 
-# by using a new material model that fixes all of the material 
-# constants to 1, except for the thermal expansivity, which is set 
+# Di (dissipation number) and Ra (Rayleigh number).
+# As ASPECT uses physical properties instead of these dimensionless
+# numbers in its equations, we replicate the benchmark formulation
+# by using a new material model that fixes all of the material
+# constants to 1, except for the thermal expansivity, which is set
 # to Di, and the viscosity, which is set to Di/Ra.
 subsection Material model
   set Model name = king material
   subsection King model
     set Reference density             = 1
 
-    # The value of the specific heat $cp$. Units: $J/kg/K$. 
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}. 
     set Reference specific heat       = 1
 
     # The value of the Rayleigh number Ra.
     set Ra                            = 1e4
 
-    # The dissipation number Di determines the slope of the 
-    # adiabatic/reference temperature profile. 
-    # For the Boussinesq approximation, Di would be zero. 
+    # The dissipation number Di determines the slope of the
+    # adiabatic/reference temperature profile.
+    # For the Boussinesq approximation, Di would be zero.
     set Di                            = 1.0
     set b                             = 0
     set c                             = 0
@@ -116,7 +116,7 @@ subsection Initial temperature model
 end
 
 # We prescibe the adiabatic surface temperature as top temperature
-# and the (nondimensional) temperature change across the boundary 
+# and the (nondimensional) temperature change across the boundary
 # is set to 1 (with no flux conditions at the sides).
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
@@ -135,15 +135,15 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
 
-# This subsection describes which heating models we want to use. 
-# This benchmark includes adiabatic heating and shear heating. 
+# This subsection describes which heating models we want to use.
+# This benchmark includes adiabatic heating and shear heating.
 subsection Heating model
   set List of model names = adiabatic heating, shear heating
 
   subsection Adiabatic heating
     # A flag indicating whether the adiabatic heating should be simplified
-    # from $\alpha T (\mathbf u \cdot \nabla p)$ 
-    # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. 
+    # from $\alpha T (\mathbf u \cdot \nabla p)$
+    # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $.
     set Use simplified adiabatic heating = true
   end
 end
@@ -158,7 +158,7 @@ subsection Gravity model
 end
 
 
-# As we are only interested in the steady state, we start on a 
+# As we are only interested in the steady state, we start on a
 # coarse mesh and refine once the solution is close to steady state.
 subsection Mesh refinement
   set Initial global refinement                = 7
@@ -170,7 +170,7 @@ end
 
 
 # In addition to some general postprocessing, we output
-# velocity statistics (needed for the root mean square velocity), 
+# velocity statistics (needed for the root mean square velocity),
 # temperature statistics (needed for the average temperature),
 # heat flux statistics (needed for the Nusselt number) and
 # heating statistics (needed for shear and adiabatic heating).
