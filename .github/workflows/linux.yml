@@ -39,7 +39,7 @@ jobs:
         sudo apt-get install -yq --no-install-recommends texlive-generic-extra texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python-pip python-setuptools libdeal.ii-dev doxygen
         doxygen --version
 
-        wget http://sourceforge.net/projects/astyle/files/astyle/astyle%202.04/astyle_2.04_linux.tar.gz
+        wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
         tar xf astyle_2.04_linux.tar.gz
         cd astyle/build/gcc && make
         sudo USER=root make install
