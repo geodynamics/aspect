@@ -38,7 +38,7 @@ namespace aspect
        * A class derived from DataPostprocessor that takes an output vector
        * and computes a variable that represents the 3 or 6 independent
        * components (in 2d and 3d, respectively) of the stress tensor at every
-       * point. The shear stress is defined as $2 \eta (\varepsilon(\mathbf u)
+       * point. The stress is defined as $2 \eta (\varepsilon(\mathbf u)
        * - \tfrac 13 \textrm{trace}\ \varepsilon(\mathbf u) \mathbf 1) +pI =
        * 2\eta (\varepsilon(\mathbf u) - \frac 13 (\nabla \cdot \mathbf u)
        * \mathbf I) + pI$.  The second term in the parentheses is zero if the
