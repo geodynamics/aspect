@@ -24,7 +24,7 @@
 /benchmarks/tangurnis/*/solution*
 /build*/
 /cmake_install.cmake
-/cookbooks/**/**.prm.out
+/cookbooks/**/*.prm.out
 /cookbooks/**/lib*.so
 /cookbooks/**/Makefile
 /cookbooks/**/aspect
