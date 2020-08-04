@@ -648,16 +648,12 @@ namespace aspect
               for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
                 if (cell->at_boundary(face_no) == false)
                   {
-
                     if (cell->neighbor(face_no)->is_active())
-
                       viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
                                                                                viscosity_per_cell_temp[cell->neighbor(face_no)->active_cell_index()]);
                     else
                       for (unsigned int l=0; l<cell->neighbor(face_no)->n_children(); ++l)
-                      
                         if (cell->neighbor(face_no)->child(l)->is_active())
-
                           viscosity_per_cell[cell->active_cell_index()] = std::max(viscosity_per_cell[cell->active_cell_index()],
                                                                                    viscosity_per_cell_temp[cell->neighbor(face_no)->child(l)->active_cell_index()]);
                   }
