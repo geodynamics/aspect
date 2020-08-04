@@ -1,0 +1,100 @@
+# This is a variation of the pure_shear.prm file, and is used to test
+# the 'stress' visualization postprocessor as well as the 'surface
+# stress' visualization postprocessor that only outputs stuff on the
+# boundary. The two ought to agree on their results at the boundary.
+
+set Dimension                              = 2
+set End time                               = 0.025
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 1.0
+    set Y extent  = 1.0
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, bottom
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function, right:function
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 1-y; x-1
+  end
+end
+
+subsection Material model
+  set Model name = finite strain
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = strain_xx, strain_xy, strain_yx, strain_yy
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 1.0;0.0;0.0;1.0
+  end
+end
+
+############### Parameters describing the temperature field
+# Note: The temperature plays no role in this model
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = strain rate
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+############### Parameters describing what to do with the solution
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set Interpolate output = false
+    set List of output variables = stress, surface stress
+    set Time between graphical output = 0.05
+  end
+end
