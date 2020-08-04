@@ -757,7 +757,9 @@ namespace aspect
                          Patterns::Integer (0),
                          "The number of adaptive refinement steps performed after "
                          "initial global refinement but while still within the first "
-                         "time step.");
+                         "time step. These refinement steps (n) are added to the value "
+                         "for initial global refinement (m) so that the total "
+                         "refinement level is n+m.   ");
       prm.declare_entry ("Time steps between mesh refinement", "10",
                          Patterns::Integer (0),
                          "The number of time steps after which the mesh is to be "
@@ -765,12 +767,16 @@ namespace aspect
                          "then the mesh will never be changed.");
       prm.declare_entry ("Refinement fraction", "0.3",
                          Patterns::Double(0., 1.),
-                         "The fraction of cells with the largest error that "
-                         "should be flagged for refinement.");
+                         "Cells are sorted from largest to smallest by their total error "
+                         "(determined by the Strategy). Then the cells with the largest "
+                         "error (top of this sorted list) that account for $v$ fraction "
+                         "of the error are refined.");
       prm.declare_entry ("Coarsening fraction", "0.05",
                          Patterns::Double(0., 1.),
-                         "The fraction of cells with the smallest error that "
-                         "should be flagged for coarsening.");
+                         "Cells are sorted from largest to smallest by their total error "
+                         "(determined by the Strategy)  Then the cells with the smallest " 
+                         "error (bottom of this sorted list) that account for v fraction "
+                         "of the error are coarsened.");
       prm.declare_entry ("Adapt by fraction of cells", "false",
                          Patterns::Bool(),
                          "Use fraction of the total number of cells instead of "
@@ -798,7 +804,9 @@ namespace aspect
                          Patterns::Bool (),
                          "Whether or not the postprocessors should be executed after "
                          "each of the initial adaptive refinement cycles that are run at "
-                         "the start of the simulation.");
+                         "the start of the simulation. This is useful for "
+                         "plotting/analyzing how the mesh refinement parameters are "
+                         "working for a particular model. ");
       prm.declare_entry ("Skip solvers on initial refinement", "false",
                          Patterns::Bool (),
                          "Whether or not solvers should be executed during the initial "
@@ -807,7 +815,7 @@ namespace aspect
       prm.declare_entry ("Skip setup initial conditions on initial refinement", "false",
                          Patterns::Bool (),
                          "Whether or not the initial conditions should be set up during the "
-                         "the adaptive refinement cycles that are run at the start of the "
+                         "adaptive refinement cycles that are run at the start of the "
                          "simulation.");
     }
     prm.leave_subsection();
