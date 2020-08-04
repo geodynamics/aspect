@@ -774,8 +774,8 @@ namespace aspect
       prm.declare_entry ("Coarsening fraction", "0.05",
                          Patterns::Double(0., 1.),
                          "Cells are sorted from largest to smallest by their total error "
-                         "(determined by the Strategy)  Then the cells with the smallest " 
-                         "error (bottom of this sorted list) that account for v fraction "
+                         "(determined by the Strategy). Then the cells with the smallest "
+                         "error (bottom of this sorted list) that account for $v$ fraction "
                          "of the error are coarsened.");
       prm.declare_entry ("Adapt by fraction of cells", "false",
                          Patterns::Bool(),
