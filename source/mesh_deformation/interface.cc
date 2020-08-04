@@ -575,10 +575,10 @@ namespace aspect
       // Update the mesh displacement vector
       LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
       distributed_mesh_displacements = mesh_displacements;
-      distributed_mesh_displacements.add(sim.time_step, velocity_solution);
+      distributed_mesh_displacements.add(this->get_timestep(), velocity_solution);
       mesh_displacements = distributed_mesh_displacements;
-
     }
+
 
 
     template <int dim>
@@ -661,7 +661,7 @@ namespace aspect
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
       // if we are just starting, we need to initialize the mesh displacement vector.
-      if (sim.timestep_number == 0)
+      if (this->get_timestep_number() == 0)
         mesh_displacements = 0.;
 
       // We would like to make sure that the mesh stays conforming upon
