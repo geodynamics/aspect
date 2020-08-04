@@ -112,7 +112,7 @@ namespace aspect
       for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
         {
           // Obtain the normal direction for the face in question
-          // Deall.II orders faces as dim*2+(face_direction_is_positive?1:0)
+          // Deal.II orders faces as dim*2+(face_direction_is_positive?1:0)
           const unsigned int face_normal_direction = face_no/2;
 
           if (face_normal_direction != calc_dir)
@@ -369,19 +369,10 @@ namespace aspect
       const bool n_face_normal_is_positive = (neighbor_face_no%2==1);
 
       if ((!face->at_boundary() && !face->has_children())
-          ||
-#if DEAL_II_VERSION_GTE(9,2,0)
-          (face->at_boundary() && neighbor->is_active()))
-#else
-          (face->at_boundary() && neighbor->active()))
-#endif
+          || (face->at_boundary() && neighbor->is_active()))
         {
           if (neighbor->level () == cell->level () &&
-#if DEAL_II_VERSION_GTE(9,2,0)
               neighbor->is_active() &&
-#else
-              neighbor->active() &&
-#endif
               (((neighbor->is_locally_owned()) && (cell->index() < neighbor->index()))
                ||
                ((!neighbor->is_locally_owned()) && (cell->subdomain_id() < neighbor->subdomain_id()))))

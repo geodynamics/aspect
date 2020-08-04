@@ -37,9 +37,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/read_write_vector.templates.h>
 
-#if DEAL_II_VERSION_GTE(9,2,0)
 #include <deal.II/lac/solver_idr.h>
-#endif
 
 
 
@@ -1241,11 +1239,7 @@ namespace aspect
 
     {
       const unsigned int n_vect_doubles =
-#if DEAL_II_VERSION_GTE(9,2,0)
         VectorizedArray<double>::size();
-#else
-        VectorizedArray<double>::n_array_elements;
-#endif
       const unsigned int n_vect_bits = 8 * sizeof(double) * n_vect_doubles;
 
       sim.pcout << "Vectorization over " << n_vect_doubles
@@ -1639,7 +1633,6 @@ namespace aspect
       mg_smoother_Schur.initialize(mg_matrices_Schur_complement, smoother_data_Schur);
     }
 
-#if DEAL_II_VERSION_GTE(9,2,0)
     // Estimate the eigenvalues for the Chebyshev smoothers. If not running with
     // deal.II 9.2.0, the eigenvalue estimate will be performed during the first
     // application of the Chebyshev smoother during the solve.
@@ -1657,7 +1650,7 @@ namespace aspect
         mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
         mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
       }
-#endif
+
 
     // Coarse Solver is just an application of the Chebyshev smoother setup
     // in such a way to be a solver
@@ -1916,7 +1909,6 @@ namespace aspect
           }
         else if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s)
           {
-#if DEAL_II_VERSION_GTE(9,2,0)
             SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >
             solver(solver_control_cheap, mem,
                    SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >::
@@ -1926,9 +1918,6 @@ namespace aspect
                           solution_copy,
                           rhs_copy,
                           preconditioner_cheap);
-#else
-            Assert(false, ExcMessage("The IDR(s) solver requires deal.II 9.2.0 or newer."));
-#endif
           }
         else
           Assert(false,ExcNotImplemented());
@@ -2232,7 +2221,6 @@ namespace aspect
             = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
             {
-#if DEAL_II_VERSION_GTE(9,2,0)
               ConstraintMatrix user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
 
@@ -2249,10 +2237,6 @@ namespace aspect
               // let Dirichlet values win over no normal flux:
               level_constraints.merge(user_level_constraints, ConstraintMatrix::left_object_wins);
               level_constraints.close();
-#else
-              AssertThrow(false, ExcMessage("No normal flux for spherical domains requires "
-                                            "a deal.II version newer than 9.1"));
-#endif
             }
 
           {
@@ -2261,11 +2245,7 @@ namespace aspect
               MatrixFree<dim,double>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
                                                     update_quadrature_points);
-#if DEAL_II_VERSION_GTE(9,2,0)
             additional_data.mg_level = level;
-#else
-            additional_data.level_mg_handler = level;
-#endif
             std::shared_ptr<MatrixFree<dim,double> >
             mg_mf_storage_level(new MatrixFree<dim,double>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
@@ -2296,11 +2276,7 @@ namespace aspect
               MatrixFree<dim,double>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_values | update_JxW_values |
                                                     update_quadrature_points);
-#if DEAL_II_VERSION_GTE(9,2,0)
             additional_data.mg_level = level;
-#else
-            additional_data.level_mg_handler = level;
-#endif
             std::shared_ptr<MatrixFree<dim,double> >
             mg_mf_storage_level(new MatrixFree<dim,double>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
@@ -2379,11 +2355,9 @@ namespace aspect
             boundary_constraints.reinit(locally_relevant_dofs);
             boundary_constraints.add_lines (mg_constrained_dofs_A_block.get_refinement_edge_indices(level));
             boundary_constraints.add_lines (mg_constrained_dofs_A_block.get_boundary_indices(level));
-#if DEAL_II_VERSION_GTE(9,2,0)
             // let Dirichlet values win over no normal flux:
             boundary_constraints.merge(mg_constrained_dofs_A_block.get_user_constraint_matrix(level),
                                        ConstraintMatrix::left_object_wins);
-#endif
             boundary_constraints.close();
 
             typename DoFHandler<dim>::level_cell_iterator cell = dof_handler_v.begin(level),
