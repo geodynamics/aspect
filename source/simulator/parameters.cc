@@ -758,8 +758,8 @@ namespace aspect
                          "The number of adaptive refinement steps performed after "
                          "initial global refinement but while still within the first "
                          "time step. These refinement steps (n) are added to the value "
-                         "for initial global refinement (m) so that the total "
-                         "refinement level is n+m.   ");
+                         "for initial global refinement (m) so that the final mesh has "
+                         "cells that are at most on refinement level $n+m$   ");
       prm.declare_entry ("Time steps between mesh refinement", "10",
                          Patterns::Integer (0),
                          "The number of time steps after which the mesh is to be "
@@ -769,13 +769,13 @@ namespace aspect
                          Patterns::Double(0., 1.),
                          "Cells are sorted from largest to smallest by their total error "
                          "(determined by the Strategy). Then the cells with the largest "
-                         "error (top of this sorted list) that account for $v$ fraction "
+                         "error (top of this sorted list) that account for given fraction "
                          "of the error are refined.");
       prm.declare_entry ("Coarsening fraction", "0.05",
                          Patterns::Double(0., 1.),
                          "Cells are sorted from largest to smallest by their total error "
                          "(determined by the Strategy). Then the cells with the smallest "
-                         "error (bottom of this sorted list) that account for $v$ fraction "
+                         "error (bottom of this sorted list) that account for the given fraction "
                          "of the error are coarsened.");
       prm.declare_entry ("Adapt by fraction of cells", "false",
                          Patterns::Bool(),
@@ -806,7 +806,7 @@ namespace aspect
                          "each of the initial adaptive refinement cycles that are run at "
                          "the start of the simulation. This is useful for "
                          "plotting/analyzing how the mesh refinement parameters are "
-                         "working for a particular model. ");
+                         "working for a particular model.");
       prm.declare_entry ("Skip solvers on initial refinement", "false",
                          Patterns::Bool (),
                          "Whether or not solvers should be executed during the initial "
