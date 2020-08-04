@@ -1556,35 +1556,17 @@ namespace aspect
   {
     // compute the various partitionings between processors and blocks
     // of vectors and matrices
-#if DEAL_II_VERSION_GTE(9,2,0)
     introspection.system_dofs_per_block = DoFTools::count_dofs_per_fe_block (dof_handler,
                                                                              introspection.get_components_to_blocks());
-#else
-    DoFTools::count_dofs_per_block (dof_handler,
-                                    introspection.system_dofs_per_block,
-                                    introspection.get_components_to_blocks());
-#endif
 
     {
       IndexSet system_index_set = dof_handler.locally_owned_dofs();
-#if DEAL_II_VERSION_GTE(9,2,0)
       introspection.index_sets.system_partitioning = system_index_set.split_by_block(introspection.system_dofs_per_block);
-#else
-      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
-                                         system_index_set,
-                                         introspection.index_sets.system_partitioning);
-#endif
 
       DoFTools::extract_locally_relevant_dofs (dof_handler,
                                                introspection.index_sets.system_relevant_set);
-#if DEAL_II_VERSION_GTE(9,2,0)
       introspection.index_sets.system_relevant_partitioning =
         introspection.index_sets.system_relevant_set.split_by_block(introspection.system_dofs_per_block);
-#else
-      aspect::Utilities::split_by_block (introspection.system_dofs_per_block,
-                                         introspection.index_sets.system_relevant_set,
-                                         introspection.index_sets.system_relevant_partitioning);
-#endif
 
       if (!parameters.include_melt_transport)
         {
