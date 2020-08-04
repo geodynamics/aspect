@@ -21,8 +21,8 @@ int f()
 
   command = ("cp update_script_2.x.prm output-update_script_2/updated2.prm;"
              "sed -i.bak 's:set Additional shared libraries = ./libupdate_script_2.so::' output-update_script_2/updated2.prm;"
-             "bash " ASPECT_SOURCE_DIR "/doc/update_prm_files.sh output-update_script_2/updated2.prm;"
-             "bash " ASPECT_SOURCE_DIR "/doc/update_prm_files.sh output-update_script_2/updated2.prm;"
+             "bash " ASPECT_SOURCE_DIR "/contrib/utilities/update_prm_files.sh output-update_script_2/updated2.prm;"
+             "bash " ASPECT_SOURCE_DIR "/contrib/utilities/update_prm_files.sh output-update_script_2/updated2.prm;"
              "rm output-update_script_2/updated2.prm.bak");
 
   std::cout << "Executing the update script:\n"
