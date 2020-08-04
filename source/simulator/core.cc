@@ -1815,13 +1815,13 @@ namespace aspect
 
         case NonlinearSolver::no_Advection_iterated_defect_correction_Stokes:
         {
-          solve_no_advection_defect_correction_iterated_stokes();
+          solve_no_advection_iterated_defect_correction_stokes();
           break;
         }
 
         case NonlinearSolver::single_Advection_iterated_defect_correction_Stokes:
         {
-          solve_single_advection_defect_correction_iterated_stokes();
+          solve_single_advection_iterated_defect_correction_stokes();
           break;
         }
 

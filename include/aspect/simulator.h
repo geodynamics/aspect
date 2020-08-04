@@ -581,7 +581,6 @@ namespace aspect
        */
       void solve_single_advection_iterated_stokes ();
 
-
       /**
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
@@ -594,8 +593,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_no_advection_defect_correction_iterated_stokes ();
-
+      void solve_no_advection_iterated_defect_correction_stokes ();
 
       /**
        * This function implements one scheme for the various
@@ -609,8 +607,7 @@ namespace aspect
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
        */
-      void solve_single_advection_defect_correction_iterated_stokes ();
-
+      void solve_single_advection_iterated_defect_correction_stokes ();
 
       /**
        * This function implements one scheme for the various

@@ -753,13 +753,11 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::solve_no_advection_defect_correction_iterated_stokes ()
+  void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
     double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
-
-    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
@@ -805,13 +803,11 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::solve_single_advection_defect_correction_iterated_stokes ()
+  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
     double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
-
-    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
@@ -865,7 +861,6 @@ namespace aspect
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
     double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
-
     double initial_temperature_residual = 0;
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
@@ -910,10 +905,35 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, true);
 
 
+
+        double max = 0.0;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          {
+            // in models with melt migration the melt advection equation includes the divergence of the velocity
+            // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+            // thus, we set a threshold for the initial composition residual.
+            // this only plays a role if the right-hand side of the advection equation is very small.
+            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                      ?
+                                      parameters.linear_stokes_solver_tolerance * time_step
+                                      :
+                                      0.0);
+            if (initial_composition_residual[c]>threshold)
+              max = std::max(relative_composition_residual[c],max);
+          }
+
+        max = std::max(dcr.residual/dcr.initial_residual, max);
+        max = std::max(relative_temperature_residual, max);
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << max
+              << std::endl
+              << std::endl;
+
+
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
+        if (max < parameters.nonlinear_tolerance)
           break;
       }
 
@@ -1362,8 +1382,8 @@ namespace aspect
   template void Simulator<dim>::solve_no_advection_single_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
-  template void Simulator<dim>::solve_no_advection_defect_correction_iterated_stokes(); \
-  template void Simulator<dim>::solve_single_advection_defect_correction_iterated_stokes(); \
+  template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
