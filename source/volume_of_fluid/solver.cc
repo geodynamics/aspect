@@ -21,11 +21,7 @@
 #include <aspect/global.h>
 #include <aspect/volume_of_fluid/handler.h>
 
-#if DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/affine_constraints.h>
-#else
-#  include <deal.II/lac/constraint_matrix.h>
-#endif
+#include <deal.II/lac/affine_constraints.h>
 
 #ifdef ASPECT_USE_PETSC
 #include <deal.II/lac/solver_cg.h>
