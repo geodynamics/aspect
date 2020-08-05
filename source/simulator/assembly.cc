@@ -38,9 +38,6 @@
 #include <deal.II/base/work_stream.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/full_matrix.h>
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#endif
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -457,14 +454,7 @@ namespace aspect
 #ifdef ASPECT_USE_PETSC
     Amg_data.symmetric_operator = false;
 #else
-#if DEAL_II_VERSION_GTE(9,2,0)
     Amg_data.constant_modes = constant_modes;
-#else
-    // To avoid a Trilinos error, only define constant modes
-    // if this mpi rank owns any DoFs:
-    if (dof_handler.n_locally_owned_dofs() != 0)
-      Amg_data.constant_modes = constant_modes;
-#endif
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
 

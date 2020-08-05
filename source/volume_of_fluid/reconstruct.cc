@@ -152,11 +152,7 @@ namespace aspect
                         const typename DoFHandler<dim>::cell_iterator neighbor =
                           cell->neighbor_or_periodic_neighbor(neighbor_no);
                         if (neighbor->level() == cell->level() &&
-#if DEAL_II_VERSION_GTE(9,2,0)
                             neighbor->is_active())
-#else
-                            neighbor->active())
-#endif
                           cen = neighbor;
                         else
                           cen = endc;
@@ -193,11 +189,7 @@ namespace aspect
                                 const typename DoFHandler<dim>::cell_iterator neighbor =
                                   cen->neighbor_or_periodic_neighbor(neighbor_no);
                                 if (neighbor->level() == cell->level() &&
-#if DEAL_II_VERSION_GTE(9,2,0)
                                     neighbor->is_active())
-#else
-                                    neighbor->active())
-#endif
                                   curr = neighbor;
                                 else
                                   curr = endc;
