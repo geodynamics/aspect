@@ -155,7 +155,7 @@ namespace aspect
                              "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosity", "5e24",
                              Patterns::Double (0.),
-                             "The value of the constant viscosity. Units: \\si{\\kilo\\gram\\per\\meter\\per\\second}.");
+                             "The value of the constant viscosity. Units: \\si{\\kilogram\\per\\meter\\per\\second}.");
           prm.declare_entry ("Composition viscosity prefactor 1", "1.0",
                              Patterns::Double (0.),
                              "A linear dependency of viscosity on the first compositional field. "

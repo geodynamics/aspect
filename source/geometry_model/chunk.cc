@@ -829,10 +829,10 @@ namespace aspect
         {
           prm.declare_entry ("Chunk inner radius", "0.",
                              Patterns::Double (0.),
-                             "Radius at the bottom surface of the chunk. Units: $\\si{m}$.");
+                             "Radius at the bottom surface of the chunk. Units: \\si{\\meter}.");
           prm.declare_entry ("Chunk outer radius", "1.",
                              Patterns::Double (0.),
-                             "Radius at the top surface of the chunk. Units: $\\si{m}$.");
+                             "Radius at the top surface of the chunk. Units: \\si{\\meter}.");
 
           prm.declare_entry ("Chunk minimum longitude", "0.",
                              Patterns::Double (-180., 360.), // enables crossing of either hemisphere
@@ -975,4 +975,3 @@ namespace aspect
                                    "based on an ascii data file. ")
   }
 }
-

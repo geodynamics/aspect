@@ -477,26 +477,29 @@ namespace aspect
         {
           prm.declare_entry ("Reference solid density", "3000",
                              Patterns::Double (0),
-                             "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
+                             "Reference density of the solid $\\rho_{s,0}$. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference melt density", "2500",
                              Patterns::Double (0),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference shear viscosity", "1e20",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
-                             "Units: $Pa s$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference compaction viscosity", "1e20",
                              Patterns::Double (0),
                              "The value of the constant volumetric viscosity $\\xi_0$ of the solid matrix. "
-                             "Units: $Pa s$.");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference melt viscosity", "100.0",
                              Patterns::Double (0),
-                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa s$.");
+                             "The value of the constant melt viscosity $\\eta_f$. "
+                             "Units: \\si{\\pascal\\second}.");
 
           prm.declare_entry ("Reference permeability", "5e-9",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: $m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
         }
         prm.leave_subsection();
       }
@@ -601,7 +604,7 @@ namespace aspect
                              Patterns::Double (0),
                              "Offset of the center of the solitary wave from the boundary"
                              "of the domain. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Read solution from file", "false",
                              Patterns::Bool (),
                              "Whether to read the porosity initial condition from "

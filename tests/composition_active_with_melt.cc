@@ -106,8 +106,8 @@ namespace aspect
                            "one with its linear dependence on the temperature. If there are compositional "
                            "fields, then the density only depends on the first one in such a way that "
                            "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
-                           "This parameter describes the value of $\\Delta \\rho$. Units: $kg/m^3/\\textrm{unit "
-                           "change in composition}$.");
+                           "This parameter describes the value of $\\Delta \\rho$. "
+                           "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
       }
       prm.leave_subsection();
     }

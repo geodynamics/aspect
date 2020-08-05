@@ -88,29 +88,34 @@ namespace aspect
         {
           prm.declare_entry ("Outer temperature", "0.",
                              Patterns::Double (),
-                             "Temperature at the outer boundary (lithosphere water/air). Units: $\\si{K}$.");
+                             "Temperature at the outer boundary (lithosphere water/air). Units: \\si{\\kelvin}.");
           prm.declare_entry ("Inner temperature", "6000.",
                              Patterns::Double (),
                              "Temperature at the inner boundary (core mantle boundary) at the "
-                             "beginning. Units: $\\si{K}$.");
+                             "beginning. Units: \\si{\\kelvin}.");
           prm.declare_entry ("dT over dt", "0.",
                              Patterns::Double (),
-                             "Initial CMB temperature changing rate. Units: $K/year$.");
+                             "Initial CMB temperature changing rate. "
+                             "Units: \\si{\\kelvin}/year.");
           prm.declare_entry ("dR over dt", "0.",
                              Patterns::Double (),
-                             "Initial inner core radius changing rate. Units: $km/year$.");
+                             "Initial inner core radius changing rate. "
+                             "Units: \\si{\\kilo\\meter}/year.");
           prm.declare_entry ("dX over dt", "0.",
                              Patterns::Double (),
-                             "Initial light composition changing rate. Units: $1/year$.");
+                             "Initial light composition changing rate. "
+                             "Units: 1/year.");
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
-                             "Density of the core. Units: $kg/m^3$.");
+                             "Density of the core. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Gravity acceleration", "9.8",
                              Patterns::Double (),
-                             "Gravitation acceleration at CMB. Units: $m/s^2$.");
+                             "Gravitation acceleration at CMB. "
+                             "Units: \\si{\\meter\\per\\second\\squared}.");
           prm.declare_entry ("CMB pressure", "0.14e12",
                              Patterns::Double (),
-                             "Pressure at CMB. Units: $Pa$.");
+                             "Pressure at CMB. Units: \\si{\\pascal}.");
           prm.declare_entry ("Initial light composition", "0.01",
                              Patterns::Double (0.),
                              "Initial light composition (eg. S,O) concentration "
@@ -120,24 +125,28 @@ namespace aspect
                              "The max iterations for nonliner core energy solver.");
           prm.declare_entry ("Core heat capacity", "840.",
                              Patterns::Double (0.),
-                             "Heat capacity of the core. Units: $J/kg/K$.");
+                             "Heat capacity of the core. "
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0.),
                              "Core compressibility at zero pressure. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0.),
-                             "Core density at zero pressure. Units: $kg/m^3$. "
+                             "Core density at zero pressure. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0.),
-                             "Core thermal expansivity. Units: $1/K$.");
+                             "Core thermal expansivity. Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0.),
-                             "The latent heat of core freeze. Units: $J/kg$.");
+                             "The latent heat of core freeze. "
+                             "Units: \\si{\\joule\\per\\kilogram}.");
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
-                             "The heat of reaction. Units: $J/kg$.");
+                             "The heat of reaction. "
+                             "Units: \\si{\\joule\\per\\kilogram}.");
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0.),
                              "Compositional expansion coefficient $Beta_c$. "
@@ -147,18 +156,20 @@ namespace aspect
                              "Partition coefficient of the light element.");
           prm.declare_entry ("Core conductivity", "60.",
                              Patterns::Double (0.),
-                             "Core heat conductivity $k_c$. Units: $W/m/K$.");
+                             "Core heat conductivity $k_c$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.enter_subsection("Geotherm parameters");
           {
             prm.declare_entry ("Tm0","1695.",
                                Patterns::Double (0.),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: $\\si{K}$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm0. Units: \\si{\\kelvin}.");
             prm.declare_entry ("Tm1","10.9",
                                Patterns::Double (),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. Units: $1/Tpa$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm1. "
+                               "Units: \\si{\\per\\tera\\pascal}.");
             prm.declare_entry ("Tm2","-8.0",
                                Patterns::Double (),
-                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. Units: $1/TPa^2$.");
+                               "Melting curve (\\cite{NPB+04} eq. (40)) parameter Tm2. "
+                               "Units: \\si{\\per\\tera\\pascal\\squared}.");
             prm.declare_entry ("Theta","0.11",
                                Patterns::Double (),
                                "Melting curve (\\cite{NPB+04} eq. (40)) parameter Theta.");

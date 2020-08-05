@@ -149,14 +149,14 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    # Extent of the box in x-direction. Units: m.
+    # Extent of the box in x-direction. Units: \\si{\\meter}.
     set X extent = 1 # default: 1
 
-    # Extent of the box in y-direction. Units: m.
+    # Extent of the box in y-direction. Units: \\si{\\meter}.
     set Y extent = 1
 
     # Extent of the box in z-direction. This value is ignored if the
-    # simulation is in 2d Units: m.
+    # simulation is in 2d Units: \\si{\\meter}.
     set Z extent = 1
   end
 end
@@ -210,22 +210,22 @@ subsection Material model
   set Model name = simple
 
   subsection Simple model
-    # Reference density $\rho_0$. Units: $kg/m^3$.
+    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density             = 1    # default: 3300
 
-    # The value of the specific heat $cp$. Units: $JG/kgK$.
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat       = 1250
 
-    # The reference temperature $T_0$. Units: $K$.
+    # The reference temperature $T_0$. Units: \\si{\\kelvin}.
     set Reference temperature         = 0    # default: 293
 
-    # The value of the thermal conductivity $k$. Units: $W/m/K$.
+    # The value of the thermal conductivity $k$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.
     set Thermal conductivity          = 1e-6 # default: 4.7
 
-    # The value of the thermal expansion coefficient $\beta$. Units: $1/K$.
+    # The value of the thermal expansion coefficient $\beta$. Units: \\si{\\per\\kelvin}.
     set Thermal expansion coefficient = 2e-5
 
-    # The value of the constant viscosity. Units: $kg/m/s$.
+    # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
     set Viscosity                     = 1    # default: 5e24
   end
 

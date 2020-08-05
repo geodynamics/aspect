@@ -153,11 +153,11 @@ namespace aspect
                              Patterns::Double(0),
                              "The viscosity that is used in this model. "
                              "\n\n"
-                             "Units: $Pa \\, s$");
+                             "Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.leave_subsection();
         }
         prm.leave_subsection();

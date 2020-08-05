@@ -621,7 +621,7 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: $Pa \\, s$");
+                             "Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the viscosity "
@@ -638,7 +638,7 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.leave_subsection();
         }
         prm.leave_subsection();

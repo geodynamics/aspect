@@ -106,12 +106,12 @@ namespace aspect
                            "List of cohesions, $C$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from "
-                           "exceeding the yield stress. Units: $Pa$.");
+                           "exceeding the yield stress. Units: \\si{\\pascal}.");
         prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
                            "Limits the maximum value of the yield stress determined by the "
                            "drucker-prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                           "in previous models. Units: $Pa$");
+                           "in previous models. Units: \\si{\\pascal}");
       }
 
 

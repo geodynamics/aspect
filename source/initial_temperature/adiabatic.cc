@@ -282,7 +282,7 @@ namespace aspect
                              "If this value is larger than 0, the initial temperature profile will "
                              "not be adiabatic, but subadiabatic. This value gives the maximal "
                              "deviation from adiabaticity. Set to 0 for an adiabatic temperature "
-                             "profile. Units: $\\si{K}$.\n\n"
+                             "profile. Units: \\si{\\kelvin}.\n\n"
                              "The function object in the Function subsection "
                              "represents the compositional fields that will be used as a reference "
                              "profile for calculating the thermal diffusivity. "

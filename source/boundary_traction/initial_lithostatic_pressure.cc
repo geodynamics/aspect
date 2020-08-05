@@ -272,7 +272,7 @@ namespace aspect
                              "The point where the pressure profile will be calculated. "
                              "Cartesian coordinates when geometry is a box, otherwise enter radius, longitude, "
                              "and in 3D latitude."
-                             "Units: $\\si{m}$ or degrees.");
+                             "Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Number of integration points", "1000",
                             Patterns::Integer(0),
                             "The number of integration points over which we integrate the lithostatic pressure "

@@ -1,19 +1,19 @@
 # King2010 ALA benchmark
 
-# reference values (old): 
+# reference values (old):
 # Code Ra   Di   Nu     Vrms    Vsurf−max <V surf> <T>    <φ>    <W >
 # CU   10^4 0.25 4.4100 40.0000 58.1000   38.8000  0.5148 0.8494 0.8501
-# wealt   "    "    4.44   39.9                       0.51493 8.46633256e-01 8.46071386e-01 
-# we   "    "    4.43957   39.887840                       0.514951021 8.46633256e-01 8.46071386e-01 
+# wealt   "    "    4.44   39.9                       0.51493 8.46633256e-01 8.46071386e-01
+# we   "    "    4.43957   39.887840                       0.514951021 8.46633256e-01 8.46071386e-01
 # okay
 
 # CU   10^5 0.25 9.2100 178.2000 252.4000 184.3000 0.5319 2.0503 2.0540
-# WE   "    "    9.50829 178.07837                  0.532474458   2.05198146e+00  -2.05114850e+00  
+# WE   "    "    9.50829 178.07837                  0.532474458   2.05198146e+00  -2.05114850e+00
 # okay
 
 
 # ALA  10^4  1   2.4700 24.9000 37.6000 24.4000 0.5103 1.3627 1.3638
-# Leng08     1   2.47                   24.3           1.3542 ,1.3587 
+# Leng08     1   2.47                   24.3           1.3542 ,1.3587
 # WE schrott     2.411  24.3                    0.510  1.30194982e+00 -1.31280279e+00
 # We new         2.455  24.7                    0.5115 1.34274053e+00 -1.35403894e+00
 # no-1/3    2.456  24.7      0.5117 1.34669982e+00  -1.35134127e+00
@@ -22,12 +22,12 @@
 
 # ALA  10^4 0.5 3.8200 35.9000 52.8000 35.1000 0.5217 1.3818 1.3830
 # we with1/3    3.849  35.9                    0.5225 1.38400306e+00 -1.38222762e+00
-# we no-1/3     3.83   35.9                    0.5225 1.38569274e+00 -1.38212532e+00 
+# we no-1/3     3.83   35.9                    0.5225 1.38569274e+00 -1.38212532e+00
 
 
 # ALA  10^5 1.0  3.8800 84.6000 137.2000 88.8000 0.5294 2.7652 2.7742
 # we             3.886  84.4                     0.53   2.76013974e+00 -2.76857768e+00
-      
+
 
 
 # TALA:
@@ -178,7 +178,7 @@ end
 subsection Heating model
   # shear heating: 1/2 eta*e(u): ... need  -> 1/2 e(u): ..  * Di/Ra
   # adiabatic heating: alpha T (u . \nabla p)
-  # 
+  #
 
   set List of model names = adiabatic heating, shear heating#, constant heating
 
@@ -188,7 +188,7 @@ subsection Heating model
 
   subsection Adiabatic heating
     # A flag indicating whether the adiabatic heating should be simplified
-    # from $\alpha T (\mathbf u \cdot \nabla p)$ 
+    # from $\alpha T (\mathbf u \cdot \nabla p)$
     # to $ \alpha \rho T (\mathbf u \cdot \mathbf g) $. alpha=thermal exp
 
     # have \alpha rho T w
@@ -218,10 +218,10 @@ subsection Material model
   subsection King model
     set Reference density             = 1
 
-    # The value of the specific heat $cp$. Units: $J/kg/K$. => H
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}. => H
     set Reference specific heat       = 1   # ??
 
-    # The value of the constant viscosity. Units: $kg/m/s$.
+    # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
     set Ra                     = 1e4
     set Di = 0.25 # BA: Di=0.0
     set b=0

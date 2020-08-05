@@ -95,7 +95,7 @@ namespace aspect
                            Patterns::Selection("File|Value"),
                            "Method that is used to specify the depth of the lithosphere-asthenosphere boundary.");
         prm.declare_entry ("Maximum lithosphere depth", "200000.0",
-                           Patterns::Double (0.),"Units: m."
+                           Patterns::Double (0.),"Units: \\si{\\meter}."
                            "The maximum depth of the lithosphere. The model will be "
                            "NaNs below this depth.");
         prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/",

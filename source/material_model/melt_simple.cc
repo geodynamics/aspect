@@ -441,27 +441,29 @@ namespace aspect
         {
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),
-                             "Reference density of the solid $\\rho_{s,0}$. Units: $kg/m^3$.");
+                             "Reference density of the solid $\\rho_{s,0}$. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference melt density", "2500.",
                              Patterns::Double (0.),
-                             "Reference density of the melt/fluid$\\rho_{f,0}$. Units: $kg/m^3$.");
+                             "Reference density of the melt/fluid$\\rho_{f,0}$. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
-                             "in both the density and viscosity formulas. Units: $\\si{K}$.");
+                             "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Reference shear viscosity", "5e20",
                              Patterns::Double (0.),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa \\, s$.");
+                             "dependencies. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference bulk viscosity", "1e22",
                              Patterns::Double (0.),
                              "The value of the constant bulk viscosity $\\xi_0$ of the solid matrix. "
                              "This viscosity may be modified by both temperature and porosity "
-                             "dependencies. Units: $Pa \\, s$.");
+                             "dependencies. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Reference melt viscosity", "10.",
                              Patterns::Double (0.),
-                             "The value of the constant melt viscosity $\\eta_f$. Units: $Pa \\, s$.");
+                             "The value of the constant melt viscosity $\\eta_f$. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Exponential melt weakening factor", "27.",
                              Patterns::Double (0.),
                              "The porosity dependence of the viscosity. Units: dimensionless.");
@@ -480,33 +482,33 @@ namespace aspect
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
-                             "Units: $W/m/K$.");
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: $J/kg/K$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
-                             "Units: $1/K$.");
+                             "Units: \\si{\\per\\kelvin}.");
           prm.declare_entry ("Reference permeability", "1e-8",
                              Patterns::Double(),
                              "Reference permeability of the solid host rock."
-                             "Units: $m^2$.");
+                             "Units: \\si{\\meter\\squared}.");
           prm.declare_entry ("Melt extraction depth", "1000.0",
                              Patterns::Double (0.),
                              "Depth above that melt will be extracted from the model, "
                              "which is done by a negative reaction term proportional to the "
                              "porosity field. "
-                             "Units: $m$.");
+                             "Units: \\si{\\meter}.");
           prm.declare_entry ("Solid compressibility", "0.0",
                              Patterns::Double (0.),
                              "The value of the compressibility of the solid matrix. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Melt compressibility", "0.0",
                              Patterns::Double (0.),
                              "The value of the compressibility of the melt. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("Melt bulk modulus derivative", "0.0",
                              Patterns::Double (0.),
                              "The value of the pressure derivative of the melt bulk "
@@ -580,7 +582,7 @@ namespace aspect
                              "depleted material. Depletion is indicated by the compositional "
                              "field with the name peridotite. Not used if this field does not "
                              "exist in the model. "
-                             "Units: $kg/m^3$.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Depletion solidus change", "200.0",
                              Patterns::Double (0.),
                              "The solidus temperature change for a depletion of 100\\%. For positive "
@@ -588,32 +590,32 @@ namespace aspect
                              "(depletion) and lowered for a negative peridotite field (enrichment). "
                              "Scaling with depletion is linear. Only active when fractional melting "
                              "is used. "
-                             "Units: $\\si{K}$.");
+                             "Units: \\si{\\kelvin}.");
           prm.declare_entry ("A1", "1085.7",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the solidus "
                              "of peridotite. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("A2", "1.329e-7",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of peridotite. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("A3", "-5.1e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
                              "in the quadratic function that approximates "
                              "the solidus of peridotite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("B1", "1475.0",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the lherzolite "
                              "liquidus used for calculating the fraction "
                              "of peridotite-derived melt. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("B2", "8.0e-8",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
@@ -621,7 +623,7 @@ namespace aspect
                              "the  lherzolite liquidus used for "
                              "calculating the fraction of peridotite-"
                              "derived melt. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("B3", "-3.2e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
@@ -629,25 +631,25 @@ namespace aspect
                              "the  lherzolite liquidus used for "
                              "calculating the fraction of peridotite-"
                              "derived melt. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("C1", "1780.0",
                              Patterns::Double (),
                              "Constant parameter in the quadratic "
                              "function that approximates the liquidus "
                              "of peridotite. "
-                             "Units: $\\degree C$.");
+                             "Units: \\si{\\degreeCelsius}.");
           prm.declare_entry ("C2", "4.50e-8",
                              Patterns::Double (),
                              "Prefactor of the linear pressure term "
                              "in the quadratic function that approximates "
                              "the liquidus of peridotite. "
-                             "Units: $\\degree C/Pa$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal}.");
           prm.declare_entry ("C3", "-2.0e-18",
                              Patterns::Double (),
                              "Prefactor of the quadratic pressure term "
                              "in the quadratic function that approximates "
                              "the liquidus of peridotite. "
-                             "Units: $\\degree C/(Pa^2)$.");
+                             "Units: \\si{\\degreeCelsius\\per\\pascal\\squared}.");
           prm.declare_entry ("r1", "0.5",
                              Patterns::Double (),
                              "Constant in the linear function that "
@@ -659,7 +661,7 @@ namespace aspect
                              "Prefactor of the linear pressure term "
                              "in the linear function that approximates "
                              "the clinopyroxene reaction coefficient. "
-                             "Units: $1/Pa$.");
+                             "Units: \\si{\\per\\pascal}.");
           prm.declare_entry ("beta", "1.5",
                              Patterns::Double (),
                              "Exponent of the melting temperature in "
@@ -669,7 +671,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt of peridotite. "
-                             "Units: $J/(kg K)$.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Mass fraction cpx", "0.15",
                              Patterns::Double (),
                              "Mass fraction of clinopyroxene in the "
