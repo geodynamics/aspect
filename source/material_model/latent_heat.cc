@@ -51,8 +51,20 @@ namespace aspect
 
           // Calculate Viscosity
           {
-            const double delta_temp = temperature-reference_T;
-            double visc_temperature_dependence = std::max(std::min(std::exp(-thermal_viscosity_exponent*delta_temp/reference_T),1e2),1e-2);
+            const double reference_temperature = (this->include_adiabatic_heating()
+                                                  ?
+                                                  this->get_adiabatic_conditions().temperature(in.position[i])
+                                                  :
+                                                  reference_T);
+
+            const double delta_temp = temperature-reference_temperature;
+            const double T_dependence = ( thermal_viscosity_exponent == 0.0
+                                          ?
+                                          0.0
+                                          :
+                                          thermal_viscosity_exponent * delta_temp / reference_temperature );
+
+            double visc_temperature_dependence = std::max(std::min(std::exp(-T_dependence),1e2),1e-2);
 
             if (std::isnan(visc_temperature_dependence))
               visc_temperature_dependence = 1.0;
