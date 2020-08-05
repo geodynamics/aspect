@@ -21,6 +21,21 @@
 ##
 ## ---------------------------------------------------------------------
 
+find_astyle() {
+  IFS=':' read -r -a PATHS <<< "$PATH"
+  options=$(find "${PATHS[@]}" -iname '*astyle*' 2> /dev/null)
+  astyle=""
+
+  for exe in ${options}; do
+    astyle="${exe}"
+    if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 2.04" ; then
+      break
+    fi
+  done
+
+  echo "${astyle}"
+}
+
 if test ! -d source -o ! -d include ; then
   echo "*** This script must be run from the top-level directory of ASPECT."
   exit 1
@@ -31,22 +46,26 @@ if test ! -f contrib/utilities/astyle.rc ; then
   exit 1
 fi
 
-if test -z "`which astyle`" ; then
+astyle="$(find_astyle)"
+
+if test -z "${astyle}"; then
   echo "*** No astyle program found."
   exit 1
 fi
 
-if test "`astyle --version 2>&1`" != "Artistic Style Version 2.04" ; then
+if test "$("${astyle}" --version 2>&1)" != "Artistic Style Version 2.04" ; then
   echo "*** Found a version of astyle different than the required version 2.04."
   exit 1
 fi
+
+echo "--- Found astyle 2.04 at ${astyle}"
 
 
 # collect all header and source files and process them in batches of 50 files
 # with up to 10 in parallel
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 astyle --options=contrib/utilities/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
 
 # remove execute permission on source files:
 find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
