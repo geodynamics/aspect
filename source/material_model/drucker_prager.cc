@@ -219,7 +219,7 @@ namespace aspect
                              "magnitude of the viscosities that appear, such as an average "
                              "value or the value one would use to compute a Rayleigh number."
                              "\n\n"
-                             "Units: \\si{\\pascal\\second}");
+                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "

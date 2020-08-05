@@ -110,7 +110,7 @@ namespace aspect
           prm.declare_entry("Crust depth","0.",
                             Patterns::Double(),
                             "Depth of the crust when crust if defined by depth. "
-                            "Units: \\si{\\meter}");
+                            "Units: \\si{\\meter}.");
           prm.declare_entry("Crust composition number","0",
                             Patterns::Integer(0),
                             "Which composition field should be treated as crust");

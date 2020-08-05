@@ -169,7 +169,7 @@ namespace aspect
                        "particular number. For example, if this parameter is set to $50$, then that means that "
                        "the time step can at most increase by 50\\% from one time step to the next, or by a "
                        "factor of 1.5. "
-                       "Units: \\%");
+                       "Units: \\%.");
 
     prm.declare_entry ("Use conduction timestep", "false",
                        Patterns::Bool (),

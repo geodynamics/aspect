@@ -115,7 +115,7 @@ namespace aspect
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
-                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}");
+                             "If only one value is given, then all use the same value. Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::Anything(),
                              "List of thermal conductivities for background mantle and compositional fields,"

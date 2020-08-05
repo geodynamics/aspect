@@ -56,7 +56,7 @@ namespace aspect
                            Patterns::List(Patterns::Double(0)),
                            "List of constant viscosity prefactors (i.e., multiplicative factors) "
                            "for background material and compositional fields, for a total of N+1 "
-                           "where N is the number of compositional fields. Units: none");
+                           "where N is the number of compositional fields. Units: none.");
       }
 
 

@@ -68,24 +68,24 @@ namespace aspect
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}");
+                           "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\per\\second}.");
         prm.declare_entry ("Stress exponents for dislocation creep", "3.5",
                            Patterns::List(Patterns::Double (0.)),
                            "List of stress exponents, $n_{\\text{dislocation}}$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value.  Units: None");
+                           "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Activation energies for dislocation creep", "530e3",
                            Patterns::List(Patterns::Double (0.)),
                            "List of activation energies, $E_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\mole}");
+                           "Units: \\si{\\joule\\per\\mole}.");
         prm.declare_entry ("Activation volumes for dislocation creep", "1.4e-5",
                            Patterns::List(Patterns::Double (0.)),
                            "List of activation volumes, $V_a$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\meter\\cubed\\per\\mole}");
+                           "Units: \\si{\\meter\\cubed\\per\\mole}.");
       }
 
 
