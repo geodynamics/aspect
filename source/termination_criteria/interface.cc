@@ -81,7 +81,7 @@ namespace aspect
     }
 
     template <int dim>
-    std::pair<bool,bool>
+    bool
     Manager<dim>::execute () const
     {
       bool terminate_simulation = false;
@@ -157,8 +157,7 @@ namespace aspect
             }
         }
 
-      return std::make_pair (terminate_simulation,
-                             do_checkpoint_on_terminate);
+      return terminate_simulation;
     }
 
 
@@ -184,11 +183,6 @@ namespace aspect
       // choose from
       prm.enter_subsection("Termination criteria");
       {
-        // Whether to checkpoint the simulation right before termination
-        prm.declare_entry("Checkpoint on termination", "false",
-                          Patterns::Bool (),
-                          "Whether to checkpoint the simulation right before termination.");
-
         // construct a string for Patterns::MultipleSelection that
         // contains the names of all registered termination criteria
         const std::string pattern_of_names
@@ -224,8 +218,6 @@ namespace aspect
       std::vector<std::string> plugin_names;
       prm.enter_subsection("Termination criteria");
       {
-        do_checkpoint_on_terminate = prm.get_bool("Checkpoint on termination");
-
         plugin_names = Utilities::split_string_list(prm.get("Termination criteria"));
         AssertThrow(Utilities::has_unique_entries(plugin_names),
                     ExcMessage("The list of strings for the parameter "

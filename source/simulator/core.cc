@@ -425,8 +425,8 @@ namespace aspect
         volume_of_fluid_handler->initialize (prm);
       }
 
-    termination_manager.initialize_simulator (*this);
-    termination_manager.parse_parameters (prm);
+    time_stepping_manager.initialize_simulator (*this);
+    time_stepping_manager.parse_parameters (prm);
 
     lateral_averaging.initialize_simulator (*this);
 
@@ -1956,13 +1956,15 @@ namespace aspect
               }
           }
 
+
+
         // if we postprocess nonlinear iterations, this function is called within
         // solve_timestep () in the individual solver schemes
         if (!parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
         // get new time step size
-        const double new_time_step = compute_time_step();
+        const double new_time_step = time_stepping_manager.compute_time_step_size();
 
         // see if we want to refine the mesh
         maybe_refine_mesh(new_time_step, max_refinement_level);
@@ -1973,17 +1975,19 @@ namespace aspect
         // update values for timestep, increment time step by one.
         advance_time(new_time_step);
 
-        // Check whether to terminate the simulation. The first part of the
-        // pair indicates whether to terminate the execution; the second
-        // indicates whether to do one more checkpoint:
-        const std::pair<bool,bool> termination = termination_manager.execute();
+        // Check whether to terminate the simulation:
+        const bool should_terminate = time_stepping_manager.should_simulation_terminate_now();
 
-        const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time, termination);
+        const bool write_checkpoint_due_to_termination
+          = should_terminate && time_stepping_manager.need_checkpoint_on_terminate();
+
+        const bool checkpoint_written = maybe_write_checkpoint(last_checkpoint_time,
+                                                               write_checkpoint_due_to_termination);
+
         if (checkpoint_written)
           last_checkpoint_time = std::time(nullptr);
 
-        // see if we want to terminate
-        if (termination.first)
+        if (should_terminate)
           break;
       }
     while (true);
