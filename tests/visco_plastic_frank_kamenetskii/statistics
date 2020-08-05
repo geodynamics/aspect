@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 15: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 16: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 17: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 18: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 1 5 3 4.08248290e-04 6.91168359e-04 1.57608000e+05 1.57608000e+05 -1.57608000e+05 -1.57608000e+05 output-visco_plastic_frank_kamenetskii/solution/solution-00000 

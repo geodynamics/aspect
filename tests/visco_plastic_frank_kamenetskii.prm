@@ -1,0 +1,109 @@
+# A test for Frank Kamenetskii rheology in the visco_plastic material model.
+# Frank-Kamenetskii viscosity approximation:
+# viscosity = A * exp(E * 0.5 * (1.0-(T/ref_T)))
+# A: 1.e21, E: 15., ref_T: 1573
+# Using these values, the computed viscosity should be
+#   ~ 1e21 Pa s.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1573.
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications 
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+
+# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = bottom y: function, top y: function, left x: function, right x: function
+end
+
+# Velocity on boundaries characterized by functions
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = mm=0.001, year=1
+    set Function expression = if (x<50e3 , -0.5*mm/year, 0.5*mm/year); if (y<50e3 , 0.5*mm/year, -0.5*mm/year);
+  end
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Left temperature   = 1573
+    set Right temperature  = 1573
+    set Top temperature    = 1573
+  end
+end
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1573
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = frank kamenetskii
+    set Viscosity ratios for Frank Kamenetskii = 15.
+    set Prefactors for Frank Kamenetskii = 1.e21
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = viscosity, strain rate
+    set Output format            = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+  end
+end
