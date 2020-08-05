@@ -119,7 +119,7 @@ subsection Material model
   subsection Depth dependent model
     set Base model = simple
     set Depth dependence method = File
-    set Data directory = $ASPECT_SOURCE_DIR/tests/
+    set Data directory = $ASPECT_SOURCE_DIR/data/material-model/depth-dependent/
     set Viscosity depth file = visc_depth.txt
   end
   subsection Simple model
