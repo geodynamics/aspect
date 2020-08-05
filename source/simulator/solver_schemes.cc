@@ -431,12 +431,19 @@ namespace aspect
         compute_current_constraints ();
       }
 
-    // the Stokes matrix depends on the viscosity. if the viscosity
-    // depends on other solution variables, then after we need to
-    // update the Stokes matrix in every time step and so need to set
-    // the following flag. if we change the Stokes matrix we also
-    // need to update the Stokes preconditioner.
-    rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+    // If the Stokes matrix depends on the solution, or we have active
+    // velocity boundary conditions, we need to re-assemble the system matrix
+    // (and preconditioner) every time. If we have active boundary conditions,
+    // they could a) depend on the solution, or b) be inhomogeneous. In both
+    // cases, just assembling the RHS will be incorrect.  If no active
+    // boundaries exist, we only have no-slip or free slip conditions, so we
+    // don't need to force assembly of the matrix.
+    if ((nonlinear_iteration == 0 && time_step == 0)
+        ||
+        stokes_matrix_depends_on_solution()
+        ||
+        (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+      rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
     assemble_stokes_system();
 
@@ -495,9 +502,21 @@ namespace aspect
             pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
             newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
             newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
-            rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
+
+            // If the Stokes matrix depends on the solution, or we have active
+            // velocity boundary conditions, we need to re-assemble the system matrix
+            // (and preconditioner) every time. If we have active boundary conditions,
+            // they could a) depend on the solution, or b) be inhomogeneous. In both
+            // cases, just assembling the RHS will be incorrect.  If no active
+            // boundaries exist, we only have no-slip or free slip conditions, so we
+            // don't need to force assembly of the matrix.
+            if (stokes_matrix_depends_on_solution()
+                ||
+                (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+              rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
 
             assemble_stokes_system();
+
             /**
              * Eisenstat Walker method for determining the tolerance
              */
