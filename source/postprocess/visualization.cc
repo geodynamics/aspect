@@ -1052,10 +1052,10 @@ namespace aspect
             {
               AssertThrow(output_format == "vtu",
                           ExcMessage("The option 'Postprocess/Visualization/Write higher order output' requires the "
-                                     "data output format to be set to 'vtu'"));
+                                     "data output format to be set to 'vtu'."));
               AssertThrow(interpolate_output == true,
                           ExcMessage("The input parameter 'Postprocess/Visualization/Write higher order output' "
-                                     "requires the input parameter 'Interpolate output' to be set to 'true'"));
+                                     "requires the input parameter 'Interpolate output' to be set to 'true'."));
             }
 
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
