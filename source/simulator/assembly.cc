@@ -455,8 +455,6 @@ namespace aspect
     Amg_data.symmetric_operator = false;
 #else
     Amg_data.constant_modes = constant_modes;
-    // To avoid a Trilinos error, only define constant modes
-    // if this mpi rank owns any DoFs:
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
 
