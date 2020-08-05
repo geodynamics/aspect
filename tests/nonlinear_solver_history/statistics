@@ -1,0 +1,24 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Visualization file name
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Outward heat flux through boundary with indicator 0 ("left") (W)
+# 20: Outward heat flux through boundary with indicator 1 ("right") (W)
+# 21: Outward heat flux through boundary with indicator 2 ("bottom") (W)
+# 22: Outward heat flux through boundary with indicator 3 ("top") (W)
+0 0.000000000000e+00 0.000000000000e+00 1024 9539 4225 2 0 42 92 45 output-nonlinear_solver_history/solution/solution-00000 9.00076536e-09 3.23376836e-08 0.00000000e+00 1.03532014e+00 1.10000000e+00 1.03532014e+00 1.66666640e-07 6.23888889e-05 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e-01 1.000000000000e-01 1024 9539 4225 1 4  7  9  9                                                      "" 9.00076835e-09 3.23376981e-08 0.00000000e+00 1.03532014e+00 1.10000000e+00 1.03532014e+00 1.66666687e-07 7.43280632e-05 0.00000000e+00 0.00000000e+00 

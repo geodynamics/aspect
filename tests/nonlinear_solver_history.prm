@@ -1,0 +1,87 @@
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0.1
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2 # default: 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, basic statistics,  temperature statistics, heat flux statistics, Stokes residual
+
+   
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables      = density, viscosity
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 30
+  end
+end

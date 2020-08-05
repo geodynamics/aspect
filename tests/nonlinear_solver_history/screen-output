@@ -1,0 +1,48 @@
+
+Loading shared library <./libnonlinear_solver_history.so>
+
+Connecting signals
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
+
+*** Timestep 0:  t=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 30+7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59046e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.59046e-16, 3.23349e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.23349e-08
+
+
+number of nonlinear iterations: 2. State: 1.
+
+   Postprocessing:
+     Writing graphical output:           output-nonlinear_solver_history/solution/solution-00000
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.667e-07 W, 6.239e-05 W, 0 W, 0 W
+     Writing stokes residuals            output-nonlinear_solver_history/stokes_residuals.txt
+
+*** Timestep 1:  t=0.1 seconds
+   Solving temperature system... 4 iterations.
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.50453e-08, 7.75451e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.75451e-07
+
+
+number of nonlinear iterations: 1. State: 1.
+
+   Postprocessing:
+     RMS, max velocity:                  9e-09 m/s, 3.23e-08 m/s
+     Temperature min/avg/max:            0 K, 1.035 K, 1.1 K
+     Heat fluxes through boundary parts: 1.667e-07 W, 7.433e-05 W, 0 W, 0 W
+     Writing stokes residuals            output-nonlinear_solver_history/stokes_residuals.txt
+
+Termination requested by criterion: end time
+
+
+
