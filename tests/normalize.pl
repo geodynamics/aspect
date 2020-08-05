@@ -18,7 +18,7 @@
 $infilename = shift;
 $aspect_src_dir = shift;
 
-open my $in,  '<', $infilename or die "Can't read file: $!";
+open my $in,  '<', $infilename or die "Can't read file: $infilename!";
 
 while (<$in>)
 {
