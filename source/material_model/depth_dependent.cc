@@ -197,17 +197,16 @@ namespace aspect
           prm.declare_entry ("Depth dependence method", "None",
                              Patterns::Selection("Function|File|List|None"),
                              "Method that is used to specify how the viscosity should vary with depth. ");
-          prm.declare_entry ("Data directory", "./",
+          prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/tests/",
                              Patterns::DirectoryName (),
                              "The path to the model data. The path may also include the special "
                              "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                              "in which the ASPECT source files were located when ASPECT was "
                              "compiled. This interpretation allows, for example, to reference "
                              "files located in the `data/' subdirectory of ASPECT. ");
-          prm.declare_entry("Viscosity depth file", "visc-depth.txt",
+          prm.declare_entry("Viscosity depth file", "visc_depth.txt",
                             Patterns::Anything (),
                             "The name of the file containing depth-dependent viscosity data. ");
-
           prm.declare_entry("Depth list", "", Patterns::List(Patterns::Double ()),
                             "A comma-separated list of depth values for use with the ``List'' "
                             "``Depth dependence method''. The list must be provided in order of "
