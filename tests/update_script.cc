@@ -17,7 +17,7 @@ int f()
 
   command = ("cp update_script.x.prm output-update_script/updated.prm &&"
              "sed -i.bak 's:set Additional shared libraries = ./libupdate_script.so::' output-update_script/updated.prm &&"
-             "bash " ASPECT_SOURCE_DIR "/doc/update_prm_files.sh output-update_script/updated.prm &&"
+             "bash " ASPECT_SOURCE_DIR "/contrib/utilities/update_prm_files.sh output-update_script/updated.prm &&"
              "rm output-update_script/updated.prm.bak");
 
   std::cout << "Executing the update script:\n"

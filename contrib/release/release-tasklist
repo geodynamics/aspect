@@ -30,19 +30,19 @@
       find . -name "*.h" -print | while read file;do $DEALSRCDIR/contrib/utilities/wrapcomments.py $file >temp;mv temp $file;done
       . note: we started ignoring the rewrapping of comments, but we should still fix wrong indentation or other problems
       ./contrib/utilities/indent
-      ./doc/update_copyright.sh
+      ./contrib/release/update_copyright.sh
       git commit -a -m "doxygen formatting, comment wrapping"
       # create a pull-request
   . create branch for master PR to update changes.h in doc/modules:
       git checkout -b post-release-$VER
       cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
-      cd doc;./bump_version.sh $NEXTVER; cd ..
+      cd contrib/release;./bump_version.sh $NEXTVER; cd ..
       git commit -m "release task: update version and changes.h"
       # create a PR
   . create a branch, bump version (note, make sure the PR above is included)
       git checkout post-release-$VER && \
       git checkout -b aspect-$VERSHORT && \
-      cd doc && ./bump_version.sh $VER && cd .. && \
+      cd contrib/release && ./bump_version.sh $VER && cd ../.. && \
       git commit -m "release task: update version info"
   . compile aspect, make sure you have a symlink in the main directory for the next step
     - make sure the WorldBuilder is found! (git submodule init)
@@ -52,12 +52,12 @@
       git commit -m "release task: update manual"
   . Tag an RC:
       export TAG=$VER-rc1
-      cd doc && ./bump_version.sh $TAG && cd .. && \
+      cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
       git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
   . Tag the release:
       export TAG=$VER
-      cd doc && ./bump_version.sh $TAG && cd .. && \
+      cd contrib/release && ./bump_version.sh $TAG && cd ../.. && \
       git commit -m "version $TAG" && \
       git tag -s v$TAG -m "version $TAG"
   . create a tar file:
