@@ -108,7 +108,7 @@ namespace aspect
           prm.declare_entry ("Core density", "12.5e3",
                              Patterns::Double (),
                              "Density of the core. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Gravity acceleration", "9.8",
                              Patterns::Double (),
                              "Gravitation acceleration at CMB. "
@@ -126,7 +126,7 @@ namespace aspect
           prm.declare_entry ("Core heat capacity", "840.",
                              Patterns::Double (0.),
                              "Heat capacity of the core. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("K0", "4.111e11",
                              Patterns::Double (0.),
                              "Core compressibility at zero pressure. "
@@ -134,7 +134,7 @@ namespace aspect
           prm.declare_entry ("Rho0", "7.019e3",
                              Patterns::Double (0.),
                              "Core density at zero pressure. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}. "
                              "See \\cite{NPB+04} for more details.");
           prm.declare_entry ("Alpha", "1.35e-5",
                              Patterns::Double (0.),
@@ -142,11 +142,11 @@ namespace aspect
           prm.declare_entry ("Lh", "750e3",
                              Patterns::Double (0.),
                              "The latent heat of core freeze. "
-                             "Units: \\si{\\joule\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kilogram}.");
           prm.declare_entry ("Rh","-27.7e6",
                              Patterns::Double (),
                              "The heat of reaction. "
-                             "Units: \\si{\\joule\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kilogram}.");
           prm.declare_entry ("Beta composition", "1.1",
                              Patterns::Double (0.),
                              "Compositional expansion coefficient $Beta_c$. "

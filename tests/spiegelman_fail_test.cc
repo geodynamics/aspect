@@ -112,7 +112,7 @@ namespace aspect
 
         /**
          * Defining a minimum strain rate stabilizes the viscosity calculation,
-         * which involves a division by the strain rate. Units: \\si{\\per\\second}.
+         * which involves a division by the strain rate. Units: $\\si{\\per\\second}$.
          */
         std::vector<double> min_strain_rate;
         std::vector<double> min_visc;
@@ -484,7 +484,7 @@ namespace aspect
                            Patterns::List(Patterns::Double(0)),
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one values is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
+                           "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
         prm.declare_entry ("List of reference densities", "2700",
                            Patterns::List (Patterns::Double(0)),
                            "A list of reference densities equal to the number of "

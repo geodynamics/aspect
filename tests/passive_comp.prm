@@ -223,7 +223,7 @@ subsection Material model
 
 
   subsection Simple model
-    # Reference density $\rho_0$. Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.
+    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density             = 3300
 
     # The reference temperature $T_0$. Units: \\si{\\kelvin}.

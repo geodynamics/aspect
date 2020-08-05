@@ -514,7 +514,7 @@ namespace aspect
                              "is part of the material model, this parameter `Density above' allows the user to specify the density "
                              "value of material that is displaced above the solid surface. By default this material is assumed to "
                              "be air, with a density of 0. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Density below","9900.",
                              Patterns::Double (0.),
                              "Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. "
@@ -523,7 +523,7 @@ namespace aspect
                              "is part of the material model, this parameter `Density below' allows the user to specify the density "
                              "value of material that is displaced below the solid surface. By default this material is assumed to "
                              "be outer core material with a density of 9900. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Output surface", "true",
                              Patterns::Bool(),
                              "Whether to output a file containing the surface dynamic topography.");

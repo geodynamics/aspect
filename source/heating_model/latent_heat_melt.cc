@@ -112,7 +112,7 @@ namespace aspect
                              Patterns::Double (),
                              "The entropy change for the phase transition "
                              "from solid to melt. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         }
         prm.leave_subsection();
       }

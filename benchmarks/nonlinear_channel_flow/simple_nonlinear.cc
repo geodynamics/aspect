@@ -75,13 +75,13 @@ namespace aspect
 
       private:
         /**
-         * For calculating density by thermal expansivity. Units: \\si{\\kelvin}
+         * For calculating density by thermal expansivity. Units: $\\si{\\kelvin}$
          */
         double reference_temperature;
 
         /**
          * Defining a minimum strain rate stabilizes the viscosity calculation,
-         * which involves a division by the strain rate. Units: \\si{\\per\\second}.
+         * which involves a division by the strain rate. Units: $\\si{\\per\\second}$.
          */
         std::vector<double> min_strain_rate;
         std::vector<double> min_viscosity;
@@ -293,18 +293,18 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::List(Patterns::Double(0)),
                              "Units: \\si{\\meter\\squared\\per\\second}");
           prm.declare_entry ("Heat capacity", "1.25e3", Patterns::List(Patterns::Double(0)),
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}");
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal expansivities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
+                             "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
 
 
           // SimpleNonlinear creep parameters
@@ -312,13 +312,13 @@ namespace aspect
                              Patterns::List(Patterns::Double(0)),
                              "List of viscosity prefactors, $A$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value. "
-                             "Units: \\si{\\pascal}$^{-n_{dislocation}}$ \\si{\\meter}$^{n_{dislocation}/m_{dislocation}}$ \\si{\\per\\second}");
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\meter}$^{n_{\\text{dislocation}}/m_{\\text{dislocation}}}$ \\si{\\per\\second}");
           prm.declare_entry ("Stress exponent", "3",
                              Patterns::List(Patterns::Double(0)),
                              "List of stress exponents, $n_dislocation$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one values is given, then all use the same value.  Units: None");
+                             "If only one value is given, then all use the same value.  Units: None");
 
           // averaging parameters
           prm.declare_entry ("Viscosity averaging p", "-1",

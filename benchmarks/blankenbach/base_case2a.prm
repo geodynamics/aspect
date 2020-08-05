@@ -68,10 +68,10 @@ subsection Material model
   subsection Nondimensional model
     set Di                      = 0.0
     set Ra                      = 1e4
-    # Reference density $\rho_0$. Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.
+    # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
     set Reference density       = 1
 
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat = 1
 
     # Whether to use the TALA instead of the ALA approximation.

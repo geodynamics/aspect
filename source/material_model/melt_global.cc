@@ -304,11 +304,11 @@ namespace aspect
           prm.declare_entry ("Reference solid density", "3000.",
                              Patterns::Double (0.),
                              "Reference density of the solid $\\rho_{s,0}$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference melt density", "2500.",
                              Patterns::Double (0.),
                              "Reference density of the melt/fluid$\\rho_{f,0}$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. The reference temperature is used "
@@ -348,7 +348,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -364,7 +364,7 @@ namespace aspect
                              "depleted material. Depletion is indicated by the compositional "
                              "field with the name peridotite. Not used if this field does not "
                              "exist in the model. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Surface solidus", "1300.",
                              Patterns::Double (0.),
                              "Solidus for a pressure of zero. "

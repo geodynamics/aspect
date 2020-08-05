@@ -152,7 +152,7 @@ namespace aspect
                              "List of densities, $\\rho$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}");
           prm.declare_entry ("Activation energies", "500",
                              Patterns::List(Patterns::Double(0)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields,"
@@ -176,7 +176,7 @@ namespace aspect
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::Double(0),
                              "Units: \\si{\\meter\\squared\\per\\second}");
           prm.declare_entry ("Heat capacity", "1.25e3", Patterns::Double(0),
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: \\si{\\meter\\cubed\\per\\mole}");
           prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_\\text{ref}$). Units: \\si{\\per\\second}");
           prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");

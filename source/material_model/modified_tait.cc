@@ -153,7 +153,7 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "The density at the reference pressure and temperature. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference isothermal bulk modulus", "125e9",
                              Patterns::Double (0.),
                              "The isothermal bulk modulus at the reference pressure and temperature. "

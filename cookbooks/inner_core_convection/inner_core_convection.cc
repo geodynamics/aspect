@@ -281,7 +281,7 @@ namespace aspect
                              Patterns::Double (),
                              "The density change that occurs across the phase transition. "
                              "A positive value means that the density increases with depth. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Compute quadratic pressure profile from gravity", "true",
                              Patterns::Bool (),
                              "Whether to automatically compute the hydrostatic pressure profile "

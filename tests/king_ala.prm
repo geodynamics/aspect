@@ -218,7 +218,7 @@ subsection Material model
   subsection King model
     set Reference density             = 1
 
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}. => H
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}. => H
     set Reference specific heat       = 1   # ??
 
     # The value of the constant viscosity. Units: \\si{\\pascal\\second}.

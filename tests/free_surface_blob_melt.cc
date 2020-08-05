@@ -188,7 +188,7 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300",
                              Patterns::Double (0),
                              "Reference density $\\rho_0$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293",
                              Patterns::Double (0),
                              "The reference temperature $T_0$. The reference temperature is used "
@@ -226,7 +226,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1250",
                              Patterns::Double (0),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "2e-5",
                              Patterns::Double (0),
                              "The value of the thermal expansion coefficient $\\alpha$. "
@@ -241,7 +241,7 @@ namespace aspect
                              "fields, then the density only depends on the first one in such a way that "
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}/unit change in composition.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
         }
         prm.leave_subsection();
       }

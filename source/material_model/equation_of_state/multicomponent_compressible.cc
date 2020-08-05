@@ -85,7 +85,7 @@ namespace aspect
                            "List of densities for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}");
+                           "Units: \\si{\\kilogram\\per\\meter\\cubed}");
         prm.declare_entry ("Reference isothermal compressibilities", "4e-12",
                            Patterns::List(Patterns::Double (0.)),
                            "List of isothermal compressibilities for background mantle and compositional fields,"
@@ -108,7 +108,7 @@ namespace aspect
                            "List of isochoric specific heats $C_v$ for background mantle and compositional fields,"
                            "for a total of N+1 values, where N is the number of compositional fields."
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}");
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
       }
 
 

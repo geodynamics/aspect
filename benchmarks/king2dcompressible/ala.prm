@@ -74,7 +74,7 @@ subsection Material model
   subsection King model
     set Reference density             = 1
 
-    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}. 
+    # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat       = 1
 
     # The value of the Rayleigh number Ra.

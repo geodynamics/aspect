@@ -238,7 +238,7 @@ namespace aspect
           prm.declare_entry ("Reference density", "3300.",
                              Patterns::Double (0.),
                              "Reference density $\\rho_0$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference temperature", "293.",
                              Patterns::Double (0.),
                              "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
@@ -259,7 +259,7 @@ namespace aspect
           prm.declare_entry ("Reference specific heat", "1250.",
                              Patterns::Double (0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}.");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
           prm.declare_entry ("Thermal expansion coefficient", "4e-5",
                              Patterns::Double (0.),
                              "The value of the thermal expansion coefficient $\\beta$. "
@@ -278,7 +278,7 @@ namespace aspect
                              "fields, then the density only depends on the first one in such a way that "
                              "the density has an additional term of the kind $+\\Delta \\rho \\; c_1(\\mathbf x)$. "
                              "This parameter describes the value of $\\Delta \\rho$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}/unit change in composition.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}/unit change in composition.");
           prm.declare_entry ("Phase transition density jumps", "",
                              Patterns::List (Patterns::Double (0.)),
                              "A list of density jumps at each phase transition. A positive value means "
@@ -286,7 +286,7 @@ namespace aspect
                              "Corresponding phase for density jump determines if the density jump occurs "
                              "in peridotite, eclogite or none of them."
                              "List must have the same number of entries as Phase transition depths. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Corresponding phase for density jump", "",
                              Patterns::List (Patterns::Integer(0)),
                              "A list of phases, which correspond to the Phase transition density jumps. "

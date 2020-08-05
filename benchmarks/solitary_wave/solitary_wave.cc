@@ -478,11 +478,11 @@ namespace aspect
           prm.declare_entry ("Reference solid density", "3000",
                              Patterns::Double (0),
                              "Reference density of the solid $\\rho_{s,0}$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference melt density", "2500",
                              Patterns::Double (0),
                              "Reference density of the melt/fluid$\\rho_{f,0}$. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}.");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
           prm.declare_entry ("Reference shear viscosity", "1e20",
                              Patterns::Double (0),
                              "The value of the constant viscosity $\\eta_0$ of the solid matrix. "

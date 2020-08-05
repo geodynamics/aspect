@@ -319,13 +319,13 @@ namespace aspect
           prm.declare_entry ("Heat capacity", "1.25e3",
                              Patterns::Double(0.),
                              "The value of the specific heat $C_p$. "
-                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilo\\gram}");
+                             "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
           prm.declare_entry ("Densities", "3300.",
                              Patterns::List(Patterns::Double(0.)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
-                             "Units: \\si{\\kilo\\gram\\per\\meter\\cubed}");
+                             "Units: \\si{\\kilogram\\per\\meter\\cubed}");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
                              Patterns::List(Patterns::Double(0.)),
                              "List of thermal expansivities for background mantle and compositional fields, "
