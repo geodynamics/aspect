@@ -1149,13 +1149,6 @@ namespace aspect
   void
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
   {
-    prm.enter_subsection ("Solver parameters");
-    prm.enter_subsection ("Matrix Free");
-    {
-
-    }
-    prm.leave_subsection ();
-    prm.leave_subsection ();
   }
 
 
@@ -1163,13 +1156,6 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
-    prm.enter_subsection ("Solver parameters");
-    prm.enter_subsection ("Matrix Free");
-    {
-
-    }
-    prm.leave_subsection ();
-    prm.leave_subsection ();
   }
 
 
