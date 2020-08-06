@@ -1,0 +1,122 @@
+# A linear problem (copied from sol_cx_4) that crashes when "iterated Newton Stokes" is
+# used an the linear tolerance is reduced.
+
+set Dimension = 2
+
+
+set CFL number                             = 1.0
+
+set End time                               = 0
+
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+set Adiabatic surface temperature          = 0
+
+set Surface pressure                       = 0
+
+set Use years in output instead of seconds = false  # default: true
+
+set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+
+    set Y extent = 1
+
+    set Z extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-9
+  end
+end
+
+subsection Material model
+  set Model name = SolCxMaterial
+  set Material averaging = harmonic average only viscosity
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 4                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+
+subsection Postprocess
+  set List of postprocessors = SolCxPostprocessor
+
+  subsection Depth average
+    set Time between graphical output = 1e8
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+
+    set Output format                 = gnuplot
+
+    set Time between graphical output = 0   # default: 1e8
+  end
+end
+
