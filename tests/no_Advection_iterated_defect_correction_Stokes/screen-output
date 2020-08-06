@@ -1,0 +1,115 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
+
+*** Timestep 0:  t=0 years
+   Initial Newton Stokes residual = 8.98822e+07, v = 8.98822e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 8.98822e+07
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 8.97745e-05, norm of the rhs: 8069.12, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 8.30642e-07, norm of the rhs: 74.6599, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 1:  t=13251 years
+   Initial Newton Stokes residual = 4.51401e+07, v = 4.51401e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1.65396e-06, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 2:  t=26502 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 3:  t=39753 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 4:  t=53003.9 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 5:  t=66254.9 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 6:  t=79505.9 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 7:  t=92756.9 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+*** Timestep 8:  t=100000 years
+   Initial Newton Stokes residual = 2.35296e+09, v = 2.35296e+09, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 3.17302e-08, norm of the rhs: 74.6599
+
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

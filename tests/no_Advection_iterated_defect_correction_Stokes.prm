@@ -1,0 +1,146 @@
+#########################################################
+# This is a model setup to test the iterated Advection and Stokes solver. 
+# Both the calculation of the residuum and the convergence 
+# with prescribed boundary conditions are tested.
+
+set Adiabatic surface temperature          = 0               # default: 0
+set CFL number                             = 0.5
+set Nonlinear solver scheme                = no Advection, iterated defect correction Stokes
+set Max nonlinear iterations               = 10
+
+# The number of space dimensions you want to run this program in.
+set Dimension                              = 2
+
+# The end time of the simulation. Units: years if the 'Use years in output
+# instead of seconds' parameter is set; seconds otherwise.
+# This end time is chosen in such a way that the solitary wave travels
+# approximately 5 times its wavelength during the model time.
+set End time                               = 1e5
+
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+set Resume computation                     = false
+set Start time                             = 0
+
+set Use years in output instead of seconds = true
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 2
+
+  subsection Stabilization parameters
+    set beta  = 0.5
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = porosity
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+  subsection Box
+    set Top temperature = 0 # default: 6000
+    set Bottom temperature = 1  # default: 0
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Geometry model
+  set Model name = box # default: 
+
+  subsection Box
+    set X extent  = 150000
+    set Y extent  = 65000
+    set X repetitions = 2
+  end
+
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
+    set Function expression = d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
+    set Variable names      = x,y
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function constants  = pi=3.1415926,x0=150000,a = 0.2, b = 75000, c = 10000, d=0.0
+    set Function expression = d + a * exp(-((x-b)*(x-b)+y*y)/(2*c*c))
+    set Variable names      = x,y
+  end
+end
+
+
+subsection Material model
+  set Model name = simple 
+  subsection Simple model
+    set Thermal conductivity = 0
+    set Thermal expansion coefficient = 1
+    set Thermal viscosity exponent = 0.0
+    set Reference specific heat = 1.0
+    set Reference density = 1.0
+    set Reference temperature = 0
+    set Viscosity = 1e16
+  end
+end
+
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0                    # default: 2
+  set Initial global refinement                = 4                    # default: 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 2,3
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = 2,3
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+
+subsection Postprocess
+  set List of postprocessors = 
+end
+
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-2
+    set Use direct solver for Stokes system = false
+  end
+end
