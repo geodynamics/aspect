@@ -661,12 +661,10 @@ namespace aspect
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
 
+      // This will initialize the mesh displacement and free surface 
+      // mesh velocity vectors with zero-valued entries.
       mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
-
-      // if we are just starting, we need to initialize the mesh displacement vector.
-      if (!this->simulator_is_past_initialization())
-        mesh_displacements = 0.;
 
       // We would like to make sure that the mesh stays conforming upon
       // redistribution, so we construct mesh_vertex_constraints, which
