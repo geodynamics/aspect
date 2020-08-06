@@ -2010,15 +2010,11 @@ namespace aspect
                            "text `$ASPECT_SOURCE_DIR' which will be interpreted as the path "
                            "in which the ASPECT source files were located when ASPECT was "
                            "compiled. This interpretation allows, for example, to reference "
-                           "files located in the `data/' subdirectory of ASPECT. ");
+                           "files located in the `data/' subdirectory of ASPECT.");
         prm.declare_entry ("Data file name",
                            default_filename,
                            Patterns::Anything (),
-                           "The file name of the model data. Provide file in format: "
-                           "(Velocity file name).\\%s\\%d where \\%s is a string specifying "
-                           "the boundary of the model according to the names of the boundary "
-                           "indicators (of the chosen geometry model).\\%d is any sprintf integer "
-                           "qualifier, specifying the format of the current file number. ");
+                           "The file name of the model data.");
         prm.declare_entry ("Scale factor", "1.",
                            Patterns::Double (),
                            "Scalar factor, which is applied to the model data. "
@@ -2498,6 +2494,14 @@ namespace aspect
 
       prm.enter_subsection (subsection_name);
       {
+        prm.declare_entry ("Data file name",
+                           default_filename,
+                           Patterns::Anything (),
+                           "The file name of the model data. Provide file in format: "
+                           "(File name).\\%s\\%d, where \\%s is a string specifying "
+                           "the boundary of the model according to the names of the boundary "
+                           "indicators (of the chosen geometry model), and \\%d is any sprintf "
+                           "integer qualifier specifying the format of the current file number.");
         prm.declare_entry ("Data file time step", "1e6",
                            Patterns::Double (0.),
                            "Time step between following data files. "
