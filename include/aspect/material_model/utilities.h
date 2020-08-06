@@ -164,6 +164,7 @@ namespace aspect
             double max_temp;
             unsigned int n_temperature;
             unsigned int n_pressure;
+            unsigned int n_columns;
             bool interpolation;
         };
 
