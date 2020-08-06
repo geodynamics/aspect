@@ -100,16 +100,10 @@ namespace aspect
             // If the property has dim components, we treat it as vector
             if (n_components == dim)
               {
-#if DEAL_II_VERSION_GTE(9,1,0)
                 vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
                                                           property_index_to_output_index[field_position]+n_components-1,
                                                           field_name,
                                                           DataComponentInterpretation::component_is_part_of_vector));
-#else
-                vector_datasets.push_back(std::make_tuple(property_index_to_output_index[field_position],
-                                                          property_index_to_output_index[field_position]+n_components-1,
-                                                          field_name));
-#endif
               }
           }
 
@@ -153,7 +147,6 @@ namespace aspect
         return dataset_names;
       }
 
-#if DEAL_II_VERSION_GTE(9,1,0)
       template <int dim>
       std::vector<
       std::tuple<unsigned int,
@@ -163,15 +156,6 @@ namespace aspect
       {
         return vector_datasets;
       }
-#else
-      template <int dim>
-      std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-      ParticleOutput<dim>::get_vector_data_ranges () const
-      {
-        return vector_datasets;
-      }
-#endif
-
     }
 
     template <int dim>
