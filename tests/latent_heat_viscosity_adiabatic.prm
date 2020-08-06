@@ -1,5 +1,5 @@
 # A modification of the latent heat viscosity test, but with adiabatic heating. 
-# It tests that the viscosity of th different layers is constant. 
+# It tests that the viscosity of the different layers is constant. 
 # The gnuplot output illustrates the viscosity increase at 410 and 660 km depth.
 
 set Dimension                              = 2
