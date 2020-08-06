@@ -455,8 +455,8 @@ namespace aspect
       {
         AssertThrow(false, ExcMessage("Cannot open snapshot mesh file or read the triangulation stored there."));
       }
-    global_volume = GridTools::volume (triangulation, *mapping);
     setup_dofs();
+    global_volume = GridTools::volume (triangulation, *mapping);
 
     LinearAlgebra::BlockVector
     distributed_system (system_rhs);
