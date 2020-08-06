@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
@@ -15,6 +11,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 8.98822e+07
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -22,6 +19,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 8.97745e-05, norm of the rhs: 8069.12, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.97745e-05
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -29,6 +27,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 8.30642e-07, norm of the rhs: 74.6599, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.30642e-07
 
 
    Postprocessing:
@@ -42,6 +41,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.131943, norm of the rhs: 6.01063e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.131943
 
    Solving temperature system... 12 iterations.
    Solving porosity system ... 10 iterations.
@@ -49,6 +49,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 7.19876e-05, norm of the rhs: 3279.38, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00402664
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 9 iterations.
@@ -56,195 +57,289 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 7.13208e-06, norm of the rhs: 324.9, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000771627
+
+   Solving temperature system... 10 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 5.98755e-05, 2.97181e-05
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 4.79847e-07, norm of the rhs: 21.8593, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.98755e-05
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 4.51153e-06, 1.99485e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 5.58154e-08, norm of the rhs: 2.54266, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 4.51153e-06
 
 
    Postprocessing:
 
-*** Timestep 2:  t=26110.3 years
+*** Timestep 2:  t=26110 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0238529, 0.0169642
-   Initial Newton Stokes residual = 4.59708e+07, v = 4.59708e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0238436, 0.0169551
+   Initial Newton Stokes residual = 4.59713e+07, v = 4.59713e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0286804, norm of the rhs: 1.31846e+06
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0286639, norm of the rhs: 1.31772e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0286639
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0010457, 0.000399892
+      Relative nonlinear residuals (temperature, compositional fields): 0.00104398, 0.000399086
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.56674e-05, norm of the rhs: 1639.66, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.56317e-05, norm of the rhs: 1638.03, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00104398
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000203609, 9.09457e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.00020323, 9.06977e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 2.17645e-06, norm of the rhs: 100.053, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 2.1712e-06, norm of the rhs: 99.813, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00020323
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 8.30161e-06, 3.84394e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.09575e-07, norm of the rhs: 5.0373, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 8.30161e-06
 
 
    Postprocessing:
 
-*** Timestep 3:  t=38522.8 years
+*** Timestep 3:  t=38522.2 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0138251, 0.00625266
-   Initial Newton Stokes residual = 4.63483e+07, v = 4.63483e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0138163, 0.00624643
+   Initial Newton Stokes residual = 4.63489e+07, v = 4.63489e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0184104, norm of the rhs: 853291
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0183949, norm of the rhs: 852583
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0183949
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.00049324, 0.000111251
+      Relative nonlinear residuals (temperature, compositional fields): 0.000492633, 0.000111039
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.38992e-05, norm of the rhs: 2498.14, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.38227e-05, norm of the rhs: 2494.63, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000492633
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000284635, 0.0001469
+      Relative nonlinear residuals (temperature, compositional fields): 0.00028438, 0.000146651
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 2.63825e-06, norm of the rhs: 122.279, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 2.63504e-06, norm of the rhs: 122.131, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.00028438
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 6.18781e-06, 2.95495e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 8.43483e-08, norm of the rhs: 3.90946, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.18781e-06
 
 
    Postprocessing:
 
-*** Timestep 4:  t=50507.9 years
+*** Timestep 4:  t=50507 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0150869, 0.00661229
-   Initial Newton Stokes residual = 4.68081e+07, v = 4.68081e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0150815, 0.00660998
+   Initial Newton Stokes residual = 4.68088e+07, v = 4.68088e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0205559, norm of the rhs: 962181
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0205458, norm of the rhs: 961724
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0205458
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000465069, 0.000117682
+      Relative nonlinear residuals (temperature, compositional fields): 0.00046476, 0.000117539
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.26125e-05, norm of the rhs: 2462.69, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.25834e-05, norm of the rhs: 2461.37, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00046476
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000114039, 6.14343e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000113923, 6.13478e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.34642e-06, norm of the rhs: 63.0235, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.34491e-06, norm of the rhs: 62.9534, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000113923
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 5.95842e-06, 2.27793e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 6.34257e-08, norm of the rhs: 2.96888, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.95842e-06
 
 
    Postprocessing:
 
-*** Timestep 5:  t=62101.2 years
+*** Timestep 5:  t=62100 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0158116, 0.00760329
-   Initial Newton Stokes residual = 4.72897e+07, v = 4.72897e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0158072, 0.00760234
+   Initial Newton Stokes residual = 4.72906e+07, v = 4.72906e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.021855, norm of the rhs: 1.03352e+06
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0218474, norm of the rhs: 1.03318e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0218474
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000491925, 0.000111117
+      Relative nonlinear residuals (temperature, compositional fields): 0.000491768, 0.00011106
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.87334e-05, norm of the rhs: 2777.49, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.87203e-05, norm of the rhs: 2776.92, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000491768
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000126887, 5.18717e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000126862, 5.1839e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.47259e-06, norm of the rhs: 69.6384, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.47228e-06, norm of the rhs: 69.6249, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000126862
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 6.61803e-06, 2.36199e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.03475e-07, norm of the rhs: 4.89337, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.61803e-06
 
 
    Postprocessing:
 
-*** Timestep 6:  t=73013 years
+*** Timestep 6:  t=73010.9 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0154447, 0.00778737
-   Initial Newton Stokes residual = 4.78003e+07, v = 4.78003e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.015439, 0.00778626
+   Initial Newton Stokes residual = 4.78013e+07, v = 4.78013e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0219537, norm of the rhs: 1.04939e+06
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0219446, norm of the rhs: 1.04898e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0219446
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000484941, 0.000104454
+      Relative nonlinear residuals (temperature, compositional fields): 0.000484675, 0.000104381
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.00486e-05, norm of the rhs: 2870.34, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.00268e-05, norm of the rhs: 2869.36, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000484675
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000128242, 4.45494e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000128185, 4.45152e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.54611e-06, norm of the rhs: 73.9043, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.54542e-06, norm of the rhs: 73.873, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000128185
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 6.49423e-06, 2.21696e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 1.02394e-07, norm of the rhs: 4.89459, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.49423e-06
 
 
    Postprocessing:
 
-*** Timestep 7:  t=83270.3 years
+*** Timestep 7:  t=83267.4 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.0151164, 0.00759597
-   Initial Newton Stokes residual = 4.84302e+07, v = 4.84302e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0151111, 0.00759493
+   Initial Newton Stokes residual = 4.84316e+07, v = 4.84316e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0219887, norm of the rhs: 1.06492e+06
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0219797, norm of the rhs: 1.06452e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0219797
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000454885, 9.83957e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000454577, 9.83253e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.17207e-05, norm of the rhs: 2989.15, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.17009e-05, norm of the rhs: 2988.28, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000454577
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000113339, 4.02957e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000113269, 4.02676e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.49323e-06, norm of the rhs: 72.3174, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.4924e-06, norm of the rhs: 72.2792, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 0.000113269
+
+   Solving temperature system... 9 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 5.59138e-06, 1.9105e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 9.07277e-08, norm of the rhs: 4.39409, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 5.59138e-06
 
 
    Postprocessing:
 
-*** Timestep 8:  t=92952.1 years
+*** Timestep 8:  t=92948.5 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.015237, 0.00733372
-   Initial Newton Stokes residual = 4.92929e+07, v = 4.92929e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0152322, 0.00733282
+   Initial Newton Stokes residual = 4.92949e+07, v = 4.92949e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0220711, norm of the rhs: 1.08795e+06
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0220622, norm of the rhs: 1.08755e+06
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0220622
 
    Solving temperature system... 11 iterations.
    Solving porosity system ... 10 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000411672, 9.35286e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.000411352, 9.34637e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.25072e-05, norm of the rhs: 3081.16, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.24835e-05, norm of the rhs: 3080.11, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000411352
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 9.20893e-05, 3.72681e-05
+      Relative nonlinear residuals (temperature, compositional fields): 9.20205e-05, 3.72442e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.37173e-06, norm of the rhs: 67.6164, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.37086e-06, norm of the rhs: 67.5765, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 9.20205e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 8 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 4.40943e-06, 1.55692e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 4.99467e-08, norm of the rhs: 2.46212, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 4.40943e-06
 
 
    Postprocessing:
@@ -252,26 +347,37 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 *** Timestep 9:  t=100000 years
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.010299, 0.00479755
-   Initial Newton Stokes residual = 5.01641e+07, v = 5.01641e+07, p = 0
+      Relative nonlinear residuals (temperature, compositional fields): 0.0103042, 0.00480102
+   Initial Newton Stokes residual = 5.01671e+07, v = 5.01671e+07, p = 0
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0147203, norm of the rhs: 738431
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.014726, norm of the rhs: 738760
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.014726
 
    Solving temperature system... 10 iterations.
    Solving porosity system ... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 0.000149003, 4.33485e-05
+      Relative nonlinear residuals (temperature, compositional fields): 0.00014906, 4.33809e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 7.65835e-05, norm of the rhs: 3841.74, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 7.66035e-05, norm of the rhs: 3842.98, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00014906
 
    Solving temperature system... 9 iterations.
    Solving porosity system ... 8 iterations.
-      Relative nonlinear residuals (temperature, compositional fields): 6.96591e-05, 2.75427e-05
+      Relative nonlinear residuals (temperature, compositional fields): 6.96998e-05, 2.75555e-05
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.29592e-06, norm of the rhs: 65.0085, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 1.29624e-06, norm of the rhs: 65.0287, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.96998e-05
+
+   Solving temperature system... 8 iterations.
+   Solving porosity system ... 7 iterations.
+      Relative nonlinear residuals (temperature, compositional fields): 2.79889e-06, 1.39291e-06
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 4.84022e-08, norm of the rhs: 2.4282, newton_derivative_scaling_factor: 0
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 2.79889e-06
 
 
    Postprocessing:
@@ -279,9 +385,4 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
