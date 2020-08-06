@@ -156,6 +156,9 @@ namespace aspect
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
 
+            std::vector<std::string> phase_names;
+            std::vector<dealii::Table<2,double>> phase_volume_fractions;
+
             double delta_press;
             double min_press;
             double max_press;
@@ -164,6 +167,7 @@ namespace aspect
             double max_temp;
             unsigned int n_temperature;
             unsigned int n_pressure;
+            unsigned int n_phases;
             unsigned int n_columns;
             bool interpolation;
         };

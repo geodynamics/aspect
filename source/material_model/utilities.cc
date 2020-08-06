@@ -538,7 +538,8 @@ namespace aspect
           // column i in text file -> column j in properties
           // Properties are stored in the order rho, alpha, cp, vp, vs, h
           std::vector<int> prp_indices(6, -1);
-
+          std::vector<int> phase_indices;
+          n_phases = 0;
           for (unsigned int n=0; n<n_columns; n++)
             {
               std::string label;
@@ -555,6 +556,15 @@ namespace aspect
                 prp_indices[4] = n;
               else if (label == "h,J/kg")
                 prp_indices[5] = n;
+              else if (label.length() > 3)
+                {
+                  if (label.substr(0,4).compare("vol_") == 0)
+                    {
+                      phase_indices.push_back(n);
+                      phase_names.push_back(label.substr(4)); // reads to the end of the label
+                      n_phases++;
+                    }
+                }
             }
           AssertThrow(std::all_of(prp_indices.begin(), prp_indices.end(), [](int i)
           {
@@ -582,6 +592,12 @@ namespace aspect
           vp_values.reinit(n_temperature,n_pressure);
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
+
+          phase_volume_fractions.resize(n_phases);
+          for (unsigned int n=0; n<n_phases; n++)
+            {
+              phase_volume_fractions[n].reinit(n_temperature,n_pressure);
+            }
 
           unsigned int i = 0;
           std::vector<double> previous_row_values(n_columns, 0.);
@@ -625,6 +641,10 @@ namespace aspect
               vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
               enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
 
+              for (unsigned int n=0; n<n_phases; n++)
+                {
+                  phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_indices[n]];
+                }
               i++;
             }
           AssertThrow(i == n_temperature*n_pressure, ExcMessage("Material table size not consistent with header."));
