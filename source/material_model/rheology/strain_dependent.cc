@@ -354,7 +354,7 @@ namespace aspect
             }
           }
 
-        std::array<double, 3> weakening_factors = {brittle_weakening.first,brittle_weakening.second,viscous_weakening};
+        const std::array<double, 3> weakening_factors = {{brittle_weakening.first,brittle_weakening.second,viscous_weakening}};
 
         return weakening_factors;
 
