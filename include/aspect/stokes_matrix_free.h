@@ -46,7 +46,7 @@
 /**
  * Typedef for the number type for the multigrid operators. Can be either float or double.
  */
-using GMGNumberType = float;
+using GMGNumberType = double;
 
 namespace aspect
 {
