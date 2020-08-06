@@ -473,28 +473,46 @@ namespace aspect
           std::istringstream in(Utilities::read_and_distribute_file_content(filename, comm));
 
           // The following lines read in a PerpleX tab file in standard format
-          std::getline(in, temp); // eat first line, PerpleX version number
-          std::getline(in, temp); // eat next line, table file name
-          std::getline(in, temp); // eat next line, dimension of table
-          std::getline(in, temp); // eat next line, the string T(K)
+          // First line is the Perplex version number
+          std::getline(in, temp); // get next line, table file name
+          std::getline(in, temp); // get next line, dimension of table
+          std::getline(in, temp); // get next line, either T(K) or P(bar)
 
-          in >> min_temp;
-          std::getline(in, temp);
-          in >> delta_temp;
-          std::getline(in, temp);
-          in >> n_temperature;
-          std::getline(in, temp); // eat next line, the string P(bar)
-          std::getline(in, temp);
-          in >> min_press;
-          min_press *= 1e5;  // conversion from [bar] to [Pa]
-          std::getline(in, temp);
-          in >> delta_press;
-          delta_press *= 1e5; // conversion from [bar] to [Pa]
-          std::getline(in, temp);
-          in >> n_pressure;
-          std::getline(in, temp); // eat next line, number of columns
+          for (unsigned int i=0; i<2; i++)
+            {
+              std::string natural_variable;
+              in >> natural_variable;
+
+              if (natural_variable[0] == 'T')
+                {
+                  std::getline(in, temp);
+                  in >> min_temp;
+                  std::getline(in, temp);
+                  in >> delta_temp;
+                  std::getline(in, temp);
+                  in >> n_temperature;
+                  std::getline(in, temp); // get next line, either T(K), P(bar) or number of columns
+                }
+              else if (natural_variable[0] == 'P')
+                {
+                  std::getline(in, temp);
+                  in >> min_press;
+                  min_press *= 1e5;  // conversion from [bar] to [Pa]
+                  std::getline(in, temp);
+                  in >> delta_press;
+                  delta_press *= 1e5; // conversion from [bar] to [Pa]
+                  std::getline(in, temp);
+                  in >> n_pressure;
+                  std::getline(in, temp); // get next line, either T(K), P(bar) or number of columns
+                }
+              else
+                {
+                  AssertThrow (false, ExcMessage("The start of the PerpleX file does not have the expected format."));
+                }
+            }
+
           in >> n_columns;
-          std::getline(in, temp); // eat next line, column labels
+          std::getline(in, temp); // get next line, column labels
 
           // here we string match to assign properties to columns
           // column i in text file -> column j in properties
