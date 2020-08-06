@@ -376,12 +376,12 @@ namespace aspect
                                                 eta * 2.0 * (scratch.grads_phi_u[i] * scratch.grads_phi_u[j])
                                                 // assemble \nabla p as -(p, div v):
                                                 - (pressure_scaling *
-                                                   scratch.div_phi_u[i] * scratch.phi_p[j])
+                                                   (scratch.div_phi_u[i] * scratch.phi_p[j]))
                                                 // assemble the term -div(u) as -(div u, q).
                                                 // Note the negative sign to make this
                                                 // operator adjoint to the grad p term:
                                                 - (pressure_scaling *
-                                                   scratch.phi_p[i] * scratch.div_phi_u[j]))
+                                                   (scratch.phi_p[i] * scratch.div_phi_u[j])))
                                               * JxW;
                   }
 
@@ -423,8 +423,8 @@ namespace aspect
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
                             data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j]
-                                                                                             + scratch.grads_phi_u[j] * deta_deps_times_eps_times_phi[i])
-                                                        + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * scratch.grads_phi_u[i] * strain_rate )
+                                                                                             + (scratch.grads_phi_u[j] * deta_deps_times_eps_times_phi[i]))
+                                                        + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * (scratch.grads_phi_u[i] * strain_rate) )
                                                       * JxW;
 
                             Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
@@ -439,7 +439,7 @@ namespace aspect
                         for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
                           {
                             data.local_matrix(i,j) += ( derivative_scaling_factor * alpha * 2.0 * (scratch.grads_phi_u[i] * deta_deps_times_eps_times_phi[j])
-                                                        + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * scratch.grads_phi_u[i] * strain_rate )
+                                                        + derivative_scaling_factor * pressure_scaling * 2.0 * viscosity_derivative_wrt_pressure * scratch.phi_p[j] * (scratch.grads_phi_u[i] * strain_rate) )
                                                       * JxW;
 
                             Assert(dealii::numbers::is_finite(data.local_matrix(i,j)),
