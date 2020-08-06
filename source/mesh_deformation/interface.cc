@@ -661,7 +661,7 @@ namespace aspect
       DoFTools::extract_locally_relevant_dofs (mesh_deformation_dof_handler,
                                                mesh_locally_relevant);
 
-      // This will initialize the mesh displacement and free surface 
+      // This will initialize the mesh displacement and free surface
       // mesh velocity vectors with zero-valued entries.
       mesh_displacements.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
