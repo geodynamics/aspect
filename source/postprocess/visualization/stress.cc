@@ -30,6 +30,14 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      Stress<dim>::
+      Stress ()
+        :
+        DataPostprocessorTensor<dim> ("stress",
+                                      update_values | update_gradients | update_quadrature_points)
+      {}
+
+      template <int dim>
       void
       Stress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -37,7 +45,7 @@ namespace aspect
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert ((computed_quantities[0].size() == SymmetricTensor<2,dim>::n_independent_components),
+        Assert ((computed_quantities[0].size() == Tensor<2,dim>::n_independent_components),
                 ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
@@ -65,67 +73,17 @@ namespace aspect
 
             const SymmetricTensor<2,dim> stress = 2*eta*compressible_strain_rate +
                                                   in.pressure[q] * unit_symmetric_tensor<dim>();
-            for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
-              computed_quantities[q](i) = stress[stress.unrolled_to_component_indices(i)];
+            for (unsigned int d=0; d<dim; ++d)
+              for (unsigned int e=0; e<dim; ++e)
+                computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
+                  = stress[d][e];
           }
 
         // average the values if requested
         const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
         if (!viz.output_pointwise_stress_and_strain())
           average_quantities(computed_quantities);
-
       }
-
-
-      template <int dim>
-      std::vector<std::string>
-      Stress<dim>::get_names () const
-      {
-        std::vector<std::string> names;
-        switch (dim)
-          {
-            case 2:
-              names.emplace_back("stress_xx");
-              names.emplace_back("stress_yy");
-              names.emplace_back("stress_xy");
-              break;
-
-            case 3:
-              names.emplace_back("stress_xx");
-              names.emplace_back("stress_yy");
-              names.emplace_back("stress_zz");
-              names.emplace_back("stress_xy");
-              names.emplace_back("stress_xz");
-              names.emplace_back("stress_yz");
-              break;
-
-            default:
-              Assert (false, ExcNotImplemented());
-          }
-
-        return names;
-      }
-
-
-      template <int dim>
-      std::vector<DataComponentInterpretation::DataComponentInterpretation>
-      Stress<dim>::get_data_component_interpretation () const
-      {
-        return
-          std::vector<DataComponentInterpretation::DataComponentInterpretation>
-          (SymmetricTensor<2,dim>::n_independent_components,
-           DataComponentInterpretation::component_is_scalar);
-      }
-
-
-
-      template <int dim>
-      UpdateFlags
-      Stress<dim>::get_needed_update_flags () const
-      {
-        return update_gradients | update_values | update_quadrature_points;
-      }
-
     }
   }
 }
