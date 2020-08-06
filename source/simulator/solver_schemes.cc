@@ -438,9 +438,7 @@ namespace aspect
     // cases, just assembling the RHS will be incorrect.  If no active
     // boundaries exist, we only have no-slip or free slip conditions, so we
     // don't need to force assembly of the matrix.
-    if ((nonlinear_iteration == 0 && time_step == 0)
-        ||
-        stokes_matrix_depends_on_solution()
+    if (stokes_matrix_depends_on_solution()
         ||
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
