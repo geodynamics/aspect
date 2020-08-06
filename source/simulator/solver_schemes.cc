@@ -689,7 +689,6 @@ namespace aspect
 
     dcr.residual_old = dcr.residual;
 
-    pcout << std::endl;
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
   }
@@ -787,6 +786,8 @@ namespace aspect
 
         assemble_and_solve_defect_correction_Stokes(dcr, true);
 
+        pcout << std::endl;
+
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
@@ -839,6 +840,8 @@ namespace aspect
       {
 
         assemble_and_solve_defect_correction_Stokes(dcr, true);
+
+        pcout << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
@@ -1170,6 +1173,8 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
         relative_residual = dcr.residual/dcr.initial_residual;
 
+        pcout << std::endl;
+
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
             // Before postprocessing, we need to copy the actual solution into the solution vector
@@ -1271,6 +1276,8 @@ namespace aspect
 
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
+        pcout << std::endl;
+        
         relative_residual = dcr.residual/dcr.initial_residual;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
