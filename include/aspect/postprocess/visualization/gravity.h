@@ -35,7 +35,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       /**
-       * A class derived from DataPostprocessor that outputs the gravity.
+       * A class derived from DataPostprocessorVector that outputs the gravity
+       * as a vector field.
        */
       template <int dim>
       class Gravity
