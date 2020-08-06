@@ -1,0 +1,83 @@
+# A copy of free_surface_tangential_mesh_velocity that has tangential
+# mesh velocity constraints on the same boundary as prescribed constraints
+# (in this case a free surface).
+
+set Dimension                              = 2
+set End time                               = 1e6
+set Use years in output instead of seconds = true
+set Output directory                       = output
+set Adiabatic surface temperature          = 1613
+set CFL number                             = 1.0
+set Pressure normalization                 = no
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2e5
+    set X repetitions = 2
+    set Y extent = 1e5
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: free surface
+    set Additional tangential mesh velocity boundary indicators = left,right, top
+  subsection Free surface
+    set Free surface stabilization theta = 0.5
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = function
+
+  subsection Function
+    set Function expression = if(y<5e4,1613,273)
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+  subsection Function
+    set Function expression = if(x>0, 1e-2 , -1e-2); 0
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.8
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density     = 3300
+    set Thermal conductivity  = 3.3
+    set Thermal expansion coefficient  = 3e-5
+    set Reference specific heat        = 1200
+    set Viscosity             = 1e21
+    set Reference temperature = 1600
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+  set Strategy                           = strain rate, topography
+end
+
+subsection Postprocess
+  set List of postprocessors = topography
+end

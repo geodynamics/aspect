@@ -1,0 +1,14 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Minimum topography (m)
+# 12: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145  0 34 36 35  0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+06 1.000000000000e+06 512 4851 2145 26 33 35 35 -2.03657255e-05 8.60566797e-06 
