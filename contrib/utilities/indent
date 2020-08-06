@@ -24,7 +24,7 @@
 find_astyle() {
   IFS=':' read -r -a PATHS <<< "$PATH"
 
-  astyle=""
+  astyle="`which astyle`"
   while IFS= read -r -d '' exe; do
     astyle="${exe}"
     if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 2.04" ; then
