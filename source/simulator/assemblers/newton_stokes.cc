@@ -268,11 +268,20 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
-      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
-      const MaterialModel::ElasticOutputs<dim>
-      *elastic_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
+      const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
+
+      const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
+                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()
+                                                                            :
+                                                                            nullptr;
+
+      const bool enable_elasticity = this->get_parameters().enable_elasticity;
+
+      const MaterialModel::ElasticOutputs<dim> *elastic_outputs = enable_elasticity ?
+                                                                  scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()
+                                                                  :
+                                                                  nullptr;
 
       const MaterialModel::PrescribedPlasticDilation<dim>
       *prescribed_dilation =
@@ -328,16 +337,16 @@ namespace aspect
                                     -(density * gravity * scratch.phi_u[i]))
                                    * JxW;
 
-              if (force != nullptr && this->get_parameters().enable_additional_stokes_rhs)
+              if (enable_additional_stokes_rhs)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
                                       + pressure_scaling * force->rhs_p[q] * scratch.phi_p[i])
                                      * JxW;
 
-              if (elastic_outputs != nullptr && this->get_parameters().enable_elasticity)
+              if (enable_elasticity)
                 data.local_rhs(i) += (scalar_product(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 
-              if (prescribed_dilation != nullptr)
+              if (enable_additional_stokes_rhs)
                 data.local_rhs(i) += (
                                        // RHS of - (div u,q) = - (R,q)
                                        - pressure_scaling
@@ -347,7 +356,7 @@ namespace aspect
 
               // Only assemble this term if we are running incompressible, otherwise this term
               // is already included on the LHS of the equation.
-              if (prescribed_dilation != nullptr && !material_model_is_compressible)
+              if (enable_additional_stokes_rhs && !material_model_is_compressible)
                 data.local_rhs(i) += (
                                        // RHS of momentum eqn: - \int 2/3 eta R, div v
                                        - 2.0 / 3.0 * eta
