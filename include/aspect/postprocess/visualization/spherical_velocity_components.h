@@ -65,9 +65,6 @@ namespace aspect
            */
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
           get_data_component_interpretation () const override;
-
-
-
       };
     }
   }
