@@ -1147,14 +1147,14 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   void
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &/*prm*/)
   {
   }
 
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
+  void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &/*prm*/)
   {
   }
 
