@@ -12507,9 +12507,9 @@ will bring you to a new page, where you have to go to the ``Artifacts'' tab in t
 right corner. Depending on the tester, the file might be called \texttt{changes-gcc.diff}
 or \texttt{changes-test-results.diff}). To use this file to update your test output, you
 will have to download it and put it into your top-level \aspect{} directory. There you
-can apply the .diff file using the program patch:
+can apply the .diff file using:
 \begin{lstlisting}[frame=single,language=ksh]
-  patch -p1 < changes-test-results.diff
+  git apply changes-test-results.diff
 \end{lstlisting}
 This will update your test output so that it matches the results from the official tester.
 
