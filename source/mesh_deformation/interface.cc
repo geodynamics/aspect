@@ -665,7 +665,7 @@ namespace aspect
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
       // if we are just starting, we need to initialize the mesh displacement vector.
-      if (this->get_timestep_number() == 0)
+      if (!sim.simulator_is_past_initialization)
         mesh_displacements = 0.;
 
       // We would like to make sure that the mesh stays conforming upon
