@@ -1394,7 +1394,7 @@ namespace aspect
                 active_viscosity_table(cell, 0)[i] = active_viscosity_vector(local_dof_indices[0]);
               else
                 {
-                  // For DGQ1, project back to quadrature point vaues
+                  // For DGQ1, project back to quadrature point values
                   fe_values_projection.reinit(DG_cell);
                   fe_values_projection.get_function_values(active_viscosity_vector,
                                                            local_dof_indices,
@@ -1504,9 +1504,6 @@ namespace aspect
 
     stokes_matrix.initialize_dof_vector(rhs_correction);
     stokes_matrix.initialize_dof_vector(u0);
-
-    rhs_correction.collect_sizes();
-    u0.collect_sizes();
 
     u0 = 0;
     rhs_correction = 0;
@@ -1784,10 +1781,6 @@ namespace aspect
         stokes_matrix.initialize_dof_vector(initial_copy);
         stokes_matrix.initialize_dof_vector(rhs_copy);
 
-        solution_copy.collect_sizes();
-        initial_copy.collect_sizes();
-        rhs_copy.collect_sizes();
-
         internal::ChangeVectorTypes::copy(solution_copy,distributed_stokes_solution);
         internal::ChangeVectorTypes::copy(initial_copy,linearized_stokes_initial_guess);
         internal::ChangeVectorTypes::copy(rhs_copy,distributed_stokes_rhs);
@@ -1843,9 +1836,6 @@ namespace aspect
 
     stokes_matrix.initialize_dof_vector(solution_copy);
     stokes_matrix.initialize_dof_vector(rhs_copy);
-
-    solution_copy.collect_sizes();
-    rhs_copy.collect_sizes();
 
     internal::ChangeVectorTypes::copy(solution_copy,distributed_stokes_solution);
     internal::ChangeVectorTypes::copy(rhs_copy,distributed_stokes_rhs);
