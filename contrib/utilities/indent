@@ -23,15 +23,14 @@
 
 find_astyle() {
   IFS=':' read -r -a PATHS <<< "$PATH"
-  options=$(find "${PATHS[@]}" -iname '*astyle*' 2> /dev/null)
-  astyle=""
 
-  for exe in ${options}; do
+  astyle=""
+  while IFS= read -r -d '' exe; do
     astyle="${exe}"
     if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 2.04" ; then
       break
     fi
-  done
+  done < <(find "${PATHS[@]}" -iname '*astyle*' -print0 2>/dev/null)
 
   echo "${astyle}"
 }
