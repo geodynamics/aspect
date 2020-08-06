@@ -1277,7 +1277,7 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
         pcout << std::endl;
-        
+
         relative_residual = dcr.residual/dcr.initial_residual;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)

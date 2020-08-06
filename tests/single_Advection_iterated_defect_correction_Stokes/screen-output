@@ -1,0 +1,208 @@
+
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Initial Newton Stokes residual = 8.98822e+07, v = 8.98822e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 8.98822e+07
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 8.97745e-05, norm of the rhs: 8069.12, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 8.30642e-07, norm of the rhs: 74.6599, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 1:  t=13251 years
+   Solving temperature system... 14 iterations.
+   Solving porosity system ... 11 iterations.
+   Initial Newton Stokes residual = 4.55548e+07, v = 4.55548e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.131943, norm of the rhs: 6.01063e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 7.85167e-05, norm of the rhs: 3576.81, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 7.76241e-07, norm of the rhs: 35.3615, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 2:  t=26136.7 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.59293e+07, v = 4.59293e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0300829, norm of the rhs: 1.38168e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.31806e-05, norm of the rhs: 1523.96, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 2.7419e-07, norm of the rhs: 12.5933, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 3:  t=38584.2 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.62984e+07, v = 4.62984e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0198092, norm of the rhs: 917135
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.72643e-05, norm of the rhs: 2651.25, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.35823e-07, norm of the rhs: 20.1779, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 4:  t=50605.6 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.67525e+07, v = 4.67525e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0214232, norm of the rhs: 1.00159e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.22906e-05, norm of the rhs: 2444.72, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.1199e-07, norm of the rhs: 19.2616, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 5:  t=62234.1 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.72245e+07, v = 4.72245e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0225198, norm of the rhs: 1.06349e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.79498e-05, norm of the rhs: 2736.65, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.46152e-07, norm of the rhs: 21.0693, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 6:  t=73225 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.77163e+07, v = 4.77163e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0227452, norm of the rhs: 1.08532e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 5.92052e-05, norm of the rhs: 2825.05, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.39307e-07, norm of the rhs: 20.9621, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 7:  t=83553.7 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.83119e+07, v = 4.83119e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0228268, norm of the rhs: 1.10281e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.05067e-05, norm of the rhs: 2923.19, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.34559e-07, norm of the rhs: 20.9944, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 8:  t=93302.1 years
+   Solving temperature system... 13 iterations.
+   Solving porosity system ... 12 iterations.
+   Initial Newton Stokes residual = 4.91279e+07, v = 4.91279e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0229566, norm of the rhs: 1.12781e+06
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.18426e-05, norm of the rhs: 3038.2, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 4.51617e-07, norm of the rhs: 22.187, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+*** Timestep 9:  t=100000 years
+   Solving temperature system... 12 iterations.
+   Solving porosity system ... 11 iterations.
+   Initial Newton Stokes residual = 4.99014e+07, v = 4.99014e+07, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.0142212, norm of the rhs: 709657
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 8.40667e-05, norm of the rhs: 4195.05, newton_derivative_scaling_factor: 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 7.30428e-07, norm of the rhs: 36.4494, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+
