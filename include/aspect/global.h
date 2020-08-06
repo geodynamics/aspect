@@ -49,25 +49,25 @@ namespace aspect
     /**
      * Number of seconds in a year [s]
      */
-    extern const double year_in_seconds;
+    constexpr double year_in_seconds = 60*60*24*365.2425;
 
     /**
      * Zero degrees Celsius to Kelvin [K]
      */
-    extern const double celsius_to_kelvin;
+    constexpr double celsius_to_kelvin = 273.15;
 
     /**
      * Gas constant (also known as R) [J K^-1 mol^-1]
      */
-    extern const double gas_constant;
+    constexpr double gas_constant = 8.3144621;
     /**
      * Avogadro's constant [mol^-1]
      */
-    extern const double avogadro;
+    constexpr double avogadro = 6.02214129e23;
     /**
      * Gravitational constant [m^3 kg^-1 s^-2]
      */
-    extern const double big_g;
+    constexpr double big_g = 6.67384e-11;
 
     /**
      * Constants for Earth:
@@ -83,94 +83,93 @@ namespace aspect
         /**
          * Planet mass [kg]
          */
-        extern const double planet;
+        constexpr double planet = 5.9736e24;
         /**
          * Mass of the whole core [kg]
          */
-        extern const double core;
+        constexpr double core = 1.932e24;
         /**
          * Mass of the mantle [kg]
          */
-        extern const double mantle;
+        constexpr double mantle = 4.043e24;
       }
 
       /**
-       * Earth structure radii taken from the IASP91 model:
+       * Earth structure radii taken from the IASP91 model
        */
       namespace iasp91_radii
       {
         /**
          * Inner core radius [m], equivalent of 5150 km depth
          */
-        extern const double inner_core;
+        constexpr double inner_core = 1.2171e6;
         /**
          * Inner core radius [m], equivalent of 2889 km depth
          */
-        extern const double core;
+        constexpr double core = 3.482e6;
         /**
          * Lower mantle radius [m], equivalent of 660 km depth
          */
-        extern const double lower_mantle;
+        constexpr double lower_mantle = 5.711e6;
         /**
          * Radius [m], equivalent of 5150 km depth
          */
-        extern const double planet;
+        constexpr double planet = 6.371e6;
       }
 
       /**
-       * Gravity values taken from the PREM (Dziewonski and Anderson, 1981):
+       * Gravity values taken from the PREM (Dziewonski and Anderson, 1981)
        */
       namespace prem_gravity
       {
         /**
          * Inner core boundary gravity [ms^-2]
          */
-        extern const double icb;
+        constexpr double icb = 4.4002;
         /**
          * Core-mantle boundary gravity [ms^-2]
          */
-        extern const double cmb;
+        constexpr double cmb = 10.6823;
         /**
          * Upper-lower mantle boundary gravity [ms^-2]
          */
-        extern const double ulmb;
+        constexpr double ulmb = 10.0143;
         /**
          * Surface gravity [ms^-2]
          */
-        extern const double surface;
+        constexpr double surface = 9.8156;
       }
 
       /**
-       * "Standard gravity" (average gravitational acceleration at surface
+       * NIST "Standard gravity" (average gravitational acceleration at surface
        * [ms^-2]
        */
-      extern const double surface_gravity;
+      constexpr double surface_gravity = 9.80665;
     }
 
     /**
-     * Constants for Mars:
+     * Constants for Mars
      */
     namespace mars
     {
-
       /**
        * Mars structure radii
        */
       namespace radii
       {
         /**
-         * Planetary radius [m]
+         * Planetary radius from Seidermann et al., 2007 [m]
          */
-        extern const double planet;
+        constexpr double planet = 3.3895e6;
         /**
-         * Core radius [m]
+         * Core radius from Rivoldini et al., 2011 [m]
          */
-        extern const double core;
+        constexpr double core = 1.794e6;
       }
       /**
-       * Surface gravity [ms^-2]
+       * Surface gravity from Lodders et al., 1998 [ms^-2]
        */
-      extern const double surface_gravity;
+      constexpr double surface_gravity = 3.711;
     }
   }
 
