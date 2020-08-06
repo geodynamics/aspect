@@ -12,7 +12,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 45 
-set Nonlinear solver tolerance = 2.5e-10
+set Nonlinear solver tolerance = 5e-10
 set Additional shared libraries = ../benchmarks/nonlinear_channel_flow/libsimple_nonlinear.so
 
 subsection Solver parameters
