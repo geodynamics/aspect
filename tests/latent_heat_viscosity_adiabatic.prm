@@ -1,0 +1,114 @@
+# A modification of the latent heat viscosity test, but with adiabatic heating. 
+# It tests that the viscosity of the different layers is constant. 
+# The gnuplot output illustrates the viscosity increase at 410 and 660 km depth.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Adiabatic surface temperature          = 1600
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
+
+subsection Material model
+  set Model name = latent heat
+
+  subsection Latent heat
+    set Viscosity                     = 1e21
+    set Thermal viscosity exponent    = 15.0
+    set Reference temperature         = 1600
+    # 'background' or 'all' are identical identifiers, because there is just
+    # background material
+    set Phase transition depths           = all:410000|660000
+    set Phase transition widths           = background:20000|20000
+    set Phase transition temperatures     = all:1600|1600
+    set Phase transition Clapeyron slopes = all:3e6|-2e6
+    set Phase transition density jumps    = 100, 200
+    set Corresponding phase for density jump = 0, 0
+    set Viscosity prefactors          = 1, 10, 100
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+    set Opening angle = 90
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = inner, outer, left, right
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = inner, outer
+end
+
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 2600 
+    set Outer temperature = 273 
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = adiabatic
+
+  subsection Adiabatic
+    set Age top boundary layer = 0
+    set Age bottom boundary layer = 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Mesh refinement
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+
+  subsection Visualization
+    set Interpolate output = false
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+    set List of output variables      = material properties
+  end
+
+  subsection Depth average
+    set Time between graphical output = 1e6
+    set Number of zones = 25
+  end
+end
+
+subsection Checkpointing
+  set Time between checkpoint  = 1800
+end

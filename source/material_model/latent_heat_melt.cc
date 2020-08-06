@@ -46,12 +46,19 @@ namespace aspect
             }
 
           std::vector<double> composition = in.composition[i];
-          const double delta_temp = in.temperature[i] - reference_T;
+
+          const double reference_temperature = (this->include_adiabatic_heating()
+                                                ?
+                                                this->get_adiabatic_conditions().temperature(in.position[i])
+                                                :
+                                                reference_T);
+
+          const double delta_temp = in.temperature[i] - reference_temperature;
           const double T_dependence = ( thermal_viscosity_exponent == 0.0
                                         ?
                                         0.0
                                         :
-                                        thermal_viscosity_exponent * delta_temp / reference_T );
+                                        thermal_viscosity_exponent * delta_temp / reference_temperature );
 
 
           double temperature_dependence = std::max (std::min ( std::exp( - T_dependence ), 1e2 ), 1e-2 );
