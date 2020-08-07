@@ -21,7 +21,7 @@
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
 
-#ifdef HAVE_LIBDAP
+#ifdef ASPECT_WITH_LIBDAP
 #include <D4Connect.h>
 #include <Connect.h>
 #include <Response.h>
@@ -970,7 +970,7 @@ namespace aspect
           // from a provided URL
           if (filename_is_url(filename))
             {
-#ifdef HAVE_LIBDAP
+#ifdef ASPECT_WITH_LIBDAP
               libdap::Connect *url = new libdap::Connect(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
@@ -1061,7 +1061,7 @@ namespace aspect
               filesize = data_string.size();
 
               delete url;
-#else // HAVE_LIBDAP
+#else // ASPECT_WITH_LIBDAP
 
               // broadcast failure state, then throw
               const int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
@@ -1071,7 +1071,7 @@ namespace aspect
                                      "Make sure you have the dependencies for reading a url " +
                                      "(run cmake with -DASPECT_WITH_LIBDAP=ON)"));
 
-#endif // HAVE_LIBDAP
+#endif // ASPECT_WITH_LIBDAP
             }
           else
             {

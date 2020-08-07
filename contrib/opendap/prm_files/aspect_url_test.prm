@@ -29,7 +29,7 @@ subsection Initial temperature model
    set Model name = adiabatic boundary
  subsection Adiabatic boundary
     set Data directory    = 
-    set Data file name       = http://test.opendap.org/opendap/BALTO/lithospheric_thickness.csv
+    set Data file name       = http://balto.opendap.org/opendap/lithosphere_thickness/lithospheric_thickness.csv
 end 
 end 
    
