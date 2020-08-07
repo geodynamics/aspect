@@ -759,7 +759,7 @@ namespace aspect
                          "initial global refinement but while still within the first "
                          "time step. These refinement steps (n) are added to the value "
                          "for initial global refinement (m) so that the final mesh has "
-                         "cells that are at most on refinement level $n+m$   ");
+                         "cells that are at most on refinement level $n+m$.");
       prm.declare_entry ("Time steps between mesh refinement", "10",
                          Patterns::Integer (0),
                          "The number of time steps after which the mesh is to be "
