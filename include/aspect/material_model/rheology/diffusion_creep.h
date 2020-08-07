@@ -23,6 +23,7 @@
 
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/utilities.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -50,18 +51,30 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters from the parameter file.
+           * Read the parameters this class declares from the parameter file.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and will be checked against the parsed
+           * parameters.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm,
+                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
+                              std::shared_ptr<std::vector<unsigned int>>());
 
           /**
            * Compute the viscosity based on the diffusion creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be fisrt computed on
+           * each phases and then averaged for each compositional field.
            */
           double
           compute_viscosity (const double pressure,
                              const double temperature,
-                             const unsigned int composition) const;
+                             const unsigned int composition,
+                             const std::vector<double> &phase_function_values = std::vector<double>(),
+                             const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
         private:
 

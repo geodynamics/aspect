@@ -1,0 +1,4 @@
+New: Change the implementations in MaterialModel::Rheology to allow computation of viscosity on phases.
+Also add optional entry to MaterialModel::ViscoPlastic::calculate_isostrain_viscosities in order to pass in values of phase functions.
+<br>
+(Haoyuan Li, 2020/08/06)
