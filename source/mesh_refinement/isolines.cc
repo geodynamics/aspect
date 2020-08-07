@@ -46,7 +46,7 @@ namespace aspect
           {
             if (values[index] < min_values[index] || values[index] > max_values[index])
               {
-                // ouside this isoline, no need to search futher
+                // outside this isoline, no need to search further
                 return false;
               }
           }
@@ -63,6 +63,12 @@ namespace aspect
             index = 0;
             found = true;
           }
+        else if (property_name == "background")
+          {
+            name = PropertyName::Background;
+            index = 0;
+            found = true;
+          }
         else
           {
             auto p = std::find(available_compositions.begin(), available_compositions.end(), property_name);
@@ -75,7 +81,7 @@ namespace aspect
           }
         if (found == false)
           {
-            // The property name was not found. This could be because the compositional field was not present.
+            // The property name has not been found. This could come from that the compositional field was not present.
             // Abort and warn the user.
             std::string key_list = "Temperature";
             for (auto &composition : available_compositions)
@@ -184,21 +190,33 @@ namespace aspect
                             }
                           else if (isoline.properties[index].name == Internal::PropertyName::Composition)
                             {
-                              values[index] = in.composition[i_quad][isoline.properties[index].index];
+                              values[index] = std::min(std::max(in.composition[i_quad][isoline.properties[index].index], 0.0), 1.0);
+                            }
+                          else if (isoline.properties[index].name == Internal::PropertyName::Background)
+                            {
+                              double sum_composition = 0.0;  // Compute background material fraction
+                              for (unsigned i=0 ; i < in.composition[i_quad].size() ; ++i)
+                                {
+                                  sum_composition += std::min(std::max(in.composition[i_quad][i], 0.0), 1.0);
+                                }
+                              if (sum_composition >= 1.0)
+                                values[index] = 0.0;
+                              else
+                                values[index] = 1.0 - sum_composition;
                             }
                         }
 
                       if ( isoline.values_are_in_range(values))
                         {
-                          // If the current refinement level is smaller or equal to the refinement
-                          // minimum level, any coarsening flags should be cleared.
+                          // If the current refinement level is smaller or equal to the minimum
+                          // refinement level, any coarsening flags should be cleared.
                           if (cell->level() <= isoline.min_refinement)
                             {
                               clear_coarsen = true;
                             }
 
-                          // If the current refinement level is smaller then the minimum level,
-                          // a refinment flag should be placed.
+                          // If the current refinement level is smaller then the minimum
+                          // refinement level, a refinment flag should be placed.
                           if (cell->level() <  isoline.min_refinement)
                             {
                               refine = true;
@@ -212,8 +230,8 @@ namespace aspect
                               clear_refine = true;
                             }
 
-                          // If the current refinement level is larger then the maximum level, a coarsening
-                          // flag should be placed.
+                          // If the current refinement level is larger then the maximum refinemment level,
+                          // a coarsening flag should be placed.
                           if (cell->level() >  isoline.max_refinement)
                             {
                               coarsen = true;
@@ -231,7 +249,7 @@ namespace aspect
                 clear_coarsen = false;
 
               // Perform the actual placement of the coarsening and refinement flags
-              // We want to make sure that the refiment never goes below the minimum
+              // We want to make sure that the refinement never goes below the minimum
               // or above the maximum, so we first check/set the coarsen/refine flag,
               // and then check/set the clear coarsen/refine flag.
               if (coarsen == true)
@@ -268,7 +286,7 @@ namespace aspect
                              Patterns::Anything(),
                              "A list of isoline separated by semi-colins (;). Each isoline entry consists of "
                              "multiple entries separted by a comma. The first two entries indicate the minimum and maximum "
-                             "refinement levels respecitvely. The entries after the first two describe the field the isoline "
+                             "refinement levels respectively. The entries after the first two describe the field the isoline "
                              "applies to, followed by a colin (:) followed by the minimum and maximum grid levels seperated by "
                              "bar (|). An example for an isoline is '0, 2, Temperature: 300 | 600'; 2, 2, C_1: 0.5 | 1");
 
@@ -282,23 +300,14 @@ namespace aspect
     void
     Isolines<dim>::parse_parameters (ParameterHandler &prm)
     {
-      /**
-       * Todo:
-       * 1. Add background field C_b option
-       */
-
       // lookup the minimum and maximum refinment
       prm.enter_subsection("Mesh refinement");
       unsigned int minimum_refinement_level = Utilities::string_to_int(prm.get ("Minimum refinement level"));
       unsigned int maximum_refinement_level = Utilities::string_to_int(prm.get("Initial global refinement")) + Utilities::string_to_int(prm.get("Initial adaptive refinement"));
       prm.leave_subsection();
 
-      // fill parameter list_of_composition_names: Todo: These should be enums
-      std::vector<std::string> list_of_composition_names = {"Temperature", "Density", "viscosity", "strain-rate", "Pressure"};
       const std::vector<std::string> compositions = this->introspection().get_composition_names();
-      list_of_composition_names.insert(list_of_composition_names.end(), compositions.begin(), compositions.end());
 
-      // parameter has_background_field, what does it do, what do we want?
       prm.enter_subsection("Mesh refinement");
       {
         prm.enter_subsection("Isolines");
@@ -315,8 +324,8 @@ namespace aspect
               std::vector<double> max_value_inputs;
               const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isoline_entry, ',');
 
-              AssertThrow(field_entries.size() >= 4,
-                          ExcMessage("An isoline needs to contain at least 4 entries, but isoline " + std::to_string(isoline_entry_number)
+              AssertThrow(field_entries.size() >= 3,
+                          ExcMessage("An isoline needs to contain at least 3 entries, but isoline " + std::to_string(isoline_entry_number)
                                      + " contains  only " +  std::to_string(field_entries.size()) + " entries: " + isoline_entry + "."));
 
               // convert a potential min, min+1, min + 1, min+10, max, max-1, etc. to actual integers.
@@ -333,16 +342,14 @@ namespace aspect
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
                               ExcMessage("The isoline property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
-                  // todo, see that field is in list
-                  // todo, figure out what to do with background fields?
-                  properties.push_back(Internal::Property(key_and_value[0], compositions));
+                  properties.push_back(Internal::Property(key_and_value[0], compositions)); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
                               ExcMessage("Both a maximum and minimum value is required for each isoline."));
-                  min_value_inputs.push_back(Utilities::string_to_double(values[0]));
+                  min_value_inputs.push_back(Utilities::string_to_double(values[0]));  // get min and max values of the range
                   max_value_inputs.push_back(Utilities::string_to_double(values[1]));
                   AssertThrow(min_value_inputs.back() < max_value_inputs.back(),
-                              ExcMessage("The provided maximum refinement level has to be larger the then the minimum refinement level."));
+                              ExcMessage("The provided maximum refinement level has to be larger than the minimum refinement level."));
                 }
               isoline.min_values = min_value_inputs;
               isoline.max_values = max_value_inputs;
@@ -364,6 +371,21 @@ namespace aspect
   {
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Isolines,
                                               "isolines",
-                                              "Todo")
+                                              "A mesh refinement criterion that computes "
+                                              "refinement indicators between two iso-surfaces of"
+                                              "specific field entries(e.g. temperature, compsitions)."
+                                              "\n\n"
+                                              "The way these indicators are derived on each isoline is by "
+                                              "checking the conditions whether solutions of specific "
+                                              "fields are within the ranges of values given. If these conditions"
+                                              "hold, then an indicator is either put on or taken off"
+                                              "in order to secure mesh refinement within the range of levels"
+                                              "given. Usage of this plugin allows user to put an conditional"
+                                              "minimum and maximum refinement function onto fields that they"
+                                              "are interested in."
+                                              "\n\n"
+                                              "For now, only temperature and names of compositions are allowed as field"
+                                              "entries"
+                                             )
   }
 }

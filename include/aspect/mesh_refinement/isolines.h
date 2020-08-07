@@ -37,7 +37,8 @@ namespace aspect
       enum class PropertyName
       {
         Temperature,
-        Composition
+        Composition,
+        Background
       };
 
       class Property

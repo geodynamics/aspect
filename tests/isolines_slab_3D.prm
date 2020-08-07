@@ -1,0 +1,99 @@
+# This input file tests the box geometry in
+# combination with the isolines plugin to refine a 2D slab
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1673.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes #single Advection, single Newton Stokes
+set Max nonlinear iterations = 0
+#set Skip solvers on initial refinement = true
+
+
+# We take a box geometry and increase the repetitions
+# of the coarse mesh
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 5
+    set Y extent = 1
+    set Z extent = 5
+    set X repetitions = 5
+    set Y repetitions = 1
+    set Z repetitions = 5
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isolines
+  subsection Isolines
+    set Isolines = 2,    2,    C_1 : 0.5 | 1.0
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1673.0
+    set Top temperature    = 273.0
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0, 1, 2, 3, 4, 5
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x, y, z
+    set Function constants = Xtr=3.0, Dsl=1.0, Zmax=5.0, D0=0.3, Xmax=5.0
+    set Function expression = (x > Xtr + D0) ? ((z + Dsl > Zmax + D0)? 273.0 : 1673.0):\
+                              (((z > x + Xmax - Xtr - Dsl) && (z < x + Xmax - Xtr))? 273.0 : 1673.0)
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names = x, y, z
+    set Function constants = Xtr=3.0, Dsl=1.0, Zmax=5.0, D0=0.3, Xmax=5.0
+    set Function expression = (x > Xtr + D0) ? ((z + Dsl > Zmax + D0)? 1.0 : 0.0):\
+                              (((z > x + Xmax - Xtr - Dsl) && (z < x + Xmax - Xtr))? 1.0 : 0.0)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics
+  subsection Visualization
+    set Output format            = vtu
+  end
+end
