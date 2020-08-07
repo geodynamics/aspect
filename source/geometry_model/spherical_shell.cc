@@ -571,6 +571,9 @@ namespace aspect
                              "In either case, this parameter is ignored unless the opening "
                              "angle of the domain is 360 degrees. This parameter is also "
                              "ignored when using a custom mesh subdivision scheme.");
+          prm.declare_entry ("X periodic", "false",
+                             Patterns::Bool (),
+                             "Whether the box should be periodic in X direction");
         }
         prm.leave_subsection();
       }
