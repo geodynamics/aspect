@@ -363,15 +363,15 @@ namespace WorldBuilder
           // This function only returns positive values, because we want
           // the fault to be centered around the line provided by the user.
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         true,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       true,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];
@@ -491,15 +491,15 @@ namespace WorldBuilder
           // This function only returns positive values, because we want
           // the fault to be centered around the line provided by the user.
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         true,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       true,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];
@@ -622,15 +622,15 @@ namespace WorldBuilder
           // This function only returns positive values, because we want
           // the fault to be centered around the line provided by the user.
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         true,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       true,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];

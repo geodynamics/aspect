@@ -144,18 +144,30 @@ if(ASPECT_WITH_WORLD_BUILDER)
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
+  SET(UNITY_WB_LAST_FILES
+  "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
+
   FOREACH(_source_file ${wb_files})
     # exclude the world builder files from including precompiled headers, they
     # do not include ASPECT's dependencies at all.
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
-    # exclude the world builder from unity builds (avoids compilation errors):
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
   ENDFOREACH()
 
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
 endif()
+
+FOREACH(_source_file ${UNITY_WB_LAST_FILES})
+  SET(_full_name "${_source_file}")
+  LIST(FIND TARGET_SRC ${_full_name} _index)
+  IF(_index EQUAL -1)
+    MESSAGE(FATAL_ERROR "could not find ${_full_name}.")
+  ENDIF()
+
+  LIST(REMOVE_ITEM TARGET_SRC ${_full_name})
+  LIST(APPEND TARGET_SRC ${_full_name})
+ENDFOREACH()
 
 
 # load in version info and export it
