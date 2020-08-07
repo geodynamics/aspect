@@ -190,8 +190,8 @@ namespace aspect
               }
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
             interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
-  //            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-  //               interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+            //            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            //               interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
             return interpretation;
           }
@@ -650,31 +650,32 @@ namespace aspect
 
       // do this otherwise there is no graphical output after the first iteration
       if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Stokes_adjoint) {}
-      else { 
-
-      // if this is the first time we get here, set the last output time
-      // to the current time - output_interval. this makes sure we
-      // always produce data during the first time step
-      if (std::isnan(last_output_time))
+      else
         {
-          last_output_time = this->get_time() - output_interval;
-          last_output_timestep = this->get_timestep_number();
-        }
 
-      // Return if graphical output is not requested at this time. Do not
-      // return in the first timestep, or if the last output was more than
-      // output_interval in time ago, or maximum_timesteps_between_outputs in
-      // number of timesteps ago.
-      // The comparison in number of timesteps is safe from integer overflow for
-      // at most 2 billion timesteps , which is not likely to
-      // be ever reached (both values are unsigned int,
-      // and the default value of maximum_timesteps_between_outputs is
-      // set to numeric_limits<int>::max())
-      if ((this->get_time() < last_output_time + output_interval)
-          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
-          && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
-      }
+          // if this is the first time we get here, set the last output time
+          // to the current time - output_interval. this makes sure we
+          // always produce data during the first time step
+          if (std::isnan(last_output_time))
+            {
+              last_output_time = this->get_time() - output_interval;
+              last_output_timestep = this->get_timestep_number();
+            }
+
+          // Return if graphical output is not requested at this time. Do not
+          // return in the first timestep, or if the last output was more than
+          // output_interval in time ago, or maximum_timesteps_between_outputs in
+          // number of timesteps ago.
+          // The comparison in number of timesteps is safe from integer overflow for
+          // at most 2 billion timesteps , which is not likely to
+          // be ever reached (both values are unsigned int,
+          // and the default value of maximum_timesteps_between_outputs is
+          // set to numeric_limits<int>::max())
+          if ((this->get_time() < last_output_time + output_interval)
+              && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
+              && (this->get_timestep_number() != 0))
+            return std::pair<std::string,std::string>();
+        }
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all

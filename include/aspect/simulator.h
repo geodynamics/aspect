@@ -373,10 +373,6 @@ namespace aspect
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
       };
 
-      virtual
-      std::list<std::string>
-      required_other_postprocessors() const;
-
 
     private:
 
@@ -2115,7 +2111,9 @@ namespace aspect
       bool                                                      adjoint_problem;
       LinearAlgebra::BlockVector                                current_adjoint_solution;
       void solve_stokes_adjoint ();
+
       void compute_parameter_update ();
+
   };
 }
 

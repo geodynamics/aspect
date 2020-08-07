@@ -18,13 +18,14 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/melt.h>
+#include <aspect/simulator/assemblers/adjoint.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
@@ -1453,86 +1454,124 @@ namespace aspect
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
+
+
   template <int dim>
   void Simulator<dim>::solve_stokes_adjoint ()
   {
-    // TODO iterate
-    // todo make number of interations a parameter and change Do iterations for inversion parameter
-//    for (unsigned int i=0; i<parameters.num_it_adjoint; ++i)
-//      {
 
-//        pcout << " ^^ Adjoint iteration number " << i  << std::endl;
+    for (unsigned int i=0; i<=parameters.num_it_adjoint; ++i)
+       {
 
-        // -------------------------------------------------------------
-        // SOLVE FORWARD PROBLEM
+        pcout << " ^^ Adjoint iteration number " << i  << std::endl;
 
-        pcout << "   Forward problem ... " << std::endl;
+    // -------------------------------------------------------------
+    // SOLVE FORWARD PROBLEM
 
-        adjoint_problem = false;
-        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+    pcout << "   Forward problem ... " << std::endl;
 
-        assemble_stokes_system();
-        build_stokes_preconditioner();
+    // I think at this point this flag only affects postprocessing
+    adjoint_problem = false;
 
-        solve_stokes(); // solves Ax=b, puts x into 'solution'
-        // put 'solution' into 'current_linearization_point' (=u/p)
-        current_linearization_point.block(introspection.block_indices.velocities)
-          = solution.block(introspection.block_indices.velocities);
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-          current_linearization_point.block(introspection.block_indices.pressure)
-            = solution.block(introspection.block_indices.pressure);
+    // set the assemblers for the RHS
+    set_assemblers();
 
-        // postprocess forward solution to calculate DT and maybe geoid etc.
-        // TODO: only run the postprocessors I need, e.g. DT
-         postprocess ();
+    rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
-        // -------------------------------------------------------------
-        // SOLVE ADJOINT PROBLEM
+    assemble_stokes_system();
+    build_stokes_preconditioner();
 
-        pcout << "   Adjoint problem ... " << std::endl;
+    solve_stokes(); // solves Ax=b, puts x into 'solution'
+    // put 'solution' into 'current_linearization_point' (=u/p)
+    current_linearization_point.block(introspection.block_indices.velocities)
+      = solution.block(introspection.block_indices.velocities);
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      current_linearization_point.block(introspection.block_indices.pressure)
+        = solution.block(introspection.block_indices.pressure);
 
-        // only do adjoint if final (refined) mesh is reached
-        adjoint_problem = true;
-        rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
+    // postprocess forward solution to calculate DT and maybe geoid etc.
+    // TODO: only run the postprocessors I need, e.g. DT
+    postprocess ();
 
-        // the right hand side is assembled differently when adjoint_problem is true
-        assemble_stokes_system();
-        solve_stokes();  // solve Ax=b_adj
+    // -------------------------------------------------------------
+    // SOLVE ADJOINT PROBLEM
 
-        // put 'solution' into 'current_adjoint_solution' (=lambda_u/lambda_p)
-        current_adjoint_solution.block(introspection.block_indices.velocities)
-          = solution.block(introspection.block_indices.velocities);
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-          current_adjoint_solution.block(introspection.block_indices.pressure)
-            = solution.block(introspection.block_indices.pressure);
+    pcout << "   Adjoint problem ... " << std::endl;
 
-        // put forward solution back into solution vector for postprocessing output
-        solution.block(introspection.block_indices.velocities) =
-          current_linearization_point.block(introspection.block_indices.velocities);
-        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-          solution.block(introspection.block_indices.pressure)
-            = current_linearization_point.block(introspection.block_indices.pressure);
+    // only do adjoint if final (refined) mesh is reached
+    // I think at this point this flag only affects postprocessing
+    adjoint_problem = true;
 
-        // postprocess adjoint solution to get output
-        // TODO: only run the postprocessors I need, e.g. DT
-        // postprocess ();
+    // clear all RHS assemblers and only do pressure rhs compatibility and assemble the Adjoint RHS;
+    assemblers->stokes_system.clear();
+    assemblers->stokes_system_on_boundary_face.clear();
+
+    // add the terms necessary to normalize the pressure
+    if (do_pressure_rhs_compatibility_modification)
+      assemblers->stokes_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+
+    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
+      p->initialize_simulator(*this);
 
 
-        // -------------------------------------------------------------
-        // COMPUTE UPDATES FOR ETA AND RHO
+    // I moved this over from assembly.cc
+    assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
 
-        // the inversion only works with a specific material model
-        // this doesn't actually check the material model yet just the number of comp fields, but okay
-        Assert(introspection.n_compositional_fields == 2,
-               ExcMessage ("You're not using the right material model for the adjoint problem. "
-                           "The only model that is consistent is the additive material model."));
+    assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+    assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
 
-        // set up rhs and mass matrix
-        // solve system for gradients in eta and rho
-        compute_parameter_update();
+    assemblers->stokes_system_on_boundary_face.push_back(
+      std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
 
-//      }
+    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system_on_boundary_face[0].get()))
+      p->initialize_simulator(*this);
+
+
+    // Don't need to reassmble the stokes system because it's the same as for the forward problem
+    rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
+
+    // the right hand side is assembled differently when adjoint_problem is true
+    assemble_stokes_system();
+    solve_stokes();  // solve Ax=b_adj
+
+    // put 'solution' into 'current_adjoint_solution' (=lambda_u/lambda_p)
+    current_adjoint_solution.block(introspection.block_indices.velocities)
+      = solution.block(introspection.block_indices.velocities);
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      current_adjoint_solution.block(introspection.block_indices.pressure)
+        = solution.block(introspection.block_indices.pressure);
+
+    // put forward solution back into solution vector for postprocessing output
+    solution.block(introspection.block_indices.velocities) =
+      current_linearization_point.block(introspection.block_indices.velocities);
+    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+      solution.block(introspection.block_indices.pressure)
+        = current_linearization_point.block(introspection.block_indices.pressure);
+
+    // postprocess adjoint solution to get output
+    // TODO: only run the postprocessors I need, e.g. DT
+    // postprocess ();
+
+
+    // -------------------------------------------------------------
+    // COMPUTE UPDATES FOR ETA AND RHO
+
+    // the inversion only works with a specific material model
+    // this doesn't actually check the material model yet just the number of comp fields, but okay
+    Assert(introspection.n_compositional_fields == 2,
+           ExcMessage ("You're not using the right material model for the adjoint problem. "
+                       "The only model that is consistent is the additive material model."));
+
+    // set up rhs and mass matrix
+    // solve system for gradients in eta and rho
+    compute_parameter_update();
+
+ //    postprocess ();
+
+    }
   }
+
 
 }
 

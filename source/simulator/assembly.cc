@@ -257,15 +257,6 @@ namespace aspect
           }
       }
 
-    // adjoint RHS
-    // this is set to zero within the adjoint assembler if it's not in adjoint mode
-    assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
-
-    assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
-    assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
-
-    assemblers->stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
   }
 
   template <int dim>
@@ -1254,62 +1245,14 @@ namespace aspect
   }
 
 
-
-  template <int dim>
-  struct DynTopoData
-  {
-    DynTopoData(MPI_Comm mpi_communicator, std::string filename)
-    {
-
-      std::string temp;
-      // Read data from disk and distribute among processes
-      std::istringstream in(Utilities::read_and_distribute_file_content(filename, mpi_communicator));
-
-      getline(in,temp);  // throw away the rest of the line
-      getline(in,temp);  // throw away the rest of the line
-
-      int number_of_observations;
-      in >> number_of_observations;
-
-      for (int i=0; i<number_of_observations; i++)
-        {
-          Tensor<1,dim> temp_tensor;
-          double tempval;
-
-          for (int j=0; j< dim; j++)
-            in >> temp_tensor[j];
-
-          Point<dim> point(temp_tensor);
-
-          measurement_locations.push_back(point);
-
-          in >> tempval;
-          dynamic_topographies.push_back(tempval);
-
-          in >> tempval;
-          dynamic_topographies_sigma.push_back(tempval);
-        }
-    };
-
-    std::vector<double> dynamic_topographies;
-    std::vector<double>  dynamic_topographies_sigma;
-    std::vector <Point<dim> > measurement_locations;
-  };
-
-  template <int dim>
-  std::list<std::string>
-  Simulator<dim>::required_other_postprocessors() const
-  {
-    std::list<std::string> deps;
-    deps.push_back("dynamic topography");
-    return deps;
-  }
-
-
   template <int dim>
   void
   Simulator<dim>::compute_parameter_update ()
   {
+    // This calculation requires that the DT postprocessor is selected
+    AssertThrow(postprocess_manager.template has_matching_postprocessor<const Postprocess::DynamicTopography<dim>> (), 
+   ExcMessage("The dynamic topography postprocessor has to be active for adjoint computations."));
+
     // INTERIOR TERM
     system_matrix = 0.;
     system_rhs = 0.;
@@ -1329,7 +1272,7 @@ namespace aspect
                              quadrature_formula,
                              update_values |
                              update_gradients |
-                             update_q_points |
+                             update_quadrature_points |
                              update_JxW_values);
 
     FEValues<dim> fe_values_adjoint (*mapping,
@@ -1337,15 +1280,15 @@ namespace aspect
                                      quadrature_formula,
                                      update_values |
                                      update_gradients |
-                                     update_q_points |
+                                     update_quadrature_points |
                                      update_JxW_values);
 
     FEFaceValues<dim> fe_face_values (*mapping,
-                                     finite_element,
+                                      finite_element,
                                       quadrature_formula_face,
                                       update_values |
                                       update_gradients |
-                                      update_q_points |
+                                      update_quadrature_points |
                                       update_JxW_values);
 
     // Storage for shape function values for the current solution.
@@ -1412,10 +1355,10 @@ namespace aspect
               for (unsigned int i = 0; i<dofs_per_cell; ++i)
                 {
                   // density kernel
-                  local_rhs(i) += (gravity * velocity_adjoint) * phi_rho[i] * fe_values.JxW(q);
+                  local_rhs(i) += -(gravity * velocity_adjoint) * phi_rho[i] * fe_values.JxW(q);
 
                   // viscosity kernel
-                  local_rhs(i) += ( -2 * eta * strain_rate_forward * strain_rate_adjoint) * phi_eta[i] * fe_values.JxW(q);
+                  local_rhs(i) += (2 * eta * strain_rate_forward * strain_rate_adjoint) * phi_eta[i] * fe_values.JxW(q);
                   // it's fine to add both of them because only one of them at a time is nonzero
 
                   for (unsigned int j = 0; j<dofs_per_cell; j++)
@@ -1459,90 +1402,37 @@ namespace aspect
               MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
               material_model->evaluate(in_face, out_face);
 
-              // initiate in a way that they work if no points are read in
-              bool calc_RHS = false;
-              double DT_obs = 0;
-              double DT_sigma = 1;
-
-              const Point<dim> midpoint_at_surface = cell->face(top_face_idx)->center();
+              fe_face_values[introspection.extractors.temperature].get_function_values(topo_vector, topo_values);
 
 
-              if (parameters.read_in_points == true)
+              for (unsigned int q=0; q<n_q_face_points; ++q)
                 {
-                  static DynTopoData<dim> observations(mpi_communicator, parameters.adjoint_input_file);
-                  for (unsigned int j=0; j<observations.measurement_locations.size(); ++j)
+                  Point<dim> location = fe_face_values.quadrature_point(q);
+
+                  const double density   = out_face.densities[q];
+		  const double eta	 = out_face.viscosities[q];
+
+                  const SymmetricTensor<2,dim> strain_rate = in_face.strain_rate[q] - 1./3 * trace(in_face.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                  const Tensor<1,dim> gravity = gravity_model->gravity_vector(location);
+                  const Tensor<1,dim> n_hat = - gravity/gravity.norm();
+
+                  for (unsigned int k=0; k<dofs_per_cell; ++k)
                     {
-                      const Point<dim> next_measurement_location = observations.measurement_locations[j];
-                      if (next_measurement_location.distance(midpoint_at_surface) < cell->face(top_face_idx)->minimum_vertex_distance()/2)
-                        {
-                          calc_RHS = true;
-                          DT_obs = observations.dynamic_topographies[j];
-                          DT_sigma = observations.dynamic_topographies_sigma[j];
-                        }
-                    }
-                }
-
-              // go to this if either we are not reading in points (i.e. using points everywhere) or if we
-              // are reading in points and there is a read in point in this cell
-              if (parameters.read_in_points == false | calc_RHS)
-                {
-                  double dynamic_topography_surface_average = 0;
-                  double cell_surface_area = 0;
-
-                  fe_face_values[introspection.extractors.temperature].get_function_values(topo_vector, topo_values);
-
-                  // todo this calculates DT and all the respective things within the upper cell, not surface. figure that out
-                  // todo this should be delta function (here and RHS). figure this out.
-                  for (unsigned int q=0; q<n_q_face_points; ++q)
-                    {
-                	  dynamic_topography_surface_average += topo_values[q] * fe_face_values.JxW(q);
-                	  cell_surface_area += fe_face_values.JxW(q);
+                      phi_rho[k] = fe_values[introspection.extractors.compositional_fields[0]].value(k,q);
+                      phi_eta[k] = fe_values[introspection.extractors.compositional_fields[1]].value(k,q);
                     }
 
-                  dynamic_topography_surface_average /= cell_surface_area;
-
-
-                  for (unsigned int q=0; q<n_q_face_points; ++q)
+		  // TODO: does this need to be integrated across the surface? I think so ..
+                  for (unsigned int i = 0; i<dofs_per_cell; ++i)
                     {
+                      // density kernel
+                      local_rhs(i) += - topo_values[q] * topo_values[q] / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
 
-                      const double surface_difference = parameters.use_fixed_surface_value
-                                                        ?
-                                                        1
-                                                        :
-                                                        (dynamic_topography_surface_average - DT_obs)/DT_sigma;
+                      // viscosity kernel
+                      local_rhs(i) += topo_values[q] * n_hat * (2 * eta * strain_rate  * n_hat)
+                                      / ((density - density_above)*gravity.norm()) * phi_eta[i] * fe_face_values.JxW(q);
+                      // it's fine to add both  of them because only one of them at a time is nonzero
 
-                      Point<dim> location = fe_face_values.quadrature_point(q);
-
-                      // -------- to calculate sensitivity to specific degree
-                      //const std_cxx11::array<double, dim> spherical_point = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(location);
-                      //const double surface_difference = std::sin(4*spherical_point[1]);
-
-                      const double viscosity = out_face.viscosities[q];
-                      const double density   = out_face.densities[q];
-
-                      const SymmetricTensor<2,dim> strain_rate = in_face.strain_rate[q] - 1./3 * trace(in_face.strain_rate[q]) * unit_symmetric_tensor<dim>();
-                      const SymmetricTensor<2,dim> shear_stress = 2 * viscosity * strain_rate;
-
-                      const Tensor<1,dim> gravity = gravity_model->gravity_vector(location);
-                      const Tensor<1,dim> radial_direction = gravity/gravity.norm();
-
-                      for (unsigned int k=0; k<dofs_per_cell; ++k)
-                        {
-                          phi_rho[k] = fe_values[introspection.extractors.compositional_fields[0]].value(k,q);
-                          phi_eta[k] = fe_values[introspection.extractors.compositional_fields[1]].value(k,q);
-                        }
-
-                      for (unsigned int i = 0; i<dofs_per_cell; ++i)
-                        {
-                          // density kernel
-                          local_rhs(i) += surface_difference * topo_values[q] / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
-
-                          // viscosity kernel
-                          local_rhs(i) += -surface_difference * radial_direction * (shear_stress * radial_direction)
-                                          / gravity.norm() / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
-                          // it's fine to add both  of them because only one of them at a time is nonzero
-
-                        }
                     }
                 }
             }
@@ -1582,33 +1472,6 @@ namespace aspect
 
     solution.block(rho_comp_block).add (parameters.update_factor_rho, delta.block(rho_comp_block));
     solution.block(eta_comp_block).add (parameters.update_factor_eta, delta.block(eta_comp_block));
-
-    /*
-        // output rhs
-            DataOut<dim> data_out;
-
-            data_out.attach_dof_handler (dof_handler);
-            std::vector<DataComponentInterpretation::DataComponentInterpretation>  data_component_interpretation(dim, DataComponentInterpretation::component_is_part_of_vector);
-            data_component_interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-            data_component_interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-            data_component_interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-            data_component_interpretation.push_back (DataComponentInterpretation::component_is_scalar);
-
-
-            LinearAlgebra::BlockVector distr_rhs;
-            distr_rhs.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-            distr_rhs = system_rhs;
-            data_out.add_data_vector (distr_rhs, "rhs",
-                                      DataOut<dim>::type_dof_data,
-                                      data_component_interpretation);
-
-            data_out.build_patches ();
-            std::ofstream output (dim == 2 ?
-                                  "solution-2d.vtk":
-                                  "solution-3d.vtk");
-            data_out.write_vtk (output);
-      */
-
 
   }
 }
@@ -1655,7 +1518,6 @@ namespace aspect
                                                                       const bool                                             compute_strainrate, \
                                                                       MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; \
   template void Simulator<dim>::compute_parameter_update (); \
-  template std::list<std::string> Simulator<dim>::required_other_postprocessors () const;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -1295,10 +1295,10 @@ namespace aspect
 
     prm.enter_subsection("Adjoint problem");
     {
-      prm.declare_entry ("Input filename for ajoint points", "/Users/jackyaustermann/Desktop/Aspect_code/aspect/data/adjoint-observations/dynamic_topography_observations.txt",
+      prm.declare_entry ("Input filename for adjoint points", "$ASPECT_SOURCE_DIR/data/adjoint-observations/dynamic_topography_observations.txt",
                          Patterns::Anything(),
                          "");
-      prm.declare_entry ("Read points in from file", "false",
+      prm.declare_entry ("Read points from file", "false",
                          Patterns::Bool (),
                          "");
       prm.declare_entry ("Number of iterations in adjoint inversion", "1",
@@ -1982,8 +1982,8 @@ namespace aspect
 
     prm.enter_subsection("Adjoint problem");
     {
-      adjoint_input_file              = prm.get ("Input filename for ajoint points");
-      read_in_points                  = prm.get_bool ("Read points in from file");
+      adjoint_input_file              = prm.get ("Input filename for adjoint points");
+      read_in_points                  = prm.get_bool ("Read points from file");
       num_it_adjoint                  = prm.get_integer ("Number of iterations in adjoint inversion");
       use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
       update_factor_rho               = prm.get_double ("Factor to update the density properties");

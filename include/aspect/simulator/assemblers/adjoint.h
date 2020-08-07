@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011, 2012 by the authors of the ASPECT code.
+  Copyright (C) 2017 - 2019 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -18,34 +18,29 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#ifndef _aspect_simulator_assemblers_adjoint_h
+#define _aspect_simulator_assemblers_adjoint_h
 
-#ifndef _aspect_postprocess_adjoint_kernels_h
-#define _aspect_postprocess_adjoint_kernels_h
 
-#include <aspect/postprocess/interface.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_access.h>
-
 
 namespace aspect
 {
-  namespace Postprocess
+  namespace Assemblers
   {
 
     /**
-     * A postprocessor that computes the adjoint density and viscosity sensitivity kernel.
-     *
-     * @ingroup Postprocessing
-     */
+         */
     template <int dim>
-    class AdjointKernels : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class StokesAdjointRHS : public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
     {
       public:
-        /**
-         * Evaluate the solution for the dynamic topography.
-         */
         virtual
-        std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        void
+        execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                internal::Assembly::CopyData::CopyDataBase<dim> &data) const;
     };
   }
 }
