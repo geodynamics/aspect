@@ -23,6 +23,7 @@
 #define _aspect_gravity_model_function_h
 
 #include <aspect/gravity_model/interface.h>
+#include <aspect/simulator_access.h>
 
 #include <deal.II/base/parsed_function.h>
 
@@ -39,13 +40,21 @@ namespace aspect
      * @ingroup GravityModels
      */
     template <int dim>
-    class Function : public Interface<dim>
+    class Function : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
         Function ();
+
+        /**
+         * A function that is called at the beginning of each time step to
+         * indicate what the model time is for which the gravity will
+         * next be evaluated. For the current class, the function passes to
+         * the parsed function what the current time is.
+         */
+        void update () override;
 
         /**
          * Return the gravity vector as a function of position.
