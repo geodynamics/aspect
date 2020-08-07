@@ -1696,7 +1696,6 @@ namespace aspect
 
     prm.enter_subsection ("Compositional fields");
     {
-      n_compositional_fields = prm.get_integer ("Number of fields");
       if (include_melt_transport && (n_compositional_fields == 0))
         {
           AssertThrow (false,
