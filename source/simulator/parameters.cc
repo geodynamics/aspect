@@ -1636,11 +1636,11 @@ namespace aspect
         global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
         global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
         global_composition_max_preset       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
-                                              (Utilities::split_string_list(prm.get ("Global composition maximum"))),
+                                                                                      (Utilities::split_string_list(prm.get ("Global composition maximum"))),
                                                                                       n_compositional_fields,
                                                                                       "Global composition maximum");
         global_composition_min_preset       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
-                                              (Utilities::split_string_list(prm.get ("Global composition minimum"))),
+                                                                                      (Utilities::split_string_list(prm.get ("Global composition minimum"))),
                                                                                       n_compositional_fields,
                                                                                       "Global composition minimum");
       }
