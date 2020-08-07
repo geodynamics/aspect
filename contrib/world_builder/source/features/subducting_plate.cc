@@ -378,15 +378,15 @@ namespace WorldBuilder
                    << ") and one_dimensional_coordinates (" << one_dimensional_coordinates.size() << ") are different.");*/
           // todo: explain
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         false,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       false,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];
@@ -503,15 +503,15 @@ namespace WorldBuilder
         {
           // todo: explain
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         false,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       false,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];
@@ -635,15 +635,15 @@ namespace WorldBuilder
         {
           // todo: explain
           std::map<std::string,double> distance_from_planes =
-            Utilities::distance_point_from_curved_planes(position,
-                                                         reference_point,
-                                                         coordinates,
-                                                         slab_segment_lengths,
-                                                         slab_segment_angles,
-                                                         starting_radius,
-                                                         this->world->parameters.coordinate_system,
-                                                         false,
-                                                         one_dimensional_coordinates);
+            WorldBuilder::Utilities::distance_point_from_curved_planes(position,
+                                                                       reference_point,
+                                                                       coordinates,
+                                                                       slab_segment_lengths,
+                                                                       slab_segment_angles,
+                                                                       starting_radius,
+                                                                       this->world->parameters.coordinate_system,
+                                                                       false,
+                                                                       one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
           const double distance_along_plane = distance_from_planes["distanceAlongPlane"];

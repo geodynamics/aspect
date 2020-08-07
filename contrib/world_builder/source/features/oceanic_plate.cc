@@ -146,8 +146,8 @@ namespace WorldBuilder
 
 
       if (depth <= max_depth && depth >= min_depth &&
-          Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
-                                                                  world->parameters.coordinate_system->natural_coordinate_system())))
+          WorldBuilder::Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                                                                world->parameters.coordinate_system->natural_coordinate_system())))
         {
           for (auto &temperature_model: temperature_models)
             {
@@ -179,8 +179,8 @@ namespace WorldBuilder
                                                                       *(world->parameters.coordinate_system));
 
       if (depth <= max_depth && depth >= min_depth &&
-          Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
-                                                                  world->parameters.coordinate_system->natural_coordinate_system())))
+          WorldBuilder::Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                                                                world->parameters.coordinate_system->natural_coordinate_system())))
         {
           for (auto &composition_model: composition_models)
             {
@@ -212,8 +212,8 @@ namespace WorldBuilder
                                                                       *(world->parameters.coordinate_system));
 
       if (depth <= max_depth && depth >= min_depth &&
-          Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
-                                                                  world->parameters.coordinate_system->natural_coordinate_system())))
+          WorldBuilder::Utilities::polygon_contains_point(coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                                                                world->parameters.coordinate_system->natural_coordinate_system())))
         {
           for (auto &grains_model: grains_models)
             {
