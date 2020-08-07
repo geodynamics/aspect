@@ -910,7 +910,12 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
 
         if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
           break;
@@ -994,7 +999,12 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
 
         if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
           break;

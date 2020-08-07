@@ -1,0 +1,70 @@
+
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Solving block system ... 0 iterations.
+   Solving air system ... 0 iterations.
+   Solving inclusion system ... 0 iterations.
+   Initial Newton Stokes residual = 1.71525e+14, v = 8.87054e+13, p = 1.46807e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+89 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 1.71525e+14
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.129 m/year, 0.221 m/year
+     Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0000
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+115 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00452565, norm of the rhs: 7.76262e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.131 m/year, 0.221 m/year
+     Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0001
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+34 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00379011, norm of the rhs: 6.50098e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.132 m/year, 0.221 m/year
+     Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0002
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+34 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.00345696, norm of the rhs: 5.92954e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.133 m/year, 0.22 m/year
+     Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0003
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+35 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.00332741, norm of the rhs: 5.70734e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.135 m/year, 0.22 m/year
+     Writing graphical output:  output-newton_postprocess_nonlinear/solution/solution-00000.0004
+
+
+
+
+
+Termination requested by criterion: end time
+
+
+
