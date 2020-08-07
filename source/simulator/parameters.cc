@@ -1085,14 +1085,16 @@ namespace aspect
                            "The maximum global composition values that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from composition advection fields. "
                            "The number of the input 'Global composition maximum' values separated by ',' has to be "
-                           "the same as the number of the compositional fields");
+                           "one or the same as the number of the compositional fields. When only one value "
+                           "is supplied, this same value is assumed for all compositional fields.");
         prm.declare_entry ("Global composition minimum",
                            boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
                            Patterns::List(Patterns::Double ()),
                            "The minimum global composition value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from composition advection fields. "
                            "The number of the input 'Global composition minimum' values separated by ',' has to be "
-                           "the same as the number of the compositional fields");
+                           "one or the same as the number of the compositional fields. When only one value "
+                           "is supplied, this same value is assumed for all compositional fields.");
       }
       prm.leave_subsection ();
     }
@@ -1633,10 +1635,14 @@ namespace aspect
           = prm.get_bool("Use limiter for discontinuous composition solution");
         global_temperature_max_preset       = prm.get_double ("Global temperature maximum");
         global_temperature_min_preset       = prm.get_double ("Global temperature minimum");
-        global_composition_max_preset       = Utilities::string_to_double
-                                              (Utilities::split_string_list(prm.get ("Global composition maximum")));
-        global_composition_min_preset       = Utilities::string_to_double
-                                              (Utilities::split_string_list(prm.get ("Global composition minimum")));
+        global_composition_max_preset       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition maximum"))),
+                                                                                      n_compositional_fields,
+                                                                                      "Global composition maximum");
+        global_composition_min_preset       = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double
+                                              (Utilities::split_string_list(prm.get ("Global composition minimum"))),
+                                                                                      n_compositional_fields,
+                                                                                      "Global composition minimum");
       }
       prm.leave_subsection ();
 
@@ -1746,15 +1752,6 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
-
-      // global_composition_max_preset.size() and global_composition_min_preset.size() are obtained early than
-      // n_compositional_fields. Therefore, we can only check if their sizes are the same here.
-      if (use_limiter_for_discontinuous_composition_solution)
-        AssertThrow ((global_composition_max_preset.size() == (n_compositional_fields)
-                      && global_composition_min_preset.size() == (n_compositional_fields)),
-                     ExcMessage ("The number of multiple 'Global composition maximum' values "
-                                 "and the number of multiple 'Global composition minimum' values "
-                                 "have to be the same as the total number of compositional fields"));
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list
