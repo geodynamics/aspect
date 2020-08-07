@@ -72,18 +72,18 @@ namespace aspect
                            "List of densities for background mantle and compositional fields,"
                            "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\kilogram\\per\\meter\\cubed}");
+                           "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
         prm.declare_entry ("Thermal expansivities", std::to_string(default_thermal_expansion),
                            Patterns::Anything(),
                            "List of thermal expansivities for background mantle and compositional fields,"
                            "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
-                           "If only one value is given, then all use the same value. Units: \\si{\\per\\kelvin}");
+                           "If only one value is given, then all use the same value. Units: \\si{\\per\\kelvin}.");
         prm.declare_entry ("Heat capacities", "1250.",
                            Patterns::Anything(),
                            "List of specific heats $C_p$ for background mantle and compositional fields,"
                            "for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. "
                            "If only one value is given, then all use the same value. "
-                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
+                           "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");
         prm.declare_alias ("Heat capacities", "Specific heats");
       }
 

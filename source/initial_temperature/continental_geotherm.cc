@@ -109,7 +109,7 @@ namespace aspect
                              "List of the 3 thicknesses of the lithospheric layers "
                              "'upper\\_crust', 'lower\\_crust' and 'mantle\\_lithosphere'. "
                              "If only one thickness is given, then the same thickness is used "
-                             "for all layers. Units: \\si{meter}");
+                             "for all layers. Units: \\si{meter}.");
           prm.declare_entry ("Surface temperature", "273.15",
                              Patterns::Double (0.),
                              "The value of the surface temperature. Units: \\si{\\kelvin}.");

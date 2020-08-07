@@ -140,7 +140,7 @@ namespace aspect
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
                              "at the surface of the domain. "
-                             "Units: \\si{\\meter\\per\\second\\squared}");
+                             "Units: \\si{\\meter\\per\\second\\squared}.");
           prm.declare_entry ("Magnitude at bottom", "10.7",
                              Patterns::Double (),
                              "Magnitude of the radial gravity vector "
@@ -149,7 +149,7 @@ namespace aspect
                              "example represents the core-mantle boundary in "
                              "the case of the `spherical shell' geometry model, "
                              "and the center in the case of the `sphere' "
-                             "geometry model. Units: \\si{\\meter\\per\\second\\squared}");
+                             "geometry model. Units: \\si{\\meter\\per\\second\\squared}.");
         }
         prm.leave_subsection ();
       }

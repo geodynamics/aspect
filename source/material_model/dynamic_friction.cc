@@ -173,23 +173,23 @@ namespace aspect
                                Patterns::List(Patterns::Double (0.)),
                                "List of coefficients of static friction for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: dimensionless");
+                               "If only one value is given, then all use the same value. Units: dimensionless.");
             prm.declare_entry ("Coefficients of dynamic friction", "0.4",
                                Patterns::List(Patterns::Double (0.)),
                                "List of coefficients of dynamic friction for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: dimensionless");
+                               "If only one value is given, then all use the same value. Units: dimensionless.");
             prm.declare_entry ("Cohesions", "4.e6",
                                Patterns::List(Patterns::Double (0.)),
                                "List of cohesions for background mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
-                               "If only one value is given, then all use the same value. Units: \\si{\\pascal}");
+                               "If only one value is given, then all use the same value. Units: \\si{\\pascal}.");
             prm.declare_entry ("Background Viscosities", "1.e20",
                                Patterns::List(Patterns::Double (0.)),
                                "List of background viscosities for mantle and compositional fields,"
                                "for a total of N+1 values, where N is the number of compositional fields."
                                "If only one value is given, then all use the same value. "
-                               "Units: \\si{\\pascal\\second}");
+                               "Units: \\si{\\pascal\\second}.");
           }
           prm.leave_subsection();
         }

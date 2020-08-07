@@ -111,7 +111,7 @@ namespace aspect
                            "Limits the maximum value of the yield stress determined by the "
                            "drucker-prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
-                           "in previous models. Units: \\si{\\pascal}");
+                           "in previous models. Units: \\si{\\pascal}.");
       }
 
 
