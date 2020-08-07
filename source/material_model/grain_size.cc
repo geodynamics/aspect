@@ -1043,7 +1043,7 @@ namespace aspect
           prm.declare_entry ("Use paleowattmeter", "true",
                              Patterns::Bool (),
                              "A flag indicating whether the computation should be use the paleowattmeter approach of "
-                             "Austin and Evans (2007) \\url{http://dx.doi.org/10.1130/G23244A.1} for grain size reduction " 
+                             "Austin and Evans (2007) \\url{http://dx.doi.org/10.1130/G23244A.1} for grain size reduction "
                              "in the dislocation creep regime (if true) or the paleopiezometer approach from Hall and "
                              "Parmetier (2003) \\url{http://dx.doi.org/10.1029/2002GC000308} (if false).");
           prm.declare_entry ("Average specific grain boundary energy", "1.0",
