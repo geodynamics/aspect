@@ -328,7 +328,8 @@ namespace aspect
                                           const std::vector<double> &composition,
                                           const SymmetricTensor<2,dim> &strain_rate,
                                           const ViscosityScheme &viscous_type,
-                                          const YieldScheme &yield_type) const;
+                                          const YieldScheme &yield_type,
+                                          const std::vector<double> &phase_function_values = std::vector<double>()) const;
 
 
         /**
@@ -351,7 +352,8 @@ namespace aspect
                                            const std::vector<double> &volume_fractions,
                                            const std::vector<double> &composition_viscosities,
                                            const MaterialModel::MaterialModelInputs<dim> &in,
-                                           MaterialModel::MaterialModelOutputs<dim> &out) const;
+                                           MaterialModel::MaterialModelOutputs<dim> &out,
+                                           const std::vector<double> &phase_function_values = std::vector<double>()) const;
 
 
         /**
