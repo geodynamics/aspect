@@ -759,7 +759,7 @@ namespace aspect
              p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
              p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
           {
-            auto lambda = [&] (const Point<dim> &x) -> double
+            auto lambda = [&] (const dealii::Point<dim> &x) -> double
             {
               return boundary_temperature_manager.boundary_temperature(*p, x);
             };
@@ -1361,7 +1361,7 @@ namespace aspect
       {
         VectorFunctionFromVelocityFunctionObject<dim> vel
         (introspection.n_components,
-         [&] (const Point<dim> &x) -> Tensor<1,dim>
+         [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
         {
           return boundary_velocity_manager.boundary_velocity(p->first, x);
         });

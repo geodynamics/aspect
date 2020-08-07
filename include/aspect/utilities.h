@@ -223,7 +223,7 @@ namespace aspect
        */
       template <int dim>
       std::array<double,dim>
-      WGS84_coordinates(const Point<dim> &position);
+      WGS84_coordinates(const dealii::Point<dim> &position);
 
       /**
        * Returns spherical coordinates of a Cartesian point. The returned array
@@ -233,7 +233,7 @@ namespace aspect
        */
       template <int dim>
       std::array<double,dim>
-      cartesian_to_spherical_coordinates(const Point<dim> &position);
+      cartesian_to_spherical_coordinates(const dealii::Point<dim> &position);
 
       /**
        * Return the Cartesian point of a spherical position defined by radius,
@@ -241,7 +241,7 @@ namespace aspect
        * omitted.
        */
       template <int dim>
-      Point<dim>
+      dealii::Point<dim>
       spherical_to_cartesian_coordinates(const std::array<double,dim> &scoord);
 
       /**
@@ -252,7 +252,7 @@ namespace aspect
       template <int dim>
       Tensor<1,dim>
       spherical_to_cartesian_vector(const Tensor<1,dim> &spherical_vector,
-                                    const Point<dim> &position);
+                                    const dealii::Point<dim> &position);
 
 
       /**
@@ -262,7 +262,7 @@ namespace aspect
        */
       template <int dim>
       std::array<double,3>
-      cartesian_to_ellipsoidal_coordinates(const Point<3> &position,
+      cartesian_to_ellipsoidal_coordinates(const dealii::Point<3> &position,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
 
@@ -271,7 +271,7 @@ namespace aspect
        * theta and radius.
        */
       template <int dim>
-      Point<3>
+      dealii::Point<3>
       ellipsoidal_to_cartesian_coordinates(const std::array<double,3> &phi_theta_d,
                                            const double semi_major_axis_a,
                                            const double eccentricity);
