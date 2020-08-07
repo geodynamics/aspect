@@ -184,6 +184,30 @@ namespace aspect
           return (drho - rho) / delta_press;
         }
 
+        unsigned int
+        MaterialLookup::phase_volume_fraction_index(const std::string phase_name) const
+        {
+          int phase_index = -1;
+          for (unsigned int n=0; n<n_phases; n++)
+            {
+              if (phase_names[n].compare(phase_name) == 0)
+                {
+                  phase_index = n;
+                  break;
+                }
+            }
+          Assert(phase_index != -1, ExcMessage("Phase name " + phase_name + " not found in list."));
+          return phase_index;
+        }
+
+        double
+        MaterialLookup::phase_volume_fraction(const int phase_id,
+                                              const double temperature,
+                                              const double pressure) const
+        {
+          return value(temperature,pressure,phase_volume_fraction_values[phase_id],interpolation);
+        }
+
         double
         MaterialLookup::value (const double temperature,
                                const double pressure,
@@ -593,10 +617,10 @@ namespace aspect
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
 
-          phase_volume_fractions.resize(n_phases);
+          phase_volume_fraction_values.resize(n_phases);
           for (unsigned int n=0; n<n_phases; n++)
             {
-              phase_volume_fractions[n].reinit(n_temperature,n_pressure);
+              phase_volume_fraction_values[n].reinit(n_temperature,n_pressure);
             }
 
           unsigned int i = 0;
@@ -643,7 +667,7 @@ namespace aspect
 
               for (unsigned int n=0; n<n_phases; n++)
                 {
-                  phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_indices[n]];
+                  phase_volume_fraction_values[n][i%n_temperature][i/n_temperature]=row_values[phase_indices[n]];
                 }
               i++;
             }

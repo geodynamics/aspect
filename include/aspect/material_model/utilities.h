@@ -118,6 +118,15 @@ namespace aspect
             dRhodp (const double temperature,
                     const double pressure) const;
 
+
+            unsigned int
+            phase_volume_fraction_index(const std::string phase_name) const;
+
+            double
+            phase_volume_fraction(const int phase_id,
+                                  const double temperature,
+                                  const double pressure) const;
+
             /**
              * Returns the size of the data tables in pressure (first entry)
              * and temperature (second entry) dimensions.
@@ -157,7 +166,7 @@ namespace aspect
             dealii::Table<2,double> enthalpy_values;
 
             std::vector<std::string> phase_names;
-            std::vector<dealii::Table<2,double>> phase_volume_fractions;
+            std::vector<dealii::Table<2,double>> phase_volume_fraction_values;
 
             double delta_press;
             double min_press;
