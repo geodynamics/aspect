@@ -1,0 +1,132 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.3.0-pre (viscosity_T_dependence, 7c53d6d72)
+--     . using deal.II 9.2.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.2.0
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&NewtonSolver=1&sha=7c53d6d72&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 1,024 (on 5 levels)
+Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Solving block system ... 0 iterations.
+   Solving air system ... 0 iterations.
+   Solving inclusion system ... 0 iterations.
+   Initial Newton Stokes residual = 1.71525e+14, v = 8.87054e+13, p = 1.46807e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+89 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 1.71525e+14
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.129 m/year, 0.221 m/year
+     Writing graphical output:  output/solution/solution-00000.0000
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+115 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.00452565, norm of the rhs: 7.76262e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.131 m/year, 0.221 m/year
+     Writing graphical output:  output/solution/solution-00000.0001
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+34 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.00379011, norm of the rhs: 6.50098e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.132 m/year, 0.221 m/year
+     Writing graphical output:  output/solution/solution-00000.0002
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+34 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 0.00345696, norm of the rhs: 5.92954e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.133 m/year, 0.22 m/year
+     Writing graphical output:  output/solution/solution-00000.0003
+
+   The linear solver tolerance is set to 0.1. 
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+35 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 0.00332741, norm of the rhs: 5.70734e+11, newton_derivative_scaling_factor: 0
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/4.712e+09 // 0/1/5.104e+09 // 0/1/1.834e+08
+     RMS, max velocity:         0.135 m/year, 0.22 m/year
+     Writing graphical output:  output/solution/solution-00000.0004
+
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      6.68s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         1 |    0.0523s |      0.78% |
+| Assemble Stokes system Picard    |         5 |     0.263s |       3.9% |
+| Assemble Stokes system rhs       |         4 |     0.151s |       2.3% |
+| Assemble composition system      |         6 |     0.527s |       7.9% |
+| Assemble temperature system      |         1 |    0.0662s |      0.99% |
+| Build Stokes preconditioner      |         5 |     0.289s |       4.3% |
+| Build composition preconditioner |         3 |    0.0119s |      0.18% |
+| Build temperature preconditioner |         1 |  0.000881s |         0% |
+| Initialization                   |         1 |    0.0964s |       1.4% |
+| Postprocessing                   |         5 |     0.542s |       8.1% |
+| Setup dof systems                |         1 |   0.00824s |      0.12% |
+| Setup initial conditions         |         1 |    0.0984s |       1.5% |
+| Setup matrices                   |         1 |    0.0508s |      0.76% |
+| Solve Stokes system              |         5 |       4.5s |        67% |
+| Solve composition system         |         3 |   0.00163s |         0% |
+| Solve temperature system         |         1 |  0.000495s |         0% |
++----------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      6.68s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         1 |    0.0523s |      0.78% |
+| Assemble Stokes system Picard    |         5 |     0.263s |       3.9% |
+| Assemble Stokes system rhs       |         4 |     0.151s |       2.3% |
+| Assemble composition system      |         6 |     0.527s |       7.9% |
+| Assemble temperature system      |         1 |    0.0662s |      0.99% |
+| Build Stokes preconditioner      |         5 |     0.289s |       4.3% |
+| Build composition preconditioner |         3 |    0.0119s |      0.18% |
+| Build temperature preconditioner |         1 |  0.000881s |         0% |
+| Initialization                   |         1 |    0.0964s |       1.4% |
+| Postprocessing                   |         5 |     0.542s |       8.1% |
+| Setup dof systems                |         1 |   0.00824s |      0.12% |
+| Setup initial conditions         |         1 |    0.0984s |       1.5% |
+| Setup matrices                   |         1 |    0.0508s |      0.76% |
+| Solve Stokes system              |         5 |       4.5s |        67% |
+| Solve composition system         |         3 |   0.00163s |         0% |
+| Solve temperature system         |         1 |  0.000495s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&NewtonSolver=1&sha=7c53d6d72&src=code
+-----------------------------------------------------------------------------

@@ -1,0 +1,188 @@
+# This test makes sure that postprocessing nonlinear iterations works
+# with the Newton solver scheme. 
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
+set Nonlinear solver tolerance             = 1e-4
+set Max nonlinear iterations               = 5
+set CFL number                             = 0.5
+set Maximum time step                      = 5
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+
+# Solver parameters
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance = 1e-7
+    set Number of cheap Stokes solver steps = 0
+  end
+  subsection Newton solver parameters
+    set Max Newton line search iterations        = 5
+    set Max pre-Newton nonlinear iterations      = 200
+    set Maximum linear Stokes solver tolerance   = 1e-1
+    set Nonlinear Newton solver switch tolerance = 1e-4
+    set SPD safety factor                        = 0.9
+    set Stabilization preconditioner             = SPD
+    set Stabilization velocity block             = SPD
+    set Use Newton failsafe                      = false
+    set Use Newton residual scaling method       = false
+    set Use Eisenstat Walker method for Picard iterations = true
+  end
+end
+
+
+# Model geometry (100x100 km, initial 50 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 2
+    set Y repetitions = 2
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Globally refine to 3.125 km grid spacing
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+
+# Velocity boundary conditions (5e-9 m/s on each boundary)
+# The imposed velocity produces a background strain-rate 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, top y: function, bottom y: function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = vel=0.15778463
+    set Function expression = if (x<50e3 , vel, -vel); if (y<50e3, -vel, vel);
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = stress_xx, stress_yy, stress_xy, block, air, inclusion
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; \
+                              if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
+                              if (y<=25.e3 || y>=75.e3, 1, 0); \
+                              if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Fixed composition boundary indicators  = 
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions (isothermal)
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Material averaging = none
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Densities                   = 2700
+    set Reference viscosity         = 1.e21
+    set Reference strain rate       = 1.e-13
+    set Maximum viscosity           = 1.e23
+    set Minimum viscosity           = 1.e17
+
+    set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Include viscoelasticity = true
+
+    set Elastic shear moduli        = 1e50
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 5e3
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = harmonic
+
+    set Angles of internal friction = 37., 0., 0., 0., 37., 0., 0.
+    set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
+
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, named additional outputs
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 0e3
+    set Interpolate output = true
+
+  end
+
+  set Run postprocessors on nonlinear iterations = true
+
+end
+
+# Termination criteria
+subsection Termination criteria
+ set Termination criteria = end time
+end
+
