@@ -88,16 +88,29 @@ namespace aspect
         virtual void update();
 
         /**
+        * A function that returns the initial deformation of certain mesh
+        * vertices (e.g. the surface vertices). @p position is the original
+        * position of each vertex and this function is expected to return the
+        * displacement vector of this position. The default implementation
+        * returns a zero displacement (= no initial deformation).
+        */
+        virtual
+        Tensor<1,dim>
+        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
+                                                const Point<dim> &position) const;
+
+        /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific set of boundaries.
          * The calling class will respect
          * these constraints when computing the new vertex positions.
+         * The default implementation creates no constraints.
          */
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const = 0;
+                                                 const std::set<types::boundary_id> &boundary_id) const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -294,6 +307,25 @@ namespace aspect
          * in the parameter file.
          */
         std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects_map;
+
+        /**
+        * Set the boundary conditions for the solution of the elliptic
+        * problem, which computes the initial displacements of the internal
+        * vertices so that the mesh does not become too distorted due to
+        * motion of the surface. Displacements of vertices on the
+        * deforming surface are fixed according to the selected deformation
+        * plugins.
+        */
+        AffineConstraints<double> make_initial_constraints ();
+
+        /**
+         * Deform the initial mesh by solving a Laplace equation
+         * for the interior mesh vertices. The boundary deformation
+         * is prescribed as given by the
+         * compute_initial_deformation_on_boundary() function of
+         * the individual mesh deformation plugins.
+         */
+        void deform_initial_mesh ();
 
         /**
          * Set the boundary conditions for the solution of the elliptic
