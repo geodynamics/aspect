@@ -133,7 +133,7 @@ namespace WorldBuilder
                   y_list[j] = coordinates[j][1];
                 }
 
-              Utilities::interpolation x_spline, y_spline;
+              WorldBuilder::Utilities::interpolation x_spline, y_spline;
               x_spline.set_points(one_dimensional_coordinates_local, x_list, interpolation == "linear" ? false : true);
               y_spline.set_points(one_dimensional_coordinates_local, y_list, interpolation == "linear" ? false : true);
 
