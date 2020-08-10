@@ -29,6 +29,8 @@
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
+#include <deal.II/lac/affine_constraints.h>
+
 #include <deal.II/distributed/tria.h>
 
 #include <deal.II/dofs/dof_handler.h>
@@ -39,12 +41,6 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/base/tensor_function.h>
 
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#else
-#  include <deal.II/lac/affine_constraints.h>
-#endif
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
@@ -77,18 +73,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 namespace aspect
 {
   using namespace dealii;
-
-#if DEAL_II_VERSION_GTE(9,1,0)
-  /**
-   * The ConstraintMatrix class was deprecated in deal.II 9.1 in favor
-   * of AffineConstraints. To make the name available for ASPECT
-   * nonetheless, use a `using` declaration. This injects the name
-   * into the `aspect` namespace, where it is visible before the
-   * deprecated name in the `dealii` namespace, thereby suppressing
-   * the deprecation message.
-   */
-  using ConstraintMatrix = class dealii::AffineConstraints<double>;
-#endif
 
   template <int dim>
   class MeltHandler;
