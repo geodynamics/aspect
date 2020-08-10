@@ -540,111 +540,6 @@ namespace aspect
   }
 
 
-  namespace
-  {
-    /**
-     * Conversion object where one can provide a function that returns
-     * a tensor for the velocity at a given point and it returns something
-     * that matches the dealii::Function interface with a number of output
-     * components equal to the number of components of the finite element
-     * in use.
-     */
-    template <int dim>
-    class VectorFunctionFromVelocityFunctionObject : public Function<dim>
-    {
-      public:
-        /**
-         * Given a function object that takes a Point and returns a Tensor<1,dim>,
-         * convert this into an object that matches the Function@<dim@>
-         * interface.
-         *
-         * @param n_components total number of components of the finite element system.
-         * @param function_object The function that will form one component
-         *     of the resulting Function object.
-         */
-        VectorFunctionFromVelocityFunctionObject (const unsigned int n_components,
-                                                  const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object);
-
-        /**
-         * Return the value of the
-         * function at the given
-         * point. Returns the value the
-         * function given to the constructor
-         * produces for this point.
-         */
-        double value (const Point<dim>   &p,
-                      const unsigned int  component = 0) const override;
-
-        /**
-         * Return all components of a
-         * vector-valued function at a
-         * given point.
-         *
-         * <tt>values</tt> shall have the right
-         * size beforehand,
-         * i.e. #n_components.
-         */
-        void vector_value (const Point<dim>   &p,
-                           Vector<double>     &values) const override;
-
-      private:
-        /**
-         * The function object which we call when this class's value() or
-         * value_list() functions are called.
-         **/
-        const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
-    };
-
-
-    template <int dim>
-    VectorFunctionFromVelocityFunctionObject<dim>::
-    VectorFunctionFromVelocityFunctionObject
-    (const unsigned int n_components,
-     const std::function<Tensor<1,dim> (const Point<dim> &)> &function_object)
-      :
-      Function<dim>(n_components),
-      function_object (function_object)
-    {
-    }
-
-
-
-    template <int dim>
-    double
-    VectorFunctionFromVelocityFunctionObject<dim>::value (const Point<dim> &p,
-                                                          const unsigned int component) const
-    {
-      Assert (component < this->n_components,
-              ExcIndexRange (component, 0, this->n_components));
-
-      if (component < dim)
-        {
-          const Tensor<1,dim> v = function_object(p);
-          return v[component];
-        }
-      else
-        return 0;
-    }
-
-
-
-    template <int dim>
-    void
-    VectorFunctionFromVelocityFunctionObject<dim>::
-    vector_value (const Point<dim>   &p,
-                  Vector<double>     &values) const
-    {
-      AssertDimension(values.size(), this->n_components);
-
-      // set everything to zero, and then the right components to their correct values
-      values = 0;
-
-      const Tensor<1,dim> v = function_object(p);
-      for (unsigned int d=0; d<dim; ++d)
-        values(d) = v[d];
-    }
-  }
-
 
   template <int dim>
   void
@@ -1359,7 +1254,7 @@ namespace aspect
          p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
          p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
       {
-        VectorFunctionFromVelocityFunctionObject<dim> vel
+        Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
         (introspection.n_components,
          [&] (const Point<dim> &x) -> Tensor<1,dim>
         {
