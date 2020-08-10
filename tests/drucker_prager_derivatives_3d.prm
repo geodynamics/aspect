@@ -10,8 +10,7 @@ set Additional shared libraries = tests/libdrucker_prager_derivatives_3d.so
 set Dimension                              = 3
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated Advection and Newton Stokes
-set Max nonlinear iterations               = 0
+set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry (100x100 km, 10 km spacing)
 subsection Geometry model

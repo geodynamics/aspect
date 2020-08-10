@@ -80,7 +80,7 @@ namespace aspect
                        "checkpoint file, otherwise started from scratch.");
 
     prm.declare_entry ("Max nonlinear iterations", "10",
-                       Patterns::Integer (0),
+                       Patterns::Integer (1),
                        "The maximal number of nonlinear iterations to be performed.");
 
     prm.declare_entry ("Max nonlinear iterations in pre-refinement", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
