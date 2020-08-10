@@ -29,7 +29,7 @@ namespace aspect
       template <int dim>
       void
       ReferencePosition<dim>::initialize_one_particle_property(const Point<dim> &position,
-                                                      std::vector<double> &data) const
+                                                               std::vector<double> &data) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           data.push_back(position[i]);
@@ -38,9 +38,9 @@ namespace aspect
       template <int dim>
       void
       ReferencePosition<dim>::update_particle_property(const unsigned int data_position,
-                                              const Vector<double> &/*solution*/,
-                                              const std::vector<Tensor<1,dim> > &/*gradients*/,
-                                              typename ParticleHandler<dim>::particle_iterator &particle) const
+                                                       const Vector<double> &/*solution*/,
+                                                       const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         for (unsigned int i = 0; i < dim; ++i)
           particle->get_properties()[data_position+i] = particle->get_reference_location()[i];
