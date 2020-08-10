@@ -184,20 +184,16 @@ namespace aspect
           return (drho - rho) / delta_press;
         }
 
-        unsigned int
-        MaterialLookup::phase_volume_fraction_index(const std::string phase_name) const
+        std::vector<std::string>
+        MaterialLookup::phase_volume_phase_names() const
         {
-          int phase_index = -1;
-          for (unsigned int n=0; n<n_phases; n++)
-            {
-              if (phase_names[n].compare(phase_name) == 0)
-                {
-                  phase_index = n;
-                  break;
-                }
-            }
-          Assert(phase_index != -1, ExcMessage("Phase name " + phase_name + " not found in list."));
-          return phase_index;
+          return phase_names;
+        }
+
+        int
+        MaterialLookup::phase_volume_index(const std::string phase_name) const
+        {
+          return phase_name_index.at(phase_name);
         }
 
         double
@@ -518,7 +514,7 @@ namespace aspect
           std::getline(in, temp); // get next line, dimension of table
           unsigned int n_variables;
           in >> n_variables;
-          AssertThrow (n_variables==2, ExcMessage("The PerpleX file must be two dimensional (P(bar)-T(K))."));
+          AssertThrow (n_variables==2, ExcMessage("The PerpleX file " + filename + " must be two dimensional (P(bar)-T(K))."));
 
           std::getline(in, temp); // get next line, either T(K) or P(bar)
 
@@ -551,7 +547,7 @@ namespace aspect
                 }
               else
                 {
-                  AssertThrow (false, ExcMessage("The start of the PerpleX file does not have the expected format."));
+                  AssertThrow (false, ExcMessage("The start of the PerpleX file " + filename + " does not have the expected format."));
                 }
             }
 
@@ -586,6 +582,7 @@ namespace aspect
                     {
                       phase_indices.push_back(n);
                       phase_names.push_back(label.substr(4)); // reads to the end of the label
+                      phase_name_index[label.substr(4)] = n_phases;
                       n_phases++;
                     }
                 }
@@ -594,8 +591,12 @@ namespace aspect
           {
             return i>=0;
           }),
-          ExcMessage("PerpleX lookup files must contain columns with the labels "
+          ExcMessage("The PerpleX lookup file " + filename + " must contain columns with the labels "
                      "rho,kg/m3, alpha,1/K, cp,J/K/kg, vp,km/s, vs,km/s and h,J/kg."));
+
+          AssertThrow(phase_name_index.size() == phase_names.size(),
+                      ExcMessage("The PerpleX lookup file " + filename + " must have unique phase names. "
+                                 "Either combine columns with the same phase name, or change the phase names."));
 
           std::getline(in, temp); // first data line
 

@@ -1,16 +1,16 @@
 |6.6.6
-pyrolite_1.tab                                                                                      
+pyrolite_1.tab
            2
-P(bar)  
-   1.0000000000000000     
-   6410.2307692307695     
+P(bar)
+   1.0000000000000000
+   6410.2307692307695
           40
-T(K)    
-   300.00000000000000     
-   56.410256410256409     
+T(K)
+   300.00000000000000
+   56.410256410256409
           40
-           8
-P(bar)         T(K)           rho,kg/m3      alpha,1/K      cp,J/K/kg      vp,km/s        vs,km/s        h,J/kg        	vol_Pl vol_Pl vol_O vol_Cpx vol_Cpx vol_ky vol_q vol_Opx vol_Gt vol_Gt vol_Sp vol_C2/c vol_Ring vol_Wad vol_st vol_Wus vol_Wus vol_Aki vol_Aki vol_ca-pv vol_CF vol_Pv
+          30
+P(bar)         T(K)           rho,kg/m3      alpha,1/K      cp,J/K/kg      vp,km/s        vs,km/s        h,J/kg        	vol_Pl1 vol_Pl2 vol_O vol_Cpx1 vol_Cpx2 vol_ky vol_q vol_Opx vol_Gt1 vol_Gt2 vol_Sp vol_C2/c vol_Ring vol_Wad vol_st vol_Wus1 vol_Wus2 vol_Aki1 vol_Aki2 vol_ca-pv vol_CF vol_Pv
   1.00000        300.000        3305.89       0.212517E-004   858.434        7.33378        3.64967      -0.134344E+008	0.0381445 0 0.721705 0.13978 0 0.0557572 0.0446141 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
   6411.23        300.000        3391.38       0.211381E-004   854.627        8.33749        4.82705      -0.132479E+008	0 0 0.61055 0.13909 0.0290736 0.0337792 0 0.126896 0.0606111 0 0 0 0 0 0 0 0 0 0 0 0 0
   12821.5        300.000        3422.84       0.204411E-004   853.304        8.45259        4.88339      -0.130631E+008	0 0 0.585762 0.136328 0.0298683 0.00755613 0 0.11066 0.129826 0 0 0 0 0 0 0 0 0 0 0 0 0

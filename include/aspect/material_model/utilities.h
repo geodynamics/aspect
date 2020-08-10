@@ -118,9 +118,11 @@ namespace aspect
             dRhodp (const double temperature,
                     const double pressure) const;
 
+            std::vector<std::string>
+            phase_volume_phase_names() const;
 
-            unsigned int
-            phase_volume_fraction_index(const std::string phase_name) const;
+            int
+            phase_volume_index(std::string phase_name) const;
 
             double
             phase_volume_fraction(const int phase_id,
@@ -166,6 +168,7 @@ namespace aspect
             dealii::Table<2,double> enthalpy_values;
 
             std::vector<std::string> phase_names;
+            std::unordered_map<std::string, int> phase_name_index;
             std::vector<dealii::Table<2,double>> phase_volume_fraction_values;
 
             double delta_press;
