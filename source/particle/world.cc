@@ -250,6 +250,12 @@ namespace aspect
           signals.post_refinement_load_user_data.connect(lambda);
           signals.post_resume_load_user_data.connect(lambda);
         }
+
+      signals.post_mesh_deformation.connect(
+        [&] (const SimulatorAccess<dim> &)
+      {
+        particle_handler->sort_particles_into_subdomains_and_cells();
+      });
     }
 
 

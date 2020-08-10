@@ -1744,7 +1744,10 @@ namespace aspect
     // mesh_deformation_execute() after the Stokes solve, it will be before we know what the appropriate
     // time step to take is, and we will timestep the boundary incorrectly.
     if (parameters.mesh_deformation_enabled)
+    {
       mesh_deformation->execute ();
+      signals.post_mesh_deformation(*this);
+    }
 
     // Compute the reactions of compositional fields and temperature in case of operator splitting.
     if (parameters.use_operator_splitting)
