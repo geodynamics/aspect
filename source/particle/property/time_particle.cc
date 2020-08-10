@@ -18,11 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-/* I think I need the simulator.h, because if I dont have it, it comlains about initialising and constructing before lines that are exactly the same as in melt_particle.cc. But if I include the aspect path or copy the file into plugin folder, it says that the file does not exist*/
-/* 
-it finds it now with less path, but it does not help the problem*/
-//AG: For absolute paths, we have to use ""
-#include "time_particle.h"
+
+#include <aspect/particle/property/time_particle.h>
 #include <aspect/simulator.h>
 
 
