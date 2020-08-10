@@ -37,6 +37,8 @@ namespace aspect
                                       update_values | update_gradients | update_quadrature_points)
       {}
 
+
+
       template <int dim>
       void
       Stress<dim>::
