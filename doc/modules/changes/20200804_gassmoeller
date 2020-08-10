@@ -1,0 +1,6 @@
+<li> New: There is now a signal called post_nonlinear_solver that is triggered
+after the nonlinear solver has finished in a timestep and can be used to query
+information like the number of nonlinear iterations, the initial and final
+nonlinear residuals, and whether the solver succeeded.
+<br>
+(Rene Gassmoeller, 2020/08/04)

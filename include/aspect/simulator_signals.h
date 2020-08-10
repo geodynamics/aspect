@@ -251,6 +251,17 @@ namespace aspect
                                   const SolverControl &solver_control)> post_advection_solver;
 
     /**
+     * A signal that is fired when the nonlinear solver scheme is done.
+     * The signal parameter is an object that contains information
+     * about the final state (failure/success), number of
+     * iterations and history of residuals of the nonlinear solver.
+     * If there is no nonlinear solver (only a single solve), the
+     * SolverControl object will report a successful state, a single iteration
+     * and a remaining residual of zero.
+     */
+    boost::signals2::signal<void (const SolverControl &)> post_nonlinear_solver;
+
+    /**
      * A signal that is fired at the end of the set_assemblers() function that
      * allows modification of the assembly objects active in this simulation.
      */

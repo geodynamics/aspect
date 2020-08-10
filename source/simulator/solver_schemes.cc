@@ -678,6 +678,12 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -694,25 +700,30 @@ namespace aspect
                parameters.max_nonlinear_iterations_in_prerefinement)
       :
       parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
     do
       {
-        const double relative_nonlinear_stokes_residual =
+        relative_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_nonlinear_stokes_residual
+              << ": " << relative_residual
               << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
-          break;
-
         ++nonlinear_iteration;
       }
-    while (nonlinear_iteration < max_nonlinear_iterations);
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -723,6 +734,12 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
   template <int dim>
@@ -730,6 +747,12 @@ namespace aspect
   {
     if (timestep_number == 0)
       assemble_and_solve_stokes();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -749,6 +772,11 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
     do
       {
         const double relative_temperature_residual =
@@ -767,7 +795,8 @@ namespace aspect
         pcout << ", " << relative_nonlinear_stokes_residual;
         pcout << std::endl;
 
-        double max = 0.0;
+        // Find the maximum residual of the individual equations
+        relative_residual = relative_temperature_residual;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           {
             // in models with melt migration the melt advection equation includes the divergence of the velocity
@@ -780,25 +809,23 @@ namespace aspect
                                       :
                                       0.0);
             if (initial_composition_residual[c]>threshold)
-              max = std::max(relative_composition_residual[c],max);
+              relative_residual = std::max(relative_composition_residual[c],relative_residual);
           }
+        relative_residual = std::max(relative_nonlinear_stokes_residual, relative_residual);
 
-        max = std::max(relative_nonlinear_stokes_residual, max);
-        max = std::max(relative_temperature_residual, max);
         pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << max
+              << ": " << relative_residual
               << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        if (max < parameters.nonlinear_tolerance)
-          break;
-
         ++nonlinear_iteration;
       }
-    while (nonlinear_iteration < max_nonlinear_iterations);
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -822,26 +849,29 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
     do
       {
-        const double relative_nonlinear_stokes_residual =
+        relative_residual =
           assemble_and_solve_stokes(nonlinear_iteration == 0, &initial_stokes_residual);
 
         pcout << "      Relative nonlinear residual (Stokes system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << relative_nonlinear_stokes_residual
+              << ": " << relative_residual
               << std::endl
               << std::endl;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        // if reached convergence, exit nonlinear iterations.
-        if (relative_nonlinear_stokes_residual < parameters.nonlinear_tolerance)
-          break;
-
         ++nonlinear_iteration;
       }
-    while (nonlinear_iteration < max_nonlinear_iterations);
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -851,7 +881,7 @@ namespace aspect
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
-    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
 
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
@@ -882,13 +912,23 @@ namespace aspect
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
-    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
+                                                  newton_handler->parameters.nonlinear_switch_tolerance);
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+
+    do
       {
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
 
-        if (use_picard == true && (dcr.residual/dcr.initial_residual <= newton_handler->parameters.nonlinear_switch_tolerance ||
-                                   nonlinear_iteration >= newton_handler->parameters.max_pre_newton_nonlinear_iterations))
+        if (use_picard == true &&
+            nonlinear_solver_control_picard.check(nonlinear_iteration, relative_residual) != SolverControl::iterate)
           {
             use_picard = false;
             pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
@@ -908,6 +948,7 @@ namespace aspect
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
 
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
+        relative_residual = dcr.residual/dcr.initial_residual;
 
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
@@ -917,9 +958,9 @@ namespace aspect
             postprocess ();
           }
 
-        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
-          break;
+        ++nonlinear_iteration;
       }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
@@ -931,6 +972,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -971,13 +1014,23 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    SolverControl nonlinear_solver_control_picard(newton_handler->parameters.max_pre_newton_nonlinear_iterations,
+                                                  newton_handler->parameters.nonlinear_switch_tolerance);
+
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
-    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
       {
-        if (use_picard == true && (dcr.residual/dcr.initial_residual <= newton_handler->parameters.nonlinear_switch_tolerance ||
-                                   nonlinear_iteration >= newton_handler->parameters.max_pre_newton_nonlinear_iterations))
+        // If we are in the Picard phase, check if we can switch to Newton
+        if (use_picard == true &&
+            nonlinear_solver_control_picard.check(nonlinear_iteration, relative_residual) != SolverControl::iterate)
           {
             use_picard = false;
             pcout << "   Switching from defect correction form of Picard to the Newton solver scheme." << std::endl;
@@ -998,6 +1051,8 @@ namespace aspect
 
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
 
+        relative_residual = dcr.residual/dcr.initial_residual;
+
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
             // Before postprocessing, we need to copy the actual solution into the solution vector
@@ -1006,9 +1061,9 @@ namespace aspect
             postprocess ();
           }
 
-        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
-          break;
+        ++nonlinear_iteration;
       }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
     // Reset the Newton stabilization at the end of the timestep.
     newton_handler->parameters.preconditioner_stabilization = starting_preconditioner_stabilization;
@@ -1020,6 +1075,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -1069,6 +1126,12 @@ namespace aspect
 
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 
@@ -1078,6 +1141,12 @@ namespace aspect
   {
     if (parameters.run_postprocessors_on_nonlinear_iterations)
       postprocess ();
+
+    // Setup a nonlinear solver control that only allows a single iteration
+    SolverControl nonlinear_solver_control(1,1.0);
+    // Announce that we did a single iteration, and assume we have converged
+    nonlinear_solver_control.check(1,0.0);
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 }
 
