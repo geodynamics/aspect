@@ -35,8 +35,8 @@ namespace aspect
        *
        * @ingroup ParticleProperties
        */
-       // AG: we need to derive from the SimulatorAccess class if you want
-       // to use functions from this class, like get_time()
+      // AG: we need to derive from the SimulatorAccess class if you want
+      // to use functions from this class, like get_time()
       template <int dim>
       class TimeParticle : public Interface<dim>,  public ::aspect::SimulatorAccess<dim>
       {
@@ -52,7 +52,7 @@ namespace aspect
            * of this function should be to extend this vector by a number of
            * properties.
            */
-          		  
+
           void
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const override;

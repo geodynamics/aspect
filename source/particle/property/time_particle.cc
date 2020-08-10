@@ -29,26 +29,26 @@ namespace aspect
   {
     namespace Property
     {
-	
+
       template <int dim>
       void
       TimeParticle<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
-                                                  std::vector<double> &data) const
-													  {
-	  data.push_back(0.0);
-													  }
+                                                          std::vector<double> &data) const
+      {
+        data.push_back(0.0);
+      }
 
       template <int dim>
       void
       TimeParticle<dim>::update_one_particle_property(const unsigned int data_position,
-                                                  const Point<dim> &,
-                                                  const Vector<double> &time,
-                                                  const std::vector<Tensor<1,dim> > &,
-                                                  const ArrayView<double> &data) const
-												  {
-      data[data_position] = this->get_time();
-												  }
-      
+                                                      const Point<dim> &,
+                                                      const Vector<double> &time,
+                                                      const std::vector<Tensor<1,dim> > &,
+                                                      const ArrayView<double> &data) const
+      {
+        data[data_position] = this->get_time();
+      }
+
       template <int dim>
       UpdateTimeFlags
       TimeParticle<dim>::need_update() const
