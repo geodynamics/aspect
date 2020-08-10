@@ -248,6 +248,21 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return;
 
+    bool skip_EV_dirichlet_boundary_cells = false;
+
+    if (advection_field.is_temperature())
+      skip_EV_dirichlet_boundary_cells = true;
+    else
+      {
+        const std::string field_name = introspection.name_for_compositional_index(advection_field.compositional_variable);
+        if (std::find(parameters.disable_boundary_entropy_viscosity_for_compositions.begin(),
+                      parameters.disable_boundary_entropy_viscosity_for_compositions.end(),
+                      field_name)
+            !=
+            parameters.disable_boundary_entropy_viscosity_for_compositions.end())
+          skip_EV_dirichlet_boundary_cells = true;
+      }
+
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
     const double global_entropy_variation = get_entropy_variation ((global_field_range.first +
@@ -340,79 +355,83 @@ namespace aspect
         // we need the stabilization, because the boundary cells can
         // be advection dominated. Hence, only disable artificial
         // viscosity if flow through the boundary is slow, or
-        // tangential.
+        // tangential. Also disable artificial viscosity for compositions
+        // for which this is requested (e.g. compositions with
+        // physical diffusion).
         if (parameters.advection_stabilization_method
-            == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity
-            && advection_field.is_temperature())
+            == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity)
           {
-            const std::set<types::boundary_id> &fixed_temperature_boundaries =
-              boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
-            const std::set<types::boundary_id> &tangential_velocity_boundaries =
-              boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
-            const std::set<types::boundary_id> &zero_velocity_boundaries =
-              boundary_velocity_manager.get_zero_boundary_velocity_indicators();
-
-            bool cell_at_conduction_dominated_dirichlet_boundary = false;
-            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
-              if (cell->at_boundary(face_no) == true &&
-                  fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
-                {
-                  // If the velocity is tangential or zero we can always disable stabilization, except if there is another
-                  // face at a different boundary. Therefore continue with the next face rather than break the loop.
-                  if ((tangential_velocity_boundaries.find(cell->face(face_no)->boundary_id())
-                       != tangential_velocity_boundaries.end())
-                      ||
-                      (zero_velocity_boundaries.find(cell->face(face_no)->boundary_id())
-                       != zero_velocity_boundaries.end()))
-                    {
-                      cell_at_conduction_dominated_dirichlet_boundary = true;
-                      continue;   // test next face
-                    }
-
-                  scratch.face_finite_element_values->reinit (cell, face_no);
-                  (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_solution,
-                      face_old_velocity_values);
-                  (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_old_solution,
-                      face_old_old_velocity_values);
-
-                  // ... check if the face is a boundary with normal flow by integrating the normal velocities
-                  // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
-                  double normal_flow = 0.0;
-                  double flow = 0.0;
-                  double area = 0.0;
-                  for (unsigned int q=0; q<scratch.face_finite_element_values->n_quadrature_points; ++q)
-                    {
-                      normal_flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0 *
-                                      scratch.face_finite_element_values->normal_vector(q)) *
-                                     scratch.face_finite_element_values->JxW(q);
-                      flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0).norm() *
-                              scratch.face_finite_element_values->JxW(q);
-                      area += scratch.face_finite_element_values->JxW(q);
-                    }
-
-                  // Disable stabilization for boundaries with slow flow, or tangential flow.
-                  // Break the loop in case a face is at multiple boundaries, some with flow, some without.
-                  // In those cases we can not disable stabilization.
-                  if ((std::abs(flow/area) * time_step
-                       < std::sqrt(std::numeric_limits<double>::epsilon()) * cell->diameter())
-                      ||
-                      (std::abs(normal_flow)
-                       < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow)))
-                    {
-                      cell_at_conduction_dominated_dirichlet_boundary = true;
-                    }
-                  else
-                    {
-                      cell_at_conduction_dominated_dirichlet_boundary = false;
-                      break; // no need to check any other face
-                    }
-                }
-
-            if (cell_at_conduction_dominated_dirichlet_boundary)
+            if (skip_EV_dirichlet_boundary_cells == true)
               {
-                // If we set the viscosity to zero, we don't need any further computation on this cell
-                viscosity_per_cell[cell->active_cell_index()] = 0.0;
-                continue;   // next cell
+                const std::set<types::boundary_id> &fixed_temperature_boundaries =
+                  boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+                const std::set<types::boundary_id> &tangential_velocity_boundaries =
+                  boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+                const std::set<types::boundary_id> &zero_velocity_boundaries =
+                  boundary_velocity_manager.get_zero_boundary_velocity_indicators();
+
+                bool cell_at_conduction_dominated_dirichlet_boundary = false;
+                for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+                  if (cell->at_boundary(face_no) == true &&
+                      fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
+                    {
+                      // If the velocity is tangential or zero we can always disable stabilization, except if there is another
+                      // face at a different boundary. Therefore continue with the next face rather than break the loop.
+                      if ((tangential_velocity_boundaries.find(cell->face(face_no)->boundary_id())
+                           != tangential_velocity_boundaries.end())
+                          ||
+                          (zero_velocity_boundaries.find(cell->face(face_no)->boundary_id())
+                           != zero_velocity_boundaries.end()))
+                        {
+                          cell_at_conduction_dominated_dirichlet_boundary = true;
+                          continue;   // test next face
+                        }
+
+                      scratch.face_finite_element_values->reinit (cell, face_no);
+                      (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_solution,
+                          face_old_velocity_values);
+                      (*scratch.face_finite_element_values)[introspection.extractors.velocities].get_function_values(old_old_solution,
+                          face_old_old_velocity_values);
+
+                      // ... check if the face is a boundary with normal flow by integrating the normal velocities
+                      // (flux through the boundary) as: int u*n ds = Sum_q u(x_q)*n(x_q) JxW(x_q)...
+                      double normal_flow = 0.0;
+                      double flow = 0.0;
+                      double area = 0.0;
+                      for (unsigned int q=0; q<scratch.face_finite_element_values->n_quadrature_points; ++q)
+                        {
+                          normal_flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0 *
+                                          scratch.face_finite_element_values->normal_vector(q)) *
+                                         scratch.face_finite_element_values->JxW(q);
+                          flow += ((face_old_velocity_values[q]+face_old_old_velocity_values[q])/2.0).norm() *
+                                  scratch.face_finite_element_values->JxW(q);
+                          area += scratch.face_finite_element_values->JxW(q);
+                        }
+
+                      // Disable stabilization for boundaries with slow flow, or tangential flow.
+                      // Break the loop in case a face is at multiple boundaries, some with flow, some without.
+                      // In those cases we can not disable stabilization.
+                      if ((std::abs(flow/area) * time_step
+                           < std::sqrt(std::numeric_limits<double>::epsilon()) * cell->diameter())
+                          ||
+                          (std::abs(normal_flow)
+                           < std::sqrt(std::numeric_limits<double>::epsilon()) * std::abs(flow)))
+                        {
+                          cell_at_conduction_dominated_dirichlet_boundary = true;
+                        }
+                      else
+                        {
+                          cell_at_conduction_dominated_dirichlet_boundary = false;
+                          break; // no need to check any other face
+                        }
+                    }
+
+                if (cell_at_conduction_dominated_dirichlet_boundary)
+                  {
+                    // If we set the viscosity to zero, we don't need any further computation on this cell
+                    viscosity_per_cell[cell->active_cell_index()] = 0.0;
+                    continue;   // next cell
+                  }
               }
           }
 
