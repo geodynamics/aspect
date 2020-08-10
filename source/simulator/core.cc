@@ -725,9 +725,9 @@ namespace aspect
   Simulator<dim>::
   compute_current_constraints ()
   {
-    // We put the constraints we compute into a separate ConstraintMatrix so we can check
+    // We put the constraints we compute into a separate AffineConstraints<double> so we can check
     // if the set of constraints has changed. If it did, we need to update the sparsity patterns.
-    ConstraintMatrix new_current_constraints;
+    AffineConstraints<double> new_current_constraints;
     new_current_constraints.clear ();
     new_current_constraints.reinit (introspection.index_sets.system_relevant_set);
     new_current_constraints.merge (constraints);
@@ -1312,7 +1312,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  void Simulator<dim>::compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
 
     // This needs to happen after the periodic constraints are added:
@@ -1350,7 +1350,7 @@ namespace aspect
   }
 
   template <int dim>
-  void Simulator<dim>::compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints)
+  void Simulator<dim>::compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints)
   {
     // set the current time and do the interpolation
     // for the prescribed velocity fields

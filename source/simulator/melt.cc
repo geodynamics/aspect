@@ -1462,7 +1462,7 @@ namespace aspect
   template <int dim>
   void
   MeltHandler<dim>::
-  add_current_constraints(ConstraintMatrix &constraints)
+  add_current_constraints(AffineConstraints<double> &constraints)
   {
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 

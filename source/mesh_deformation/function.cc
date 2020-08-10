@@ -58,7 +58,7 @@ namespace aspect
     template <int dim>
     void
     BoundaryFunction<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                                    ConstraintMatrix &mesh_velocity_constraints,
+                                                                    AffineConstraints<double> &mesh_velocity_constraints,
                                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
       // Loop over all boundary indicators to set the velocity constraints

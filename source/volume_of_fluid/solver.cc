@@ -57,7 +57,7 @@ namespace aspect
 #endif
 
     // Create distributed vector (we need all blocks here even though we only
-    // solve for the current block) because only have a ConstraintMatrix
+    // solve for the current block) because only have a AffineConstraints<double>
     // for the whole system, current_linearization_point contains our initial guess.
     LinearAlgebra::BlockVector distributed_solution (
       this->introspection().index_sets.system_partitioning,

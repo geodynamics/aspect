@@ -458,14 +458,14 @@ namespace aspect
        * conditions that do not change over time. This function is used by
        * setup_dofs();
        */
-      void compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints);
+      void compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints);
 
       /**
        * Fill the given @p constraints with constraints coming from the velocity boundary
        * conditions that do can change over time. This function is used by
        * compute_current_constraints().
        */
-      void compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints);
+      void compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints);
 
       /**
        * Given the 'constraints' member that contains all constraints that are
@@ -1368,7 +1368,7 @@ namespace aspect
        * @note: Rotational modes are currently not handled and don't appear to
        * require constraints so far.
        */
-      void setup_nullspace_constraints(ConstraintMatrix &constraints);
+      void setup_nullspace_constraints(AffineConstraints<double> &constraints);
 
 
       /**
@@ -1906,8 +1906,8 @@ namespace aspect
        * 'constraints' is computed in setup_dofs(), 'current_constraints' is
        * done in compute_current_constraints().
        */
-      ConstraintMatrix                                          constraints;
-      ConstraintMatrix                                          current_constraints;
+      AffineConstraints<double>                                          constraints;
+      AffineConstraints<double>                                          current_constraints;
 
       /**
        * A place to store the latest correction computed by normalize_pressure().
