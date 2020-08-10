@@ -706,6 +706,20 @@ namespace aspect
   void Simulator<dim>::solve_single_advection_single_stokes ()
   {
     assemble_and_solve_temperature();
+    // Advect the particles before they are potentially used to
+    // set up the compositional fields.
+    if (particle_world.get() != nullptr)
+      {
+        // Do not advect the particles in the initial refinement stage
+        const bool in_initial_refinement = (timestep_number == 0)
+                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        if (!in_initial_refinement)
+          // Advance the particles in the world to the current time
+          particle_world->advance_timestep();
+
+        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_world->update_particles();
+      }
     assemble_and_solve_composition();
     assemble_and_solve_stokes();
 

@@ -1837,6 +1837,10 @@ namespace aspect
           Assert (false, ExcNotImplemented());
       }
 
+    // In the single Advection, single Stokes scheme,
+    // we already advect the particles before the
+    // composition advection.
+    if (parameters.nonlinear_solver != NonlinearSolver::single_Advection_single_Stokes)
     if (particle_world.get() != nullptr)
       {
         // Do not advect the particles in the initial refinement stage

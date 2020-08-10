@@ -657,7 +657,8 @@ namespace aspect
                 = this->get_fe().component_to_system_index(this->introspection()
                                                            .component_indices.velocities[dir],j);
 
-              velocity_at_support_point[dir] = this->get_solution()[cell_dof_indices[support_point_index]];
+              // Change to current linearization point
+              velocity_at_support_point[dir] = this->get_current_linearization_point()[cell_dof_indices[support_point_index]];
               old_velocity_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
             }
 
@@ -693,6 +694,7 @@ namespace aspect
             }
         }
 
+      // The current instead of old timestep is already used
       integrator->local_integrate_step(begin_particle,
                                        end_particle,
                                        old_velocity,
