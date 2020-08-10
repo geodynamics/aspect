@@ -26,7 +26,17 @@
 #include <aspect/material_model/utilities.h>
 
 #include <deal.II/base/point.h>
+
+// Work around an incorrect instantiation in qprojector.h of deal.II 9.2.0,
+// which requires including qprojector.h before quadrature.h (and not
+// after). This file doesn't actually need qprojector.h, so the include can be
+// removed when we require 9.3.. For more info see
+// https://github.com/geodynamics/aspect/issues/3728
+#if !DEAL_II_VERSION_GTE(9,3,0)
+#include <deal.II/base/qprojector.h>
+#endif
 #include <deal.II/base/quadrature.h>
+
 #include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/dofs/dof_handler.h>
