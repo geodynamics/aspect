@@ -20,8 +20,8 @@
 
 
 
-#ifndef _aspect_isolines_h
-#define _aspect_isolines_h
+#ifndef _aspect_isosurfaces_h
+#define _aspect_isosurfaces_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
@@ -53,12 +53,12 @@ namespace aspect
           unsigned int index;
       };
 
-      class Isoline
+      class Isosurface
       {
         public:
           /**
            * Checks whether the provided values are between the min and max value  for
-           * those property of the isoline. This function assumes that the order of the
+           * those property of the isosurface. This function assumes that the order of the
            * provided values matches the order in which the properties are stored.
            */
           bool values_are_in_range(const std::vector<double> values) const;
@@ -75,12 +75,12 @@ namespace aspect
     }
 
     /**
-     * A class that implements a Isolines TODO
+     * A class that implements a Isosurfaces TODO
      *
      * @ingroup MeshRefinement
      */
     template <int dim>
-    class Isolines : public Interface<dim>,
+    class Isosurfaces : public Interface<dim>,
       public SimulatorAccess<dim>
     {
       public:
@@ -117,7 +117,7 @@ namespace aspect
         /**
          * Todo
          */
-        std::vector<Internal::Isoline> isolines;
+        std::vector<Internal::Isosurface> isosurfaces;
 
     };
   }

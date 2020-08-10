@@ -1,0 +1,23 @@
+# This input file tests the box geometry in
+# combination with the isosurfaces plugin to refine a 2D slab
+include $ASPECT_SOURCE_DIR/tests/isosurfaces_slab_2D.prm
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
+  set Strategy = isosurfaces
+  subsection Isosurfaces
+    set Isosurfaces = 2,    2,    background : 0.5 | 1.0
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names = x, y
+    set Function constants = Xtr=5.0, Dsl=1.0, Ymax=10.0, D0=0.3, Xmax=10.0
+    set Function expression = (x > Xtr + D0) ? ((y + Dsl > Ymax + D0)? 0.0 : 1.0):\
+                              (((y > x + Xmax - Xtr - Dsl) && (y < x + Xmax - Xtr))? 0.0 : 1.0)
+  end
+end

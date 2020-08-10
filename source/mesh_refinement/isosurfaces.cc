@@ -20,7 +20,7 @@
 
 
 
-#include <aspect/mesh_refinement/isolines.h>
+#include <aspect/mesh_refinement/isosurfaces.h>
 #include <aspect/utilities.h>
 #include <aspect/geometry_model/interface.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -35,18 +35,18 @@ namespace aspect
     namespace Internal
     {
       bool
-      Isoline::values_are_in_range(const std::vector<double> values) const
+      Isosurface::values_are_in_range(const std::vector<double> values) const
       {
-        // This assumes that all the vectors in isolines already have the
+        // This assumes that all the vectors in isosurfaces already have the
         // same length.
         Assert(values.size() == min_values.size(),
-               ExcMessage("Internal error: Vector of values passed to the isoline class function values_are_in_range, "
+               ExcMessage("Internal error: Vector of values passed to the isosurface class function values_are_in_range, "
                           "does not have the the correct size."));
         for (unsigned int index = 0; index < values.size(); ++index)
           {
             if (values[index] < min_values[index] || values[index] > max_values[index])
               {
-                // outside this isoline, no need to search further
+                // outside this isosurface, no need to search further
                 return false;
               }
           }
@@ -88,7 +88,7 @@ namespace aspect
               key_list += ", " + composition;
 
             AssertThrow(false,
-                        ExcMessage("The key given for the isoline could not be converted. The provided key was: " + property_name + ". "
+                        ExcMessage("The key given for the isosurface could not be converted. The provided key was: " + property_name + ". "
                                    "The following keys are allowed for this model: " + key_list + "."));
           }
       }
@@ -143,12 +143,12 @@ namespace aspect
 
     template <int dim>
     void
-    Isolines<dim>::update ()
+    Isosurfaces<dim>::update ()
     { }
 
     template <int dim>
     void
-    Isolines<dim>::tag_additional_cells () const
+    Isosurfaces<dim>::tag_additional_cells () const
     {
       if (this->get_dof_handler().n_locally_owned_dofs() == 0)
         return;
@@ -178,21 +178,21 @@ namespace aspect
 
               for (unsigned int i_quad=0; i_quad<quadrature.size(); ++i_quad)
                 {
-                  for (auto &isoline : isolines)
+                  for (auto &isosurface : isosurfaces)
                     {
                       // setup the vector to check
-                      std::vector<double> values(isoline.min_values.size());
-                      for (unsigned int index = 0; index < isoline.properties.size(); ++index)
+                      std::vector<double> values(isosurface.min_values.size());
+                      for (unsigned int index = 0; index < isosurface.properties.size(); ++index)
                         {
-                          if (isoline.properties[index].name == Internal::PropertyName::Temperature)
+                          if (isosurface.properties[index].name == Internal::PropertyName::Temperature)
                             {
                               values[index] = in.temperature[i_quad];
                             }
-                          else if (isoline.properties[index].name == Internal::PropertyName::Composition)
+                          else if (isosurface.properties[index].name == Internal::PropertyName::Composition)
                             {
-                              values[index] = std::min(std::max(in.composition[i_quad][isoline.properties[index].index], 0.0), 1.0);
+                              values[index] = std::min(std::max(in.composition[i_quad][isosurface.properties[index].index], 0.0), 1.0);
                             }
-                          else if (isoline.properties[index].name == Internal::PropertyName::Background)
+                          else if (isosurface.properties[index].name == Internal::PropertyName::Background)
                             {
                               double sum_composition = 0.0;  // Compute background material fraction
                               for (unsigned i=0 ; i < in.composition[i_quad].size() ; ++i)
@@ -206,18 +206,18 @@ namespace aspect
                             }
                         }
 
-                      if ( isoline.values_are_in_range(values))
+                      if ( isosurface.values_are_in_range(values))
                         {
                           // If the current refinement level is smaller or equal to the minimum
                           // refinement level, any coarsening flags should be cleared.
-                          if (cell->level() <= isoline.min_refinement)
+                          if (cell->level() <= isosurface.min_refinement)
                             {
                               clear_coarsen = true;
                             }
 
                           // If the current refinement level is smaller then the minimum
                           // refinement level, a refinment flag should be placed.
-                          if (cell->level() <  isoline.min_refinement)
+                          if (cell->level() <  isosurface.min_refinement)
                             {
                               refine = true;
                               break;
@@ -225,14 +225,14 @@ namespace aspect
 
                           // If the current refinement level is larger or equal to the maximum refinement
                           // level, any refinement flag should be cleared.
-                          if (cell->level() >= isoline.max_refinement)
+                          if (cell->level() >= isosurface.max_refinement)
                             {
                               clear_refine = true;
                             }
 
                           // If the current refinement level is larger then the maximum refinemment level,
                           // a coarsening flag should be placed.
-                          if (cell->level() >  isoline.max_refinement)
+                          if (cell->level() >  isosurface.max_refinement)
                             {
                               coarsen = true;
                             }
@@ -275,20 +275,20 @@ namespace aspect
 
     template <int dim>
     void
-    Isolines<dim>::
+    Isosurfaces<dim>::
     declare_parameters (ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh refinement");
       {
-        prm.enter_subsection("Isolines");
+        prm.enter_subsection("Isosurfaces");
         {
-          prm.declare_entry ("Isolines", "depth",
+          prm.declare_entry ("Isosurfaces", "depth",
                              Patterns::Anything(),
-                             "A list of isoline separated by semi-colins (;). Each isoline entry consists of "
+                             "A list of isosurface separated by semi-colins (;). Each isosurface entry consists of "
                              "multiple entries separted by a comma. The first two entries indicate the minimum and maximum "
-                             "refinement levels respectively. The entries after the first two describe the field the isoline "
+                             "refinement levels respectively. The entries after the first two describe the field the isosurface "
                              "applies to, followed by a colin (:) followed by the minimum and maximum grid levels seperated by "
-                             "bar (|). An example for an isoline is '0, 2, Temperature: 300 | 600'; 2, 2, C_1: 0.5 | 1");
+                             "bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600'; 2, 2, C_1: 0.5 | 1");
 
         }
         prm.leave_subsection();
@@ -298,7 +298,7 @@ namespace aspect
 
     template <int dim>
     void
-    Isolines<dim>::parse_parameters (ParameterHandler &prm)
+    Isosurfaces<dim>::parse_parameters (ParameterHandler &prm)
     {
       // lookup the minimum and maximum refinment
       prm.enter_subsection("Mesh refinement");
@@ -310,51 +310,51 @@ namespace aspect
 
       prm.enter_subsection("Mesh refinement");
       {
-        prm.enter_subsection("Isolines");
+        prm.enter_subsection("Isosurfaces");
         {
           // Split the list by comma delimited components.
-          const std::vector<std::string> isoline_entries = dealii::Utilities::split_string_list(prm.get("Isolines"), ';');
-          unsigned int isoline_entry_number = 0;
-          for (auto &isoline_entry : isoline_entries)
+          const std::vector<std::string> isosurface_entries = dealii::Utilities::split_string_list(prm.get("Isosurfaces"), ';');
+          unsigned int isosurface_entry_number = 0;
+          for (auto &isosurface_entry : isosurface_entries)
             {
-              isoline_entry_number++;
-              aspect::MeshRefinement::Internal::Isoline isoline;  // a new object of isoline
+              isosurface_entry_number++;
+              aspect::MeshRefinement::Internal::Isosurface isosurface;  // a new object of isosurface
               std::vector<aspect::MeshRefinement::Internal::Property> properties;  // a vector of Property
               std::vector<double> min_value_inputs;
               std::vector<double> max_value_inputs;
-              const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isoline_entry, ',');
+              const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isosurface_entry, ',');
 
               AssertThrow(field_entries.size() >= 3,
-                          ExcMessage("An isoline needs to contain at least 3 entries, but isoline " + std::to_string(isoline_entry_number)
-                                     + " contains  only " +  std::to_string(field_entries.size()) + " entries: " + isoline_entry + "."));
+                          ExcMessage("An isosurface needs to contain at least 3 entries, but isosurface " + std::to_string(isosurface_entry_number)
+                                     + " contains  only " +  std::to_string(field_entries.size()) + " entries: " + isosurface_entry + "."));
 
               // convert a potential min, min+1, min + 1, min+10, max, max-1, etc. to actual integers.
-              isoline.min_refinement = Internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
-              isoline.max_refinement = Internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
-              AssertThrow(isoline.min_refinement <= isoline.max_refinement,
+              isosurface.min_refinement = Internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
+              isosurface.max_refinement = Internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
+              AssertThrow(isosurface.min_refinement <= isosurface.max_refinement,
                           ExcMessage("The provided maximum refinement level has to be larger the then the minimum refinement level."));
               for (auto field_entry = field_entries.begin()+2; field_entry < field_entries.end(); ++field_entry)
                 {
                   AssertThrow(Patterns::Map(Patterns::Anything(),
                                             Patterns::List(Patterns::Double(), 0, std::numeric_limits<unsigned int>::max(), "|")
                                            ).match(*field_entry),
-                              ExcMessage("The isoline is not formatted correctly."));
+                              ExcMessage("The isosurface is not formatted correctly."));
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
-                              ExcMessage("The isoline property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
+                              ExcMessage("The isosurface property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
                   properties.push_back(Internal::Property(key_and_value[0], compositions)); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
-                              ExcMessage("Both a maximum and minimum value is required for each isoline."));
+                              ExcMessage("Both a maximum and minimum value is required for each isosurface."));
                   min_value_inputs.push_back(Utilities::string_to_double(values[0]));  // get min and max values of the range
                   max_value_inputs.push_back(Utilities::string_to_double(values[1]));
                   AssertThrow(min_value_inputs.back() < max_value_inputs.back(),
                               ExcMessage("The provided maximum refinement level has to be larger than the minimum refinement level."));
                 }
-              isoline.min_values = min_value_inputs;
-              isoline.max_values = max_value_inputs;
-              isoline.properties = properties;
-              isolines.push_back(isoline);
+              isosurface.min_values = min_value_inputs;
+              isosurface.max_values = max_value_inputs;
+              isosurface.properties = properties;
+              isosurfaces.push_back(isosurface);
             }
         }
         prm.leave_subsection();
@@ -369,13 +369,13 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Isolines,
-                                              "isolines",
+    ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Isosurfaces,
+                                              "isosurfaces",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators between two iso-surfaces of"
                                               "specific field entries(e.g. temperature, compsitions)."
                                               "\n\n"
-                                              "The way these indicators are derived on each isoline is by "
+                                              "The way these indicators are derived on each isosurface is by "
                                               "checking the conditions whether solutions of specific "
                                               "fields are within the ranges of values given. If these conditions"
                                               "hold, then an indicator is either put on or taken off"

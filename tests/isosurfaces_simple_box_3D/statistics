@@ -7,7 +7,4 @@
 # 7: Number of degrees of freedom for all compositions
 # 8: Number of nonlinear iterations
 # 9: Visualization file name
-# 10: Minimal value for composition C_1
-# 11: Maximal value for composition C_1
-# 12: Global mass for composition C_1
-0 0.000000000000e+00 0.000000000000e+00 508 17557 5568 5568 0 output-isolines_slab_3D/solution/solution-00000 0.00000000e+00 1.00000000e+00 4.02256944e+00 
+0 0.000000000000e+00 0.000000000000e+00 260 8949 2836 8508 0 output-isosurfaces_simple_box_3D/solution/solution-00000 

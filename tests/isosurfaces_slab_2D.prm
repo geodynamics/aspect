@@ -1,5 +1,5 @@
 # This input file tests the box geometry in
-# combination with the isolines plugin to refine a 2D slab
+# combination with the isosurfaces plugin to refine a 2D slab
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -8,9 +8,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 1673.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = iterated Advection and Newton Stokes #single Advection, single Newton Stokes
-set Max nonlinear iterations = 0
-#set Skip solvers on initial refinement = true
+set Nonlinear solver scheme                = no Advection, no Stokes 
 
 # We take a box geometry and increase the repetitions
 # of the coarse mesh
@@ -27,9 +25,9 @@ end
 subsection Mesh refinement
   set Initial global refinement          = 0
   set Initial adaptive refinement        = 2
-  set Strategy = isolines
-  subsection Isolines
-    set Isolines = 2,    2,    C_1 : 0.5 | 1.0
+  set Strategy = isosurfaces
+  subsection Isosurfaces
+    set Isosurfaces = 2,    2,    C_1 : 0.5 | 1.0
   end
 end
 
@@ -92,7 +90,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, composition statistics
   subsection Visualization
-    set Output format            = vtu
+    set Output format            = gnuplot
   end
 end
 
