@@ -44,6 +44,20 @@ namespace aspect
       return gravity;
     }
 
+
+    template <int dim>
+    void
+    Function<dim>::update()
+    {
+      // we get time passed as seconds (always) but may want
+      // to reinterpret it in years
+      if (this->convert_output_to_years())
+        function.set_time (this->get_time() / year_in_seconds);
+      else
+        function.set_time (this->get_time());
+    }
+
+
     template <int dim>
     void
     Function<dim>::declare_parameters (ParameterHandler &prm)

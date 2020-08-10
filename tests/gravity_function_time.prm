@@ -1,0 +1,91 @@
+# Copy of the simpler box test with a function
+# object describing the gravity
+
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 1.0
+set Start time                             = 0
+set Adiabatic surface temperature          = 0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = false  # default: true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+
+
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Function expression = 0;if(t>0,x,0)
+  end
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1.2 # default: 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+end
+
+
+subsection Material model
+  set Model name = simpler
+
+  subsection Simpler model
+    set Reference density             = 1    # default: 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1    # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 1
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 0, 2, 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics
+
+   
+subsection Visualization
+    set Interpolate output = false
+    set Output format                 = gnuplot
+    set List of output variables      = density, gravity
+    set Time between graphical output = 0
+end
+end
+
