@@ -94,7 +94,7 @@ namespace aspect
          */
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const override;
 
         /**

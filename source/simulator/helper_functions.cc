@@ -823,7 +823,7 @@ namespace aspect
   void Simulator<dim>::interpolate_onto_velocity_system(const TensorFunction<1,dim> &func,
                                                         LinearAlgebra::Vector &vec)
   {
-    ConstraintMatrix hanging_constraints(introspection.index_sets.system_relevant_set);
+    AffineConstraints<double> hanging_constraints(introspection.index_sets.system_relevant_set);
     DoFTools::make_hanging_node_constraints(dof_handler, hanging_constraints);
     hanging_constraints.close();
 

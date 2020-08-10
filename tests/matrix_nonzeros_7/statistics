@@ -25,7 +25,7 @@
 # 25: Triangulation memory consumption (MB) 
 # 26: p4est memory consumption (MB) 
 # 27: DoFHandler memory consumption (MB) 
-# 28: ConstraintMatrix memory consumption (MB) 
+# 28: AffineConstraints<double> memory consumption (MB) 
 # 29: Solution vector memory consumption (MB) 
 # 30: MGTransfer memory consumption (MB) 
 # 31: Matrix-free viscosity tables memory consumption (MB) 

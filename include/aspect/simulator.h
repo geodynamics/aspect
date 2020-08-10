@@ -29,6 +29,8 @@
 
 DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 
+#include <deal.II/lac/affine_constraints.h>
+
 #include <deal.II/distributed/tria.h>
 
 #include <deal.II/dofs/dof_handler.h>
@@ -39,12 +41,6 @@ DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
 #include <deal.II/base/tensor_function.h>
 
 DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
-
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#else
-#  include <deal.II/lac/affine_constraints.h>
-#endif
 
 #include <aspect/global.h>
 #include <aspect/simulator_access.h>
@@ -77,18 +73,6 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 namespace aspect
 {
   using namespace dealii;
-
-#if DEAL_II_VERSION_GTE(9,1,0)
-  /**
-   * The ConstraintMatrix class was deprecated in deal.II 9.1 in favor
-   * of AffineConstraints. To make the name available for ASPECT
-   * nonetheless, use a `using` declaration. This injects the name
-   * into the `aspect` namespace, where it is visible before the
-   * deprecated name in the `dealii` namespace, thereby suppressing
-   * the deprecation message.
-   */
-  using ConstraintMatrix = class dealii::AffineConstraints<double>;
-#endif
 
   template <int dim>
   class MeltHandler;
@@ -458,14 +442,14 @@ namespace aspect
        * conditions that do not change over time. This function is used by
        * setup_dofs();
        */
-      void compute_initial_velocity_boundary_constraints (ConstraintMatrix &constraints);
+      void compute_initial_velocity_boundary_constraints (AffineConstraints<double> &constraints);
 
       /**
        * Fill the given @p constraints with constraints coming from the velocity boundary
        * conditions that do can change over time. This function is used by
        * compute_current_constraints().
        */
-      void compute_current_velocity_boundary_constraints (ConstraintMatrix &constraints);
+      void compute_current_velocity_boundary_constraints (AffineConstraints<double> &constraints);
 
       /**
        * Given the 'constraints' member that contains all constraints that are
@@ -1368,7 +1352,7 @@ namespace aspect
        * @note: Rotational modes are currently not handled and don't appear to
        * require constraints so far.
        */
-      void setup_nullspace_constraints(ConstraintMatrix &constraints);
+      void setup_nullspace_constraints(AffineConstraints<double> &constraints);
 
 
       /**
@@ -1906,8 +1890,8 @@ namespace aspect
        * 'constraints' is computed in setup_dofs(), 'current_constraints' is
        * done in compute_current_constraints().
        */
-      ConstraintMatrix                                          constraints;
-      ConstraintMatrix                                          current_constraints;
+      AffineConstraints<double>                                          constraints;
+      AffineConstraints<double>                                          current_constraints;
 
       /**
        * A place to store the latest correction computed by normalize_pressure().

@@ -10,7 +10,7 @@ using namespace aspect;
 
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &sim,
-                                ConstraintMatrix &)
+                                AffineConstraints<double> &)
 {
   static bool first = true;
   if (first)

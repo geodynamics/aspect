@@ -419,7 +419,7 @@ namespace aspect
       // For the moment add constraints from all plugins into one matrix, then
       // merge that matrix with the existing constraints (respecting the existing
       // constraints as more important)
-      ConstraintMatrix plugin_constraints(mesh_vertex_constraints.get_local_lines());
+      AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
       for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
            = mesh_deformation_objects_map.begin();
@@ -432,7 +432,7 @@ namespace aspect
                model = boundary_id->second.begin();
                model != boundary_id->second.end(); ++model)
             {
-              ConstraintMatrix current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
+              AffineConstraints<double> current_plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
               (*model)->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                                  current_plugin_constraints,
@@ -458,7 +458,7 @@ namespace aspect
             }
         }
 
-      mesh_velocity_constraints.merge(plugin_constraints,ConstraintMatrix::left_object_wins);
+      mesh_velocity_constraints.merge(plugin_constraints,AffineConstraints<double>::left_object_wins);
       mesh_velocity_constraints.close();
     }
 

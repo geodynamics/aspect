@@ -54,7 +54,7 @@ namespace aspect
     /**
      * A base class for mesh deformation plugins. Each derived class should
      * implement a function that determines the deformation velocity for certain
-     * mesh vertices and store them in a ConstraintMatrix object. The velocities
+     * mesh vertices and store them in a AffineConstraints<double> object. The velocities
      * for all non-constrained vertices will be computed by solving a Laplace-
      * problem with the given constraints.
      */
@@ -96,7 +96,7 @@ namespace aspect
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                 ConstraintMatrix &mesh_velocity_constraints,
+                                                 AffineConstraints<double> &mesh_velocity_constraints,
                                                  const std::set<types::boundary_id> &boundary_id) const = 0;
 
         /**
@@ -375,13 +375,13 @@ namespace aspect
          * Storage for the mesh velocity constraints for solving the
          * elliptic problem.
          */
-        ConstraintMatrix mesh_velocity_constraints;
+        AffineConstraints<double> mesh_velocity_constraints;
 
         /**
          * Storage for the mesh vertex constraints for keeping the mesh conforming
          * upon redistribution.
          */
-        ConstraintMatrix mesh_vertex_constraints;
+        AffineConstraints<double> mesh_vertex_constraints;
 
         /**
          * A set of boundary indicators that denote those boundaries that are

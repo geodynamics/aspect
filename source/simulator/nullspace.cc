@@ -110,7 +110,7 @@ namespace aspect
 
 
   template <int dim>
-  void Simulator<dim>::setup_nullspace_constraints(ConstraintMatrix &constraints)
+  void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
     if (!(parameters.nullspace_removal & (NullspaceRemoval::linear_momentum
                                           | NullspaceRemoval::net_translation)))
@@ -482,7 +482,7 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::setup_nullspace_constraints (ConstraintMatrix &);
+  template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

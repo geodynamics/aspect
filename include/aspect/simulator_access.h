@@ -777,7 +777,7 @@ namespace aspect
        * Return a pointer to the object that describes the DoF
        * constraints for the time step we are currently solving.
        */
-      const ConstraintMatrix &
+      const AffineConstraints<double> &
       get_current_constraints () const;
 
       /**

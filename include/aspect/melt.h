@@ -453,7 +453,7 @@ namespace aspect
        * This reverts the system of equations we solve back to the Stokes
        * system without melt transport for these cells.
        */
-      void add_current_constraints(ConstraintMatrix &constraints);
+      void add_current_constraints(AffineConstraints<double> &constraints);
 
       /**
        * Returns the entry of the private variable is_melt_cell_vector for the
@@ -507,7 +507,7 @@ namespace aspect
        * which depend on the solution of the porosity field, later after
        * we have computed this solution.
        */
-      ConstraintMatrix current_constraints;
+      AffineConstraints<double> current_constraints;
 
   };
 

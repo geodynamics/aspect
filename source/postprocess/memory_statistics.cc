@@ -55,7 +55,7 @@ namespace aspect
                              + this->get_stokes_matrix_free().get_constraints_p().memory_consumption();
         }
       statistics.add_value ("DoFHandler memory consumption (MB) ", dof_handler_mem/mb);
-      statistics.add_value ("ConstraintMatrix memory consumption (MB) ", constraints_mem/mb);
+      statistics.add_value ("AffineConstraints<double> memory consumption (MB) ", constraints_mem/mb);
 
       statistics.add_value ("Solution vector memory consumption (MB) ", this->get_solution().memory_consumption()/mb);
 

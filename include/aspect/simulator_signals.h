@@ -103,7 +103,7 @@ namespace aspect
      * argument that indicates the constraints to be computed.
      */
     boost::signals2::signal<void (const SimulatorAccess<dim> &,
-                                  ConstraintMatrix &)>  post_constraints_creation;
+                                  AffineConstraints<double> &)>  post_constraints_creation;
 
     /**
      * A signal that is called at the start of setup_dofs(). This allows for

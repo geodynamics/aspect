@@ -39,18 +39,4 @@ namespace std_cxx14
 #include <deal.II/base/std_cxx14/memory.h>
 #endif
 
-#include <deal.II/lac/affine_constraints.h>
-namespace aspect
-{
-  /**
-   * The ConstraintMatrix class was deprecated in deal.II 9.1 in favor
-   * of AffineConstraints. To make the name available for ASPECT
-   * nonetheless, use a `using` declaration. This injects the name
-   * into the `aspect` namespace, where it is visible before the
-   * deprecated name in the `dealii` namespace, thereby suppressing
-   * the deprecation message.
-   */
-  using ConstraintMatrix = class dealii::AffineConstraints<double>;
-}
-
 #endif

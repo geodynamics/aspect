@@ -8,7 +8,7 @@ using namespace aspect;
 
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &,
-                                ConstraintMatrix &)
+                                AffineConstraints<double> &)
 {
   std::cout << std::endl
             << "*** constraints signal called ***"

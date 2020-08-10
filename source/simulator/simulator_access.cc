@@ -669,7 +669,7 @@ namespace aspect
   }
 
   template <int dim>
-  const ConstraintMatrix &
+  const AffineConstraints<double> &
   SimulatorAccess<dim>::get_current_constraints() const
   {
     return simulator->current_constraints;

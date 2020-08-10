@@ -56,7 +56,7 @@ namespace aspect
       void
       add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
                      const Tensor<1, dim> &constraining_vector,
-                     ConstraintMatrix &constraints,
+                     AffineConstraints<double> &constraints,
                      const double inhomogeneity = 0)
       {
         // This function is modified from an internal deal.II function in vector_tools.templates.h
@@ -227,7 +227,7 @@ namespace aspect
                                                     const unsigned int level,
                                                     const unsigned int first_vector_component,
                                                     const std::set<types::boundary_id> &boundary_ids,
-                                                    ConstraintMatrix &constraints)
+                                                    AffineConstraints<double> &constraints)
       {
         // TODO: This is a simplification of compute_no_normal_flux_constraints() from deal.II.
         // The differences are:
@@ -2131,7 +2131,7 @@ namespace aspect
       std::vector<const DoFHandler<dim>*> stokes_dofs;
       stokes_dofs.push_back(&dof_handler_v);
       stokes_dofs.push_back(&dof_handler_p);
-      std::vector<const ConstraintMatrix *> stokes_constraints;
+      std::vector<const AffineConstraints<double> *> stokes_constraints;
       stokes_constraints.push_back(&constraints_v);
       stokes_constraints.push_back(&constraints_p);
 
@@ -2188,7 +2188,7 @@ namespace aspect
         {
           IndexSet relevant_dofs;
           DoFTools::extract_locally_relevant_level_dofs(dof_handler_v, level, relevant_dofs);
-          ConstraintMatrix level_constraints;
+          AffineConstraints<double> level_constraints;
           level_constraints.reinit(relevant_dofs);
           level_constraints.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
           level_constraints.close();
@@ -2197,7 +2197,7 @@ namespace aspect
             = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
             {
-              ConstraintMatrix user_level_constraints;
+              AffineConstraints<double> user_level_constraints;
               user_level_constraints.reinit(relevant_dofs);
 
               internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(dof_handler_v,
@@ -2211,7 +2211,7 @@ namespace aspect
               mg_constrained_dofs_A_block.add_user_constraints(level,user_level_constraints);
 
               // let Dirichlet values win over no normal flux:
-              level_constraints.merge(user_level_constraints, ConstraintMatrix::left_object_wins);
+              level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
               level_constraints.close();
             }
 
@@ -2242,7 +2242,7 @@ namespace aspect
         {
           IndexSet relevant_dofs;
           DoFTools::extract_locally_relevant_level_dofs(dof_handler_p, level, relevant_dofs);
-          ConstraintMatrix level_constraints;
+          AffineConstraints<double> level_constraints;
           level_constraints.reinit(relevant_dofs);
           level_constraints.close();
 
@@ -2327,13 +2327,13 @@ namespace aspect
             std::vector<SymmetricTensor<2,dim> > symgrad_phi_u (dofs_per_cell);
             std::vector<double> div_phi_u (dofs_per_cell);
 
-            ConstraintMatrix boundary_constraints;
+            AffineConstraints<double> boundary_constraints;
             boundary_constraints.reinit(locally_relevant_dofs);
             boundary_constraints.add_lines (mg_constrained_dofs_A_block.get_refinement_edge_indices(level));
             boundary_constraints.add_lines (mg_constrained_dofs_A_block.get_boundary_indices(level));
             // let Dirichlet values win over no normal flux:
             boundary_constraints.merge(mg_constrained_dofs_A_block.get_user_constraint_matrix(level),
-                                       ConstraintMatrix::left_object_wins);
+                                       AffineConstraints<double>::left_object_wins);
             boundary_constraints.close();
 
             typename DoFHandler<dim>::level_cell_iterator cell = dof_handler_v.begin(level),
@@ -2437,7 +2437,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const ConstraintMatrix &
+  const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
   {
     return constraints_v;
@@ -2445,7 +2445,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const ConstraintMatrix &
+  const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_p() const
   {
     return constraints_p;

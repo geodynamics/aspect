@@ -236,7 +236,7 @@ namespace aspect
       std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
 
       // set up constraints
-      ConstraintMatrix mass_matrix_constraints(mesh_locally_relevant);
+      AffineConstraints<double> mass_matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
       typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
@@ -366,7 +366,7 @@ namespace aspect
     template <int dim>
     void
     FreeSurface<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                               ConstraintMatrix &mesh_velocity_constraints,
+                                                               AffineConstraints<double> &mesh_velocity_constraints,
                                                                const std::set<types::boundary_id> &boundary_id) const
     {
       // For the free surface indicators we constrain the displacement to be v.n

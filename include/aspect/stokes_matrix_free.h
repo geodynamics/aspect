@@ -346,14 +346,14 @@ namespace aspect
        * Return a pointer to the object that describes the velocity DoF
        * constraints for the block GMG Stokes solver.
        */
-      virtual const ConstraintMatrix &
+      virtual const AffineConstraints<double> &
       get_constraints_v () const = 0;
 
       /**
        * Return a pointer to the object that describes the pressure DoF
        * constraints for the block GMG Stokes solver.
        */
-      virtual const ConstraintMatrix &
+      virtual const AffineConstraints<double> &
       get_constraints_p () const = 0;
 
       /**
@@ -480,14 +480,14 @@ namespace aspect
        * Return a pointer to the object that describes the velocity DoF
        * constraints for the block GMG Stokes solver.
        */
-      const ConstraintMatrix &
+      const AffineConstraints<double> &
       get_constraints_v () const override;
 
       /**
        * Return a pointer to the object that describes the pressure DoF
        * constraints for the block GMG Stokes solver.
        */
-      const ConstraintMatrix &
+      const AffineConstraints<double> &
       get_constraints_p () const override;
 
       /**
@@ -550,8 +550,8 @@ namespace aspect
       ABlockMatrixType A_block_matrix;
       SchurComplementMatrixType Schur_complement_block_matrix;
 
-      ConstraintMatrix constraints_v;
-      ConstraintMatrix constraints_p;
+      AffineConstraints<double> constraints_v;
+      AffineConstraints<double> constraints_p;
 
       MGLevelObject<ABlockMatrixType> mg_matrices_A_block;
       MGLevelObject<SchurComplementMatrixType> mg_matrices_Schur_complement;
