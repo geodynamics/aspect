@@ -193,7 +193,15 @@ namespace aspect
         int
         MaterialLookup::phase_volume_index(const std::string phase_name) const
         {
-          return phase_name_index.at(phase_name);
+          std::map<std::string, int>::const_iterator it = phase_name_index.find(phase_name);
+          if (it != phase_name_index.end())
+            {
+              return it->second; // "second" returns the index corresponding to the phase_name
+            }
+          else
+            {
+              return -1; // if find doesn't find the phase_name as a key, return an impossible index as a flag
+            }
         }
 
         double
@@ -581,8 +589,8 @@ namespace aspect
                   if (label.substr(0,4).compare("vol_") == 0)
                     {
                       phase_indices.push_back(n);
-                      phase_names.push_back(label.substr(4)); // reads to the end of the label
-                      phase_name_index[label.substr(4)] = n_phases;
+                      phase_names.push_back(label);
+                      phase_name_index[label] = n_phases;
                       n_phases++;
                     }
                 }

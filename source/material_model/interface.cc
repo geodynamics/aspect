@@ -1123,6 +1123,8 @@ namespace aspect
   \
   template class SeismicAdditionalOutputs<dim>; \
   \
+  template class PhasePropertyOutputs<dim>; \
+  \
   template class ReactionRateOutputs<dim>; \
   \
   template class PrescribedPlasticDilation<dim>; \

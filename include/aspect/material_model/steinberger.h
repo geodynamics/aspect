@@ -183,6 +183,11 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
 
+        virtual std::vector<double> phase_volume_fractions (const double      temperature,
+                                                            const double      pressure,
+                                                            const std::vector<double> &compositional_fields,
+                                                            const Point<dim> &position) const;
+
         /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
          * function and postprocessors. The function returns two pairs, the
@@ -304,6 +309,12 @@ namespace aspect
          * Perplex files.
          */
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
+
+        /**
+        * List of strings containing the names of the unique phases in all the material lookups
+        */
+        std::vector<std::string> unique_phase_names;
+        std::vector<std::vector<int>> unique_phase_indices;
 
         /**
          * Pointer to an object that reads and processes data for the lateral

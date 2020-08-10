@@ -132,9 +132,34 @@ namespace aspect
     void
     Steinberger<dim>::initialize()
     {
+      std::set<std::string> set_phase_names;
       for (unsigned i = 0; i < material_file_names.size(); i++)
-        material_lookup.push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>
-                                  (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
+        {
+          material_lookup.push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>
+                                    (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
+
+          // Here we lookup all of the different phases and insert them into the set_phase_names set.
+          std::vector<std::string> phase_names = material_lookup[i]->phase_volume_phase_names();
+          unique_phase_indices.push_back(std::vector<int>());
+          for (std::string const &name : phase_names)
+            {
+              set_phase_names.insert(name);
+            }
+        }
+      // Copy the set of phase names into the unique_phase_names vector
+      std::copy(set_phase_names.begin(), set_phase_names.end(), std::back_inserter(unique_phase_names));
+
+      // We now loop over all the material file names again, finding the
+      // index of material_lookup[i]->phase_volume_phase_names()
+      for (unsigned i = 0; i < material_file_names.size(); i++)
+        {
+          std::vector<std::string> phase_names = material_lookup[i]->phase_volume_phase_names();
+          for (unsigned j = 0; j < unique_phase_names.size(); j++)
+            {
+              unique_phase_indices[i].push_back(material_lookup[i]->phase_volume_index(unique_phase_names[j]));
+            }
+        }
+
       lateral_viscosity_lookup
         = std_cxx14::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
                                                                    this->get_mpi_communicator());
@@ -142,6 +167,7 @@ namespace aspect
         = std_cxx14::make_unique<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
                                                                   this->get_mpi_communicator());
       avg_temp.resize(n_lateral_slices);
+
     }
 
 
@@ -383,6 +409,56 @@ namespace aspect
     }
 
 
+    template <int dim>
+    std::vector<double>
+    Steinberger<dim>::
+    phase_volume_fractions (const double      temperature,
+                            const double      pressure,
+                            const std::vector<double> &compositional_fields,
+                            const Point<dim> &) const
+    {
+      std::vector<double> volume_fractions(unique_phase_names.size(), 0.);
+
+      if (material_lookup.size() == 1)
+        {
+          for (unsigned int j = 0; j < unique_phase_names.size(); j++)
+            {
+              if (unique_phase_indices[0][j] != -1)
+                volume_fractions[j] += material_lookup[0]->phase_volume_fraction(unique_phase_indices[0][j],temperature,pressure);
+            }
+
+        }
+      else if (material_lookup.size() == compositional_fields.size() + 1)
+        {
+          for (unsigned int j = 0; j < unique_phase_names.size(); j++)
+            {
+              double background_volume_fraction = 0.;
+              if (unique_phase_indices[0][j] != -1)
+                background_volume_fraction = material_lookup[0]->phase_volume_fraction(unique_phase_indices[0][j],temperature,pressure);
+
+              volume_fractions[j] = background_volume_fraction;
+              for (unsigned int i = 0; i < compositional_fields.size(); ++i)
+                {
+                  if (unique_phase_indices[i+1][j] != -1)
+                    volume_fractions[j] += compositional_fields[i] * (material_lookup[i+1]->phase_volume_fraction(unique_phase_indices[i+1][j],temperature,pressure) - background_volume_fraction);
+                }
+            }
+        }
+      else
+        {
+          for (unsigned i = 0; i < material_lookup.size(); i++)
+            {
+              for (unsigned int j = 0; j < unique_phase_names.size(); j++)
+                {
+                  if (unique_phase_indices[i][j] != -1)
+                    volume_fractions[j] += compositional_fields[i] * material_lookup[i]->phase_volume_fraction(unique_phase_indices[i][j],temperature,pressure);
+                }
+            }
+        }
+      return volume_fractions;
+    }
+
+
 
     template <int dim>
     double
@@ -489,11 +565,17 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c]            = 0;
 
-          // fill seismic velocities outputs if they exist
+          // fill seismic velocity outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
             {
               seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
               seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+            }
+
+          // fill phase volume outputs if they exist
+          if (PhasePropertyOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<PhasePropertyOutputs<dim> >())
+            {
+              phase_volume_fractions_out->phase_property_values[i] = phase_volume_fractions(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
             }
         }
 
@@ -707,6 +789,13 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+        }
+
+      if (out.template get_additional_output<PhasePropertyOutputs<dim> >() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std_cxx14::make_unique<MaterialModel::PhasePropertyOutputs<dim>> (n_points, unique_phase_names));
         }
     }
 
