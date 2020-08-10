@@ -731,6 +731,8 @@ namespace aspect
       do
         {
           advect_particles();
+          if (property_manager->need_update() == Property::update_time_substep)
+            update_particles();
         }
       // Keep calling the integrator until it indicates it is finished
       while (integrator->new_integration_step());
@@ -738,7 +740,7 @@ namespace aspect
       apply_particle_per_cell_bounds();
 
       // Update particle properties
-      if (property_manager->need_update() == Property::update_time_step)
+      if (property_manager->need_update() == Property::update_time_step || property_manager->need_update() == Property::update_time_substep)
         update_particles();
 
       // Now that all particle information was updated, exchange the new

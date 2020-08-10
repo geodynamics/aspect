@@ -259,7 +259,17 @@ namespace aspect
          * integration of solution properties or time varying particle
          * properties are used while solving the model problem.
          */
-        update_time_step
+        update_time_step,
+        /**
+         * Update the particles at every particle advection substep. The substeps are
+         * defined by the particle integrator which include an euler, a RK2 and a RK4
+         * scheme. This flags make sure that the update function is called at every
+         * integration substep and at the end (which is the same time as update_time_step).
+         * This flag is only necessary if the particle properties need to update the data
+         * based on the integration substeps, for example a tensor which needs to be
+         * rotated by the advection.
+         */
+        update_time_substep
       };
 
       /**
