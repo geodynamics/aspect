@@ -61,12 +61,12 @@ end
 
 # Refine the upper 150 km of the mesh so lithosphere structure is resolved.
 # Function expression asks if the depth is less than the lithosphere depth and
-# then refinement level = 7, else refinement level = 0. 
-# Note, the minimum refinement level for the lower 850 km of the mesh would be 
-# coarser than the initial one level of global refinement. This would then lead
+# then refinement level = 7, else refinement level = 3. 
+# Note, if the minimum refinement level for the lower 850 km of the mesh would be 
+# less than the initial global refinement level, then this would lead
 # to coarsening in the future. 
-# To avoid this, you may want to set this 'else' value to the same as the number
-# of initial global refinement steps.
+# To avoid this, you may want to set this 'else' value to the same level as the number
+# of initial global refinement steps as done here.
 
 subsection Mesh refinement
   set Initial global refinement          = 3
@@ -77,10 +77,11 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system   = cartesian
     set Variable names      = x,y
-    set Function constants  = ymax=1e6,lith=1.5e5
-    set Function expression = ((ymax-y<=lith) ? 7 : 0)
+    set Function constants  = ymax=1.e6, lith=1.5e5
+    set Function expression = ((ymax-y<=lith) ? 7 : 3)
   end
 end
+
 
 # Half-space cooling model increasing with age from x>0 to xtrm
 # For x>xtrm, half-space cooling model with a fixed age.
