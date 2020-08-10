@@ -1,0 +1,3 @@
+<li> New: The gravity model 'function' does now evaluate the time at each timestep and the function expression can therefore now be time dependent. 
+<br>
+(Jacky Austermann, 2020/08/10)
