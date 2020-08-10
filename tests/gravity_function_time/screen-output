@@ -8,7 +8,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output/solution/solution-00000
+     Writing graphical output: output-gravity_function_time/solution/solution-00000
      RMS, max velocity:        0 m/s, 0 m/s
 
 *** Timestep 1:  t=1 seconds
@@ -16,9 +16,10 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Writing graphical output: output/solution/solution-00001
+     Writing graphical output: output-gravity_function_time/solution/solution-00001
      RMS, max velocity:        0.00394 m/s, 0.0067 m/s
 
 Termination requested by criterion: end time
+
 
 
