@@ -43,7 +43,7 @@ namespace aspect
         KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                             this->get_dof_handler(),
                                             QGauss<dim-1>(this->introspection().polynomial_degree.velocities +1),
-                                            typename FunctionMap<dim>::type(),
+                                            std::map<types::boundary_id,const Function<dim>*>(),
                                             this->get_solution(),
                                             indicators,
                                             this->introspection().variable("fluid velocity").component_mask,
