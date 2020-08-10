@@ -1,7 +1,10 @@
-# This is a copy of teinberger compressible test,
-# but it uses the pyrolite material property table instead
+# This is a copy of Steinberger compressible test,
+# but it uses a pyrolite material property table instead
 # of the test data, so that reasonable seismic velocities are
-# computed.
+# computed. The property table also contains volume fractions of the
+# stable phases in the rock, which can be output using
+# the "named additional outputs" in the list of named outputs for
+# the Visualization postprocessor.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
