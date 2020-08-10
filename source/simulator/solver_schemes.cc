@@ -375,7 +375,7 @@ namespace aspect
 
   template <int dim>
   void Simulator<dim>::assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
-                                                                   bool use_picard)
+                                                                   const bool use_picard)
   {
     // The matrix-free GMG Stokes preconditioner is currently not implemented for the Newton solver.
     if (stokes_matrix_free)

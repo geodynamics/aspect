@@ -744,7 +744,7 @@ namespace aspect
        * <code>source/simulator/solver_schemes.cc</code>.
        */
       void assemble_and_solve_defect_correction_Stokes(DefectCorrectionResiduals &dcr,
-                                                       bool use_picard);
+                                                       const bool use_picard);
 
       /**
        * Initiate the assembly of one advection matrix and right hand side and
