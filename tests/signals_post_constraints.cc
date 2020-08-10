@@ -8,7 +8,7 @@ using namespace aspect;
 
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
-                                ConstraintMatrix &current_constraints)
+                                AffineConstraints<double> &current_constraints)
 {
   simulator_access.get_statistics_object()
   .add_value ("number of constraints",

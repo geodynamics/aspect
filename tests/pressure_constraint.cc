@@ -10,7 +10,7 @@ namespace aspect
 
   template <int dim>
   void modify_constraints (const SimulatorAccess<dim> &simulator_access,
-                           ConstraintMatrix &current_constraints)
+                           AffineConstraints<double> &current_constraints)
   {
     // Hack: the first pressure dof is only this easy to compute if we don't
     // use a direct solver or reorganize the blocks of the linear system in
