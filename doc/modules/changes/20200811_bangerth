@@ -1,0 +1,9 @@
+Changed: The 'stress', 'shear stress', and 'strain rate tensor'
+visualization postprocessors now output their information in the form
+of actual tensors that (with deal.II versions post-9.2) can be
+visualized as tensors and not just as individual scalar
+components. This also implies that now *all* components of these
+tensors, not just the ones on and above the diagonal, are output, even
+though these tensors are all symmetric.
+<br>
+(Wolfgang Bangerth, 2020/08/11)
