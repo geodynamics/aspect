@@ -269,6 +269,26 @@ namespace aspect
           std::pair<std::string, Vector<float> *>
           execute () const = 0;
       };
+
+
+      /**
+       * This class is a tag class: If a visualization postprocessor is derived
+       * from it, then this is interpreted as saying that the class will only
+       * be used to generate graphical output on the surface of the model,
+       * rather than for the entire domain.
+       */
+      template <int dim>
+      class SurfaceOnlyVisualization
+      {
+        public:
+          /**
+           * Destructor. Made `virtual` to ensure that it is possible to
+           * test whether a derived class is derived from this class via
+           * a `dynamic_cast`.
+           */
+          virtual
+          ~SurfaceOnlyVisualization () = default;
+      };
     }
 
 
@@ -625,6 +645,12 @@ namespace aspect
          * output for cells (via DataOut).
          */
         OutputHistory cell_output_history;
+
+        /**
+         * Information about the history of writing graphical
+         * output for faces (via DataOutFaces).
+         */
+        OutputHistory face_output_history;
 
         /**
          * Write the various master record files. The master files are used by
