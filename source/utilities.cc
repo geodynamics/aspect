@@ -1785,8 +1785,13 @@ namespace aspect
               AssertThrow(current_grid_spacing > 0.0,
                           ExcMessage ("Coordinates in dimension "
                                       + Utilities::int_to_string(d)
-                                      + " are not strictly ascending. "));
+                                      + " are not strictly ascending."));
 
+              // If spacing between coordinates changed (with a relative
+              // tolerance), kepp track of that information.  Note that we do
+              // not break out of this loop in this case but run through the
+              // whole array, so that the AssertThrow above is executed for
+              // each entry to ensure increasing coordinate values.
               if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
                 coordinate_values_are_equidistant = false;
             }
