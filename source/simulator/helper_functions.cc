@@ -521,12 +521,15 @@ namespace aspect
 
   template <int dim>
   bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time,
-                                               const std::pair<bool,bool> termination_output)
+                                               const bool force_writing_checkpoint)
   {
-    bool write_checkpoint = false;
+    // Do a checkpoint if this is the end of simulation,
+    // and the termination criteria say to checkpoint at the end.
+    bool write_checkpoint = force_writing_checkpoint;
+
     // If we base checkpoint frequency on timing, measure the time at process 0
     // This prevents race conditions where some processes will checkpoint and others won't
-    if (parameters.checkpoint_time_secs > 0)
+    if (!write_checkpoint && parameters.checkpoint_time_secs > 0)
       {
         int global_do_checkpoint = ((std::time(nullptr)-last_checkpoint_time) >=
                                     parameters.checkpoint_time_secs);
@@ -538,16 +541,11 @@ namespace aspect
       }
 
     // If we base checkpoint frequency on steps, see if it's time for another checkpoint
-    if ((parameters.checkpoint_time_secs == 0) &&
+    if (!write_checkpoint &&
+        (parameters.checkpoint_time_secs == 0) &&
         (parameters.checkpoint_steps > 0) &&
         (timestep_number % parameters.checkpoint_steps == 0))
       write_checkpoint = true;
-
-    // Do a checkpoint if this is the end of simulation,
-    // and the termination criteria say to checkpoint at the end.
-    if (termination_output.first && termination_output.second)
-      write_checkpoint = true;
-
 
     // Do a checkpoint if indicated by checkpoint parameters
     if (write_checkpoint)
@@ -587,156 +585,6 @@ namespace aspect
         old_old_solution      = old_solution;
         old_solution          = solution;
       }
-  }
-
-
-
-  template <int dim>
-  double Simulator<dim>::compute_time_step () const
-  {
-    const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                             parameters.stokes_velocity_degree);
-
-    FEValues<dim> fe_values (*mapping,
-                             finite_element,
-                             quadrature_formula,
-                             update_values |
-                             update_gradients |
-                             ((parameters.use_conduction_timestep || parameters.include_melt_transport)
-                              ?
-                              update_quadrature_points
-                              :
-                              update_default));
-
-    const unsigned int n_q_points = quadrature_formula.size();
-
-
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-    std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,std::vector<double> (n_q_points));
-
-    double max_local_speed_over_meshsize = 0;
-    double min_local_conduction_timestep = std::numeric_limits<double>::max();
-
-    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                               introspection.n_compositional_fields);
-    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                 introspection.n_compositional_fields);
-
-    for (const auto &cell : dof_handler.active_cell_iterators())
-      if (cell->is_locally_owned())
-        {
-          fe_values.reinit (cell);
-          fe_values[introspection.extractors.velocities].get_function_values (solution,
-                                                                              velocity_values);
-
-          double max_local_velocity = 0;
-          for (unsigned int q=0; q<n_q_points; ++q)
-            max_local_velocity = std::max (max_local_velocity,
-                                           velocity_values[q].norm());
-
-          if (parameters.include_melt_transport)
-            {
-              const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
-              fe_values[ex_u_f].get_function_values (solution,fluid_velocity_values);
-
-              for (unsigned int q=0; q<n_q_points; ++q)
-                max_local_velocity = std::max (max_local_velocity,
-                                               fluid_velocity_values[q].norm());
-            }
-
-          max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
-                                                   max_local_velocity
-                                                   /
-                                                   cell->minimum_vertex_distance());
-
-          if (parameters.use_conduction_timestep)
-            {
-              in.reinit(fe_values,
-                        cell,
-                        introspection,
-                        solution);
-
-              material_model->evaluate(in, out);
-
-              if (parameters.formulation_temperature_equation
-                  == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                {
-                  // Overwrite the density by the reference density coming from the
-                  // adiabatic conditions as required by the formulation
-                  for (unsigned int q=0; q<n_q_points; ++q)
-                    out.densities[q] = adiabatic_conditions->density(in.position[q]);
-                }
-              else if (parameters.formulation_temperature_equation
-                       == Parameters<dim>::Formulation::TemperatureEquation::real_density)
-                {
-                  // use real density
-                }
-              else
-                AssertThrow(false, ExcNotImplemented());
-
-
-              // Evaluate thermal diffusivity at each quadrature point and
-              // calculate the corresponding conduction timestep, if applicable
-              for (unsigned int q=0; q<n_q_points; ++q)
-                {
-                  const double k = out.thermal_conductivities[q];
-                  const double rho = out.densities[q];
-                  const double c_p = out.specific_heat[q];
-
-                  Assert(rho * c_p > 0,
-                         ExcMessage ("The product of density and c_P needs to be a "
-                                     "non-negative quantity."));
-
-                  const double thermal_diffusivity = k/(rho*c_p);
-
-                  if (thermal_diffusivity > 0)
-                    {
-                      min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                               parameters.CFL_number*pow(cell->minimum_vertex_distance(),2.)
-                                                               / thermal_diffusivity);
-                    }
-                }
-            }
-        }
-
-    const double max_global_speed_over_meshsize
-      = Utilities::MPI::max (max_local_speed_over_meshsize, mpi_communicator);
-
-    double min_convection_timestep = std::numeric_limits<double>::max();
-    double min_conduction_timestep = std::numeric_limits<double>::max();
-
-    if (max_global_speed_over_meshsize != 0.0)
-      min_convection_timestep = parameters.CFL_number / (parameters.temperature_degree * max_global_speed_over_meshsize);
-
-    if (parameters.use_conduction_timestep)
-      min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, mpi_communicator);
-
-    double new_time_step = std::min(min_convection_timestep,
-                                    min_conduction_timestep);
-
-    AssertThrow (new_time_step > 0,
-                 ExcMessage("The time step length for the each time step needs to be positive, "
-                            "but the computed step length was: " + std::to_string(new_time_step) + ". "
-                            "Please check for non-positive material properties."));
-
-    // Make sure we do not exceed the maximum time step length. This can happen
-    // if velocities get too small or even zero in models that are stably stratified
-    // or use prescribed velocities.
-    new_time_step = std::min(new_time_step, parameters.maximum_time_step);
-
-    // Make sure that the time step doesn't increase too fast
-    if (time_step != 0)
-      new_time_step = std::min(new_time_step, time_step + time_step * parameters.maximum_relative_increase_time_step);
-
-    // Make sure we do not exceed the maximum length for the first time step
-    if (timestep_number == 0)
-      new_time_step = std::min(new_time_step, parameters.maximum_first_time_step);
-
-    // Make sure we reduce the time step length appropriately if we terminate after this step
-    new_time_step = termination_manager.check_for_last_time_step(new_time_step);
-
-    return new_time_step;
   }
 
 
@@ -2508,10 +2356,9 @@ namespace aspect
   template double Simulator<dim>::get_maximal_velocity (const LinearAlgebra::BlockVector &solution) const; \
   template std::pair<double,double> Simulator<dim>::get_extrapolated_advection_field_range (const AdvectionField &advection_field) const; \
   template void Simulator<dim>::maybe_write_timing_output () const; \
-  template bool Simulator<dim>::maybe_write_checkpoint (const time_t last_checkpoint_time, const std::pair<bool,bool> termination_output); \
+  template bool Simulator<dim>::maybe_write_checkpoint (const time_t, const bool); \
   template bool Simulator<dim>::maybe_do_initial_refinement (const unsigned int max_refinement_level); \
   template void Simulator<dim>::maybe_refine_mesh (const double new_time_step, unsigned int &max_refinement_level); \
-  template double Simulator<dim>::compute_time_step () const; \
   template void Simulator<dim>::advance_time (const double step_size); \
   template void Simulator<dim>::make_pressure_rhs_compatible(LinearAlgebra::BlockVector &vector); \
   template void Simulator<dim>::output_statistics(); \

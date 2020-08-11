@@ -61,7 +61,7 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 #include <aspect/boundary_fluid_pressure/interface.h>
 #include <aspect/boundary_traction/interface.h>
 #include <aspect/mesh_refinement/interface.h>
-#include <aspect/termination_criteria/interface.h>
+#include <aspect/time_stepping/interface.h>
 #include <aspect/postprocess/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/particle/world.h>
@@ -1467,14 +1467,14 @@ namespace aspect
       void maybe_write_timing_output () const;
 
       /**
-       * Check if a checkpoint should be written in this timestep. Is so create
+       * Check if a checkpoint should be written in this timestep. If so create
        * one. Returns whether a checkpoint was written.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
       bool maybe_write_checkpoint (const time_t last_checkpoint_time,
-                                   const std::pair<bool,bool> termination_output);
+                                   const bool force_writing_checkpoint);
 
       /**
        * Check if we should do an initial refinement cycle in this timestep.
@@ -1504,18 +1504,6 @@ namespace aspect
        */
       void maybe_refine_mesh (const double new_time_step,
                               unsigned int &max_refinement_level);
-
-      /**
-       * Compute the size of the next time step from the mesh size and the
-       * velocity on each cell. The computed time step has to satisfy the CFL
-       * number chosen in the input parameter file on each cell of the mesh.
-       * If specified in the parameter file, the time step will be the minimum
-       * of the convection *and* conduction time steps.
-       *
-       * This function is implemented in
-       * <code>source/simulator/helper_functions.cc</code>.
-       */
-      double compute_time_step () const;
 
       /**
        * Advance the current time by the given @p step_size and update the
@@ -1835,10 +1823,10 @@ namespace aspect
        */
 
       /**
-       * @name Variables related to simulation termination
+       * @name Variables related to simulation time stepping
        * @{
        */
-      TerminationCriteria::Manager<dim>                         termination_manager;
+      TimeStepping::Manager<dim>                                time_stepping_manager;
       /**
        * @}
        */

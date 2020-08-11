@@ -160,10 +160,8 @@ namespace aspect
          * Execute all of the termination criteria objects that have been
          * requested in the input file.
          *
-         * The function returns a pair of values. The first part of the
-         * returned pair indicates whether the simulation should be
-         * terminated. The second part indicates whether a final checkpoint
-         * should be performed.
+         * The function returns a bool indicating whether the simulation should be
+         * terminated.
          *
          * To avoid undefined situations, this function only requires that a
          * single processor's termination request comes back positive for a
@@ -172,7 +170,7 @@ namespace aspect
          * that the simulation should be terminated, then this is enough.
          */
         virtual
-        std::pair<bool,bool>
+        bool
         execute () const;
 
         /**
@@ -264,11 +262,6 @@ namespace aspect
          */
         std::list<std::string>                       termination_obj_names;
 
-        /**
-         * Whether to do a final checkpoint before termination. This is
-         * specified in the parameters.
-         */
-        bool do_checkpoint_on_terminate;
     };
 
 
