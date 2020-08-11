@@ -1778,7 +1778,7 @@ namespace aspect
 
           const double grid_spacing = coordinate_values[d][1] - coordinate_values[d][0];
 
-          for (unsigned int n = 1; n < table_points[d]; n++)
+          for (unsigned int n = 1; n < table_points[d]; ++n)
             {
               const double current_grid_spacing = coordinate_values[d][n] - coordinate_values_[d][n-1];
 
@@ -1795,7 +1795,7 @@ namespace aspect
       // For each data component, set up a GridData,
       // its type depending on the read-in grid.
       data.resize(components);
-      for (unsigned int c = 0; c < components; c++)
+      for (unsigned int c = 0; c < components; ++c)
         {
           if (coordinate_values_are_equidistant)
             data[c]
@@ -1816,9 +1816,9 @@ namespace aspect
     AsciiDataLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm &comm)
     {
-      // grab the values already stored in this class (if they exist), this way we can
+      // Grab the values already stored in this class (if they exist), this way we can
       // check if somebody changes the size of the table over time and error out (see below)
-      TableIndices<dim> table_points = this->table_points;
+      TableIndices<dim> new_table_points = this->table_points;
       std::vector<std::string> column_names;
 
       // Read data from disk and distribute among processes
@@ -1838,10 +1838,10 @@ namespace aspect
                   unsigned int temp_index;
                   linestream >> temp_index;
 
-                  if (table_points[i] == 0)
-                    table_points[i] = temp_index;
+                  if (new_table_points[i] == 0)
+                    new_table_points[i] = temp_index;
                   else
-                    AssertThrow (table_points[i] == temp_index,
+                    AssertThrow (new_table_points[i] == temp_index,
                                  ExcMessage("The file grid must not change over model runtime. "
                                             "Either you prescribed a conflicting number of points in "
                                             "the input file, or the POINTS comment in your data files "
@@ -1851,7 +1851,7 @@ namespace aspect
 
       for (unsigned int i = 0; i < dim; i++)
         {
-          AssertThrow(table_points[i] != 0,
+          AssertThrow(new_table_points[i] != 0,
                       ExcMessage("Could not successfully read in the file header of the "
                                  "ascii data file <" + filename + ">. One header line has to "
                                  "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
@@ -1920,12 +1920,12 @@ namespace aspect
       // there is no constructor for Table, which takes TableIndices as
       // argument.
       Table<dim,double> data_table;
-      data_table.TableBase<dim,double>::reinit(table_points);
+      data_table.TableBase<dim,double>::reinit(new_table_points);
       std::vector<Table<dim,double> > data_tables(components, data_table);
 
       std::vector<std::vector<double>> coordinate_values(dim);
       for (unsigned int d=0; d<dim; ++d)
-        coordinate_values[d].resize(table_points[d]);
+        coordinate_values[d].resize(new_table_points[d]);
 
       if (column_names.size()==0)
         {
@@ -1934,14 +1934,14 @@ namespace aspect
             column_names.push_back("column " + Utilities::int_to_string(c,2));
         }
 
-      // Finaylly read data lines
+      // Finally read data lines:
       unsigned int read_data_entries = 0;
       do
         {
           // what row and column of the file are we in?
           const unsigned int column_num = read_data_entries%(components+dim);
           const unsigned int row_num = read_data_entries/(components+dim);
-          TableIndices<dim> idx = compute_table_indices(table_points, row_num);
+          TableIndices<dim> idx = compute_table_indices(new_table_points, row_num);
 
           if (column_num < dim)
             {
@@ -1953,7 +1953,10 @@ namespace aspect
                           ExcMessage("Invalid coordinate "
                                      + Utilities::int_to_string(column_num) + " in row "
                                      + Utilities::int_to_string(row_num)
-                                     + " in file " + filename));
+                                     + " in file " + filename +
+                                     "\nThis class expects the coordinates to be structured, meaning "
+                                     "the coordinate values in each coordinate direction repeat exactly "
+                                     "each time."));
 
               coordinate_values[column_num][idx[column_num]] = temp_data;
             }
