@@ -52,13 +52,16 @@ namespace aspect
             {
               /**
                * An approximation of the Peierls creep formulation from Mei et al. (2010), where stress is
-               * replaced with strain rate (second invariant) when calculation viscosity. This substitution
-               * require two additional fitting parameters (g,q). Details of this derivation can be found
+               * replaced with strain rate (second invariant) when calculating viscosity. This substitution
+               * require two additional fitting parameters (gamma,p). Details of this derivation can be found
                * in the following document: https://ucdavis.app.box.com/s/scaorcblr9u294836pgk4hyf60gv7psr.
                * The formulation for the viscosity is:
-               *  ((0.5*g*sigma_p)/(A*((g*sigma_p)^2)^(1/(s+2)))) * exp((E/(R*T))*((1-g^p)/(s+2))) * edot_ii^(1/(s+2)-1)
+               *  ((0.5*gamma*sigma_p)/(A*((gamma*sigma_p)^2)^(1/(s+2)))) * exp((E/(R*T))*((1-gamma^p)/(s+2))) * edot_ii^(1/(s+2)-1)
                * where
-               * s = (E/(R*T))*p*(g^p)
+               * s = (E/(R*T))*p*(gamma^p)
+               * sigma_p is the Peierls stress
+               * gamma is the Peierls creep fitting parameter
+               * p is the Peierls creep fitting exponent
                * A is the Peierls prefactor term (1/s 1/Pa^2)
                * E is the Peierls activation energy (J/mol)
                * edot_ii is the second invariant of the deviatoric strain rate
@@ -66,13 +69,13 @@ namespace aspect
                * R is the gas constant
                */
               const double s = (activation_energies_peierls[composition] / (constants::gas_constant * temperature)) *
-                               peierls_fitting_exponent * std::pow(peierls_fitting_parameter,peierls_fitting_exponent);
+                               peierls_fitting_exponents[composition] * std::pow(peierls_fitting_parameters[composition],peierls_fitting_exponents[composition]);
 
-              const double left_term = 0.5 * (peierls_fitting_parameter * peierls_stress) /
-                                       std::pow((prefactors_peierls[composition] * std::pow(peierls_fitting_parameter * peierls_stress,2)),( 1 / (s + 2)));
+              const double left_term = 0.5 * (peierls_fitting_parameters[composition] * peierls_stresses[composition]) /
+                                       std::pow((prefactors_peierls[composition] * std::pow(peierls_fitting_parameters[composition] * peierls_stresses[composition],2)),( 1 / (s + 2)));
 
               const double middle_term = std::exp((activation_energies_peierls[composition] / (constants::gas_constant * temperature)) *
-                                                  ((1. - std::pow(peierls_fitting_parameter,peierls_fitting_exponent)) / (s + 2)));
+                                                  ((1. - std::pow(peierls_fitting_parameters[composition],peierls_fitting_exponents[composition])) / (s + 2)));
 
               const double right_term = std::pow(strain_rate, (1. / (s + 2)) - 1.);
 
@@ -106,23 +109,30 @@ namespace aspect
                            Patterns::List(Patterns::Double(0)),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value. "
-                           "Units: $Pa^{-n_{\\text{dislocation}}} s^{-1}$");
+                           "If only one value is given, then all use the same value. Units: $1/s 1/Pa^{2}$");
         prm.declare_entry ("Activation energies for Peierls creep", "320e3",
                            Patterns::List(Patterns::Double(0)),
                            "List of activation energies, $E$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: $J / mol$");
-        prm.declare_entry ("Peierls stress", "5.e9",
-                           Patterns::Double (0),
-                           "The stress limit for Peierls creep $\\sigma_{\\text{peierls}}$. Units: $Pa s$");
-        prm.declare_entry ("Peierls fitting parameter", "0.17",
-                           Patterns::Double (0),
-                           "A constant fitting parameter $\\gamma$ between stress $\\sigma$ and the Peierls "
-                           "stress $\\sigma_{\\text{peierls}}$. Units: none");
-        prm.declare_entry ("Peierls fitting exponent", "0.5",
-                           Patterns::Double (0),
-                           "A constant exponent $p$ applied to the Peierls fitting parameter $\\gamma$. Units: none");
+        prm.declare_entry ("Peierls stresses", "5.e9",
+                           Patterns::List(Patterns::Double(0)),
+                           "List of stress limits for Peierls creep $\\sigma_{\\text{peierls}}$ for background "
+                           "material and compositional fields, for a total of N+1 values, where N is the number "
+                           "of compositional fields. If only one value is given, then all use the same value. "
+                           "Units: $Pa$");
+        prm.declare_entry ("Peierls fitting parameters", "0.17",
+                           Patterns::List(Patterns::Double(0)),
+                           "List of fitting parameters $\\gamma$ between stress $\\sigma$ and the Peierls "
+                           "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of compositional fields. If only one "
+                           "value is given, then all use the same value. Units: none");
+        prm.declare_entry ("Peierls fitting exponents", "0.5",
+                           Patterns::List(Patterns::Double(0)),
+                           "List of fitting exponents, $p$, between stress $\\sigma$ and the Peierls stres "
+                           "$\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
+                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "If only one value is given, then all use the same value. Units: none");
       }
 
 
@@ -145,9 +155,16 @@ namespace aspect
         activation_energies_peierls = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for Peierls creep"))),
                                                                               n_fields,
                                                                               "Activation energies for Peierls creep");
-        peierls_stress = prm.get_double ("Peierls stress");
-        peierls_fitting_parameter = prm.get_double ("Peierls fitting parameter");
-        peierls_fitting_exponent = prm.get_double ("Peierls fitting exponent");
+        peierls_stresses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls stresses"))),
+                                                                   n_fields,
+                                                                   "Peierls stresses");
+        peierls_fitting_parameters = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting parameters"))),
+                                                                             n_fields,
+                                                                             "Peierls fitting parameters");
+
+        peierls_fitting_exponents = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting exponents"))),
+                                                                            n_fields,
+                                                                            "Peierls fitting exponents");
       }
     }
   }

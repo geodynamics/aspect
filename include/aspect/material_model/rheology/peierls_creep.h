@@ -76,29 +76,29 @@ namespace aspect
           } peierls_creep_flow_law;
 
           /**
-           * List of Peirls creep prefactors A.
+           * List of Peirls creep prefactors (A).
            */
           std::vector<double> prefactors_peierls;
 
           /**
-           * List of Peierls creep activation energies E.
+           * List of Peierls creep activation energies (E).
            */
           std::vector<double> activation_energies_peierls;
 
           /**
-           * Peierls stress
+           * List of Peierls stresses (sigma_p)
            */
-          double peierls_stress;
+          std::vector<double> peierls_stresses;
 
           /**
-           * Peierls fitting parameter
+           * List of Peierls fitting parameters (gamma)
            */
-          double peierls_fitting_parameter;
+          std::vector<double> peierls_fitting_parameters;
 
           /**
-           * Peierls fitting exponent
+           * List of Peierls fitting exponents (p)
            */
-          double peierls_fitting_exponent;
+          std::vector<double> peierls_fitting_exponents;
 
       };
     }

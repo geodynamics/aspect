@@ -5,7 +5,6 @@
 # exact viscosity is calculated in python through:
 #  import numpy as np
 #  R    = 8.314  # gas constant [J/mol*K] 
-#  g    = 9.81   # gravity [m/s^2]
 #  T    = 1073   # temperature [K]
 #  sig  = 900e6  # stress [Pa] 
 #  sigp = 5.9e9  # Peierls creep stress [Pa]
@@ -19,14 +18,14 @@
 #    visc = 0.5*sig/edot_ii = 1.237746641657093e+19
 #
 #  Fitting parameters for approximated viscosity:
-#    q = 0.5
-#    g = 0.1
+#    p     = 0.5 # fitting exponent
+#    gamma = 0.1 # fitting parameter
 # 
 #  Exponential term in Peierls creep viscosity approximation
-#    s = q*np.power(g,q)*(E/(R*T))
+#    s = p*np.power(gamma,p)*(E/(R*T))
 #
 #  # Approximated viscosity
-#    visca = 0.5*g*sigp/np.power(Ap*g*g*sigp*sigp,(1/(2+s)))*np.power(edot_ii,(1/(2+s))-1)*np.exp((E/(R*T))*(1 - np.power(g,q))/(2+s))
+#    visca = 0.5*gamma*sigp/np.power(Ap*gamma*gamma*sigp*sigp,(1/(2+s)))*np.power(edot_ii,(1/(2+s))-1)*np.exp((E/(R*T))*(1 - np.power(gamma,p))/(2+s))
 #          = 1.2823529299258986e+19
 #
 # The material model should return the above value of the approximated viscosity.
@@ -97,9 +96,9 @@ subsection Material model
     set Include Peierls creep                     = true
     set Prefactors for Peierls creep              = 1.4e-19
     set Activation energies for Peierls creep     = 320.e3
-    set Peierls stress                            = 5.9e9
-    set Peierls fitting parameter                 = 0.10
-    set Peierls fitting exponent                  = 0.5
+    set Peierls stresses                          = 5.9e9
+    set Peierls fitting parameters                = 0.10
+    set Peierls fitting exponents                 = 0.5
   end
 end
 
