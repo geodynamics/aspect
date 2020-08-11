@@ -228,7 +228,10 @@ namespace aspect
                                                                                    phase_function_values,
                                                                                    phase_function.n_phase_transitions_for_each_composition());
 
-          // Step 1c: select what form of viscosity to use (diffusion, dislocation or composite)
+          // Step 1c: compute viscosity from Frank-Kamenetskii approximation
+          const double viscosity_frank_kamenetskii = frank_kamenetskii_rheology.compute_viscosity(temperature, j);
+
+          // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
           double viscosity_pre_yield = 0.0;
           switch (viscous_type)
             {
@@ -240,6 +243,11 @@ namespace aspect
               case dislocation:
               {
                 viscosity_pre_yield = viscosity_dislocation;
+                break;
+              }
+              case frank_kamenetskii:
+              {
+                viscosity_pre_yield = viscosity_frank_kamenetskii;
                 break;
               }
               case composite:
@@ -770,9 +778,9 @@ namespace aspect
                              "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                              "geometric, or maximum composition.");
           prm.declare_entry ("Viscous flow law", "composite",
-                             Patterns::Selection("diffusion|dislocation|composite"),
+                             Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite"),
                              "Select what type of viscosity law to use between diffusion, "
-                             "dislocation and composite options. Soon there will be an option "
+                             "dislocation, frank kamenetskii, and composite options. Soon there will be an option "
                              "to select a specific flow law for each assigned composition ");
           prm.declare_entry ("Yield mechanism", "drucker",
                              Patterns::Selection("drucker|limiter"),
@@ -784,6 +792,9 @@ namespace aspect
 
           // Dislocation creep parameters
           Rheology::DislocationCreep<dim>::declare_parameters(prm);
+
+          // Frank-Kamenetskii viscosity parameters
+          Rheology::FrankKamenetskii<dim>::declare_parameters(prm);
 
           // Constant viscosity prefactor parameters
           Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
@@ -888,6 +899,8 @@ namespace aspect
             viscous_flow_law = diffusion;
           else if (prm.get ("Viscous flow law") == "dislocation")
             viscous_flow_law = dislocation;
+          else if (prm.get ("Viscous flow law") == "frank kamenetskii")
+            viscous_flow_law = frank_kamenetskii;
           else
             AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
 
@@ -911,6 +924,10 @@ namespace aspect
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
           dislocation_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+
+          // FK viscosity parameters
+          frank_kamenetskii_rheology.initialize_simulator (this->get_simulator());
+          frank_kamenetskii_rheology.parse_parameters(prm);
 
           // Constant viscosity prefactor parameters
           constant_viscosity_prefactors.initialize_simulator (this->get_simulator());

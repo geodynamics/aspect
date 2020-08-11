@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
+#include <aspect/material_model/rheology/frank_kamenetskii.h>
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
@@ -304,6 +305,7 @@ namespace aspect
         {
           diffusion,
           dislocation,
+          frank_kamenetskii,
           composite
         } viscous_flow_law;
 
@@ -378,6 +380,7 @@ namespace aspect
          */
         Rheology::DiffusionCreep<dim> diffusion_creep;
         Rheology::DislocationCreep<dim> dislocation_creep;
+        Rheology::FrankKamenetskii<dim> frank_kamenetskii_rheology;
 
         /**
          * Object for computing the viscosity multiplied by a constant prefactor.
