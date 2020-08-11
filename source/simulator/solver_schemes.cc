@@ -568,7 +568,7 @@ namespace aspect
 
         double test_velocity_residual = 0;
         double test_pressure_residual = 0;
-        double lambda = 1;
+        double step_length_factor = 1;
         double alpha = 1e-4;
         unsigned int line_search_iteration = 0;
 
@@ -584,14 +584,15 @@ namespace aspect
             current_linearization_point.block(introspection.block_indices.velocities) = backup_linearization_point.block(introspection.block_indices.velocities);
 
             LinearAlgebra::BlockVector search_direction = solution;
-            search_direction *= lambda;
+            search_direction *= step_length_factor;
 
             current_linearization_point.block(introspection.block_indices.pressure) += search_direction.block(introspection.block_indices.pressure);
             current_linearization_point.block(introspection.block_indices.velocities) += search_direction.block(introspection.block_indices.velocities);
 
             // Rebuild the rhs to determine the new residual.
             assemble_newton_stokes_matrix = rebuild_stokes_preconditioner = false;
-            rebuild_stokes_matrix = boundary_velocity_manager.get_active_boundary_velocity_conditions().size()!=0;
+            rebuild_stokes_matrix = (boundary_velocity_manager.get_active_boundary_velocity_conditions().empty()
+                                     == false);
 
             assemble_stokes_system();
 
@@ -601,7 +602,7 @@ namespace aspect
                                       + test_pressure_residual * test_pressure_residual);
 
             // Determine if the decrease is sufficient.
-            if (test_residual < (1.0 - alpha * lambda) * dcr.residual
+            if (test_residual < (1.0 - alpha * step_length_factor) * dcr.residual
                 ||
                 line_search_iteration >= newton_handler->parameters.max_newton_line_search_iterations
                 ||
@@ -618,17 +619,17 @@ namespace aspect
               {
 
                 pcout << "   Line search iteration " << line_search_iteration << ", with norm of the rhs "
-                      << test_residual << " and going to " << (1.0 - alpha * lambda) * dcr.residual
+                      << test_residual << " and going to " << (1.0 - alpha * step_length_factor) * dcr.residual
                       << ", relative residual: " << test_residual/dcr.initial_residual << std::endl;
 
                 /**
                  * The line search step was not sufficient to decrease the residual
                  * enough, so we take a smaller step to see if it improves the residual.
                  */
-                lambda *= (2.0/3.0);// TODO: make a parameter out of this.
+                step_length_factor *= (2.0/3.0);// TODO: make a parameter out of this.
               }
 
-            line_search_iteration++;
+            ++line_search_iteration;
             Assert(line_search_iteration <= newton_handler->parameters.max_newton_line_search_iterations,
                    ExcMessage ("This tests the while condition. This condition should "
                                "actually never be false, because the break statement "
