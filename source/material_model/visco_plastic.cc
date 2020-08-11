@@ -56,18 +56,18 @@ namespace aspect
        */
       bool plastic_yielding = false;
 
-      MaterialModel::MaterialModelInputs <dim> in_new (in_new.n_evaluation_points(), this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs <dim> in (in.n_evaluation_points(), this->n_compositional_fields());
       unsigned int i = 0;
 
-      in_new.pressure[i] = pressure;
-      in_new.temperature[i] = temperature;
-      in_new.composition[i] = composition;
-      in_new.strain_rate[i] = strain_rate;
+      in.pressure[i] = pressure;
+      in.temperature[i] = temperature;
+      in.composition[i] = composition;
+      in.strain_rate[i] = strain_rate;
 
       const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, get_volumetric_composition_mask());
 
       const std::pair<std::vector<double>, std::vector<bool> > calculate_viscosities =
-        calculate_isostrain_viscosities(in_new, i, volume_fractions, viscous_flow_law, yield_mechanism);
+        calculate_isostrain_viscosities(in, i, volume_fractions, viscous_flow_law, yield_mechanism);
 
       std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(),volume_fractions.end());
       plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(),max_composition)];
@@ -423,8 +423,8 @@ namespace aspect
 
           const double finite_difference_accuracy = 1e-7;
 
-          // A new material model inputs variable that uses the modified strain rate and pressure.
-          MaterialModel::MaterialModelInputs<dim> in_new = in;
+          // A new material model inputs variable that uses the strain rate and pressure difference.
+          MaterialModel::MaterialModelInputs<dim> in_derivatives = in;
 
           // For each independent component, compute the derivative.
           for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
@@ -440,10 +440,10 @@ namespace aspect
                                                                     * finite_difference_accuracy
                                                                     * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
 
-              in_new.strain_rate[i] = strain_rate_difference;
+              in_derivatives.strain_rate[i] = strain_rate_difference;
 
               std::vector<double> eta_component =
-                calculate_isostrain_viscosities(in_new, i, volume_fractions,
+                calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
                                                 viscous_flow_law, yield_mechanism,
                                                 phase_function_values).first;
 
@@ -467,10 +467,10 @@ namespace aspect
            */
           const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
-          in_new.pressure[i] = pressure_difference;
+          in_derivatives.pressure[i] = pressure_difference;
 
           const std::vector<double> viscosity_difference =
-            calculate_isostrain_viscosities(in_new, i, volume_fractions,
+            calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
                                             viscous_flow_law, yield_mechanism,
                                             phase_function_values).first;
 
