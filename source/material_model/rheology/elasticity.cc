@@ -96,6 +96,10 @@ namespace aspect
                            Patterns::Bool (),
                            "Whether to apply a stress averaging scheme to account for differences "
                            "between the fixed elastic time step and numerical time step. ");
+        prm.declare_entry ("Stabilization scale factor", "1.",
+                           Patterns::Double (1., std::numeric_limits<double>::max()),
+                           "Scale Factor which controls the degree of stabilization applied to elastic "
+                           "stresses.");
       }
 
 
@@ -122,6 +126,11 @@ namespace aspect
         if (use_stress_averaging)
           AssertThrow(use_fixed_elastic_time_step == true,
                       ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
+
+        stabilization_scale_factor = prm.get_double ("Stabilization scale factor");
+        if (stabilization_scale_factor < 1)
+          AssertThrow(stabilization_scale_factor < 1,
+                      ExcMessage("Stabilization scale factor must be greater than one"));
 
         fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
         AssertThrow(fixed_elastic_time_step > 0,
@@ -325,17 +334,15 @@ namespace aspect
         //
         // We also use this parameter when we are still *before* the first time step,
         // i.e., if the time step number is numbers::invalid_unsigned_int.
-        const double dte = ( ( this->get_timestep_number() > 0 &&
+        double dte = ( ( this->get_timestep_number() > 0 &&
                                this->simulator_is_past_initialization() &&
                                use_fixed_elastic_time_step == false )
                              ?
-                             this->get_timestep()
+                             this->get_timestep() * stabilization_scale_factor
                              :
                              fixed_elastic_time_step);
         return dte;
       }
-
-
 
       template <int dim>
       const std::vector<double> &

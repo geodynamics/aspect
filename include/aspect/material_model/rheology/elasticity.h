@@ -160,6 +160,12 @@ namespace aspect
            * Double for fixed elastic time step value, read from parameter file
            */
           double fixed_elastic_time_step;
+
+          /**
+           * Double for amount of stabilization applied to elastic stresses
+           */
+
+          double stabilization_scale_factor;
       };
     }
   }
