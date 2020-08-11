@@ -80,13 +80,11 @@ namespace aspect
                             typename MaterialModel::Interface<dim>::MaterialModelOutputs &out) const
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-        double c = 1.0;
         MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
         *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
-            const double porosity = in.composition[i][porosity_idx];
             const double x = in.position[i](0);
             const double z = in.position[i](1);
             out.viscosities[i] = 1.0;
@@ -144,15 +142,17 @@ namespace aspect
         double z = p(1);
 //**********
 // copy and paste here (add "out.")
-        values[0] = cos(z);
-        values[1] = sin(x);
-        values[2] = -0.2e1 * sin(x + z) + sin(x * z);
-        values[3] = sin(x + z);
-        values[4] = 1;
-        values[5] = 1;
-        values[6] = sin(x * z);
+        const double phi = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
+
+        values[0] = cos(z);                                                 //ux
+        values[1] = sin(x);                                                 //uz
+        values[2] = -0.2e1 * sin(x + z) + sin(x * z);                       //p_f
+        values[3] = sin(x + z);                                             //p_c
+        values[4] = values[0] - 1.0/phi * (-2.0 * cos(x+z) + cos(x*z)*z);   //u_f_x
+        values[5] = values[1] - 1.0/phi * (-2.0 * cos(x+z) + cos(x*z)*x);   //u_f_z
+        values[6] = values[2] + values[3] / (1.0 - phi);                    //p_s = p_f + p_c / (1-phi)
         values[7] = 0;
-        values[8] = 0.1000000000e-1 + 0.2000000000e0 * exp(-0.200e2 * pow(x + 0.20e1 * z, 0.2e1));
+        values[8] = phi;                                                    //porosity
 //**********
       }
   };

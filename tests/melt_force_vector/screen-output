@@ -15,7 +15,7 @@ Number of degrees of freedom: 2,088 (851+578+81+289+289)
      RMS, max velocity:                               0.999 m/s, 1.3 m/s
      Pressure min/avg/max:                            -0.964 Pa, 0.000703 Pa, 1.733 Pa
      Max, min, and rms velocity along boundary parts: 1.307 m/s, 1.013 m/s, 1.198 m/s, 1.307 m/s, 1.013 m/s, 1.198 m/s, 0.9869 m/s, 0.541 m/s, 0.7514 m/s, 0.9869 m/s, 0.541 m/s, 0.7514 m/s
-     Errors                                            h = 3.535534e-01 ndofs= 2088 u_L2= 2.837164e-03 p_L2= 1.217818e+00 p_f_L2= 1.428258e-02 p_c_L2= 7.741754e-03 phi_L2= 1.736581e-02 u_f_L2= 3.631819e+02
+     Errors                                            h = 3.535534e-01 ndofs= 2088 u_L2= 2.837164e-03 p_L2= 3.329364e-02 p_f_L2= 1.428258e-02 p_c_L2= 7.741754e-03 phi_L2= 1.736581e-02 u_f_L2= 6.625314e+01
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,880 (3,235+2,178+289+1,089+1,089)
@@ -31,7 +31,7 @@ Number of degrees of freedom: 7,880 (3,235+2,178+289+1,089+1,089)
      RMS, max velocity:                               1 m/s, 1.3 m/s
      Pressure min/avg/max:                            -0.9565 Pa, 9.168e-05 Pa, 1.74 Pa
      Max, min, and rms velocity along boundary parts: 1.307 m/s, 1.006 m/s, 1.198 m/s, 1.307 m/s, 1.006 m/s, 1.198 m/s, 0.9935 m/s, 0.5405 m/s, 0.7514 m/s, 0.9935 m/s, 0.5405 m/s, 0.7514 m/s
-     Errors                                            h = 1.767767e-01 ndofs= 7880 u_L2= 7.150378e-04 p_L2= 1.234237e+00 p_f_L2= 3.576920e-03 p_c_L2= 1.942137e-03 phi_L2= 2.988517e-03 u_f_L2= 3.751121e+02
+     Errors                                            h = 1.767767e-01 ndofs= 7880 u_L2= 7.150378e-04 p_L2= 1.114860e-02 p_f_L2= 3.576920e-03 p_c_L2= 1.942137e-03 phi_L2= 2.988517e-03 u_f_L2= 3.008524e+01
 
 Termination requested by criterion: end time
 
