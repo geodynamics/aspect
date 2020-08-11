@@ -315,7 +315,7 @@ namespace aspect
         else if (skip_interior_cells && !cell->at_boundary())
           {
             bool neighbor_at_boundary = false;
-            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+            for (const unsigned int face_no : cell->face_indices())
               if (cell->neighbor(face_no)->at_boundary() == true)
                 neighbor_at_boundary = true;
 
@@ -353,7 +353,7 @@ namespace aspect
               boundary_velocity_manager.get_zero_boundary_velocity_indicators();
 
             bool cell_at_conduction_dominated_dirichlet_boundary = false;
-            for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+            for (const unsigned int face_no : cell->face_indices())
               if (cell->at_boundary(face_no) == true &&
                   fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
                 {
@@ -645,7 +645,7 @@ namespace aspect
               if (skip_interior_cells && !cell->at_boundary())
                 continue;
 
-              for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+              for (const unsigned int face_no : cell->face_indices())
                 if (cell->at_boundary(face_no) == false)
                   {
                     if (cell->neighbor(face_no)->is_active())
