@@ -1788,7 +1788,7 @@ namespace aspect
                                       + " are not strictly ascending."));
 
               // If spacing between coordinates changed (with a relative
-              // tolerance), kepp track of that information.  Note that we do
+              // tolerance), keep track of that information.  Note that we do
               // not break out of this loop in this case but run through the
               // whole array, so that the AssertThrow above is executed for
               // each entry to ensure increasing coordinate values.
