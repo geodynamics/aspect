@@ -26,26 +26,88 @@ MESSAGE(STATUS "====================================================")
 SET(TARGET "aspect")
 
 FILE(GLOB_RECURSE TARGET_SRC
-     "source/*.cc" "unit_tests/*.cc" "include/*.h" "contrib/catch/catch.hpp")
+       "contrib/catch/catch.hpp")
 
-# Special treatment of some files for unity builds. We move the following
-# files to the end of the list of all .cc files (TARGET_SRC). This ordering is
-# required to not have specializations (for example helper_functions.cc)
-# appear after explicit class instantiation (for example core.cc) of the same
-# class that happen to be included in the same unity cxx file.
-SET(UNITY_LAST_FILES
-  "source/simulator/core.cc;source/volume_of_fluid/handler.cc")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
 
-FOREACH(_source_file ${UNITY_LAST_FILES})
-  SET(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
-  LIST(FIND TARGET_SRC ${_full_name} _index)
-  IF(_index EQUAL -1)
-    MESSAGE(FATAL_ERROR "could not find ${_full_name}.")
-  ENDIF()
+#Todo: find out how to automatically make this list
+SET(plugin_systems_glob_recusive "adiabatic_conditions;boundary_composition;boundary_fluid_pressure;boundary_heat_flux;boundary_temperature;boundary_traction;boundary_velocity;geometry_model;gravity_model;") 
+SET(plugin_systems_glob_recusive "${plugin_systems_glob_recusive};heating_model;initial_composition;initial_temperature;material_model;mesh_deformation;mesh_refinement;particle;prescribed_stokes_solution;") 
+SET(plugin_systems_glob_recusive "${plugin_systems_glob_recusive};simulator;termination_criteria;time_stepping;volume_of_fluid")
+SET(plugin_systems_glob_root "source")
+SET(plugin_systems_glob_pps "postprocess")
+SET(plugin_systems_glob_pps_visu "visualization") 
 
-  LIST(REMOVE_ITEM TARGET_SRC ${_full_name})
-  LIST(APPEND TARGET_SRC ${_full_name})
+
+SET(UNITY_EXCLUDE_FILES
+ "source/simulator/core.cc;source/volume_of_fluid/handler.cc") 
+
+
+
+FOREACH(_plugin_system ${plugin_systems_glob_root})
+  File(GLOB source_plugin_system "${_plugin_system}/*.cc")
+  
+  # Remove exlude files from list
+  FOREACH(_UNITY_EXCLUDE_FILES ${UNITY_EXCLUDE_FILES})
+    LIST(REMOVE_ITEM source_plugin_system "${CMAKE_SOURCE_DIR}/${_UNITY_EXCLUDE_FILES}")
+  ENDFOREACH()
+
+  FOREACH(_source_plugin_system ${source_plugin_system})
+    SET_PROPERTY(SOURCE ${_source_plugin_system} PROPERTY UNITY_GROUP "${_plugin_system}")
+  ENDFOREACH()
+  LIST(APPEND TARGET_SRC ${source_plugin_system})
 ENDFOREACH()
+
+
+FOREACH(_plugin_system ${plugin_systems_glob_pps})
+  File(GLOB source_plugin_system "source/${_plugin_system}/*.cc")
+  
+  # Remove exlude files from list
+  FOREACH(_UNITY_EXCLUDE_FILES ${UNITY_EXCLUDE_FILES})
+    LIST(REMOVE_ITEM source_plugin_system "${CMAKE_SOURCE_DIR}/${_UNITY_EXCLUDE_FILES}")
+  ENDFOREACH()
+
+  FOREACH(_source_plugin_system ${source_plugin_system})
+    SET_PROPERTY(SOURCE ${_source_plugin_system} PROPERTY UNITY_GROUP "${_plugin_system}")
+  ENDFOREACH()
+  LIST(APPEND TARGET_SRC ${source_plugin_system})
+ENDFOREACH()
+
+
+FOREACH(_plugin_system ${plugin_systems_glob_pps_visu})
+  File(GLOB source_plugin_system "source/post_process/${_plugin_system}/*.cc")
+  
+  # Remove exlude files from list
+  FOREACH(_UNITY_EXCLUDE_FILES ${UNITY_EXCLUDE_FILES})
+    LIST(REMOVE_ITEM source_plugin_system "${CMAKE_SOURCE_DIR}/${_UNITY_EXCLUDE_FILES}")
+  ENDFOREACH()
+
+  FOREACH(_source_plugin_system ${source_plugin_system})
+    SET_PROPERTY(SOURCE ${_source_plugin_system} PROPERTY UNITY_GROUP "${_plugin_system}")
+  ENDFOREACH()
+  LIST(APPEND TARGET_SRC ${source_plugin_system})
+ENDFOREACH()
+
+
+FOREACH(_plugin_system ${plugin_systems_glob_recusive})
+  File(GLOB_RECURSE source_plugin_system "source/${_plugin_system}/*.cc")
+
+  # Remove exlude files from list
+  FOREACH(_UNITY_EXCLUDE_FILES ${UNITY_EXCLUDE_FILES})
+    LIST(REMOVE_ITEM source_plugin_system "${CMAKE_SOURCE_DIR}/${_UNITY_EXCLUDE_FILES}")
+  ENDFOREACH()
+
+  FOREACH(_source_plugin_system ${source_plugin_system})
+    SET_PROPERTY(SOURCE ${_source_plugin_system} PROPERTY UNITY_GROUP "${_plugin_system}")
+  ENDFOREACH()
+  LIST(APPEND TARGET_SRC ${source_plugin_system})
+ENDFOREACH()
+
+  # Add the exlude files seperately to the list
+  FOREACH(_UNITY_EXCLUDE_FILES ${UNITY_EXCLUDE_FILES})
+    LIST(APPEND TARGET_SRC "${CMAKE_SOURCE_DIR}/${_UNITY_EXCLUDE_FILES}")
+  ENDFOREACH()
+
 
 # Set up include directories. Put the ASPECT header files
 # to the front of the list, whereas the 'catch' headers can
@@ -137,35 +199,44 @@ if(ASPECT_WITH_WORLD_BUILDER)
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
 
   # add source and include dirs:
-  FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
-  LIST(APPEND TARGET_SRC ${wb_files})
+  FILE(GLOB_RECURSE wb_root_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
+  LIST(REMOVE_ITEM wb_root_files "${WORLD_BUILDER_SOURCE_DIR}/source/point.cc")
+  LIST(REMOVE_ITEM wb_root_files "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
+
+  FILE(GLOB_RECURSE wb_feature_files "${WORLD_BUILDER_SOURCE_DIR}/source/features/*.cc")
+  FILE(GLOB_RECURSE wb_coordinate_systems_files "${WORLD_BUILDER_SOURCE_DIR}/source/coordinate_systems*.cc")
+  FILE(GLOB_RECURSE wb_types_files "${WORLD_BUILDER_SOURCE_DIR}/source/coordinate_systems*.cc")
+  LIST(APPEND TARGET_SRC  ${wb_feature_files} ${wb_coordinate_systems_files} ${wb_types_files} ${wb_root_files} "${WORLD_BUILDER_SOURCE_DIR}/source/point.cc" "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
 
   # generate config.cc and include it:
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
-  # Move some file to the end for unity builds to make sure other file come
-  # "before". Note: The current design keeps all ASPECT files (including
-  # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
-  # many issues with non-unique namespace names like Utilities.
-  SET(UNITY_WB_LAST_FILES
-  "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
 
-  FOREACH(_source_file ${UNITY_WB_LAST_FILES})
-    LIST(FIND TARGET_SRC ${_source_file} _index)
-    IF(_index EQUAL -1)
-      MESSAGE(FATAL_ERROR "could not find ${_source_file}.")
-    ENDIF()
-
-    LIST(REMOVE_ITEM TARGET_SRC ${_source_file})
-    LIST(APPEND TARGET_SRC ${_source_file})
-  ENDFOREACH()
-
-  FOREACH(_source_file ${wb_files})
-    # exclude the world builder files from including precompiled headers, they
-    # do not include ASPECT's dependencies at all.
+  # exclude the world builder files from including precompiled headers, they
+  # do not include ASPECT's dependencies at all.
+  FOREACH(_source_file ${wb_root_files})
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
     SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY UNITY_GROUP "WB_root")
+  ENDFOREACH()
+
+  FOREACH(_source_file ${wb_feature_files})
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY UNITY_GROUP "WB_features")
+  ENDFOREACH()
+
+  FOREACH(_source_file ${wb_coordinate_systems_files})
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY UNITY_GROUP "WB coordinate_systems")
+  ENDFOREACH()
+
+  FOREACH(_source_file ${wb_types_files})
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
+    SET_PROPERTY(SOURCE ${_source_file} PROPERTY UNITY_GROUP "WB_types")
   ENDFOREACH()
 
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
@@ -619,14 +690,15 @@ ENDIF()
 
 
 IF (ASPECT_UNITY_BUILD)
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
-    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD TRUE)
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.18)
+  SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD TRUE)
+    SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD_MODE GROUP)
     MESSAGE(STATUS "Combining source files into unity build.")
-  ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
+  ELSEIF(CMAKE_VERSION VERSION_LESS 3.18)
     MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
   ENDIF()
 ELSE()
-  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.18)
     SET_PROPERTY(TARGET aspect PROPERTY UNITY_BUILD FALSE)
   ENDIF()
 
