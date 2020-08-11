@@ -279,6 +279,8 @@ namespace aspect
                                                                             use_elasticity,
                                                                             use_reference_strainrate);
 
+          
+          double current_stress = numbers::signaling_nan<double>();
           if (use_elasticity == false)
             current_stress = 2. * viscosity_pre_yield * current_edot_ii;
           else

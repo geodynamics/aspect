@@ -3232,7 +3232,7 @@ namespace aspect
                                                        const std::vector<double> &composition,
                                                        const double ref_strain_rate,
                                                        const double min_strain_rate,
-                                                       const double strain_rate,
+                                                       const SymmetricTensor<2,dim> &strain_rate,
                                                        bool use_elasticity,
                                                        bool use_reference_strainrate)
     {
@@ -3255,7 +3255,6 @@ namespace aspect
       // Step 2: calculate the viscous stress magnitude
       // and strain rate. If requested compute visco-elastic contribution
       double current_edot_ii = numbers::signaling_nan<double>();
-      double current_stress = numbers::signaling_nan<double>();
 
       if (use_elasticity == false)
         {
