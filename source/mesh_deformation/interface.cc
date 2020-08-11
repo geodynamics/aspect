@@ -347,7 +347,7 @@ namespace aspect
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
-      typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
       periodic_boundary_pairs pbp = sim.geometry_model->get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler, (*p).first.first, (*p).first.second, (*p).second, mesh_velocity_constraints);

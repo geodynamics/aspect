@@ -1565,7 +1565,7 @@ namespace aspect
     using vector_t = dealii::LinearAlgebra::distributed::Vector<double>;
 
     // ABlock GMG Smoother: Chebyshev, degree 4
-    typedef PreconditionChebyshev<ABlockMatrixType,vector_t> ASmootherType;
+    using ASmootherType = PreconditionChebyshev<ABlockMatrixType,vector_t>;
     mg::SmootherRelaxation<ASmootherType, vector_t>
     mg_smoother_A;
     {
@@ -1591,7 +1591,7 @@ namespace aspect
     }
 
     // Schur complement matrix GMG Smoother: Chebyshev, degree 4
-    typedef PreconditionChebyshev<SchurComplementMatrixType,vector_t> MSmootherType;
+    using MSmootherType = PreconditionChebyshev<SchurComplementMatrixType,vector_t>;
     mg::SmootherRelaxation<MSmootherType, vector_t>
     mg_smoother_Schur(4);
     {
@@ -1682,7 +1682,7 @@ namespace aspect
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-    typedef PreconditionMG<dim, vector_t, MGTransferMatrixFree<dim,double> > GMGPreconditioner;
+    using GMGPreconditioner = PreconditionMG<dim, vector_t, MGTransferMatrixFree<dim,double> >;
     GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 

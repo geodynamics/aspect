@@ -207,12 +207,12 @@ namespace aspect
       /**
        * Import Nonlinear Solver type.
        */
-      typedef typename Parameters<dim>::NonlinearSolver NonlinearSolver;
+      using NonlinearSolver = typename Parameters<dim>::NonlinearSolver;
 
       /**
        * Import nullspace removal type.
        */
-      typedef typename Parameters<dim>::NullspaceRemoval NullspaceRemoval;
+      using NullspaceRemoval = typename Parameters<dim>::NullspaceRemoval;
 
 
       /**
@@ -1724,8 +1724,8 @@ namespace aspect
        */
       std::ofstream log_file_stream;
 
-      typedef boost::iostreams::tee_device<std::ostream, std::ofstream> TeeDevice;
-      typedef boost::iostreams::stream< TeeDevice > TeeStream;
+      using TeeDevice = boost::iostreams::tee_device<std::ostream, std::ofstream>;
+      using TeeStream = boost::iostreams::stream< TeeDevice >;
 
       TeeDevice iostream_tee_device;
       TeeStream iostream_tee_stream;

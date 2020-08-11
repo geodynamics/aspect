@@ -1155,14 +1155,14 @@ namespace aspect
          * measure given that the referenced structure used to be a member of
          * the current class.
          */
-        typedef MaterialModel::MaterialModelInputs<dim> MaterialModelInputs;
+        using MaterialModelInputs = MaterialModel::MaterialModelInputs<dim>;
         /**
          * A typedef to import the MaterialModelOutputs name into the current
          * class. This typedef primarily exists as a backward compatibility
          * measure given that the referenced structure used to be a member of
          * the current class.
          */
-        typedef MaterialModel::MaterialModelOutputs<dim> MaterialModelOutputs;
+        using MaterialModelOutputs = MaterialModel::MaterialModelOutputs<dim>;
 
         /**
          * Destructor. Made virtual to enforce that derived classes also have

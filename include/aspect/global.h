@@ -184,14 +184,14 @@ namespace aspect
    * serialization. The type chosen here is a binary archive which we
    * subsequently will have to un-compress.
    */
-  typedef boost::archive::binary_iarchive iarchive;
+  using iarchive = boost::archive::binary_iarchive;
 
   /**
    * A typedef that denotes the BOOST stream type for writing data during
    * serialization. The type chosen here is a binary archive which we compress
    * before writing it into a file.
    */
-  typedef boost::archive::binary_oarchive oarchive;
+  using oarchive = boost::archive::binary_oarchive;
 
   /**
    * A class we throw in exceptions in parallel jobs and that we can silently
@@ -217,125 +217,125 @@ namespace aspect
     /**
      * Typedef for the vector type used.
      */
-    typedef dealii::PETScWrappers::MPI::Vector Vector;
+    using Vector = dealii::PETScWrappers::MPI::Vector;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    typedef dealii::PETScWrappers::MPI::BlockVector BlockVector;
+    using BlockVector = dealii::PETScWrappers::MPI::BlockVector;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    typedef dealii::PETScWrappers::MPI::SparseMatrix SparseMatrix;
+    using SparseMatrix = dealii::PETScWrappers::MPI::SparseMatrix;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    typedef dealii::PETScWrappers::MPI::BlockSparseMatrix BlockSparseMatrix;
+    using BlockSparseMatrix = dealii::PETScWrappers::MPI::BlockSparseMatrix;
 
     /**
      * Typedef for the base class for all preconditioners.
      */
-    typedef dealii::PETScWrappers::PreconditionerBase PreconditionBase;
+    using PreconditionBase = dealii::PETScWrappers::PreconditionerBase;
 
     /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
-    typedef dealii::PETScWrappers::PreconditionBoomerAMG PreconditionAMG;
+    using PreconditionAMG = dealii::PETScWrappers::PreconditionBoomerAMG;
 
     /**
      * Typedef for the Incomplete Cholesky preconditioner used for other
      * blocks of the system matrix.
      */
-    typedef dealii::PETScWrappers::PreconditionICC PreconditionIC;
+    using PreconditionIC = dealii::PETScWrappers::PreconditionICC;
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used for
      * other blocks of the system matrix. Note that PETSc does not support a
      * communicating ILU, so we use Jacobi here.
      */
-    typedef dealii::PETScWrappers::PreconditionBlockJacobi PreconditionILU;
+    using PreconditionILU = dealii::PETScWrappers::PreconditionBlockJacobi;
 
     /**
      * Typedef for the Jacobi preconditioner used for free surface velocity
      * projection.
      */
-    typedef dealii::PETScWrappers::PreconditionJacobi PreconditionJacobi;
+    using PreconditionJacobi = dealii::PETScWrappers::PreconditionJacobi;
 
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::BlockDynamicSparsityPattern BlockDynamicSparsityPattern;
+    using BlockDynamicSparsityPattern = dealii::BlockDynamicSparsityPattern;
 
     /**
      * Typedef for the compressed sparsity pattern type.
      */
-    typedef dealii::DynamicSparsityPattern DynamicSparsityPattern;
+    using DynamicSparsityPattern = dealii::DynamicSparsityPattern;
 #else
     /**
      * Typedef for the vector type used.
      */
-    typedef dealii::TrilinosWrappers::MPI::Vector Vector;
+    using Vector = dealii::TrilinosWrappers::MPI::Vector;
 
     /**
      * Typedef for the type used to describe vectors that consist of multiple
      * blocks.
      */
-    typedef dealii::TrilinosWrappers::MPI::BlockVector BlockVector;
+    using BlockVector = dealii::TrilinosWrappers::MPI::BlockVector;
 
     /**
      * Typedef for the sparse matrix type used.
      */
-    typedef dealii::TrilinosWrappers::SparseMatrix SparseMatrix;
+    using SparseMatrix = dealii::TrilinosWrappers::SparseMatrix;
 
     /**
      * Typedef for the type used to describe sparse matrices that consist of
      * multiple blocks.
      */
-    typedef dealii::TrilinosWrappers::BlockSparseMatrix BlockSparseMatrix;
+    using BlockSparseMatrix = dealii::TrilinosWrappers::BlockSparseMatrix;
 
     /**
      * Typedef for the base class for all preconditioners.
      */
-    typedef dealii::TrilinosWrappers::PreconditionBase PreconditionBase;
+    using PreconditionBase = dealii::TrilinosWrappers::PreconditionBase;
 
     /**
      * Typedef for the AMG preconditioner type used for the top left block of
      * the Stokes matrix.
      */
-    typedef dealii::TrilinosWrappers::PreconditionAMG PreconditionAMG;
+    using PreconditionAMG = dealii::TrilinosWrappers::PreconditionAMG;
 
     /**
      * Typedef for the Incomplete Cholesky preconditioner used for other
      * blocks of the system matrix.
      */
-    typedef dealii::TrilinosWrappers::PreconditionIC PreconditionIC;
+    using PreconditionIC = dealii::TrilinosWrappers::PreconditionIC;
 
     /**
      * Typedef for the Incomplete LU decomposition preconditioner used for
      * other blocks of the system matrix.
      */
-    typedef dealii::TrilinosWrappers::PreconditionILU PreconditionILU;
+    using PreconditionILU = dealii::TrilinosWrappers::PreconditionILU;
 
     /**
      * Typedef for the Jacobi preconditioner used for free surface velocity
      * projection.
      */
-    typedef dealii::TrilinosWrappers::PreconditionJacobi PreconditionJacobi;
+    using PreconditionJacobi = dealii::TrilinosWrappers::PreconditionJacobi;
 
     /**
      * Typedef for the block compressed sparsity pattern type.
      */
-    typedef dealii::TrilinosWrappers::BlockSparsityPattern BlockDynamicSparsityPattern;
+    using BlockDynamicSparsityPattern = dealii::TrilinosWrappers::BlockSparsityPattern;
 
     /**
      * Typedef for the compressed sparsity pattern type.
      */
-    typedef dealii::TrilinosWrappers::SparsityPattern DynamicSparsityPattern;
+    using DynamicSparsityPattern = dealii::TrilinosWrappers::SparsityPattern;
 #endif
   }
 }

@@ -110,7 +110,7 @@ namespace aspect
               // specify Brent algorithm parameters
               const double a=273;
               const double b=3273;
-              typedef std::pair<double, double> Result;
+              using Result = std::pair<double, double>;
               // create fVs function to use in Brent minimization and calculate temperature
               auto bfunc = [ &,this] (double x)
               {
@@ -281,7 +281,7 @@ namespace aspect
         {
           // create fdV function to use in Brent minimization and calculate isothermal_volume_change and density using
           // expressions in Grose & Afonso 2013
-          typedef std::pair<double, double> Result2;
+          using Result2 = std::pair<double, double>;
           auto vfunc = [ &,this] (double x)
           {
             return fdV(x, bulk_modulus, bulk_modulus_pressure_derivative, pressure);

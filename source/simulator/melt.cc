@@ -1513,9 +1513,7 @@ namespace aspect
     internal::PcNonZeroDofsAssembler<dim> assembler(is_melt_cell_vector, nonzero_pc_dofs);
     assembler.initialize_simulator(this->get_simulator());
 
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
+    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
     const unsigned int stokes_dofs_per_cell = dim * fe.base_element(this->introspection().base_elements.velocities).dofs_per_cell
                                               + fe.base_element(this->introspection().base_elements.pressure).dofs_per_cell

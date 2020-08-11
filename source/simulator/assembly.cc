@@ -358,9 +358,7 @@ namespace aspect
 
     const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
 
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
+    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
     // determine which update flags to use for the cell integrals
     const UpdateFlags cell_update_flags
@@ -725,9 +723,7 @@ namespace aspect
     const QGauss<dim>   quadrature_formula(parameters.stokes_velocity_degree+1);
     const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
 
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
+    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
     // determine which updates flags we need on cells and faces
     const UpdateFlags cell_update_flags
@@ -1143,9 +1139,7 @@ namespace aspect
     system_rhs.block(block_idx) = 0;
 
 
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
+    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
     Vector<double> viscosity_per_cell;
     viscosity_per_cell.reinit(triangulation.n_active_cells());

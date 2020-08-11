@@ -542,9 +542,9 @@ namespace aspect
       // and build_preconditioner(). It will be deleted after the last use.
       MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double> > level_viscosity_vector;
 
-      typedef MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double> StokesMatrixType;
-      typedef MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double> SchurComplementMatrixType;
-      typedef MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double> ABlockMatrixType;
+      using StokesMatrixType = MatrixFreeStokesOperators::StokesOperator<dim,velocity_degree,double>;
+      using SchurComplementMatrixType = MatrixFreeStokesOperators::MassMatrixOperator<dim,velocity_degree-1,double>;
+      using ABlockMatrixType = MatrixFreeStokesOperators::ABlockOperator<dim,velocity_degree,double>;
 
       StokesMatrixType stokes_matrix;
       ABlockMatrixType A_block_matrix;

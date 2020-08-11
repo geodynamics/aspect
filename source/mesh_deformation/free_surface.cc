@@ -239,7 +239,7 @@ namespace aspect
       AffineConstraints<double> mass_matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
-      typedef std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundary_pairs;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
