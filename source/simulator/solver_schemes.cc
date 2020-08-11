@@ -192,6 +192,21 @@ namespace aspect
   std::vector<double> Simulator<dim>::assemble_and_solve_composition (const bool compute_initial_residual,
                                                                       std::vector<double> *initial_residual)
   {
+      // Advect the particles before they are potentially used to
+      // set up the compositional fields.
+      if (particle_world.get() != nullptr)
+        {
+          // Do not advect the particles in the initial refinement stage
+          const bool in_initial_refinement = (timestep_number == 0)
+                                             && (pre_refinement_step < parameters.initial_adaptive_refinement);
+          if (!in_initial_refinement)
+            // Advance the particles in the world to the current time
+            particle_world->advance_timestep();
+
+          if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+            particle_world->update_particles();
+        }
+
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
     if (compute_initial_residual)
@@ -706,20 +721,6 @@ namespace aspect
   void Simulator<dim>::solve_single_advection_single_stokes ()
   {
     assemble_and_solve_temperature();
-    // Advect the particles before they are potentially used to
-    // set up the compositional fields.
-    if (particle_world.get() != nullptr)
-      {
-        // Do not advect the particles in the initial refinement stage
-        const bool in_initial_refinement = (timestep_number == 0)
-                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
-        if (!in_initial_refinement)
-          // Advance the particles in the world to the current time
-          particle_world->advance_timestep();
-
-        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-          particle_world->update_particles();
-      }
     assemble_and_solve_composition();
     assemble_and_solve_stokes();
 
@@ -738,6 +739,8 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_no_advection_iterated_stokes ()
   {
+
+
     double initial_stokes_residual = 0.0;
 
     const unsigned int max_nonlinear_iterations =
@@ -1056,10 +1059,33 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
+
+    // Store the current location of the particles, so that we can reset
+    // the particles to it in each nonlinear iteration.
+    unsigned int n_locally_owned_particles = 0;
+    std::vector< Point<dim> > local_particle_positions(n_locally_owned_particles);
+    if (particle_world.get() != nullptr)
+    {
+        n_locally_owned_particles = particle_world->get_particle_handler().n_locally_owned_particles();
+        local_particle_positions.resize(n_locally_owned_particles);
+        // Get the current particle positions
+        particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
+    }
+
     do
       {
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
+
+        // Reset particle positions and advect them with the current velocity
+        if (particle_world.get() != nullptr)
+        {
+            // use 'false' to overwrite the current position of the particles
+            // TODO from manual: The new set of points defined by the vector has to be
+            // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
+            // function manages to find the new cells in which the particles belong.
+            particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);
+        }
 
         const std::vector<double>  relative_composition_residual =
           assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
@@ -1188,6 +1214,18 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    // Store the current location of the particles, so that we can reset
+    // the particles to it in each nonlinear iteration.
+    unsigned int n_locally_owned_particles = 0;
+    std::vector< Point<dim> > local_particle_positions(n_locally_owned_particles);
+    if (particle_world.get() != nullptr)
+    {
+        n_locally_owned_particles = particle_world->get_particle_handler().n_locally_owned_particles();
+        local_particle_positions.resize(n_locally_owned_particles);
+        // Get the current particle positions
+        particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
+    }
+
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
@@ -1204,6 +1242,17 @@ namespace aspect
     do
       {
         assemble_and_solve_temperature();
+
+        // Reset particle positions and advect them with the current velocity
+        if (particle_world.get() != nullptr)
+        {
+            // use 'false' to overwrite the current position of the particles
+            // TODO from manual: The new set of points defined by the vector has to be
+            // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
+            // function manages to find the new cells in which the particles belong.
+            particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);
+        }
+
         assemble_and_solve_composition();
 
         if (use_picard == true &&

@@ -102,6 +102,7 @@ namespace aspect
       return *property_manager;
     }
 
+
     template <int dim>
     const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
@@ -168,12 +169,19 @@ namespace aspect
 
 
     template <int dim>
+    Particles::ParticleHandler<dim> &
+    World<dim>::get_particle_handler()
+    {
+      return *particle_handler.get();
+    }
+
+
+    template <int dim>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
     {
       return *interpolator;
     }
-
 
 
     template <int dim>
@@ -182,7 +190,6 @@ namespace aspect
     {
       return particle_handler->n_global_particles();
     }
-
 
     template <int dim>
     void
