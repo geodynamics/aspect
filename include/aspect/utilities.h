@@ -605,6 +605,22 @@ namespace aspect
         explicit AsciiDataLookup(const double scale_factor);
 
         /**
+         * Replace the data stored in this class by the data given to this function.
+         *
+         * @note This is a manual way to fill the data. Consider load_file() if your data
+         * is stored in a txt/csv file.
+         *
+         * The data consists of @p n_components (implicitly given by the size of @p column_names)
+         * specified at @p coordinate_values[d] points in each of the dim coordinate directions @p d.
+         *
+         * The data in @p raw_data consists of a Table for each of the @p n_components components.
+         */
+        void reinit(const std::vector<std::string> &column_names,
+                    const std::vector<std::vector<double>> &coordinate_values,
+                    const std::vector<Table<dim,double> > &raw_data
+                   );
+
+        /**
          * Loads a data text file. Throws an exception if the file does not
          * exist, if the data file format is incorrect or if the file grid
          * changes over model runtime.
@@ -731,11 +747,11 @@ namespace aspect
         bool coordinate_values_are_equidistant;
 
         /**
-         * Computes the table indices of each entry in the input data file.
-         * The index depends on dim, grid_dim and the number of components.
+         * Computes the table indices given the size @p sizes of the
+         * i-th entry.
          */
         TableIndices<dim>
-        compute_table_indices(const unsigned int i) const;
+        compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const;
 
     };
 
