@@ -450,6 +450,8 @@ namespace aspect
         return update;
       }
 
+
+
       template <int dim>
       UpdateFlags
       Manager<dim>::get_needed_update_flags () const
