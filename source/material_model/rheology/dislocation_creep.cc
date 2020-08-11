@@ -37,6 +37,38 @@ namespace aspect
       {}
 
 
+      template <int dim>
+      const DislocationCreepParameters
+      DislocationCreep<dim>::compute_creep_parameters (const unsigned int composition,
+                                                       const std::vector<double> &phase_function_values,
+                                                       const std::vector<unsigned int> &n_phases_per_composition) const
+      {
+        DislocationCreepParameters creep_parameters;
+        if (phase_function_values == std::vector<double>())
+          {
+            // no phases
+            creep_parameters.prefactor = prefactors_dislocation[composition];
+            creep_parameters.activation_energy = activation_energies_dislocation[composition];
+            creep_parameters.activation_volume = activation_volumes_dislocation[composition];
+            creep_parameters.stress_exponent = stress_exponents_dislocation[composition];
+          }
+        else
+          {
+            // Average among phases
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                         prefactors_dislocation, composition,
+                                         MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                 activation_energies_dislocation, composition);
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                 activation_volumes_dislocation , composition);
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                               stress_exponents_dislocation, composition);
+          }
+
+        return creep_parameters;
+      }
+
 
       template <int dim>
       double
@@ -47,43 +79,50 @@ namespace aspect
                                                 const std::vector<double> &phase_function_values,
                                                 const std::vector<unsigned int> &n_phases_per_composition) const
       {
-        double prefactors_dislocation_composition;
-        double activation_energies_dislocation_composition;
-        double activation_volumes_dislocation_composition;
-        double stress_exponents_dislocation_composition;
-        if (phase_function_values == std::vector<double>())
-          {
-            // no phases
-            prefactors_dislocation_composition = prefactors_dislocation[composition];
-            activation_energies_dislocation_composition = activation_energies_dislocation[composition];
-            activation_volumes_dislocation_composition = activation_volumes_dislocation[composition];
-            stress_exponents_dislocation_composition = stress_exponents_dislocation[composition];
-          }
-        else
-          {
-            // Average among phases
-            prefactors_dislocation_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                 prefactors_dislocation, composition,
-                                                 MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            activation_energies_dislocation_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                          activation_energies_dislocation, composition);
-            activation_volumes_dislocation_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                         activation_volumes_dislocation , composition);
-            stress_exponents_dislocation_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                       stress_exponents_dislocation, composition);
-          }
+        const DislocationCreepParameters p = compute_creep_parameters(composition,
+                                                                      phase_function_values,
+                                                                      n_phases_per_composition);
+
         // Power law creep equation:
         //    viscosity = 0.5 * A^(-1/n) * edot_ii^((1-n)/n) * exp((E + P*V)/(nRT))
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double viscosity_dislocation = 0.5 * std::pow(prefactors_dislocation_composition,-1/stress_exponents_dislocation_composition) *
-                                             std::exp((activation_energies_dislocation_composition + pressure*activation_volumes_dislocation_composition)/
-                                                      (constants::gas_constant*temperature*stress_exponents_dislocation_composition)) *
-                                             std::pow(strain_rate,((1. - stress_exponents_dislocation_composition)/stress_exponents_dislocation_composition));
+        const double viscosity_dislocation = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
+                                             std::exp((p.activation_energy + pressure*p.activation_volume)/
+                                                      (constants::gas_constant*temperature*p.stress_exponent)) *
+                                             std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
         return viscosity_dislocation;
       }
 
+
+      template <int dim>
+      std::pair<double, double>
+      DislocationCreep<dim>::compute_strain_rate_and_derivative (const double stress,
+                                                                 const double pressure,
+                                                                 const double temperature,
+                                                                 const DislocationCreepParameters creep_parameters) const
+      {
+        // Power law creep equation:
+        //   edot_ii_partial = A * stress^n * exp(-(E + P*V)/(RT))
+        //   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * exp(-(E + P*V)/(RT))
+        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // stress: deviatoric stress, E: activation energy, P: pressure,
+        // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
+        const double strain_rate_dislocation = creep_parameters.prefactor *
+                                               std::pow(stress,creep_parameters.stress_exponent) *
+                                               std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                        (constants::gas_constant*temperature));
+
+        const double dstrain_rate_dstress_dislocation = creep_parameters.prefactor *
+                                                        creep_parameters.stress_exponent *
+                                                        std::pow(stress,creep_parameters.stress_exponent-1.) *
+                                                        std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                                 (constants::gas_constant*temperature));
+
+        const std::pair<double, double> strain_rate_and_derivative (strain_rate_dislocation, dstrain_rate_dstress_dislocation);
+        return strain_rate_and_derivative;
+      }
 
 
       template <int dim>

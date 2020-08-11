@@ -39,6 +39,40 @@ namespace aspect
 
 
       template <int dim>
+      const DiffusionCreepParameters
+      DiffusionCreep<dim>::compute_creep_parameters (const unsigned int composition,
+                                                     const std::vector<double> &phase_function_values,
+                                                     const std::vector<unsigned int> &n_phases_per_composition) const
+      {
+        DiffusionCreepParameters creep_parameters;
+        if (phase_function_values == std::vector<double>())
+          {
+            // no phases
+            creep_parameters.prefactor = prefactors_diffusion[composition];
+            creep_parameters.activation_energy = activation_energies_diffusion[composition];
+            creep_parameters.activation_volume = activation_volumes_diffusion[composition];
+            creep_parameters.stress_exponent = stress_exponents_diffusion[composition];
+            creep_parameters.grain_size_exponent = grain_size_exponents_diffusion[composition];
+          }
+        else
+          {
+            // Average among phases
+            creep_parameters.prefactor = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                         prefactors_diffusion, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
+            creep_parameters.activation_energy = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                 activation_energies_diffusion, composition);
+            creep_parameters.activation_volume = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                 activation_volumes_diffusion, composition);
+            creep_parameters.stress_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                               stress_exponents_diffusion, composition);
+            creep_parameters.grain_size_exponent = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                   grain_size_exponents_diffusion, composition);
+          }
+        return creep_parameters;
+      }
+
+
+      template <int dim>
       double
       DiffusionCreep<dim>::compute_viscosity (const double pressure,
                                               const double temperature,
@@ -46,44 +80,49 @@ namespace aspect
                                               const std::vector<double> &phase_function_values,
                                               const std::vector<unsigned int> &n_phases_per_composition) const
       {
-        double prefactors_diffusion_composition;
-        double activation_energies_diffusion_composition;
-        double activation_volumes_diffusion_composition;
-        double grain_size_exponents_diffusion_composition;
-        if (phase_function_values == std::vector<double>())
-          {
-            // no phases
-            prefactors_diffusion_composition = prefactors_diffusion[composition];
-            activation_energies_diffusion_composition = activation_energies_diffusion[composition];
-            activation_volumes_diffusion_composition = activation_volumes_diffusion[composition];
-            grain_size_exponents_diffusion_composition = grain_size_exponents_diffusion[composition];
-          }
-        else
-          {
-            // Average among phases
-            prefactors_diffusion_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                               prefactors_diffusion, composition,  MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic);
-            activation_energies_diffusion_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                        activation_energies_diffusion, composition);
-            activation_volumes_diffusion_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                       activation_volumes_diffusion, composition);
-            grain_size_exponents_diffusion_composition = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                         grain_size_exponents_diffusion, composition);
-          }
+        const DiffusionCreepParameters p = compute_creep_parameters(composition,
+                                                                    phase_function_values,
+                                                                    n_phases_per_composition);
+
         // Power law creep equation
         //    viscosity = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT))
         // A: prefactor,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
-        const double viscosity_diffusion = 0.5 / prefactors_diffusion_composition *
-                                           std::exp((activation_energies_diffusion_composition +
-                                                     pressure*activation_volumes_diffusion_composition)/
+        const double viscosity_diffusion = 0.5 / p.prefactor *
+                                           std::exp((p.activation_energy +
+                                                     pressure*p.activation_volume)/
                                                     (constants::gas_constant*temperature)) *
-                                           std::pow(grain_size, grain_size_exponents_diffusion_composition);
+                                           std::pow(grain_size, p.grain_size_exponent);
 
         return viscosity_diffusion;
       }
 
+
+      template <int dim>
+      std::pair<double, double>
+      DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
+                                                               const double pressure,
+                                                               const double temperature,
+                                                               const DiffusionCreepParameters creep_parameters) const
+      {
+        // Power law creep equation
+        //   edot_ii_partial = A * stress^n * d^-m * exp(-(E + P*V)/(RT))
+        //   d(edot_ii_partial)/d(stress) = A * n * stress^(n-1) * d^-m * exp(-(E + P*V)/(RT))
+        // A: prefactor, edot_ii_partial: square root of second invariant of deviatoric strain rate tensor attributable to the creep mechanism,
+        // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
+        // V; activation volume, R: gas constant, T: temperature.
+        // For diffusion creep, n = 1 (strain rate is linearly dependent on stress).
+        const double dstrain_rate_dstress_diffusion = creep_parameters.prefactor *
+                                                      std::pow(grain_size, -creep_parameters.grain_size_exponent) *
+                                                      std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
+                                                               (constants::gas_constant*temperature));
+
+        const double strain_rate_diffusion = stress * dstrain_rate_dstress_diffusion;
+
+        const std::pair<double, double> strain_rate_and_derivative (strain_rate_diffusion, dstrain_rate_dstress_diffusion);
+        return strain_rate_and_derivative;
+      }
 
 
       template <int dim>
@@ -96,6 +135,12 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. "
                            "Units: \\si{\\per\\pascal\\meter}$^{m_{\\text{diffusion}}}$\\si{\\per\\second}.");
+        prm.declare_entry ("Stress exponents for diffusion creep", "1.",
+                           Patterns::List(Patterns::Double(0.)),
+                           "List of stress exponents, $n_{\\text{diffusion}}$, for background mantle and compositional fields, "
+                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "The stress exponent for diffusion creep is almost always equal to one. "
+                           "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Grain size exponents for diffusion creep", "3.",
                            Patterns::Anything(),
                            "List of grain size exponents, $m_{\\text{diffusion}}$, for background material and compositional fields, "
@@ -137,7 +182,12 @@ namespace aspect
                                                                     "Prefactors for diffusion creep",
                                                                     true,
                                                                     expected_n_phases_per_composition);
-
+        stress_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Stress exponents for diffusion creep"),
+                                                                          list_of_composition_names,
+                                                                          has_background_field,
+                                                                          "Prefactors for diffusion creep",
+                                                                          true,
+                                                                          expected_n_phases_per_composition);
         grain_size_exponents_diffusion = Utilities::parse_map_to_double_array(prm.get("Grain size exponents for diffusion creep"),
                                                                               list_of_composition_names,
                                                                               has_background_field,
