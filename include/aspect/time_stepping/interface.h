@@ -34,6 +34,103 @@ namespace aspect
   {
 
     /**
+     * This enum describes the possible reactions by the time stepping plugins after the
+     * computation of each time step.
+     *
+     * Note: the ordering of the options is crucial, as the Manager will use the minimum
+     * of the values given by all active plugins as the reaction to take. This means the
+     * first entry has highest priority.
+     */
+    enum class Reaction
+    {
+      /**
+       * Initiate mesh refinement and go back in time to repeat the last timestep.
+       */
+      refine_and_repeat_step,
+      /**
+       * Go back in time to repeat the last timestep.
+       */
+      repeat_step,
+      /**
+       * Initiate mesh refinement and continue to the next timestep.
+       */
+      refine_and_advance,
+      /**
+       * Continue to the next timestep. The default action to take.
+       */
+      advance
+    };
+
+    /**
+     * A base class for parameterizations of the time stepping models.
+     *
+     * @ingroup TimeStepping
+     */
+    template <int dim>
+    class Interface
+    {
+      public:
+        /**
+         * Destructor. Made virtual to enforce that derived classes also have
+         * virtual destructors.
+         */
+        virtual ~Interface() = default;
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program after parse_parameters is run and after
+         * the SimulatorAccess (if applicable) is initialized.
+         */
+        virtual
+        void
+        initialize ();
+
+        /**
+         * A function that is called at the beginning of each time step. The
+         * default implementation of the function does nothing, but derived
+         * classes that need more elaborate setups for a given time step may
+         * overload the function.
+         */
+        virtual
+        void
+        update ();
+
+        /**
+         * Execute the logic of the plugin.
+         *
+         * This is called after every time step to determine
+         * a) What to do (advance, repeat, etc.), see the Reaction enum.
+         * b) What timestep size to use.
+         *
+         */
+        virtual
+        std::pair<Reaction, double>
+        execute() = 0;
+
+
+        /**
+         * Declare the parameters this class takes through input files. The
+         * default implementation of this function does not describe any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
+         */
+        static
+        void
+        declare_parameters (ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         * The default implementation of this function does not read any
+         * parameters. Consequently, derived classes do not have to overload
+         * this function if they do not take any runtime parameters.
+         */
+        virtual
+        void
+        parse_parameters (ParameterHandler &prm);
+    };
+
+
+    /**
      * A class to handle computation of the next time step (as desired by the user) and
      * checking if the simulation is finished.
      */
@@ -80,6 +177,45 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * For the current plugin subsystem, write a connection graph of all of the
+         * plugins we know about, in the format that the
+         * programs dot and neato understand. This allows for a visualization of
+         * how all of the plugins that ASPECT knows about are interconnected, and
+         * connect to other parts of the ASPECT code.
+         *
+         * @param output_stream The stream to write the output to.
+         */
+        static
+        void
+        write_plugin_graph (std::ostream &output_stream);
+
+
+        /**
+         * A function that is used to register time stepping model objects in such
+         * a way that the Manager can deal with all of them without having to
+         * know them by name. This allows the files in which individual
+         * plugins are implemented to register these plugins, rather than also
+         * having to modify the Manager class by adding the new plugin class.
+         *
+         * @param name A string that identifies the model
+         * @param description A text description of what this model does and that
+         * will be listed in the documentation of the parameter file.
+         * @param declare_parameters_function A pointer to a function that can be
+         * used to declare the parameters that this model wants to read
+         * from input files.
+         * @param factory_function A pointer to a function that can create an
+         * object of this model.
+         *
+         * @ingroup TimeStepping
+         */
+        static
+        void
+        register_time_stepping_model (const std::string &name,
+                                      const std::string &description,
+                                      void (*declare_parameters_function) (ParameterHandler &),
+                                      Interface<dim> *(*factory_function) ());
+
       private:
 
         /**
@@ -93,7 +229,31 @@ namespace aspect
          * it to determine the time_step size in the final time step.
          */
         TerminationCriteria::Manager<dim> termination_manager;
+
+        /**
+         * A list of active plugins to determine time step sizes.
+         */
+        std::list<std::unique_ptr<Interface<dim> > > active_plugins;
     };
+
+    /**
+     * Given a class name, a name, and a description for the parameter file, register it with the
+     * aspect::TimeStepping::Manager class.
+     *
+     * @ingroup TimeStepping
+     */
+#define ASPECT_REGISTER_TIME_STEPPING_MODEL(classname,name,description) \
+  template class classname<2>; \
+  template class classname<3>; \
+  namespace ASPECT_REGISTER_TIME_STEPPING_MODEL_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::TimeStepping::Manager<2>::register_time_stepping_model, \
+                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::TimeStepping::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::TimeStepping::Manager<3>::register_time_stepping_model, \
+                                name, description); \
+  }
 
   }
 }

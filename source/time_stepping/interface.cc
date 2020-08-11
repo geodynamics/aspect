@@ -26,137 +26,73 @@ namespace aspect
 {
   namespace TimeStepping
   {
+    namespace
+    {
+      std::tuple
+      <void *,
+      void *,
+      aspect::internal::Plugins::PluginList<Interface<2> >,
+      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+    }
+
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::
+    initialize ()
+    {
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::
+    update ()
+    {
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::declare_parameters (ParameterHandler &/*prm*/)
+    {
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::
+    parse_parameters (ParameterHandler &/*prm*/)
+    {
+    }
+
+
 
     template <int dim>
     double
     Manager<dim>::
     compute_time_step_size() const
     {
-      const QIterated<dim> quadrature_formula (QTrapez<1>(),
-                                               this->get_parameters().stokes_velocity_degree);
+      double new_time_step = std::numeric_limits<double>::max();
+      Reaction reaction = Reaction::advance;
 
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values |
-                               update_gradients |
-                               ((this->get_parameters().use_conduction_timestep || this->get_parameters().include_melt_transport)
-                                ?
-                                update_quadrature_points
-                                :
-                                update_default));
+      for (const auto &plugin : active_plugins)
+        {
+          std::pair<Reaction, double> answer
+            = plugin->execute();
 
-      const unsigned int n_q_points = quadrature_formula.size();
+          new_time_step = std::min(new_time_step, answer.second);
+          reaction = static_cast<Reaction>(std::min(reaction, answer.first));
+        }
 
-
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
-      std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-      std::vector<std::vector<double> > composition_values (this->introspection().n_compositional_fields,std::vector<double> (n_q_points));
-
-      double max_local_speed_over_meshsize = 0;
-      double min_local_conduction_timestep = std::numeric_limits<double>::max();
-
-      MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                 this->introspection().n_compositional_fields);
-      MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                   this->introspection().n_compositional_fields);
-
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                        velocity_values);
-
-            double max_local_velocity = 0;
-            for (unsigned int q=0; q<n_q_points; ++q)
-              max_local_velocity = std::max (max_local_velocity,
-                                             velocity_values[q].norm());
-
-            if (this->get_parameters().include_melt_transport)
-              {
-                const FEValuesExtractors::Vector ex_u_f = this->introspection().variable("fluid velocity").extractor_vector();
-                fe_values[ex_u_f].get_function_values (this->get_solution(), fluid_velocity_values);
-
-                for (unsigned int q=0; q<n_q_points; ++q)
-                  max_local_velocity = std::max (max_local_velocity,
-                                                 fluid_velocity_values[q].norm());
-              }
-
-            max_local_speed_over_meshsize = std::max(max_local_speed_over_meshsize,
-                                                     max_local_velocity
-                                                     /
-                                                     cell->minimum_vertex_distance());
-
-            if (this->get_parameters().use_conduction_timestep)
-              {
-                in.reinit(fe_values,
-                          cell,
-                          this->introspection(),
-                          this->get_solution());
-
-                this->get_material_model().evaluate(in, out);
-
-                if (this->get_parameters().formulation_temperature_equation
-                    == Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                  {
-                    // Overwrite the density by the reference density coming from the
-                    // adiabatic conditions as required by the formulation
-                    for (unsigned int q=0; q<n_q_points; ++q)
-                      out.densities[q] = this->get_adiabatic_conditions().density(in.position[q]);
-                  }
-                else if (this->get_parameters().formulation_temperature_equation
-                         == Parameters<dim>::Formulation::TemperatureEquation::real_density)
-                  {
-                    // use real density
-                  }
-                else
-                  AssertThrow(false, ExcNotImplemented());
-
-
-                // Evaluate thermal diffusivity at each quadrature point and
-                // calculate the corresponding conduction timestep, if applicable
-                for (unsigned int q=0; q<n_q_points; ++q)
-                  {
-                    const double k = out.thermal_conductivities[q];
-                    const double rho = out.densities[q];
-                    const double c_p = out.specific_heat[q];
-
-                    Assert(rho * c_p > 0,
-                           ExcMessage ("The product of density and c_P needs to be a "
-                                       "non-negative quantity."));
-
-                    const double thermal_diffusivity = k/(rho*c_p);
-
-                    if (thermal_diffusivity > 0)
-                      {
-                        min_local_conduction_timestep = std::min(min_local_conduction_timestep,
-                                                                 this->get_parameters().CFL_number*pow(cell->minimum_vertex_distance(),2.)
-                                                                 / thermal_diffusivity);
-                      }
-                  }
-              }
-          }
-
-      const double max_global_speed_over_meshsize
-        = Utilities::MPI::max (max_local_speed_over_meshsize, this->get_mpi_communicator());
-
-      double min_convection_timestep = std::numeric_limits<double>::max();
-      double min_conduction_timestep = std::numeric_limits<double>::max();
-
-      if (max_global_speed_over_meshsize != 0.0)
-        min_convection_timestep = this->get_parameters().CFL_number / (this->get_parameters().temperature_degree * max_global_speed_over_meshsize);
-
-      if (this->get_parameters().use_conduction_timestep)
-        min_conduction_timestep = - Utilities::MPI::max (-min_local_conduction_timestep, this->get_mpi_communicator());
-
-      double new_time_step = std::min(min_convection_timestep,
-                                      min_conduction_timestep);
-
-      AssertThrow (new_time_step > 0,
-                   ExcMessage("The time step length for the each time step needs to be positive, "
-                              "but the computed step length was: " + std::to_string(new_time_step) + ". "
-                              "Please check for non-positive material properties."));
+      // For now, we only support the default:
+      AssertThrow(reaction == Reaction::advance,
+                  ExcNotImplemented());
 
       // Make sure we do not exceed the maximum time step length. This can happen
       // if velocities get too small or even zero in models that are stably stratified
@@ -208,18 +144,52 @@ namespace aspect
 
     template <int dim>
     void
+    Manager<dim>::register_time_stepping_model(const std::string &name,
+                                               const std::string &description,
+                                               void (*declare_parameters_function) (ParameterHandler &),
+                                               Interface<dim> *(*factory_function) ())
+    {
+      std::get<dim>(registered_plugins).register_plugin (name,
+                                                         description,
+                                                         declare_parameters_function,
+                                                         factory_function);
+    }
+
+
+
+    template <int dim>
+    void
     Manager<dim>:: declare_parameters (ParameterHandler &prm)
     {
       TerminationCriteria::Manager<dim>::declare_parameters(prm);
       prm.enter_subsection("Termination criteria");
       {
-        // Whether to checkpoint the simulation right before termination
         prm.declare_entry("Checkpoint on termination", "false",
                           Patterns::Bool (),
                           "Whether to checkpoint the simulation right before termination.");
       }
       prm.leave_subsection();
 
+
+      prm.enter_subsection("Time stepping");
+      {
+        const std::string pattern_of_names
+          = std::get<dim>(registered_plugins).get_pattern_of_names ();
+
+        prm.declare_entry("List of model names",
+                          "",
+                          Patterns::MultipleSelection(pattern_of_names),
+                          "A comma separated list of time stepping plugins that "
+                          "will be used to calculate the time step size. The minimum of the "
+                          " result of each plugin will be used.\n\n"
+                          "The following plugins are available:\n\n"
+                          +
+                          std::get<dim>(registered_plugins).get_description_string());
+
+      }
+      prm.leave_subsection();
+
+      std::get<dim>(registered_plugins).declare_parameters (prm);
     }
 
 
@@ -234,6 +204,68 @@ namespace aspect
         do_checkpoint_on_terminate = prm.get_bool("Checkpoint on termination");
       }
       prm.leave_subsection();
+
+      {
+        prm.enter_subsection("Time stepping");
+        std::vector<std::string>
+        model_names
+          = Utilities::split_string_list(prm.get("List of model names"));
+
+        AssertThrow(Utilities::has_unique_entries(model_names),
+                    ExcMessage("The list of strings for the parameter "
+                               "'Time stepping/List of model names' contains entries more than once. "
+                               "This is not allowed. Please check your parameter file."));
+
+        if (model_names.size()==0)
+          {
+            // handle the default case, where the user has not chosen any time stepping scheme explicitly:
+
+            model_names.emplace_back("convection time step");
+            if (this->get_parameters().use_conduction_timestep)
+              model_names.emplace_back("conduction time step");
+          }
+        else
+          {
+            AssertThrow(this->get_parameters().use_conduction_timestep == false,
+                        ExcMessage("When you are using Time stepping:: List of model names, do can not "
+                                   "set \"Use conduction timestep\" to true. Use the \"conduction time step\" "
+                                   "instead"));
+          }
+
+        prm.leave_subsection();
+
+        for (unsigned int name=0; name<model_names.size(); ++name)
+          {
+            active_plugins.push_back (std::unique_ptr<Interface<dim> >
+                                      (std::get<dim>(registered_plugins)
+                                       .create_plugin (model_names[name],
+                                                       "Time stepping::Model names")));
+
+            if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*active_plugins.back()))
+              sim->initialize_simulator (this->get_simulator());
+
+            active_plugins.back()->parse_parameters (prm);
+            active_plugins.back()->initialize ();
+          }
+      }
+    }
+
+
+
+    template <int dim>
+    void
+    Manager<dim>::write_plugin_graph (std::ostream &out)
+    {
+      std::get<dim>(registered_plugins).write_plugin_graph ("Time stepping interface",
+                                                            out);
+    }
+
+
+    template <int dim>
+    std::string
+    get_valid_model_names_pattern ()
+    {
+      return std::get<dim>(registered_plugins).get_pattern_of_names ();
     }
 
   }
@@ -246,13 +278,28 @@ namespace aspect
 namespace aspect
 {
 
+  namespace internal
+  {
+    namespace Plugins
+    {
+      template <>
+      std::list<internal::Plugins::PluginList<TimeStepping::Interface<2> >::PluginInfo> *
+      internal::Plugins::PluginList<TimeStepping::Interface<2> >::plugins = nullptr;
+      template <>
+      std::list<internal::Plugins::PluginList<TimeStepping::Interface<3> >::PluginInfo> *
+      internal::Plugins::PluginList<TimeStepping::Interface<3> >::plugins = nullptr;
+    }
+  }
+
   namespace TimeStepping
   {
 #define INSTANTIATE(dim) \
   \
+  template class Interface<dim>; \
+  template class Manager<dim>; \
   template \
-  class \
-  Manager<dim>;
+  std::string \
+  get_valid_model_names_pattern<dim> ();
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
