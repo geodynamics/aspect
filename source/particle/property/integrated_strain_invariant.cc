@@ -34,6 +34,8 @@ namespace aspect
         data.push_back(0.0);
       }
 
+
+
       template <int dim>
       void
       IntegratedStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
@@ -62,8 +64,9 @@ namespace aspect
         // New strain is the old strain plus dt*edot_ii
         const double new_strain = old_strain + dt*edot_ii;
         data[data_position] = new_strain;
-
       }
+
+
 
       template <int dim>
       UpdateTimeFlags
@@ -72,12 +75,16 @@ namespace aspect
         return update_time_step;
       }
 
+
+
       template <int dim>
       UpdateFlags
       IntegratedStrainInvariant<dim>::get_needed_update_flags () const
       {
         return update_gradients;
       }
+
+
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
