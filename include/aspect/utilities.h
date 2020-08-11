@@ -1249,6 +1249,19 @@ namespace aspect
                               const double SPD_safety_factor);
 
     /**
+     * Computes the current_edot_ii and current_stress, with the option for
+     * viscous and viscoelastic contribution.
+     */
+    template <int dim>
+    double compute_current_edot_ii (const unsigned int j,  // the volume fraction
+                                                       const std::vector<double> &composition,
+                                                       const double ref_strain_rate,
+                                                       const double min_strain_rate,
+                                                       const double strain_rate,
+                                                       bool use_elasticity,
+                                                       bool use_reference_strainrate);
+
+    /**
      * Converts an array of size dim to a Point of size dim.
      */
     template <int dim>

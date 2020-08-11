@@ -185,14 +185,6 @@ namespace aspect
       std::vector<bool> composition_yielding(volume_fractions.size(), false);
       std::vector<double> composition_viscosities(volume_fractions.size(), numbers::signaling_nan<double>());
 
-      // Assemble stress tensor if elastic behavior is enabled
-      SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
-      if (use_elasticity == true)
-        {
-          for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-            stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
-        }
-
       // The first time this function is called (first iteration of first time step)
       // a specified "reference" strain rate is used as the returned value would
       // otherwise be zero.
@@ -279,42 +271,28 @@ namespace aspect
 
           // Step 2: calculate the viscous stress magnitude
           // and strain rate. If requested compute visco-elastic contributions.
-          double current_edot_ii = numbers::signaling_nan<double>();
-          double current_stress = numbers::signaling_nan<double>();
+          const double current_edot_ii = Utilities::compute_current_edot_ii(j,
+                                                                            composition,
+                                                                            ref_strain_rate,
+                                                                            min_strain_rate,
+                                                                            strain_rate,
+                                                                            use_elasticity,
+                                                                            use_reference_strainrate);
 
           if (use_elasticity == false)
-            {
-              current_edot_ii = edot_ii;
-              current_stress = 2. * viscosity_pre_yield * current_edot_ii;
-            }
+            current_stress = 2. * viscosity_pre_yield * current_edot_ii;
           else
             {
-              const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
-
-              if (use_reference_strainrate == true)
-                current_edot_ii = ref_strain_rate;
-              else
+              if (use_reference_strainrate == false)
                 {
-                  const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
-                                                                    stress_old,
-                                                                    elastic_shear_moduli[j]);
+                  const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
+                  // Step 2a: calculate viscoelastic (effective) viscosity
+                  viscosity_pre_yield = elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield,
+                                                                                          elastic_shear_moduli[j]);
 
-                  current_edot_ii = std::max(viscoelastic_strain_rate_invariant,
-                                             min_strain_rate);
+                  // Step 2b: calculate current (viscous + elastic) stress magnitude
+                  current_stress = viscosity_pre_yield * current_edot_ii;
                 }
-
-              // Step 2a: calculate viscoelastic (effective) viscosity
-              viscosity_pre_yield = elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield,
-                                                                                      elastic_shear_moduli[j]);
-
-              // Step 2b: calculate current (viscous + elastic) stress magnitude
-              current_stress = viscosity_pre_yield * current_edot_ii;
-
-              // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
-              // viscosity calculation below assumes stress = 2 * viscosity * strain_rate_invariant,
-              // whereas the combined viscoelastic + viscous stresses already include the
-              // 2x factor (see computation of edot inside elastic_rheology).
-              current_edot_ii /= 2.;
             }
 
           // Step 3: strain weakening
