@@ -54,6 +54,19 @@ namespace aspect
         plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain,
         viscous_weakening_with_viscous_strain_only
       };
+      /**
+       * Enumeration for selecting which type of healing mechanism to use.
+       * For the case no healing, no strain healing occurs.
+       * Otherwise, the strain is healed (reduced) as a function of temperature,
+       * a user defined healing time scale and additional parameters.
+       * Future models could consider strain healing formulations that are a function
+       * of time, deformation rate, or other parameters
+       */
+      enum HealingMechanism
+      {
+        no_healing,
+        temperature_dependent
+      };
 
       template <int dim>
       class StrainDependent : public ::aspect::SimulatorAccess<dim>
@@ -82,6 +95,14 @@ namespace aspect
           std::array<double, 3>
           compute_strain_weakening_factors(const unsigned int j,
                                            const std::vector<double> &composition) const;
+
+          /**
+           * A function that computes by strain healing (reduction)
+           */
+          double
+          calculate_strain_healing (const MaterialModel::MaterialModelInputs<dim> &in,
+                                    const double edot_ii,
+                                    const unsigned int j) const;
 
           /**
            * A function that computes by how much the cohesion and internal friction
@@ -131,10 +152,17 @@ namespace aspect
           WeakeningMechanism
           get_weakening_mechanism () const;
 
+          /**
+           * A function that returns the selected type of strain healing mechanism.
+           */
+          HealingMechanism
+          get_healing_mechanism () const;
+
         private:
 
           WeakeningMechanism weakening_mechanism;
 
+          HealingMechanism healing_mechanism;
           /**
            * The start of the strain interval (plastic or total strain)
            * within which cohesion and angle of friction should be weakened.
@@ -178,6 +206,15 @@ namespace aspect
            */
           std::vector<double> viscous_strain_weakening_factors;
 
+          /**
+           * The healing rate used in the temperature dependent strain healing model.
+           */
+          double strain_healing_temperature_dependent_recovery_rate;
+
+          /**
+           * A prefactor of viscosity used in the strain healing calculation.
+           */
+          double strain_healing_temperature_dependent_prefactor;
       };
     }
   }
