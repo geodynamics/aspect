@@ -119,8 +119,11 @@ ENDIF()
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET} CXX)
 
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 message(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
+
 if(ASPECT_WITH_WORLD_BUILDER)
   # Check whether we can find the WorldBuilder.
   SET(WORLD_BUILDER_SOURCE_DIR "" CACHE PATH "Provide an external World Builder directory to be compiled with ASPECT. \
@@ -130,50 +133,40 @@ if(ASPECT_WITH_WORLD_BUILDER)
     SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   ENDIF()
 
+  SET(WORLD_BUILDER_INSTALL_DIR ${CMAKE_BINARY_DIR}/world_builder_${CMAKE_BUILD_TYPE}/)
+  SET(WB_LIB_LOCATION ${WORLD_BUILDER_INSTALL_DIR}lib/${CMAKE_STATIC_LIBRARY_PREFIX}WorldBuilder${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+  ExternalProject_Add(world_builder_project
+  SOURCE_DIR ${WORLD_BUILDER_SOURCE_DIR}
+  TMP_DIR ${WORLD_BUILDER_INSTALL_DIR}tmp/
+  BINARY_DIR ${WORLD_BUILDER_INSTALL_DIR}
+  INSTALL_COMMAND ""
+  INSTALL_DIR ${WORLD_BUILDER_INSTALL_DIR}
+  BUILD_BYPRODUCTS ${WB_LIB_LOCATION}
+  CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${WORLD_BUILDER_INSTALL_DIR} ${WORLD_BUILDER_SOURCE_DIR}
+)
+
+ExternalProject_Get_Property(world_builder_project BINARY_DIR)
+
+add_library(WorldBuilder STATIC IMPORTED)
+
+set_target_properties(WorldBuilder PROPERTIES
+  IMPORTED_LOCATION ${WB_LIB_LOCATION})
+
   # Always include the header files.
+  # Todo: I think the world builder needs an external api include folder
+  # and a separte internal.
   INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
 
-  INCLUDE("${WORLD_BUILDER_SOURCE_DIR}/cmake/version.cmake")
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
-
-  # add source and include dirs:
-  FILE(GLOB_RECURSE wb_files "${WORLD_BUILDER_SOURCE_DIR}/source/*.cc")
-  LIST(APPEND TARGET_SRC ${wb_files})
 
   # generate config.cc and include it:
   CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
   LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
 
-  # Move some file to the end for unity builds to make sure other file come
-  # "before". Note: The current design keeps all ASPECT files (including
-  # ASPECT_UNITY_LAST files) before all GWB files. Mixing them will causes
-  # many issues with non-unique namespace names like Utilities.
-  SET(UNITY_WB_LAST_FILES
-  "${WORLD_BUILDER_SOURCE_DIR}/source/parameters.cc")
-
-  FOREACH(_source_file ${UNITY_WB_LAST_FILES})
-    LIST(FIND TARGET_SRC ${_source_file} _index)
-    IF(_index EQUAL -1)
-      MESSAGE(FATAL_ERROR "could not find ${_source_file}.")
-    ENDIF()
-
-    LIST(REMOVE_ITEM TARGET_SRC ${_source_file})
-    LIST(APPEND TARGET_SRC ${_source_file})
-  ENDFOREACH()
-
-  FOREACH(_source_file ${wb_files})
-    # exclude the world builder files from including precompiled headers, they
-    # do not include ASPECT's dependencies at all.
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY COTIRE_EXCLUDED TRUE )
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
-    # Temporarily disable world builder unity builds:
-    SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE )
-  ENDFOREACH()
-
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
   SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
 ENDIF()
-
 
 
 # load in version info and export it
@@ -467,6 +460,19 @@ ENDIF()
 
 ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
 DEAL_II_SETUP_TARGET(${TARGET})
+
+
+if(ASPECT_WITH_WORLD_BUILDER)
+  target_link_libraries(${TARGET} WorldBuilder)
+  # Make doesn't know how to how to layout the dependencies
+  # in a fine grained manner and requires a more coarse
+  # approach than Ninja. Since I don't know whether this also
+  # works for other build systems, the caorse approach is only
+  # disabled for Ninja.
+  if(NOT ${CMAKE_GENERATOR} STREQUAL "Ninja" )
+    add_dependencies( WorldBuilder world_builder_project )
+  endif()
+endif()
 
 FIND_PACKAGE(PerpleX QUIET HINTS ./contrib/perplex/install/ ../ ../../ $ENV{PERPLEX_DIR})
 IF(${PerpleX_FOUND})

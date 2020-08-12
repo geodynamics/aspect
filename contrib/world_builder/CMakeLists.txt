@@ -10,6 +10,10 @@ if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif()
 
+if(POLICY CMP0058)
+  cmake_policy(SET CMP0058 NEW)
+endif()
+
 # load in version info and export it
 SET(WORLD_BUILDER_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake/version.cmake")
