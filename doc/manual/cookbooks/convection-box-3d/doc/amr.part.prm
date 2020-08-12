@@ -1,7 +1,0 @@
-subsection Mesh refinement
-  set Initial global refinement                = 3
-  set Initial adaptive refinement              = 3
-  set Time steps between mesh refinement       = 15
-
-  set Additional refinement times              = 0.003
-end
