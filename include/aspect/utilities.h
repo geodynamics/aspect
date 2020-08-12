@@ -1254,12 +1254,21 @@ namespace aspect
      */
     template <int dim>
     double compute_current_edot_ii (const unsigned int j,  // the volume fraction
-                                                       const std::vector<double> &composition,
-                                                       const double ref_strain_rate,
-                                                       const double min_strain_rate,
-                                                       const SymmetricTensor<2,dim> &strain_rate,
-                                                       bool use_elasticity,
-                                                       bool use_reference_strainrate);
+                                    const std::vector<double> &composition,
+                                    const double ref_strain_rate,
+                                    const double min_strain_rate,
+                                    const SymmetricTensor<2,dim> &strain_rate,
+                                    bool use_elasticity,
+                                    bool use_reference_strainrate);
+
+    /**
+     * Calculate the square root of the second moment invariant for the deviatoric
+     * strain rate tensor, including viscoelastic stresses.
+     */
+    double
+    calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
+                                        const SymmetricTensor<2,dim> &stress,
+                                        const double shear_modulus) const;
 
     /**
      * Converts an array of size dim to a Point of size dim.

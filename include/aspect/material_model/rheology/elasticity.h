@@ -119,15 +119,6 @@ namespace aspect
                                             const double shear_modulus) const;
 
           /**
-           * Calculate the square root of the second moment invariant for the deviatoric
-           * strain rate tensor, including viscoelastic stresses.
-           */
-          double
-          calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
-                                              const SymmetricTensor<2,dim> &stress,
-                                              const double shear_modulus) const;
-
-          /**
            * Compute the elastic time step.
            */
           double

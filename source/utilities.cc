@@ -3229,12 +3229,12 @@ namespace aspect
 
     template <int dim>
     double compute_current_edot_ii (const unsigned int j,  // the volume fraction
-                                                       const std::vector<double> &composition,
-                                                       const double ref_strain_rate,
-                                                       const double min_strain_rate,
-                                                       const SymmetricTensor<2,dim> &strain_rate,
-                                                       bool use_elasticity,
-                                                       bool use_reference_strainrate)
+                                    const std::vector<double> &composition,
+                                    const double ref_strain_rate,
+                                    const double min_strain_rate,
+                                    const SymmetricTensor<2,dim> &strain_rate,
+                                    bool use_elasticity,
+                                    bool use_reference_strainrate)
     {
       // Assemble stress tensor if elastic behavior is enabled
       SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
@@ -3268,7 +3268,7 @@ namespace aspect
             current_edot_ii = ref_strain_rate;
           else
             {
-              const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(strain_rate,
+              const double viscoelastic_strain_rate_invariant = calculate_viscoelastic_strain_rate(strain_rate,
                                                                 stress_old,
                                                                 elastic_shear_moduli[j]);
 
@@ -3286,6 +3286,16 @@ namespace aspect
       return current_edot_ii;
     }
 
+    template <int dim>
+    double calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
+                                              const SymmetricTensor<2,dim> &stress,
+                                              const double shear_modulus) const
+    {
+      const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
+                                          (shear_modulus * elastic_timestep());
+
+      return std::sqrt(std::fabs(second_invariant(edot)));
+    }
 
 
     template <int dim>

@@ -355,21 +355,6 @@ namespace aspect
         const double dte = elastic_timestep();
         return ( viscosity * dte ) / ( dte + ( viscosity / elastic_shear_modulus ) );
       }
-
-
-
-      template <int dim>
-      double
-      Elasticity<dim>::
-      calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
-                                         const SymmetricTensor<2,dim> &stress,
-                                         const double shear_modulus) const
-      {
-        const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
-                                            (shear_modulus * elastic_timestep());
-
-        return std::sqrt(std::fabs(second_invariant(edot)));
-      }
     }
   }
 }
