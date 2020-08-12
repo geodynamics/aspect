@@ -1,0 +1,63 @@
+
+Number of active cells: 96 (on 1 levels)
+Number of degrees of freedom: 4,030 (2,910+150+970)
+
+Number of mesh deformation degrees of freedom: 450
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.03312e-08
+
+
+   Postprocessing:
+
+     Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     9.8
+     Reference density (kg/m^3):                    1
+     Reference thermal expansion coefficient (1/K): 0.1
+     Reference specific heat capacity (J/(K*kg)):   1
+     Reference thermal conductivity (W/(m*K)):      1
+     Reference viscosity (Pa*s):                    1
+     Reference thermal diffusivity (m^2/s):         1
+     Rayleigh number:                               0
+
+     Topography min/max:               -5.821e-11 m, 1.164e-10 m
+     Density at top/bottom of domain:  1 kg/m^3, 1 kg/m^3
+     Pressure at top/bottom of domain: 2669 Pa, 1.871e+06 Pa
+     Computing dynamic topography      
+     Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00000
+
+*** Timestep 1:  t=4.55088e-14 years, dt=4.55088e-14 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 80+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 19.4377
+
+   Solving Stokes system... 18+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000424553
+
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.67952e-07
+
+
+   Postprocessing:
+     Topography min/max:               -2.915e+04 m, 5.632e+04 m
+     Density at top/bottom of domain:  0.999 kg/m^3, 1.081 kg/m^3
+     Pressure at top/bottom of domain: -4002 Pa, 1.934e+06 Pa
+     Computing dynamic topography      
+     Writing geoid anomaly:            output-geoid_freesurface/geoid_anomaly.00001
+
+Termination requested by criterion: end step
+
+
+
