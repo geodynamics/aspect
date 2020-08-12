@@ -380,7 +380,7 @@ namespace aspect
          */
         Rheology::DiffusionCreep<dim> diffusion_creep;
         Rheology::DislocationCreep<dim> dislocation_creep;
-        Rheology::FrankKamenetskii<dim> frank_kamenetskii_rheology;
+        std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
 
         /**
          * Object for computing the viscosity multiplied by a constant prefactor.

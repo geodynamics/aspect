@@ -244,7 +244,7 @@ namespace aspect
               }
               case frank_kamenetskii:
               {
-                viscosity_pre_yield = frank_kamenetskii_rheology.compute_viscosity(temperature, j);
+                viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(temperature, j);
                 break;
               }
               case composite:
@@ -923,8 +923,12 @@ namespace aspect
           dislocation_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
           // Frank Kamenetskii viscosity parameters
-          frank_kamenetskii_rheology.initialize_simulator (this->get_simulator());
-          frank_kamenetskii_rheology.parse_parameters(prm);
+          if (viscous_flow_law == frank_kamenetskii)
+            {
+              frank_kamenetskii_rheology = std_cxx14::make_unique<Rheology::FrankKamenetskii<dim>>();
+              frank_kamenetskii_rheology->initialize_simulator (this->get_simulator());
+              frank_kamenetskii_rheology->parse_parameters(prm);
+            }
 
           // Constant viscosity prefactor parameters
           constant_viscosity_prefactors.initialize_simulator (this->get_simulator());
