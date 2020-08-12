@@ -1,0 +1,172 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.3.0-pre (particles_elasticity, 55147952b)
+--     . using deal.II 9.2.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.2.0
+--     . running in DEBUG mode
+--     . running with 4 MPI processes
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&particles=1&sha=55147952b&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 400 (on 1 levels)
+Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 26+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.72033e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Writing particle output:   visco_plastic_vep_stress_build-up_yield_particles/particles/particles-00000
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.903s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |    0.0594s |       6.6% |
+| Assemble temperature system      |         1 |    0.0392s |       4.3% |
+| Build Stokes preconditioner      |         2 |    0.0602s |       6.7% |
+| Build temperature preconditioner |         1 |  0.000608s |         0% |
+| Initialization                   |         1 |     0.388s |        43% |
+| Particles: Advect                |         2 |    0.0119s |       1.3% |
+| Particles: Exchange ghosts       |         2 |    0.0118s |       1.3% |
+| Particles: Generate              |         1 |   0.00674s |      0.75% |
+| Particles: Initialization        |         1 |  0.000206s |         0% |
+| Particles: Initialize properties |         1 |    0.0146s |       1.6% |
+| Particles: Interpolate           |         3 |    0.0157s |       1.7% |
+| Particles: Sort                  |         2 |   0.00667s |      0.74% |
+| Particles: Update properties     |         1 |    0.0864s |       9.6% |
+| Postprocessing                   |         1 |    0.0231s |       2.6% |
+| Setup dof systems                |         1 |    0.0283s |       3.1% |
+| Setup initial conditions         |         1 |    0.0802s |       8.9% |
+| Setup matrices                   |         1 |    0.0352s |       3.9% |
+| Solve Stokes system              |         2 |    0.0217s |       2.4% |
+| Solve temperature system         |         1 |   0.00125s |      0.14% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.72231e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0
+     Number of advected particles: 11968
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      3.35s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         3 |     0.165s |       4.9% |
+| Assemble temperature system      |         2 |      0.21s |       6.3% |
+| Build Stokes preconditioner      |         3 |     0.162s |       4.8% |
+| Build temperature preconditioner |         2 |  0.000822s |         0% |
+| Initialization                   |         1 |     0.388s |        12% |
+| Particles: Advect                |         4 |    0.0226s |      0.68% |
+| Particles: Exchange ghosts       |         3 |    0.0163s |      0.49% |
+| Particles: Generate              |         1 |   0.00674s |       0.2% |
+| Particles: Initialization        |         1 |  0.000206s |         0% |
+| Particles: Initialize properties |         1 |    0.0146s |      0.44% |
+| Particles: Interpolate           |         6 |     0.032s |      0.96% |
+| Particles: Sort                  |         4 |    0.0191s |      0.57% |
+| Particles: Update properties     |         2 |      2.06s |        62% |
+| Postprocessing                   |         2 |    0.0284s |      0.85% |
+| Setup dof systems                |         1 |    0.0283s |      0.85% |
+| Setup initial conditions         |         1 |    0.0802s |       2.4% |
+| Setup matrices                   |         1 |    0.0352s |       1.1% |
+| Solve Stokes system              |         3 |    0.0245s |      0.73% |
+| Solve temperature system         |         2 |   0.00238s |         0% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 2:  t=2000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.72234e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -5.328/4.384/-5.934e+08
+     Number of advected particles: 11964
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      5.75s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         4 |     0.264s |       4.6% |
+| Assemble temperature system      |         3 |     0.377s |       6.6% |
+| Build Stokes preconditioner      |         4 |     0.258s |       4.5% |
+| Build temperature preconditioner |         3 |   0.00107s |         0% |
+| Initialization                   |         1 |     0.388s |       6.8% |
+| Particles: Advect                |         6 |    0.0335s |      0.58% |
+| Particles: Exchange ghosts       |         4 |    0.0209s |      0.36% |
+| Particles: Generate              |         1 |   0.00674s |      0.12% |
+| Particles: Initialization        |         1 |  0.000206s |         0% |
+| Particles: Initialize properties |         1 |    0.0146s |      0.25% |
+| Particles: Interpolate           |         9 |    0.0469s |      0.82% |
+| Particles: Sort                  |         6 |    0.0315s |      0.55% |
+| Particles: Update properties     |         3 |      4.02s |        70% |
+| Postprocessing                   |         3 |     0.033s |      0.57% |
+| Setup dof systems                |         1 |    0.0283s |      0.49% |
+| Setup initial conditions         |         1 |    0.0802s |       1.4% |
+| Setup matrices                   |         1 |    0.0352s |      0.61% |
+| Solve Stokes system              |         4 |    0.0272s |      0.47% |
+| Solve temperature system         |         3 |   0.00354s |         0% |
++----------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      5.75s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         4 |     0.264s |       4.6% |
+| Assemble temperature system      |         3 |     0.377s |       6.6% |
+| Build Stokes preconditioner      |         4 |     0.258s |       4.5% |
+| Build temperature preconditioner |         3 |   0.00107s |         0% |
+| Initialization                   |         1 |     0.388s |       6.8% |
+| Particles: Advect                |         6 |    0.0335s |      0.58% |
+| Particles: Exchange ghosts       |         4 |    0.0209s |      0.36% |
+| Particles: Generate              |         1 |   0.00674s |      0.12% |
+| Particles: Initialization        |         1 |  0.000206s |         0% |
+| Particles: Initialize properties |         1 |    0.0146s |      0.25% |
+| Particles: Interpolate           |         9 |    0.0469s |      0.82% |
+| Particles: Sort                  |         6 |    0.0315s |      0.55% |
+| Particles: Update properties     |         3 |      4.02s |        70% |
+| Postprocessing                   |         3 |     0.033s |      0.57% |
+| Setup dof systems                |         1 |    0.0283s |      0.49% |
+| Setup initial conditions         |         1 |    0.0802s |       1.4% |
+| Setup matrices                   |         1 |    0.0352s |      0.61% |
+| Solve Stokes system              |         4 |    0.0272s |      0.47% |
+| Solve temperature system         |         3 |   0.00354s |         0% |
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&particles=1&sha=55147952b&src=code
+-----------------------------------------------------------------------------

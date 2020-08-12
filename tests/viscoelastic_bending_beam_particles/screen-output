@@ -1,0 +1,78 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.3.0-pre (particles_elasticity, 55147952b)
+--     . using deal.II 9.2.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.2.0
+--     . running in DEBUG mode
+--     . running with 4 MPI processes
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&dg=1&particles=1&sha=55147952b&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 150 (on 1 levels)
+Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 0/1/2.25e+06
+     Writing particle output:   viscoelastic_bending_beam_particles/particles/particles-00000
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0 // 0/1/2.25e+06
+     Number of advected particles: 4480
+
+*** Timestep 2:  t=2000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 37+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:    -1.543e+07/1.464e+07/-7.689e+11 // -1.464e+07/1.543e+07/7.689e+11 // -3.651e+06/1.074e+06/-3.788e+12 // -0.1842/1.163/2.242e+06
+     Number of advected particles: 4482
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      2.01s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         3 |    0.0781s |       3.9% |
+| Assemble temperature system      |         3 |     0.124s |       6.1% |
+| Build Stokes preconditioner      |         3 |    0.0877s |       4.4% |
+| Build temperature preconditioner |         3 |  0.000723s |         0% |
+| Initialization                   |         1 |     0.375s |        19% |
+| Particles: Advect                |         6 |    0.0114s |      0.57% |
+| Particles: Exchange ghosts       |         4 |    0.0107s |      0.53% |
+| Particles: Generate              |         1 |   0.00267s |      0.13% |
+| Particles: Initialization        |         1 |  0.000203s |         0% |
+| Particles: Initialize properties |         1 |   0.00635s |      0.32% |
+| Particles: Interpolate           |        12 |    0.0329s |       1.6% |
+| Particles: Sort                  |         6 |   0.00682s |      0.34% |
+| Particles: Update properties     |         3 |      1.05s |        52% |
+| Postprocessing                   |         3 |    0.0136s |      0.68% |
+| Setup dof systems                |         1 |    0.0172s |      0.86% |
+| Setup initial conditions         |         1 |    0.0458s |       2.3% |
+| Setup matrices                   |         1 |     0.046s |       2.3% |
+| Solve Stokes system              |         3 |    0.0665s |       3.3% |
+| Solve temperature system         |         3 |   0.00396s |       0.2% |
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&dg=1&particles=1&sha=55147952b&src=code
+-----------------------------------------------------------------------------
