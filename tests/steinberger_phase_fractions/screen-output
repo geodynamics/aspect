@@ -9,61 +9,25 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
 *** Timestep 0:  t=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+243 iterations.
+   Solving Stokes system... 200+286 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions/solution/solution-00000
-     RMS, max velocity:                  0.789 m/year, 3.02 m/year
-     Temperature min/avg/max:            273 K, 2003 K, 4250 K
-     Heat fluxes through boundary parts: -1.906e+06 W, -2.252e+07 W, 0 W, 0 W
+     RMS, max velocity:                  0.105 m/year, 0.418 m/year
+     Temperature min/avg/max:            273 K, 2062 K, 4250 K
+     Heat fluxes through boundary parts: -4.737e+05 W, -2.52e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phase_fractions/depth_average
 
-*** Timestep 1:  t=30270.8 years
-   Solving temperature system... 11 iterations.
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+270 iterations.
+   Solving Stokes system... 200+219 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions/solution/solution-00001
-     RMS, max velocity:                  0.778 m/year, 2.58 m/year
-     Temperature min/avg/max:            273 K, 2002 K, 4250 K
-     Heat fluxes through boundary parts: 2.466e+07 W, 2.088e+06 W, 0 W, 0 W
-     Writing depth average:              output-steinberger_phase_fractions/depth_average
-
-*** Timestep 2:  t=67272.7 years
-   Solving temperature system... 18 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+236 iterations.
-
-   Postprocessing:
-     Writing graphical output:           output-steinberger_phase_fractions/solution/solution-00002
-     RMS, max velocity:                  1.48 m/year, 5.22 m/year
-     Temperature min/avg/max:            273 K, 2002 K, 4250 K
-     Heat fluxes through boundary parts: -1.447e+06 W, -3.554e+06 W, 0 W, 0 W
-     Writing depth average:              output-steinberger_phase_fractions/depth_average
-
-*** Timestep 3:  t=88457 years
-   Solving temperature system... 13 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+266 iterations.
-
-   Postprocessing:
-     Writing graphical output:           output-steinberger_phase_fractions/solution/solution-00003
-     RMS, max velocity:                  1.25 m/year, 4.87 m/year
-     Temperature min/avg/max:            273 K, 2001 K, 4250 K
-     Heat fluxes through boundary parts: -6.365e+05 W, -5.298e+06 W, 0 W, 0 W
-     Writing depth average:              output-steinberger_phase_fractions/depth_average
-
-*** Timestep 4:  t=100000 years
-   Solving temperature system... 11 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+203 iterations.
-
-   Postprocessing:
-     Writing graphical output:           output-steinberger_phase_fractions/solution/solution-00004
-     RMS, max velocity:                  0.815 m/year, 2.64 m/year
-     Temperature min/avg/max:            273 K, 1999 K, 4250 K
-     Heat fluxes through boundary parts: -2.979e+07 W, 1.835e+07 W, 0 W, 0 W
+     RMS, max velocity:                  0.105 m/year, 0.374 m/year
+     Temperature min/avg/max:            273 K, 2061 K, 4250 K
+     Heat fluxes through boundary parts: -9.4e+05 W, -1.204e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_phase_fractions/depth_average
 
 Termination requested by criterion: end time

@@ -193,8 +193,8 @@ namespace aspect
         int
         MaterialLookup::phase_volume_index(const std::string phase_name) const
         {
-          std::map<std::string, int>::const_iterator it = phase_name_index.find(phase_name);
-          if (it != phase_name_index.end())
+          std::map<std::string, int>::const_iterator it = phase_name_index_map.find(phase_name);
+          if (it != phase_name_index_map.end())
             {
               return it->second; // "second" returns the index corresponding to the phase_name
             }
@@ -568,9 +568,32 @@ namespace aspect
           std::vector<int> prp_indices(6, -1);
           std::vector<int> phase_column_indices;
           n_phases = 0;
-          for (unsigned int n=0; n<n_columns; n++)
+
+          // First two columns should be P(bar) and T(K).
+          // Here we find the order.
+          std::string column_name;
+          in >> column_name;
+
+          std::string first_natural_variable;
+          if (column_name == "P(bar)")
             {
-              std::string column_name;
+              first_natural_variable = column_name;
+              in >> column_name;
+              AssertThrow(column_name == "T(K)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+            }
+          else if (column_name == "T(K)")
+            {
+              first_natural_variable = column_name;
+              in >> column_name;
+              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+            }
+          else
+            {
+              AssertThrow(false, ExcMessage("The first column name in PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
+            }
+
+          for (unsigned int n=2; n<n_columns; n++)
+            {
               in >> column_name;
               if (column_name == "rho,kg/m3")
                 prp_indices[0] = n;
@@ -590,7 +613,7 @@ namespace aspect
                     {
                       phase_column_indices.push_back(n);
                       phase_column_names.push_back(column_name);
-                      phase_name_index[column_name] = n_phases;
+                      phase_name_index_map[column_name] = n_phases;
                       n_phases++;
                     }
                 }
@@ -602,7 +625,7 @@ namespace aspect
           ExcMessage("The PerpleX lookup file " + filename + " must contain columns with names "
                      "rho,kg/m3, alpha,1/K, cp,J/K/kg, vp,km/s, vs,km/s and h,J/kg."));
 
-          AssertThrow(phase_name_index.size() == phase_column_names.size(),
+          AssertThrow(phase_name_index_map.size() == phase_column_names.size(),
                       ExcMessage("The PerpleX lookup file " + filename + " must have unique column names. "
                                  "Sometimes, the same phase is stable with >1 composition at the same "
                                  "pressure and temperature, so you may see several columns with the same name. "
@@ -667,16 +690,33 @@ namespace aspect
               if (in.eof())
                 break;
 
-              density_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[0]];
-              thermal_expansivity_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[1]];
-              specific_heat_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[2]];
-              vp_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[3]];
-              vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
-              enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
-
-              for (unsigned int n=0; n<n_phases; n++)
+              if (first_natural_variable == "T(K)")
                 {
-                  phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
+                  density_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[0]];
+                  thermal_expansivity_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[1]];
+                  specific_heat_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[2]];
+                  vp_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[3]];
+                  vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
+                  enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
+
+                  for (unsigned int n=0; n<n_phases; n++)
+                    {
+                      phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
+                    }
+                }
+              else // first_natural_variable == "P(bar)"
+                {
+                  density_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[0]];
+                  thermal_expansivity_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[1]];
+                  specific_heat_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[2]];
+                  vp_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[3]];
+                  vs_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[4]];
+                  enthalpy_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[5]];
+
+                  for (unsigned int n=0; n<n_phases; n++)
+                    {
+                      phase_volume_fractions[n][i/n_pressure][i%n_pressure]=row_values[phase_column_indices[n]];
+                    }
                 }
               i++;
             }

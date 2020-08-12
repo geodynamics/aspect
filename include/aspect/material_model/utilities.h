@@ -168,7 +168,7 @@ namespace aspect
             dealii::Table<2,double> enthalpy_values;
 
             std::vector<std::string> phase_column_names;
-            std::map<std::string, int> phase_name_index;
+            std::map<std::string, int> phase_name_index_map;
             std::vector<dealii::Table<2,double>> phase_volume_fractions;
 
             double delta_press;
