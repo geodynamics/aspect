@@ -1,0 +1,5 @@
+<li> New: Added a new particle property (ElasticStress) to store and advect
+elastic stresses. This particle property allows replacing compositional fields
+with particles in any model using viscoelasticity.
+<br>
+(John Naliboff, 2020/08/12)
