@@ -1269,7 +1269,7 @@ namespace aspect
     double
     calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
                                         const SymmetricTensor<2,dim> &stress,
-                                        const double shear_modulus) const;
+                                        const double shear_modulus);
 
     /**
      * Converts an array of size dim to a Point of size dim.

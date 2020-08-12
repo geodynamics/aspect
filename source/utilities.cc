@@ -3288,7 +3288,7 @@ namespace aspect
     template <int dim>
     double calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
                                               const SymmetricTensor<2,dim> &stress,
-                                              const double shear_modulus) const
+                                              const double shear_modulus) 
     {
       const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
                                           (shear_modulus * elastic_timestep());
