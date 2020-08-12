@@ -1,0 +1,163 @@
+# A description of convection in a 3d box. See the manual for more information.
+
+# At the top, we define the number of space dimensions we would like to
+# work in:
+set Dimension                              = 3
+
+# There are several global variables that have to do with what
+# time system we want to work in and what the end time is. We
+# also designate an output directory.
+set Use years in output instead of seconds = false
+set End time                               = 1.0
+set Output directory                       = output_convection_box_3d
+
+# Then there are variables that describe how the pressure should
+# be normalized. Here, we choose a zero average pressure
+# at the surface of the domain (for the current geometry, the
+# surface is defined as the top boundary).
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+# Then come a number of sections that deal with the setup
+# of the problem to solve. The first one deals with the
+# geometry of the domain within which we want to solve.
+# The sections that follow all have the same basic setup
+# where we select the name of a particular model (here,
+# the box geometry) and then, in a further subsection,
+# set the parameters that are specific to this particular
+# model.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+    set Z extent = 1
+  end
+end
+
+
+# The next section deals with the initial conditions for the
+# temperature (there are no initial conditions for the
+# velocity variable since the velocity is assumed to always
+# be in a static equilibrium with the temperature field).
+# There are a number of models with the 'function' model
+# a generic one that allows us to enter the actual initial
+# conditions in the form of a formula that can contain
+# constants. We choose a linear temperature profile that
+# matches the boundary conditions defined below plus
+# a small perturbation:
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y,z
+    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
+    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)*y^3
+  end
+end
+
+
+# Then follows a section that describes the boundary conditions for the
+# temperature. The model we choose is called 'box' and allows to set a constant
+# temperature on each of the four sides of the box geometry. In our case, we
+# choose something that is heated from below and cooled from above. 
+# All other parts of the boundary are insulated (i.e., no heat flux through
+# these boundaries; this is also often used to specify symmetry boundaries).
+subsection Boundary temperature model
+  set List of model names = box
+  set Fixed temperature boundary indicators   = bottom, top
+
+  subsection Box
+    set Bottom temperature = 1
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+
+# The next parameters then describe on which parts of the
+# boundary we prescribe a zero or nonzero velocity and
+# on which parts the flow is allowed to be tangential.
+# Here, all six sides of the box allow tangential
+# unrestricted flow but with a zero normal component:
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, front, back, bottom, top
+end
+
+
+# The following two sections describe first the
+# direction (vertical) and magnitude of gravity and the
+# material model (i.e., density, viscosity, etc). We have
+# discussed the settings used here in the introduction to
+# this cookbook in the manual already.
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1e16   # = Ra / Thermal expansion coefficient
+  end
+end
+
+
+subsection Material model
+  set Model name = simple # default:
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1e-10
+    set Viscosity                     = 1
+  end
+end
+
+
+# The settings above all pertain to the description of the
+# continuous partial differential equations we want to solve.
+# The following section deals with the discretization of
+# this problem, namely the kind of mesh we want to compute
+# on. We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 3
+  set Initial adaptive refinement              = 3
+  set Time steps between mesh refinement       = 15
+
+  set Additional refinement times              = 0.003
+end
+
+
+# The final part is to specify what ASPECT should do with the
+# solution once computed at the end of every time step. The
+# process of evaluating the solution is called `postprocessing'
+# and we choose to compute velocity and temperature statistics,
+# statistics about the heat flux through the boundaries of the
+# domain, and to generate graphical output files for later
+# visualization. These output files are created every time
+# a time step crosses time points separated by 0.01. Given
+# our start time (zero) and final time (0.5) this means that
+# we will obtain 50 output files.
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+
+  subsection Visualization
+    set Time between graphical output = 0.0001
+  end
+end
+
+
+subsection Checkpointing
+  # The number of timesteps between performing checkpoints. If 0 and time
+  # between checkpoint is not specified, checkpointing will not be performed.
+  # Units: None.
+  set Steps between checkpoint = 50
+end
+
+
+subsection Solver parameters
+  set Temperature solver tolerance = 1e-10
+end
