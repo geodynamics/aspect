@@ -838,6 +838,17 @@ namespace aspect
 
     template <int dim>
     NamedAdditionalMaterialOutputs<dim>::
+    NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names,
+                                   const unsigned int n_points)
+      :
+      output_values(output_names.size(), std::vector<double>(n_points, numbers::signaling_nan<double>())),
+      names(output_names)
+    {}
+
+
+
+    template <int dim>
+    NamedAdditionalMaterialOutputs<dim>::
     ~NamedAdditionalMaterialOutputs()
     {}
 
@@ -848,6 +859,21 @@ namespace aspect
     NamedAdditionalMaterialOutputs<dim>::get_names() const
     {
       return names;
+    }
+
+
+
+    template<int dim>
+    std::vector<double>
+    NamedAdditionalMaterialOutputs<dim>::get_nth_output(const unsigned int idx) const
+    {
+      // In this function we extract the values for the nth output
+      // The number of outputs is the outer vector
+      Assert (output_values.size() > idx,
+              ExcMessage ("The requested output index is out of range for output_values."));
+      Assert (output_values[idx].size() > 0,
+              ExcMessage ("There must be one or more points for the nth output."));
+      return output_values[idx];
     }
 
 
