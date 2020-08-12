@@ -24,8 +24,8 @@ A surface pressure of rho_l*g*H0 (where rho_l is the load density,
 
 Changing the stress instantaneously as the load is applied/removed
  leads to oscillations in the elastic response. This can be addressed
- by setting a fixed elastic timestep equal to the numerical ("Maximum")
- timestep and turning on stress averaging:
+ by setting a fixed elastic timestep which is several times longer than 
+ the numerical ("Maximum") timestep and turning on stress averaging:
    'free_surface_VE_cylinder_2D_loading_fixed_elastic_dt.prm'
    'free_surface_VE_cylinder_3D_loading_fixed_elastic_dt.prm'
 
@@ -54,3 +54,12 @@ The solutions match well in 3-D. In 2-D, the geometries of the loading
  function are different (Cartesian in ASPECT vs cylindrical analytically).
  As such, the agreement in 2-D breaks down for small r0 (load width) or
  if the right boundary is placed further away.
+ 
+The fit between the numerical and the analytical solution can be improved
+ by choosing short elastic (and therewith even shorter numerical) time
+ steps. The shorter the elastic time step is, the more instantaneous is 
+ the surface response to loading and unloading. When using a very small 
+ time step in the analytical solution it can be seen that the response 
+ is indeed instantaneous, favoring small elastic and computational time
+ steps for an accurat numerical solution as well. 
+
