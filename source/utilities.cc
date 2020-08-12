@@ -3233,8 +3233,9 @@ namespace aspect
                                     const double ref_strain_rate,
                                     const double min_strain_rate,
                                     const SymmetricTensor<2,dim> &strain_rate,
-                                    bool use_elasticity,
-                                    bool use_reference_strainrate)
+                                    const std::vector<double> &elastic_shear_moduli,
+                                    const bool use_elasticity,
+                                    const bool use_reference_strainrate)
     {
       // Assemble stress tensor if elastic behavior is enabled
       SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
@@ -3262,8 +3263,6 @@ namespace aspect
         }
       else
         {
-          const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
-
           if (use_reference_strainrate == true)
             current_edot_ii = ref_strain_rate;
           else
