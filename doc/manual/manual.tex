@@ -4420,7 +4420,7 @@ plugin that allows you to describe this formula in a symbolic way in the input f
 case is this snippet of code discussed in
 Section~\ref{sec:cookbooks-simple-box-3d}:
 %
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/initial.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/initial.part.prm.out}
 %
 The formulas you can enter here need to use a syntax that is understood by the
 functions and classes that interpret what you write. Internally, this is done
@@ -4691,7 +4691,7 @@ interesting once one goes to 3d. The setup from the previous section is easily
 adjusted to this and in the following, let us walk through some of the changes
 we have to consider when going from 2d to 3d. The full input file that
 contains these modifications and that was used for the simulations we will show
-subsequently can be found at \url{cookbooks/convection_box_3d.prm}.
+subsequently can be found at \url{cookbooks/convection\_box\_3d.prm}.
 
 The first set of changes has to do with the geometry: it is three-dimensional,
 and we will have to address the fact that a box in 3d has 6 sides, not the 4 we
@@ -4701,41 +4701,41 @@ numbered as follows: ``\textit{in 3d, boundary indicators 0 through 5 indicate
 left, right, front, back, bottom and top boundaries}.'' Recalling that we want
 tangential flow all around and want to fix the temperature to known values at
 the bottom and top, the following will make sense:
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/start.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/start.part.prm.out}
 
 
 The next step is to describe the initial conditions. As before, we will use an
 unstably layered medium but the perturbation now needs to be both in $x$- and
 $y$-direction
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/initial.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/initial.part.prm.out}
 
 The third issue we need to address is that we can likely not afford a mesh as
 fine as in 2d. We choose a mesh that is refined 3 times globally at the
 beginning, then 3 times adaptively, and is then adapted every 15 time steps. We
 also allow one additional mesh refinement in the first time step following
 $t=0.003$ once the initial instability has given way to a more stable pattern:
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/amr.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/amr.part.prm.out}
 
 Finally, as we have seen in the previous section, a computation with $Ra=10^4$
 does not lead to a simulation that is exactly exciting. Let us choose $Ra=10^6$
 instead (the mesh chosen above with up to 7 refinement levels after some time
 is fine enough to resolve this). We can achieve this in the same way as in the
 previous section by choosing $\alpha=10^{-10}$ and setting
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/gravity.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/gravity.part.prm.out}
 This has some interesting implications. First, a higher Rayleigh number makes
 time scales correspondingly smaller; where we generated graphical output only
 once every 0.01 time units before, we now need to choose the corresponding
 increment smaller by a factor of 100:
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/postprocess.part.prm.out}
 Secondly, a simulation like this -- in 3d, with a significant number of cells,
 and for a significant number of time steps -- will likely take a good amount of
 time. The computations for which we show results below was run using 64
 processors by running it using the command
-{\tt{mpirun -n 64 ./aspect convection_box_3d.prm}}. If the machine should crash
+{\tt{mpirun -n 64 ./aspect convection\_box\_3d.prm}}. If the machine should crash
 during such a run, a significant amount of compute time would be lost if we had
 to run everything from the start. However, we can avoid this by periodically
 checkpointing the state of the computation:
-\lstinputlisting[language=prmfile]{cookbooks/convection_box_3d/doc/checkpoint.part.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/convection\_box\_3d/doc/checkpoint.part.prm.out}
 If the computation does crash (or if a computation runs out of the time limit
 imposed by a scheduling system), then it can be restarted from such
 checkpointing files (see the parameter {\tt Resume computation}
