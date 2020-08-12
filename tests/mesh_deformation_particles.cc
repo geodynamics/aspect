@@ -12,13 +12,13 @@ template <int dim>
 void post_mesh_deformation (const SimulatorAccess<dim> &simulator_access)
 {
   // Get the reference location of the one particle,
-  // and check that it has the correct value.                         
+  // and check that it has the correct value.
   const Point<dim> predicted_particle_reference_location = simulator_access.get_particle_world().get_particle_handler().begin()->get_reference_location();
-  Point<dim> correct_particle_reference_location; 
+  Point<dim> correct_particle_reference_location;
   correct_particle_reference_location[0] = 0.5;
   correct_particle_reference_location[dim-1] = 1./3.;
   AssertThrow(predicted_particle_reference_location == correct_particle_reference_location,
-    ExcMessage("The particle reference location is not correct."));
+              ExcMessage("The particle reference location is not correct."));
 }
 
 
