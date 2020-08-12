@@ -36,6 +36,8 @@ namespace aspect
                                       update_gradients | update_quadrature_points)
       {}
 
+
+
       template <int dim>
       void
       StrainRateTensor<dim>::
@@ -62,9 +64,10 @@ namespace aspect
                  :
                  strain_rate);
 
-            for (unsigned int i=0; i<Tensor<2,dim>::n_independent_components; ++i)
-              computed_quantities[q](i)
-                = compressible_strain_rate[compressible_strain_rate.unrolled_to_component_indices(i)];
+            for (unsigned int d=0; d<dim; ++d)
+              for (unsigned int e=0; e<dim; ++e)
+                computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
+                  = compressible_strain_rate[d][e];
           }
 
         const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();

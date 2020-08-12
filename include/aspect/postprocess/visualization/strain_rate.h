@@ -51,6 +51,9 @@ namespace aspect
           public Interface<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           StrainRate ();
 
           void
