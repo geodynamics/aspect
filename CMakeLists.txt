@@ -159,13 +159,6 @@ set_target_properties(WorldBuilder PROPERTIES
   INCLUDE_DIRECTORIES("${WORLD_BUILDER_SOURCE_DIR}/include/")
 
   MESSAGE(STATUS "Using World Builder version ${WORLD_BUILDER_VERSION} found at ${WORLD_BUILDER_SOURCE_DIR}.")
-
-  # generate config.cc and include it:
-  CONFIGURE_FILE("${WORLD_BUILDER_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY_DIR}/world_builder_config.cc" @ONLY)
-  LIST(INSERT TARGET_SRC 0 "${CMAKE_BINARY_DIR}/world_builder_config.cc")
-
-  SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY COTIRE_EXCLUDED TRUE )
-  SET_PROPERTY(SOURCE "${CMAKE_BINARY_DIR}/world_builder_config.cc" PROPERTY SKIP_PRECOMPILE_HEADERS TRUE )
 ENDIF()
 
 
@@ -463,7 +456,17 @@ DEAL_II_SETUP_TARGET(${TARGET})
 
 
 if(ASPECT_WITH_WORLD_BUILDER)
-  target_link_libraries(${TARGET} WorldBuilder)
+  # Make sure that the whole library is loaded, so the registration is done correctly.
+  if(NOT APPLE AND NOT MSVC)
+    SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive WorldBuilder -Wl,--no-whole-archive)
+  elseif(MSVC)
+    SET(GWB_LIBRARY_WHOLE WorldBuilder)
+  else()
+    SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
+  endif()
+
+  target_link_libraries(${TARGET} ${GWB_LIBRARY_WHOLE})
+
   # Make doesn't know how to how to layout the dependencies
   # in a fine grained manner and requires a more coarse
   # approach than Ninja. Since I don't know whether this also
