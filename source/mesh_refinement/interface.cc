@@ -91,10 +91,9 @@ namespace aspect
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
       // call the update() functions of all refinement plugins.
-      unsigned int index = 0;
       for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
-           p != mesh_refinement_objects.end(); ++p, ++index)
+           p != mesh_refinement_objects.end(); ++p)
         {
           try
             {
@@ -266,10 +265,9 @@ namespace aspect
 
       // call the tag_additional_cells() functions of all
       // plugins we have here in turns.
-      unsigned int index = 0;
       for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
            p = mesh_refinement_objects.begin();
-           p != mesh_refinement_objects.end(); ++p, ++index)
+           p != mesh_refinement_objects.end(); ++p)
         {
           try
             {
