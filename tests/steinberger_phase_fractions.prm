@@ -50,7 +50,7 @@ subsection Material model
 
   subsection Steinberger model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
-    set Material file names              = pyr_with_volume_fractions.txt
+    set Material file names              = pyr_MS95_with_volume_fractions_lo_res.dat
     set Bilinear interpolation           = true
     set Latent heat                      = false
     set Reference viscosity              = 1e21
