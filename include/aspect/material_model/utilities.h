@@ -119,7 +119,7 @@ namespace aspect
                     const double pressure) const;
 
             std::vector<std::string>
-            phase_volume_phase_names() const;
+            phase_volume_column_names() const;
 
             int
             phase_volume_index(std::string phase_name) const;
@@ -167,9 +167,9 @@ namespace aspect
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
 
-            std::vector<std::string> phase_names;
+            std::vector<std::string> phase_column_names;
             std::map<std::string, int> phase_name_index;
-            std::vector<dealii::Table<2,double>> phase_volume_fraction_values;
+            std::vector<dealii::Table<2,double>> phase_volume_fractions;
 
             double delta_press;
             double min_press;

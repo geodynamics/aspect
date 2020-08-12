@@ -185,9 +185,9 @@ namespace aspect
         }
 
         std::vector<std::string>
-        MaterialLookup::phase_volume_phase_names() const
+        MaterialLookup::phase_volume_column_names() const
         {
-          return phase_names;
+          return phase_column_names;
         }
 
         int
@@ -209,7 +209,7 @@ namespace aspect
                                               const double temperature,
                                               const double pressure) const
         {
-          return value(temperature,pressure,phase_volume_fraction_values[phase_id],interpolation);
+          return value(temperature,pressure,phase_volume_fractions[phase_id],interpolation);
         }
 
         double
@@ -514,7 +514,7 @@ namespace aspect
           // <delta grid variable 2>
           // <n steps grid variable 2>
           // Number of property columns in the table
-          // Column labels
+          // Column names
 
           // First line is the Perplex version number
           std::getline(in, temp); // get next line, table file name
@@ -566,31 +566,31 @@ namespace aspect
           // column i in text file -> column j in properties
           // Properties are stored in the order rho, alpha, cp, vp, vs, h
           std::vector<int> prp_indices(6, -1);
-          std::vector<int> phase_indices;
+          std::vector<int> phase_column_indices;
           n_phases = 0;
           for (unsigned int n=0; n<n_columns; n++)
             {
-              std::string label;
-              in >> label;
-              if (label == "rho,kg/m3")
+              std::string column_name;
+              in >> column_name;
+              if (column_name == "rho,kg/m3")
                 prp_indices[0] = n;
-              else if (label == "alpha,1/K")
+              else if (column_name == "alpha,1/K")
                 prp_indices[1] = n;
-              else if (label == "cp,J/K/kg")
+              else if (column_name == "cp,J/K/kg")
                 prp_indices[2] = n;
-              else if (label == "vp,km/s")
+              else if (column_name == "vp,km/s")
                 prp_indices[3] = n;
-              else if (label == "vs,km/s")
+              else if (column_name == "vs,km/s")
                 prp_indices[4] = n;
-              else if (label == "h,J/kg")
+              else if (column_name == "h,J/kg")
                 prp_indices[5] = n;
-              else if (label.length() > 3)
+              else if (column_name.length() > 3)
                 {
-                  if (label.substr(0,4).compare("vol_") == 0)
+                  if (column_name.substr(0,13).compare("vol_fraction_") == 0)
                     {
-                      phase_indices.push_back(n);
-                      phase_names.push_back(label);
-                      phase_name_index[label] = n_phases;
+                      phase_column_indices.push_back(n);
+                      phase_column_names.push_back(column_name);
+                      phase_name_index[column_name] = n_phases;
                       n_phases++;
                     }
                 }
@@ -599,12 +599,14 @@ namespace aspect
           {
             return i>=0;
           }),
-          ExcMessage("The PerpleX lookup file " + filename + " must contain columns with the labels "
+          ExcMessage("The PerpleX lookup file " + filename + " must contain columns with names "
                      "rho,kg/m3, alpha,1/K, cp,J/K/kg, vp,km/s, vs,km/s and h,J/kg."));
 
-          AssertThrow(phase_name_index.size() == phase_names.size(),
-                      ExcMessage("The PerpleX lookup file " + filename + " must have unique phase names. "
-                                 "Either combine columns with the same phase name, or change the phase names."));
+          AssertThrow(phase_name_index.size() == phase_column_names.size(),
+                      ExcMessage("The PerpleX lookup file " + filename + " must have unique column names. "
+                                 "Sometimes, the same phase is stable with >1 composition at the same "
+                                 "pressure and temperature, so you may see several columns with the same name. "
+                                 "Either combine columns with the same name, or change the names."));
 
           std::getline(in, temp); // first data line
 
@@ -626,11 +628,9 @@ namespace aspect
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
 
-          phase_volume_fraction_values.resize(n_phases);
+          phase_volume_fractions.resize(n_phases);
           for (unsigned int n=0; n<n_phases; n++)
-            {
-              phase_volume_fraction_values[n].reinit(n_temperature,n_pressure);
-            }
+            phase_volume_fractions[n].reinit(n_temperature,n_pressure);
 
           unsigned int i = 0;
           std::vector<double> previous_row_values(n_columns, 0.);
@@ -676,7 +676,7 @@ namespace aspect
 
               for (unsigned int n=0; n<n_phases; n++)
                 {
-                  phase_volume_fraction_values[n][i%n_temperature][i/n_temperature]=row_values[phase_indices[n]];
+                  phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
                 }
               i++;
             }

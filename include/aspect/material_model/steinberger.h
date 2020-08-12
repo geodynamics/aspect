@@ -183,10 +183,7 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
 
-        virtual std::vector<double> phase_volume_fractions (const double      temperature,
-                                                            const double      pressure,
-                                                            const std::vector<double> &compositional_fields,
-                                                            const Point<dim> &position) const;
+        virtual std::vector<std::vector<double>> phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in) const;
 
         /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
@@ -313,8 +310,8 @@ namespace aspect
         /**
         * List of strings containing the names of the unique phases in all the material lookups
         */
-        std::vector<std::string> unique_phase_names;
-        std::vector<std::vector<int>> unique_phase_indices;
+        std::vector<std::string> unique_phase_volume_column_names;
+        std::vector<std::vector<int>> unique_phase_volume_column_indices;
 
         /**
          * Pointer to an object that reads and processes data for the lateral

@@ -924,31 +924,6 @@ namespace aspect
 
 
     /**
-     * Additional output fields for phase properties to be added to
-     * the MaterialModel::MaterialModelOutputs structure and filled in the
-     * MaterialModel::Interface::evaluate() function.
-     */
-    template <int dim>
-    class PhasePropertyOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        PhasePropertyOutputs (const unsigned int n_points,
-                              const std::vector<std::string> phase_names);
-
-        std::vector<double> get_nth_output(const unsigned int idx) const override;
-
-        /**
-         * Phase properties for all phases at the evaluation points
-         * that are passed to the instance of MaterialModel::Interface::evaluate()
-         * that fills the current object.
-         * phase_property_values[q][c] is the phase property at the evaluation point q
-         * for the compositional field with the index c.
-         */
-        std::vector<std::vector<double> > phase_property_values;
-    };
-
-
-    /**
      * Additional output fields for reaction rates to be added to
      * the MaterialModel::MaterialModelOutputs structure and filled in the
      * MaterialModel::Interface::evaluate() function.

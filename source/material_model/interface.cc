@@ -940,32 +940,6 @@ namespace aspect
     }
 
 
-    template<int dim>
-    PhasePropertyOutputs<dim>::PhasePropertyOutputs (const unsigned int n_points,
-                                                     const std::vector<std::string> property_names)
-      :
-      NamedAdditionalMaterialOutputs<dim>(property_names),
-      phase_property_values(n_points, std::vector<double>(property_names.size(), numbers::signaling_nan<double>()))
-    {}
-
-
-
-    template<int dim>
-    std::vector<double>
-    PhasePropertyOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      // we have to extract the nth phase property output
-      // but the vector in the material model outputs is sorted so that the
-      // number of evaluation points (and not the number of phase properties)
-      // is the outer vector
-      std::vector<double> nth_phase_properties(phase_property_values.size());
-      for (unsigned int n=0; n<phase_property_values.size(); ++n)
-        nth_phase_properties[n] = phase_property_values[n][idx];
-
-      return nth_phase_properties;
-    }
-
-
 
     namespace
     {
@@ -1122,8 +1096,6 @@ namespace aspect
   template class NamedAdditionalMaterialOutputs<dim>; \
   \
   template class SeismicAdditionalOutputs<dim>; \
-  \
-  template class PhasePropertyOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
   \
