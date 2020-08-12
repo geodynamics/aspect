@@ -271,6 +271,7 @@ namespace aspect
 
           // Step 2: calculate the viscous stress magnitude
           // and strain rate. If requested compute visco-elastic contributions.
+          const double dte = elastic_timestep();
           const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
           const double current_edot_ii = Utilities::compute_current_edot_ii(j,
                                                                             composition,
@@ -279,7 +280,8 @@ namespace aspect
                                                                             strain_rate,
                                                                             elastic_shear_moduli,
                                                                             use_elasticity,
-                                                                            use_reference_strainrate);
+                                                                            use_reference_strainrate,
+                                                                            dte);
 
 
           double current_stress = numbers::signaling_nan<double>();

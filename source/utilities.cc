@@ -3235,7 +3235,8 @@ namespace aspect
                                     const SymmetricTensor<2,dim> &strain_rate,
                                     const std::vector<double> &elastic_shear_moduli,
                                     const bool use_elasticity,
-                                    const bool use_reference_strainrate)
+                                    const bool use_reference_strainrate,
+                                    const double dte)
     {
       // Assemble stress tensor if elastic behavior is enabled
       SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
@@ -3269,7 +3270,8 @@ namespace aspect
             {
               const double viscoelastic_strain_rate_invariant = calculate_viscoelastic_strain_rate(strain_rate,
                                                                 stress_old,
-                                                                elastic_shear_moduli[j]);
+                                                                elastic_shear_moduli[j],
+                                                                dte);
 
               current_edot_ii = std::max(viscoelastic_strain_rate_invariant,
                                          min_strain_rate);
@@ -3288,10 +3290,11 @@ namespace aspect
     template <int dim>
     double calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
                                               const SymmetricTensor<2,dim> &stress,
-                                              const double shear_modulus) 
+                                              const double shear_modulus,
+                                              const double dte) 
     {
       const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
-                                          (shear_modulus * elastic_timestep());
+                                          (shear_modulus * dte);
 
       return std::sqrt(std::fabs(second_invariant(edot)));
     }

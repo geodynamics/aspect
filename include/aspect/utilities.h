@@ -1260,7 +1260,8 @@ namespace aspect
                                     const SymmetricTensor<2,dim> &strain_rate,
                                     const std::vector<double> &elastic_shear_moduli,
                                     const bool use_elasticity,
-                                    const bool use_reference_strainrate);
+                                    const bool use_reference_strainrate,
+                                    const double dte);
 
     /**
      * Calculate the square root of the second moment invariant for the deviatoric
