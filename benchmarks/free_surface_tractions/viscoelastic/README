@@ -61,5 +61,5 @@ The fit between the numerical and the analytical solution can be improved
  the surface response to loading and unloading. When using a very small 
  time step in the analytical solution it can be seen that the response 
  is indeed instantaneous, favoring small elastic and computational time
- steps for an accurat numerical solution as well. 
+ steps for an accurate numerical solution as well. 
 
