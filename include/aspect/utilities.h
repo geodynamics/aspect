@@ -1266,6 +1266,7 @@ namespace aspect
      * Calculate the square root of the second moment invariant for the deviatoric
      * strain rate tensor, including viscoelastic stresses.
      */
+    template <int dim>
     double
     calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
                                         const SymmetricTensor<2,dim> &stress,
