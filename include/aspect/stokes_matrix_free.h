@@ -305,7 +305,10 @@ namespace aspect
       virtual void evaluate_material_model()=0;
 
       /**
-       * Add correction to system RHS for non-zero boundary condition.
+       * Add correction to system RHS for non-zero boundary condition. For more information
+       * on exactly what this correction is and why it is computed, see the deal.II tutorial
+       * step 50 section "LaplaceProblem::assemble_rhs()":
+       * https://www.dealii.org/developer/doxygen/deal.II/step_50.html#LaplaceProblemassemble_rhs
        */
       virtual void correct_stokes_rhs()=0;
 
@@ -433,7 +436,10 @@ namespace aspect
       void evaluate_material_model() override;
 
       /**
-       * Add correction to system RHS for non-zero boundary condition.
+       * Add correction to system RHS for non-zero boundary condition. For more information
+       * on exactly what this correction is and why it is computed, see the deal.II tutorial
+       * step 50 section "LaplaceProblem::assemble_rhs()":
+       * https://www.dealii.org/developer/doxygen/deal.II/step_50.html#LaplaceProblemassemble_rhs
        */
       void correct_stokes_rhs() override;
 
@@ -442,12 +448,6 @@ namespace aspect
        * operators on each level for the purpose of smoothing inside the multigrid v-cycle.
        */
       void build_preconditioner() override;
-
-      /**
-       * Get the workload imbalance of the distribution
-       * of the level hierarchy.
-       */
-      double get_workload_imbalance();
 
       /**
        * Declare parameters. (No actual parameters at the moment).
