@@ -1,0 +1,28 @@
+# Like the poiseuille_2d.prm test and based on the nonlinear channel 
+# flow benchmark, but adds passive particles.
+
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_tractions_Newton_Stokes.prm
+
+set Dimension = 2
+set Additional shared libraries = ../benchmarks/nonlinear_channel_flow/libsimple_nonlinear.so
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization, particles
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = material properties,strain rate, spd factor
+    set Output format = gnuplot
+    set Time between graphical output = 2
+  end
+  subsection Particles
+    set Number of particles = 512
+    set Time between data output = 1
+    set Data output format = gnuplot
+    set List of particle properties = initial position, position
+    set Interpolation scheme = nearest neighbor
+    set Particle generator name = random uniform 
+    set Minimum particles per cell = 2 
+    set Maximum particles per cell = 2 
+    set Load balancing strategy = remove and add particles
+  end
+end
