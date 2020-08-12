@@ -555,9 +555,7 @@ namespace aspect
     sim.system_matrix.block(block_idx, block_idx) = 0;
     sim.system_rhs = 0;
 
-    typedef
-    FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>
-    CellFilter;
+    using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
     const FiniteElement<dim> &volume_of_fluid_fe = (*field.volume_fraction.fe);
 

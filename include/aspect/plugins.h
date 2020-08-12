@@ -163,12 +163,11 @@ namespace aspect
          * the run-time parameters this plugin takes from the parameter file.
          * - A function that can produce objects of this plugin type.
          */
-        typedef
-        std::tuple<std::string,
-            std::string,
-            void ( *) (ParameterHandler &),
-            InterfaceClass *( *) ()>
-            PluginInfo;
+        using PluginInfo
+        = std::tuple<std::string,
+        std::string,
+        void ( *) (ParameterHandler &),
+        InterfaceClass *( *) ()>;
 
         /**
          * A pointer to a list of all registered plugins.

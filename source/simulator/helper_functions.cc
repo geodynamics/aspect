@@ -2184,8 +2184,9 @@ namespace aspect
                             "temperature and heat flux boundary conditions in the input file."));
 
     // Check that the periodic boundaries do not have other boundary conditions set
-    typedef std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >
-    periodic_boundary_set;
+    using periodic_boundary_set
+      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 
     for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
