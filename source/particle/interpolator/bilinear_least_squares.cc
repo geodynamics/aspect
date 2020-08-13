@@ -20,6 +20,7 @@
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
 #include <aspect/postprocess/particles.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
@@ -107,7 +108,7 @@ namespace aspect
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
              particle != particle_range.end(); ++particle, ++positions_index)
           {
-            const auto particle_property_value = particle->get_properties();
+            const auto &particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               if (selected_properties[property_index])
                 b[property_index][positions_index] = particle_property_value[property_index];
