@@ -838,7 +838,7 @@ namespace aspect
     {
       public:
         /**
-         * Constructor.
+         * Base constructor.
          *
          * @param output_names A list of names for the additional output variables
          *   this object will store. The length of the list also indicates
@@ -846,6 +846,19 @@ namespace aspect
          *   will store.
          */
         NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names);
+
+        /**
+         * Constructor for case where outputs are stored for a number of points.
+         *
+         * @param output_names A list of names for the additional output variables
+         *   this object will store. The length of the list also indicates
+         *   how many additional output variables objects of derived classes
+         *   will store.
+         * @param n_points The number of points for which to store each of the
+         *   output variables.
+         */
+        NamedAdditionalMaterialOutputs(const std::vector<std::string> &output_names,
+                                       const unsigned int n_points);
 
         /**
          * Destructor.
@@ -862,12 +875,19 @@ namespace aspect
          * Given an index as input argument, return a reference the to vector of
          * values of the additional output with that index.
          */
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const = 0;
+        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
 
         void average (const MaterialAveraging::AveragingOperation /*operation*/,
                       const FullMatrix<double>  &/*projection_matrix*/,
                       const FullMatrix<double>  &/*expansion_matrix*/) override
         {}
+
+
+        /**
+         * Values for the outputs at a set of evaluation points
+         * output_values[i][j] is the value of output i at point j.
+         */
+        std::vector<std::vector<double> > output_values;
 
       private:
         const std::vector<std::string> names;
