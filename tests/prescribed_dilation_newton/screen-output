@@ -1,10 +1,6 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libprescribed_dilation_newton.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
@@ -17,14 +13,13 @@ Number of degrees of freedom: 948 (578+81+289)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 441.548
 
    Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+25 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 3.74883e-16, norm of the rhs: 1.65529e-13, newton_derivative_scaling_factor: 0
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.82 m/s
-     Errors u_L2, p_L2:        1.794314e-04, 8.890806e-05
+     Errors u_L2, p_L2:        1.794314e-04, 8.890805e-05
      Writing graphical output: output-prescribed_dilation_newton/solution/solution-00000
 
 Number of active cells: 256 (on 5 levels)
@@ -39,7 +34,6 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 605.137
 
    Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+27 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 6.09492e-16, norm of the rhs: 3.68826e-13, newton_derivative_scaling_factor: 0
 
@@ -53,5 +47,3 @@ Termination requested by criterion: end time
 
 
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
