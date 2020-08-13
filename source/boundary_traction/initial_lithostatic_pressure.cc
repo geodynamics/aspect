@@ -270,8 +270,10 @@ namespace aspect
           prm.declare_entry ("Representative point", "",
                              Patterns::List(Patterns::Double()),
                              "The point where the pressure profile will be calculated. "
-                             "Cartesian coordinates when geometry is a box, otherwise enter radius, longitude, "
-                             "and in 3D latitude."
+                             "Cartesian coordinates (x,y,z) when geometry is a box, otherwise enter radius, "
+                             "longitude, and in 3D latitude. Note that the coordinate related to the depth "
+                             "(y in 2D cartesian, z in 3D cartesian and radius in spherical coordinates) is "
+                             "not used."
                              "Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Number of integration points", "1000",
                             Patterns::Integer(0),
@@ -342,7 +344,8 @@ namespace aspect
                                             "other geometries (radius, longitude, latitude), and "
                                             "the number of integration points. "
                                             "The lateral coordinates of the point are used to calculate "
-                                            "the lithostatic pressure profile with depth. "
+                                            "the lithostatic pressure profile with depth. This means that "
+                                            "the depth coordinate is not used."
                                             "\n\n"
                                             "Gravity is expected to point along the depth direction. ")
   }
