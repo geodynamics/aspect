@@ -180,6 +180,19 @@ namespace aspect
 
 
     template <int dim>
+    void
+    World<dim>::set_particle_handler(dealii::Particles::ParticleHandler<dim> new_particle_handler)
+    {
+      //std::unique_ptr<dealii::Particles::ParticleHandler<dim> > ptr_new_particle_handler;
+      //ptr_new_particle_handler = std::make_unique<dealii::Particles::ParticleHandler<dim> >(new_particle_handler);
+      //particle_handler = ptr_new_particle_handler;
+      //particle_handler.reset (new Particles::ParticleHandler<dim>);
+      //*particle_handler = new_particle_handler;
+    }
+
+
+
+    template <int dim>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
     {
