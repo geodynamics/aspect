@@ -11,7 +11,7 @@
 # temperature and those in the material model and compositional
 # heating plugins. 
 
-include $ASPECT_SOURCE_DIR/cookbooks/continental_extension.prm
+include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension.prm
 
 set Timing output frequency                = 100
 set End time                               = 1e4
