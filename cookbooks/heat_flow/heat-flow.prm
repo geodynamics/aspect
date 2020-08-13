@@ -1,0 +1,124 @@
+# A model of spreading at a mid-ocean ridge.
+
+############### Global parameters
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 5e6
+set Use years in output instead of seconds = true
+set Output directory                       = output-heat-flow
+
+############### Parameters describing the model
+# Let us here choose again a box domain (400 km wide and 100 km in depth)
+# where we fix the temperature at the bottom and top,
+# allow inflow from the bottom and outflow on the left and right,
+# and prescribe the velocity along the top using the
+# `function' description.
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 400000
+    set Y extent = 100000
+    set X repetitions = 4
+    set Box origin X coordinate = -200000
+  end
+end
+
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+  
+  subsection Box
+    set Bottom temperature = 1600
+    set Top temperature    = 293
+  end
+end
+
+
+# The velocity along the top boundary models a spreading
+# center of a mid-ocean ridge. 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x:function, right x:function, top: function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = v=1, cm_per_year=0.05
+    set Function expression = if(x>0, v * cm_per_year, -v * cm_per_year); 0
+  end
+end
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = left y:initial lithostatic pressure, right y:initial lithostatic pressure
+
+  subsection Initial lithostatic pressure
+    set Representative point = 0,0
+    set Number of integration points = 1000
+  end
+end
+
+
+# We then choose a vertical gravity model and describe the
+# initial temperature as a constant (being equivalent to a 
+# plate age of 0). 
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 1600
+  end
+end
+
+
+subsection Material model
+  set Model name = composition reaction
+
+  subsection Composition reaction model
+    set Thermal conductivity          = 4.7
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1e23
+  end
+end
+
+
+# The final part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed
+subsection Mesh refinement
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 2
+  set Time steps between mesh refinement = 0
+  set Strategy                           = minimum refinement function
+
+  subsection Minimum refinement function
+    set Variable names = depth, w
+    set Function expression = if(depth<000,7,if(depth<7000,6,if(depth<30000,5,if(depth<45000,4,3))))
+  end
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, heat flux statistics
+
+  subsection Visualization
+    set Time between graphical output = 1e5
+    set List of output variables = density, heat flux map, vertical heat flux
+
+    subsection Material properties
+      set List of material properties = density, specific heat, thermal conductivity
+    end
+  end
+end
+
+
