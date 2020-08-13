@@ -235,9 +235,6 @@ namespace aspect
                                                                                    phase_function_values,
                                                                                    phase_function.n_phase_transitions_for_each_composition());
 
-          // Step 1c: compute viscosity from Frank-Kamenetskii approximation
-          const double viscosity_frank_kamenetskii = frank_kamenetskii_rheology.compute_viscosity(in.temperature[i], j);
-
           // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
           double viscosity_pre_yield = 0.0;
           switch (viscous_type)
@@ -254,7 +251,7 @@ namespace aspect
               }
               case frank_kamenetskii:
               {
-                viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(temperature, j);
+                viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], j);
                 break;
               }
               case composite:
