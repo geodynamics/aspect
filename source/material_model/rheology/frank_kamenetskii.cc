@@ -84,6 +84,12 @@ namespace aspect
                      ExcMessage("The Frank-Kamenetskii rheology is currently only implemented for "
                                 "models without adiabatic heating. Please implement the necessary "
                                 "temperature adjustment if you need this feature."));
+
+        AssertThrow (this->get_adiabatic_surface_temperature() > 0.0,
+                     ExcMessage("The Frank-Kamenetskii rheology can only be used when the adiabatic "
+                                "surface temperature (reference_temperature in equation for viscosity) "
+                                "is non-zero."));
+
         viscosity_ratios_frank_kamenetskii = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosity ratios for Frank Kamenetskii"))),
                                                                                      n_fields,
                                                                                      "Viscosity ratios for Frank Kamenetskii");

@@ -105,8 +105,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // initialize the material we want to test.
   aspect::ParameterHandler prm;
 
-  const aspect::MaterialModel::ViscoPlastic<dim> const_material_model = dynamic_cast<const aspect::MaterialModel::ViscoPlastic<dim> &>(simulator_access.get_material_model());
-  aspect::MaterialModel::ViscoPlastic<dim> material_model = const_cast<aspect::MaterialModel::ViscoPlastic<dim> &>(const_material_model);
+  const aspect::MaterialModel::ViscoPlastic<dim> &const_material_model = dynamic_cast<const aspect::MaterialModel::ViscoPlastic<dim> &>(simulator_access.get_material_model());
+  aspect::MaterialModel::ViscoPlastic<dim> &material_model = const_cast<aspect::MaterialModel::ViscoPlastic<dim> &>(const_material_model);
 
   material_model.declare_parameters(prm);
 
