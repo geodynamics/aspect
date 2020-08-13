@@ -59,6 +59,7 @@ namespace aspect
            */
           double
           compute_viscosity (const double strain_rate,
+                             const double pressure,
                              const double temperature,
                              const unsigned int composition) const;
 
@@ -66,13 +67,14 @@ namespace aspect
           /**
            * Enumeration for selecting which type of Peierls creep flow law to use.
            * Currently, the only available option directly calculates the viscosity
-           * using an approximation to the model of Mei et al., 2010. The full
+           * using an approximation where the strain rate, rather than stress is used.
+           * This approximation requires specifying multiple fitting parameters. The full
            * derivation for this approximation (derived by Magali Billen) can be
-           * found at https://ucdavis.app.box.com/s/scaorcblr9u294836pgk4hyf60gv7psr.
+           * found at https://ucdavis.app.box.com/s/cl5mwhkjeabol4otrdukfcdwfvg9me4w/file/705438695737.
            */
           enum PeierlsCreepScheme
           {
-            mei_viscosity_approx
+            viscosity_approx
           } peierls_creep_flow_law;
 
           /**
@@ -81,9 +83,19 @@ namespace aspect
           std::vector<double> prefactors_peierls;
 
           /**
+           * List of Peierls creep stress exponents n.
+           */
+          std::vector<double> stress_exponents_peierls;
+
+          /**
            * List of Peierls creep activation energies (E).
            */
           std::vector<double> activation_energies_peierls;
+
+          /**
+           * List of Peierls creep activation volumes V.
+           */
+          std::vector<double> activation_volumes_peierls;
 
           /**
            * List of Peierls stresses (sigma_p)
@@ -96,9 +108,14 @@ namespace aspect
           std::vector<double> peierls_fitting_parameters;
 
           /**
-           * List of Peierls fitting exponents (p)
+           * List of the first Peierls fitting exponents (p)
            */
-          std::vector<double> peierls_fitting_exponents;
+          std::vector<double> peierls_fitting_exponents_p;
+
+          /**
+           * List of the second Peierls fitting exponents (q)
+           */
+          std::vector<double> peierls_fitting_exponents_q;
 
       };
     }

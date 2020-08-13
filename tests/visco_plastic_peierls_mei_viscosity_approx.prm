@@ -4,29 +4,34 @@
 # et al. 2010 and assuming a stress of 900e6 Pa, the
 # exact viscosity is calculated in python through:
 #  import numpy as np
-#  R    = 8.314  # gas constant [J/mol*K] 
-#  T    = 1073   # temperature [K]
-#  sig  = 900e6  # stress [Pa] 
-#  sigp = 5.9e9  # Peierls creep stress [Pa]
-#  Ap   = 1.4e-7 /np.power(1e6,2) # Peierls creep prefactor 1/s 1/Pa^2 
-#  E    = 320e3  # Peierls creeep activation energy [J/mol]
+#  A    = 1.4e-7/np.power(1e6,2) # Peierls creep prefactor 1/s 1/Pa^2 
+#  R    = 8.314   # gas constant [J/mol*K] 
+#  T    = 1073    # temperature [K]
+#  sig  = 1000e6  # stress [Pa] 
+#  sigp = 5.9e9   # Peierls creep stress [Pa]
+#  E    = 320e3   # Peierls creeep activation energy [J/mol]
+#  V    = 0       # Peierls creep activation volume
+#  P    = 0       # Pressure (Pa)
+#  n    = 2       # Peierls creep stress exponent
+#  p    = 0.5     # second fitting exponent
+#  q    = 1       # second fitting exponent
 # 
 #  Strain rate invariant:
-#    edot_ii = Ap*np.power(sig,2)*np.exp( -(E/(R*T))*(1 - np.sqrt(sig/sigp)) ) = 3.6356390302747323e-11
+#    edot_ii = A*np.power(sig,n)*np.exp(-(E/(R*T))*np.power( (1-np.power((sig/sigp),p) ),q) )
+#            = 9.326722654162315e-11
 #
 #  Viscosity:
-#    visc = 0.5*sig/edot_ii = 1.237746641657093e+19
+#    visc = 0.5*sig/edot_ii = 5.22097951523685e+18
 #
 #  Fitting parameters for approximated viscosity:
-#    p     = 0.5 # fitting exponent
-#    gamma = 0.1 # fitting parameter
+#    gamma = 0.15 # fitting parameter
 # 
 #  Exponential term in Peierls creep viscosity approximation
-#    s = p*np.power(gamma,p)*(E/(R*T))
+#    s =  p*q*np.power(g,p)*np.power((1-np.power(g,p)),q-1)*(E/(R*T)) 
 #
 #  # Approximated viscosity
-#    visca = 0.5*gamma*sigp/np.power(Ap*gamma*gamma*sigp*sigp,(1/(2+s)))*np.power(edot_ii,(1/(2+s))-1)*np.exp((E/(R*T))*(1 - np.power(gamma,p))/(2+s))
-#          = 1.2823529299258986e+19
+#    visca = 0.5*gamma*sigp/np.power(A*np.power(gamma*sigp,n),1/(s+n))*np.power(edot_ii,(1/(s+n))-1)*np.exp((E/(R*T))*np.power((1 - np.power(gamma,p)),q)/(s+n)) 
+#          = 5.236440783251679e+18
 #
 # The material model should return the above value of the approximated viscosity.
 # The strain rate invariant (edot_ii) above is manually set in the material
@@ -81,8 +86,8 @@ end
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
-    set Reference strain rate                     = 3.6356390302747323e-11
-    set Minimum strain rate                       = 3.6356390302747323e-11
+    set Reference strain rate                     = 9.326722654162315e-11
+    set Minimum strain rate                       = 9.326722654162315e-11
     # dislocation creep parameters
     # These values produce such a sufficiently high viscosity that the 
     # composite viscosity between the diffusion and dislocation creep
@@ -96,9 +101,12 @@ subsection Material model
     set Include Peierls creep                     = true
     set Prefactors for Peierls creep              = 1.4e-19
     set Activation energies for Peierls creep     = 320.e3
+    set Activation volumes for Peierls creep      = 0.
     set Peierls stresses                          = 5.9e9
-    set Peierls fitting parameters                = 0.10
-    set Peierls fitting exponents                 = 0.5
+    set Stress exponents for Peierls creep        = 2.0
+    set Peierls fitting parameters                = 0.15
+    set Peierls fitting exponents p               = 0.5
+    set Peierls fitting exponents q               = 1.0
   end
 end
 

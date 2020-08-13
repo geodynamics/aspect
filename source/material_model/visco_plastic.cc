@@ -268,7 +268,7 @@ namespace aspect
             }
 
           // Step 1d-1: compute viscosity from Peierls creep law
-          const double viscosity_peierls = peierls_creep.compute_viscosity(edot_ii, temperature_for_viscosity, j);
+          const double viscosity_peierls = peierls_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
 
           // Step 1d-2: harmonically average diffusion/dislocation/composite and peierls creep viscosity
           viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
