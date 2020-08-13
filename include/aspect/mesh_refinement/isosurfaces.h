@@ -20,8 +20,8 @@
 
 
 
-#ifndef _aspect_isosurfaces_h
-#define _aspect_isosurfaces_h
+#ifndef _aspect_mesh_refinement_isosurfaces_h
+#define _aspect_mesh_refinement_isosurfaces_h
 
 #include <aspect/mesh_refinement/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,48 +34,68 @@ namespace aspect
   {
     namespace Internal
     {
-      enum class PropertyName
+      enum class PropertyType
       {
         Temperature,
-        Composition,
-        Background
+        Composition
       };
 
-      class Property
+      struct Property
       {
         public:
           /**
-           * constructor. Make a property from a vector string and string.
+           * constructor. Converts a property name into a structure containing a property type
+           * and  index. If the property contains multiple items (e.g. the property compositional field has a
+           * field index) they are store in the index
+           * @param property_name The name of a property, which can be Temperature for the temperature field or
+           * the name of a compositional field listed in the parameter available_compositions.
+           * @param available_compositions A list of names of the available compositional fields.
            */
-          Property(const std::string &property_name,const std::vector<std::string> &available_compositions);
+          Property(const std::string &property_name,
+                   const std::vector<std::string> &available_compositions);
 
-          PropertyName name;
+          /**
+           * The Property type of the property
+           */
+          PropertyType type;
+
+
+          /**
+           * An index, in case the property type contains multiple values. This is
+           * currently only used for storing which compositional field the property
+           * corresponds to.
+           */
           unsigned int index;
       };
 
-      class Isosurface
+      struct Isosurface
       {
         public:
           /**
-           * Checks whether the provided values are between the min and max value  for
-           * those property of the isosurface. This function assumes that the order of the
-           * provided values matches the order in which the properties are stored.
+           * Checks whether the provided values are between the min and max value for the
+           * set properties of the isosurface. This function assumes that the order of the
+           * provided @p values matches the order in which the properties are stored.
+           *
+           * This function assumes than @p values and all the vectors in isosurfaces already
+           * have the same length.
            */
-          bool values_are_in_range(const std::vector<double> values) const;
+          bool are_all_values_in_range(const std::vector<double> &values) const;
 
           std::vector<double> min_values;
           std::vector<double> max_values;
-          double min_refinement;
-          double max_refinement;
+          int min_refinement;
+          int max_refinement;
           std::vector<Property> properties;
       };
-
-      unsigned int min_max_string_to_int(const std::string &string, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level);
 
     }
 
     /**
-     * A class that implements a Isosurfaces TODO
+     * A class that implements an Isosurfaces mesh refinement plugin. This
+     * plugin allows for setting a minimum and a maximum refinement levels in
+     * a part of the model domain where a value (e.g. Temperature) is between
+     * two other values (e.g. two isotherms). This is currently implemented
+     * for temperature and compositions.
      *
      * @ingroup MeshRefinement
      */
@@ -100,7 +120,7 @@ namespace aspect
         tag_additional_cells () const override;
 
         /**
-         * Declare the parameters this class takes through input files.
+         * Declare the parameters this class takes from input files.
          */
         static
         void
@@ -115,7 +135,7 @@ namespace aspect
 
       private:
         /**
-         * Todo
+         * A vector of the isosurfaces used by this class.
          */
         std::vector<Internal::Isosurface> isosurfaces;
 

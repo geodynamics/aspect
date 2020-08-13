@@ -35,13 +35,13 @@ namespace aspect
     namespace Internal
     {
       bool
-      Isosurface::values_are_in_range(const std::vector<double> values) const
+      Isosurface::are_all_values_in_range(const std::vector<double> &values) const
       {
         // This assumes that all the vectors in isosurfaces already have the
         // same length.
         Assert(values.size() == min_values.size(),
-               ExcMessage("Internal error: Vector of values passed to the isosurface class function values_are_in_range, "
-                          "does not have the the correct size."));
+               ExcMessage("Internal error: Vector of values passed to the isosurface class "
+                          "function are_all_values_in_range, does not have the the correct size."));
         for (unsigned int index = 0; index < values.size(); ++index)
           {
             if (values[index] < min_values[index] || values[index] > max_values[index])
@@ -59,13 +59,7 @@ namespace aspect
         bool found = false;
         if (property_name == "Temperature")
           {
-            name = PropertyName::Temperature;
-            index = 0;
-            found = true;
-          }
-        else if (property_name == "background")
-          {
-            name = PropertyName::Background;
+            type = PropertyType::Temperature;
             index = 0;
             found = true;
           }
@@ -74,14 +68,14 @@ namespace aspect
             auto p = std::find(available_compositions.begin(), available_compositions.end(), property_name);
             if (p != available_compositions.end())
               {
-                name = PropertyName::Composition;
+                type = PropertyType::Composition;
                 index = std::distance(available_compositions.begin(), p);
                 found = true;
               }
           }
         if (found == false)
           {
-            // The property name has not been found. This could come from that the compositional field was not present.
+            // The property name has not been found. This could come from that the compositional field is not present.
             // Abort and warn the user.
             std::string key_list = "Temperature";
             for (auto &composition : available_compositions)
@@ -93,6 +87,15 @@ namespace aspect
           }
       }
 
+      /**
+       * converts strings describing the refinement level which potentially contains a min
+       * or max statement included in them to a int. For example if minimum_refinement_level
+       * is 1, and the string is 'min+1', it will return 2. The returned value will be capped
+       * by the provided @p minimum_refinement_level and @p maximum_refinement_level.
+       *
+       * This function will throw an assertion when the string contains `max+` or `min-` since
+       * that is always incorrect.
+       */
       unsigned int min_max_string_to_int(const std::string &string_value, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level)
       {
         // start with removing the spaces so that a ' min + 1 ' would become 'min+1'.
@@ -108,7 +111,7 @@ namespace aspect
                 std::vector<std::string> tmpNumber = Utilities::split_string_list(string,'+');
                 AssertThrow(tmpNumber.size() == 2,
                             ExcMessage("Could not convert value '" + string + "' to an int because it contains more than one '+' sign."));
-                return minimum_refinement_level+Utilities::string_to_int(tmpNumber[1]);
+                return std::min(std::max(minimum_refinement_level+Utilities::string_to_int(tmpNumber[1]),minimum_refinement_level),maximum_refinement_level);
               }
             else
               {
@@ -124,18 +127,18 @@ namespace aspect
                 std::vector<std::string> tmpNumber = Utilities::split_string_list(string,'-');
                 AssertThrow(tmpNumber.size() == 2,
                             ExcMessage("Could not convert value '" + string + "' to an int because it contains more than one '-' sign."));
-                return maximum_refinement_level-Utilities::string_to_int(tmpNumber[1]);
+                return std::min(std::max(maximum_refinement_level-Utilities::string_to_int(tmpNumber[1]),minimum_refinement_level),maximum_refinement_level);
               }
             else
               {
-                AssertThrow(string.compare(0,4,"maxi") != 0,
+                AssertThrow(string.compare(0,4,"max+") != 0,
                             ExcMessage("A value of " + string_value + " was provided, but you can't provide a larger value than the maximum."));
                 return maximum_refinement_level;
               }
           }
         else
           {
-            return Utilities::string_to_int(string);
+            return std::min(std::max((unsigned int)Utilities::string_to_int(string),minimum_refinement_level),maximum_refinement_level);
           }
 
       }
@@ -163,7 +166,6 @@ namespace aspect
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
 
-      unsigned i = 0;
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         {
           if (cell->is_locally_owned())
@@ -184,53 +186,41 @@ namespace aspect
                       std::vector<double> values(isosurface.min_values.size());
                       for (unsigned int index = 0; index < isosurface.properties.size(); ++index)
                         {
-                          if (isosurface.properties[index].name == Internal::PropertyName::Temperature)
+                          if (isosurface.properties[index].type == Internal::PropertyType::Temperature)
                             {
                               values[index] = in.temperature[i_quad];
                             }
-                          else if (isosurface.properties[index].name == Internal::PropertyName::Composition)
+                          else if (isosurface.properties[index].type == Internal::PropertyType::Composition)
                             {
-                              values[index] = std::min(std::max(in.composition[i_quad][isosurface.properties[index].index], 0.0), 1.0);
-                            }
-                          else if (isosurface.properties[index].name == Internal::PropertyName::Background)
-                            {
-                              double sum_composition = 0.0;  // Compute background material fraction
-                              for (unsigned i=0 ; i < in.composition[i_quad].size() ; ++i)
-                                {
-                                  sum_composition += std::min(std::max(in.composition[i_quad][i], 0.0), 1.0);
-                                }
-                              if (sum_composition >= 1.0)
-                                values[index] = 0.0;
-                              else
-                                values[index] = 1.0 - sum_composition;
+                              values[index] = in.composition[i_quad][isosurface.properties[index].index];
                             }
                         }
 
-                      if ( isosurface.values_are_in_range(values))
+                      if ( isosurface.are_all_values_in_range(values))
                         {
-                          // If the current refinement level is smaller or equal to the minimum
-                          // refinement level, any coarsening flags should be cleared.
+                          // If the current refinement level is smaller than or equal to the minimum
+                          // refinement level, any coarsening flag should be cleared.
                           if (cell->level() <= isosurface.min_refinement)
                             {
                               clear_coarsen = true;
                             }
 
-                          // If the current refinement level is smaller then the minimum
-                          // refinement level, a refinment flag should be placed.
+                          // If the current refinement level is smaller than the minimum
+                          // refinement level, a refinement flag should be placed.
                           if (cell->level() <  isosurface.min_refinement)
                             {
                               refine = true;
                               break;
                             }
 
-                          // If the current refinement level is larger or equal to the maximum refinement
+                          // If the current refinement level is larger than or equal to the maximum refinement
                           // level, any refinement flag should be cleared.
                           if (cell->level() >= isosurface.max_refinement)
                             {
                               clear_refine = true;
                             }
 
-                          // If the current refinement level is larger then the maximum refinemment level,
+                          // If the current refinement level is larger than the maximum refinemment level,
                           // a coarsening flag should be placed.
                           if (cell->level() >  isosurface.max_refinement)
                             {
@@ -248,28 +238,24 @@ namespace aspect
               if (coarsen == true)
                 clear_coarsen = false;
 
-              // Perform the actual placement of the coarsening and refinement flags
-              // We want to make sure that the refinement never goes below the minimum
-              // or above the maximum, so we first check/set the coarsen/refine flag,
-              // and then check/set the clear coarsen/refine flag.
-              if (coarsen == true)
-                {
-                  cell->set_coarsen_flag ();
-                }
+              // Perform the actual placement of the coarsening and refinement flags.
               if (clear_coarsen == true)
                 {
                   cell->clear_coarsen_flag ();
                 }
-              if (refine == true)
+              if (coarsen == true)
                 {
-                  cell->set_refine_flag ();
+                  cell->set_coarsen_flag ();
                 }
               if (clear_refine == true)
                 {
                   cell->clear_refine_flag ();
                 }
+              if (refine == true)
+                {
+                  cell->set_refine_flag ();
+                }
             }
-          ++i;
         }
     }
 
@@ -284,11 +270,25 @@ namespace aspect
         {
           prm.declare_entry ("Isosurfaces", "depth",
                              Patterns::Anything(),
-                             "A list of isosurface separated by semi-colins (;). Each isosurface entry consists of "
-                             "multiple entries separted by a comma. The first two entries indicate the minimum and maximum "
-                             "refinement levels respectively. The entries after the first two describe the field the isosurface "
-                             "applies to, followed by a colin (:) followed by the minimum and maximum grid levels seperated by "
-                             "bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600'; 2, 2, C_1: 0.5 | 1");
+                             "A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of "
+                             "multiple entries separated by a comma. The first two entries indicate the minimum and maximum "
+                             "refinement levels respectively. The entries after the first two describe the fields the isosurface "
+                             "applies to, followed by a colon (:), which again followed by the minimum and maximum grid levels separated by "
+                             "bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
+                             "In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between "
+                             "300 and 600 and at level 2 when the compositional field C\\_1 is between 0.5 and 1. If both happen at "
+                             "the same location, the last one is set, which in this case would be a fixed level 2."
+                             "\n\n"
+                             "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
+                             "two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with "
+                             "the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding "
+                             "values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a "
+                             "number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or "
+                             "add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the "
+                             "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
+                             "mesh refinement level below the global minimum or above the global maximum."
+                             "\n\n"
+                             "If isosurfaces overlap, the last one sets the values.");
 
         }
         prm.leave_subsection();
@@ -300,16 +300,13 @@ namespace aspect
     void
     Isosurfaces<dim>::parse_parameters (ParameterHandler &prm)
     {
-      // lookup the minimum and maximum refinment
-      prm.enter_subsection("Mesh refinement");
-      unsigned int minimum_refinement_level = Utilities::string_to_int(prm.get ("Minimum refinement level"));
-      unsigned int maximum_refinement_level = Utilities::string_to_int(prm.get("Initial global refinement")) + Utilities::string_to_int(prm.get("Initial adaptive refinement"));
-      prm.leave_subsection();
-
-      const std::vector<std::string> compositions = this->introspection().get_composition_names();
-
       prm.enter_subsection("Mesh refinement");
       {
+        // lookup the minimum and maximum refinement
+        const unsigned int minimum_refinement_level = this->get_parameters().min_grid_level;
+        const unsigned int maximum_refinement_level = this->get_parameters().initial_global_refinement + this->get_parameters().initial_adaptive_refinement;
+
+        const std::vector<std::string> &compositions = this->introspection().get_composition_names();
         prm.enter_subsection("Isosurfaces");
         {
           // Split the list by comma delimited components.
@@ -317,9 +314,9 @@ namespace aspect
           unsigned int isosurface_entry_number = 0;
           for (auto &isosurface_entry : isosurface_entries)
             {
-              isosurface_entry_number++;
-              aspect::MeshRefinement::Internal::Isosurface isosurface;  // a new object of isosurface
-              std::vector<aspect::MeshRefinement::Internal::Property> properties;  // a vector of Property
+              ++isosurface_entry_number;
+              aspect::MeshRefinement::Internal::Isosurface isosurface;
+              std::vector<aspect::MeshRefinement::Internal::Property> properties;
               std::vector<double> min_value_inputs;
               std::vector<double> max_value_inputs;
               const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isosurface_entry, ',');
@@ -332,8 +329,8 @@ namespace aspect
               isosurface.min_refinement = Internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
               isosurface.max_refinement = Internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
               AssertThrow(isosurface.min_refinement <= isosurface.max_refinement,
-                          ExcMessage("The provided maximum refinement level has to be larger the then the minimum refinement level."));
-              for (auto field_entry = field_entries.begin()+2; field_entry < field_entries.end(); ++field_entry)
+                          ExcMessage("The provided maximum refinement level has to be larger than the minimum refinement level."));
+              for (auto field_entry = field_entries.begin()+2; field_entry != field_entries.end(); ++field_entry)
                 {
                   AssertThrow(Patterns::Map(Patterns::Anything(),
                                             Patterns::List(Patterns::Double(), 0, std::numeric_limits<unsigned int>::max(), "|")
@@ -345,11 +342,11 @@ namespace aspect
                   properties.push_back(Internal::Property(key_and_value[0], compositions)); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
-                              ExcMessage("Both a maximum and minimum value is required for each isosurface."));
+                              ExcMessage("Both a maximum and a minimum values are required for each isosurface."));
                   min_value_inputs.push_back(Utilities::string_to_double(values[0]));  // get min and max values of the range
                   max_value_inputs.push_back(Utilities::string_to_double(values[1]));
                   AssertThrow(min_value_inputs.back() < max_value_inputs.back(),
-                              ExcMessage("The provided maximum refinement level has to be larger than the minimum refinement level."));
+                              ExcMessage("The provided maximum refinement level has to be larger than the provided minimum refinement level."));
                 }
               isosurface.min_values = min_value_inputs;
               isosurface.max_values = max_value_inputs;
@@ -372,20 +369,31 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Isosurfaces,
                                               "isosurfaces",
                                               "A mesh refinement criterion that computes "
-                                              "refinement indicators between two iso-surfaces of"
+                                              "refinement indicators between two iso-surfaces of "
                                               "specific field entries(e.g. temperature, compsitions)."
                                               "\n\n"
                                               "The way these indicators are derived on each isosurface is by "
-                                              "checking the conditions whether solutions of specific "
-                                              "fields are within the ranges of values given. If these conditions"
-                                              "hold, then an indicator is either put on or taken off"
-                                              "in order to secure mesh refinement within the range of levels"
-                                              "given. Usage of this plugin allows user to put an conditional"
-                                              "minimum and maximum refinement function onto fields that they"
+                                              "checking whether the solutions of specific "
+                                              "fields are within the ranges of values given. If these conditions "
+                                              "hold, then an indicator is either put on or taken off "
+                                              "in order to secure mesh refinement within the range of levels "
+                                              "given. Usage of this plugin allows the user to put a conditional "
+                                              "minimum and maximum refinement function onto fields that they "
                                               "are interested in."
                                               "\n\n"
-                                              "For now, only temperature and names of compositions are allowed as field"
-                                              "entries"
+                                              "For now, only temperature and compositional fields are allowed as "
+                                              "field entries. The key words could be 'Temperature' or one of the names "
+                                              "of the compositional fields which are either specified by user or set up "
+                                              "as C\\_0, C\\_1, etc."
+                                              "\n\n"
+                                              "Usage: A list of isosurface separated by semi-colons (;). Each "
+                                              "isosurface entry consists of multiple entries separated by a comma. "
+                                              "The first two entries indicate the minimum and maximum refinement "
+                                              "levels respectively. The entries after the first two describe the "
+                                              "fields the isosurface applies to, followed by a colon (:), which again "
+                                              "followed by the minimum and maximum grid levels separated by bar (|). An "
+                                              "example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
+                                              "If isosurfaces overlap, the last one sets the values. "
                                              )
   }
 }

@@ -15,7 +15,7 @@ Number of degrees of freedom: 511 (162+25+81+81+81+81)
 *** Timestep 0:  t=0 years, dt=0 years
 
    Postprocessing:
-     Writing graphical output: output-isosurfaces_simple_box_2D/solution/solution-00000
+     Writing graphical output: output-isosurfaces_simple_box_2D_min_max_1/solution/solution-00000
 
 Termination requested by criterion: end time
 
