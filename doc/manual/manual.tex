@@ -6056,6 +6056,12 @@ fewer numbers and only a part of the model domain (and are much faster in this c
 there needs to be a large number of particles (possibly because they are used for other purposes as well), then they
 can be much more expensive. Both approaches can be used to actively influence the rheology in the material model.}
 
+\subsubsection{Reading in Crust 1.0 as a layered initial composition}
+\label{sec:cookbooks-crust1}
+
+\input{cookbooks/crust1/doc/crust1.tex}
+
+
 \subsubsection{Reading in compositional initial composition files generated with geomIO}
 \label{sec:geomio}
 \textit{This section was contributed by Juliane Dannberg}
@@ -7683,7 +7689,7 @@ amounts to the following:
  \item Move into the directory of that particular benchmark:
 \begin{verbatim}
  $ cd benchmarks/solcx
-\end{verbatim} 
+\end{verbatim}
  \item Set up the project:
 \begin{verbatim}
  $ cmake .

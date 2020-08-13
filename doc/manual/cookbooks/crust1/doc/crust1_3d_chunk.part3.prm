@@ -1,0 +1,6 @@
+# The Crust 1.0 layers have four compositional columns: layer_id, density, vp and vs
+# Here we call the density field density_field, to distinguish it from the density in the outputs
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = layer_id, density_field, vp, vs
+end

@@ -1,7 +1,12 @@
-# This test is to check that the layered ascii data initial temperature
-# plugin works in a 2D box with temperature defined as linear
-# between isotherms and constant below and above the
-# first and last isotherm (with a value taken from that isotherm).
+# This cookbook is an extension of the free_surface cookbook. Please see the
+# other cookbook for details about the free surface. This cookbook illustrates
+# how to use an external plugin to modify the material model, and what
+# influence a viscous crust has on the magnitude of surface topography.
+
+# This model loads an additional shared library, which provides another
+# material model that is not part of the main ASPECT code, but instead
+# lies in in a subdirectory of this cookbook folder.
+set Additional shared libraries            = ./plugin/libsimpler_with_density_field.so
 
 set Dimension                              = 3
 set Use years in output instead of seconds = true
@@ -40,11 +45,6 @@ subsection Boundary temperature model
   set List of model names = box
 end
 
-# The Crust 1.0 layers have four compositional columns: layer_id, density, vp and vs
-subsection Compositional fields
-  set Number of fields = 4
-end
-
 # The initial composition model reads in the Crust 1.0 layers in order,
 # from the top of the mantle to the base of the air.
 subsection Initial composition model
@@ -53,6 +53,28 @@ subsection Initial composition model
     set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/crust1/
     set Data file names       = ascii_data_crust1_9_top_mantle.txt, ascii_data_crust1_8_top_lower_crust.txt, ascii_data_crust1_7_top_middle_crust.txt, ascii_data_crust1_6_top_upper_crust.txt, ascii_data_crust1_5_top_lower_sediments.txt, ascii_data_crust1_4_top_middle_sediments.txt, ascii_data_crust1_3_top_upper_sediments.txt, ascii_data_crust1_2_top_ice.txt, ascii_data_crust1_1_top_water.txt, ascii_data_crust1_0_base_air.txt
     set Interpolation scheme  = piecewise constant
+  end
+end
+
+# The Crust 1.0 layers have four compositional columns: layer_id, density, vp and vs
+# Here we call the density field density_field, to distinguish it from the density in the outputs
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = layer_id, density_field, vp, vs
+end
+
+# Because we load the additional shared library at the top, we here have the
+# option to choose the new material model that is described inside that library
+# called 'simpler with density field'. This model uses the initial
+# composition to define the density.
+subsection Material model
+  set Model name = simpler with density field
+  subsection Simpler with density field model
+    set Reference specific heat       = 1250
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+    set Compositional field index for density = 2
   end
 end
 
@@ -66,14 +88,6 @@ subsection Gravity model
 
   subsection Radial constant
     set Magnitude = 10
-  end
-end
-
-
-subsection Material model
-  set Model name = simple
-  subsection Simple model
-    set Viscosity = 1e21
   end
 end
 
@@ -99,6 +113,11 @@ subsection Postprocess
     set Interpolate output            = true
     set Output format                 = vtu
     set Time between graphical output = 0
+    set List of output variables      = material properties
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+
   end
 
 end

@@ -1,0 +1,123 @@
+# This cookbook is an extension of the free_surface cookbook. Please see the
+# other cookbook for details about the free surface. This cookbook illustrates
+# how to use an external plugin to modify the material model, and what
+# influence a viscous crust has on the magnitude of surface topography.
+
+# This model loads an additional shared library, which provides another
+# material model that is not part of the main ASPECT code, but instead
+# lies in in a subdirectory of this cookbook folder.
+set Additional shared libraries            = ./plugin/libsimpler_with_density_field.so
+
+set Dimension                              = 3
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Adiabatic surface temperature          = 1613.0
+
+
+# Narrow North-South profile through Chomolungma/Mt Everest
+# Outer radius taken to be 20 km above sea level (about 15 km above highest topography)
+subsection Geometry model
+  set Model name = chunk
+
+  subsection Chunk
+    set Chunk minimum longitude = 86
+    set Chunk maximum longitude = 87
+    set Longitude repetitions = 1
+    set Chunk minimum latitude = 20
+    set Chunk maximum latitude = 40
+    set Latitude repetitions = 80
+    set Chunk inner radius = 6291000
+    set Chunk outer radius = 6391000
+    set Radius repetitions = 10
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1000
+  end
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+# The initial composition model reads in the Crust 1.0 layers in order,
+# from the top of the mantle to the base of the air.
+subsection Initial composition model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/crust1/
+    set Data file names       = ascii_data_crust1_9_top_mantle.txt, ascii_data_crust1_8_top_lower_crust.txt, ascii_data_crust1_7_top_middle_crust.txt, ascii_data_crust1_6_top_upper_crust.txt, ascii_data_crust1_5_top_lower_sediments.txt, ascii_data_crust1_4_top_middle_sediments.txt, ascii_data_crust1_3_top_upper_sediments.txt, ascii_data_crust1_2_top_ice.txt, ascii_data_crust1_1_top_water.txt, ascii_data_crust1_0_base_air.txt
+    set Interpolation scheme  = piecewise constant
+  end
+end
+
+# The Crust 1.0 layers have four compositional columns: layer_id, density, vp and vs
+# Here we call the density field density_field, to distinguish it from the density in the outputs
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = layer_id, density_field, vp, vs
+end
+
+# Because we load the additional shared library at the top, we here have the
+# option to choose the new material model that is described inside that library
+# called 'simpler with density field'. This model uses the initial
+# composition to define the density.
+subsection Material model
+  set Model name = simpler with density field
+  subsection Simpler with density field model
+    set Reference specific heat       = 1250
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+    set Compositional field index for density = 2
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = east, west, outer, inner
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement                = 1
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = temperature
+end
+
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics, depth average, composition statistics, visualization
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+
+  subsection Visualization
+    set Number of grouped files       = 0
+    set Interpolate output            = true
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set List of output variables      = material properties
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+
+  end
+
+end

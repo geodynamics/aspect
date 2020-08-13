@@ -1,0 +1,14 @@
+# Because we load the additional shared library at the top, we here have the
+# option to choose the new material model that is described inside that library
+# called 'simpler with density field'. This model uses the initial
+# composition to define the density.
+subsection Material model
+  set Model name = simpler with density field
+  subsection Simpler with density field model
+    set Reference specific heat       = 1250
+    set Thermal conductivity          = 1.0
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1.e20
+    set Compositional field index for density = 2
+  end
+end
