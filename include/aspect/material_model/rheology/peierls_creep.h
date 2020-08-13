@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,6 +32,14 @@ namespace aspect
 
     namespace Rheology
     {
+      /**
+       * Peierls creep is a low temperature, high stress viscous deformation mechanism.
+       * Crystal deformation occurs through dislocation glide, which requires high stresses.
+       * It is considered an important deformation mechanism in the lithosphere and subducting
+       * slabs (Kumamoto et al., 2017, Science Advances). The approximate form of the Peierls
+       * flow law used here is based on a derivation from Kameyama et al., 1999, Earth and
+       * Planetary Science Letters.
+       */
       template <int dim>
       class PeierlsCreep : public ::aspect::SimulatorAccess<dim>
       {
@@ -68,9 +76,11 @@ namespace aspect
            * Enumeration for selecting which type of Peierls creep flow law to use.
            * Currently, the only available option directly calculates the viscosity
            * using an approximation where the strain rate, rather than stress is used.
-           * This approximation requires specifying multiple fitting parameters. The full
-           * derivation for this approximation (derived by Magali Billen) can be
-           * found at https://ucdavis.app.box.com/s/cl5mwhkjeabol4otrdukfcdwfvg9me4w/file/705438695737.
+           * This approximation requires specifying one fitting parameter (gamma) to
+           * obtain the best fit in the expected stress range for a given problem
+           * (gamma = stress / peierls_stress). The derivation for this approximation
+           * (derived by Magali Billen) can be found at:
+           * https://ucdavis.app.box.com/s/cl5mwhkjeabol4otrdukfcdwfvg9me4w/file/705438695737.
            */
           enum PeierlsCreepScheme
           {
@@ -80,22 +90,22 @@ namespace aspect
           /**
            * List of Peirls creep prefactors (A).
            */
-          std::vector<double> prefactors_peierls;
+          std::vector<double> prefactors;
 
           /**
            * List of Peierls creep stress exponents n.
            */
-          std::vector<double> stress_exponents_peierls;
+          std::vector<double> stress_exponents;
 
           /**
            * List of Peierls creep activation energies (E).
            */
-          std::vector<double> activation_energies_peierls;
+          std::vector<double> activation_energies;
 
           /**
            * List of Peierls creep activation volumes V.
            */
-          std::vector<double> activation_volumes_peierls;
+          std::vector<double> activation_volumes;
 
           /**
            * List of Peierls stresses (sigma_p)
@@ -105,17 +115,19 @@ namespace aspect
           /**
            * List of Peierls fitting parameters (gamma)
            */
-          std::vector<double> peierls_fitting_parameters;
+          std::vector<double> fitting_parameters;
 
           /**
-           * List of the first Peierls fitting exponents (p)
+           * List of the first Peierls parameter related
+           * to dislocation glide (p)
            */
-          std::vector<double> peierls_fitting_exponents_p;
+          std::vector<double> glide_parameters_p;
 
           /**
-           * List of the second Peierls fitting exponents (q)
+           * List of the second Peierls parameter related
+           * to dislocation glide (q)
            */
-          std::vector<double> peierls_fitting_exponents_q;
+          std::vector<double> glide_parameters_q;
 
       };
     }

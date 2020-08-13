@@ -267,11 +267,10 @@ namespace aspect
               }
             }
 
-          // Step 1d-1: compute viscosity from Peierls creep law
+          // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
           const double viscosity_peierls = peierls_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
-
-          // Step 1d-2: harmonically average diffusion/dislocation/composite and peierls creep viscosity
-          viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
+          if (use_peierls_creep)
+            viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
 
           // Step 1e: multiply the viscosity by a constant (default value is 1)
           viscosity_pre_yield = constant_viscosity_prefactors.compute_viscosity(viscosity_pre_yield, j);
@@ -814,6 +813,7 @@ namespace aspect
 
           // Frank-Kamenetskii viscosity parameters
           Rheology::FrankKamenetskii<dim>::declare_parameters(prm);
+
           // Peierls creep parameters
           Rheology::PeierlsCreep<dim>::declare_parameters(prm);
 
@@ -961,11 +961,8 @@ namespace aspect
 
           // Peierls creep parameters
           use_peierls_creep = prm.get_bool ("Include Peierls creep");
-          if (use_peierls_creep)
-            {
-              peierls_creep.initialize_simulator (this->get_simulator());
-              peierls_creep.parse_parameters(prm);
-            }
+          peierls_creep.initialize_simulator (this->get_simulator());
+          peierls_creep.parse_parameters(prm);
 
           // Constant viscosity prefactor parameters
           constant_viscosity_prefactors.initialize_simulator (this->get_simulator());

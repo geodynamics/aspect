@@ -13,25 +13,29 @@
 #  V    = 0       # Peierls creep activation volume
 #  P    = 0       # Pressure (Pa)
 #  n    = 2       # Peierls creep stress exponent
-#  p    = 0.5     # second fitting exponent
-#  q    = 1       # second fitting exponent
+#  p    = 0.5     # First slide parameter
+#  q    = 1       # Second glide parameter
 # 
 #  Strain rate invariant:
 #    edot_ii = A*np.power(sig,n)*np.exp(-(E/(R*T))*np.power( (1-np.power((sig/sigp),p) ),q) )
-#            = 9.326722654162315e-11
+#            = 9.576747017313619e-11
 #
 #  Viscosity:
 #    visc = 0.5*sig/edot_ii = 5.22097951523685e+18
 #
 #  Fitting parameters for approximated viscosity:
 #    gamma = 0.15 # fitting parameter
-# 
+#
+#  Recalcualte strain rate
+#    edot_ii = A*np.power(sig,n)*np.exp(-(E/(R*T))*np.power((1 - np.power(gamma,p)),q))*np.power(sig/(gamma*sigp),s)
+#            = 9.326722654162315e-11
+#
 #  Exponential term in Peierls creep viscosity approximation
 #    s =  p*q*np.power(g,p)*np.power((1-np.power(g,p)),q-1)*(E/(R*T)) 
 #
 #  # Approximated viscosity
 #    visca = 0.5*gamma*sigp/np.power(A*np.power(gamma*sigp,n),1/(s+n))*np.power(edot_ii,(1/(s+n))-1)*np.exp((E/(R*T))*np.power((1 - np.power(gamma,p)),q)/(s+n)) 
-#          = 5.236440783251679e+18
+#          = 5.360939941500902e+18
 #
 # The material model should return the above value of the approximated viscosity.
 # The strain rate invariant (edot_ii) above is manually set in the material
@@ -99,14 +103,15 @@ subsection Material model
     set Activation volumes for dislocation creep  = 0
     # Peierls creep parameters
     set Include Peierls creep                     = true
+    set Peierls creep flow law                    = viscosity approximation
     set Prefactors for Peierls creep              = 1.4e-19
     set Activation energies for Peierls creep     = 320.e3
     set Activation volumes for Peierls creep      = 0.
     set Peierls stresses                          = 5.9e9
     set Stress exponents for Peierls creep        = 2.0
     set Peierls fitting parameters                = 0.15
-    set Peierls fitting exponents p               = 0.5
-    set Peierls fitting exponents q               = 1.0
+    set Peierls glide parameters p                = 0.5
+    set Peierls glide parameters q                = 1.0
   end
 end
 

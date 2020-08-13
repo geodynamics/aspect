@@ -55,44 +55,44 @@ namespace aspect
             {
               /**
                * An approximation of the Peierls creep formulation, where stress is replaced with strain rate
-               * (second invariant) when calculating viscosity. This substitution requires three additional
-               * fitting parameters (gamma,p,q). Details of this derivation can be found in the following document:
+               * (second invariant) when calculating viscosity. This substitution requires a fitting parameter (gamma),
+               * which describes the relationship between stress and the Peierls stress (gamma = stress/stress_peierls).
+               * Details of this derivation can be found in the following document:
                * https://ucdavis.app.box.com/s/cl5mwhkjeabol4otrdukfcdwfvg9me4w/file/705438695737
                * The formulation for the viscosity is:
-               *  ((0.5*gamma*sigma_p)/(A*((gamma*sigma_p)^n)^(1/(s+n)))) * exp(((E+PV)/(R*T))*(((1-gamma^p)^q)/(s+n))) * edot_ii^(1/(s+n)-1)
-               * where
-               * s = ((E + P*V)/(R*T))*p*q*((1 - gamma^p)^(q-1)*(gamma^p)
+               *   stress_term * arrhenius_term * strain_rate_term, where
+               * stress_term      = (0.5 * gamma * sigma_p) / (A * ((gamma * sigma_p)^n)^(1/(s+n)))
+               * arrhenius_term   = exp(( (E + P * V) / (R * T)) * (1 - gamma^p)^q / (s + n) )
+               * strain_rate_term = edot_ii^(1 / (s + n) - 1)
+               * Above,
+               * s = ((E + P * V) / (R * T)) * p * q * (1 - gamma^p)^(q-1) * (gamma^p)
                * sigma_p is the Peierls stress
                * gamma is the Peierls creep fitting parameter
-               * p is the first Peierls creep fitting exponent
-               * q is the second Peierls creep fitting exponent
+               * p is the first Peierls glide parameter
+               * q is the second Peierls creep glide parameter
                * A is the Peierls prefactor term (1/s 1/Pa^2)
                * n is the Peierls stress exponent
                * E is the Peierls activation energy (J/mol)
-               * V is the Peierls activation volume (m^3/mol)
+               * V is the Peierls activation volume (m^3/mol). However, to date V has always been set to 0.
                * edot_ii is the second invariant of the deviatoric strain rate (1/s)
                * T is temperature (K)
                * R is the gas constant
                */
-              const double s = ( (activation_energies_peierls[c] + pressure * activation_volumes_peierls[c]) / (constants::gas_constant * temperature)) *
-                               peierls_fitting_exponents_p[c] * peierls_fitting_exponents_q[c] *
-                               std::pow((1. - std::pow(peierls_fitting_parameters[c], peierls_fitting_exponents_p[c])),(peierls_fitting_exponents_q[c] - 1.0)) *
-                               std::pow(peierls_fitting_parameters[c], peierls_fitting_exponents_p[c]);
+              const double s = ( (activation_energies[c] + pressure * activation_volumes[c]) / (constants::gas_constant * temperature)) *
+                               glide_parameters_p[c] * glide_parameters_q[c] *
+                               std::pow((1. - std::pow(fitting_parameters[c], glide_parameters_p[c])),(glide_parameters_q[c] - 1.)) *
+                               std::pow(fitting_parameters[c], glide_parameters_p[c]);
 
-              const double peierls_left_term = 0.5 * (peierls_fitting_parameters[c] * peierls_stresses[c]) /
-                                               std::pow((prefactors_peierls[c] * std::pow(peierls_fitting_parameters[c] * peierls_stresses[c],stress_exponents_peierls[c])),( 1 / (s + stress_exponents_peierls[c])));
+              const double stress_term = 0.5 * (fitting_parameters[c] * peierls_stresses[c]) /
+                                         std::pow((prefactors[c] * std::pow(fitting_parameters[c] * peierls_stresses[c],stress_exponents[c])),( 1. / (s + stress_exponents[c])));
 
-              const double peierls_middle_term_a = (activation_energies_peierls[c] + pressure * activation_volumes_peierls[c]) / (constants::gas_constant * temperature);
+              const double arrhenius_term = std::exp( ((activation_energies[c] + pressure * activation_volumes[c]) / (constants::gas_constant * temperature)) *
+                                                      (std::pow((1. - std::pow(fitting_parameters[c],glide_parameters_p[c])),glide_parameters_q[c])) /
+                                                      (s + stress_exponents[c]) );
 
-              const double peierls_middle_term_b = std::pow((1. - std::pow(peierls_fitting_parameters[c],peierls_fitting_exponents_p[c])),peierls_fitting_exponents_q[c]);
+              const double strain_rate_term = std::pow(strain_rate, (1. / (s + stress_exponents[c])) - 1.);
 
-              const double peierls_middle_term_c = s + stress_exponents_peierls[c];
-
-              const double peierls_middle_term = std::exp(peierls_middle_term_a * peierls_middle_term_b / peierls_middle_term_c);
-
-              const double peierls_right_term = std::pow(strain_rate, (1. / (s + stress_exponents_peierls[c])) - 1.);
-
-              viscosity = peierls_left_term * peierls_middle_term * peierls_right_term;
+              viscosity = stress_term * arrhenius_term * strain_rate_term;
               break;
             }
             default:
@@ -115,13 +115,13 @@ namespace aspect
                            Patterns::Selection("viscosity approximation"),
                            "Select what type of Peierls creep flow law to use. Currently, the "
                            "only available option is an approximation to Peierls creep, which "
-                           "uses the strain rate invariant, rather than stress, as an input. "
-                           "Future options will allow formulations that use stress as an input.");
-        prm.declare_entry ("Prefactors for Peierls creep", "1.4e-7",
+                           "uses the strain rate invariant, rather than stress, as an input. ");
+        prm.declare_entry ("Prefactors for Peierls creep", "1.4e-19",
                            Patterns::List(Patterns::Double(0)),
                            "List of viscosity prefactors, $A$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value. Units: $1/s 1/Pa^{2}$");
+                           "If only one value is given, then all use the same value. "
+                           "Units: \\si{\\pascal}$^{-n_{\\text{peierls}}}$ \\si{\\per\\second}");
         prm.declare_entry ("Stress exponents for Peierls creep", "2.0",
                            Patterns::Anything(),
                            "List of stress exponents, $n_{\\text{peierls}}$, for background material and compositional "
@@ -131,7 +131,7 @@ namespace aspect
                            Patterns::List(Patterns::Double(0)),
                            "List of activation energies, $E$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
-                           "If only one value is given, then all use the same value.  Units: $J / mol$");
+                           "If only one value is given, then all use the same value. Units: \\si{\\joule\\per\\mole}.");
         prm.declare_entry ("Activation volumes for Peierls creep", "1.4e-5",
                            Patterns::Anything(),
                            "List of activation volumes, $V$, for background material and compositional fields, "
@@ -143,25 +143,24 @@ namespace aspect
                            "List of stress limits for Peierls creep $\\sigma_{\\text{peierls}}$ for background "
                            "material and compositional fields, for a total of N+1 values, where N is the number "
                            "of compositional fields. If only one value is given, then all use the same value. "
-                           "Units: $Pa$");
+                           "Units: \\si{\\pascal}");
         prm.declare_entry ("Peierls fitting parameters", "0.17",
                            Patterns::List(Patterns::Double(0)),
                            "List of fitting parameters $\\gamma$ between stress $\\sigma$ and the Peierls "
                            "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. If only one "
                            "value is given, then all use the same value. Units: none");
-        prm.declare_entry ("Peierls fitting exponents p", "0.5",
+        prm.declare_entry ("Peierls glide parameters p", "0.5",
                            Patterns::List(Patterns::Double(0)),
-                           "List of the first fitting exponents, $p$, between stress $\\sigma$ and the Peierls "
-                           "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "List of the first Peierls creep glide parameters, $p$, for background and compositional "
+                           "fields for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: none");
-        prm.declare_entry ("Peierls fitting exponents q", "0.5",
+        prm.declare_entry ("Peierls glide parameters q", "1.0",
                            Patterns::List(Patterns::Double(0)),
-                           "List of the second fitting exponents, $q$, between stress $\\sigma$ and the Peierls "
-                           "stress $\\sigma_{\\text{peierls}}$ for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "List of the second Peierls creep glide parameters, $q$, for background and compositional "
+                           "fields for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: none");
+
       }
 
 
@@ -178,36 +177,37 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("Not a valid Peierls creep flow law"));
 
-        prefactors_peierls = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for Peierls creep"))),
+        prefactors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for Peierls creep"))),
+                                                             n_fields,
+                                                             "Prefactors for Peierls creep");
+
+        stress_exponents = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for Peierls creep"))),
+                                                                   n_fields,
+                                                                   "Stress exponents for Peierls creep");
+
+        activation_energies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for Peierls creep"))),
+                                                                      n_fields,
+                                                                      "Activation energies for Peierls creep");
+
+        activation_volumes = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for Peierls creep"))),
                                                                      n_fields,
-                                                                     "Prefactors for Peierls creep");
-
-        stress_exponents_peierls = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for Peierls creep"))),
-                                                                           n_fields,
-                                                                           "Stress exponents for Peierls creep");
-
-        activation_energies_peierls = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for Peierls creep"))),
-                                                                              n_fields,
-                                                                              "Activation energies for Peierls creep");
-
-        activation_volumes_peierls = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for Peierls creep"))),
-                                                                             n_fields,
-                                                                             "Activation volumes for Peierls creep");
+                                                                     "Activation volumes for Peierls creep");
 
         peierls_stresses = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls stresses"))),
                                                                    n_fields,
                                                                    "Peierls stresses");
-        peierls_fitting_parameters = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting parameters"))),
-                                                                             n_fields,
-                                                                             "Peierls fitting parameters");
 
-        peierls_fitting_exponents_p = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting exponents p"))),
-                                                                              n_fields,
-                                                                              "Peierls fitting exponents p");
+        fitting_parameters = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting parameters"))),
+                                                                     n_fields,
+                                                                     "Peierls fitting parameters");
 
-        peierls_fitting_exponents_q = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls fitting exponents q"))),
-                                                                              n_fields,
-                                                                              "Peierls fitting exponents q");
+        glide_parameters_p = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls glide parameters p"))),
+                                                                     n_fields,
+                                                                     "Peierls glide parameters p");
+
+        glide_parameters_q = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Peierls glide parameters q"))),
+                                                                     n_fields,
+                                                                     "Peierls glide parameters q");
       }
     }
   }
