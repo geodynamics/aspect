@@ -273,12 +273,12 @@ namespace aspect
                              "Cartesian coordinates (x,y,z) when geometry is a box, otherwise enter radius, "
                              "longitude, and in 3D latitude. Note that the coordinate related to the depth "
                              "(y in 2D cartesian, z in 3D cartesian and radius in spherical coordinates) is "
-                             "not used."
+                             "not used. "
                              "Units: \\si{\\meter} or degrees.");
           prm.declare_entry("Number of integration points", "1000",
                             Patterns::Integer(0),
                             "The number of integration points over which we integrate the lithostatic pressure "
-                            "downwards. ");
+                            "downwards.");
         }
         prm.leave_subsection();
       }
