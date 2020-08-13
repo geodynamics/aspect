@@ -190,20 +190,6 @@ namespace aspect
           return phase_column_names;
         }
 
-        int
-        MaterialLookup::phase_volume_index(const std::string phase_name) const
-        {
-          std::map<std::string, int>::const_iterator it = phase_name_index_map.find(phase_name);
-          if (it != phase_name_index_map.end())
-            {
-              return it->second; // "second" returns the index corresponding to the phase_name
-            }
-          else
-            {
-              return -1; // if find doesn't find the phase_name as a key, return an impossible index as a flag
-            }
-        }
-
         double
         MaterialLookup::phase_volume_fraction(const int phase_id,
                                               const double temperature,
@@ -567,7 +553,6 @@ namespace aspect
           // Properties are stored in the order rho, alpha, cp, vp, vs, h
           std::vector<int> prp_indices(6, -1);
           std::vector<int> phase_column_indices;
-          n_phases = 0;
 
           // First two columns should be P(bar) and T(K).
           // Here we find the order.
@@ -611,10 +596,24 @@ namespace aspect
                 {
                   if (column_name.substr(0,13).compare("vol_fraction_") == 0)
                     {
-                      phase_column_indices.push_back(n);
-                      phase_column_names.push_back(column_name);
-                      phase_name_index_map[column_name] = n_phases;
-                      n_phases++;
+                      if (std::find(phase_column_names.begin(),
+                                    phase_column_names.end(),
+                                    column_name) != phase_column_names.end())
+                        {
+                          AssertThrow(false,
+                                      ExcMessage("The PerpleX lookup file " + filename + " must have unique column names. "
+                                                 "Sometimes, the same phase is stable with >1 composition at the same "
+                                                 "pressure and temperature, so you may see several columns with the same name. "
+                                                 "Either combine columns with the same name, or change the names."));
+                        }
+                      else
+                        {
+                          // Populate phase_column_names with the column name
+                          // and phase_column_indices with the column index in the current lookup file
+                          // This makes populating the phase_volume_fractions object easier.
+                          phase_column_indices.push_back(n);
+                          phase_column_names.push_back(column_name);
+                        }
                     }
                 }
             }
@@ -624,12 +623,6 @@ namespace aspect
           }),
           ExcMessage("The PerpleX lookup file " + filename + " must contain columns with names "
                      "rho,kg/m3, alpha,1/K, cp,J/K/kg, vp,km/s, vs,km/s and h,J/kg."));
-
-          AssertThrow(phase_name_index_map.size() == phase_column_names.size(),
-                      ExcMessage("The PerpleX lookup file " + filename + " must have unique column names. "
-                                 "Sometimes, the same phase is stable with >1 composition at the same "
-                                 "pressure and temperature, so you may see several columns with the same name. "
-                                 "Either combine columns with the same name, or change the names."));
 
           std::getline(in, temp); // first data line
 
@@ -651,8 +644,8 @@ namespace aspect
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
 
-          phase_volume_fractions.resize(n_phases);
-          for (unsigned int n=0; n<n_phases; n++)
+          phase_volume_fractions.resize(phase_column_names.size());
+          for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
             phase_volume_fractions[n].reinit(n_temperature,n_pressure);
 
           unsigned int i = 0;
@@ -699,7 +692,7 @@ namespace aspect
                   vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
                   enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
 
-                  for (unsigned int n=0; n<n_phases; n++)
+                  for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {
                       phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
                     }
@@ -713,7 +706,7 @@ namespace aspect
                   vs_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[4]];
                   enthalpy_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[5]];
 
-                  for (unsigned int n=0; n<n_phases; n++)
+                  for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {
                       phase_volume_fractions[n][i/n_pressure][i%n_pressure]=row_values[phase_column_indices[n]];
                     }

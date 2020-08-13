@@ -118,12 +118,18 @@ namespace aspect
             dRhodp (const double temperature,
                     const double pressure) const;
 
+            /**
+             * Returns a vector of all the column names in the lookup file
+             * that start with the character string vol_fraction_
+             */
             std::vector<std::string>
             phase_volume_column_names() const;
 
-            int
-            phase_volume_index(std::string phase_name) const;
-
+            /**
+             * Returns the volume fraction of the phase_idth phase
+             * at a given temperature and pressure, where the phase_column_name
+             * corresponds to that given in phase_volume_column_names()[phase_id].
+             */
             double
             phase_volume_fraction(const int phase_id,
                                   const double temperature,
@@ -168,7 +174,6 @@ namespace aspect
             dealii::Table<2,double> enthalpy_values;
 
             std::vector<std::string> phase_column_names;
-            std::map<std::string, int> phase_name_index_map;
             std::vector<dealii::Table<2,double>> phase_volume_fractions;
 
             double delta_press;

@@ -149,7 +149,6 @@ namespace aspect
 
           // Here we lookup all of the different phases and insert them into the set_phase_volume_column_names set.
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
-          unique_phase_volume_column_indices.push_back(std::vector<int>());
           for (std::string const &name : phase_volume_column_names)
             {
               set_phase_volume_column_names.insert(name);
@@ -158,14 +157,24 @@ namespace aspect
       // Copy the set of phase names into the unique_phase_volume_column_names vector
       std::copy(set_phase_volume_column_names.begin(), set_phase_volume_column_names.end(), std::back_inserter(unique_phase_volume_column_names));
 
-      // We now loop over all the material file names again, finding the
-      // index of material_lookup[i]->phase_volume_column_names()
-      for (unsigned i = 0; i < material_file_names.size(); i++)
+      // We now fill the unique_phase_volume_column_indices object
+      // with the indices of the phases as stored in each
+      // material lookup.
+
+      // Initialise the column indices as -1 (if the phase doesn't exist in a given lookup)
+      unique_phase_volume_column_indices.resize(material_file_names.size(),
+                                                std::vector<int>(unique_phase_volume_column_names.size(), -1));
+
+      for (unsigned int i = 0; i < material_file_names.size(); i++)
         {
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
-          for (unsigned j = 0; j < unique_phase_volume_column_names.size(); j++)
+          for (unsigned int j = 0; j < phase_volume_column_names.size(); j++)
             {
-              unique_phase_volume_column_indices[i].push_back(material_lookup[i]->phase_volume_index(unique_phase_volume_column_names[j]));
+              std::vector<std::string>::iterator it = std::find(unique_phase_volume_column_names.begin(),
+                                                                unique_phase_volume_column_names.end(),
+                                                                phase_volume_column_names[j]);
+              unsigned int i_unique = std::distance(unique_phase_volume_column_names.begin(), it);
+              unique_phase_volume_column_indices[i][i_unique] = j;
             }
         }
 
@@ -452,7 +461,7 @@ namespace aspect
                     background_volume_fraction = material_lookup[0]->phase_volume_fraction(unique_phase_volume_column_indices[0][i],in.temperature[j],in.pressure[j]);
 
                   volume_fractions[i][j] = background_volume_fraction;
-                  for (unsigned int k = 0; k < in.composition[0].size(); ++k)
+                  for (unsigned int k = 0; k < in.composition[0].size(); k++)
                     {
                       if (unique_phase_volume_column_indices[k+1][i] != -1)
                         volume_fractions[i][j] += in.composition[j][k] * (material_lookup[k+1]->phase_volume_fraction(unique_phase_volume_column_indices[k+1][i],in.temperature[j],in.pressure[j]) - background_volume_fraction);
@@ -460,19 +469,26 @@ namespace aspect
                 }
             }
         }
-      else
+      else if (material_lookup.size() == in.composition[0].size())
         {
-          for (unsigned k = 0; k < material_lookup.size(); k++)
+          for (unsigned int i = 0; i < unique_phase_volume_column_names.size(); i++)
             {
-              for (unsigned int i = 0; i < unique_phase_volume_column_names.size(); i++)
+              for (unsigned int j = 0; j < in.n_evaluation_points(); j++)
                 {
-                  for (unsigned int j = 0; j < in.n_evaluation_points(); j++)
+                  for (unsigned k = 0; k < material_lookup.size(); k++)
                     {
                       if (unique_phase_volume_column_indices[k][i] != -1)
                         volume_fractions[i][j] += in.composition[j][k] * material_lookup[k]->phase_volume_fraction(unique_phase_volume_column_indices[k][i],in.temperature[j],in.pressure[j]);
                     }
                 }
             }
+        }
+      else
+        {
+          AssertThrow (false,
+                       ExcMessage("The number of material lookups must be equal to "
+                                  "one, the number of compositional fields, or the number "
+                                  "of compositional fields plus one (if using a background field)."));
         }
       return volume_fractions;
     }
