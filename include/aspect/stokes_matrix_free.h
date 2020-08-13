@@ -436,10 +436,8 @@ namespace aspect
       void evaluate_material_model() override;
 
       /**
-       * Add correction to system RHS for non-zero boundary condition. For more information
-       * on exactly what this correction is and why it is computed, see the deal.II tutorial
-       * step 50 section "LaplaceProblem::assemble_rhs()":
-       * https://www.dealii.org/developer/doxygen/deal.II/step_50.html#LaplaceProblemassemble_rhs
+       * Add correction to system RHS for non-zero boundary condition. See description in
+       * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
        */
       void correct_stokes_rhs() override;
 

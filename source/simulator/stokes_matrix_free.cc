@@ -1388,7 +1388,7 @@ namespace aspect
     level_viscosity_vector = 0.;
     level_viscosity_vector.resize(0,n_levels-1);
 
-    // Project the active lvel viscosity vector to multilevel vector representations
+    // Project the active level viscosity vector to multilevel vector representations
     // using MG transfer objects. This transfer is based on the same linear operator used to
     // transfer data inside a v-cycle.
     MGTransferMatrixFree<dim,double> transfer;
