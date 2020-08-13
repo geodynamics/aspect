@@ -21,7 +21,7 @@
 
 #include <aspect/global.h>
 #include <aspect/time_stepping/conduction_time_step.h>
-#include <aspect/simulator.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 namespace aspect
 {
@@ -123,6 +123,7 @@ namespace aspect
                                         "conduction time step",
                                         "This model computes the conduction time step as the minimum "
                                         "over all cells of $ CFL h^2 \\cdot \\rho C_p / k$, "
-                                        "where k is the thermal conductivity.")
+                                        "where k is the thermal conductivity. This plugin will always "
+                                        "request advancing to the next time step.")
   }
 }

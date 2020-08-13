@@ -30,6 +30,9 @@ namespace aspect
 {
   using namespace dealii;
 
+  /**
+   * A namespace containing all class related to the time stepping plugin system.
+   */
   namespace TimeStepping
   {
 

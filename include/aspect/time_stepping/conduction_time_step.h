@@ -19,7 +19,7 @@
 */
 
 
-#ifndef _aspect_time_stepping_convection_time_step_h
+#ifndef _aspect_time_stepping_conduction_time_step_h
 #define _aspect_time_stepping_conduction_time_step_h
 
 #include <aspect/time_stepping/interface.h>
@@ -32,8 +32,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a heating model based on a functional
-     * description provided in the input file.
+     * Compute the conduction time step based on the current solution and
+     * return this as the time step.
      *
      * @ingroup TimeStepping
      */
@@ -48,13 +48,12 @@ namespace aspect
 
 
         /**
-         * The main execute() function.
+         * @copydoc aspect::TimeStepping::Interface<dim>::execute()
          */
         virtual
         std::pair<Reaction, double>
         execute() override;
 
-      private:
     };
   }
 }

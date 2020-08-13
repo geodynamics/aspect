@@ -21,7 +21,6 @@
 
 #include <aspect/global.h>
 #include <aspect/time_stepping/convection_time_step.h>
-#include <aspect/simulator.h>
 
 namespace aspect
 {
@@ -37,26 +36,14 @@ namespace aspect
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
                                quadrature_formula,
-                               update_values |
-                               update_gradients |
-                               ((this->get_parameters().include_melt_transport)
-                                ?
-                                update_quadrature_points
-                                :
-                                update_default));
+                               update_values);
 
       const unsigned int n_q_points = quadrature_formula.size();
 
       std::vector<Tensor<1,dim> > velocity_values(n_q_points);
       std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
-      std::vector<std::vector<double> > composition_values (this->introspection().n_compositional_fields,std::vector<double> (n_q_points));
 
       double max_local_speed_over_meshsize = 0;
-
-      MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                 this->introspection().n_compositional_fields);
-      MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                   this->introspection().n_compositional_fields);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -116,6 +103,7 @@ namespace aspect
                                         "convection time step",
                                         "This model computes the convection time step as the minimum "
                                         "over all cells of $ CFL h^2 \\cdot \\rho C_p / k$, "
-                                        "where k is the thermal conductivity.")
+                                        "where k is the thermal conductivity. This plugin will always "
+                                        "request advancing to the next time step.")
   }
 }

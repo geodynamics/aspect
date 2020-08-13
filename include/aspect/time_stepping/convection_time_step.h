@@ -32,7 +32,8 @@ namespace aspect
     using namespace dealii;
 
     /**
-     *
+     * Compute the convection time step based on the current solution and
+     * return it.
      *
      * @ingroup TimeStepping
      */
@@ -47,7 +48,7 @@ namespace aspect
 
 
         /**
-         * The main execute() function.
+         * @copydoc aspect::TimeStepping::Interface<dim>::execute()
          */
         virtual
         std::pair<Reaction, double>
