@@ -97,7 +97,7 @@ namespace aspect
                            "Whether to apply a stress averaging scheme to account for differences "
                            "between the fixed elastic time step and numerical time step. ");
         prm.declare_entry ("Stabilization time scale factor", "1.",
-                           Patterns::Double (1., std::numeric_limits<double>::max()),
+                           Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influence how fast "
                            "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization, "
                            "and infinity is equivalent to not applying elastic stresses at all. The "
@@ -130,8 +130,6 @@ namespace aspect
                       ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
 
         stabilization_time_scale_factor = prm.get_double ("Stabilization time scale factor");
-        AssertThrow(stabilization_time_scale_factor >= 1,
-                    ExcMessage("Stabilization time scale factor must be greater than one"));
 
         fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
         AssertThrow(fixed_elastic_time_step > 0,
