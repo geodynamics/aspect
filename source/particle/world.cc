@@ -103,12 +103,23 @@ namespace aspect
     }
 
 
+
     template <int dim>
     const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
     {
       return *particle_handler.get();
     }
+
+
+
+    template <int dim>
+    Particles::ParticleHandler<dim> &
+    World<dim>::get_particle_handler()
+    {
+      return *particle_handler.get();
+    }
+
 
 
     template <int dim>
@@ -169,19 +180,12 @@ namespace aspect
 
 
     template <int dim>
-    Particles::ParticleHandler<dim> &
-    World<dim>::get_particle_handler()
-    {
-      return *particle_handler.get();
-    }
-
-
-    template <int dim>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
     {
       return *interpolator;
     }
+
 
 
     template <int dim>
@@ -190,6 +194,8 @@ namespace aspect
     {
       return particle_handler->n_global_particles();
     }
+
+
 
     template <int dim>
     void
@@ -664,7 +670,6 @@ namespace aspect
                 = this->get_fe().component_to_system_index(this->introspection()
                                                            .component_indices.velocities[dir],j);
 
-              // Change to current linearization point
               velocity_at_support_point[dir] = this->get_current_linearization_point()[cell_dof_indices[support_point_index]];
               old_velocity_at_support_point[dir] = this->get_old_solution()[cell_dof_indices[support_point_index]];
             }
@@ -701,7 +706,6 @@ namespace aspect
             }
         }
 
-      // The current instead of old timestep is already used
       integrator->local_integrate_step(begin_particle,
                                        end_particle,
                                        old_velocity,
@@ -973,13 +977,6 @@ namespace aspect
                              "in this case particles can move more than one cell "
                              "diameter in one time step and therefore skip the layer "
                              "of ghost cells around the local subdomain."));
-
-//      AssertThrow(!this->get_parameters().mesh_deformation_enabled,
-//                  ExcMessage("Combining particles and a deforming mesh is currently untested "
-//                             "and not officially supported. If you disable this assertion make "
-//                             "sure you benchmark the particle accuracy, and carefully check for "
-//                             "problems related to storing the particle reference coordinates for "
-//                             "a deforming mesh."));
 
       prm.enter_subsection("Postprocess");
       {

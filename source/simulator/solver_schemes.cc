@@ -739,8 +739,6 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_no_advection_iterated_stokes ()
   {
-
-
     double initial_stokes_residual = 0.0;
 
     const unsigned int max_nonlinear_iterations =
@@ -1062,12 +1060,10 @@ namespace aspect
 
     // Store the current location of the particles, so that we can reset
     // the particles to it in each nonlinear iteration.
-    unsigned int n_locally_owned_particles = 0;
-    std::vector< Point<dim> > local_particle_positions(n_locally_owned_particles);
+    std::vector< Point<dim> > local_particle_positions;
     if (particle_world.get() != nullptr)
       {
-        n_locally_owned_particles = particle_world->get_particle_handler().n_locally_owned_particles();
-        local_particle_positions.resize(n_locally_owned_particles);
+        local_particle_positions.resize(particle_world->get_particle_handler().n_locally_owned_particles());
         // Get the current particle positions
         particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
       }
@@ -1080,8 +1076,9 @@ namespace aspect
         // Reset particle positions and advect them with the current velocity
         if (particle_world.get() != nullptr)
           {
-            // use 'false' to overwrite the current position of the particles
-            // TODO from manual: The new set of points defined by the vector has to be
+            // Use 'false' to overwrite the current position of the particles, instead of adding
+            // to the current position.
+            // The new set of points defined by the vector has to be
             // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
             // function manages to find the new cells in which the particles belong.
             particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);
@@ -1216,12 +1213,10 @@ namespace aspect
 
     // Store the current location of the particles, so that we can reset
     // the particles to it in each nonlinear iteration.
-    unsigned int n_locally_owned_particles = 0;
-    std::vector< Point<dim> > local_particle_positions(n_locally_owned_particles);
+    std::vector< Point<dim> > local_particle_positions;
     if (particle_world.get() != nullptr)
       {
-        n_locally_owned_particles = particle_world->get_particle_handler().n_locally_owned_particles();
-        local_particle_positions.resize(n_locally_owned_particles);
+        local_particle_positions.resize(particle_world->get_particle_handler().n_locally_owned_particles());
         // Get the current particle positions
         particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
       }
@@ -1246,8 +1241,9 @@ namespace aspect
         // Reset particle positions and advect them with the current velocity
         if (particle_world.get() != nullptr)
           {
-            // use 'false' to overwrite the current position of the particles
-            // TODO from manual: The new set of points defined by the vector has to be
+            // Use 'false' to overwrite the current position of the particles, instead of adding
+            // to the current position.
+            // The new set of points defined by the vector has to be
             // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
             // function manages to find the new cells in which the particles belong.
             particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);

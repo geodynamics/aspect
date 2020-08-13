@@ -113,7 +113,7 @@ namespace aspect
 
         /**
          * Get the particle handler for this particle world.
-         * There is not get_particles() function in the dealII
+         * There is no get_particles() function in the deal.II
          * ParticleHandler, so we get and set the positions
          * of the particles. These getter/setter functions are
          * not const, and neither are the calling functions,
