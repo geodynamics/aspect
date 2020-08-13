@@ -146,14 +146,6 @@ namespace aspect
         void copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
                                     Particles::ParticleHandler<dim> &to_particle_handler) const;
 
-        /**
-         * Reset the particle handler for this particle world.
-         * This is for example needed after each nonlinear
-         * iteration in iterative advection schemes, such that
-         * the position and properties of the particles are
-         * correct.
-         */
-        void set_particle_handler(Particles::ParticleHandler<dim> new_particle_handler);
 
         /**
          * Do initial logic for handling pre-refinement steps
