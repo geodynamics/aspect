@@ -9,7 +9,7 @@ set Dimension                              = 3
 # also designate an output directory.
 set Use years in output instead of seconds = false
 set End time                               = 1.0
-set Output directory                       = output-convection-box-3d
+set Output directory                       = output_convection_box_3d
 
 # Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
