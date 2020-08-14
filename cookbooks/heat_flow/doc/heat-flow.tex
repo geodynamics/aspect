@@ -40,8 +40,8 @@ In order to complete this assignment, you will need to run models with ASPECT in
 \subparagraph{Heat flux close to mid-ocean ridges}
 Analyze the heat flux close to mid-ocean ridges. 
 
-In order to do that, use the mid-ocean ridge model we have been looking at in class, which is located in the folder \texttt{models/01\_heat\_flow/heat-flow.prm}. Run the model and use ParaView to compute and visualize the conductive and convective heat flux in vertical direction. 
-Hint: You can use the Calculator filter to compute the convective an conductive heat flux, using the equation we discussed in class. Be careful to make sure that the units are the same; the velocity in ParaView is given in m/yr, while all other properties are given in SI units:
+In order to do that, use the mid-ocean ridge model we have been looking at in class, which is located in the folder \url{cookbooks/heat_flow/}. Run the model and use ParaView to compute and visualize the conductive and convective heat flux in vertical direction. 
+Hint: You can use the Calculator filter in ParaView to compute the convective an conductive heat flux, using the equation we discussed in class. Be careful to make sure that the units are the same; the velocity in ParaView is given in m/yr, while all other properties are given in SI units:
 
 \begin{itemize}
 \item density: kg/m$^3$
@@ -62,7 +62,7 @@ Hint: You can save screenshots in ParaView under the menu option \texttt{File $\
 In your report, start by describing the setup of the model and what kind of predictions it can make that we can then compare to observations. Specifically, include a qualitative discussion of the physical processes and the material properties that affect the temperature distribution and heat flow computed in the model, based on the equation solved in the model. 
 
 Then describe your model results. Include your plot of convective/conductive heat flux and discuss it:
-Where is convection dominant, where conduction? 
+Respectively, where are convection and conduction dominant? 
 Qualitatively, how does the temperature profile compare to the ones we computed in class with Wolfram Alpha, 
 where we assumed the temperature follows a conductive (linear) profile going downwards from the surface, 
 and then remains constant once it reaches 1600 K (in the region where convection is dominant)? 
@@ -79,7 +79,7 @@ In order to do that, pick your favourite ocean island from the list below. Find 
 
 Use the input file \url{cookbooks/heat_flow/heat-flow-plume.prm}. 
 The model is very similar to the mid-ocean ridge model you analyzed above, but the oceanic plate does not move
-(so by default, there is no convective heat flux), and the extension in vertical direction is larger 
+(so by default, there is no convective heat flux), and extension in the vertical direction is larger 
 to allow for older (and, accordingly, thicker) oceanic lithosphere. 
 
 Open this file and change the following model parameters:
