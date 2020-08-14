@@ -1,0 +1,5 @@
+<li> New: The manual now has a cookbook demonstrating how to read in the
+Crust 1.0 dataset into ASPECT at arbitrary resolution using the
+AsciiDataLayered plugin.
+<br>
+(Bob Myhill, John Naliboff, 2020/08/15)

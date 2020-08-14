@@ -1,7 +1,17 @@
-# This cookbook is an extension of the free_surface cookbook. Please see the
-# other cookbook for details about the free surface. This cookbook illustrates
-# how to use an external plugin to modify the material model, and what
-# influence a viscous crust has on the magnitude of surface topography.
+# This cookbook shows how the ascii data layered plugin for the initial
+# composition can be used to sample the Crust 1.0 dataset (Laske et al., 2013)
+# at arbitrary resolution.
+# The dataset itself provides an estimate of the depths of
+# 10 lithological boundaries in the Earth at 1 degree resolution. These layers are:
+# the top of the mantle, the tops of the lower, middle and upper crust,
+# the tops of the lower, middle and upper sediments,
+# the tops of the ice and water layers, and the base of the air (i.e. the topography).
+# The densities within the layers are assumed to be constant vertically, but vary
+# laterally.
+
+# In this cookbook, we assign the material density from the initial compositional
+# field defined by Crust 1.0, using a material model plugin based on simpler
+# material model. We call this material model ``SimplerWithDensityField''.
 
 # This model loads an additional shared library, which provides another
 # material model that is not part of the main ASPECT code, but instead
