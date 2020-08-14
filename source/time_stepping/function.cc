@@ -99,6 +99,8 @@ namespace aspect
   {
     ASPECT_REGISTER_TIME_STEPPING_MODEL(Function,
                                         "function",
-                                        "This model uses a time step specified in the parameter file.")
+                                        "This model uses a time step specified in the parameter "
+                                        "file specified as a function of time. This plugin will always "
+                                        "request advancing to the next time step.")
   }
 }

@@ -1,4 +1,6 @@
-# test "Time stepping::Function" plugin, based on box_end_time_1e7_terminate.prm
+# test "Time stepping::Function" plugin with a negative time step, based on box_end_time_1e7_terminate.prm
+
+# EXPECT FAILURE
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -13,7 +15,7 @@ subsection Time stepping
 
   set List of model names = function
   subsection Function
-    set Function expression = if (time<5e3,2e2+1e2*cos(2*3.141*time/5e3),3e2+time/1e3)
+    set Function expression = if (time<5e2,1e2,-1)
   end
 end
 

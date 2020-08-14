@@ -113,7 +113,7 @@ namespace aspect
       AssertThrow (new_time_step > 0,
                    ExcMessage("The time step length for the each time step needs to be positive, "
                               "but the computed step length was: " + std::to_string(new_time_step) + ". "
-                              "Please check the time stepping plugins and for non-positive material properties."));
+                              "Please check the time stepping plugins in use."));
       return new_time_step;
     }
 
