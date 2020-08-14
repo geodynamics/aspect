@@ -1,6 +1,7 @@
-New: Added a new double stabilization_time_scale_factor to Rheology::Elasticity.
+New: Added a new input parameter stabilization_time_scale_factor to Rheology::Elasticity.
 
-This variable is a stabilization factor for the elastic stresses that influences how fast elastic stresses adjust to deformation.
+This variable is a stabilization factor for the elastic stresses that influences how fast
+ elastic stresses adjust to deformation.
 
 <br>
 (Daniel Douglas, 2020/08/13)
