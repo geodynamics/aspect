@@ -389,7 +389,7 @@ namespace aspect
         /**
          * Objects for computing peierls creep viscosities.
          */
-        Rheology::PeierlsCreep<dim> peierls_creep;
+        std::unique_ptr<Rheology::PeierlsCreep<dim> > peierls_creep;
 
         /**
          * Object for computing the viscosity multiplied by a constant prefactor.

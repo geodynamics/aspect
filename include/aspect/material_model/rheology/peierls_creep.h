@@ -84,16 +84,16 @@ namespace aspect
            */
           enum PeierlsCreepScheme
           {
-            viscosity_approx
+            viscosity_approximation
           } peierls_creep_flow_law;
 
           /**
-           * List of Peirls creep prefactors (A).
+           * List of Peierls creep prefactors (A).
            */
           std::vector<double> prefactors;
 
           /**
-           * List of Peierls creep stress exponents n.
+           * List of Peierls creep stress exponents (n).
            */
           std::vector<double> stress_exponents;
 
@@ -103,29 +103,29 @@ namespace aspect
           std::vector<double> activation_energies;
 
           /**
-           * List of Peierls creep activation volumes V.
+           * List of Peierls creep activation volumes (V).
            */
           std::vector<double> activation_volumes;
 
           /**
-           * List of Peierls stresses (sigma_p)
+           * List of Peierls stresses (sigma_p).
            */
           std::vector<double> peierls_stresses;
 
           /**
-           * List of Peierls fitting parameters (gamma)
+           * List of Peierls fitting parameters (gamma).
            */
           std::vector<double> fitting_parameters;
 
           /**
            * List of the first Peierls parameter related
-           * to dislocation glide (p)
+           * to dislocation glide (p).
            */
           std::vector<double> glide_parameters_p;
 
           /**
            * List of the second Peierls parameter related
-           * to dislocation glide (q)
+           * to dislocation glide (q).
            */
           std::vector<double> glide_parameters_q;
 
