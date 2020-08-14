@@ -38,6 +38,7 @@ namespace aspect
       {}
 
 
+
       template <int dim>
       const DiffusionCreepParameters
       DiffusionCreep<dim>::compute_creep_parameters (const unsigned int composition,
@@ -72,6 +73,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       double
       DiffusionCreep<dim>::compute_viscosity (const double pressure,
@@ -99,6 +101,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
       DiffusionCreep<dim>::compute_strain_rate_and_derivative (const double stress,
@@ -120,9 +123,9 @@ namespace aspect
 
         const double strain_rate_diffusion = stress * dstrain_rate_dstress_diffusion;
 
-        const std::pair<double, double> strain_rate_and_derivative (strain_rate_diffusion, dstrain_rate_dstress_diffusion);
-        return strain_rate_and_derivative;
+        return std::make_pair(strain_rate_diffusion, dstrain_rate_dstress_diffusion);
       }
+
 
 
       template <int dim>

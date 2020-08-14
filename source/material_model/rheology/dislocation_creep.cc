@@ -37,6 +37,7 @@ namespace aspect
       {}
 
 
+
       template <int dim>
       const DislocationCreepParameters
       DislocationCreep<dim>::compute_creep_parameters (const unsigned int composition,
@@ -70,6 +71,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       double
       DislocationCreep<dim>::compute_viscosity (const double strain_rate,
@@ -96,6 +98,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
       DislocationCreep<dim>::compute_strain_rate_and_derivative (const double stress,
@@ -120,9 +123,9 @@ namespace aspect
                                                         std::exp(-(creep_parameters.activation_energy + pressure*creep_parameters.activation_volume)/
                                                                  (constants::gas_constant*temperature));
 
-        const std::pair<double, double> strain_rate_and_derivative (strain_rate_dislocation, dstrain_rate_dstress_dislocation);
-        return strain_rate_and_derivative;
+        return std::make_pair(strain_rate_dislocation, dstrain_rate_dstress_dislocation);
       }
+
 
 
       template <int dim>
