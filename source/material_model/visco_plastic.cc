@@ -56,10 +56,18 @@ namespace aspect
        */
       bool plastic_yielding = false;
 
+      MaterialModel::MaterialModelInputs <dim> in (in.n_evaluation_points(), this->n_compositional_fields());
+      unsigned int i = 0;
+
+      in.pressure[i] = pressure;
+      in.temperature[i] = temperature;
+      in.composition[i] = composition;
+      in.strain_rate[i] = strain_rate;
+
       const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, get_volumetric_composition_mask());
 
       const std::pair<std::vector<double>, std::vector<bool> > calculate_viscosities =
-        calculate_isostrain_viscosities(volume_fractions, pressure, temperature, composition, strain_rate, viscous_flow_law, yield_mechanism);
+        calculate_isostrain_viscosities(in, i, volume_fractions, viscous_flow_law, yield_mechanism);
 
       std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(),volume_fractions.end());
       plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(),max_composition)];
@@ -118,7 +126,8 @@ namespace aspect
        */
 
       const std::pair<std::vector<double>, std::vector<bool>> calculate_viscosities =
-                                                             calculate_isostrain_viscosities(volume_fractions, in.pressure[0], in.temperature[0], in.composition[0], in.strain_rate[0], viscous_flow_law, yield_mechanism, phase_function_values);
+                                                             calculate_isostrain_viscosities(in, 0, volume_fractions, viscous_flow_law,
+                                                                 yield_mechanism, phase_function_values);
 
       std::vector<double>::const_iterator max_composition = std::max_element(volume_fractions.begin(), volume_fractions.end());
       const bool plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(), max_composition)];
@@ -165,11 +174,9 @@ namespace aspect
     template <int dim>
     std::pair<std::vector<double>, std::vector<bool> >
     ViscoPlastic<dim>::
-    calculate_isostrain_viscosities (const std::vector<double> &volume_fractions,
-                                     const double &pressure,
-                                     const double &temperature,
-                                     const std::vector<double> &composition,
-                                     const SymmetricTensor<2,dim> &strain_rate,
+    calculate_isostrain_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     const unsigned int i,
+                                     const std::vector<double> &volume_fractions,
                                      const ViscosityScheme &viscous_type,
                                      const YieldScheme &yield_type,
                                      const std::vector<double> &phase_function_values) const
@@ -183,21 +190,21 @@ namespace aspect
       if (use_elasticity == true)
         {
           for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-            stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = composition[j];
+            stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
         }
 
       // The first time this function is called (first iteration of first time step)
       // a specified "reference" strain rate is used as the returned value would
       // otherwise be zero.
       const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
-                                            (strain_rate.norm() <= std::numeric_limits<double>::min());
+                                            (in.strain_rate[i].norm() <= std::numeric_limits<double>::min());
 
       double edot_ii;
       if (use_reference_strainrate)
         edot_ii = ref_strain_rate;
       else
         // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
-        edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+        edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
                            min_strain_rate);
 
       // Calculate viscosities for each of the individual compositional phases
@@ -208,23 +215,23 @@ namespace aspect
           // Choice of activation volume depends on whether there is an adiabatic temperature
           // gradient used when calculating the viscosity. This allows the same activation volume
           // to be used in incompressible and compressible models.
-          const double temperature_for_viscosity = temperature + adiabatic_temperature_gradient_for_viscosity*pressure;
+          const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
           AssertThrow(temperature_for_viscosity != 0, ExcMessage(
                         "The temperature used in the calculation of the visco-plastic rheology is zero. "
                         "This is not allowed, because this value is used to divide through. It is probably "
                         "being caused by the temperature being zero somewhere in the model. The relevant "
-                        "values for debugging are: temperature (" + Utilities::to_string(temperature) +
+                        "values for debugging are: temperature (" + Utilities::to_string(in.temperature[i]) +
                         "), adiabatic_temperature_gradient_for_viscosity ("
                         + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-                        + Utilities::to_string(pressure) + ")."));
+                        + Utilities::to_string(in.pressure[i]) + ")."));
 
           // Step 1a: compute viscosity from diffusion creep law
-          const double viscosity_diffusion = diffusion_creep.compute_viscosity(pressure, temperature_for_viscosity, j,
+          const double viscosity_diffusion = diffusion_creep.compute_viscosity(in.pressure[i], temperature_for_viscosity, j,
                                                                                phase_function_values,
                                                                                phase_function.n_phase_transitions_for_each_composition());
 
           // Step 1b: compute viscosity from dislocation creep law
-          const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j,
+          const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
                                                                                    phase_function_values,
                                                                                    phase_function.n_phase_transitions_for_each_composition());
 
@@ -244,7 +251,7 @@ namespace aspect
               }
               case frank_kamenetskii:
               {
-                viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(temperature, j);
+                viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], j);
                 break;
               }
               case composite:
@@ -281,7 +288,7 @@ namespace aspect
                 current_edot_ii = ref_strain_rate;
               else
                 {
-                  const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(strain_rate,
+                  const double viscoelastic_strain_rate_invariant = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
                                                                     stress_old,
                                                                     elastic_shear_moduli[j]);
 
@@ -307,7 +314,7 @@ namespace aspect
 
           // Step 3a: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
           // If no brittle and/or viscous strain weakening is applied, the factors are 1.
-          const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, composition);
+          const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
 
           // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity
           const double current_cohesion = drucker_prager_parameters.cohesions[j] * weakening_factors[0];
@@ -319,7 +326,7 @@ namespace aspect
           // Step 4a: calculate Drucker-Prager yield stress
           const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
                                                                                      current_friction,
-                                                                                     std::max(pressure,0.0),
+                                                                                     std::max(in.pressure[i], 0.0),
                                                                                      drucker_prager_parameters.max_yield_stress);
 
           // Step 4b: select if yield viscosity is based on Drucker Prager or stress limiter rheology
@@ -343,7 +350,7 @@ namespace aspect
                   {
                     viscosity_yield = drucker_prager_plasticity.compute_viscosity(current_cohesion,
                                                                                   current_friction,
-                                                                                  std::max(pressure,0.0),
+                                                                                  std::max(in.pressure[i], 0.0),
                                                                                   current_edot_ii,
                                                                                   drucker_prager_parameters.max_yield_stress);
                     composition_yielding[j] = true;
@@ -416,6 +423,9 @@ namespace aspect
 
           const double finite_difference_accuracy = 1e-7;
 
+          // A new material model inputs variable that uses the strain rate and pressure difference.
+          MaterialModel::MaterialModelInputs<dim> in_derivatives = in;
+
           // For each independent component, compute the derivative.
           for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
             {
@@ -429,11 +439,12 @@ namespace aspect
                                                                     * (component > dim-1 ? 0.5 : 1 )
                                                                     * finite_difference_accuracy
                                                                     * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
+
+              in_derivatives.strain_rate[i] = strain_rate_difference;
+
               std::vector<double> eta_component =
-                calculate_isostrain_viscosities(volume_fractions, in.pressure[i],
-                                                in.temperature[i], in.composition[i],
-                                                strain_rate_difference,
-                                                viscous_flow_law,yield_mechanism,
+                calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+                                                viscous_flow_law, yield_mechanism,
                                                 phase_function_values).first;
 
               // For each composition of the independent component, compute the derivative.
@@ -456,11 +467,15 @@ namespace aspect
            */
           const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
 
-          const std::vector<double> viscosity_difference =
-            calculate_isostrain_viscosities(volume_fractions, pressure_difference,
-                                            in.temperature[i], in.composition[i], in.strain_rate[i],
-                                            viscous_flow_law, yield_mechanism, phase_function_values).first;
+          in_derivatives.pressure[i] = pressure_difference;
 
+          // Modify the in_derivatives object again to take the original strain rate.
+          in_derivatives.strain_rate[i] = in.strain_rate[i];
+
+          const std::vector<double> viscosity_difference =
+            calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+                                            viscous_flow_law, yield_mechanism,
+                                            phase_function_values).first;
 
           for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
             {
@@ -622,7 +637,8 @@ namespace aspect
               // TODO: This is only consistent with viscosity averaging if the arithmetic averaging
               // scheme is chosen. It would be useful to have a function to calculate isostress viscosities.
               const std::pair<std::vector<double>, std::vector<bool> > calculate_viscosities =
-                calculate_isostrain_viscosities(volume_fractions, in.pressure[i], in.temperature[i], in.composition[i], in.strain_rate[i],viscous_flow_law,yield_mechanism, phase_function_values);
+                calculate_isostrain_viscosities(in, i, volume_fractions, viscous_flow_law,
+                                                yield_mechanism, phase_function_values);
 
               // The isostrain condition implies that the viscosity averaging should be arithmetic (see above).
               // We have given the user freedom to apply alternative bounds, because in diffusion-dominated
@@ -640,7 +656,7 @@ namespace aspect
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >())
-                compute_viscosity_derivatives(i,volume_fractions, calculate_viscosities.first, in, out, phase_function_values);
+                compute_viscosity_derivatives(i, volume_fractions, calculate_viscosities.first, in, out, phase_function_values);
             }
 
           // Now compute changes in the compositional fields (i.e. the accumulated strain).

@@ -324,11 +324,9 @@ namespace aspect
          * experience the same strain rate (isostrain).
          */
         std::pair<std::vector<double>, std::vector<bool> >
-        calculate_isostrain_viscosities ( const std::vector<double> &volume_fractions,
-                                          const double &pressure,
-                                          const double &temperature,
-                                          const std::vector<double> &composition,
-                                          const SymmetricTensor<2,dim> &strain_rate,
+        calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const unsigned int i,
+                                          const std::vector<double> &volume_fractions,
                                           const ViscosityScheme &viscous_type,
                                           const YieldScheme &yield_type,
                                           const std::vector<double> &phase_function_values = std::vector<double>()) const;
