@@ -64,11 +64,9 @@ namespace aspect
     double Manager<dim>::check_for_last_time_step (const double time_step) const
     {
       double new_time_step = time_step;
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = termination_objects.begin();
-           p != termination_objects.end(); ++p)
+      for (const auto &p : termination_objects)
         {
-          double current_time_step = (*p)->check_for_last_time_step (new_time_step);
+          double current_time_step = p->check_for_last_time_step (new_time_step);
 
           AssertThrow (current_time_step > 0,
                        ExcMessage("Time step must be greater than 0."));

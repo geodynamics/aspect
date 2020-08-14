@@ -1834,20 +1834,19 @@ namespace aspect
                    ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
                                "the number of compositional fields that are interpolated from particle properties."));
 
-      for (std::vector<std::string>::const_iterator p = x_mapped_particle_properties.begin();
-           p != x_mapped_particle_properties.end(); ++p)
+      for (const auto &p : x_mapped_particle_properties)
         {
           // each entry has the format (white space is optional):
           // <name> : <value (might have spaces)> [component]
           //
           // first tease apart the two halves
-          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for mapped particle properties  "
                                    "requires that each entry has the form `"
                                    "<name of field> : <particle property> [component]', "
                                    "but there does not appear to be a colon in the entry <"
-                                   + *p
+                                   + p
                                    + ">."));
 
           // the easy part: get the name of the compositional field
@@ -1964,20 +1963,19 @@ namespace aspect
       const std::vector<std::string> x_prescribed_traction_boundary_indicators
         = Utilities::split_string_list
           (prm.get ("Prescribed traction boundary indicators"));
-      for (std::vector<std::string>::const_iterator p = x_prescribed_traction_boundary_indicators.begin();
-           p != x_prescribed_traction_boundary_indicators.end(); ++p)
+      for (const auto &p : x_prescribed_traction_boundary_indicators)
         {
           // each entry has the format (white space is optional):
           // <id> [x][y][z] : <value (might have spaces)>
           //
           // first tease apart the two halves
-          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for prescribed traction boundary indicators "
                                    "requires that each entry has the form `"
                                    "<id> [x][y][z] : <value>', but there does not "
                                    "appear to be a colon in the entry <"
-                                   + *p
+                                   + p
                                    + ">."));
 
           // the easy part: get the value

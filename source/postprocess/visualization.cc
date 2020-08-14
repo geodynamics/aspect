@@ -343,11 +343,9 @@ namespace aspect
         // the global .visit file needs the relative path because it sits a
         // directory above
         std::vector<std::string> filenames_with_path;
-        for (std::vector<std::string>::const_iterator it = filenames.begin();
-             it != filenames.end();
-             ++it)
+        for (const auto &filename : filenames)
           {
-            filenames_with_path.push_back("solution/" + (*it));
+            filenames_with_path.push_back("solution/" + filename);
           }
 
         if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
@@ -380,9 +378,8 @@ namespace aspect
     Visualization<dim>::update ()
     {
       //Call the .update() method for each visualization postprocessor.
-      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
-           p = postprocessors.begin(); p!=postprocessors.end(); ++p)
-        (*p)->update();
+      for (const auto &p : postprocessors)
+        p->update();
     }
 
 
@@ -618,8 +615,7 @@ namespace aspect
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
       std::list<std::unique_ptr<Vector<float> > > cell_data_vectors;
-      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
-           p = postprocessors.begin(); p!=postprocessors.end(); ++p)
+      for (const auto &p : postprocessors)
         {
           try
             {
@@ -633,10 +629,10 @@ namespace aspect
               // the two ways when we send things to the data_out or
               // data_out_faces objects.
               if (const DataPostprocessor<dim> *viz_postprocessor
-                  = dynamic_cast<const DataPostprocessor<dim>*>(& **p))
+                  = dynamic_cast<const DataPostprocessor<dim>*>(& *p))
                 {
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
-                      (& **p) == nullptr)
+                      (& *p) == nullptr)
                     data_out.add_data_vector (this->get_solution(),
                                               *viz_postprocessor);
                   else
@@ -646,7 +642,7 @@ namespace aspect
               else if (const VisualizationPostprocessors::CellDataVectorCreator<dim> *
                        cell_data_creator
                        = dynamic_cast<const VisualizationPostprocessors::CellDataVectorCreator<dim>*>
-                         (& **p))
+                         (& *p))
                 {
                   // get the data produced here
                   const std::pair<std::string, Vector<float> *>
@@ -662,7 +658,7 @@ namespace aspect
                                                (cell_data.second));
 
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
-                      (& **p) == nullptr)
+                      (& *p) == nullptr)
                     data_out.add_data_vector (*cell_data.second,
                                               cell_data.first,
                                               DataOut<dim>::type_cell_data);
@@ -696,7 +692,7 @@ namespace aspect
               std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running the visualization postprocessor <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -714,7 +710,7 @@ namespace aspect
               std::cerr << "An exception happened on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running the visualization postprocessor <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
@@ -1323,11 +1319,9 @@ namespace aspect
       // loop over all of the viz postprocessors and collect what
       // they want. don't worry about duplicates, the postprocessor
       // manager will filter them out
-      for (typename std::list<std::unique_ptr<VisualizationPostprocessors::Interface<dim> > >::const_iterator
-           p = postprocessors.begin();
-           p != postprocessors.end(); ++p)
+      for (const auto &p : postprocessors)
         {
-          const std::list<std::string> this_requirements = (*p)->required_other_postprocessors();
+          const std::list<std::string> this_requirements = p->required_other_postprocessors();
           requirements.insert (requirements.end(),
                                this_requirements.begin(), this_requirements.end());
         }

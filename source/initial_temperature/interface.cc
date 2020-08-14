@@ -153,12 +153,10 @@ namespace aspect
       double temperature = 0.0;
       int i = 0;
 
-      for (typename std::list<std::unique_ptr<InitialTemperature::Interface<dim> > >::const_iterator initial_temperature_object = initial_temperature_objects.begin();
-           initial_temperature_object != initial_temperature_objects.end();
-           ++initial_temperature_object)
+      for (const auto &initial_temperature_object : initial_temperature_objects)
         {
           temperature = model_operators[i](temperature,
-                                           (*initial_temperature_object)->initial_temperature(position));
+                                           initial_temperature_object->initial_temperature(position));
           i++;
         }
       return temperature;

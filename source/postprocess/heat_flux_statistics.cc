@@ -61,10 +61,8 @@ namespace aspect
         boundary_indicators
           = this->get_geometry_model().get_used_boundary_indicators ();
         std::vector<double> local_values;
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p)
-          local_values.push_back (local_boundary_fluxes[*p]);
+        for (const auto p : boundary_indicators)
+          local_values.push_back (local_boundary_fluxes[p]);
 
         // then collect contributions from all processors
         std::vector<double> global_values (local_values.size());

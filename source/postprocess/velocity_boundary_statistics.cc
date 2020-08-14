@@ -56,12 +56,10 @@ namespace aspect
       const std::set<types::boundary_id>
       boundary_indicators
         = this->get_geometry_model().get_used_boundary_indicators ();
-      for (std::set<types::boundary_id>::const_iterator
-           p = boundary_indicators.begin();
-           p != boundary_indicators.end(); ++p)
+      for (const auto p : boundary_indicators)
         {
-          local_max_vel[*p] = -std::numeric_limits<double>::max();
-          local_min_vel[*p] = std::numeric_limits<double>::max();
+          local_max_vel[p] = -std::numeric_limits<double>::max();
+          local_min_vel[p] = std::numeric_limits<double>::max();
         }
 
       // for every surface face that is part of a geometry boundary
@@ -119,15 +117,13 @@ namespace aspect
         std::vector<double> local_velocity_square_integral_values;
         std::vector<double> local_boundary_area_values;
 
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_indicators.begin();
-             p != boundary_indicators.end(); ++p)
+        for (const auto p : boundary_indicators)
           {
-            local_max_values.push_back (local_max_vel[*p]);
-            local_min_values.push_back (local_min_vel[*p]);
+            local_max_values.push_back (local_max_vel[p]);
+            local_min_values.push_back (local_min_vel[p]);
 
-            local_velocity_square_integral_values.push_back (local_velocity_square_integral[*p]);
-            local_boundary_area_values.push_back (local_boundary_area[*p]);
+            local_velocity_square_integral_values.push_back (local_velocity_square_integral[p]);
+            local_boundary_area_values.push_back (local_boundary_area[p]);
           }
         // then collect contributions from all processors
         std::vector<double> global_max_values (local_max_values.size());

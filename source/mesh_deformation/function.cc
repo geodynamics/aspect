@@ -62,11 +62,10 @@ namespace aspect
                                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
       // Loop over all boundary indicators to set the velocity constraints
-      for (std::set<types::boundary_id>::const_iterator boundary_id = boundary_ids.begin();
-           boundary_id != boundary_ids.end(); ++boundary_id)
+      for (const auto boundary_id : boundary_ids)
         VectorTools::interpolate_boundary_values (this->get_mapping(),
                                                   mesh_deformation_dof_handler,
-                                                  *boundary_id,
+                                                  boundary_id,
                                                   function,
                                                   mesh_velocity_constraints);
     }

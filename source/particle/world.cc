@@ -282,19 +282,17 @@ namespace aspect
 
                     std::list<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
 
-                    for (std::set<unsigned int>::const_iterator id = particle_ids_to_remove.begin();
-                         id != particle_ids_to_remove.end(); ++id)
+                    for (const auto id : particle_ids_to_remove)
                       {
                         typename ParticleHandler<dim>::particle_iterator particle_to_remove = particles_in_cell.begin();
-                        std::advance(particle_to_remove,*id);
+                        std::advance(particle_to_remove, id);
 
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
-                    for (typename std::list<typename ParticleHandler<dim>::particle_iterator>::iterator particle = particles_to_remove.begin();
-                         particle != particles_to_remove.end(); ++particle)
+                    for (const auto &particle : particles_to_remove)
                       {
-                        particle_handler->remove_particle(*particle);
+                        particle_handler->remove_particle(particle);
                       }
                   }
               }
@@ -613,12 +611,11 @@ namespace aspect
 
       std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
 
-      for (typename std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> >::const_iterator particle = particles.begin();
-           particle != particles.end(); ++particle)
+      for (const auto &particle : particles)
         new_particles.insert(new_particles.end(),
                              std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
-                                            particle->first.first,particle->first.second),
-                                            particle->second));
+                                            particle.first.first, particle.first.second),
+                                            particle.second));
 
       particle_handler->insert_particles(new_particles);
     }

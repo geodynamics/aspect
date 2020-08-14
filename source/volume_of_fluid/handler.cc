@@ -337,14 +337,13 @@ namespace aspect
       initialization_data_type = std::vector<VolumeOfFluid::VolumeOfFluidInputType::Kind> (n_volume_of_fluid_fields,
                                  VolumeOfFluid::VolumeOfFluidInputType::composition);
 
-      for (std::vector<std::string>::const_iterator p = x_initialization_type.begin();
-           p != x_initialization_type.end(); ++p)
+      for (const auto &p : x_initialization_type)
         {
           // each entry has the format (white space is optional):
           // <name> : <value (might have spaces)>
           //
           // first tease apart the two halves
-          const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+          const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for "
                                    "<Initial composition model/Volume of Fluid intialization method> "
@@ -352,7 +351,7 @@ namespace aspect
                                    "requires that each entry " "has the form "
                                    "`<name of field> : <method>', but this "
                                    "does not match the number of colons in the "
-                                   "entry <" + *p + ">."));
+                                   "entry <" + p + ">."));
 
           // get the name of the compositional field
           const std::string key = split_parts[0];

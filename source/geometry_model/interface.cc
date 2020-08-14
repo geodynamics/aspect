@@ -226,15 +226,14 @@ namespace aspect
       // set, then this means that we had previously already found it -- i.e.,
       // that it is in the map at least twice. produce an error in that case.
       std::string name;
-      for (std::map<std::string,types::boundary_id>::const_iterator p = mapping.begin();
-           p != mapping.end(); ++p)
-        if (p->second == boundary_id)
+      for (const auto &p : mapping)
+        if (p.second == boundary_id)
           {
             Assert (name == "",
                     ExcMessage ("This geometry model appears to provide multiple "
                                 "names for the boundary with indicator <" +
                                 Utilities::int_to_string (boundary_id) + ">."));
-            name = p->first;
+            name = p.first;
           }
 
       return name;

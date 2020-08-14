@@ -276,26 +276,25 @@ namespace aspect
           const std::list<std::string> additional_postprocessors
             = postprocessors.back()->required_other_postprocessors ();
 
-          for (std::list<std::string>::const_iterator p = additional_postprocessors.begin();
-               p != additional_postprocessors.end(); ++p)
+          for (const auto &p : additional_postprocessors)
             {
               AssertThrow (Patterns::Selection(std::get<dim>(registered_plugins).get_pattern_of_names ())
-                           .match (*p) == true,
+                           .match (p) == true,
                            ExcMessage ("Postprocessor <" + postprocessor_names[name] +
                                        "> states that it depends on another postprocessor, <"
-                                       + *p +
+                                       + p +
                                        ">, but the latter is not a valid name."));
 
               bool already_present = false;
               for (unsigned int n=0; n<postprocessor_names.size(); ++n)
-                if (postprocessor_names[n] == *p)
+                if (postprocessor_names[n] == p)
                   {
                     already_present = true;
                     break;
                   }
 
               if (already_present == false)
-                postprocessor_names.push_back (*p);
+                postprocessor_names.push_back (p);
             }
         }
       Assert (postprocessor_names.size() == postprocessors.size(),
@@ -333,11 +332,10 @@ namespace aspect
                   // are already in the list
                   const std::list<std::string> deps = (*pp)->required_other_postprocessors();
                   bool unmet_dependencies = false;
-                  for (std::list<std::string>::const_iterator p = deps.begin();
-                       p != deps.end(); ++p)
+                  for (const auto &p : deps)
                     if (std::find (sorted_names.begin(),
                                    sorted_names.end(),
-                                   *p) == sorted_names.end())
+                                   p) == sorted_names.end())
                       {
                         unmet_dependencies = true;
                         break;
@@ -374,9 +372,8 @@ namespace aspect
                   {
                     out << "  " << postprocessor_names[i] << " -> ";
                     const std::list<std::string> deps = (*pp)->required_other_postprocessors();
-                    for (std::list<std::string>::const_iterator p = deps.begin();
-                         p != deps.end(); ++p)
-                      out << "'" << *p << "' ";
+                    for (const auto &p : deps)
+                      out << "'" << p << "' ";
                     out << std::endl;
                   }
               AssertThrow (false, ExcMessage(out.str()));

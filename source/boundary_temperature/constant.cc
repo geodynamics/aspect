@@ -128,18 +128,17 @@ namespace aspect
             = Utilities::split_string_list(prm.get ("Boundary indicator to temperature mappings"));
 
 
-          for (std::vector<std::string>::const_iterator it = x_boundary_temperatures.begin();
-               it != x_boundary_temperatures.end(); ++it)
+          for (const auto &boundary_id_string : x_boundary_temperatures)
             {
               // each entry has the format (white space is optional):
               // <id> : <value (might have spaces)>
-              const std::vector<std::string> parts = Utilities::split_string_list (*it, ':');
+              const std::vector<std::string> parts = Utilities::split_string_list (boundary_id_string, ':');
 
               AssertThrow (parts.size() == 2,
                            ExcMessage (std::string("Invalid entry trying to describe boundary "
                                                    "temperatures. Each entry needs to have the form "
                                                    "<boundary_id : name>, "
-                                                   "but there is an entry of the form <") + *it + ">"));
+                                                   "but there is an entry of the form <") + boundary_id_string + ">"));
 
               types::boundary_id boundary_id;
               try
