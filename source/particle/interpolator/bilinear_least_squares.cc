@@ -169,7 +169,7 @@ namespace aspect
                   }
 
                 // Overshoot and undershoot correction of interpolated particle property.
-                if (use_global_valued_limiter)
+                if (use_global_min_max_limiter)
                   {
                     interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
                     interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
@@ -213,7 +213,6 @@ namespace aspect
                                   Patterns::Bool (),
                                   "Whether to apply a global particle property limiting scheme to the interpolated "
                                   "particle properties.");
-
               }
               prm.leave_subsection();
             }
@@ -223,6 +222,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void
@@ -236,8 +237,8 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                use_global_valued_limiter = prm.get_bool("Use limiter");
-                if (use_global_valued_limiter)
+                use_global_min_max_limiter = prm.get_bool("Use limiter");
+                if (use_global_min_max_limiter)
                   {
                     global_maximum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property maximum")));
                     global_minimum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property minimum")));
