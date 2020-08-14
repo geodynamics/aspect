@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
@@ -13,11 +9,9 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 8.98822e+07
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 8.97745e-05, norm of the rhs: 8069.12, newton_derivative_scaling_factor: 0
 
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 8.30642e-07, norm of the rhs: 74.6599, newton_derivative_scaling_factor: 0
 
@@ -107,9 +101,4 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

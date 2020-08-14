@@ -756,7 +756,7 @@ namespace aspect
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
-    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
@@ -777,23 +777,34 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
 
-    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
       {
-
         assemble_and_solve_defect_correction_Stokes(dcr, true);
 
         pcout << std::endl;
 
-        if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+        relative_residual = dcr.residual/dcr.initial_residual;
 
-        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
-          break;
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
+
+        ++nonlinear_iteration;
       }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
@@ -801,6 +812,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
   template <int dim>
@@ -808,7 +821,7 @@ namespace aspect
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
-    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
 
     DefectCorrectionResiduals dcr;
     dcr.initial_residual = 1;
@@ -828,6 +841,9 @@ namespace aspect
                parameters.max_nonlinear_iterations_in_prerefinement)
       :
       parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
 
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
@@ -836,19 +852,27 @@ namespace aspect
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
 
-    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
       {
-
         assemble_and_solve_defect_correction_Stokes(dcr, true);
 
         pcout << std::endl;
 
-        if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+        relative_residual = dcr.residual/dcr.initial_residual;
 
-        if (dcr.residual/dcr.initial_residual < parameters.nonlinear_tolerance)
-          break;
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
+
+        ++nonlinear_iteration;
       }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
@@ -856,6 +880,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
   template <int dim>
@@ -863,7 +889,7 @@ namespace aspect
   {
     // Now store the linear_tolerance we started out with, because we might change
     // it within this timestep.
-    double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
     double initial_temperature_residual = 0;
     std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
 
@@ -886,12 +912,16 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
 
-
-    for (nonlinear_iteration = 0; nonlinear_iteration < max_nonlinear_iterations; ++nonlinear_iteration)
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
       {
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
@@ -906,8 +936,6 @@ namespace aspect
         pcout << std::endl;
 
         assemble_and_solve_defect_correction_Stokes(dcr, true);
-
-
 
         double max = 0.0;
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
@@ -926,19 +954,23 @@ namespace aspect
           }
 
         max = std::max(dcr.residual/dcr.initial_residual, max);
-        max = std::max(relative_temperature_residual, max);
+        relative_residual = std::max(relative_temperature_residual, max);
         pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
-              << ": " << max
+              << ": " << relative_residual
               << std::endl
               << std::endl;
 
-
         if (parameters.run_postprocessors_on_nonlinear_iterations)
-          postprocess ();
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
 
-        if (max < parameters.nonlinear_tolerance)
-          break;
+        ++nonlinear_iteration;
       }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
 
     // Reset the linear tolerance to what it was at the beginning of the time step.
     parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
@@ -946,6 +978,8 @@ namespace aspect
     // When we are finished iterating, we need to set the final solution to the current linearization point,
     // because the solution vector is used in the postprocess.
     solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
 
 

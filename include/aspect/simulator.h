@@ -614,9 +614,10 @@ namespace aspect
        * steps necessary to assemble and solve the nonlinear problem.
        *
        * The `iterated Advection and defect correction Stokes' scheme
-       * iterated over both the temperature and composition equations
-       * and the Stokes equations at the same time. The Stokes are iterated out
-       * using Defect Correction (DC) form of the Picard iterations.
+       * iterates over both the temperature and composition equations
+       * and the Stokes equations at the same time. The Stokes equation
+       * is iterated out using the Defect Correction (DC) form of the
+       * Picard iterations.
        *
        * This function is implemented in
        * <code>source/simulator/solver_schemes.cc</code>.
