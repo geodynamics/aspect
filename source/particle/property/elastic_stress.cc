@@ -31,12 +31,21 @@ namespace aspect
     {
       template <int dim>
       ElasticStress<dim>::ElasticStress ()
+        :
+        material_inputs(1,0),
+        material_outputs(1,0)
       {}
+
+
 
       template <int dim>
       void
       ElasticStress<dim>::initialize ()
       {
+        material_inputs = MaterialModel::MaterialModelInputs<dim>(1, this->n_compositional_fields());
+
+        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
+
         AssertThrow((Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model())
                      ||
                      Plugins::plugin_type_matches<const MaterialModel::Viscoelastic<dim>>(this->get_material_model())),
@@ -46,6 +55,8 @@ namespace aspect
                     ExcMessage ("This particle property should only be used if 'Enable elasticity' is set to true"));
 
       }
+
+
 
       template <int dim>
       void
@@ -74,6 +85,8 @@ namespace aspect
 
       }
 
+
+
       template <int dim>
       void
       ElasticStress<dim>::update_particle_property(const unsigned int data_position,
@@ -81,34 +94,33 @@ namespace aspect
                                                    const std::vector<Tensor<1,dim> > &gradients,
                                                    typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
+        material_inputs.position[0] = particle->get_location();
 
-        in.position[0] = particle->get_location();
+        material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(this->get_triangulation()),
+                                                                                      &(this->get_dof_handler()));
 
-        in.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(this->get_triangulation()),
-                                                                         &(this->get_dof_handler()));
+        material_inputs.temperature[0] = solution[this->introspection().component_indices.temperature];
 
-        in.temperature[0] = solution[this->introspection().component_indices.temperature];
-
-        in.pressure[0] = solution[this->introspection().component_indices.pressure];
+        material_inputs.pressure[0] = solution[this->introspection().component_indices.pressure];
 
         for (unsigned int d = 0; d < dim; ++d)
-          in.velocity[0][d] = solution[this->introspection().component_indices.velocities[d]];
+          material_inputs.velocity[0][d] = solution[this->introspection().component_indices.velocities[d]];
 
         for (unsigned int n = 0; n < this->n_compositional_fields(); ++n)
-          in.composition[0][n] = solution[this->introspection().component_indices.compositional_fields[n]];
+          material_inputs.composition[0][n] = solution[this->introspection().component_indices.compositional_fields[n]];
 
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
-        in.strain_rate[0] = symmetrize (grad_u);
+        material_inputs.strain_rate[0] = symmetrize (grad_u);
 
-        MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
-        this->get_material_model().evaluate (in,out);
+        this->get_material_model().evaluate (material_inputs,material_outputs);
 
         for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          particle->get_properties()[data_position + i] += out.reaction_terms[0][i];
+          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
       }
+
+
 
       template <int dim>
       UpdateTimeFlags
@@ -117,12 +129,16 @@ namespace aspect
         return update_time_step;
       }
 
+
+
       template <int dim>
       UpdateFlags
       ElasticStress<dim>::get_needed_update_flags () const
       {
         return update_values | update_gradients;
       }
+
+
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
