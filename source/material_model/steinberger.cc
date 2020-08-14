@@ -137,8 +137,7 @@ namespace aspect
       // The thermodynamic properties and stable mineral phases within each material
       // will in general be different, and must be averaged in a reasonable way.
 
-      // This set is used to build a set of unique phase column names,
-      // that is then backinserted into the unique_phase_volume_column_names vector.
+      // In the following, we populate the unique_phase_names vector.
       // We do this because we are choosing in this material model to combine
       // minerals with different compositions but which are the same phase.
       std::set<std::string> set_phase_volume_column_names;
@@ -147,34 +146,36 @@ namespace aspect
           material_lookup.push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>
                                     (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
 
-          // Here we lookup all of the different phases and insert them into the set_phase_volume_column_names set.
+          // Here we lookup all of the vcolumn names and insert
+          // unique names into the unique_phase_names vector.
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
           for (std::string const &name : phase_volume_column_names)
             {
-              set_phase_volume_column_names.insert(name);
+              if (std::find(unique_phase_names.begin(),
+                            unique_phase_names.end(),
+                            name) == unique_phase_names.end())
+                unique_phase_names.push_back(name);
             }
         }
-      // Copy the set of phase names into the unique_phase_volume_column_names vector
-      std::copy(set_phase_volume_column_names.begin(), set_phase_volume_column_names.end(), std::back_inserter(unique_phase_volume_column_names));
 
-      // We now fill the unique_phase_volume_column_indices object
-      // with the indices of the phases as stored in each
-      // material lookup.
+      // We now fill the unique_phase_indices object
+      // with the unique_phase_names index for each of the phases
+      // stored in each material lookup.
 
-      // Initialise the column indices as -1 (if the phase doesn't exist in a given lookup)
-      unique_phase_volume_column_indices.resize(material_file_names.size(),
-                                                std::vector<int>(unique_phase_volume_column_names.size(), -1));
+      // Initialise the column indices
+      unique_phase_indices.resize(material_file_names.size(),
+                                  std::vector<unsigned int>());
 
       for (unsigned int i = 0; i < material_file_names.size(); i++)
         {
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
           for (unsigned int j = 0; j < phase_volume_column_names.size(); j++)
             {
-              std::vector<std::string>::iterator it = std::find(unique_phase_volume_column_names.begin(),
-                                                                unique_phase_volume_column_names.end(),
+              std::vector<std::string>::iterator it = std::find(unique_phase_names.begin(),
+                                                                unique_phase_names.end(),
                                                                 phase_volume_column_names[j]);
-              unsigned int i_unique = std::distance(unique_phase_volume_column_names.begin(), it);
-              unique_phase_volume_column_indices[i][i_unique] = j;
+              unsigned int i_unique = std::distance(unique_phase_names.begin(), it);
+              unique_phase_indices[i].push_back(i_unique);
             }
         }
 
@@ -432,54 +433,57 @@ namespace aspect
                                   phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in) const
     {
       // In the following function,
-      // the index i corresponds to the ith unique phase
-      // the index j corresponds to the jth evaluation point
-      // the index k corresponds to the kth compositional field
+      // the index i corresponds to the ith compositional field
+      // the index j corresponds to the jth unique phase
+      // the index k corresponds to the kth evaluation point
 
-      std::vector<std::vector<double>> volume_fractions(unique_phase_volume_column_names.size(),
+      std::vector<std::vector<double>> volume_fractions(unique_phase_names.size(),
                                                         std::vector<double>(in.n_evaluation_points(), 0.));
 
       if (material_lookup.size() == 1)
         {
-          for (unsigned int i = 0; i < unique_phase_volume_column_names.size(); i++)
+          // if there is only one lookup, unique_phase_names is in the same order as the lookup
+          for (unsigned int j = 0; j < unique_phase_names.size(); j++)
             {
-              for (unsigned int j = 0; j < in.n_evaluation_points(); j++)
-                {
-                  if (unique_phase_volume_column_indices[0][i] != -1)
-                    volume_fractions[i][j] += material_lookup[0]->phase_volume_fraction(unique_phase_volume_column_indices[0][i],in.temperature[j],in.pressure[j]);
-                }
+              for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
+                volume_fractions[j][k] += material_lookup[0]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
             }
         }
       else if (material_lookup.size() == in.composition[0].size() + 1) // background field
         {
-          for (unsigned int i = 0; i < unique_phase_volume_column_names.size(); i++)
+          // The first material lookup corresponds to a background composition
+          // We first look up the volume fractions corresponding to this background field
+          // (assuming the domain is filled 100% with this single composition)
+          std::vector<std::vector<double>> background_volume_fractions(unique_phase_names.size(),
+                                                                       std::vector<double>(in.n_evaluation_points(), 0.));
+          for (unsigned int j = 0; j < unique_phase_indices[0].size(); j++)
             {
-              for (unsigned int j = 0; j < in.n_evaluation_points(); j++)
+              for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
                 {
-                  double background_volume_fraction = 0.;
-                  if (unique_phase_volume_column_indices[0][i] != -1)
-                    background_volume_fraction = material_lookup[0]->phase_volume_fraction(unique_phase_volume_column_indices[0][i],in.temperature[j],in.pressure[j]);
+                  background_volume_fractions[unique_phase_indices[0][j]][k] += material_lookup[0]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
+                  volume_fractions[unique_phase_indices[0][j]][k] += background_volume_fractions[unique_phase_indices[0][j]][k];
+                }
+            }
 
-                  volume_fractions[i][j] = background_volume_fraction;
-                  for (unsigned int k = 0; k < in.composition[0].size(); k++)
-                    {
-                      if (unique_phase_volume_column_indices[k+1][i] != -1)
-                        volume_fractions[i][j] += in.composition[j][k] * (material_lookup[k+1]->phase_volume_fraction(unique_phase_volume_column_indices[k+1][i],in.temperature[j],in.pressure[j]) - background_volume_fraction);
-                    }
+          // We can now loop through the other material models
+          for (unsigned int i = 1; i < material_lookup.size(); i++)
+            {
+              for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
+                {
+                  for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
+                    volume_fractions[unique_phase_indices[i][j]][k] += in.composition[k][i-1] * (material_lookup[i]->phase_volume_fraction(unique_phase_indices[i][j],in.temperature[k],in.pressure[k]) - background_volume_fractions[unique_phase_indices[i][j]][k]);
                 }
             }
         }
       else if (material_lookup.size() == in.composition[0].size())
         {
-          for (unsigned int i = 0; i < unique_phase_volume_column_names.size(); i++)
+
+          for (unsigned i = 0; i < material_lookup.size(); i++)
             {
-              for (unsigned int j = 0; j < in.n_evaluation_points(); j++)
+              for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
                 {
-                  for (unsigned k = 0; k < material_lookup.size(); k++)
-                    {
-                      if (unique_phase_volume_column_indices[k][i] != -1)
-                        volume_fractions[i][j] += in.composition[j][k] * material_lookup[k]->phase_volume_fraction(unique_phase_volume_column_indices[k][i],in.temperature[j],in.pressure[j]);
-                    }
+                  for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
+                    volume_fractions[unique_phase_indices[i][j]][k] += in.composition[k][i] * material_lookup[i]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
                 }
             }
         }
@@ -610,9 +614,7 @@ namespace aspect
 
       // fill phase volume outputs if they exist
       if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
-        {
-          phase_volume_fractions_out->output_values = phase_volume_fractions(in);
-        }
+        phase_volume_fractions_out->output_values = phase_volume_fractions(in);
 
       if (latent_heat)
         {
@@ -823,7 +825,7 @@ namespace aspect
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_volume_column_names, n_points));
+            std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
         }
 
       if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)

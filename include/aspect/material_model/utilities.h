@@ -127,8 +127,7 @@ namespace aspect
 
             /**
              * Returns the volume fraction of the phase_idth phase
-             * at a given temperature and pressure, where the phase_column_name
-             * corresponds to that given in phase_volume_column_names()[phase_id].
+             * at a given temperature and pressure.
              */
             double
             phase_volume_fraction(const int phase_id,
@@ -173,6 +172,12 @@ namespace aspect
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
 
+            /**
+            * The vector of column names corresponding to each phase,
+            * and a vector of tables containing the volume fractions of
+            * each phase at a given temperature and pressure.
+            * The ordering of both vectors is the same.
+            */
             std::vector<std::string> phase_column_names;
             std::vector<dealii::Table<2,double>> phase_volume_fractions;
 

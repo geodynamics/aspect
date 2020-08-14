@@ -183,6 +183,11 @@ namespace aspect
                                    const std::vector<double> &compositional_fields,
                                    const Point<dim> &position) const;
 
+        /**
+        * Returns the volume fractions of all the phases over all of the current
+        * evaluation points. The outer loop is over the phases, and the inner
+        * loop is over all the evaluation points.
+        */
         virtual std::vector<std::vector<double>> phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in) const;
 
         /**
@@ -308,10 +313,17 @@ namespace aspect
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
 
         /**
-        * List of strings containing the names of the unique phases in all the material lookups
+        * Vector of strings containing the names of the unique phases in all the material lookups.
         */
-        std::vector<std::string> unique_phase_volume_column_names;
-        std::vector<std::vector<int>> unique_phase_volume_column_indices;
+        std::vector<std::string> unique_phase_names;
+
+        /**
+        * Vector of vector of unsigned ints which constitutes mappings
+        * between lookup phase name vectors and unique_phase_names.
+        * The element unique_phase_indices[i][j] contains the
+        * index of phase name j from lookup i as it is found in unique_phase_names.
+        */
+        std::vector<std::vector<unsigned int>> unique_phase_indices;
 
         /**
          * Pointer to an object that reads and processes data for the lateral

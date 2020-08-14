@@ -606,14 +606,10 @@ namespace aspect
                                                  "pressure and temperature, so you may see several columns with the same name. "
                                                  "Either combine columns with the same name, or change the names."));
                         }
-                      else
-                        {
-                          // Populate phase_column_names with the column name
-                          // and phase_column_indices with the column index in the current lookup file
-                          // This makes populating the phase_volume_fractions object easier.
-                          phase_column_indices.push_back(n);
-                          phase_column_names.push_back(column_name);
-                        }
+                      // Populate phase_column_names with the column name
+                      // and phase_column_indices with the column index in the current lookup file.
+                      phase_column_indices.push_back(n);
+                      phase_column_names.push_back(column_name);
                     }
                 }
             }
@@ -683,6 +679,11 @@ namespace aspect
               if (in.eof())
                 break;
 
+              // The ordering of the first two columns in the PerpleX table files
+              // dictates whether the inner loop is over temperature or pressure.
+              // The first column is always the inner loop.
+              // The following lines populate the material property tables
+              // according to that implicit loop structure.
               if (first_natural_variable == "T(K)")
                 {
                   density_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[0]];

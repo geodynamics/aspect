@@ -1,10 +1,26 @@
 # This is a copy of Steinberger compressible test,
-# but it uses a pyrolite material property table instead
+# but it uses pyrolite and MORB-composition material property tables instead
 # of the test data, so that reasonable seismic velocities are
-# computed. The property table also contains volume fractions of the
+# computed. The property tables also contain volume fractions of the
 # stable phases in the rock, which can be output using
 # the "named additional outputs" in the list of named outputs for
 # the Visualization postprocessor.
+# The material property tables were created from raw PerpleX-vertex output
+# using the python script
+# contrib/python/create_aspect_readable_perplex_table_with_phase_volumes.py
+
+# The PerpleX calculations were run with the
+# Stixrude and Lithgow-Bertelloni
+# (2011; https://doi.org/10.1111/j.1365-246X.2010.04890.x) dataset.
+
+# The pyrolite composition is a six-component version of the composition in
+# McDonough and Sun (1995; https://doi.org/10.1016/0009-2541(94)00140-4):
+0.36 wt% Na2O, 37.8 wt% MgO, 4.45 wt% Al2O3, 45.0 wt% SiO2, 3.55 wt% CaO, 8.05 wt% FeO
+
+# The MORB composition is a six-component version of the composition in
+# Gale et al (2013; https://doi.org/10.1029/2012GC004334)
+# 2.790 wt% Na2O, 7.580 wt% MgO, 14.70 wt% Al2O3, 50.47 wt% SiO2, 11.39 wt% CaO, 10.43 wt% FeO
+
 
 set CFL number                             = 1.0
 set End time                               = 1e5
