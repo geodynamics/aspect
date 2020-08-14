@@ -146,7 +146,7 @@ namespace aspect
           material_lookup.push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>
                                     (data_directory+material_file_names[i],interpolation,this->get_mpi_communicator()));
 
-          // Here we lookup all of the vcolumn names and insert
+          // Here we look up all of the column names and insert
           // unique names into the unique_phase_names vector.
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
           for (std::string const &name : phase_volume_column_names)
@@ -471,7 +471,7 @@ namespace aspect
               for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
                 {
                   for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
-                    volume_fractions[unique_phase_indices[i][j]][k] += in.composition[k][i-1] * (material_lookup[i]->phase_volume_fraction(unique_phase_indices[i][j],in.temperature[k],in.pressure[k]) - background_volume_fractions[unique_phase_indices[i][j]][k]);
+                    volume_fractions[unique_phase_indices[i][j]][k] += in.composition[k][i-1] * (material_lookup[i]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]) - background_volume_fractions[unique_phase_indices[i][j]][k]);
                 }
             }
         }
