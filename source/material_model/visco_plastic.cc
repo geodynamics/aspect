@@ -469,6 +469,9 @@ namespace aspect
 
           in_derivatives.pressure[i] = pressure_difference;
 
+          // Modify the in_derivatives object again to take the original strain rate.
+          in_derivatives.strain_rate[i] = in.strain_rate[i];
+
           const std::vector<double> viscosity_difference =
             calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
                                             viscous_flow_law, yield_mechanism,
