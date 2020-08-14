@@ -501,7 +501,7 @@ namespace aspect
         catch (...)
           {
             // start the solve over again and try with a stabilized version
-            pcout << "Solve failed and catched, try again with stabilisation" << std::endl;
+            pcout << "failed, trying again with stabilization" << std::endl;
             newton_handler->parameters.preconditioner_stabilization = Newton::Parameters::Stabilization::SPD;
             newton_handler->parameters.velocity_block_stabilization = Newton::Parameters::Stabilization::SPD;
 
@@ -574,7 +574,6 @@ namespace aspect
 
         pcout << "      Relative nonlinear residual (total Newton system) after nonlinear iteration " << nonlinear_iteration+1
               << ": " << dcr.stokes_residuals.first/dcr.initial_residual << ", norm of the rhs: " << dcr.stokes_residuals.first << std::endl;
-
       }
     else
       {
