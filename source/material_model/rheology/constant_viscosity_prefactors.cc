@@ -40,10 +40,10 @@ namespace aspect
 
       template <int dim>
       double
-      ConstantViscosityPrefactors<dim>::compute_viscosity (const double viscosity,
+      ConstantViscosityPrefactors<dim>::compute_viscosity (const double base_viscosity,
                                                            const unsigned int composition_index) const
       {
-        return viscosity * constant_viscosity_prefactors[composition_index];
+        return base_viscosity * constant_viscosity_prefactors[composition_index];
       }
 
 
@@ -92,4 +92,3 @@ namespace aspect
 #undef INSTANTIATE
   }
 }
-
