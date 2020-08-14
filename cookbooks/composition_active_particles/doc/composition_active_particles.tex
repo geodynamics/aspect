@@ -1,0 +1,54 @@
+\paragraph{Using active particles.}
+In the examples above, particle properties passively track distinct
+model properties.  These particle properties, however, may also be used
+to actively influence the model as it runs.  For instance, a
+composition-dependent material model may use particles' initial
+composition rather than an advected compositional field. To make this
+work -- i.e., to get information from particles that are located at
+unpredictable locations, to the quadrature
+points at which material models and other parts of the code need to
+evaluate these properties -- we need to somehow get the values from
+particles back to fields that can then be evaluated at any point where
+this is necessary.
+A slightly modified version of the active-composition cookbook (\url{cookbooks/composition_active/composition_active.prm}) illustrates how to use `active particles' in this manner.
+
+This cookbook, \url{cookbooks/composition_active_particles/composition_active_particles.prm}, modifies two sections of the input file.  First, particles are added under the \texttt{Postprocess} section:
+
+\lstinputlisting[language=prmfile]{cookbooks/composition_active_particles/doc/particles.part.prm.out}
+Here, each particle will carry the \texttt{velocity} and
+\texttt{initial composition} properties.  In order to use the particle initial composition value to modify the flow through the material model, we now modify the \texttt{Composition} section:
+
+\lstinputlisting[language=prmfile]{cookbooks/composition_active_particles/doc/composition.part.prm.out}
+
+What this does is the following: It says that there will be two
+compositional fields, called \texttt{lower} and \texttt{upper}
+(because we will use them to indicate material that comes from either
+the lower or upper part of the domain). Next, the
+\texttt{Compositional field methods} states that each of these fields
+will be computed by interpolation from the particles (if we had left
+this parameter at its default value, \texttt{field}, for each field,
+then it would have solved an advection PDE in each time step, as we
+have done in all previous examples).
+
+In this case, we specify that both of the compositional fields are in
+fact interpolated from particle properties in each time step. How this
+is done is described in the fourth line. To understand it, it is
+important to realize that particles and fields have matching names: We
+have named the fields \texttt{lower} and \texttt{upper}, whereas the
+properties that result from the \texttt{initial composition} entry in
+the particles section are called \texttt{initial lower} and
+\texttt{initial upper}, since they inherit the names of the fields.
+
+The syntax for interpolation from particles to fields then
+states that the \texttt{lower} field will be set to the interpolated
+value of the \texttt{initial lower} particle property at the end of
+each time step, and similarly
+for the \texttt{upper} field. In turn, the
+\texttt{initial composition} particle property was using the same
+method that one would have used for the compositional field
+initialization if these fields were actually advected along in each
+time step.
+
+In this model the given global refinement level (5), associated number of cells (1024) and 100,000 total particles produces an average particle-per-cell count slightly below 100.  While on the high end compared to most geodynamic studies using active particles, increasing the number of particles per cell further may alter the solution.  As with the numerical resolution, any study using active particles should systematically vary the number of particles per cell in order to determine this parameter's influence on the simulation.
+
+\note{\aspect{}'s particle implementation is in a preliminary state. While the accuracy and scalability of the implementation is benchmarked, other limitations remain. This in particular means that it is not optimized for performance, and more than a few thousand particles per process can slow down a model significantly. Moreover, models with a highly adaptive mesh and many particles do encounter a significant slowdown, because \aspect{} only considers the number of degrees of freedom for load balancing across processes and not the number of particles. Therefore processes that compute the solution for coarse-grid regions have to process many more particles than other processes. Additionally, the checkpoint/restart functionality for particles is only implemented in models with a constant number of processes before and after the checkpoint and when the selected particle properties do not change. These limitations might be removed over time, but for current models the user should be aware of them.}
