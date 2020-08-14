@@ -71,7 +71,7 @@ namespace aspect
            * undershoot of interpolated particle properties based on global max
            * and global min for each propery.
            */
-          bool use_global_valued_limiter;
+          bool use_global_min_max_limiter;
 
           /**
            * For each interpolated particle property, a global max and global
