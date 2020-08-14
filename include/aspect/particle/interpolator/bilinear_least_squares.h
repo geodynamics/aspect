@@ -31,8 +31,9 @@ namespace aspect
     namespace Interpolator
     {
       /**
-       * Return the interpolated properties of all particles of the given cell using bilinear least squares method.
-       * Currently, only the two dimensional model is supported.
+       * Evaluate the properties of all particles of the given cell
+       * using a least squares projection onto the set of bilinear
+       * (or, in 3d, trilinear) functions.
        *
        * @ingroup ParticleInterpolators
        */

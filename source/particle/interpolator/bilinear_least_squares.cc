@@ -279,8 +279,9 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
                                             "Interpolates particle properties onto a vector of points using a "
-                                            "bilinear least squares method. Currently only 2D models are "
-                                            "supported. Note that deal.II must be configured with BLAS/LAPACK.")
+                                            "bilinear least squares method. "
+                                            "Note that deal.II must be configured with BLAS and LAPACK to "
+                                            "support this operation.")
     }
   }
 }
