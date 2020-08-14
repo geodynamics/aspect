@@ -194,18 +194,27 @@ namespace aspect
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
+    // TODO for the iterated Advection schemes, the particle positions
+    // and properties have to be reset after each nonlinear iteration.
+    // At the moment, there is no functionality to copy the ParticleHandler
+    // and use the copy to reset it after the nonlinear iterations.
+    // Therefore we exclude the iterated Advection schemes from the
+    // particle advection reordering, and still advect particles after
+    // all nonlinear iterations in this case.
     if (particle_world.get() != nullptr)
-      {
-        // Do not advect the particles in the initial refinement stage
-        const bool in_initial_refinement = (timestep_number == 0)
-                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
-        if (!in_initial_refinement)
-          // Advance the particles in the world to the current time
-          particle_world->advance_timestep();
+      if (parameters.nonlinear_solver != NonlinearSolver::iterated_Advection_and_Stokes &&
+          parameters.nonlinear_solver != NonlinearSolver::iterated_Advection_and_Newton_Stokes)
+        {
+          // Do not advect the particles in the initial refinement stage
+          const bool in_initial_refinement = (timestep_number == 0)
+                                             && (pre_refinement_step < parameters.initial_adaptive_refinement);
+          if (!in_initial_refinement)
+            // Advance the particles in the world to the current time
+            particle_world->advance_timestep();
 
-        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-          particle_world->update_particles();
-      }
+          if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+            particle_world->update_particles();
+        }
 
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
@@ -1058,31 +1067,10 @@ namespace aspect
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
 
-    // Store the current location of the particles, so that we can reset
-    // the particles to it in each nonlinear iteration.
-    std::vector< Point<dim> > local_particle_positions;
-    if (particle_world.get() != nullptr)
-      {
-        local_particle_positions.resize(particle_world->get_particle_handler().n_locally_owned_particles());
-        // Get the current particle positions
-        particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
-      }
-
     do
       {
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
-
-        // Reset particle positions and advect them with the current velocity
-        if (particle_world.get() != nullptr)
-          {
-            // Use 'false' to overwrite the current position of the particles, instead of adding
-            // to the current position.
-            // The new set of points defined by the vector has to be
-            // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
-            // function manages to find the new cells in which the particles belong.
-            particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);
-          }
 
         const std::vector<double>  relative_composition_residual =
           assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
@@ -1211,16 +1199,6 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
-    // Store the current location of the particles, so that we can reset
-    // the particles to it in each nonlinear iteration.
-    std::vector< Point<dim> > local_particle_positions;
-    if (particle_world.get() != nullptr)
-      {
-        local_particle_positions.resize(particle_world->get_particle_handler().n_locally_owned_particles());
-        // Get the current particle positions
-        particle_world->get_particle_handler().get_particle_positions(local_particle_positions);
-      }
-
     // Now iterate out the nonlinearities.
     dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
                                                       numbers::signaling_nan<double>());
@@ -1237,17 +1215,6 @@ namespace aspect
     do
       {
         assemble_and_solve_temperature();
-
-        // Reset particle positions and advect them with the current velocity
-        if (particle_world.get() != nullptr)
-          {
-            // Use 'false' to overwrite the current position of the particles, instead of adding
-            // to the current position.
-            // The new set of points defined by the vector has to be
-            // sufficiently close to the original one to ensure that the sort_particles_into_subdomains_and_cells()
-            // function manages to find the new cells in which the particles belong.
-            particle_world->get_particle_handler().set_particle_positions(local_particle_positions, false);
-          }
 
         assemble_and_solve_composition();
 
