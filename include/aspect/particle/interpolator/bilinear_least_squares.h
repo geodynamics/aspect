@@ -35,8 +35,6 @@ namespace aspect
        * using a least squares projection onto the set of bilinear
        * (or, in 3d, trilinear) functions.
        *
-       * @note Currently, only the two dimensional model is supported.
-       *
        * @ingroup ParticleInterpolators
        */
       template <int dim>
