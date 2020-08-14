@@ -24,7 +24,7 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
    Switching from defect correction form of Picard to the Newton solver scheme.
    The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is none and A block is none.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... Solve failed and catched, try again with stabilisation
+   Solving Stokes system... failed, trying again with stabilization
    The linear solver tolerance is set to 0.758936
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+9 iterations.
