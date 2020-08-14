@@ -689,7 +689,6 @@ namespace aspect
 
     dcr.residual_old = dcr.residual;
 
-    pcout << std::endl;
     if (nonlinear_iteration != 0)
       last_pressure_normalization_adjustment = normalize_pressure(current_linearization_point);
   }
@@ -751,6 +750,238 @@ namespace aspect
 
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
+
+  template <int dim>
+  void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes ()
+  {
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+
+    DefectCorrectionResiduals dcr;
+    dcr.initial_residual = 1;
+
+    dcr.velocity_residual = 0;
+    dcr.pressure_residual = 0;
+    dcr.residual = 1;
+    dcr.residual_old = 1;
+
+    dcr.switch_initial_residual = 1;
+    dcr.newton_residual_for_derivative_scaling_factor = 1;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    // Now iterate out the nonlinearities.
+    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
+                                                      numbers::signaling_nan<double>());
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
+      {
+        assemble_and_solve_defect_correction_Stokes(dcr, true);
+
+        pcout << std::endl;
+
+        relative_residual = dcr.residual/dcr.initial_residual;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+
+    // When we are finished iterating, we need to set the final solution to the current linearization point,
+    // because the solution vector is used in the postprocess.
+    solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
+  template <int dim>
+  void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes ()
+  {
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+
+    DefectCorrectionResiduals dcr;
+    dcr.initial_residual = 1;
+
+    dcr.velocity_residual = 0;
+    dcr.pressure_residual = 0;
+    dcr.residual = 1;
+    dcr.residual_old = 1;
+
+    dcr.switch_initial_residual = 1;
+    dcr.newton_residual_for_derivative_scaling_factor = 1;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    // Now iterate out the nonlinearities.
+    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
+                                                      numbers::signaling_nan<double>());
+
+    assemble_and_solve_temperature();
+    assemble_and_solve_composition();
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
+      {
+        assemble_and_solve_defect_correction_Stokes(dcr, true);
+
+        pcout << std::endl;
+
+        relative_residual = dcr.residual/dcr.initial_residual;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+
+    // When we are finished iterating, we need to set the final solution to the current linearization point,
+    // because the solution vector is used in the postprocess.
+    solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
+  template <int dim>
+  void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes ()
+  {
+    // Now store the linear_tolerance we started out with, because we might change
+    // it within this timestep.
+    const double begin_linear_tolerance = parameters.linear_stokes_solver_tolerance;
+    double initial_temperature_residual = 0;
+    std::vector<double> initial_composition_residual (parameters.n_compositional_fields,0);
+
+    DefectCorrectionResiduals dcr;
+    dcr.initial_residual = 1;
+
+    dcr.velocity_residual = 0;
+    dcr.pressure_residual = 0;
+    dcr.residual = 1;
+    dcr.residual_old = 1;
+
+    dcr.switch_initial_residual = 1;
+    dcr.newton_residual_for_derivative_scaling_factor = 1;
+
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    // Now iterate out the nonlinearities.
+    dcr.stokes_residuals = std::pair<double,double>  (numbers::signaling_nan<double>(),
+                                                      numbers::signaling_nan<double>());
+
+    double relative_residual = std::numeric_limits<double>::max();
+    nonlinear_iteration = 0;
+    do
+      {
+        const double relative_temperature_residual =
+          assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
+
+        const std::vector<double>  relative_composition_residual =
+          assemble_and_solve_composition(nonlinear_iteration == 0, &initial_composition_residual);
+
+        // write the residual output in the same order as the solutions
+        pcout << "      Relative nonlinear residuals (temperature, compositional fields): " << relative_temperature_residual;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          pcout << ", " << relative_composition_residual[c];
+        pcout << std::endl;
+
+        assemble_and_solve_defect_correction_Stokes(dcr, true);
+
+        double max = 0.0;
+        for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
+          {
+            // in models with melt migration the melt advection equation includes the divergence of the velocity
+            // and can not be expected to converge to a smaller value than the residual of the Stokes equation.
+            // thus, we set a threshold for the initial composition residual.
+            // this only plays a role if the right-hand side of the advection equation is very small.
+            const double threshold = (parameters.include_melt_transport && c == introspection.compositional_index_for_name("porosity")
+                                      ?
+                                      parameters.linear_stokes_solver_tolerance * time_step
+                                      :
+                                      0.0);
+            if (initial_composition_residual[c]>threshold)
+              max = std::max(relative_composition_residual[c],max);
+          }
+
+        max = std::max(dcr.residual/dcr.initial_residual, max);
+        relative_residual = std::max(relative_temperature_residual, max);
+        pcout << "      Relative nonlinear residual (total system) after nonlinear iteration " << nonlinear_iteration+1
+              << ": " << relative_residual
+              << std::endl
+              << std::endl;
+
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          {
+            // Before postprocessing, we need to copy the actual solution into the solution vector
+            // (which is used for postprocessing)
+            solution = current_linearization_point;
+            postprocess ();
+          }
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    // Reset the linear tolerance to what it was at the beginning of the time step.
+    parameters.linear_stokes_solver_tolerance = begin_linear_tolerance;
+
+    // When we are finished iterating, we need to set the final solution to the current linearization point,
+    // because the solution vector is used in the postprocess.
+    solution = current_linearization_point;
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
 
 
   template <int dim>
@@ -976,6 +1207,8 @@ namespace aspect
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
         relative_residual = dcr.residual/dcr.initial_residual;
 
+        pcout << std::endl;
+
         if (parameters.run_postprocessors_on_nonlinear_iterations)
           {
             // Before postprocessing, we need to copy the actual solution into the solution vector
@@ -1076,6 +1309,8 @@ namespace aspect
                       (1.0-(dcr.newton_residual_for_derivative_scaling_factor/dcr.switch_initial_residual))));
 
         assemble_and_solve_defect_correction_Stokes(dcr, use_picard);
+
+        pcout << std::endl;
 
         relative_residual = dcr.residual/dcr.initial_residual;
 
@@ -1188,6 +1423,9 @@ namespace aspect
   template void Simulator<dim>::solve_no_advection_single_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_stokes(); \
+  template void Simulator<dim>::solve_no_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_single_advection_iterated_defect_correction_stokes(); \
+  template void Simulator<dim>::solve_iterated_advection_and_defect_correction_stokes(); \
   template void Simulator<dim>::solve_iterated_advection_and_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \

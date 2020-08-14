@@ -585,6 +585,49 @@ namespace aspect
        * This function implements one scheme for the various
        * steps necessary to assemble and solve the nonlinear problem.
        *
+       * The `no Advection, iterated defect correction Stokes' scheme
+       * does not solve the temperature and composition equations
+       * but only iterates out the solution of the Stokes
+       * equation using Defect Correction (DC) Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_no_advection_iterated_defect_correction_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `single Advection, iterated defect correction Stokes' scheme
+       * solves the temperature and composition equations once at the beginning
+       * of each time step and then iterates out the solution of the Stokes
+       * equation using Defect Correction (DC) Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_single_advection_iterated_defect_correction_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
+       * The `iterated Advection and defect correction Stokes' scheme
+       * iterates over both the temperature and composition equations
+       * and the Stokes equations at the same time. The Stokes equation
+       * is iterated out using the Defect Correction (DC) form of the
+       * Picard iterations.
+       *
+       * This function is implemented in
+       * <code>source/simulator/solver_schemes.cc</code>.
+       */
+      void solve_iterated_advection_and_defect_correction_stokes ();
+
+      /**
+       * This function implements one scheme for the various
+       * steps necessary to assemble and solve the nonlinear problem.
+       *
        * The `iterated Advection and Newton Stokes' scheme iterates over solving the temperature,
        * composition, and Stokes equations just like `iterated Advection and Stokes', but
        * for the Stokes system it is able to switch from a defect correction form of
