@@ -133,8 +133,10 @@ if(ASPECT_WITH_WORLD_BUILDER)
     SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
   ENDIF()
 
-  SET(WORLD_BUILDER_INSTALL_DIR ${CMAKE_BINARY_DIR}/world_builder_${CMAKE_BUILD_TYPE}/)
-  SET(WB_LIB_LOCATION ${WORLD_BUILDER_INSTALL_DIR}lib/${CMAKE_STATIC_LIBRARY_PREFIX}WorldBuilder${CMAKE_STATIC_LIBRARY_SUFFIX})
+  string(TOLOWER ${CMAKE_BUILD_TYPE} BUILD_TYPE_LOWER)
+
+  SET(WORLD_BUILDER_INSTALL_DIR ${CMAKE_BINARY_DIR}/world_builder_${BUILD_TYPE_LOWER}/)
+  SET(WB_LIB_LOCATION ${WORLD_BUILDER_INSTALL_DIR}lib/${CMAKE_SHARED_LIBRARY_PREFIX}WorldBuilder${CMAKE_SHARED_LIBRARY_SUFFIX})
 
   ExternalProject_Add(world_builder_project
   SOURCE_DIR ${WORLD_BUILDER_SOURCE_DIR}
@@ -143,15 +145,14 @@ if(ASPECT_WITH_WORLD_BUILDER)
   INSTALL_COMMAND ""
   INSTALL_DIR ${WORLD_BUILDER_INSTALL_DIR}
   BUILD_BYPRODUCTS ${WB_LIB_LOCATION}
-  CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${WORLD_BUILDER_INSTALL_DIR} ${WORLD_BUILDER_SOURCE_DIR}
+  CMAKE_ARGS -DCMAKE_BUILD_TYPE=${BUILD_TYPE_LOWER} -DCMAKE_INSTALL_PREFIX=${WORLD_BUILDER_INSTALL_DIR} ${WORLD_BUILDER_SOURCE_DIR}
 )
 
 ExternalProject_Get_Property(world_builder_project BINARY_DIR)
 
-add_library(WorldBuilder STATIC IMPORTED)
+add_library(WorldBuilder SHARED IMPORTED)
 
-set_target_properties(WorldBuilder PROPERTIES
-  IMPORTED_LOCATION ${WB_LIB_LOCATION})
+set_target_properties(WorldBuilder PROPERTIES IMPORTED_LOCATION ${WB_LIB_LOCATION})
 
   # Always include the header files.
   # Todo: I think the world builder needs an external api include folder
@@ -456,16 +457,7 @@ DEAL_II_SETUP_TARGET(${TARGET})
 
 
 if(ASPECT_WITH_WORLD_BUILDER)
-  # Make sure that the whole library is loaded, so the registration is done correctly.
-  if(NOT APPLE AND NOT MSVC)
-    SET(GWB_LIBRARY_WHOLE -Wl,--whole-archive WorldBuilder -Wl,--no-whole-archive)
-  elseif(MSVC)
-    SET(GWB_LIBRARY_WHOLE WorldBuilder)
-  else()
-    SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
-  endif()
-
-  target_link_libraries(${TARGET} ${GWB_LIBRARY_WHOLE})
+  target_link_libraries(${TARGET} WorldBuilder)
 
   # Make doesn't know how to how to layout the dependencies
   # in a fine grained manner and requires a more coarse

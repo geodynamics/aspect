@@ -156,7 +156,7 @@ endif()
 
 set(SOURCES ${SOURCES_CXX} ${SOURCES_FORTAN})
 
-add_library(WorldBuilder ${SOURCES})
+add_library(WorldBuilder SHARED ${SOURCES})
 
 add_executable(WorldBuilderApp "${CMAKE_CURRENT_SOURCE_DIR}/app/main.cc")
 add_executable(WorldBuilderVisualization "${CMAKE_CURRENT_SOURCE_DIR}/visualization/main.cc")
