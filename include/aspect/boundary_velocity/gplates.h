@@ -80,7 +80,7 @@ namespace aspect
           /**
            * Interpolation functions to access the velocities.
            */
-          std::array<std::unique_ptr<typename Functions::InterpolatedUniformGridData<2> >, 2> velocities;
+          std::array<std::unique_ptr<Functions::InterpolatedUniformGridData<2>>, 2> velocities;
 
           /**
            * Distances between adjacent point in the Lat/Long grid

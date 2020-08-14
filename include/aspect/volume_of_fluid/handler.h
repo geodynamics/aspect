@@ -216,7 +216,7 @@ namespace aspect
        * held here as all access to the actual methods for composition
        * initialization is handled by the manager.
        */
-      std::vector<typename VolumeOfFluid::VolumeOfFluidInputType::Kind> initialization_data_type;
+      std::vector<VolumeOfFluid::VolumeOfFluidInputType::Kind> initialization_data_type;
 
       friend class Simulator<dim>;
   };

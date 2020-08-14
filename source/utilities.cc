@@ -3701,7 +3701,7 @@ namespace aspect
                      const unsigned int component_index,
                      const Quadrature<2> &quadrature,
                      const std::function<void(
-                       const typename DoFHandler<2>::active_cell_iterator &,
+                       const DoFHandler<2>::active_cell_iterator &,
                        const std::vector<Point<2> > &,
                        std::vector<double> &)> &function,
                      dealii::LinearAlgebra::distributed::Vector<double> &vec_result);
@@ -3712,7 +3712,7 @@ namespace aspect
                      const unsigned int component_index,
                      const Quadrature<3> &quadrature,
                      const std::function<void(
-                       const typename DoFHandler<3>::active_cell_iterator &,
+                       const DoFHandler<3>::active_cell_iterator &,
                        const std::vector<Point<3> > &,
                        std::vector<double> &)> &function,
                      dealii::LinearAlgebra::distributed::Vector<double> &vec_result);
@@ -3723,7 +3723,7 @@ namespace aspect
                      const unsigned int component_index,
                      const Quadrature<2> &quadrature,
                      const std::function<void(
-                       const typename DoFHandler<2>::active_cell_iterator &,
+                       const DoFHandler<2>::active_cell_iterator &,
                        const std::vector<Point<2> > &,
                        std::vector<double> &)> &function,
                      LinearAlgebra::BlockVector &vec_result);
@@ -3734,7 +3734,7 @@ namespace aspect
                      const unsigned int component_index,
                      const Quadrature<3> &quadrature,
                      const std::function<void(
-                       const typename DoFHandler<3>::active_cell_iterator &,
+                       const DoFHandler<3>::active_cell_iterator &,
                        const std::vector<Point<3> > &,
                        std::vector<double> &)> &function,
                      LinearAlgebra::BlockVector &vec_result);

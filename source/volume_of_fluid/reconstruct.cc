@@ -507,8 +507,10 @@ namespace aspect
     solution.block(blockidx) = initial_solution.block(blockidx);
   }
 
+
+
   template <>
-  void VolumeOfFluidHandler<3>::update_volume_of_fluid_composition (const typename Simulator<3>::AdvectionField &/*composition_field*/,
+  void VolumeOfFluidHandler<3>::update_volume_of_fluid_composition (const Simulator<3>::AdvectionField &/*composition_field*/,
                                                                     const VolumeOfFluidField<3> &/*volume_of_fluid_field*/,
                                                                     LinearAlgebra::BlockVector &/*solution*/)
   {

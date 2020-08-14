@@ -401,10 +401,13 @@ namespace aspect
 
                   const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
                   const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-                  typename Newton::Parameters::Stabilization velocity_block_stabilization = this->get_newton_handler().parameters.velocity_block_stabilization;
+                  const Newton::Parameters::Stabilization velocity_block_stabilization
+                    = this->get_newton_handler().parameters.velocity_block_stabilization;
 
                   // use the spd factor when the stabilization is PD or SPD
-                  const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD) != Newton::Parameters::Stabilization::none ?
+                  const double alpha =  (velocity_block_stabilization & Newton::Parameters::Stabilization::PD)
+                                        != Newton::Parameters::Stabilization::none
+                                        ?
                                         Utilities::compute_spd_factor<dim>(eta, strain_rate, viscosity_derivative_wrt_strain_rate,
                                                                            this->get_newton_handler().parameters.SPD_safety_factor)
                                         :
@@ -455,7 +458,8 @@ namespace aspect
 #if DEBUG
       if (scratch.rebuild_newton_stokes_matrix)
         {
-          if (this->get_newton_handler().parameters.velocity_block_stabilization == Newton::Parameters::Stabilization::SPD)
+          if (this->get_newton_handler().parameters.velocity_block_stabilization
+              == Newton::Parameters::Stabilization::SPD)
             {
               // regardless of whether we do or do not add the Newton
               // linearization terms, we ought to test whether the top-left

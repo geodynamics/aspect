@@ -93,12 +93,18 @@ namespace aspect
         distributed_heat_flux_vector = 0.;
         heat_flux_vector = 0.;
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
-        typename HeatingModel::HeatingModelOutputs heating_out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelInputs
+        in(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs
+        out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
 
-        typename MaterialModel::Interface<dim>::MaterialModelInputs face_in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
-        typename MaterialModel::Interface<dim>::MaterialModelOutputs face_out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        HeatingModel::HeatingModelOutputs
+        heating_out(fe_volume_values.n_quadrature_points, simulator_access.n_compositional_fields());
+
+        typename MaterialModel::Interface<dim>::MaterialModelInputs
+        face_in(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
+        typename MaterialModel::Interface<dim>::MaterialModelOutputs
+        face_out(fe_face_values.n_quadrature_points, simulator_access.n_compositional_fields());
 
         std::vector<double> old_temperatures (n_q_points);
         std::vector<double> old_old_temperatures (n_q_points);
