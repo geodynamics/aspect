@@ -49,6 +49,18 @@ namespace aspect
 
 
       template <int dim>
+      std::pair<double, double>
+      ConstantViscosityPrefactors<dim>::compute_strain_rate_and_derivative (const double stress,
+                                                                            const double base_viscosity,
+                                                                            const unsigned int composition_index) const
+      {
+        const double viscosity = base_viscosity * constant_viscosity_prefactors[composition_index];
+        return std::make_pair(0.5*stress/viscosity, 0.5/viscosity);
+      }
+
+
+
+      template <int dim>
       void
       ConstantViscosityPrefactors<dim>::declare_parameters (ParameterHandler &prm)
       {

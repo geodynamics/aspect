@@ -67,6 +67,15 @@ namespace aspect
           compute_viscosity (const double base_viscosity,
                              const unsigned int composition_index) const;
 
+          /**
+          * Compute the strain rate and first stress derivative
+          * as a function of stress.
+          */
+          std::pair<double, double>
+          compute_strain_rate_and_derivative (const double stress,
+                                              const double base_viscosity,
+                                              const unsigned int composition_index) const;
+
         private:
           /**
            * The constant viscosity prefactors, which are read in
