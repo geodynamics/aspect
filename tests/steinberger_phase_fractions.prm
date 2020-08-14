@@ -15,7 +15,7 @@
 
 # The pyrolite composition is a six-component version of the composition in
 # McDonough and Sun (1995; https://doi.org/10.1016/0009-2541(94)00140-4):
-0.36 wt% Na2O, 37.8 wt% MgO, 4.45 wt% Al2O3, 45.0 wt% SiO2, 3.55 wt% CaO, 8.05 wt% FeO
+# 0.36 wt% Na2O, 37.8 wt% MgO, 4.45 wt% Al2O3, 45.0 wt% SiO2, 3.55 wt% CaO, 8.05 wt% FeO
 
 set CFL number                             = 1.0
 set End time                               = 1e5
