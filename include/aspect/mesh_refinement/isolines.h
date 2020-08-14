@@ -69,6 +69,7 @@ namespace aspect
           std::vector<Property> properties;
       };
 
+      unsigned int min_max_string_to_int(const std::string &string, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level);
 
     }
 

@@ -86,6 +86,53 @@ namespace aspect
                                    "The following keys are allowed for this model: " + key_list + "."));
           }
       }
+
+      unsigned int min_max_string_to_int(const std::string &string_value, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level)
+      {
+        // start with removing the spaces so that a ' min + 1 ' would become 'min+1'.
+        std::string string = string_value;
+        std::string::iterator end_pos = std::remove(string.begin(), string.end(), ' ');
+        string.erase(end_pos, string.end());
+
+        // check whether the field starts with a 'min'
+        if (string.compare(0,3,"min") == 0)
+          {
+            if (string.compare(0,4,"min+") == 0)
+              {
+                std::vector<std::string> tmpNumber = Utilities::split_string_list(string,'+');
+                AssertThrow(tmpNumber.size() == 2,
+                            ExcMessage("Could not convert value '" + string + "' to an int because it contains more than one '+' sign."));
+                return minimum_refinement_level+Utilities::string_to_int(tmpNumber[1]);
+              }
+            else
+              {
+                AssertThrow(string.compare(0,4,"min-") != 0,
+                            ExcMessage("A value of " + string_value + " was provided, but you can't provide a smaller value than the minimum."));
+                return minimum_refinement_level;
+              }
+          }
+        else if (string.compare(0,3,"max") == 0)
+          {
+            if (string.compare(0,4,"max-") == 0)
+              {
+                std::vector<std::string> tmpNumber = Utilities::split_string_list(string,'-');
+                AssertThrow(tmpNumber.size() == 2,
+                            ExcMessage("Could not convert value '" + string + "' to an int because it contains more than one '-' sign."));
+                return maximum_refinement_level-Utilities::string_to_int(tmpNumber[1]);
+              }
+            else
+              {
+                AssertThrow(string.compare(0,4,"maxi") != 0,
+                            ExcMessage("A value of " + string_value + " was provided, but you can't provide a larger value than the maximum."));
+                return maximum_refinement_level;
+              }
+          }
+        else
+          {
+            return Utilities::string_to_int(string);
+          }
+
+      }
     }
 
     template <int dim>
@@ -238,8 +285,13 @@ namespace aspect
       /**
        * Todo:
        * 1. Add background field C_b option
-       * 2. add min and max key words.
        */
+
+      // lookup the minimum and maximum refinment
+      prm.enter_subsection("Mesh refinement");
+      unsigned int minimum_refinement_level = Utilities::string_to_int(prm.get ("Minimum refinement level"));
+      unsigned int maximum_refinement_level = Utilities::string_to_int(prm.get("Initial global refinement")) + Utilities::string_to_int(prm.get("Initial adaptive refinement"));
+      prm.leave_subsection();
 
       // fill parameter list_of_composition_names: Todo: These should be enums
       std::vector<std::string> list_of_composition_names = {"Temperature", "Density", "viscosity", "strain-rate", "Pressure"};
@@ -253,16 +305,23 @@ namespace aspect
         {
           // Split the list by comma delimited components.
           const std::vector<std::string> isoline_entries = dealii::Utilities::split_string_list(prm.get("Isolines"), ';');
+          unsigned int isoline_entry_number = 0;
           for (auto &isoline_entry : isoline_entries)
             {
+              isoline_entry_number++;
               aspect::MeshRefinement::Internal::Isoline isoline;  // a new object of isoline
               std::vector<aspect::MeshRefinement::Internal::Property> properties;  // a vector of Property
               std::vector<double> min_value_inputs;
               std::vector<double> max_value_inputs;
               const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isoline_entry, ',');
-              //todo: maybe fix 'max' and 'min' level
-              isoline.min_refinement = Utilities::string_to_int(field_entries[0]);
-              isoline.max_refinement = Utilities::string_to_int(field_entries[1]);
+
+              AssertThrow(field_entries.size() >= 4,
+                          ExcMessage("An isoline needs to contain at least 4 entries, but isoline " + std::to_string(isoline_entry_number)
+                                     + " contains  only " +  std::to_string(field_entries.size()) + " entries: " + isoline_entry + "."));
+
+              // convert a potential min, min+1, min + 1, min+10, max, max-1, etc. to actual integers.
+              isoline.min_refinement = Internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
+              isoline.max_refinement = Internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
               AssertThrow(isoline.min_refinement <= isoline.max_refinement,
                           ExcMessage("The provided maximum refinement level has to be larger the then the minimum refinement level."));
               for (auto field_entry = field_entries.begin()+2; field_entry < field_entries.end(); ++field_entry)
