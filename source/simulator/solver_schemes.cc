@@ -440,7 +440,7 @@ namespace aspect
     // don't need to force assembly of the matrix.
     if (stokes_matrix_depends_on_solution()
         ||
-        (nonlinear_iteration == 0 && boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
+        nonlinear_iteration == 0)
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = assemble_newton_stokes_matrix = true;
     else if (parameters.enable_prescribed_dilation)
       // The dilation requires the Stokes matrix (which is on the rhs
