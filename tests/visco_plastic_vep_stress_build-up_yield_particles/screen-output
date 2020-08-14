@@ -1,0 +1,54 @@
+
+Number of active cells: 400 (on 1 levels)
+Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.64787e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Writing particle output:   output-visco_plastic_vep_stress_build-up_yield_particles/particles/particles-00000
+
+
+
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0
+     Number of advected particles: 11958
+
+
+
+
+*** Timestep 2:  t=2000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64933e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -2.367/15.16/6.338e+09
+     Number of advected particles: 11953
+
+
+
+
+Termination requested by criterion: end time
+
+
+

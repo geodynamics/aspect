@@ -1,0 +1,33 @@
+# This parameter file modifies the benchmark viscoealastic_bending_beam.prm
+# to use particles, rather than compositional fields, to track viscoleastic 
+# stresses and location of the beam.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
+
+set Output directory = output_viscoelastic_bending_beam_particles
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 4
+  set Compositional field methods =           particles,           particles,           particles,         particles
+  set Names of fields             =           stress_xx,           stress_yy,           stress_xy,              beam
+  set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy, beam:initial beam
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, basic statistics, particles, temperature statistics, visualization
+  subsection Particles
+    set Number of particles = 4e5
+    set Minimum particles per cell  = 95
+    set Maximum particles per cell  = 105
+    set Load balancing strategy     = remove and add particles
+    set List of particle properties = initial composition, elastic stress
+    set Interpolation scheme        = nearest neighbor
+    set Update ghost particles      = true
+    set Particle generator name     = random uniform
+    set Time between data output    = 0
+    set Data output format          = vtu
+  end
+end
+

@@ -1,0 +1,26 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Minimal value for composition stress_xx
+# 14: Maximal value for composition stress_xx
+# 15: Global mass for composition stress_xx
+# 16: Minimal value for composition stress_yy
+# 17: Maximal value for composition stress_yy
+# 18: Global mass for composition stress_yy
+# 19: Minimal value for composition stress_xy
+# 20: Maximal value for composition stress_xy
+# 21: Global mass for composition stress_xy
+# 22: Number of advected particles
+# 23: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 400 3803 441 5043 2 0         25 28 28 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11966 output-visco_plastic_vep_stress_build-up_yield_particles/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 400 3803 441 5043 1 0 4294967295  0  0 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11958                                                                                 "" 
+2 2.000000000000e+03 1.000000000000e+03 400 3803 441 5043 1 0 4294967295  0  0 1.00000000e+06 1.00000000e+06 1.00000000e+16 -1.00000000e+06 -1.00000000e+06 -1.00000000e+16 -2.36653956e+00 1.51597787e+01 6.33778379e+09 11953                                                                                 "" 

@@ -1,0 +1,43 @@
+# This test checks whether the viscoelastic bending beam benchmark
+# run successfully. In particular, this benchmark is a good test to 
+# ensure that a model using active particles to track both viscoelastic 
+# stresses and lithologies, which affect material properties, works.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm 
+
+set End time         = 2e3
+set Output directory = viscoelastic_bending_beam_particles
+
+# Significantly reduce resolution 
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 10
+  end
+end
+
+# Compositional field names and methods
+subsection Compositional fields
+  set Number of fields = 4
+  set Compositional field methods =           particles,           particles,           particles,         particles
+  set Names of fields             =           stress_xx,           stress_yy,           stress_xy,              beam
+  set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy, beam:initial beam
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, particles
+  subsection Particles
+    set Number of particles = 4.5e3
+    set Minimum particles per cell  = 25
+    set Maximum particles per cell  = 35
+    set Load balancing strategy     = remove and add particles
+    set List of particle properties = initial composition, elastic stress
+    set Interpolation scheme        = bilinear least squares
+    set Update ghost particles      = true
+    set Particle generator name     = random uniform
+    set Time between data output    = 1e9
+    set Data output format          = vtu
+  end
+end

@@ -1,0 +1,44 @@
+
+Number of active cells: 400 (on 1 levels)
+Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 27+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Writing particle output:   output-viscoelastic_numerical_elastic_time_step_particles/particles/particles-00000
+
+
+
+
+*** Timestep 1:  t=1000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0
+     Number of advected particles: 11958
+
+
+
+
+*** Timestep 2:  t=2000 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -9.901/59.5/2.778e+10
+     Number of advected particles: 11953
+
+
+
+
+Termination requested by criterion: end time
+
+
+
