@@ -43,6 +43,11 @@ namespace aspect
       class Property
       {
         public:
+          /**
+           * constructor. Make a property from a vector string and string.
+           */
+          Property(const std::string &property_name,const std::vector<std::string> &available_compositions);
+
           PropertyName name;
           unsigned int index;
       };
@@ -51,7 +56,9 @@ namespace aspect
       {
         public:
           /**
-           * Todo
+           * Checks whether the provided values are between the min and max value  for
+           * those property of the isoline. This function assumes that the order of the
+           * provided values matches the order in which the properties are stored.
            */
           bool values_are_in_range(const std::vector<double> values) const;
 
@@ -62,7 +69,6 @@ namespace aspect
           std::vector<Property> properties;
       };
 
-      Property convert_string_property(const std::vector<std::string>&, const std::string);
 
     }
 
