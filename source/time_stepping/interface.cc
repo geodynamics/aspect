@@ -108,7 +108,13 @@ namespace aspect
         new_time_step = std::min(new_time_step, this->get_parameters().maximum_first_time_step);
 
       // Make sure we reduce the time step length appropriately if we terminate after this step
-      return termination_manager.check_for_last_time_step(new_time_step);
+      new_time_step = termination_manager.check_for_last_time_step(new_time_step);
+
+      AssertThrow (new_time_step > 0,
+                   ExcMessage("The time step length for the each time step needs to be positive, "
+                              "but the computed step length was: " + std::to_string(new_time_step) + ". "
+                              "Please check the time stepping plugins in use."));
+      return new_time_step;
     }
 
 
