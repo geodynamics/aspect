@@ -2,8 +2,8 @@
 include $ASPECT_SOURCE_DIR/tests/isosurfaces_simple_box_2D.prm
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
-  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
   set Strategy = isosurfaces
   subsection Isosurfaces
     set Isosurfaces = max,    max,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\

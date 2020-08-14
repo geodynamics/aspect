@@ -75,8 +75,8 @@ subsection Compositional fields
 end
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
-  set Initial adaptive refinement        = 3
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 2
   set Strategy = isosurfaces
   subsection Isosurfaces
     set Isosurfaces = 4,    4,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\

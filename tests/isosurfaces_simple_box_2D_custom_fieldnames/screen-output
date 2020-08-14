@@ -1,4 +1,9 @@
 
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 58 (18+4+9+9+9+9)
+
+*** Timestep 0:  t=0 years
+
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 159 (50+9+25+25+25+25)
 
@@ -6,16 +11,6 @@ Number of degrees of freedom: 159 (50+9+25+25+25+25)
 
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 511 (162+25+81+81+81+81)
-
-*** Timestep 0:  t=0 years
-
-Number of active cells: 46 (on 4 levels)
-Number of degrees of freedom: 1,395 (444+63+222+222+222+222)
-
-*** Timestep 0:  t=0 years
-
-Number of active cells: 172 (on 5 levels)
-Number of degrees of freedom: 4,788 (1,528+204+764+764+764+764)
 
 *** Timestep 0:  t=0 years
 
