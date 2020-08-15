@@ -297,7 +297,7 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
-       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * Evaluate the MaterialModel to query for the viscosity on the active cells,
        * project this viscosity to the multigrid hierarchy, and cache the information
        * for later usage. Also sets pressure scaling and information regarding the
        * compressiblity of the flow.
@@ -428,10 +428,10 @@ namespace aspect
       void setup_dofs() override;
 
       /**
-       * Evalute the MaterialModel to query for the viscosity on the active cells,
+       * Evaluate the MaterialModel to query for the viscosity on the active cells,
        * project this viscosity to the multigrid hierarchy, and cache the information
        * for later usage. Also sets pressure scaling and information regarding the
-       * compressiblity of the flow.
+       * compressibility of the flow.
        */
       void evaluate_material_model() override;
 

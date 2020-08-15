@@ -48,7 +48,7 @@ namespace aspect
       {
         public:
           /**
-           * This function prepares the data for writing. It reads the data from @p particle_hander and their
+           * This function prepares the data for writing. It reads the data from @p particle_handler and their
            * property information from @p property_information, and builds a list of patches that is stored
            * internally until the destructor is called. This function needs to be called before one of the
            * write function of the base class can be called to write the output data.

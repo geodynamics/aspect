@@ -70,7 +70,7 @@ namespace aspect
           /**
            * Variables related to a limiting scheme that prevents overshoot and
            * undershoot of interpolated particle properties based on global max
-           * and global min for each propery.
+           * and global min for each property.
            */
           bool use_global_min_max_limiter;
 

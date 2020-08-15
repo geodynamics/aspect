@@ -79,7 +79,7 @@ namespace aspect
            */
           std::vector<double> padded_temperature_depth_average;
           /**
-           * Whether to extrapolate temperautres above/below the first/last depth-average slice
+           * Whether to extrapolate temperatures above/below the first/last depth-average slice
            * or, alternatively, interpolate above the center of the first slice using the surface
            * temperature or below the last slice using the bottom temperature.
            */

@@ -229,14 +229,14 @@ namespace aspect
 
         /**
          * Returns what the natural coordinate system for this geometry model is,
-         * which for a Ellipsoidal chunk is Ellisoidal.
+         * which for a Ellipsoidal chunk is Ellipsoidal.
          */
         aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
 
         /**
          * Takes the Cartesian points (x,z or x,y,z) and returns standardized
          * coordinates which are most 'natural' to the geometry model. For a
-         * ellispoidal chunk this is (radius, longitude) in 2d and (radius,
+         * ellipsoidal chunk this is (radius, longitude) in 2d and (radius,
          * longitude, latitude) in 3d. Note that internally the coordinates are
          * stored in longitude, latitude, depth.
          */

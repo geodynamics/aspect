@@ -295,7 +295,7 @@ namespace aspect
                                                     ( ( average_viscoelastic_viscosity / average_elastic_shear_moduli[i] ) *
                                                       ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) );
 
-                // Stress averaging scheme to account for difference betweed fixed elastic time step
+                // Stress averaging scheme to account for difference between fixed elastic time step
                 // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
                 if (use_fixed_elastic_time_step == true && use_stress_averaging == true)
                   {

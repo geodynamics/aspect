@@ -153,7 +153,7 @@ namespace aspect
 
         /**
          * Returns what the natural coordinate system for this geometry model is,
-         * which for two merged boxex is Cartesian.
+         * which for two merged boxes is Cartesian.
          */
         aspect::Utilities::Coordinates::CoordinateSystem natural_coordinate_system() const override;
 

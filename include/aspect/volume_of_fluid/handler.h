@@ -102,7 +102,7 @@ namespace aspect
       void set_initial_volume_fractions ();
 
       /**
-       * Initialize specified field based on a composition field initial conditon
+       * Initialize specified field based on a composition field initial condition
        */
       void initialize_from_composition_field (const VolumeOfFluidField<dim> &field);
 
@@ -144,7 +144,7 @@ namespace aspect
                                             const bool update_from_old_solution);
 
       /**
-       * Solve the diagnonal matrix assembled in assemble_volume_of_fluid_system for the
+       * Solve the diagonal matrix assembled in assemble_volume_of_fluid_system for the
        * specified field.
        */
       void solve_volume_of_fluid_system (const VolumeOfFluidField<dim> &field);

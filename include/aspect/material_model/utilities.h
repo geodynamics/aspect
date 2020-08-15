@@ -105,7 +105,7 @@ namespace aspect
              * the dHdT and dHdp functions. The third argument represents
              * the number of substeps taken to compute this average. A number
              * larger than one means the temperature-pressure range that is spanned
-             * by the first two input arguments is seperated into @p n_substeps
+             * by the first two input arguments is separated into @p n_substeps
              * equally spaced pressure-temperature steps, the derivatives are
              * computed for each substep and then averaged.
              */

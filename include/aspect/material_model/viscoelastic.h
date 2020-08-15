@@ -65,7 +65,7 @@ namespace aspect
      * However, an important distinction between this material model and
      * the studies above is the use of compositional fields, rather than
      * tracers, to track individual components of the viscoelastic stress
-     * tensor. The material model will be udpated when an option to track
+     * tensor. The material model will be updated when an option to track
      * and calculate viscoelastic stresses with tracers is implemented.
      *
      * Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric

@@ -145,7 +145,7 @@ namespace aspect
            * therefore it is implemented here to avoid duplication.
            * In case the position is not in the local domain this function
            * throws an exception of type ExcParticlePointNotInDomain, which
-           * can be catched in the calling plugin.
+           * can be caught in the calling plugin.
            */
           std::pair<Particles::internal::LevelInd,Particle<dim> >
           generate_particle(const Point<dim> &position,
