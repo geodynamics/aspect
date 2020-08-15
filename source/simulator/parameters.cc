@@ -1572,13 +1572,13 @@ namespace aspect
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_translation_z);
           else if (nullspace_names[i]=="linear x momentum")
-            nullspace_removal = typename       NullspaceRemoval::Kind(
+            nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_x);
           else if (nullspace_names[i]=="linear y momentum")
-            nullspace_removal = typename       NullspaceRemoval::Kind(
+            nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_y);
           else if (nullspace_names[i]=="linear z momentum")
-            nullspace_removal = typename       NullspaceRemoval::Kind(
+            nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::linear_momentum_z);
           else if (nullspace_names[i]=="linear momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(

@@ -2212,7 +2212,7 @@ namespace aspect
         // next make sure that all listed indicators are actually used by
         // this geometry
         for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          for (typename std::set<types::boundary_id>::const_iterator
+          for (std::set<types::boundary_id>::const_iterator
                p = boundary_indicator_lists[i].begin();
                p != boundary_indicator_lists[i].end(); ++p)
             AssertThrow (all_boundary_indicators.find (*p)

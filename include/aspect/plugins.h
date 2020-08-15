@@ -387,7 +387,7 @@ namespace aspect
           names_and_descriptions[std::get<0>(*p)] = std::get<1>(*p);;
 
         // then output it all
-        typename std::map<std::string,std::string>::const_iterator
+        std::map<std::string,std::string>::const_iterator
         p = names_and_descriptions.begin();
         while (true)
           {
