@@ -1,0 +1,93 @@
+# A test for the Particle::World::copy_particle_handler
+# function that copies the particle handler (and all contained
+# particles), modifies one of them, and then resets the
+# the particles every time the composition system is solved.
+ 
+set Dimension                              = 2
+set End time                               = 70
+set Use years in output instead of seconds = false
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent  = 0.9142
+    set Y extent  = 1.0000
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = bottom, top
+  set Tangential velocity boundary indicators = left, right
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density             = 1010
+    set Viscosity                     = 1e2
+    set Thermal expansion coefficient = 0
+    set Density differential for compositional field 1 = -10
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,z
+    set Function constants  = pi=3.1415926
+    set Function expression = 0.5*(1+tanh((0.2+0.02*cos(pi*x/0.9142)-z)/0.02))
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Strategy                           = composition
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+  set Coarsening fraction                = 0.05
+  set Refinement fraction                = 0.3
+end
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, composition statistics,particles
+
+  subsection Particles
+    set Number of particles = 10
+    set Time between data output = 70
+    set Data output format = vtu
+    set List of particle properties = velocity
+
+    set Particle generator name = uniform box
+
+    subsection Generator
+      subsection Uniform box
+        set Minimum x = 0.3
+        set Maximum x = 0.5
+        set Minimum y = 0.1
+        set Maximum y = 0.3
+      end
+    end
+  end
+end
