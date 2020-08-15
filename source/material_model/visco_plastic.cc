@@ -1087,7 +1087,7 @@ namespace aspect
                                    "the full finite strain tensor through particles."
                                    "When only the second invariant of the strain is tracked, one has the option to "
                                    "track the full strain or only the plastic strain. In the latter case, strain is only tracked "
-                                   "in case the material is plastically yielding, i.e. the viscous stess > yield stress. "
+                                   "in case the material is plastically yielding, i.e. the viscous stress > yield stress. "
                                    "\n\n"
                                    "Viscous stress may also be limited by a non-linear stress limiter "
                                    "that has a form similar to the Peierls creep mechanism. "

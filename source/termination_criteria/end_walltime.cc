@@ -26,7 +26,7 @@ namespace aspect
   namespace TerminationCriteria
   {
     // The start_walltime is made as static and initialized here to
-    // make sure it is initialized right way as the programe starts.
+    // make sure it is initialized right way as the program starts.
     template <int dim>
     std::time_t
     EndWalltime<dim>::start_walltime = std::time(nullptr);

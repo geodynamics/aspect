@@ -347,7 +347,7 @@ namespace aspect
           const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for "
-                                   "<Initial composition model/Volume of Fluid intialization method> "
+                                   "<Initial composition model/Volume of Fluid initialization method> "
                                    "volume of fluid initialization met "
                                    "requires that each entry " "has the form "
                                    "`<name of field> : <method>', but this "
@@ -365,7 +365,7 @@ namespace aspect
                        != names_of_compositional_fields.end(),
                        ExcMessage ("Name of field <" + key +
                                    "> appears in the parameter "
-                                   "<Initial composition model/Volume of Fluid intialization method>, but "
+                                   "<Initial composition model/Volume of Fluid initialization method>, but "
                                    "there is no field with this name."));
 
           const unsigned int compositional_field_index = std::distance(names_of_compositional_fields.begin(),
@@ -374,14 +374,14 @@ namespace aspect
           AssertThrow (compositional_field_methods[compositional_field_index]
                        == Parameters<dim>::AdvectionFieldMethod::volume_of_fluid,
                        ExcMessage ("The field <" + key + "> appears in the parameter "
-                                   "<Initial composition model/Volume of Fluid intialization method>, "
+                                   "<Initial composition model/Volume of Fluid initialization method>, "
                                    "but is not advected by a particle method."));
 
           AssertThrow (std::count(names_of_compositional_fields.begin(),
                                   names_of_compositional_fields.end(), key) == 1,
                        ExcMessage ("Name of field <" + key + "> appears more "
                                    "than once in the parameter "
-                                   "<Initial composition model/Volume of Fluid intialization type>."));
+                                   "<Initial composition model/Volume of fluid intialization type>."));
 
           // Get specification for how to treat initializing data
           const std::string value = split_parts[1];
@@ -413,7 +413,7 @@ namespace aspect
                 ExcMessage("Volume of Fluid Interface Tracking requires CFL < 1."));
 
     AssertThrow(!this->get_material_model().is_compressible(),
-                ExcMessage("Volume of Fluid Interface Tracking currently assumes incompressiblity."));
+                ExcMessage("Volume of Fluid Interface Tracking currently assumes incompressibility."));
 
     AssertThrow(dynamic_cast<const MappingCartesian<dim> *>(&(this->get_mapping())),
                 ExcMessage("Volume of Fluid Interface Tracking currently requires Cartesian Mappings"));

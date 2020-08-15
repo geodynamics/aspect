@@ -103,7 +103,7 @@ namespace aspect
                                               "has to be `x', `y', `composition1', `composition2' etc. "
                                               "in a 2d model and `x', `y', `z', `composition1', "
                                               "`composition2' etc. in a 3d model; i.e. "
-                                              "the columns before the lcompositional field always contains "
+                                              "the columns before the compositional field always contains "
                                               "the position of the surface along the vertical direction. "
                                               "The first column needs to ascend first, "
                                               "followed by the second in order to assign the correct data "

@@ -1238,7 +1238,7 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_single_advection_iterated_newton_stokes ()
   {
-    // First assemble and sove the temperature and compositional fields
+    // First assemble and solve the temperature and compositional fields
     assemble_and_solve_temperature();
     assemble_and_solve_composition();
 

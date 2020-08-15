@@ -53,7 +53,7 @@ namespace aspect
           {
             return 1.0;
           }
-        const double dtest = d / norm1; // Threshold value for changes in compuation behavior
+        const double dtest = d / norm1; // Threshold value for changes in computation behavior
         // Normalized parameter indicating the "slope" (positive and finite)
         // Chosen due to resulting in simple formulas
         // Equal to the absolute value of the smaller vector entry in the 1-norm normalized normal vector
@@ -362,7 +362,7 @@ namespace aspect
         // fpdx=\int pH(d-n\cdot x)dx$ for all polynomials $p$ less than or
         // equal to the given degree
         //
-        // The funcitons for the correct values were calculated and exported using sympy
+        // The functions for the correct values were calculated and exported using sympy
         if (d<-0.5*norm1)
           {
             for (unsigned int i =0; i < basis_count; ++i)
@@ -473,7 +473,7 @@ namespace aspect
         // fpdx=\int pH(d-n\cdot x)dx$ for all polynomials $p$ less than or
         // equal to the given degree
         //
-        // The funcitons for the correct values were calculated and exported using sympy
+        // The functions for the correct values were calculated and exported using sympy
         if (d<-0.5*norm1)
           {
             for (int i =0; i < basis_count; ++i)

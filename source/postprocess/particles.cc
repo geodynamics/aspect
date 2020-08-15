@@ -628,7 +628,7 @@ namespace aspect
 
           prm.declare_entry ("Exclude output properties", "",
                              Patterns::Anything(),
-                             "A comma seperated list of strings which exclude all particle"
+                             "A comma separated list of strings which exclude all particle"
                              "property fields which contain these strings. If one of the "
                              "entries is 'all', only a id will be provided for every point.");
         }

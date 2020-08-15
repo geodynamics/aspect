@@ -346,7 +346,7 @@ namespace aspect
 
       std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes;
       std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes;
-      // Initialize the surface and CMB density contrasts with NaNs becasue they may be unused in case of no dynamic topography contribution.
+      // Initialize the surface and CMB density contrasts with NaNs because they may be unused in case of no dynamic topography contribution.
       double surface_delta_rho = numbers::signaling_nan<double>();
       double CMB_delta_rho = numbers::signaling_nan<double>();
       if (include_dynamic_topo_contribution == true)
