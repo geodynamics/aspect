@@ -269,7 +269,7 @@ namespace aspect
 
     prm.enter_subsection("Initial composition model");
     {
-      prm.declare_entry("Volume of fluid intialization type", "",
+      prm.declare_entry("Volume of fluid initialization type", "",
                         Patterns::Map (Patterns::Anything(),
                                        Patterns::Selection("composition|level set")),
                         "A comma separated list denoting the method to be used to "
@@ -332,7 +332,7 @@ namespace aspect
 
     prm.enter_subsection("Initial composition model");
     {
-      const std::vector<std::string> x_initialization_type = Utilities::split_string_list(prm.get("Volume of fluid intialization type"));
+      const std::vector<std::string> x_initialization_type = Utilities::split_string_list(prm.get("Volume of fluid initialization type"));
 
       initialization_data_type = std::vector<VolumeOfFluid::VolumeOfFluidInputType::Kind> (n_volume_of_fluid_fields,
                                  VolumeOfFluid::VolumeOfFluidInputType::composition);
@@ -346,7 +346,7 @@ namespace aspect
           const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
           AssertThrow (split_parts.size() == 2,
                        ExcMessage ("The format for "
-                                   "<Initial composition model/Volume of Fluid initialization method> "
+                                   "<Initial composition model/Volume of fluid initialization method> "
                                    "volume of fluid initialization met "
                                    "requires that each entry " "has the form "
                                    "`<name of field> : <method>', but this "
@@ -364,7 +364,7 @@ namespace aspect
                        != names_of_compositional_fields.end(),
                        ExcMessage ("Name of field <" + key +
                                    "> appears in the parameter "
-                                   "<Initial composition model/Volume of Fluid initialization method>, but "
+                                   "<Initial composition model/Volume of fluid initialization method>, but "
                                    "there is no field with this name."));
 
           const unsigned int compositional_field_index = std::distance(names_of_compositional_fields.begin(),
@@ -373,14 +373,14 @@ namespace aspect
           AssertThrow (compositional_field_methods[compositional_field_index]
                        == Parameters<dim>::AdvectionFieldMethod::volume_of_fluid,
                        ExcMessage ("The field <" + key + "> appears in the parameter "
-                                   "<Initial composition model/Volume of Fluid initialization method>, "
+                                   "<Initial composition model/Volume of fluid initialization method>, "
                                    "but is not advected by a particle method."));
 
           AssertThrow (std::count(names_of_compositional_fields.begin(),
                                   names_of_compositional_fields.end(), key) == 1,
                        ExcMessage ("Name of field <" + key + "> appears more "
                                    "than once in the parameter "
-                                   "<Initial composition model/Volume of fluid intialization type>."));
+                                   "<Initial composition model/Volume of fluid initialization type>."));
 
           // Get specification for how to treat initializing data
           const std::string value = split_parts[1];

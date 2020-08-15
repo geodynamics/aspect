@@ -70,8 +70,8 @@ end
 
 subsection Initial composition model
   set Model name = function
-  set Volume of fluid intialization type = C_1:level set
-  
+  set Volume of fluid initialization type = C_1:level set
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
