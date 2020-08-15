@@ -64,7 +64,7 @@ namespace aspect
            * Compute the viscosity.
            */
           double
-          compute_viscosity (const double viscosity,
+          compute_viscosity (const double base_viscosity,
                              const unsigned int composition_index) const;
 
         private:
@@ -74,7 +74,7 @@ namespace aspect
            * The total number of prefactors will be equal to one
            * plus the number of compositional fields. The prefactor
            * for a given compositional field is multiplied with a
-           * viscosity value provided by the material model, which
+           * base_viscosity value provided by the material model, which
            * is then returned to the material model.
            */
           std::vector<double> constant_viscosity_prefactors;
