@@ -188,7 +188,8 @@ namespace aspect
         * evaluation points. The outer loop is over the phases, and the inner
         * loop is over all the evaluation points.
         */
-        virtual std::vector<std::vector<double>> phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in) const;
+        void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
         /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
