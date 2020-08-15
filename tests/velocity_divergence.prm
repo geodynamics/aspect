@@ -1,7 +1,7 @@
 # This is a test investigating if the divergence
 # of the velocity is really zero, as it should be 
 # in cases where no melt is present. The material model
-# implements a rection term for the porosity 
+# implements a reaction term for the porosity 
 # compositional field that equals the velocity divergence
 # in the way it would be used in models with melt transport,
 # but in this model melt migration is not used.

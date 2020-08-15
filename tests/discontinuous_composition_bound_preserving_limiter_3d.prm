@@ -28,7 +28,7 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, front, back, bottom, top
 end
 
-# Thermal expansion coeff = 0 --> no temperature depedence
+# Thermal expansion coeff = 0 --> no temperature dependence
 subsection Material model
   set Model name = simple
   subsection Simple model
@@ -110,4 +110,3 @@ subsection Discretization
       set Global composition minimum = 0.0
   end
 end
-

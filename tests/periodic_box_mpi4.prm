@@ -1,4 +1,4 @@
-# like periodix_box2.prm. This test shows bugs inside
+# like periodic_box2.prm. This test shows bugs inside
 # SimulatorAccess<dim>::get_fe() and handling of nullspace constraints that
 # happen if one MPI process does not own any DoFs. We force this here be using
 # a coarse mesh and 4 tasks.

@@ -27,7 +27,7 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-# Thermal expansion coeff = 0 --> no temperature depedence
+# Thermal expansion coeff = 0 --> no temperature dependence
 subsection Material model
   set Model name = simple
   subsection Simple model

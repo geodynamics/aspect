@@ -40,10 +40,10 @@ subsection Material model
 # velocity and normal stress. The relation between the two scales 
 # with the phase change number P, which is given in the 'Function
 # expression'. 
-# For P-->inifinity, the boundary is a free slip boundary, and for 
+# For P-->infinity, the boundary is a free slip boundary, and for 
 # P-->0, the boundary is an open boundary (with zero normal stress). 
 
-# For time dependence, the varibale names have to have dim+1 entries,
+# For time dependence, the variable names have to have dim+1 entries,
 # and the last variable will be the time
   subsection Inner core
     subsection Phase change resistance function

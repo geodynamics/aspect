@@ -1,4 +1,4 @@
-# A test for the geoid, gravity and dynamic topography posprocessor
+# A test for the geoid, gravity and dynamic topography postprocessor
 
 set Dimension                              = 3 
 

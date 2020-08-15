@@ -6,7 +6,7 @@
 # to the set_assemblers signal, and during every call to evaluate()
 # fills the AdditionalMaterialOutputs object of type AnisotropicViscosity with
 # the chosen viscosity tensor that is selected in this input file.
-# This way the solved equations are changed without modifying the main codei
+# This way the solved equations are changed without modifying the main code
 # base.
 
 set Dimension = 2

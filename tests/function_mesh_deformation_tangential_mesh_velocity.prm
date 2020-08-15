@@ -1,6 +1,6 @@
 # This test prescribes a surface motion going from 
 # 1000 m per million year on the left to -1000 m
-# on the right, thus keeping the overal domain area
+# on the right, thus keeping the overall domain area
 # fixed.
 set Dimension                              = 2
 set End time                               = 5e5
@@ -34,7 +34,7 @@ end
 
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: boundary function
-  # The left and rigth boundary are allowed to move, 
+  # The left and right boundary are allowed to move, 
   # even though the Stokes velocity is zero along these boundaries.
   set Additional tangential mesh velocity boundary indicators = left,right
   # Prescribe a boundary velocity in m/s equal to max 1000 m/My

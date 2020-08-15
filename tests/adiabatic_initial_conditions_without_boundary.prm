@@ -3,7 +3,7 @@
 # prescribed bottom thermal boundary layer age. This case makes no sense,
 # but it might occur by accident. The expected result is no boundary layer,
 # however previously we computed a boundary layer against the adiabatic
-# surface temperature. This test veryfies the solution of this bug.
+# surface temperature. This test verifies the solution of this bug.
 
 set Dimension = 2
 set CFL number                             = 1.0

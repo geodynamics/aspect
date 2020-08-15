@@ -1,8 +1,8 @@
-# This is a copy of teinberger compressible test,
+# This is a copy of Steinberger compressible test,
 # but it uses the pyrolite material property table instead
-# of the test data, so that reasonable seismic velocities are 
+# of the test data, so that reasonable seismic velocities are
 # computed.
- 
+
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0

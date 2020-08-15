@@ -1,5 +1,5 @@
 # This is a test for the artificial viscosity. 
-# In particaluar, it checks that the results for
+# In particular, it checks that the results for
 # temperature and compositional fields are the same.
 
 set Adiabatic surface temperature          = 1623               # default: 0

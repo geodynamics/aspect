@@ -2,7 +2,7 @@
 # It is the same setup as in the rising_melt_blob test, 
 # with added passive particles that move with the melt
 # velocity. The test checks if the particles are moving 
-# correctly, and if they are correcly labelled with the
+# correctly, and if they are correctly labelled with the
 # property 'melt presence' if the porosity is above a 
 # threshold at their location. 
 

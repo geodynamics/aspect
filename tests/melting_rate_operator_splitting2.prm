@@ -119,7 +119,7 @@ subsection Material model
     set Exponential melt weakening factor = 0.0
     set Melting time scale for operator splitting = 1.111111111e3
 
-    # simplifiy the melting model so that porosity depends on temperature linearly
+    # simplify the melting model so that porosity depends on temperature linearly
     set Surface solidus               = 1000
     set Pressure solidus change       = 0.0
     set Depletion solidus change      = 0.0

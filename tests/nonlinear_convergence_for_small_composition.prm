@@ -4,7 +4,7 @@
 # if the reaction term depends on the Stokes solution (in this case
 # the velocity divergence) and the right-hand side of the compositional
 # field advection equation is zero or very small otherwise, as long as 
-# the Stokes solution still changes (the numver of linear Stokes solver 
+# the Stokes solution still changes (the number of linear Stokes solver 
 # iterations is not equal to zero).
 # As soon as the Stokes system is not solved any more, the nonlinear
 # residual drops to a very small number.

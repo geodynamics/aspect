@@ -52,7 +52,7 @@ end
 
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
-  # are isolating. To guarantuee a steady downward flow, we fix the velocity
+  # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides. 
   set Fixed temperature boundary indicators   = 3
 end
@@ -86,7 +86,7 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-# In constrast to the other latent heat test we need a small temperature
+# In contrast to the other latent heat test we need a small temperature
 # perturbation to be able to compute derivatives from the material table.
 # This is because we compute derivatives from the differences between cell 
 # vertices, and if they have identical pressure-temperature conditions, we 
@@ -96,7 +96,7 @@ subsection Initial temperature model
   end
 end
 
-# All of the material properties are taken from the table or hardcoded
+# All of the material properties are taken from the table or hard coded
 # in the material model.
 subsection Material model
   set Model name = latent heat enthalpy

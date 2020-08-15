@@ -5,7 +5,7 @@
 # is 1 m/yr and the solid velocity is 0. 
 # There are two compositional fields, one is transported 
 # with the solid velocity (the peridotite field), and one is
-# trnsported with the melt velocity (the melt composition
+# transported with the melt velocity (the melt composition
 # field). 
 # While the mass of the peridotite field should be conserved, 
 # the mass of the melt_composition field should decrease over 

@@ -6,7 +6,7 @@
 # in ASPECT.
 # We compute these material properties in a new material model, which
 # is implemented in the .cc file, together with a postprocessor to calculate 
-# the error and a new pressure boundary cinsition.     
+# the error and a new pressure boundary condition.     
 # 
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50

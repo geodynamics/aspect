@@ -1,4 +1,4 @@
-# This test checks wether the derivatives of the simple nonlinear
+# This test checks whether the derivatives of the simple nonlinear
 # material model are the same as the finite difference derivatives 
 # created by the simple nonlinear material model.
 set Additional shared libraries = tests/libspiegelman_material.so

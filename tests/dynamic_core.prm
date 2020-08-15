@@ -1,5 +1,5 @@
 # A simple setup for Earth convection model in a 2d shell 
-# with the core mantle boundary (CMB) temperature dyanmically evolves through time. 
+# with the core mantle boundary (CMB) temperature dynamically evolves through time. 
 # The 'dynamic core' boundary temperature plugin and 'core statistics' postprocessor 
 # are used to solving and tracing the core evolution.
 
@@ -65,7 +65,7 @@ subsection Boundary temperature model
     set Max iteration                     = 30
     set Core heat capacity                = 840
     set K0                                = 4.111e11
-    set Alpha                             = 1.35e-5 # Themal expensivity for the core
+    set Alpha                             = 1.35e-5 # Thermal expansivity for the core
     set Core conductivity                 = 50
     subsection Geotherm parameters
         set Tm0=1695

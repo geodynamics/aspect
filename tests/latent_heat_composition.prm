@@ -1,6 +1,6 @@
 #########################################################
 # This is a model setup to test the latent heat generation
-# with a single compostional field. The compositional field
+# with a single compositional field. The compositional field
 # is vertically stratified across the midpoint. 
 # Material flows in from the top and crosses phases 
 # transitions. In one of these transitions energy is released 
@@ -38,7 +38,7 @@ end
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. Likewise, composition is only fixed along the upper boundary 
-  # where there is inlfow. To guarantuee a steady downward flow, we fix the 
+  # where there is inflow. To guarantee a steady downward flow, we fix the 
   # velocity at the top and bottom, and set it to free slip on the sides. 
   set Fixed temperature boundary indicators   = 3
 end
@@ -65,7 +65,7 @@ subsection Boundary temperature model
   end
 end
 
-# Boundary compostion derived from initial conditions
+# Boundary composition derived from initial conditions
 subsection Boundary composition model
   set List of model names = initial composition
 end
@@ -138,7 +138,7 @@ subsection Material model
     set Reference temperature                          = 1000
     set Thermal conductivity                           = 2.38
 
-    # We set the thermal expansion amd the compressibility to zero, so that 
+    # We set the thermal expansion and the compressibility to zero, so that 
     # all temperature (and density) changes are caused by advection, diffusion 
     # and latent heating. 
     set Thermal expansion coefficient                  = 0.0

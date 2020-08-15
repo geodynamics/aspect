@@ -41,7 +41,7 @@ end
 
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
-  # are isolating. To guarantuee a steady downward flow, we fix the velocity
+  # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides. 
   set Fixed temperature boundary indicators   = 3
 end

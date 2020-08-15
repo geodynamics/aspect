@@ -18,7 +18,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -26,7 +26,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
@@ -60,18 +60,18 @@ end
 #   Crust surface temperature (Tsc) = 273 K
 #   Crust surface heat flow   (qsc) = 0.07 W/m^2
 #   Crust heat production      (Ac) = 1.5e-6 W/m^3
-#   Crust thickness           (dzu) = 30.3 m  
+#   Crust thickness           (dzu) = 30.3 m
 #   Mantle heat production     (Am) = 0. W/m^3
-#   Mantle thickness          (dzm) = 70.e3   
-#   Thermal conducitivty        (K) = 2.5 W/(m K)
+#   Mantle thickness          (dzm) = 70.e3
+#   Thermal conductivity        (K) = 2.5 W/(m K)
 # These constraints allow us to calculate the following values:
 #   qbc = qsc - A*dzc = 0.07 - 1.5e-6*30.e3 = 0.025
-#   Tbc = Tsc + (qsc/k)*dzc - (A*dzc**2)/(2*k) = 
+#   Tbc = Tsc + (qsc/k)*dzc - (A*dzc**2)/(2*k) =
 #         273. + (0.07/2.5)*30.e3 - (1.5e-6 * 30.e3**2)/(2.*2.5) = 843
 #   qsm = qbc = 0.025
 #   Tsm = Tbc = 843
 #   qbm = qsm - A*dzm = 0.025 - 0.*70.e3 = 0.025
-#   Tbm = Tsm + (qts/k)*dzs - (A*dzm**2)/(2*k) = 
+#   Tbm = Tsm + (qts/k)*dzs - (A*dzm**2)/(2*k) =
 #         843. + (0.025/2.5)*30.e3 - (0. * 70.e3**2)/(2.*2.5) = 1543
 subsection Initial temperature model
   set Model name = function
@@ -80,15 +80,15 @@ subsection Initial temperature model
     set Function constants = h=100e3,tsc=273,tsm=843,qsc=0.07,qsm=0.025,k=2.5,A=1.5e-6
     set Function expression = if( (h-y)<=30.e3, \
                                   tsc + (qsc/k)*(h-y) - (A*(h-y)*(h-y))/(2.0*k), \
-                                  tsm + (qsm/k)*(h-y-30.e3))                             
+                                  tsm + (qsm/k)*(h-y-30.e3))
   end
 end
 
 # Internal heating (user specifies heat flux in W/m^3)
 # Values below are for the background (mantle) and crust.
 # If one wishes to track a property through compositional fields that should
-# not be used to deteremine the heat flux (e.g. finite strain), set the
-# "Use compositional field for heat flux averaging" value for that field to 0. 
+# not be used to determine the heat flux (e.g. finite strain), set the
+# "Use compositional field for heat flux averaging" value for that field to 0.
 # See Initial temperature model section for relationship between heat flux, production
 # and initial temperature profile representative of a continental geotherm.
 subsection Heating model
@@ -105,7 +105,7 @@ subsection Compositional fields
   set Names of fields = upper
 end
 
-# Initial composition model 
+# Initial composition model
 subsection Initial composition model
   set Model name = function
   subsection Function
@@ -132,7 +132,7 @@ subsection Material model
     set Reference viscosity = 1e22
     set Viscosity averaging scheme = harmonic
 
-    # Thermodynamic properties   
+    # Thermodynamic properties
     # Thermal diffusivity = thermal_conductivity/(density*heat_capacity)
     set Thermal diffusivities = 1.010101e-6, 1.190476e-6
     set Heat capacities = 750.

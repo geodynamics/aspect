@@ -2,7 +2,7 @@
 # work correctly. It prescribes a zero heat flux at the sides, a 
 # basal heat flow of 4 mW/m^2 and a surface temperature of 90 K. 
 # Presently, we use a conductivity of 
-# 2.38 (the conducitvity of ice at 273 K). This test should yield a 
+# 2.38 (the conductivity of ice at 273 K). This test should yield a 
 # temperature of approximately 420 K at the base of the model.   
 
 #           Ts = 90 K

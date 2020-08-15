@@ -1,8 +1,8 @@
-# A test for the particle load balacing strategy 'repartition'.
+# A test for the particle load balancing strategy 'repartition'.
 #
 # The load is distributed according to a balanced weight defined
 # as: n_locally_owned_cells + particle_weight/1000 * n_locally_owned_particles.
-# This test uses a large particle weight to ensure a good particle distibution
+# This test uses a large particle weight to ensure a good particle distribution
 # at the cost of an imbalance in the cell distribution.
 
 # MPI: 4

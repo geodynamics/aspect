@@ -33,13 +33,13 @@ set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
   # Select one of the following models:
-  # 
+  #
   # `Tan Gurnis': A model for the Tan/Gurnis benchmark.
-  # 
+  #
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
-  # read from subsection 'Sherical constant'.
-  # 
+  # read from subsection 'Spherical constant'.
+  #
   # `box': A model in which the temperature is chosen constant on all the
   # sides of a box.
   set List of model names = initial temperature
@@ -71,11 +71,11 @@ end
 
 subsection Geometry model
   # Select one of the following models:
-  # 
-  # `spherical shell': A geometry representing a spherical shell or a pice of
+  #
+  # `spherical shell': A geometry representing a spherical shell or a piece of
   # it. Inner and outer radii are read from the parameter file in subsection
   # 'Spherical shell'.
-  # 
+  #
   # `box': A box geometry parallel to the coordinate directions. The extent of
   # the box in each coordinate direction is set in the parameter file. The box
   # geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0
@@ -83,7 +83,7 @@ subsection Geometry model
   # boundary indicators 0 through 5 indicate left, right, front, back, bottom
   # and top boundaries. See also the documentation of the deal.II class
   # ``GeometryInfo''.
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 500000
@@ -94,7 +94,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -107,7 +107,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -118,14 +118,14 @@ end
 
 subsection Material model
 
-  set Model name = simple # default: 
+  set Model name = simple # default:
 
 end
 
 
 subsection Mesh refinement
 
-  set Additional refinement times              = 
+  set Additional refinement times              =
 
   set Coarsening fraction                      = 0.2
   set Refinement fraction                      = 0.5
@@ -143,7 +143,7 @@ subsection Mesh refinement
   set Time steps between mesh refinement       = 1
   subsection Maximum refinement function
     set Coordinate system      = cartesian
-    set Function constants     = 
+    set Function constants     =
     set Function expression    = 6 + 2*sin(x*2*pi/250000)*sin(y*2*pi/250000)
     set Variable names         = x,y
   end
@@ -155,7 +155,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default: 
+  set Fixed temperature boundary indicators   = 0,3        # default:
 end
 
 subsection Boundary velocity model
@@ -163,7 +163,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default: 
+  set Zero velocity boundary indicators       =           # default:
 end
 
 
@@ -182,7 +182,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
 
-    set List of output variables      = 
+    set List of output variables      =
 
     # VTU file output supports grouping files from several CPUs into one file
     # using MPI I/O when writing on a parallel filesystem. Select 0 for no
@@ -202,6 +202,3 @@ subsection Postprocess
   end
 
 end
-
-
-

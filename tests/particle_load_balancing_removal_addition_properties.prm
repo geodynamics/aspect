@@ -1,4 +1,4 @@
-# A test for the particle load balacing strategy 'remove and add particles'.
+# A test for the particle load balancing strategy 'remove and add particles'.
 # This test is a copy of particle_load_balancing_removal_addition, except
 # that it additionally tests the generation and interpolation of
 # the properties of the newly generated particles.
