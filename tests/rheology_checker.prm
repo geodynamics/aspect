@@ -1,0 +1,82 @@
+# This test uses the rheology_checker material model plugin
+# to output computed deformation properties
+# (such as strain rate and the first stress derivative of the strain rate)
+# at a given strain rate. The plugin can easily be modified to accept
+# multiple rheology modules. It doesn't actually use these modules,
+# it is just a vessel for functions calculating and outputting properties
+# at fixed stress / strain conditions.
+
+set Additional shared libraries = tests/librheology_checker.so
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 3.e9
+
+# Model geometry (100x100 km, 10 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# No boundary-driven deformation, but the strain-rate used by the material
+# model is set in the material model section through the parameters
+# "Reference strain rate" and "Minimum strain rate".
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Temperature boundary and initial conditions
+subsection Boundary temperature model
+  set List of model names = initial temperature
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1073
+  end
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = rheology checker
+  subsection Rheology checker model
+    set Reference strain rate                     = 1e-11
+    set Reference stress                          = 1e6
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Output format            = gnuplot
+  end
+end
