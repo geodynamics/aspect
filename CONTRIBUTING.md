@@ -98,33 +98,37 @@ are new to the project then we will work with you to ensure your contributions
 are formatted with this style, so please do not think of it as a road block if
 you would like to contribute some code.
 
+
 ## Acknowledgment of contributions
-While we are grateful for every contribution, there are also several official
-ways how your contribution will be acknowledged by the ASPECT community:
-- Every commit that was merged into the ASPECT repository will make you part of
+
+The ASPECT community is grateful for every contribution! But, beyond
+this gratitude, there are also several *formal*
+ways in which your contribution will be acknowledged by the ASPECT community:
+- Every commit that is merged into the ASPECT repository makes you part of
   the growing group of ASPECT
   [contributors](https://github.com/geodynamics/aspect/graphs/contributors).
 - Our biweekly mailing list newsletter mentions all raised issues and proposed
-  and merged pull requests including an acknowledgment of the author of the
+  and merged pull requests, including an acknowledgment of the author of the
   issue/pull request.
 - If you contributed significant functionality to the source code we will ask
   you to provide an entry into our
-  [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html) by
-  placing a file into the [doc/modules/changes/](doc/modules/changes/) folder.
+  [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html)
+  that shows your name. To add such an entry, place
+  a file into the [doc/modules/changes/](doc/modules/changes/) folder.
   This changelog is used to generate our release notes, and remains available
   for all previous releases of ASPECT.
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
-- Regularly, the Principal Developers of ASPECT come together and discuss based
-  on the contributions of the last years who should be invited to join the
-  group of Principal Developers. Criteria that *Principal Developers* should
-  match are:
+- The Principal Developers of ASPECT come together on a regular basis and discuss
+  whether others should be invited to join the
+  group of Principal Developers. Criteria that *Principal Developers*
+  for this decision include:
 
-  - A profound understanding of ASPECT's structure and vision,
-  - A proven willingness to further the project's goals and help other users,
+  - A profound understanding of ASPECT's structure and vision;
+  - A proven willingness to further the project's goals and help other users;
   - Significant contributions to ASPECT (not necessarily only source code,
-    also mailing list advice, documentation, benchmarks, tutorials),
+    also mailing list advice, documentation, benchmarks, tutorials);
   - Regular and active contributions to ASPECT for more than one year,
     not restricted to user meetings.
 
