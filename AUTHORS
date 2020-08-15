@@ -1,12 +1,16 @@
 ASPECT is being developed by a large, collaborative, and inclusive
-community. It is currently maintained by the following people:
+community. The code and its community are currently maintained by the
+following *Maintainers*:
    Wolfgang Bangerth
    Juliane Dannberg
+   Menno Fraters
    Rene Gassmoeller
+   Anne Glerum
    Timo Heister
+   John Naliboff
 
-The following people have significantly contributed and furthered ASPECT's
-goals and are therefore Principal Developers:
+The following people currently serve as *Principal Developers* -- people
+who have and are providing substantial technical contributions to ASPECT:
 
    Jacky Austermann
    Wolfgang Bangerth
@@ -20,3 +24,5 @@ goals and are therefore Principal Developers:
 A complete and growing list of the many authors that have contributed
 over the years can be found at
    https://github.com/geodynamics/aspect/graphs/contributors
+We are grateful for the contributions of all of these people, and
+their participation in our community!
