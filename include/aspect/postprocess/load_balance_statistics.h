@@ -44,7 +44,7 @@ namespace aspect
      * of cells across all processes. All of these numbers
      * can be useful to assess the load balance between
      * different MPI ranks, as the difference between the
-     * mimimal and maximal load should be as small as
+     * minimal and maximal load should be as small as
      * possible.
      *
      * @ingroup Postprocessing

@@ -73,7 +73,7 @@ namespace aspect
         // Calculate start id
         const types::particle_index start_particle_id = llround(static_cast<double> (n_particles)  * local_start_weight / global_weight_integral);
 
-        // Calcualate number of local particles
+        // Calculate number of local particles
         const types::particle_index end_particle_id = llround(static_cast<double> (n_particles)  * (local_start_weight + local_weight_integral) / global_weight_integral);
         const types::particle_index n_local_particles = end_particle_id-start_particle_id;
 

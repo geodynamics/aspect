@@ -33,7 +33,7 @@ namespace aspect
 {
   /**
    * A namespace for the definition of properties of the initial topography.
-   * This includes mainly the storage and retrival of the initial topography.
+   * This includes mainly the storage and retrieval of the initial topography.
    * The retrieval is done through the value function, which requires a point
    * of size dim-1, and it returns a double which represents the elevation.
    *
@@ -129,7 +129,7 @@ namespace aspect
      * object that describes it. Ownership of the pointer is transferred to
      * the caller.
      *
-     * The intial topography model will also be asked to read its runtime
+     * The initial topography model will also be asked to read its runtime
      * parameters already.
      *
      * @ingroup InitialTopographyModels

@@ -149,7 +149,7 @@ namespace aspect
      * $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity,
      * $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the
      * Jaumann corotational stress rate. If plasticity is included the
-     * deviatoric rate of deformation may be writted as:
+     * deviatoric rate of deformation may be written as:
      * $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$
      * is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$
      * decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield
@@ -284,7 +284,7 @@ namespace aspect
         std::vector<double> thermal_diffusivities;
 
         /**
-         * Whether to use user-defined thermal conductivites instead of thermal diffusivities.
+         * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
          */
         bool define_conductivities;
 

@@ -36,7 +36,7 @@ namespace aspect
      * gravity gradients for a set of points (e.g. satellites) in or above the model
      * surface for a user-defined range of latitudes, longitudes and radius, or a list
      * of point coordinates. Spherical coordinates in the output file are radius,
-     * colattitude and colongitude. Gravity is here based on the density distribution
+     * colatitude and colongitude. Gravity is here based on the density distribution
      * from the material model (and non adiabatic). This means that the density may
      * come directly from an ascii file. This postprocessor also computes theoretical
      * gravity and its derivatives, which corresponds to the analytical solution of gravity
@@ -48,7 +48,7 @@ namespace aspect
      * gravity anomalies is to subtract the gravity of a certain point from the average
      * gravity on the map. Another way is to directly use density anomalies for this
      * postprocessor.
-     * The average- minimum- and maximum gravity acceleration and potiental are written
+     * The average- minimum- and maximum gravity acceleration and potential are written
      * into the statistics file.
 
      * @ingroup Postprocessing

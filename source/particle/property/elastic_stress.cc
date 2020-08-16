@@ -191,7 +191,7 @@ namespace aspect
                                         "A plugin in which the particle property tensor is "
                                         "defined as the total elastic stress a particle has "
                                         "accumulated. See the viscoelastic material model "
-                                        "documenation for more detailed information.")
+                                        "documentation for more detailed information.")
 
     }
   }

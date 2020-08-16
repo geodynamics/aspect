@@ -940,7 +940,7 @@ namespace aspect
      *
      * In contrast to the reaction_terms, which are actual changes in composition
      * rather than reaction rates, and assume equilibrium between the compositional
-     * fields, the reacion_rates defined here allow for reaction processes that
+     * fields, the reaction_rates defined here allow for reaction processes that
      * happen on shorter time scales than the advection, and disequilibrium reactions.
      */
     template <int dim>

@@ -598,7 +598,7 @@ namespace aspect
             {
               const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
-              // This one is only avaiable in debug mode, because normally
+              // This one is only available in debug mode, because normally
               // the AssertTrow in the preconditioner should already have
               // caught the problem.
               Assert(derivatives != nullptr, ExcMessage ("Error: The newton method requires the derivatives"));

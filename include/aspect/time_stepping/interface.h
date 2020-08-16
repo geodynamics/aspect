@@ -160,7 +160,7 @@ namespace aspect
         bool need_checkpoint_on_terminate() const;
 
         /**
-         * Check if the simulation is ready to terminate sucessfully.
+         * Check if the simulation is ready to terminate successfully.
          */
         bool should_simulation_terminate_now() const;
 

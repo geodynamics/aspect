@@ -123,12 +123,12 @@ namespace aspect
                                  "average temperature.");
               prm.declare_entry ("Use maximal temperature for bottom","true",
                                  Patterns::Bool(),
-                                 "If true, use the specified boundary temepratures as average temperatures at the surface. "
+                                 "If true, use the specified boundary temperatures as average temperatures at the surface. "
                                  "If false, extrapolate the temperature gradient between the first and second cells to the surface. "
                                  "This option will only work for models with a fixed surface temperature. ");
               prm.declare_entry ("Use minimal temperature for surface","true",
                                  Patterns::Bool(),
-                                 "Whether to use the minimal speficied boundary temperature as the bottom boundary temperature. "
+                                 "Whether to use the minimal specified boundary temperature as the bottom boundary temperature. "
                                  "This option will only work for models with a fixed bottom boundary temperature. ");
 
             }

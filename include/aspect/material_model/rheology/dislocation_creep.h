@@ -64,7 +64,7 @@ namespace aspect
            * Compute the viscosity based on the diffusion creep law.
            * If @p expected_n_phases_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
-           * for each compositional field and viscosity will be fisrt computed on
+           * for each compositional field and viscosity will be first computed on
            * each phases and then averaged for each compositional field.
            */
           double
