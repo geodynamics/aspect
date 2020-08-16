@@ -294,20 +294,19 @@ namespace aspect
         const std::vector<std::string> x_boundary_velocity_indicators
           = Utilities::split_string_list(prm.get("Prescribed velocity boundary indicators"));
 
-        for (std::vector<std::string>::const_iterator p = x_boundary_velocity_indicators.begin();
-             p != x_boundary_velocity_indicators.end(); ++p)
+        for (const auto &p : x_boundary_velocity_indicators)
           {
             // each entry has the format (white space is optional):
             // <id> [x][y][z] : <value (might have spaces)>
             //
             // first tease apart the two halves
-            const std::vector<std::string> split_parts = Utilities::split_string_list (*p, ':');
+            const std::vector<std::string> split_parts = Utilities::split_string_list (p, ':');
             AssertThrow (split_parts.size() == 2,
                          ExcMessage ("The format for prescribed velocity boundary indicators "
                                      "requires that each entry has the form `"
                                      "<id> [x][y][z] : <value>', but there does not "
                                      "appear to be a colon in the entry <"
-                                     + *p
+                                     + p
                                      + ">."));
 
             // the easy part: get the value
@@ -389,24 +388,20 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::iterator
-           boundary_id = boundary_velocity_indicators.begin();
-           boundary_id != boundary_velocity_indicators.end(); ++boundary_id)
+      for (const auto &boundary_id : boundary_velocity_indicators)
         {
-          for (std::vector<std::string>::iterator
-               name = boundary_id->second.second.begin();
-               name != boundary_id->second.second.end(); ++name)
+          for (const auto name : boundary_id.second.second)
             {
-              boundary_velocity_objects[boundary_id->first].push_back(
+              boundary_velocity_objects[boundary_id.first].push_back(
                 std::unique_ptr<Interface<dim> > (std::get<dim>(registered_plugins)
-                                                  .create_plugin (*name,
+                                                  .create_plugin (name,
                                                                   "Boundary velocity::Model names")));
 
-              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_velocity_objects[boundary_id->first].back().get()))
+              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_velocity_objects[boundary_id.first].back().get()))
                 sim->initialize_simulator (this->get_simulator());
 
-              boundary_velocity_objects[boundary_id->first].back()->parse_parameters (prm);
-              boundary_velocity_objects[boundary_id->first].back()->initialize ();
+              boundary_velocity_objects[boundary_id.first].back()->parse_parameters (prm);
+              boundary_velocity_objects[boundary_id.first].back()->initialize ();
             }
         }
     }

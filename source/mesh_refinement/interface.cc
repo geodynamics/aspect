@@ -91,13 +91,11 @@ namespace aspect
       Assert (mesh_refinement_objects.size() > 0, ExcInternalError());
 
       // call the update() functions of all refinement plugins.
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = mesh_refinement_objects.begin();
-           p != mesh_refinement_objects.end(); ++p)
+      for (const auto &p : mesh_refinement_objects)
         {
           try
             {
-              (*p)->update ();
+              p->update ();
             }
 
           // plugins that throw exceptions usually do not result in
@@ -114,7 +112,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -132,7 +130,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl
@@ -265,13 +263,11 @@ namespace aspect
 
       // call the tag_additional_cells() functions of all
       // plugins we have here in turns.
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
-           p = mesh_refinement_objects.begin();
-           p != mesh_refinement_objects.end(); ++p)
+      for (const auto &p : mesh_refinement_objects)
         {
           try
             {
-              (*p)->tag_additional_cells ();
+              p->tag_additional_cells ();
             }
 
           // plugins that throw exceptions usually do not result in
@@ -288,7 +284,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl
                         << exc.what() << std::endl
                         << "Aborting!" << std::endl
@@ -306,7 +302,7 @@ namespace aspect
               std::cerr << "Exception on MPI process <"
                         << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
                         << "> while running mesh refinement plugin <"
-                        << typeid(**p).name()
+                        << typeid(*p).name()
                         << ">: " << std::endl;
               std::cerr << "Unknown exception!" << std::endl
                         << "Aborting!" << std::endl

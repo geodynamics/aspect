@@ -167,15 +167,13 @@ namespace aspect
       const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >
       tmp_active_vel_boundary_indicators = this->get_boundary_velocity_manager().get_active_boundary_velocity_names();
 
-      for (std::map<types::boundary_id, std::pair<std::string, std::vector<std::string> > >::const_iterator p = tmp_active_vel_boundary_indicators.begin();
-           p != tmp_active_vel_boundary_indicators.end(); ++p)
-        velocity_boundary_indicators.insert(p->first);
+      for (const auto &p : tmp_active_vel_boundary_indicators)
+        velocity_boundary_indicators.insert(p.first);
 
       // Get the mesh deformation boundary indicators
       const std::set<types::boundary_id> tmp_mesh_deformation_boundary_indicators = this->get_mesh_deformation_boundary_indicators();
-      for (std::set<types::boundary_id>::const_iterator p = tmp_mesh_deformation_boundary_indicators.begin();
-           p != tmp_mesh_deformation_boundary_indicators.end(); ++p)
-        AssertThrow(velocity_boundary_indicators.find(*p) == velocity_boundary_indicators.end(),
+      for (const auto &p : tmp_mesh_deformation_boundary_indicators)
+        AssertThrow(velocity_boundary_indicators.find(p) == velocity_boundary_indicators.end(),
                     ExcMessage("The free surface mesh deformation plugin cannot be used with the current velocity boundary conditions"));
 
       this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,

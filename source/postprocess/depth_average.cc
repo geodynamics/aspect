@@ -233,19 +233,18 @@ namespace aspect
                   f << std::endl;
 
                   // Output each data point in the entries object
-                  for (typename std::vector<DataPoint>::const_iterator point = entries.begin();
-                       point != entries.end(); ++point)
+                  for (const auto &point : entries)
                     {
-                      double depth = max_depth/static_cast<double>(point->values[0].size())/2.0;
-                      for (unsigned int d = 0; d < point->values[0].size(); ++d)
+                      double depth = max_depth/static_cast<double>(point.values[0].size())/2.0;
+                      for (unsigned int d = 0; d < point.values[0].size(); ++d)
                         {
                           f << std::setw(12)
-                            << (this->convert_output_to_years() ? point->time/year_in_seconds : point->time)
+                            << (this->convert_output_to_years() ? point.time/year_in_seconds : point.time)
                             << ' ' << std::setw(12) << depth;
                           for ( unsigned int i = 0; i < variables.size(); ++i )
-                            f << ' ' << std::setw(12) << point->values[i][d];
+                            f << ' ' << std::setw(12) << point.values[i][d];
                           f << std::endl;
-                          depth+= max_depth/static_cast<double>(point->values[0].size() );
+                          depth+= max_depth/static_cast<double>(point.values[0].size() );
                         }
                     }
 

@@ -446,15 +446,12 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
-    for (std::map<types::boundary_id,std::pair<std::string,std::string> >::const_iterator
-         p = parameters.prescribed_traction_boundary_indicators.begin();
-         p != parameters.prescribed_traction_boundary_indicators.end();
-         ++p)
+    for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
         BoundaryTraction::Interface<dim> *bv
           = BoundaryTraction::create_boundary_traction<dim>
-            (p->second.second);
-        boundary_traction[p->first].reset (bv);
+            (p.second.second);
+        boundary_traction[p.first].reset (bv);
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(bv))
           sim->initialize_simulator(*this);
         bv->parse_parameters (prm);
@@ -463,21 +460,12 @@ namespace aspect
 
     std::set<types::boundary_id> open_velocity_boundary_indicators
       = geometry_model->get_used_boundary_indicators();
-    for (std::map<types::boundary_id,std::pair<std::string,std::vector<std::string> > >::const_iterator
-         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
-         p != boundary_velocity_manager.get_active_boundary_velocity_names().end();
-         ++p)
-      open_velocity_boundary_indicators.erase (p->first);
-    for (std::set<types::boundary_id>::const_iterator
-         p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
-         p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end();
-         ++p)
-      open_velocity_boundary_indicators.erase (*p);
-    for (std::set<types::boundary_id>::const_iterator
-         p = boundary_velocity_manager.get_tangential_boundary_velocity_indicators().begin();
-         p != boundary_velocity_manager.get_tangential_boundary_velocity_indicators().end();
-         ++p)
-      open_velocity_boundary_indicators.erase (*p);
+    for (const auto &p : boundary_velocity_manager.get_active_boundary_velocity_names())
+      open_velocity_boundary_indicators.erase (p.first);
+    for (const auto p : boundary_velocity_manager.get_zero_boundary_velocity_indicators())
+      open_velocity_boundary_indicators.erase (p);
+    for (const auto p : boundary_velocity_manager.get_tangential_boundary_velocity_indicators())
+      open_velocity_boundary_indicators.erase (p);
 
     // We need to do the RHS compatibility modification, if the model is
     // compressible or compatible (in the case of melt transport), and
@@ -663,13 +651,11 @@ namespace aspect
         // obtain the boundary indicators that belong to Dirichlet-type
         // temperature boundary conditions and interpolate the temperature
         // there
-        for (std::set<types::boundary_id>::const_iterator
-             p = boundary_temperature_manager.get_fixed_temperature_boundary_indicators().begin();
-             p != boundary_temperature_manager.get_fixed_temperature_boundary_indicators().end(); ++p)
+        for (const auto p : boundary_temperature_manager.get_fixed_temperature_boundary_indicators())
           {
             auto lambda = [&] (const dealii::Point<dim> &x) -> double
             {
-              return boundary_temperature_manager.boundary_temperature(*p, x);
+              return boundary_temperature_manager.boundary_temperature(p, x);
             };
 
             VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
@@ -679,7 +665,7 @@ namespace aspect
 
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
-                                                      *p,
+                                                      p,
                                                       vector_function_object,
                                                       new_current_constraints,
                                                       introspection.component_masks.temperature);
@@ -706,13 +692,11 @@ namespace aspect
         // composition boundary conditions and interpolate the composition
         // there
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-          for (std::set<types::boundary_id>::const_iterator
-               p = boundary_composition_manager.get_fixed_composition_boundary_indicators().begin();
-               p != boundary_composition_manager.get_fixed_composition_boundary_indicators().end(); ++p)
+          for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
             {
               auto lambda = [&] (const Point<dim> &x) -> double
               {
-                return boundary_composition_manager.boundary_composition(*p, x, c);
+                return boundary_composition_manager.boundary_composition(p, x, c);
               };
 
               VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
@@ -722,7 +706,7 @@ namespace aspect
 
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
-                                                        *p,
+                                                        p,
                                                         vector_function_object,
                                                         new_current_constraints,
                                                         introspection.component_masks.compositional_fields[c]);
@@ -1240,12 +1224,10 @@ namespace aspect
     signals.pre_compute_no_normal_flux_constraints(triangulation);
     {
       // do the interpolation for zero velocity
-      for (std::set<types::boundary_id>::const_iterator
-           p = boundary_velocity_manager.get_zero_boundary_velocity_indicators().begin();
-           p != boundary_velocity_manager.get_zero_boundary_velocity_indicators().end(); ++p)
+      for (const auto p : boundary_velocity_manager.get_zero_boundary_velocity_indicators())
         VectorTools::interpolate_boundary_values (*mapping,
                                                   dof_handler,
-                                                  *p,
+                                                  p,
                                                   Functions::ZeroFunction<dim>(introspection.n_components),
                                                   constraints,
                                                   introspection.component_masks.velocities);
@@ -1269,20 +1251,18 @@ namespace aspect
     // set the current time and do the interpolation
     // for the prescribed velocity fields
     boundary_velocity_manager.update();
-    for (typename std::map<types::boundary_id,std::pair<std::string, std::vector<std::string> > >::const_iterator
-         p = boundary_velocity_manager.get_active_boundary_velocity_names().begin();
-         p != boundary_velocity_manager.get_active_boundary_velocity_names().end(); ++p)
+    for (const auto &p : boundary_velocity_manager.get_active_boundary_velocity_names())
       {
         Utilities::VectorFunctionFromVelocityFunctionObject<dim> vel
         (introspection.n_components,
          [&] (const dealii::Point<dim> &x) -> Tensor<1,dim>
         {
-          return boundary_velocity_manager.boundary_velocity(p->first, x);
+          return boundary_velocity_manager.boundary_velocity(p.first, x);
         });
 
         // here we create a mask for interpolate_boundary_values out of the 'selector'
         std::vector<bool> mask(introspection.component_masks.velocities.size(), false);
-        const std::string &comp = p->second.first;
+        const std::string &comp = p.second.first;
 
         if (comp.length()>0)
           {
@@ -1318,7 +1298,7 @@ namespace aspect
           {
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
-                                                      p->first,
+                                                      p.first,
                                                       vel,
                                                       constraints,
                                                       mask);
@@ -1327,7 +1307,7 @@ namespace aspect
           {
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
-                                                      p->first,
+                                                      p.first,
                                                       Functions::ZeroFunction<dim>(introspection.n_components),
                                                       constraints,
                                                       mask);
@@ -1541,20 +1521,16 @@ namespace aspect
         // everything gets nicely aligned; then output everything
         {
           unsigned int width = 0;
-          for (std::list<std::pair<std::string,std::string> >::const_iterator
-               p = output_list.begin();
-               p != output_list.end(); ++p)
-            width = std::max<unsigned int> (width, p->first.size());
+          for (const auto &p : output_list)
+            width = std::max<unsigned int> (width, p.first.size());
 
-          for (std::list<std::pair<std::string,std::string> >::const_iterator
-               p = output_list.begin();
-               p != output_list.end(); ++p)
+          for (const auto &p : output_list)
             pcout << "     "
                   << std::left
                   << std::setw(width)
-                  << p->first
+                  << p.first
                   << " "
-                  << p->second
+                  << p.second
                   << std::endl;
         }
 
