@@ -97,7 +97,7 @@ namespace aspect
 
       private:
         double ref_strain_rate;
-          double ref_stress;
+        double ref_stress;
 
         Rheology::ConstantViscosity constant_viscosity;
         Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
@@ -130,7 +130,8 @@ namespace aspect
     RheologyChecker<dim>::make_rheology_output_names() const
     {
       const std::vector<std::string> names = {"constant viscosity strain rate",
-                                              "constant viscosity strain rate derivative"};
+                                              "constant viscosity strain rate derivative"
+                                             };
       return names;
     }
 
@@ -144,11 +145,11 @@ namespace aspect
       std::vector<std::vector<double>> outputs(rheology_out->get_names().size(), std::vector<double>(in.n_evaluation_points(), 0.));
 
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-      {
-        const std::pair strain_and_deriv_constant_viscosity = constant_viscosity_prefactors.compute_strain_rate_and_derivative (ref_stress, constant_viscosity.compute_viscosity(), 0);
-        outputs[0][i] = strain_and_deriv_constant_viscosity.first;
-        outputs[1][i] = strain_and_deriv_constant_viscosity.second;
-      }
+        {
+          const std::pair strain_and_deriv_constant_viscosity = constant_viscosity_prefactors.compute_strain_rate_and_derivative (ref_stress, constant_viscosity.compute_viscosity(), 0);
+          outputs[0][i] = strain_and_deriv_constant_viscosity.first;
+          outputs[1][i] = strain_and_deriv_constant_viscosity.second;
+        }
 
       rheology_out->output_values = outputs;
     }
@@ -186,8 +187,8 @@ namespace aspect
         {
           prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
                              "Reference strain rate for calculation of viscosities. Units: \\si{\\per\\second}.");
-                               prm.declare_entry ("Reference stress","1.0e6",Patterns::Double (0.),
-                                                  "Reference stress for calculation of strain rate and derivatives. Units: \\si{\\pascal}.");
+          prm.declare_entry ("Reference stress","1.0e6",Patterns::Double (0.),
+                             "Reference stress for calculation of strain rate and derivatives. Units: \\si{\\pascal}.");
 
           // Constant viscosity parameters
           Rheology::ConstantViscosity::declare_parameters(prm);
