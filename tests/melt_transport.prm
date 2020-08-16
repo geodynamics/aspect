@@ -1,8 +1,8 @@
 # Listing of Parameters
 # ---------------------
-# This test checks if including melt tranport in a simulation, 
+# This test checks if including melt transport in a simulation, 
 # but setting the porosity to 0, gives the same results as running
-# the simulation without melt tranport.
+# the simulation without melt transport.
 # 
 # Results are the same up to the first three digits of time step size
 # and min/max/mass of compositional fields. 

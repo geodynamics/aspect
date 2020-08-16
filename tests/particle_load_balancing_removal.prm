@@ -1,4 +1,4 @@
-# A test for the particle load balacing strategy 'remove particles'.
+# A test for the particle load balancing strategy 'remove particles'.
 # As soon as too many particles live in a cell, a fraction of them
 # is discarded.
 

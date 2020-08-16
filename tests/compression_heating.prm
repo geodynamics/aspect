@@ -7,7 +7,7 @@
 # to flow out (material expands upon melting).
 # There is no shear in the solid itself or shear between melt
 # and solid, but the velocity divergence is nonzero (it is 0.1),
-# so there is compressioon heating \xi (\nabla \cdot u_s).
+# so there is compression heating \xi (\nabla \cdot u_s).
 #
 # With the material properties in this benchmark, shear
 # heating of melt should have a value of 1.0 (for the

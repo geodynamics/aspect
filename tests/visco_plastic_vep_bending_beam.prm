@@ -1,13 +1,13 @@
 # This test checks whether the viscoelastic bending beam benchmark
-# works with the visco_platic material model. In particular,
+# works with the visco_plastic material model. In particular,
 # this benchmark is a good test to ensure that a model with
 # compositional fields that affect material properties works.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm 
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
 set End time  = 1e3
 
-# Significantly reduce resolution 
+# Significantly reduce resolution
 subsection Geometry model
   set Model name = box
   subsection Box

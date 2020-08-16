@@ -1,11 +1,11 @@
 # This test is used to check if the latent heat of
 # melting of pyroxenite is calculated correctly. 
 # The material is upwelling with a constant velocity
-# (without seperation of melt and solid) and without
+# (without separation of melt and solid) and without
 # conduction of heat, so that the steady state of the 
 # model is an adiabatic temperature profile. An approximated
 # analytical solution for this profile to compare the solution 
-# to can be calculated analogue to the descriptoin in Katz 
+# to can be calculated analogue to the description in Katz 
 # et al., 2003 (A new parameterization of hydrous mantle melting)
 # by numerically integrating equation (23) of that paper and 
 # using the corresponding parameters of the pyroxenite melting

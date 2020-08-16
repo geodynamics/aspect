@@ -4,7 +4,7 @@
 # compute reactions between compositional fields than 
 # the time step used for advection.  
 # In comparison to the example 'exponential_decay', the
-# initial comosition depends on x, and there is a constant 
+# initial composition depends on x, and there is a constant 
 # horizontal velocity. The composition decays over time, 
 # following the equations for exponential decay with a decay 
 # rate that depends on y. 

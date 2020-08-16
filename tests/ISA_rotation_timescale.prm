@@ -1,6 +1,6 @@
 # 2D model for half of a mid-ocean ridge
 # for testing the ISA rotation timescale postprocessor
-# based on the mid-ocean ridge cookbook, with a few simplificiations
+# based on the mid-ocean ridge cookbook, with a few simplifications
 
 set Dimension = 2
 set End time = 5e5

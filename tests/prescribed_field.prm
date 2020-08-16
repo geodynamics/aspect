@@ -4,7 +4,7 @@
 # The density is chosen as rho = 1 + 0.1*sin(2*pi*x)*sin(2*pi*y) 
 # and is copied into the compositional field 'prescribed field', 
 # so the minimum and maximum composition should be 0.9 at 1.1, 
-# respecively.
+# respectively.
 # The test also contains another compositional field that does
 # not use this method, so it should remain zero everywhere
 # (which is what the initial condition is).

@@ -1,7 +1,7 @@
 # This test is used to check if the latent heat of
 # melting of peridotite is calculated correctly. 
 # The material is upwelling with a constant velocity
-# (without seperation of melt and solid) and without
+# (without separation of melt and solid) and without
 # conduction of heat, so that the steady state of the 
 # model is an adiabatic temperature profile. An approximated
 # analytical solution for this profile to compare the solution 

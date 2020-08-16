@@ -1,7 +1,7 @@
 # This is a relatively realistic compressible model setup.
 # There is no simple analytical solution to it, it is rather
 # intended to serve as a comparison for more complicated
-# models. This variation is particulary made to test using
+# models. This variation is particularly made to test using
 # the full A block as preconditioner for the Stokes system
 # instead of the simplified approximation described in the
 # first ASPECT paper.

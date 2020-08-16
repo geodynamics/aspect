@@ -1,5 +1,5 @@
 # test DG advection solver on a PrescribedStokesSolution (u,v) = (0,1 )
-# with periodic boundary conditions on both x and y axises 
+# with periodic boundary conditions on both x and y axes 
 set Dimension                              = 2
 
 set Use years in output instead of seconds = false

@@ -1,6 +1,6 @@
 # 2D model for half of a mid-ocean ridge
 # for testing the grain lag angle postprocessor
-# based on the mid-ocean ridge cookbook, with a few simplificiations
+# based on the mid-ocean ridge cookbook, with a few simplifications
 
 set Dimension = 2
 set End time = 5e5

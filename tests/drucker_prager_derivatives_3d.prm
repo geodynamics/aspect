@@ -1,9 +1,9 @@
-# This test checks wether the derivatives of the drucker prager
-# material model are the same as the finite difference derivatives 
+# This test checks whether the derivatives of the drucker prager
+# material model are the same as the finite difference derivatives
 # created by the drucker prager material model. Significantly, the
-# temperature, composition, pressure and strain rate values 
-# evaluated by the material are all specified within 
-# drucker_prager_derivatives_3d.cc and the model parameters defined 
+# temperature, composition, pressure and strain rate values
+# evaluated by the material are all specified within
+# drucker_prager_derivatives_3d.cc and the model parameters defined
 # below are not used in the test.
 set Additional shared libraries = tests/libdrucker_prager_derivatives_3d.so
 
@@ -23,7 +23,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -31,7 +31,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.

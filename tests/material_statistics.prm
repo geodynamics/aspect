@@ -37,7 +37,7 @@ subsection Boundary temperature model
   end
 end
 
-# To guarantuee a steady rightward flow, we fix the velocity
+# To guarantee a steady rightward flow, we fix the velocity
 # at the left and right, and set it to free slip on the top and bottom. 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function, right:function

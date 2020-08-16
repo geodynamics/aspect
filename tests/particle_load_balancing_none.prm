@@ -1,4 +1,4 @@
-# A test for the particle load balacing strategy 'none'.
+# A test for the particle load balancing strategy 'none'.
 # No load balancing is performed and the resulting imbalance is
 # recorded by the 'load balance statistics' postprocessor.
 

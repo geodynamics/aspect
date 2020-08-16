@@ -38,7 +38,7 @@ end
 
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
-  # are isolating. To guarantuee a steady downward flow, we fix the velocity
+  # are isolating. To guarantee a steady downward flow, we fix the velocity
   # at the top and bottom, and set it to free slip on the sides. 
   set Fixed temperature boundary indicators   = 3
 end
@@ -107,7 +107,7 @@ subsection Material model
     set Reference temperature                          = 1000
     set Thermal conductivity                           = 2.38
 
-    # We set the thermal expansion amd the compressibility to zero, so that 
+    # We set the thermal expansion and the compressibility to zero, so that 
     # all temperature (and density) changes are caused by advection, diffusion 
     # and latent heating. 
     set Thermal expansion coefficient                  = 0.0

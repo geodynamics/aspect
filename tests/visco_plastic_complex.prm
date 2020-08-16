@@ -19,7 +19,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -27,7 +27,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
@@ -63,10 +63,10 @@ end
 # The initial constraints are:
 #   surface temperature (ts) = 273 K; basal temperature (tb) = 1573 K; Moho
 #   temperature (tm) = 873 K; crust heat production (A) = 9.e-7 W/m^3; crust
-#   thermal conductivity (kc) = 2.5 (W/(m K)); 
+#   thermal conductivity (kc) = 2.5 (W/(m K));
 # To satisfy these constraints, the following values are required:
 #   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
-#   mantle thermal conducitivty (km) = 3.65 (W/(m K)); 
+#   mantle thermal conductivity (km) = 3.65 (W/(m K)); 
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -74,7 +74,7 @@ subsection Initial temperature model
     set Function constants = h=100e3,ts=273,tm=873.,qs=0.0635,qb=0.0365,kc=2.5,km=3.65,A=9.e-7
     set Function expression = if( (h-y)<=30.e3, \
                                   ts + (qs/kc)*(h-y) - (A*(h-y)*(h-y))/(2.0*kc), \
-                                  tm + (qb/km)*(h-y-30.e3))                             
+                                  tm + (qb/km)*(h-y-30.e3))
   end
 end
 
@@ -90,7 +90,7 @@ subsection Heating model
     set Heating rates                 = 3.2142857e-10
     set Half decay times              = 1.e20
     set Initial concentrations mantle = 0.0
-    set Initial concentrations crust  = 1.0 
+    set Initial concentrations crust  = 1.0
     set Crust defined by composition  = true
     set Crust composition number      = 1
   end
@@ -102,7 +102,7 @@ subsection Compositional fields
   set Names of fields = plastic_strain, crust
 end
 
-# Initial composition model 
+# Initial composition model
 subsection Initial composition model
   set Model name = function
   subsection Function
@@ -129,13 +129,13 @@ subsection Material model
     set Reference viscosity = 1e22
     set Viscosity averaging scheme = harmonic
 
-    # Thermodynamic properties    
+    # Thermodynamic properties
     set Thermal diffusivities = 1.474747e-6,1.474747e-6,1.190476e-6
     set Heat capacities = 750.
     set Densities = 3300,3300,2800
     set Thermal expansivities = 0.
 
-    # Viscous flow laws 
+    # Viscous flow laws
     # Background: Dry olive (Hirth & Kohlstedt 2004), Crust: Wet quartzite (Rutter & Brodie 2004)
     set Viscous flow law = dislocation
     set Prefactors for dislocation creep = 6.52e-16,6.52e-16,8.57e-28

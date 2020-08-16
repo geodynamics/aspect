@@ -1,4 +1,4 @@
-# like periodix_box.prm, except we are now periodic in x and y and running in
+# like periodic_box.prm, except we are now periodic in x and y and running in
 # parallel
 #
 # MPI: 2

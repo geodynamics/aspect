@@ -100,7 +100,7 @@ subsection Boundary temperature model
   #
   # `spherical constant': A model in which the temperature is chosen constant
   # on the inner and outer boundaries of a spherical shell. Parameters are
-  # read from subsection 'Sherical constant'.
+  # read from subsection 'Spherical constant'.
   set List of model names = Tan Gurnis
 
 end
@@ -142,7 +142,7 @@ subsection Geometry model
   # `box': A box geometry parallel to the coordinate directions. The extent of
   # the box in each coordinate direction is set in the parameter file.
   #
-  # `spherical shell': A geometry representing a spherical shell or a pice of
+  # `spherical shell': A geometry representing a spherical shell or a piece of
   # it. Inner and outer radii are read from the parameter file in subsection
   # 'Spherical shell'.
   set Model name = box

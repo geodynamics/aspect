@@ -118,7 +118,7 @@ subsection Material model
     set Melting time scale for operator splitting = 1.111111111e3
     set Freezing rate                 = 9e-4
 
-    # simplifiy the melting model so that porosity depends on temperature linearly
+    # simplify the melting model so that porosity depends on temperature linearly
     set A1 = 726.85   # this is in °C --> 1000 K
     set A2 = 0
     set A3 = 0

@@ -44,7 +44,7 @@ set Prescribe internal velocities = true
 subsection Prescribed velocities
   subsection Indicator function
     set Variable names = x,y,t
-    # Return where to prescribe u_x; u_y; u_z (last one only used if dimeneion = 3)
+    # Return where to prescribe u_x; u_y; u_z (last one only used if dimension = 3)
     # 1 if velocity should be prescribed, 0 otherwise
     set Function expression = if(((x>.1)&(x<.9))&(abs(x-(1-y))<.05),1,0); \
                                 if(((x>.1)&(x<.9))&(abs(x-(1-y))<.05),1,0)

@@ -3,7 +3,7 @@
 # the single particle in this test follows:
 # x(t) = 0.5*t^2 + 0.1 * t, which results to:
 # x(1) = 0.6, for a particle starting at x(0)=0
-# Because the position is a polynom of second order, and we use
+# Because the position is a polynomial of second order, and we use
 # a second-order time-accurate integrator (rk2), the particle arrives
 # at the exact end position.
 

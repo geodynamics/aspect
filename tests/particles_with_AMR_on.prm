@@ -25,7 +25,7 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
-# Thermal expansion coeff = 0 --> no temperature depedence
+# Thermal expansion coeff = 0 --> no temperature dependence
 subsection Material model
   set Model name = simple
   subsection Simple model
@@ -73,7 +73,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
-    set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)  
+    set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)
  end
 end
 
@@ -89,7 +89,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 2
-  set Strategy                           = composition approximate gradient 
+  set Strategy                           = composition approximate gradient
   set Initial global refinement          = 4
   set Time steps between mesh refinement = 1
   set Coarsening fraction                = 0.05
@@ -120,7 +120,7 @@ subsection Postprocess
 
     subsection Function
        set Variable names      = x,z
-       set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)  
+       set Function expression = if(((x>187.5e3)&&(x<312.5e3)&&(z>312.5e3)&&(z<437.5e3)), 1, 0)
     end
 
     set Particle generator name = reference cell

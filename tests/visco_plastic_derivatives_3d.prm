@@ -1,4 +1,4 @@
-# This test checks wether the derivatives of the drucker prager
+# This test checks whether the derivatives of the drucker prager
 # material model are the same as the finite difference derivatives 
 # created by the drucker prager material model.
 set Additional shared libraries = tests/libvisco_plastic_derivatives.so

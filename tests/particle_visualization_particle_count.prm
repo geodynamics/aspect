@@ -1,6 +1,6 @@
 # This is a copy of the particle_property_function test, but instead of the
 # function property it tests the 'particle count' visualization plugin that
-# ouputs the number of particles per cell.
+# outputs the number of particles per cell.
 
 set Dimension                              = 2
 set End time                               = 70

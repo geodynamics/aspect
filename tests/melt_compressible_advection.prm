@@ -3,7 +3,7 @@
 # With a prescribed velocity of u = (0,z) and 
 # density, gravity and compressibilities set to 1,
 # phi = A * exp(-z) / z + 1. The z coordinate is
-# shifted z --> z+0.1 to avoind deviding by 0.  
+# shifted z --> z+0.1 to avoid dividing by 0.  
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0

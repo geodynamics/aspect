@@ -1,5 +1,5 @@
 # This is a test for the entropy viscosity. 
-# In particaluar, it checks that the value for the maximum viscosity is computed
+# In particular, it checks that the value for the maximum viscosity is computed
 # as described in the ASPECT publication.
 
 set Adiabatic surface temperature          = 1600
