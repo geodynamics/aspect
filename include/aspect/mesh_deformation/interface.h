@@ -252,19 +252,19 @@ namespace aspect
          */
         template <typename MeshDeformationType>
         bool
-        has_matching_postprocessor () const;
+        has_matching_mesh_deformation_object () const;
 
         /**
          * Go through the list of all mesh deformation objects that have been selected
          * in the input file (and are consequently currently active) and see
          * if one of them has the type specified by the template
          * argument or can be casted to that type. If so, return a reference
-         * to it. If no postprocessor is active that matches the given type,
+         * to it. If no mesh deformation object is active that matches the given type,
          * throw an exception.
          */
         template <typename MeshDeformationType>
         const MeshDeformationType &
-        get_matching_postprocessor () const;
+        get_matching_mesh_deformation_object () const;
 
         /**
          * For the current plugin subsystem, write a connection graph of all of the
@@ -421,7 +421,7 @@ namespace aspect
     template <typename MeshDeformationType>
     inline
     bool
-    MeshDeformationHandler<dim>::has_matching_postprocessor () const
+    MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
     {
       for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
            = mesh_deformation_objects_map.begin();
@@ -439,10 +439,10 @@ namespace aspect
     template <typename MeshDeformationType>
     inline
     const MeshDeformationType &
-    MeshDeformationHandler<dim>::get_matching_postprocessor () const
+    MeshDeformationHandler<dim>::get_matching_mesh_deformation_object () const
     {
-      AssertThrow(has_matching_postprocessor<MeshDeformationType> (),
-                  ExcMessage("You asked MeshDeformation::MeshDeformationHandler::get_matching_postprocessor() for a "
+      AssertThrow(has_matching_mesh_deformation_object<MeshDeformationType> (),
+                  ExcMessage("You asked MeshDeformation::MeshDeformationHandler::get_matching_mesh_deformation_object() for a "
                              "mesh deformation object of type <" + boost::core::demangle(typeid(MeshDeformationType).name()) + "> "
                              "that could not be found in the current model. Activate this "
                              "mesh deformation in the input file."));
