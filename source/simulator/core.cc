@@ -647,7 +647,7 @@ namespace aspect
     boundary_heat_flux->update();
 
     // If we do not want to prescribe Dirichlet boundary conditions on outflow boundaries,
-    // we update the boundary indicators of all faces that belong to ouflow boundaries
+    // we update the boundary indicators of all faces that belong to outflow boundaries
     // so that they are not in the list of fixed temperature boundary indicators any more.
     // We will undo this change in a later step, after the constraints have been set.
     // As long as we allow deal.II 8.5, we can not have boundary ids of more than 256,
@@ -1412,7 +1412,7 @@ namespace aspect
     // Set up the constraints for periodic boundary conditions:
 
     // Note: this has to happen _before_ we do hanging node constraints,
-    // because inconsistent contraints could be generated in parallel otherwise.
+    // because inconsistent constraints could be generated in parallel otherwise.
     {
       using periodic_boundary_set
         = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;

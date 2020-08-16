@@ -122,7 +122,7 @@ namespace aspect
                              "in weight fraction.");
           prm.declare_entry ("Max iteration", "30000",
                              Patterns::Integer (0),
-                             "The max iterations for nonliner core energy solver.");
+                             "The max iterations for nonlinear core energy solver.");
           prm.declare_entry ("Core heat capacity", "840.",
                              Patterns::Double (0.),
                              "Heat capacity of the core. "
@@ -405,7 +405,7 @@ namespace aspect
     {
       // Well solving the change in core-mantle boundary temperature T, inner core radius R, and
       //    light component (e.g. S, O, Si) composition X, the following relations has to be respected:
-      // 1. At the inner core boundary the adiabatic temperature should be equal to solidu temperature
+      // 1. At the inner core boundary the adiabatic temperature should be equal to solidus temperature
       // 2. The following energy production rate should be balanced in core:
       //    Heat flux at core-mantle boundary         Q
       //    Specific heat                             Qs*dT/dt
@@ -415,7 +415,7 @@ namespace aspect
       //    So that         Q+Qs*dT/dt+Qr+Qg*dR/dt*Ql*dR/dt=0
       // 3. The light component composition X depends on inner core radius (See function get_X() ),
       //    and core solidus may dependent on X as well
-      // This becomes a small nonliner problem. Directly iterate through the above three system doesn't
+      // This becomes a small nonlinear problem. Directly iterate through the above three system doesn't
       // converge well. Alternatively we solve the inner core radius by bisection method.
 
       int steps=1;
@@ -502,7 +502,7 @@ namespace aspect
     DynamicCore<dim>::get_Tc(double r) const
     {
       // Using all Q values from last step.
-      // Qs & Qr is constant, while Qg & Ql depends on inner core raidus Ri
+      // Qs & Qr is constant, while Qg & Ql depends on inner core radius Ri
       // TODO: Use mid-point value for Q values.
       return core_data.Ti - ( (core_data.Q + core_data.Qr + core_data.Q_OES) * core_data.dt
                               + (core_data.Qg + core_data.Ql)*(r-core_data.Ri)
@@ -755,7 +755,7 @@ namespace aspect
         global_CMB_area = Utilities::MPI::sum (local_CMB_area, this->get_mpi_communicator());
 
         // Using area averaged heat-flux density times core mantle boundary area to calculate total heat-flux on the 3D sphere.
-        // By doing this, using dyanmic core evolution with geometray other than 3D spherical shell becomes possible.
+        // By doing this, using dynamic core evolution with geometry other than 3D spherical shell becomes possible.
         double average_CMB_heatflux_density = global_CMB_flux / global_CMB_area;
         core_data.Q = average_CMB_heatflux_density * 4. * M_PI * Rc * Rc;
       }

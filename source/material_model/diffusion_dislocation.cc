@@ -518,7 +518,7 @@ namespace aspect
                                    "$A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents "
                                    "$E_i$ are the activation energies and $V_i$ are the activation volumes. "
                                    "\n\n"
-                                   "This form of the viscosity equation is commonly used in geodynamic simulatons "
+                                   "This form of the viscosity equation is commonly used in geodynamic simulations "
                                    "See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, "
                                    "other studies may use slightly different forms of the viscosity equation "
                                    "leading to variations in how specific terms are defined or combined. For "

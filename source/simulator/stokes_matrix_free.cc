@@ -811,7 +811,7 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
 
-        // The /= operator for VectorizedArray results in a foating point operation
+        // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
         const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
@@ -903,7 +903,7 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
 
-        // The /= operator for VectorizedArray results in a foating point operation
+        // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
         const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
@@ -1854,7 +1854,7 @@ namespace aspect
           throw SolverControl::NoConvergence(0,0);
 
         // Unlike with the expensive preconditioner which uses CG solves on both the
-        // velocity and pressure space, the cheap preonditioner only contains matrix-vector
+        // velocity and pressure space, the cheap preconditioner only contains matrix-vector
         // products and GMG v-cycle where the smoothers, transfer operators, and coarse
         // solvers are all defined to be linear operators which do not change from iteration
         // to iteration. Therefore we can use non-flexible Krylov methods like GMRES or IDR(s),

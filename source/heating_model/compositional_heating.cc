@@ -65,7 +65,7 @@ namespace aspect
                             Patterns::List (Patterns::Double(0.)),
                             "List of heat production per unit volume values for "
                             "background and compositional fields, for a total of "
-                            "N+1 values, where the first value correponds to the "
+                            "N+1 values, where the first value corresponds to the "
                             "background material, and N is the number of compositional fields. "
                             "Units: \\si{\\watt\\per\\meter\\cubed}.");
           prm.declare_entry ("Use compositional field for heat production averaging", "1",
