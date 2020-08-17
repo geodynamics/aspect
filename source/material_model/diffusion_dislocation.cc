@@ -56,15 +56,16 @@ namespace aspect
           // i corresponds to diffusion or dislocation creep
 
           // For diffusion creep, viscosity is grain size dependent
-          const double prefactor_stress_diffusion = prefactors_diffusion[j] *
-                                                    std::pow(grain_size, -grain_size_exponents_diffusion[j]) *
-                                                    std::exp(-(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0))/
-                                                             (constants::gas_constant*temperature));
+          const Rheology::DiffusionCreepParameters diffusion_creep_parameters = diffusion_creep.compute_creep_parameters(j);
 
           // For dislocation creep, viscosity is grain size independent (m=0)
-          const double prefactor_stress_dislocation = prefactors_dislocation[j] *
-                                                      std::exp(-(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0))/
-                                                               (constants::gas_constant*temperature));
+          const Rheology::DislocationCreepParameters dislocation_creep_parameters = dislocation_creep.compute_creep_parameters(j);
+
+          // For diffusion creep, viscosity is grain size dependent
+          const double prefactor_stress_diffusion = diffusion_creep_parameters.prefactor *
+                                                    std::pow(grain_size, -diffusion_creep_parameters.grain_size_exponent) *
+                                                    std::exp(-(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0))/
+                                                             (constants::gas_constant*temperature));
 
           // Because the ratios of the diffusion and dislocation strain rates are not known, stress is also unknown
           // We use Newton's method to find the second invariant of the stress tensor.
@@ -82,17 +83,12 @@ namespace aspect
           while (std::abs(strain_rate_residual) > strain_rate_residual_threshold
                  && stress_iteration < stress_max_iteration_number)
             {
-              strain_rate_residual = prefactor_stress_diffusion *
-                                     std::pow(stress_ii, stress_exponents_diffusion[j]) +
-                                     prefactor_stress_dislocation *
-                                     std::pow(stress_ii, stress_exponents_dislocation[j]) - edot_ii;
 
-              strain_rate_deriv = stress_exponents_diffusion[j] *
-                                  prefactor_stress_diffusion *
-                                  std::pow(stress_ii, stress_exponents_diffusion[j]-1) +
-                                  stress_exponents_dislocation[j] *
-                                  prefactor_stress_dislocation *
-                                  std::pow(stress_ii, stress_exponents_dislocation[j]-1);
+              const std::pair<double, double> diff_edot_and_deriv = diffusion_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, diffusion_creep_parameters);
+              const std::pair<double, double> disl_edot_and_deriv = dislocation_creep.compute_strain_rate_and_derivative(stress_ii, pressure, temperature, dislocation_creep_parameters);
+
+              strain_rate_residual = diff_edot_and_deriv.first + disl_edot_and_deriv.first - edot_ii;
+              strain_rate_deriv = diff_edot_and_deriv.second + disl_edot_and_deriv.second ;
 
               // If the strain rate derivative is zero, we catch it below.
               if (strain_rate_deriv>std::numeric_limits<double>::min())
@@ -111,8 +107,8 @@ namespace aspect
                                                   || !numbers::is_finite(strain_rate_residual)
                                                   || !numbers::is_finite(strain_rate_deriv)
                                                   || strain_rate_deriv < std::numeric_limits<double>::min()
-                                                  || !numbers::is_finite(std::pow(stress_ii, stress_exponents_diffusion[j]-1))
-                                                  || !numbers::is_finite(std::pow(stress_ii, stress_exponents_dislocation[j]-1))
+                                                  || !numbers::is_finite(std::pow(stress_ii, diffusion_creep_parameters.stress_exponent-1))
+                                                  || !numbers::is_finite(std::pow(stress_ii, dislocation_creep_parameters.stress_exponent-1))
                                                   || stress_iteration == stress_max_iteration_number;
               if (abort_newton_iteration)
                 {
@@ -124,20 +120,20 @@ namespace aspect
                     {
                       const double old_diffusion_strain_rate = diffusion_strain_rate;
 
-                      const double diffusion_prefactor = 0.5 * std::pow(prefactors_diffusion[j],-1.0/stress_exponents_diffusion[j]);
-                      const double diffusion_grain_size_dependence = std::pow(grain_size, grain_size_exponents_diffusion[j]/stress_exponents_diffusion[j]);
-                      const double diffusion_strain_rate_dependence = std::pow(diffusion_strain_rate, (1.-stress_exponents_diffusion[j])/stress_exponents_diffusion[j]);
-                      const double diffusion_T_and_P_dependence = std::exp(std::max(activation_energies_diffusion[j] + pressure*activation_volumes_diffusion[j],0.0)/
+                      const double diffusion_prefactor = 0.5 * std::pow(diffusion_creep_parameters.prefactor,-1.0/diffusion_creep_parameters.stress_exponent);
+                      const double diffusion_grain_size_dependence = std::pow(grain_size, diffusion_creep_parameters.grain_size_exponent/diffusion_creep_parameters.stress_exponent);
+                      const double diffusion_strain_rate_dependence = std::pow(diffusion_strain_rate, (1.-diffusion_creep_parameters.stress_exponent)/diffusion_creep_parameters.stress_exponent);
+                      const double diffusion_T_and_P_dependence = std::exp(std::max(diffusion_creep_parameters.activation_energy + pressure*diffusion_creep_parameters.activation_volume,0.0)/
                                                                            (constants::gas_constant*temperature));
 
                       const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
                                                                            * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
                                                                            min_visc), max_visc);
 
-                      const double dislocation_prefactor = 0.5 * std::pow(prefactors_dislocation[j],-1.0/stress_exponents_dislocation[j]);
-                      const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-stress_exponents_dislocation[j])/stress_exponents_dislocation[j]);
-                      const double dislocation_T_and_P_dependence = std::exp(std::max(activation_energies_dislocation[j] + pressure*activation_volumes_dislocation[j],0.0)/
-                                                                             (stress_exponents_dislocation[j]*constants::gas_constant*temperature));
+                      const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);
+                      const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-dislocation_creep_parameters.stress_exponent)/dislocation_creep_parameters.stress_exponent);
+                      const double dislocation_T_and_P_dependence = std::exp(std::max(dislocation_creep_parameters.activation_energy + pressure*dislocation_creep_parameters.activation_volume,0.0)/
+                                                                             (dislocation_creep_parameters.stress_exponent*constants::gas_constant*temperature));
 
                       const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
                                                                              * dislocation_T_and_P_dependence,
@@ -333,7 +329,6 @@ namespace aspect
                              "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}.");
 
           // Rheological parameters
-          prm.declare_entry ("Grain size", "1e-3", Patterns::Double(0.), "Units: \\si{\\meter}.");
           prm.declare_entry ("Viscosity averaging scheme", "harmonic",
                              Patterns::Selection("arithmetic|harmonic|geometric|maximum composition"),
                              "When more than one compositional field is present at a point "
@@ -395,6 +390,12 @@ namespace aspect
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\meter\\cubed\\per\\mole}.");
 
+          // Diffusion creep parameters
+          Rheology::DiffusionCreep<dim>::declare_parameters(prm);
+
+          // Dislocation creep parameters
+          Rheology::DislocationCreep<dim>::declare_parameters(prm);
+
         }
         prm.leave_subsection();
       }
@@ -446,35 +447,14 @@ namespace aspect
                                 prm);
 
           // Rheological parameters
-          // Diffusion creep parameters (Stress exponents often but not always 1)
-          prefactors_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for diffusion creep"))),
-                                                                         n_fields,
-                                                                         "Prefactors for diffusion creep");
-          stress_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for diffusion creep"))),
-                                                                               n_fields,
-                                                                               "Stress exponents for diffusion creep");
-          grain_size_exponents_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Grain size exponents for diffusion creep"))),
-                                                                                   n_fields,
-                                                                                   "Grain size exponents for diffusion creep");
-          activation_energies_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for diffusion creep"))),
-                                                                                  n_fields,
-                                                                                  "Activation energies for diffusion creep");
-          activation_volumes_diffusion = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for diffusion creep"))),
-                                                                                 n_fields,
-                                                                                 "Activation volumes for diffusion creep");
-          // Dislocation creep parameters (Note the lack of grain size exponents)
-          prefactors_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Prefactors for dislocation creep"))),
-                                                                           n_fields,
-                                                                           "Prefactors for dislocation creep");
-          stress_exponents_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress exponents for dislocation creep"))),
-                                                                                 n_fields,
-                                                                                 "Stress exponents for dislocation creep");
-          activation_energies_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation energies for dislocation creep"))),
-                                                                                    n_fields,
-                                                                                    "Activation energies for dislocation creep");
-          activation_volumes_dislocation = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Activation volumes for dislocation creep"))),
-                                                                                   n_fields,
-                                                                                   "Activation volumes for dislocation creep");
+          // Diffusion creep parameters
+          diffusion_creep.initialize_simulator (this->get_simulator());
+          diffusion_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_fields));
+
+          // Dislocation creep parameters
+          dislocation_creep.initialize_simulator (this->get_simulator());
+          dislocation_creep.parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_fields));
+
 
         }
         prm.leave_subsection();

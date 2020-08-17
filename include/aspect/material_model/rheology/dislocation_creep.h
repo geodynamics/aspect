@@ -32,6 +32,21 @@ namespace aspect
 
     namespace Rheology
     {
+      /**
+       * Data structure for dislocation creep parameters.
+       */
+      struct DislocationCreepParameters
+      {
+        /**
+         * The dislocation creep prefactor, activation energy, activation volume
+         * and stress exponent.
+         */
+        double prefactor;
+        double activation_energy;
+        double activation_volume;
+        double stress_exponent;
+      };
+
       template <int dim>
       class DislocationCreep : public ::aspect::SimulatorAccess<dim>
       {
@@ -61,11 +76,23 @@ namespace aspect
                               std::shared_ptr<std::vector<unsigned int>>());
 
           /**
-           * Compute the viscosity based on the diffusion creep law.
+           * Compute the creep parameters for the dislocation creep law.
            * If @p expected_n_phases_per_composition points to a vector of
            * unsigned integers this is considered the number of phase transitions
            * for each compositional field and viscosity will be first computed on
-           * each phases and then averaged for each compositional field.
+           * each phase and then averaged for each compositional field.
+           */
+          const DislocationCreepParameters
+          compute_creep_parameters (const unsigned int composition,
+                                    const std::vector<double> &phase_function_values = std::vector<double>(),
+                                    const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+
+          /**
+           * Compute the viscosity based on the dislocation creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
            */
           double
           compute_viscosity (const double strain_rate,
@@ -74,6 +101,20 @@ namespace aspect
                              const unsigned int composition,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+
+          /**
+           * Compute the strain rate and first stress derivative
+           * as a function of stress based on the dislocation creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          std::pair<double, double>
+          compute_strain_rate_and_derivative (const double stress,
+                                              const double pressure,
+                                              const double temperature,
+                                              const DislocationCreepParameters creep_parameters) const;
 
         private:
 

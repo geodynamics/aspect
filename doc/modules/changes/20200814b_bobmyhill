@@ -1,0 +1,6 @@
+<li> New: The diffusion and dislocation creep rheology modules
+now have a new function to calculate the strain rate and
+first stress-derivative of the strain rate to facilitate
+the development of composite rheologies.
+<br>
+(Bob Myhill, John Naliboff, Cedric Theulot, 2020/08/14)

@@ -23,6 +23,8 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/diffusion_creep.h>
+#include <aspect/material_model/rheology/dislocation_creep.h>
 
 namespace aspect
 {
@@ -106,6 +108,11 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+        /**
+         * Objects for computing viscous creep viscosities.
+         */
+        Rheology::DiffusionCreep<dim> diffusion_creep;
+        Rheology::DislocationCreep<dim> dislocation_creep;
 
         double reference_T;
 
@@ -136,18 +143,6 @@ namespace aspect
                                           const double &pressure,
                                           const double &temperature,
                                           const SymmetricTensor<2,dim> &strain_rate) const;
-
-
-        std::vector<double> prefactors_diffusion;
-        std::vector<double> stress_exponents_diffusion;
-        std::vector<double> grain_size_exponents_diffusion;
-        std::vector<double> activation_energies_diffusion;
-        std::vector<double> activation_volumes_diffusion;
-
-        std::vector<double> prefactors_dislocation;
-        std::vector<double> stress_exponents_dislocation;
-        std::vector<double> activation_energies_dislocation;
-        std::vector<double> activation_volumes_dislocation;
 
     };
 
