@@ -15,6 +15,6 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression  =  0.2+0.02*cos(pi*x/0.9142)-z
+    set Function expression = 0.2+0.02*cos(pi*x/0.9142)-z
   end
 end

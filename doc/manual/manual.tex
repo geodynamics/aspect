@@ -8058,8 +8058,6 @@ We use bisection to determine $Ra_c$ for specific choices of the domain geometry
 \textit{This section is a co-production of Cedric Thieulot, Juliane Dannberg,
 Timo Heister and Wolfgang Bangerth with an extension to this benchmark provided by the Virginia Tech Department of Geosciences class ``Geodynamics and ASPECT'' co-taught by Scott King and D.~Sarah Stamps.}
 
-\paragraph{Computation of the van Keken Problem with compositional fields}
-\label{paragraph:van-keken compositional fields}
 One of the most widely used benchmarks for mantle convection codes is the
 isoviscous Rayleigh-Taylor case (``case 1a'') published by van Keken \textit{et
 al.} in \cite{KKSCND97}.
@@ -8290,8 +8288,10 @@ Compared to the results of the models using constant viscosity throughout the do
 We can observe that when the two-layer viscosity model is added, there is only one apparent peak for each case. The first peaks of the 0.01 viscosity contrast tests appear earlier and are larger in magnitude than those of 0.1 viscosity contrast tests.  There are no secondary plumes and the whole system tends to reach stability after around 500 time steps.
 
 
-\paragraph{Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method}
-\label{paragraph:van-keken VOF interface tracking}
+\subsubsection{Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method}
+\label{sec:van-keken VOF interface tracking}
+
+\textit{This section is a co-production of Jonathan Robey and E. G. Puckett.}
 
 \input{cookbooks/van-keken-vof/doc/van-keken-vof.tex}
 
@@ -8311,7 +8311,7 @@ An initial sinusoidal disturbance of the interface between these
 layers is introduced and is characterised by an amplitude $\Delta$ and a
 wavelength $\lambda=L_x/2$ as shown in Figure~\ref{fig:RTi_setup}.
 
-\begin{figure}[h!]
+\begin{figure}
   \centering
   \includegraphics[width=0.4\textwidth]{cookbooks/benchmarks/rayleigh-taylor-instability/doc/setup}
   \caption{\it Setup of the Rayleigh-Taylor instability benchmark (taken from \cite{thie11})} 
