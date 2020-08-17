@@ -471,7 +471,6 @@ namespace aspect
         }
       else if (material_lookup.size() == in.composition[0].size())
         {
-
           for (unsigned i = 0; i < material_lookup.size(); i++)
             {
               for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)

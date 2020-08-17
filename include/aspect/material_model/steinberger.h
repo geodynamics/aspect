@@ -184,9 +184,15 @@ namespace aspect
                                    const Point<dim> &position) const;
 
         /**
-        * Returns the volume fractions of all the phases over all of the current
-        * evaluation points. The outer loop is over the phases, and the inner
-        * loop is over all the evaluation points.
+        * This function uses the MaterialModelInputs &in to fill the output_values
+        * of the phase_volume_fractions_out output object with the volume
+        * fractions of each of the unique phases at each of the evaluation points.
+        * These volume fractions are obtained from the PerpleX-derived
+        * pressure-temperature lookup tables.
+        * The filled output_values object is a vector of vector<double>;
+        * the outer vector is expected to have a size that equals the number
+        * of unique phases, the inner vector is expected to have a size that
+        * equals the number of evaluation points.
         */
         void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                           NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
