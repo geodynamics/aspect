@@ -1,0 +1,24 @@
+
+Loading shared library <./libsol_cx_newton_crash.so>
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 3,556 (2,178+289+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Initial Newton Stokes residual = 0.0172385, v = 0.0172385, p = 0
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 50+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 0.0172385
+
+   Nonlinear residual reduction has been very large (8.52861e-10); skipping Stokes solve
+
+
+   Postprocessing:
+     Errors u_L1, p_L1, u_L2, p_L2: 1.125999e-06, 1.101883e-01, 1.670011e-06, 1.106214e-01
+
+Termination requested by criterion: end time
+
+
+

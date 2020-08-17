@@ -409,6 +409,7 @@ namespace aspect
       {
         dcr.initial_residual = compute_initial_newton_residual(linearized_stokes_initial_guess);
         dcr.switch_initial_residual = dcr.initial_residual;
+        dcr.residual_old = dcr.initial_residual;
         dcr.residual = dcr.initial_residual;
       }
 
@@ -449,15 +450,23 @@ namespace aspect
 
     assemble_stokes_system();
 
+    // recompute rhs
+    dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
+    dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
+    dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
+
+    // Test whether the rhs has dropped so much that we can assume that the iteration is done.
+    if (dcr.residual < dcr.residual_old * 1e-8)
+      {
+        pcout << "   Nonlinear residual reduction has been very large (" << dcr.residual/dcr.residual_old << "); skipping Stokes solve" << std::endl;
+        return;
+      }
+
     /**
      * Eisenstat Walker method for determining the tolerance
      */
     if (nonlinear_iteration > 1)
       {
-        dcr.velocity_residual = system_rhs.block(introspection.block_indices.velocities).l2_norm();
-        dcr.pressure_residual = system_rhs.block(introspection.block_indices.pressure).l2_norm();
-        dcr.residual = std::sqrt(dcr.velocity_residual * dcr.velocity_residual + dcr.pressure_residual * dcr.pressure_residual);
-
         if (!use_picard || newton_handler->parameters.use_Eisenstat_Walker_method_for_Picard_iterations)
           {
             const bool EisenstatWalkerChoiceOne = true;
