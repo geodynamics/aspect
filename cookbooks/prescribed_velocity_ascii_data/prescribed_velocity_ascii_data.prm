@@ -1,0 +1,157 @@
+## First we set the dimension
+set Dimension   = 2
+
+# Set several global variables
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1500.
+set CFL number                             = 1.0
+set End time                               = 1e7
+set Maximum time step                      = 1e5
+set Resume computation                     = false
+set Adiabatic surface temperature          = 1500
+set Surface pressure                       = 0
+set Pressure normalization = surface
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+
+
+subsection Discretization
+  # The polynomial degree to use for the velocity variables in the Stokes
+  # system. Units: None.
+  set Stokes velocity polynomial degree       = 2
+
+  # The polynomial degree to use for the temperature variable. Units: None.
+  set Temperature polynomial degree           = 2
+
+  # Whether to use a Stokes discretization that is locally conservative at the
+  # expense of a larger number of degrees of freedom (true), or to go with a
+  # cheaper discretization that does not locally conserve mass, although it is
+  # globally conservative (false).
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    # The exponent $\alpha$ in the entropy viscosity stabilization. Units:
+    # None.
+    set alpha = 2
+
+    # The $\beta$ factor in the artificial viscosity stabilization. An
+    # appropriate value for 2d is 0.052 and 0.078 for 3d. Units: None.
+    set beta  = 0.078
+
+    # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+set Output directory = output-prescribed_velocity_ascii_data
+
+# Load the signal library.
+set Additional shared libraries = ./libprescribed_velocity_ascii_data.so
+
+
+
+subsection Geometry model
+  set Model name = box
+
+# The extents of the box in km is the same as the width
+# and height of the drawing
+  subsection Box
+    set X extent = 799000
+    set Y extent = 499000
+    set X repetitions = 192
+    set Y repetitions = 120
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+# We need one compositional field that will be assigned
+# the values read in from the ascii data plugin.
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = ascii data
+
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file name       = aspect_name.txt
+  end
+end
+
+
+## Turn prescribed velocities on
+set Prescribe internal velocities = true
+
+# We use the ascii data plugin to read in the file created with geomIO.
+subsection Prescribed velocities
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file name       = aspect_name.txt
+  end
+
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function expression = 0;0
+  end
+end
+
+subsection Initial temperature model
+  set Model name = ascii data
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
+    set Data file name       = aspect_name.txt
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = box
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom, left, right
+end
+
+subsection Material model
+  set Model name = multicomponent
+  subsection Multicomponent
+    set Reference temperature = 0.0
+    set Densities = 3300
+    set Specific heats = 2500
+    set Thermal conductivities = 4.7
+    set Thermal expansivities = 6e-5
+    set Viscosities = 1.e19
+    set Viscosity averaging scheme = arithmetic
+  end
+end
+
+# this plugin really doesn't like mesh refinement yet...
+subsection Mesh refinement
+  set Initial global refinement                = 0
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+  set Strategy                                 = strain rate, composition, temperature
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Interpolate output = true
+    set Time between graphical output = 1
+    set List of output variables      = material properties, nonadiabatic temperature, nonadiabatic pressure, strain rate
+
+    subsection Material properties
+      set List of material properties = density, viscosity, thermal expansivity, reaction terms
+    end
+  end
+end
