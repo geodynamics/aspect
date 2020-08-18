@@ -132,7 +132,7 @@ ways in which your contribution will be acknowledged by the ASPECT community:
   - Regular and active contributions to ASPECT for more than one year,
     not restricted to user meetings.
 
-  The group of current Principal Developers is listed in the [AUTHORS](AUTHORS)
+  The group of current Principal Developers is listed in the [AUTHORS](AUTHORS.md)
   file in the main repository.
 
 ## License
