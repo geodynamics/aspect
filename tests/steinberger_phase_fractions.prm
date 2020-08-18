@@ -1,0 +1,129 @@
+# This is a copy of Steinberger compressible test,
+# but it uses a pyrolite material property table instead
+# of the test data, so that reasonable seismic velocities are
+# computed. The property table also contains volume fractions of the
+# stable phases in the rock, which can be output using
+# the "named additional outputs" in the list of named outputs for
+# the Visualization postprocessor.
+# The material property table was created from raw PerpleX-vertex output
+# using the python script
+# contrib/python/create_aspect_readable_perplex_table_with_phase_volumes.py
+
+# The PerpleX calculations were run with the
+# Stixrude and Lithgow-Bertelloni
+# (2011; https://doi.org/10.1111/j.1365-246X.2010.04890.x) dataset.
+
+# The pyrolite composition is a six-component version of the composition in
+# McDonough and Sun (1995; https://doi.org/10.1016/0009-2541(94)00140-4):
+# 0.36 wt% Na2O, 37.8 wt% MgO, 4.45 wt% Al2O3, 45.0 wt% SiO2, 3.55 wt% CaO, 8.05 wt% FeO
+
+set CFL number                             = 1.0
+set End time                               = 1e5
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4250
+    set Outer temperature = 273
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/
+    set Material file names              = pyr_MS95_with_volume_fractions_lo_res.dat
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Reference viscosity              = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 3
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0,1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,2,3
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
+
+
+  subsection Visualization
+    set Interpolate output = false
+    set Output format                 = gnuplot
+    set List of output variables      = named additional outputs, Vs anomaly, Vp anomaly
+    set Time between graphical output = 0
+    subsection Vp anomaly
+      set Number of depth slices = 96
+    end
+    subsection Vs anomaly
+      set Number of depth slices = 96
+    end
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end

@@ -1,0 +1,34 @@
+
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 3,557 (1,666+225+833+833)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+304 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00000
+     RMS, max velocity:                  0.112 m/year, 0.459 m/year
+     Temperature min/avg/max:            273 K, 2030 K, 4250 K
+     Heat fluxes through boundary parts: -4.273e+05 W, -2.194e+05 W, 0 W, 0 W
+     Writing depth average:              output-steinberger_phase_fractions_background/depth_average
+
+*** Timestep 1:  t=100000 years
+   Solving temperature system... 9 iterations.
+   Solving C_1 system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+242 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00001
+     RMS, max velocity:                  0.117 m/year, 0.425 m/year
+     Temperature min/avg/max:            273 K, 2030 K, 4250 K
+     Heat fluxes through boundary parts: -1.101e+06 W, 5.444e+05 W, 0 W, 0 W
+     Writing depth average:              output-steinberger_phase_fractions_background/depth_average
+
+Termination requested by criterion: end time
+
+
+

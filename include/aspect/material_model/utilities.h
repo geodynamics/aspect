@@ -119,6 +119,22 @@ namespace aspect
                     const double pressure) const;
 
             /**
+             * Returns a vector of all the column names in the lookup file
+             * that start with the character string vol_fraction_
+             */
+            std::vector<std::string>
+            phase_volume_column_names() const;
+
+            /**
+             * Returns the volume fraction of the phase_idth phase
+             * at a given temperature and pressure.
+             */
+            double
+            phase_volume_fraction(const int phase_id,
+                                  const double temperature,
+                                  const double pressure) const;
+
+            /**
              * Returns the size of the data tables in pressure (first entry)
              * and temperature (second entry) dimensions.
              */
@@ -156,6 +172,15 @@ namespace aspect
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
 
+            /**
+            * The vector of column names corresponding to each phase,
+            * and a vector of tables containing the volume fractions of
+            * each phase at a given temperature and pressure.
+            * The ordering of both vectors is the same.
+            */
+            std::vector<std::string> phase_column_names;
+            std::vector<dealii::Table<2,double>> phase_volume_fractions;
+
             double delta_press;
             double min_press;
             double max_press;
@@ -164,6 +189,7 @@ namespace aspect
             double max_temp;
             unsigned int n_temperature;
             unsigned int n_pressure;
+            unsigned int n_phases;
             unsigned int n_columns;
             bool interpolation;
         };

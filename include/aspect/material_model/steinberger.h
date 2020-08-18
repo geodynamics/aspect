@@ -184,6 +184,20 @@ namespace aspect
                                    const Point<dim> &position) const;
 
         /**
+        * This function uses the MaterialModelInputs &in to fill the output_values
+        * of the phase_volume_fractions_out output object with the volume
+        * fractions of each of the unique phases at each of the evaluation points.
+        * These volume fractions are obtained from the PerpleX-derived
+        * pressure-temperature lookup tables.
+        * The filled output_values object is a vector of vector<double>;
+        * the outer vector is expected to have a size that equals the number
+        * of unique phases, the inner vector is expected to have a size that
+        * equals the number of evaluation points.
+        */
+        void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
+
+        /**
          * Returns the cell-wise averaged enthalpy derivatives for the evaluate
          * function and postprocessors. The function returns two pairs, the
          * first one represents the temperature derivative, the second one the
@@ -304,6 +318,19 @@ namespace aspect
          * Perplex files.
          */
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
+
+        /**
+        * Vector of strings containing the names of the unique phases in all the material lookups.
+        */
+        std::vector<std::string> unique_phase_names;
+
+        /**
+        * Vector of vector of unsigned ints which constitutes mappings
+        * between lookup phase name vectors and unique_phase_names.
+        * The element unique_phase_indices[i][j] contains the
+        * index of phase name j from lookup i as it is found in unique_phase_names.
+        */
+        std::vector<std::vector<unsigned int>> unique_phase_indices;
 
         /**
          * Pointer to an object that reads and processes data for the lateral

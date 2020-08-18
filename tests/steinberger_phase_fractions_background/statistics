@@ -1,0 +1,25 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for Stokes solver
+# 11: Velocity iterations in Stokes preconditioner
+# 12: Schur complement iterations in Stokes preconditioner
+# 13: Visualization file name
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Minimal temperature (K)
+# 17: Average temperature (K)
+# 18: Maximal temperature (K)
+# 19: Average nondimensional temperature (K)
+# 20: Outward heat flux through boundary with indicator 0 ("bottom") (W)
+# 21: Outward heat flux through boundary with indicator 1 ("top") (W)
+# 22: Outward heat flux through boundary with indicator 2 ("left") (W)
+# 23: Outward heat flux through boundary with indicator 3 ("right") (W)
+0 0.000000000000e+00 0.000000000000e+00 192 1891 833 833 0 0 504 3432 1545 output-steinberger_phase_fractions_background/solution/solution-00000 1.11515351e-01 4.59043503e-01 2.73000000e+02 2.03026689e+03 4.25000000e+03 4.41857402e-01 -4.27340871e+05 -2.19381517e+05 0.00000000e+00 0.00000000e+00 
+1 1.000000000000e+05 1.000000000000e+05 192 1891 833 833 9 9 442 2828 1356 output-steinberger_phase_fractions_background/solution/solution-00001 1.17101389e-01 4.24565368e-01 2.73000000e+02 2.03014355e+03 4.25000000e+03 4.41826389e-01 -1.10076031e+06  5.44387382e+05 0.00000000e+00 0.00000000e+00 
