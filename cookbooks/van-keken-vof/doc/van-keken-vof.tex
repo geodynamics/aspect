@@ -66,9 +66,11 @@ in the region that contains one of the fluids, which we will refer to as fluid~1
 in the complement of this region, which we will refer to as fluid~2, and 2) at each point in 
 the domain the magnitude $| \phi |$ of $\phi$ is the distance to the boundary between the 
 two fluids or materials.
-In the computations shown here, we use an approximation $\tilde{\phi}$ to $\phi$ such that   
+In the computations shown here, we use an approximation $\tilde{\phi}$ to $\phi$ such that the
 difference between $\tilde{\phi}$ and $\phi$ is small enough for the purposes of making the 
 computations high-quality.
+The use of an approximation as opposed to the function itself is due to obtaining an appropriate function for almost all nontrivial (not a line or a circle) boundaries is extremely difficult.
+In this case, because the boundary is close to horizontal, we use the vertical distance to the boundary based on the argument that the gradient will not differ sufficiently from $1$ to induce errors in the initialization computation.
 The primary advantage of choosing this particular initialization algorithm is that it allows us 
 to more accurately reproduce the initial condition on a sub-grid scale than would otherwise be 
 possible on the coarser grid on which we compute the time evolution of the interface. 
