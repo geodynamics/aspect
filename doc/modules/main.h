@@ -1,7 +1,7 @@
 /**
  * @mainpage
  *
- * @image html mesh-2d-small.png
+ * @image html unlabeled_logo_small.png
  *
  * This is the documentation of ASPECT, an Advanced Solver for Problems in
  * Earth's ConvecTion. The primary entry point to the documentation are
