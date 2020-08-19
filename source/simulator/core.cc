@@ -1392,20 +1392,7 @@ namespace aspect
 
     // Note: this has to happen _before_ we do hanging node constraints,
     // because inconsistent constraints could be generated in parallel otherwise.
-    {
-      using periodic_boundary_set
-        = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
-      periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
-
-      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
-        {
-          DoFTools::make_periodicity_constraints(dof_handler,
-                                                 (*p).first.first,  // first boundary id
-                                                 (*p).first.second, // second boundary id
-                                                 (*p).second,       // cartesian direction for translational symmetry
-                                                 constraints);
-        }
-    }
+    geometry_model->make_periodicity_constraints(constraints);
 
     //  Make hanging node constraints:
     DoFTools::make_hanging_node_constraints (dof_handler,

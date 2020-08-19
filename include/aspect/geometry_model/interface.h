@@ -346,6 +346,14 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
+        /**
+         * Collects periodic boundaries constraints for the given geometry,
+         * which will be added to the existing @p constraints.
+         */
+        virtual
+        void
+        make_periodicity_constraints(AffineConstraints<double> &constraints) const;
+
     };
 
 

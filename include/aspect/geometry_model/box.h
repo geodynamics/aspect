@@ -230,6 +230,14 @@ namespace aspect
          */
         InitialTopographyModel::Interface<dim> *topo_model;
 
+        /**
+         * Collects periodic boundaries constraints for the given geometry,
+         * which will be added to the existing @p constraints.
+         */
+        virtual
+        void
+        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
+
     };
   }
 }

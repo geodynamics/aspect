@@ -25,6 +25,7 @@
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
 #include <aspect/utilities.h>
+#include <deal.II/dofs/dof_tools.h>
 
 namespace aspect
 {
@@ -216,6 +217,23 @@ namespace aspect
                                               R1,
                                               0,
                                               true);
+
+          if (periodic)
+            {
+              // Tell p4est about the periodicity of the mesh.
+              std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator> >
+              matched_pairs;
+              FullMatrix<double> rotation_matrix(dim);
+              rotation_matrix[0][1] = 1.;
+              rotation_matrix[1][0] = -1.;
+
+              GridTools::collect_periodic_faces(coarse_grid, /*b_id1*/ 2, /*b_id2*/ 3,
+                                                /*direction*/ 1, matched_pairs,
+                                                Tensor<1, dim>(), rotation_matrix);
+
+              if (matched_pairs.size() > 0)
+                coarse_grid.add_periodicity (matched_pairs);
+            }
         }
       else if (phi == 180)
         {
@@ -337,6 +355,18 @@ namespace aspect
       return std::map<std::string,types::boundary_id>();
     }
 
+    template <int dim>
+    std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+    SphericalShell<dim>::
+    get_periodic_boundary_pairs () const
+    {
+      std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries;
+      if (periodic)
+        {
+          periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2, 3), 1) );
+        }
+      return periodic_boundaries;
+    }
 
     template <int dim>
     double
@@ -485,6 +515,26 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void
+    SphericalShell<dim>::make_periodicity_constraints(AffineConstraints<double> &constraints) const
+    {
+      std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator> >
+      matched_pairs;
+      FullMatrix<double> rotation_matrix(dim);
+      rotation_matrix[0][1] = 1.;
+      rotation_matrix[1][0] = -1.;
+
+      GridTools::collect_periodic_faces(this->get_dof_handler(), /*b_id1*/ 2, /*b_id2*/ 3,
+                                        /*direction*/ 1, matched_pairs,
+                                        Tensor<1, dim>(), rotation_matrix);
+
+      DoFTools::make_periodicity_constraints<DoFHandler<dim>,double>(matched_pairs,
+                                                                     constraints,
+                                                                     ComponentMask(),
+      {0},
+      1.);
+    }
 
     template <int dim>
     void
@@ -571,6 +621,10 @@ namespace aspect
                              "In either case, this parameter is ignored unless the opening "
                              "angle of the domain is 360 degrees. This parameter is also "
                              "ignored when using a custom mesh subdivision scheme.");
+          prm.declare_entry ("Phi periodic", "false",
+                             Patterns::Bool (),
+                             "Whether the shell should be periodic in the phi direction.");
+
         }
         prm.leave_subsection();
       }
@@ -629,6 +683,14 @@ namespace aspect
             {
               AssertThrow (n_slices > 0, ExcMessage("You must set a positive number of slices for extrusion"));
             }
+
+          periodic = prm.get_bool ("Phi periodic");
+          if (periodic)
+            {
+              AssertThrow (dim == 2,  ExcMessage("Periodic boundaries in the spherical shell are only supported for 2D models."));
+              AssertThrow (phi == 90, ExcMessage("Periodic boundaries in the spherical shell are only supported for an opening angle of 90 degrees."));
+            }
+
 
         }
         prm.leave_subsection();

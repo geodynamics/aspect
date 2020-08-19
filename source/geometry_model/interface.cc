@@ -325,6 +325,14 @@ namespace aspect
       std::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
                                                             out);
     }
+
+    template <int dim>
+    void
+    Interface<dim>::make_periodicity_constraints(AffineConstraints<double> & /*constraints*/) const
+    {
+      // do nothing
+    }
+
   }
 }
 
