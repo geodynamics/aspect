@@ -134,33 +134,49 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
 {\Large Advanced Solver for Problems in Earth's ConvecTion}
 \end{center}
 
-%MAIN PICTURE%
-\begin{textblock*}{0in}(1.5in,0.3in)
-% FILL: image height
-% e.g. height=6.5in
-\begin{center}
-\vspace{1em}
-\includegraphics[height=3.5in]
-% FILL: image file name
-% e.g. cover_image.png
-{mesh-2d.png}
-\hspace{5em}
-\end{center}
-\end{textblock*}
+{
+  \parindent 0pt
+  % Place the Logo into a box of width 0 and position it at the given
+  % (x,y) within this box.
+  \begin{textblock*}{0in}(1.5in,0.3in)
+    \begin{center}
+      \vspace{1em}
+      \includegraphics[height=3.5in]{mesh-2d.png}
+      \hspace{5em}
+    \end{center}
+  \end{textblock*}
 
-%USER MANUAL%
-\color{dark_grey}
-\hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
-\raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
-% keep the following line as is so that we can replace this using a script:
-2.3.0-pre %VERSION-INFO%
-\\\large(generated \today)\\
-{\Large Wolfgang Bangerth\\Juliane Dannberg\\Rene Gassm{\"o}ller\\Timo Heister\\}
+  % Then overlay some text into another textblock* environment that is
+  % as wide as the page. We use \raggedright, so everything is shown
+  % on the right side of the page. The y-coordinate of the anchor
+  % (0.3in) is the same as for the picture, aligning the text nicely
+  % to the image.
+  \begin{textblock*}{\textwidth}(0in,0.3in)
+    \vspace{1em}
+    \color{dark_grey}
+    \hfill{\Huge \fontfamily{\sfdefault}\selectfont User Manual \\
+      \raggedleft \huge \fontfamily{\sfdefault}\selectfont Version
+      % keep the following line as is so that we can replace this using a script:
+      2.3.0-pre %VERSION-INFO%
+      \\
+      \large(generated \today)
+      \\[16pt]
+        {\Large
+          Wolfgang Bangerth \\
+          Juliane Dannberg \\
+          Menno Fraters \\
+          Rene Gassm{\"o}ller \\
+          Anne Glerum \\
+          Timo Heister \\
+          John Naliboff\\}
+    }
+  \end{textblock*}
 }
+
 
 %AUTHOR(S) & WEBSITE%
 \null
-\vspace{17em}
+\vfill
 \color{dark_grey}
 {\fontfamily{\sfdefault}\selectfont
 % FILL: author list
@@ -174,9 +190,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Samuel Cox,
     William Durkin,
     Grant Euen,
-    Menno Fraters,
     Thomas Geenen,
-    Anne Glerum,
     Ryan Grove,
     Eric Heien,
     Louise Kellogg,
@@ -187,7 +201,6 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Hannah Mark,
     Elvira Mulyukova,
     Bob Myhill,
-    John Naliboff,
     Bart Niday,
     Jonathan Perry-Houts,
     Elbridge Gerry Puckett,
@@ -198,7 +211,7 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Wanying Wang,
     Iris van Zelst,
     Siqi Zhang \\
-\vspace{1.0em}
+\vspace{0.5em}
 }
 
 {\noindent
@@ -12250,14 +12263,20 @@ resources:
   for public and archived mailing lists, you can contact the
   primary developers:
   \begin{itemize}
-  \item Wolfgang
-    Bangerth: \url{bangerth@colostate.edu},
-  \item Juliane
-    Dannberg: \url{judannberg@gmail.com},
-  \item Rene
-    Gassm{\"o}ller: \url{rene.gassmoeller@mailbox.org},
-  \item Timo
-    Heister: \url{heister@clemson.edu}.
+  \item Wolfgang Bangerth:
+    \url{bangerth@colostate.edu},
+  \item Juliane Dannberg:
+    \url{judannberg@gmail.com},
+  \item Menno Fraters:
+    \url{menno.fraters@outlook.com},
+  \item Rene Gassm{\"o}ller:
+    \url{rene.gassmoeller@mailbox.org},
+  \item Anne Glerum:
+    \url{acglerum@gfz-potsdam.de},
+  \item Timo Heister:
+    \url{heister@clemson.edu},
+  \item John Naliboff:
+    \url{john.naliboff@gmail.com}.
   \end{itemize}
 \end{itemize}
 
