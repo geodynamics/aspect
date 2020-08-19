@@ -271,7 +271,7 @@ namespace aspect
           double viscosity_peierls = numbers::signaling_nan<double>();
           if (use_peierls_creep)
             {
-              viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, pressure, temperature_for_viscosity, j);
+              viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j);
               viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
             }
 
