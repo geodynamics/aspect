@@ -173,15 +173,10 @@ namespace aspect
                                                       const std::vector<double> &compositional_fields,
                                                       const Point<dim> &position) const;
 
-        virtual double seismic_Vp (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
-
-        virtual double seismic_Vs (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
+        virtual std::pair<double, double> seismic_velocities (const double      temperature,
+                                                              const double      pressure,
+                                                              const std::vector<double> &compositional_fields,
+                                                              const Point<dim> &position) const;
 
         /**
         * This function uses the MaterialModelInputs &in to fill the output_values

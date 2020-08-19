@@ -259,6 +259,8 @@ namespace aspect
                    const std::vector<double> &compositional_fields,
                    const Point<dim> &) const
     {
+      // The effective composite Cp of an assemblage is given by
+      // Cp_composite = sum(mass_fraction[i]*Cp[i])
       double cp = 0.0;
 
       if (material_lookup.size() == 1)
@@ -305,26 +307,30 @@ namespace aspect
              const std::vector<double> &compositional_fields,
              const Point<dim> &) const
     {
-      double rho = 0.0;
+      // The effective composite rho of an assemblage is given by
+      // rho_composite = 1./sum(mass_fraction[i]/rho[i])
+      double invrho = 0.0;
       if (material_lookup.size() == 1)
         {
-          rho = material_lookup[0]->density(temperature,pressure);
+          invrho = 1./material_lookup[0]->density(temperature,pressure);
         }
       else if (material_lookup.size() == compositional_fields.size() + 1)
         {
-          const double background_density = material_lookup[0]->density(temperature,pressure);
-          rho = background_density;
-          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-            rho += compositional_fields[i] *
-                   (material_lookup[i+1]->density(temperature,pressure) - background_density);
+          double background_mass_fraction = 1.;
+          for (unsigned int i = 1; i < compositional_fields.size(); ++i)
+            {
+              invrho += compositional_fields[i-1] / (material_lookup[i]->density(temperature,pressure));
+              background_mass_fraction -= compositional_fields[i-1];
+            }
+          invrho += background_mass_fraction/(material_lookup[0]->density(temperature,pressure));
         }
       else
         {
           for (unsigned i = 0; i < material_lookup.size(); ++i)
-            rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
+            invrho += compositional_fields[i] / material_lookup[i]->density(temperature,pressure);
         }
 
-      return rho;
+      return 1./invrho;
     }
 
 
@@ -335,93 +341,107 @@ namespace aspect
     thermal_expansion_coefficient (const double      temperature,
                                    const double      pressure,
                                    const std::vector<double> &compositional_fields,
-                                   const Point<dim> &/*position*/) const
+                                   const Point<dim> &position) const
     {
-      double alpha = 0.0;
+      // The effective composite alpha of an assemblage is given by
+      // alpha_composite = rho_composite*sum(mass_fraction[i]*alpha[i]/rho[i])
+      double alphaoverrho = 0.0;
 
       if (material_lookup.size() == 1)
         {
-          alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+          alphaoverrho = material_lookup[0]->thermal_expansivity(temperature,pressure)/(material_lookup[0]->density(temperature,pressure));
         }
       else if (material_lookup.size() == compositional_fields.size() + 1)
         {
-          const double background_alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
-          alpha = background_alpha;
-          for (unsigned int i = 0; i<compositional_fields.size(); ++i)
-            alpha += compositional_fields[i] *
-                     (material_lookup[i+1]->thermal_expansivity(temperature,pressure) - background_alpha);
+          double background_mass_fraction = 1.;
+          for (unsigned int i = 1; i < compositional_fields.size(); ++i)
+            {
+              alphaoverrho += compositional_fields[i-1]*material_lookup[i]->thermal_expansivity(temperature,pressure)/(material_lookup[i]->density(temperature,pressure));
+              background_mass_fraction -= compositional_fields[i-1];
+            }
+          alphaoverrho += background_mass_fraction*material_lookup[0]->thermal_expansivity(temperature,pressure)/(material_lookup[0]->density(temperature,pressure));
         }
       else
         {
           for (unsigned i = 0; i < material_lookup.size(); ++i)
-            alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
+            alphaoverrho += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure)/(material_lookup[i]->density(temperature,pressure));
         }
-      return alpha;
+
+      const double rho = density(temperature,pressure,compositional_fields,position);
+      return alphaoverrho*rho;
     }
 
 
 
     template <int dim>
-    double
+    std::pair<double, double>
     Steinberger<dim>::
-    seismic_Vp (const double      temperature,
-                const double      pressure,
-                const std::vector<double> &compositional_fields,
-                const Point<dim> &) const
+    seismic_velocities (const double      temperature,
+                        const double      pressure,
+                        const std::vector<double> &compositional_fields,
+                        const Point<dim> &position) const
     {
-      double vp = 0.0;
+      // This function returns the Voigt-Reuss-Hill averages of the
+      // seismic velocitie of the different materials.
+
+      // Start by calculating the absolute volumes of each material
+      // and the sum of the material volumes
+      std::vector<double> material_volumes(material_lookup.size());
+      double summed_volumes;
 
       if (material_lookup.size() == 1)
         {
-          vp = material_lookup[0]->seismic_Vp(temperature,pressure);
+          material_volumes[0] = 1.;
+          summed_volumes = 1.;
         }
-      else if (material_lookup.size() == compositional_fields.size() + 1)
+      else if (material_lookup.size() == compositional_fields.size() + 1) // background field
         {
-          const double background_vp = material_lookup[0]->seismic_Vp(temperature,pressure);
-          vp = background_vp;
-          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-            vp += compositional_fields[i] *
-                  (material_lookup[i+1]->seismic_Vp(temperature,pressure) - background_vp);
+          double background_mass_fraction = 1.;
+          for (unsigned int i = 1; i < material_lookup.size(); i++)
+            {
+              material_volumes[i] = compositional_fields[i-1]/material_lookup[i]->density(temperature,pressure);
+              summed_volumes += material_volumes[i];
+              background_mass_fraction -= compositional_fields[i-1];
+            }
+          material_volumes[0] = background_mass_fraction/material_lookup[0]->density(temperature,pressure);
+          summed_volumes += material_volumes[0];
         }
       else
         {
           for (unsigned i = 0; i < material_lookup.size(); i++)
-            vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
+            {
+              material_volumes[i] = compositional_fields[i]/material_lookup[i]->density(temperature,pressure);
+              summed_volumes += material_volumes[i];
+            }
         }
-      return vp;
+
+      // Now we calculate the averaged moduli.
+      // mu = rho*Vs^2
+      // K_s = rho*Vp^2 - 4./3.*mu
+      // The Voigt average is an arithmetic volumetric average,
+      // while the Reuss average is a harmonic volumetric average.
+      double k_voigt = 0.;
+      double mu_voigt = 0.;
+      double invk_reuss = 0.;
+      double invmu_reuss = 0.;
+
+      for (unsigned i = 0; i < material_lookup.size(); i++)
+        {
+          const double mu = material_lookup[i]->density(temperature,pressure)*std::pow(material_lookup[i]->seismic_Vs(temperature,pressure), 2.);
+          const double k =  material_lookup[i]->density(temperature,pressure)*std::pow(material_lookup[i]->seismic_Vp(temperature,pressure), 2.) - 4./3.*mu;
+          k_voigt += material_volumes[i]/summed_volumes * k;
+          mu_voigt += material_volumes[i]/summed_volumes * mu;
+          invk_reuss += material_volumes[i]/summed_volumes / k;
+          invmu_reuss += material_volumes[i]/summed_volumes / mu;
+        }
+
+      const double rho = density(temperature,pressure,compositional_fields,position);
+      const double k_VRH = (k_voigt + 1./invk_reuss)/2.;
+      const double mu_VRH = (mu_voigt + 1./invmu_reuss)/2.;
+      return std::make_pair(std::sqrt((k_VRH + 4./3.*mu_VRH)/rho),
+                            std::sqrt(mu_VRH/rho));
     }
 
-
-
-    template <int dim>
-    double
-    Steinberger<dim>::
-    seismic_Vs (const double      temperature,
-                const double      pressure,
-                const std::vector<double> &compositional_fields,
-                const Point<dim> &) const
-    {
-      double vs = 0.0;
-
-      if (material_lookup.size() == 1)
-        {
-          vs = material_lookup[0]->seismic_Vs(temperature,pressure);
-        }
-      else if (material_lookup.size() == compositional_fields.size() + 1)
-        {
-          const double background_vs = material_lookup[0]->seismic_Vs(temperature,pressure);
-          vs = background_vs;
-          for (unsigned int i = 0; i < compositional_fields.size(); ++i)
-            vs += compositional_fields[i] *
-                  (material_lookup[i+1]->seismic_Vs(temperature,pressure) - background_vs);
-        }
-      else
-        {
-          for (unsigned i = 0; i < material_lookup.size(); i++)
-            vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
-        }
-      return vs;
-    }
 
 
     template <int dim>
@@ -434,49 +454,49 @@ namespace aspect
       // the index i corresponds to the ith compositional field
       // the index j corresponds to the jth phase in the lookup
       // the index k corresponds to the kth evaluation point
-      std::vector<std::vector<double>> volume_fractions(unique_phase_names.size(), std::vector<double>(in.n_evaluation_points(), 0.));
+      std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(), std::vector<double>(in.n_evaluation_points(), 0.));
+
+      // Unfortunately, the values in in.composition represent the *mass* fractions
+      // of the different materials, not volume fractions.
+      // We must first convert these to volume fractions.
+
+      // Start by calculating the absolute volumes of each material
+      // and the sum of the material volumes at each evaluation point
+      std::vector<std::vector<double>> material_volumes(material_lookup.size(), std::vector<double>(in.n_evaluation_points(), 0.));
+      std::vector<double> summed_volumes(in.n_evaluation_points(), 0.);
 
       if (material_lookup.size() == 1)
         {
-          // if there is only one lookup, unique_phase_names is in the same order as the lookup
-          for (unsigned int j = 0; j < unique_phase_indices[0].size(); j++)
+          // if there is only one lookup, we don't need to do any calculations
+          for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
             {
-              for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
-                volume_fractions[j][k] = material_lookup[0]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
+              material_volumes[0][k] = 1.;
+              summed_volumes[k] = 1.;
             }
         }
       else if (material_lookup.size() == in.composition[0].size() + 1) // background field
         {
-          // The first material lookup corresponds to a background composition
-          // We first look up the volume fractions corresponding to this background field
-          // (assuming the domain is filled 100% with this single composition)
-          std::vector<std::vector<double>> background_volume_fractions(unique_phase_names.size(),
-                                                                       std::vector<double>(in.n_evaluation_points(), 0.));
-
-          // We can now loop through the other material models
-          for (unsigned int i = 0; i < material_lookup.size(); i++)
+          for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
             {
-              for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
+              double background_mass_fraction = 1.;
+              for (unsigned int i = 1; i < material_lookup.size(); i++)
                 {
-                  for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
-                    if (i == 0)
-                      {
-                        background_volume_fractions[unique_phase_indices[0][j]][k] += material_lookup[0]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
-                        volume_fractions[unique_phase_indices[0][j]][k] = background_volume_fractions[unique_phase_indices[0][j]][k];
-                      }
-                    else
-                      volume_fractions[unique_phase_indices[i][j]][k] += in.composition[k][i-1] * (material_lookup[i]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]) - background_volume_fractions[unique_phase_indices[i][j]][k]);
+                  material_volumes[i][k] = in.composition[k][i-1]/material_lookup[i]->density(in.temperature[k],in.pressure[k]);
+                  summed_volumes[k] += material_volumes[i][k];
+                  background_mass_fraction -= in.composition[k][i-1];
                 }
+              material_volumes[0][k] = background_mass_fraction/material_lookup[0]->density(in.temperature[k],in.pressure[k]);
+              summed_volumes[k] += material_volumes[0][k];
             }
         }
       else if (material_lookup.size() == in.composition[0].size())
         {
           for (unsigned i = 0; i < material_lookup.size(); i++)
             {
-              for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
+              for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
                 {
-                  for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
-                    volume_fractions[unique_phase_indices[i][j]][k] = in.composition[k][i] * material_lookup[i]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
+                  material_volumes[i][k] = in.composition[k][i]/material_lookup[i]->density(in.temperature[k],in.pressure[k]);
+                  summed_volumes[k] += material_volumes[i][k];
                 }
             }
         }
@@ -487,7 +507,19 @@ namespace aspect
                                   "one, the number of compositional fields, or the number "
                                   "of compositional fields plus one (if using a background field)."));
         }
-      phase_volume_fractions_out->output_values = volume_fractions;
+
+      // The phase volume fractions are the product of the
+      // material volume fractions and the phase volume fractions
+      for (unsigned i = 0; i < material_lookup.size(); i++)
+        {
+          for (unsigned int j = 0; j < unique_phase_indices[i].size(); j++)
+            {
+              for (unsigned int k = 0; k < in.n_evaluation_points(); k++)
+                phase_volume_fractions[unique_phase_indices[i][j]][k] = (material_volumes[i][k]/summed_volumes[k]) * material_lookup[i]->phase_volume_fraction(j,in.temperature[k],in.pressure[k]);
+            }
+        }
+
+      phase_volume_fractions_out->output_values = phase_volume_fractions;
     }
 
 
@@ -600,8 +632,9 @@ namespace aspect
           // fill seismic velocity outputs if they exist
           if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
             {
-              seismic_out->vp[i] = seismic_Vp(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
-              seismic_out->vs[i] = seismic_Vs(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              const std::pair<double, double> vp_and_vs = seismic_velocities(in.temperature[i], in.pressure[i], in.composition[i], in.position[i]);
+              seismic_out->vp[i] = vp_and_vs.first;
+              seismic_out->vs[i] = vp_and_vs.second;
             }
         }
 
@@ -683,7 +716,7 @@ namespace aspect
                              "assumed to define a `background composition' that is "
                              "modified by the compositional fields. If there are "
                              "exactly as many files as compositional fields, the fields are "
-                             "assumed to represent the fractions of different materials "
+                             "assumed to represent the mass fractions of different materials "
                              "and the average property is computed as a sum of "
                              "the value of the compositional field times the "
                              "material property of that field.");
