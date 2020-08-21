@@ -128,7 +128,7 @@ namespace aspect
                            "fields, for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: None.");
         prm.declare_entry ("Activation energies for Peierls creep", "320e3",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double(0.)),
                            "List of activation energies, $E$, for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: \\si{\\joule\\per\\mole}.");

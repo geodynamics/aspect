@@ -268,10 +268,9 @@ namespace aspect
             }
 
           // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
-          double viscosity_peierls = numbers::signaling_nan<double>();
           if (use_peierls_creep)
             {
-              viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j);
+              const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j);
               viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
             }
 
@@ -963,9 +962,12 @@ namespace aspect
 
           // Peierls creep parameters
           use_peierls_creep = prm.get_bool ("Include Peierls creep");
-          peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
-          peierls_creep->initialize_simulator (this->get_simulator());
-          peierls_creep->parse_parameters(prm);
+          if (use_peierls_creep)
+            {
+              peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+              peierls_creep->initialize_simulator (this->get_simulator());
+              peierls_creep->parse_parameters(prm);
+            }
 
           // Constant viscosity prefactor parameters
           constant_viscosity_prefactors.initialize_simulator (this->get_simulator());

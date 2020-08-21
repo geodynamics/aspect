@@ -1,4 +1,4 @@
-# A test for the peierls creep viscositiy approximation  
+# A test for the peierls creep viscosity approximation  
 # with the visco_plastic material model. 
 # Following the general Peierls creep flow law of Mei 
 # et al. 2010 and assuming a stress of 900e6 Pa, the
