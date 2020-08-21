@@ -21,6 +21,20 @@
 ##
 ## ---------------------------------------------------------------------
 
+find_astyle() {
+  # Split $PATH variable into an array
+  IFS=':' PATHS=(${PATH})
+
+  # Loop over available astyle executables in those $PATH directories
+  find "${PATHS[@]}" -iname '*astyle*' -print0 2>/dev/null \
+  | while IFS=  read -r -d $'\0' astyle; do
+    if test "$("${astyle}" --version 2>&1)" == "Artistic Style Version 2.04" ; then
+      echo "${astyle}"
+      return
+    fi
+  done
+}
+
 if test ! -d source -o ! -d include ; then
   echo "*** This script must be run from the top-level directory of ASPECT."
   exit 1
@@ -31,27 +45,32 @@ if test ! -f contrib/utilities/astyle.rc ; then
   exit 1
 fi
 
-if test -z "`which astyle`" ; then
+astyle="$(find_astyle)"
+astyle="${astyle:-`which astyle`}" # Fallback to `which astyle`
+
+if test -z "${astyle}"; then
   echo "*** No astyle program found."
   exit 1
 fi
 
-if test "`astyle --version 2>&1`" != "Artistic Style Version 2.04" ; then
+if test "$("${astyle}" --version 2>&1)" != "Artistic Style Version 2.04" ; then
   echo "*** Found a version of astyle different than the required version 2.04."
   exit 1
 fi
+
+echo "--- Found astyle 2.04 at ${astyle}"
 
 
 # collect all header and source files and process them in batches of 50 files
 # with up to 10 in parallel
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 astyle --options=contrib/utilities/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
 
 # remove execute permission on source files:
 find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
 
-# convert dos formatted files to unix file format by stripping out 
+# convert dos formatted files to unix file format by stripping out
 # carriage returns (15=0x0D):
 dos_to_unix()
 {
@@ -61,7 +80,7 @@ dos_to_unix()
     rm -f $f.tmp
 }
 export -f dos_to_unix
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {} 
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
 
 # convert tabs to two spaces:
 tab_to_space()
@@ -74,6 +93,6 @@ tab_to_space()
     rm -f $f.tmp
 }
 export -f tab_to_space
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {} 
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
 
 exit 0
