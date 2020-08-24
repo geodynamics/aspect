@@ -3291,7 +3291,7 @@ namespace aspect
     double calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
                                               const SymmetricTensor<2,dim> &stress,
                                               const double shear_modulus,
-                                              const double dte) 
+                                              const double dte)
     {
       const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
                                           (shear_modulus * dte);
@@ -3810,5 +3810,24 @@ namespace aspect
                        const std::vector<Point<3> > &,
                        std::vector<double> &)> &function,
                      LinearAlgebra::BlockVector &vec_result);
+
+    template double compute_current_edot_ii (const unsigned int j,
+                                             const std::vector<double> &composition,
+                                             const double ref_strain_rate,
+                                             const double min_strain_rate,
+                                             const SymmetricTensor<2,2> &strain_rate,
+                                             const std::vector<double> &elastic_shear_moduli,
+                                             const bool use_elasticity,
+                                             const bool use_reference_strainrate,
+                                             const double dte);
+    template double compute_current_edot_ii (const unsigned int j,
+                                             const std::vector<double> &composition,
+                                             const double ref_strain_rate,
+                                             const double min_strain_rate,
+                                             const SymmetricTensor<2,3> &strain_rate,
+                                             const std::vector<double> &elastic_shear_moduli,
+                                             const bool use_elasticity,
+                                             const bool use_reference_strainrate,
+                                             const double dte);
   }
 }
