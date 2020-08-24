@@ -52,6 +52,7 @@ namespace aspect
       template <int dim>
       class BoundaryVelocityResidual
         : public DataPostprocessorVector<dim>,
+          public SurfaceOnlyVisualization<dim>,
           public SimulatorAccess<dim>,
           public Interface<dim>
       {

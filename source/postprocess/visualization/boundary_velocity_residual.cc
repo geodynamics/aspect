@@ -46,7 +46,6 @@ namespace aspect
             ascii_data_lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim> >(dim, scale_factor);
             ascii_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
           }
-
         else
           {
             // The variables pointone and pointtwo are used in gplates to find the 2D plane in which the model lies.
@@ -97,38 +96,33 @@ namespace aspect
             for (unsigned int q=0; q<computed_quantities.size(); ++q)
               {
                 Tensor<1,dim> data_velocity;
-                if (use_spherical_unit_vectors && use_ascii_data)
+                if (use_ascii_data)
                   {
-                    const std::array<double,dim> cartesian_position = this->get_geometry_model().
-                                                                      cartesian_to_natural_coordinates(input_data.evaluation_points[q]);
+                    Point<dim> internal_position = input_data.evaluation_points[q];
 
-                    Point<dim> internal_position;
+                    if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
+                      {
+                        const std::array<double,dim> spherical_position = this->get_geometry_model().
+                                                                          cartesian_to_natural_coordinates(input_data.evaluation_points[q]);
 
-                    for (unsigned int d = 0; d < dim; ++d)
-                      internal_position[d] = cartesian_position[d];
+                        for (unsigned int d = 0; d < dim; ++d)
+                          internal_position[d] = spherical_position[d];
+                      }
 
                     for (unsigned int d = 0; d < dim; ++d)
                       data_velocity[d] = ascii_data_lookup->get_data(internal_position, d);
 
-                    data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, input_data.evaluation_points[q]);
+                    if (use_spherical_unit_vectors == true)
+                      data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, input_data.evaluation_points[q]);
+                  }
 
-                    for (unsigned int d = 0; d < dim; ++d)
-                      computed_quantities[q](d) = (data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor) ;
-                  }
-                else if (use_ascii_data && !use_spherical_unit_vectors)
-                  {
-                    for (unsigned int d = 0; d < dim; ++d)
-                      {
-                        data_velocity[d] = ascii_data_lookup->get_data(input_data.evaluation_points[q], d);
-                        computed_quantities[q](d) = (data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor) ;
-                      }
-                  }
                 else
                   {
                     data_velocity =  gplates_lookup->surface_velocity(input_data.evaluation_points[q]);
-                    for (unsigned int d = 0; d < dim; ++d)
-                      computed_quantities[q](d) = (data_velocity[d] - input_data.solution_values[q][d]) * velocity_scaling_factor;
                   }
+
+                for (unsigned int d = 0; d < dim; ++d)
+                  computed_quantities[q](d) = (data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor) ;
               }
           }
       }
@@ -142,7 +136,7 @@ namespace aspect
         {
           prm.enter_subsection("Visualization");
           {
-            prm.enter_subsection("Surface properties");
+            prm.enter_subsection("Boundary velocity residual");
             {
               prm.declare_entry ("Data directory",
                                  "$ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/",
@@ -174,10 +168,13 @@ namespace aspect
                                  "Specify velocity as r, phi, and theta components "
                                  "instead of x, y, and z. Positive velocities point up, east, "
                                  "and north (in 3D) or out and clockwise (in 2D). "
-                                 "This setting only makes sense for spherical geometries.");
+                                 "This setting only makes sense for spherical geometries."
+                                 "GPlates data is always interpreted to be in east and north directions "
+                                 "and is not affected by this parameter.");
               prm.declare_entry ("Use ascii data", "false",
                                  Patterns::Bool (),
-                                 "Use ascii data (e.g., GPS) for computing residual velocities .");
+                                 "Use ascii data files (e.g., GPS) for computing residual velocities "
+                                 "instead of GPlates data.");
             }
             prm.leave_subsection();
           }
@@ -194,7 +191,7 @@ namespace aspect
         prm.enter_subsection("Postprocess");
         prm.enter_subsection("Visualization");
         {
-          prm.enter_subsection("Surface properties");
+          prm.enter_subsection("Boundary velocity residual");
           {
             // Get the path to the data files. If it contains a reference
             // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
@@ -232,8 +229,8 @@ namespace aspect
                                                   "boundary velocity residual",
                                                   "A visualization output object that generates output for the velocity "
                                                   "residual at the top surface. The residual is computed at each point at the "
-                                                  " the surface as the difference between the modeled velocities and the input "
-                                                  " velocities for each vector component. The user has an option to choose "
+                                                  "surface as the difference between the modeled velocities and the input "
+                                                  "data velocities for each vector component. The user has an option to choose "
                                                   "the input data as ascii data files (e.g. GPS velocities) with columns "
                                                   "in the same format as described for the 'ascii data' initial temperature plugin "
                                                   "or a velocity field computed from the GPlates program as described in the gplates "
