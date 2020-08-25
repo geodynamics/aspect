@@ -118,7 +118,16 @@ namespace aspect
          * as an identical copy of @p from_particle_handler, assuming it
          * was set up by this particle world class. This means we assume
          * @p from_particle_handler uses the same triangulation and
-         * particle properties as are used in this model.
+         * particle properties as are used in this model. Existing
+         * particles in @p to_particle_handler are deleted.
+         *
+         * This function is expensive as it has to duplicate all data
+         * in @p from_particle_handler, and insert it into @p to_particle_handler,
+         * which may be a significant amount of data. However, it can
+         * be useful for example to save the state of a particle
+         * collection at a certain point in time and reset this
+         * state later under certain conditions, for example if
+         * a timestep has to be undone and repeated.
          */
         void copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
                                     Particles::ParticleHandler<dim> &to_particle_handler) const;

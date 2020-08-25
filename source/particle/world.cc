@@ -134,7 +134,6 @@ namespace aspect
                                                    particle.get_reference_location(),
                                                    particle.get_id());
             new_particle.set_property_pool(to_particle_handler.get_property_pool());
-            new_particle.set_properties(particle.get_properties());
 
 #ifdef DEAL_II_WITH_CXX14
             new_particles.emplace_hint(new_particles.end(),
@@ -148,7 +147,13 @@ namespace aspect
           }
 
         to_particle_handler.insert_particles(new_particles);
-        to_particle_handler.update_cached_numbers();
+
+        auto from_particle = from_particle_handler.begin();
+        for (auto &particle : to_particle_handler)
+          {
+            particle.set_properties(from_particle->get_properties());
+            ++from_particle;
+          }
       }
 
       if (update_ghost_particles &&
