@@ -1028,8 +1028,8 @@ namespace aspect
                   libdap::AttrTable *table;
 
                   table = das.get_table(i);
-                  if (table->get_attr("points") != "")
-                    points.push_back(table->get_attr("points"));
+                  if (table->get_attr("POINTS") != "")
+                    points.push_back(table->get_attr("POINTS"));
                 }
 
               std::stringstream urlString;
@@ -1059,7 +1059,6 @@ namespace aspect
 
               data_string = urlString.str();
               filesize = data_string.size();
-
               delete url;
 #else // ASPECT_WITH_LIBDAP
 
