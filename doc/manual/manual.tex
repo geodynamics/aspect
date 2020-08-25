@@ -7371,6 +7371,7 @@ We can observe that when the two-layer viscosity model is added, there is only o
 
 
 
+
 \subsubsection{Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method}
 \label{sec:van-keken VOF interface tracking}
 
@@ -7378,42 +7379,44 @@ We can observe that when the two-layer viscosity model is added, there is only o
 
 \input{cookbooks/van-keken-vof/doc/van-keken-vof.tex}
 
-\subsubsection{The Bunge et al. mantle convection experiments}
+
+
+\subsubsection{The Bunge et al.~mantle convection experiments}
+\label{sec:bunge_et_al_cookbook}
 
 \textit{This section was contributed by Cedric Thieulot and Bob Myhill.}
 
-Early mantle modelling studies of the 70's, 80's and 90's were often concerned with simple setups (Cartesian geometries, incompressible fluid, free slip boundary conditions) and investigated the influence of the Rayleigh number, the heating mode or the temperature dependence of the viscosity on temperature, pressure and/or strain rate \cite{youn74,buss75,buss79,BBC89,BC93,vavy93,burb97}. In this cookbook, we use the `simple' material model to reproduce the setup in \cite{burb96}, which reported that even modest increases in mantle viscosity with depth could have a marked effect on the style of mantle convection.
+Early mantle modelling studies of the 1970s, 1980s and 1990s were often concerned with simple set-ups (Cartesian geometries, incompressible fluid, free slip boundary conditions) and investigated the influence of the Rayleigh number, the heating mode or the temperature dependence of the viscosity on temperature, pressure and/or strain rate \cite{youn74,buss75,buss79,BBC89,BC93,vavy93,burb97}. In this cookbook, we use the `simple' material model to reproduce the set-up in \cite{burb96}, which reported that even modest increases in mantle viscosity with depth could have a marked effect on the style of mantle convection.
 
-Although the original article showcases results obtained in a 3D hollow sphere, we here run the models in an annular domain of inner radius R$_i$=3480 \si{\kilo\meter} and outer radius  R$_o$ = 6370 \si{\kilo\meter}.
-The surface temperature is set to $T_{\textit{surf}}$ = 1060 \si{\kelvin} and 
-the bottom temperature to $T_{\textit{cmb}}$ = 3450 \si{\kelvin}
-The gravity vector is radial and its magnitude is $g$ = 10 \si{\metre\per\second\squared}.
+Although the original article showcases results obtained in a 3D hollow sphere, we here run the models in an annular domain of inner radius $R_i = 3480$ \si{\kilo\meter} and outer radius  $R_o = 6370$ \si{\kilo\meter}.
+The surface temperature is set to $T{\textsubscript{surf}}$ = 1060 \si{\kelvin} and 
+the bottom temperature to $T{\textsubscript{cmb}} = 3450$ \si{\kelvin}. The gravity vector is radial and its magnitude is $g = 10$ \si{\metre\per\second\squared}.
 
-There is a single incompressible fluid in the domain, characterised by $\rho_0$ = 4500 \si{\kilogram\per\metre\cubed}, $\alpha$ = $2.5\cdot10^{-5}$ \si{\per\kelvin}, 
-$k$ = 4 \si{\watt\per\metre\per\kelvin},
-$C_p$ = 1000 \si{\joule\per\kilogram\per\kelvin} and
-its internal heating rate is $Q_{\textit{int}}$ = $1\cdot10^{-12}$ \si{\watt\per\kilogram}.
-The limit between the upper mantle (viscosity $\eta_{um}$)
-and the lower mantle (viscosity $\eta_{lm}$) is fixed at $670\si{\km}$ depth.
-As in the article we consider four time-independent radial viscosity profiles.
+There is a single incompressible fluid in the domain, characterized by $\rho_0 = 4500$ \si{\kilogram\per\metre\cubed}, $\alpha = 2.5\cdot10^{-5}$ \si{\per\kelvin}, 
+$k = 4$ \si{\watt\per\metre\per\kelvin},
+$C_p = 1000$ \si{\joule\per\kilogram\per\kelvin} and
+its internal heating rate is $Q{\textsubscript{int}} = 1\cdot10^{-12}$ \si{\watt\per\kilogram}.
+The interface between the upper mantle (viscosity $\eta\textsubscript{um}$)
+and the lower mantle (viscosity $\eta\textsubscript{lm}$) is fixed at 670 \si{\kilo\meter} depth.
+As in the article we consider four time-independent radial viscosity profiles:
 
 \begin{itemize}
-\item[a)] Isoviscous mantle, $\eta_{um}=\eta_{lm}=1.7\cdot 10^{24}$ \si{\pascal}
-\item[b)] $\eta_{um}=5.8\cdot 10^{22}$ \si{\pascal}, $\eta_{lm}=30\eta_{um}$ \si{\pascal}
-\item[c)] Isoviscous mantle, $\eta_{um}=\eta_{lm}=5.8\cdot 10^{22}$ \si{\pascal}
-\item[d)] $\eta_{um}=7\cdot 10^{21}$ \si{\pascal},  $\eta_{lm}=30\eta_{um}$ \si{\pascal}
+\item[a)] Isoviscous mantle: $\eta\textsubscript{um}=\eta\textsubscript{lm}=1.7\cdot 10^{24}$ \si{\pascal\second}
+\item[b)] Mantle with step change in viscosity: $\eta\textsubscript{um}=5.8\cdot 10^{22}$ \si{\pascal\second}, $\eta\textsubscript{lm}=30\eta\textsubscript{um}$
+\item[c)] Isoviscous mantle: $\eta\textsubscript{um}=\eta\textsubscript{lm}=5.8\cdot 10^{22}$ \si{\pascal\second}
+\item[d)] Mantle with step change in viscosity: $\eta\textsubscript{um}=7\cdot 10^{21}$ \si{\pascal\second},  $\eta\textsubscript{lm}=30\eta\textsubscript{um}$
 \end{itemize}
 
-A separate ascii file {\tt visc\_depth\_X.txt} with {\tt X=\{a,b,c,d\}} contains each of these viscosity profiles. The resulting temperature field after 5 billion years of convection is shown in Fig.~\ref{fig:bunge_et_al}. Similar to the results obtained by \cite{burb96}, models in which the lower mantle is more viscous than the upper mantle are distinctly colder than their isoviscous equivalents, with more clearly defined upwellings. You can find a movie of how the temperature evolves over this time period at \url{https://youtu.be/5SPCU1sFGGc}.
+Separate ascii files {\tt visc\_depth\_X.txt} with {\tt X=\{a,b,c,d\}} contain each of these viscosity profiles. The resulting temperature fields after 5 billion years of convection are shown in Fig.~\ref{fig:bunge_et_al}. Similar to the results obtained by \cite{burb96}, models in which the lower mantle is more viscous than the upper mantle are distinctly colder than their isoviscous equivalents, with more clearly defined upwellings. You can find a movie of how the temperature evolves over this time period at
+\url{https://youtu.be/5SPCU1sFGGc}.
 
 \begin{figure}[tbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{cookbooks/bunge_et_al_mantle_convection/temps.png}
-  \caption{\it From left to right: temperature field at time $t=5\cdot 10^9$ years obtained with viscosity profiles a, b, c and d.}
+  \includegraphics[width=0.9\textwidth]{cookbooks/bunge_et_al_mantle_convection/temps.png}
+  \caption{\it Bunge et al.~benchmark. From left to right: temperature field at time $t=5\cdot 10^9$ years obtained with viscosity profiles a, b, c and d.}
   \label{fig:bunge_et_al}
 \end{figure}
 
->>>>>>> new mantle convection cookbook
 
 \subsubsection{The Rayleigh-Taylor instability}
 \label{sec:benchmark-rayleigh-taylor}

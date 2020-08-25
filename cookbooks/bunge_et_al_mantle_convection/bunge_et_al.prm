@@ -1,4 +1,4 @@
-# Setup for convection in a quarter of a 2d shell.
+# Setup for convection in a 2d shell.
 # Parameters from Bunge et al, Nature, 1996.
 
 set Dimension                              = 2
