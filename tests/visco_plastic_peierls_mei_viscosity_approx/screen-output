@@ -1,0 +1,18 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,444 (882+121+441)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3210 kg/m^3, 5.36e+18 Pa s, 3.21e+13 kg
+
+Termination requested by criterion: end time
+
+
+

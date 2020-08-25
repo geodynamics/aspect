@@ -1,0 +1,15 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Average density (kg/m^3)
+# 13: Average viscosity (Pa s)
+# 14: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 1 0 19 21 20 3.20991000e+03 5.36023626e+18 3.20991000e+13 

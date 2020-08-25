@@ -267,7 +267,14 @@ namespace aspect
               }
             }
 
-          // Step 1d: multiply the viscosity by a constant (default value is 1)
+          // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
+          if (use_peierls_creep)
+            {
+              const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j);
+              viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
+            }
+
+          // Step 1e: multiply the viscosity by a constant (default value is 1)
           viscosity_pre_yield = constant_viscosity_prefactors.compute_viscosity(viscosity_pre_yield, j);
 
           // Step 2: calculate the viscous stress magnitude
@@ -809,6 +816,13 @@ namespace aspect
           // Frank-Kamenetskii viscosity parameters
           Rheology::FrankKamenetskii<dim>::declare_parameters(prm);
 
+          // Peierls creep parameters
+          Rheology::PeierlsCreep<dim>::declare_parameters(prm);
+
+          prm.declare_entry ("Include Peierls creep", "false",
+                             Patterns::Bool (),
+                             "Whether to include Peierls creep in the rheological formulation.");
+
           // Constant viscosity prefactor parameters
           Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
 
@@ -944,6 +958,15 @@ namespace aspect
               frank_kamenetskii_rheology = std_cxx14::make_unique<Rheology::FrankKamenetskii<dim>>();
               frank_kamenetskii_rheology->initialize_simulator (this->get_simulator());
               frank_kamenetskii_rheology->parse_parameters(prm);
+            }
+
+          // Peierls creep parameters
+          use_peierls_creep = prm.get_bool ("Include Peierls creep");
+          if (use_peierls_creep)
+            {
+              peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+              peierls_creep->initialize_simulator (this->get_simulator());
+              peierls_creep->parse_parameters(prm);
             }
 
           // Constant viscosity prefactor parameters
