@@ -124,7 +124,7 @@ namespace aspect
          * This function is expensive as it has to duplicate all data
          * in @p from_particle_handler, and insert it into @p to_particle_handler,
          * which may be a significant amount of data. However, it can
-         * be useful for example to save the state of a particle
+         * be useful to save the state of a particle
          * collection at a certain point in time and reset this
          * state later under certain conditions, for example if
          * a timestep has to be undone and repeated.

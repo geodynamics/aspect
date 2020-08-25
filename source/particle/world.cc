@@ -133,7 +133,11 @@ namespace aspect
             Particles::Particle<dim> new_particle (particle.get_location(),
                                                    particle.get_reference_location(),
                                                    particle.get_id());
+
+#if !DEAL_II_VERSION_GTE(9,3,0)
             new_particle.set_property_pool(to_particle_handler.get_property_pool());
+            new_particle.set_properties(particle.get_properties());
+#endif
 
 #ifdef DEAL_II_WITH_CXX14
             new_particles.emplace_hint(new_particles.end(),
@@ -148,12 +152,15 @@ namespace aspect
 
         to_particle_handler.insert_particles(new_particles);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
         auto from_particle = from_particle_handler.begin();
         for (auto &particle : to_particle_handler)
           {
             particle.set_properties(from_particle->get_properties());
             ++from_particle;
           }
+#endif
+
       }
 
       if (update_ghost_particles &&
