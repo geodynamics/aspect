@@ -12,7 +12,7 @@ subsection Material model
   subsection Depth dependent model
     set Base model = simple
     set Depth dependence method = File
-    set Data directory = $ASPECT_SOURCE_DIR/build/
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/bunge_et_al_mantle_convection
     set Viscosity depth file = visc_depth_a.txt
   end
   subsection Simple model
