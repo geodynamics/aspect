@@ -134,9 +134,9 @@ namespace aspect
 
         for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
           qr.append_column(A[column_index]);
-       // If A is rank deficent, qr.append_column will not append the column.
-       // We check that all columns were added through this assertion
-       AssertThrow(qr.size() == n_matrix_columns,
+        // If A is rank deficent, qr.append_column will not append the column.
+        // We check that all columns were added through this assertion
+        AssertThrow(qr.size() == n_matrix_columns,
                     ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
