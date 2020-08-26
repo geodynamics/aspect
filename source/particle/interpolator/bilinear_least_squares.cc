@@ -103,41 +103,41 @@ namespace aspect
           if (selected_properties[property_index])
             b[property_index] = 0;
 
-        unsigned int positions_index = 0;
+        unsigned int particle_index = 0;
         const double cell_diameter = found_cell->diameter();
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++positions_index)
+             particle != particle_range.end(); ++particle, ++particle_index)
           {
             const auto &particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               if (selected_properties[property_index])
-                b[property_index][positions_index] = particle_property_value[property_index];
+                b[property_index][particle_index] = particle_property_value[property_index];
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
             // A is accessed by A[column][row] here since we need to append
             // columns into the qr matrix.
-            A[0][positions_index] = 1;
-            A[1][positions_index] = relative_particle_position[0];
-            A[2][positions_index] = relative_particle_position[1];
+            A[0][particle_index] = 1;
+            A[1][particle_index] = relative_particle_position[0];
+            A[2][particle_index] = relative_particle_position[1];
             if (dim == 2)
               {
-                A[3][positions_index] = relative_particle_position[0] * relative_particle_position[1];
+                A[3][particle_index] = relative_particle_position[0] * relative_particle_position[1];
               }
             else
               {
-                A[3][positions_index] = relative_particle_position[2];
-                A[4][positions_index] = relative_particle_position[0] * relative_particle_position[1];
-                A[5][positions_index] = relative_particle_position[0] * relative_particle_position[2];
-                A[6][positions_index] = relative_particle_position[1] * relative_particle_position[2];
-                A[7][positions_index] = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
+                A[3][particle_index] = relative_particle_position[2];
+                A[4][particle_index] = relative_particle_position[0] * relative_particle_position[1];
+                A[5][particle_index] = relative_particle_position[0] * relative_particle_position[2];
+                A[6][particle_index] = relative_particle_position[1] * relative_particle_position[2];
+                A[7][particle_index] = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
               }
           }
 
         for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
           qr.append_column(A[column_index]);
-        AssertThrow(qr.size() == n_matrix_columns,
+       // If A is rank deficent, qr.append_column will not append the column.
+       // We check that all columns were added through this assertion
+       AssertThrow(qr.size() == n_matrix_columns,
                     ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
-        // If A is rank deficent, qr.append_column will not append the column.
-        // We check that all columns were added through this assertion
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
@@ -280,8 +280,9 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
                                             "Interpolates particle properties onto a vector of points using a "
-                                            "bilinear least squares method. Note that deal.II must be configured "
-                                            "with BLAS/LAPACK.")
+                                            "bilinear least squares method. "
+                                            "Note that deal.II must be configured BLAS and LAPACK to "
+                                            "support this operation.")
     }
   }
 }
