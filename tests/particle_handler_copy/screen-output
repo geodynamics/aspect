@@ -1,0 +1,184 @@
+
+Loading shared library <./libparticle_handler_copy.so>
+
+Connecting signals
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds
+   Skipping temperature solve because RHS is zero.
+duplicating particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: 0. Copied properties: 0
+resetting changed particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: 0. Copied properties: 0
+   Solving C_1 system ... duplicating particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: 0. Copied properties: 0
+resetting changed particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: 0. Copied properties: 0
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: 0. Copied properties: 0
+0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000181 m/s, 0.000404 m/s
+     Compositions min/max/mass: 0/1/0.1825
+     Writing particle output:   output-particle_handler_copy/particles/particles-00000
+
+*** Timestep 1:  t=70 seconds
+   Skipping temperature solve because RHS is zero.
+duplicating particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: -0.000348228. Copied properties: -0.000348228
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: -0.000380139. Copied properties: -0.000380139
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: -0.0002879. Copied properties: -0.0002879
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: -0.000309201. Copied properties: -0.000309201
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: -0.00036835. Copied properties: -0.00036835
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: -0.000291888. Copied properties: -0.000291888
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+resetting changed particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: -0.000380139. Copied properties: -0.000380139
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: -0.0002879. Copied properties: -0.0002879
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: -0.000309201. Copied properties: -0.000309201
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: -0.00036835. Copied properties: -0.00036835
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: -0.000291888. Copied properties: -0.000291888
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+   Solving C_1 system ... duplicating particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: -0.000380139. Copied properties: -0.000380139
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: -0.0002879. Copied properties: -0.0002879
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: -0.000309201. Copied properties: -0.000309201
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: -0.00036835. Copied properties: -0.00036835
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: -0.000291888. Copied properties: -0.000291888
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+resetting changed particle handler
+Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original properties: 3.14. Copied properties: 3.14
+Original position: 0.4 0.1. Copied position: 0.4 0.1
+Original properties: -0.000380139. Copied properties: -0.000380139
+Original position: 0.3 0.2. Copied position: 0.3 0.2
+Original properties: -0.0002879. Copied properties: -0.0002879
+Original position: 0.4 0.2. Copied position: 0.4 0.2
+Original properties: -0.000309201. Copied properties: -0.000309201
+Original position: 0.3 0.3. Copied position: 0.3 0.3
+Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original position: 0.4 0.3. Copied position: 0.4 0.3
+Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original position: 0.5 0.1. Copied position: 0.5 0.1
+Original properties: -0.00036835. Copied properties: -0.00036835
+Original position: 0.5 0.2. Copied position: 0.5 0.2
+Original properties: -0.000291888. Copied properties: -0.000291888
+Original position: 0.5 0.3. Copied position: 0.5 0.3
+Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+14 iterations.
+   Solving Stokes system... 35+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000327 m/s, 0.000727 m/s
+     Compositions min/max/mass: -0.001642/1.001/0.1825
+     Writing particle output:   output-particle_handler_copy/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+

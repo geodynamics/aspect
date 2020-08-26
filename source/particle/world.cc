@@ -108,6 +108,71 @@ namespace aspect
       return *particle_handler.get();
     }
 
+
+    template <int dim>
+    void
+    World<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
+                                       Particles::ParticleHandler<dim> &to_particle_handler) const
+    {
+      {
+        TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
+
+        // initialize to_particle_handler
+        const unsigned int n_properties = property_manager->get_n_property_components();
+        to_particle_handler.clear();
+        to_particle_handler.initialize(this->get_triangulation(),
+                                       this->get_mapping(),
+                                       n_properties);
+
+        connect_particle_handler_signals(this->get_signals(),to_particle_handler);
+
+        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
+
+        for (const auto &particle : from_particle_handler)
+          {
+            Particles::Particle<dim> new_particle (particle.get_location(),
+                                                   particle.get_reference_location(),
+                                                   particle.get_id());
+
+#if !DEAL_II_VERSION_GTE(9,3,0)
+            new_particle.set_property_pool(to_particle_handler.get_property_pool());
+            new_particle.set_properties(particle.get_properties());
+#endif
+
+#ifdef DEAL_II_WITH_CXX14
+            new_particles.emplace_hint(new_particles.end(),
+                                       particle.get_surrounding_cell(this->get_triangulation()),
+                                       std::move(new_particle));
+#else
+            new_particles.insert(new_particles.end(),
+                                 std::make_pair(particle.get_surrounding_cell(this->get_triangulation()),
+                                                std::move(new_particle)));
+#endif
+          }
+
+        to_particle_handler.insert_particles(new_particles);
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+        auto from_particle = from_particle_handler.begin();
+        for (auto &particle : to_particle_handler)
+          {
+            particle.set_properties(from_particle->get_properties());
+            ++from_particle;
+          }
+#endif
+
+      }
+
+      if (update_ghost_particles &&
+          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
+        {
+          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
+          to_particle_handler.exchange_ghost_particles();
+        }
+    }
+
+
+
     template <int dim>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
@@ -135,40 +200,50 @@ namespace aspect
         this->setup_initial_state();
       });
 
+      connect_particle_handler_signals(signals,*particle_handler);
+
+      signals.post_refinement_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        this->apply_particle_per_cell_bounds();
+      });
+
+      signals.post_resume_load_user_data.connect(
+        [&] (typename parallel::distributed::Triangulation<dim> &)
+      {
+        this->apply_particle_per_cell_bounds();
+      });
+    }
+
+
+
+    template <int dim>
+    void
+    World<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
+                                                 ParticleHandler<dim> &particle_handler_) const
+    {
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-        particle_handler->register_store_callback_function();
+        particle_handler_.register_store_callback_function();
       });
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-        particle_handler->register_load_callback_function(false);
+        particle_handler_.register_load_callback_function(false);
       });
 
       signals.pre_checkpoint_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-        particle_handler->register_store_callback_function();
+        particle_handler_.register_store_callback_function();
       });
 
       signals.post_resume_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
-        particle_handler->register_load_callback_function(true);
-      });
-
-      signals.post_refinement_load_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        this->apply_particle_per_cell_bounds();
-      });
-
-      signals.post_resume_load_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        this->apply_particle_per_cell_bounds();
+        particle_handler_.register_load_callback_function(true);
       });
 
       if (update_ghost_particles &&
@@ -176,7 +251,7 @@ namespace aspect
         {
           auto lambda = [&] (typename parallel::distributed::Triangulation<dim> &)
           {
-            particle_handler->exchange_ghost_particles();
+            particle_handler_.exchange_ghost_particles();
           };
           signals.post_refinement_load_user_data.connect(lambda);
           signals.post_resume_load_user_data.connect(lambda);
