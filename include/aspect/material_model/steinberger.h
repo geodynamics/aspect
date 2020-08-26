@@ -184,7 +184,7 @@ namespace aspect
          * cell is identical.
          */
         std::array<std::pair<double, unsigned int>,2>
-        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
+        enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
         /**
          * @}
          */

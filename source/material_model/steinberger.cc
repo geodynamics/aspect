@@ -262,18 +262,19 @@ namespace aspect
       mass_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size()));
       volume_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size()));
 
-      if (has_background)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
-          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-            {
-              // Use the adiabatic pressure instead of the real one, because of oscillations
-              const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                      ?
-                                      this->get_adiabatic_conditions().pressure(in.position[i])
-                                      :
-                                      in.pressure[i];
+          // Use the adiabatic pressure instead of the real one, because of oscillations
+          const double pressure = (this->get_adiabatic_conditions().is_initialized())
+                                  ?
+                                  this->get_adiabatic_conditions().pressure(in.position[i])
+                                  :
+                                  in.pressure[i];
 
-              double summed_volumes = 0.;
+          double summed_volumes = 0.;
+
+          if (has_background)
+            {
               mass_fractions[i][0] = 1.;
               for (unsigned int j=1; j<material_lookup.size(); ++j)
                 {
@@ -286,22 +287,9 @@ namespace aspect
               volume_fractions[i][0] = mass_fractions[i][0]/material_lookup[0]->density(in.temperature[i],pressure);
               summed_volumes += volume_fractions[i][0];
 
-              for (unsigned int j=0; j<material_lookup.size(); ++j)
-                volume_fractions[i][j] /= summed_volumes;
             }
-        }
-      else
-        {
-          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+          else
             {
-              // Use the adiabatic pressure instead of the real one, because of oscillations
-              const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                      ?
-                                      this->get_adiabatic_conditions().pressure(in.position[i])
-                                      :
-                                      in.pressure[i];
-
-              double summed_volumes = 0.;
               for (unsigned int j=0; j<material_lookup.size(); ++j)
                 {
                   const double mass_fraction = in.composition[i][first_composition_index+j];
@@ -309,10 +297,10 @@ namespace aspect
                   volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],pressure);
                   summed_volumes += volume_fractions[i][j];
                 }
-
-              for (unsigned int j=0; j<material_lookup.size(); ++j)
-                volume_fractions[i][j] /= summed_volumes;
             }
+
+          for (unsigned int j=0; j<material_lookup.size(); ++j)
+            volume_fractions[i][j] /= summed_volumes;
         }
     }
 
@@ -334,7 +322,7 @@ namespace aspect
       // The Voigt average is an arithmetic volumetric average,
       // while the Reuss average is a harmonic volumetric average.
 
-      for (unsigned int i = 0; i < in.n_evaluation_points(); i++)
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           double k_voigt = 0.;
           double mu_voigt = 0.;
@@ -348,7 +336,7 @@ namespace aspect
                                   :
                                   in.pressure[i];
 
-          for (unsigned j = 0; j < material_lookup.size(); j++)
+          for (unsigned int j = 0; j < material_lookup.size(); ++j)
             {
               const double mu = material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],pressure), 2.);
               const double k =  material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],pressure), 2.) - 4./3.*mu;
@@ -375,14 +363,18 @@ namespace aspect
                                  const std::vector<std::vector<double>> &volume_fractions,
                                  NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const
     {
-      // The phase volume fractions are the product of the
-      // material volume fractions and the phase volume fractions
+      // Each call to material_lookup[j]->phase_volume_fraction(k,temperature,pressure)
+      // returns the volume fraction of the kth phase which is present in that material lookup
+      // at the requested temperature and pressure.
+      // The total volume fraction of each phase at each evaluation point is equal to
+      // sum_j (volume_fraction_of_material_j * phase_volume_fraction_in_material_j).
       // In the following function,
-      // the index i corresponds to the kth evaluation point
-      // the index j corresponds to the ith compositional field
-      // the index k corresponds to the jth phase in the lookup
-      std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(), std::vector<double>(in.n_evaluation_points(), 0.));
-      for (unsigned int i = 0; i < in.n_evaluation_points(); i++)
+      // the index i corresponds to the ith evaluation point
+      // the index j corresponds to the jth compositional field
+      // the index k corresponds to the kth phase in the lookup
+      std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(),
+                                                              std::vector<double>(in.n_evaluation_points(), 0.));
+      for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one, because of oscillations
           const double pressure = (this->get_adiabatic_conditions().is_initialized())
@@ -390,8 +382,8 @@ namespace aspect
                                   this->get_adiabatic_conditions().pressure(in.position[i])
                                   :
                                   in.pressure[i];
-          for (unsigned j = 0; j < material_lookup.size(); j++)
-            for (unsigned int k = 0; k < unique_phase_indices[j].size(); k++)
+          for (unsigned j = 0; j < material_lookup.size(); ++j)
+            for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
               phase_volume_fractions[unique_phase_indices[j][k]][i] = volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],pressure);
         }
       phase_volume_fractions_out->output_values = phase_volume_fractions;
@@ -412,7 +404,7 @@ namespace aspect
     template <int dim>
     std::array<std::pair<double, unsigned int>,2>
     Steinberger<dim>::
-    enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const
+    enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const
     {
       // We have to take into account here that the p,T spacing of the table of material properties
       // we use might be on a finer grid than our model. Because of that we compute the enthalpy
@@ -454,22 +446,6 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      double average_temperature(0.0);
-      double average_density(0.0);
-      std::array<std::pair<double, unsigned int>,2> dH;
-
-      if (latent_heat)
-        {
-          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
-            {
-              average_temperature += in.temperature[i];
-              average_density += out.densities[i];
-            }
-          average_temperature /= in.n_evaluation_points();
-          average_density /= in.n_evaluation_points();
-          dH = enthalpy_derivative(in);
-        }
-
       std::vector<std::vector<double>> mass_fractions;
       std::vector<std::vector<double>> volume_fractions;
       fill_mass_and_volume_fractions (in, mass_fractions, volume_fractions);
@@ -483,7 +459,6 @@ namespace aspect
                                   :
                                   in.pressure[i];
 
-          // We are only asked to give viscosities if strain_rate.size() > 0.
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
@@ -494,7 +469,7 @@ namespace aspect
             out.reaction_terms[i][c]            = 0;
 
           // The following lines take the appropriate averages of the
-          // thermodynamic moaterial properties
+          // thermodynamic material properties
           std::vector<double> specific_heats(material_lookup.size());
           std::vector<double> densities(material_lookup.size());
           std::vector<double> compressibilities(material_lookup.size());
@@ -512,24 +487,62 @@ namespace aspect
                 }
             }
 
-          out.densities[i] = MaterialUtilities::average_value(volume_fractions[i], densities, MaterialUtilities::arithmetic); // volume fraction averaging of densities
-          out.compressibilities[i] = MaterialUtilities::average_value(volume_fractions[i], compressibilities, MaterialUtilities::arithmetic); // volume averaging of isothermal compressibility
+          // The density and isothermal compressibility are both volume-averaged
+          out.densities[i] = MaterialUtilities::average_value(volume_fractions[i], densities, MaterialUtilities::arithmetic);
+          out.compressibilities[i] = MaterialUtilities::average_value(volume_fractions[i], compressibilities, MaterialUtilities::arithmetic);
 
-          // The second derivatives of the thermodynamic potentials (compressibility, thermal expansivity, specific heat)
-          // are dependent not only on the phases present in the assemblage at the given temperature and pressure,
-          // but also on any reactions between phases in the assemblage. PerpleX and HeFESTo output only "static" properties
-          // (properties not including any reaction effects), and so do not capture the latent heat of reaction.
-
-          // In this material model, we always use a compressibility which includes the effects of reaction,
-          // but we allow the user the option to switch on or off thermal (latent heat) effects.
-          // If the latent_heat bool is set to true, thermal expansivity and specific heat are calculated from
-          // the change in enthalpy with pressure and temperature.
-
-          // There are alternative ways to capture the latent heat effect (by preprocessing the P-T table, for example),
-          // which may be a more appropriate approach in some cases, but the latent heat should always be considered if
-          // thermodynamic self-consistency is intended.
-          if (latent_heat)
+          if (!latent_heat)
             {
+              // Specific heat is measured per unit mass, so it is mass averaged.
+              // Thermal expansivity is volume averaged.
+              out.specific_heat[i] = MaterialUtilities::average_value(mass_fractions[i], specific_heats, MaterialUtilities::arithmetic);
+              out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions[i], thermal_expansivities, MaterialUtilities::arithmetic);
+            }
+        }
+
+      // The second derivatives of the thermodynamic potentials (compressibility, thermal expansivity, specific heat)
+      // are dependent not only on the phases present in the assemblage at the given temperature and pressure,
+      // but also on any reactions between phases in the assemblage. PerpleX and HeFESTo output only "static" properties
+      // (properties not including any reaction effects), and so do not capture the latent heat of reaction.
+
+      // In this material model, we always use a compressibility which includes the effects of reaction,
+      // but we allow the user the option to switch on or off thermal (latent heat) effects.
+      // If the latent_heat bool is set to true, thermal expansivity and specific heat are calculated from
+      // the change in enthalpy with pressure and temperature.
+
+      // There are alternative ways to capture the latent heat effect (by preprocessing the P-T table, for example),
+      // which may be a more appropriate approach in some cases, but the latent heat should always be considered if
+      // thermodynamic self-consistency is intended.
+
+      // The affected properties are computed using the partial derivatives of the enthalpy
+      // with respect to pressure and temperature:
+      // thermal expansivity = (1 - rho * (dH/dp)_T) / T
+      // specific heat capacity = (dH/dT)_P
+      // where the subscript indicates the natural variable which is held constant.
+      if (latent_heat)
+        {
+          double average_temperature(0.0);
+          double average_density(0.0);
+          std::array<std::pair<double, unsigned int>,2> dH;
+
+          for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+            {
+              average_temperature += in.temperature[i];
+              average_density += out.densities[i];
+            }
+          average_temperature /= in.n_evaluation_points();
+          average_density /= in.n_evaluation_points();
+          dH = enthalpy_derivatives(in);
+
+          for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+            {
+              // Use the adiabatic pressure instead of the real one, because of oscillations
+              const double pressure = (this->get_adiabatic_conditions().is_initialized())
+                                      ?
+                                      this->get_adiabatic_conditions().pressure(in.position[i])
+                                      :
+                                      in.pressure[i];
+
               if (this->get_adiabatic_conditions().is_initialized() && (in.current_cell.state() == IteratorState::valid)
                   && (dH[0].second > 0) && (dH[1].second > 0))
                 {
@@ -541,11 +554,6 @@ namespace aspect
                   out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],pressure)) / in.temperature[i];
                   out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],pressure);
                 }
-            }
-          else
-            {
-              out.specific_heat[i] = MaterialUtilities::average_value(mass_fractions[i], specific_heats, MaterialUtilities::arithmetic); // mass fraction averaging of specific heat
-              out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions[i], thermal_expansivities, MaterialUtilities::arithmetic); // volume averaging of thermal expansivity
             }
         }
 
