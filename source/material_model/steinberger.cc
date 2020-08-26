@@ -296,6 +296,7 @@ namespace aspect
 
               for (unsigned int j=0; j<material_lookup.size(); ++j)
                 volume_fractions[i][j] /= summed_volumes;
+
             }
         }
     }
@@ -374,7 +375,7 @@ namespace aspect
       for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         for (unsigned j = 0; j < material_lookup.size(); ++j)
           for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
-            phase_volume_fractions[unique_phase_indices[j][k]][i] = volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],in.pressure[i]);
+            phase_volume_fractions[unique_phase_indices[j][k]][i] += volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],in.pressure[i]);
 
       phase_volume_fractions_out->output_values = phase_volume_fractions;
     }

@@ -1,0 +1,30 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 12 (on 2 levels)
+Number of degrees of freedom: 281 (130+21+65+65)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+19 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-steinberger_averaging/solution/solution-00000
+     RMS, max velocity:                  2.83e-08 m/year, 6.63e-08 m/year
+     Temperature min/avg/max:            273 K, 1966 K, 4250 K
+     Heat fluxes through boundary parts: -8.746e+04 W, 1.098e+05 W, 0 W, 0 W
+     Writing depth average:              output-steinberger_averaging/depth_average
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
