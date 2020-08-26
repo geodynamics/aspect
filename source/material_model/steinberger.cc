@@ -532,7 +532,9 @@ namespace aspect
             }
           average_temperature /= in.n_evaluation_points();
           average_density /= in.n_evaluation_points();
-          dH = enthalpy_derivatives(in);
+          
+          if (in.current_cell.state() == IteratorState::valid)
+            dH = enthalpy_derivatives(in);
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
