@@ -259,48 +259,44 @@ namespace aspect
                                     std::vector<std::vector<double>> &volume_fractions) const
     {
       // Resize mass and volume fraction vectors
-      mass_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size()));
-      volume_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size()));
+      mass_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
+      volume_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
 
-      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
+      if (material_lookup.size() > 1)
         {
-          // Use the adiabatic pressure instead of the real one, because of oscillations
-          const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                  ?
-                                  this->get_adiabatic_conditions().pressure(in.position[i])
-                                  :
-                                  in.pressure[i];
-
-          double summed_volumes = 0.;
-
-          if (has_background)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
-              mass_fractions[i][0] = 1.;
-              for (unsigned int j=1; j<material_lookup.size(); ++j)
+              double summed_volumes = 0.;
+
+              if (has_background)
                 {
-                  const double mass_fraction = in.composition[i][first_composition_index+j-1];
-                  mass_fractions[i][j] = mass_fraction;
-                  mass_fractions[i][0] -= mass_fraction;
-                  volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],pressure);
-                  summed_volumes += volume_fractions[i][j];
-                }
-              volume_fractions[i][0] = mass_fractions[i][0]/material_lookup[0]->density(in.temperature[i],pressure);
-              summed_volumes += volume_fractions[i][0];
+                  mass_fractions[i][0] = 1.;
+                  for (unsigned int j=1; j<material_lookup.size(); ++j)
+                    {
+                      const double mass_fraction = in.composition[i][first_composition_index+j-1];
+                      mass_fractions[i][j] = mass_fraction;
+                      mass_fractions[i][0] -= mass_fraction;
+                      volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
+                      summed_volumes += volume_fractions[i][j];
+                    }
+                  volume_fractions[i][0] = mass_fractions[i][0]/material_lookup[0]->density(in.temperature[i],in.pressure[i]);
+                  summed_volumes += volume_fractions[i][0];
 
-            }
-          else
-            {
+                }
+              else
+                {
+                  for (unsigned int j=0; j<material_lookup.size(); ++j)
+                    {
+                      const double mass_fraction = in.composition[i][first_composition_index+j];
+                      mass_fractions[i][j] = mass_fraction;
+                      volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
+                      summed_volumes += volume_fractions[i][j];
+                    }
+                }
+
               for (unsigned int j=0; j<material_lookup.size(); ++j)
-                {
-                  const double mass_fraction = in.composition[i][first_composition_index+j];
-                  mass_fractions[i][j] = mass_fraction;
-                  volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],pressure);
-                  summed_volumes += volume_fractions[i][j];
-                }
+                volume_fractions[i][j] /= summed_volumes;
             }
-
-          for (unsigned int j=0; j<material_lookup.size(); ++j)
-            volume_fractions[i][j] /= summed_volumes;
         }
     }
 
@@ -324,28 +320,22 @@ namespace aspect
 
       for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
         {
-          double k_voigt = 0.;
-          double mu_voigt = 0.;
-          double invk_reuss = 0.;
-          double invmu_reuss = 0.;
-
-          // Use the adiabatic pressure instead of the real one, because of oscillations
-          const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                  ?
-                                  this->get_adiabatic_conditions().pressure(in.position[i])
-                                  :
-                                  in.pressure[i];
           if (material_lookup.size() == 1)
             {
-              seismic_out->vs[i] = material_lookup[0]->seismic_Vs(in.temperature[i],pressure);
-              seismic_out->vp[i] = material_lookup[0]->seismic_Vp(in.temperature[i],pressure);
+              seismic_out->vs[i] = material_lookup[0]->seismic_Vs(in.temperature[i],in.pressure[i]);
+              seismic_out->vp[i] = material_lookup[0]->seismic_Vp(in.temperature[i],in.pressure[i]);
             }
           else
             {
+              double k_voigt = 0.;
+              double mu_voigt = 0.;
+              double invk_reuss = 0.;
+              double invmu_reuss = 0.;
+
               for (unsigned int j = 0; j < material_lookup.size(); ++j)
                 {
-                  const double mu = material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],pressure), 2.);
-                  const double k =  material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],pressure), 2.) - 4./3.*mu;
+                  const double mu = material_lookup[j]->density(in.temperature[i],in.pressure[i])*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],in.pressure[i]), 2.);
+                  const double k =  material_lookup[j]->density(in.temperature[i],in.pressure[i])*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],in.pressure[i]), 2.) - 4./3.*mu;
 
                   k_voigt += volume_fractions[i][j] * k;
                   mu_voigt += volume_fractions[i][j] * mu;
@@ -382,17 +372,10 @@ namespace aspect
       std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(),
                                                               std::vector<double>(in.n_evaluation_points(), 0.));
       for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
-        {
-          // Use the adiabatic pressure instead of the real one, because of oscillations
-          const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                  ?
-                                  this->get_adiabatic_conditions().pressure(in.position[i])
-                                  :
-                                  in.pressure[i];
-          for (unsigned j = 0; j < material_lookup.size(); ++j)
-            for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
-              phase_volume_fractions[unique_phase_indices[j][k]][i] = volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],pressure);
-        }
+        for (unsigned j = 0; j < material_lookup.size(); ++j)
+          for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
+            phase_volume_fractions[unique_phase_indices[j][k]][i] = volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],in.pressure[i]);
+
       phase_volume_fractions_out->output_values = phase_volume_fractions;
     }
 
