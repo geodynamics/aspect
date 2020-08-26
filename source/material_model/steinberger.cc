@@ -335,22 +335,29 @@ namespace aspect
                                   this->get_adiabatic_conditions().pressure(in.position[i])
                                   :
                                   in.pressure[i];
-
-          for (unsigned int j = 0; j < material_lookup.size(); ++j)
+          if (material_lookup.size() == 1)
             {
-              const double mu = material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],pressure), 2.);
-              const double k =  material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],pressure), 2.) - 4./3.*mu;
-
-              k_voigt += volume_fractions[i][j] * k;
-              mu_voigt += volume_fractions[i][j] * mu;
-              invk_reuss += volume_fractions[i][j] / k;
-              invmu_reuss += volume_fractions[i][j] / mu;
+              seismic_out->vs[i] = material_lookup[0]->seismic_Vs(in.temperature[i],pressure);
+              seismic_out->vp[i] = material_lookup[0]->seismic_Vp(in.temperature[i],pressure);
             }
+          else
+            {
+              for (unsigned int j = 0; j < material_lookup.size(); ++j)
+                {
+                  const double mu = material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vs(in.temperature[i],pressure), 2.);
+                  const double k =  material_lookup[j]->density(in.temperature[i],pressure)*std::pow(material_lookup[j]->seismic_Vp(in.temperature[i],pressure), 2.) - 4./3.*mu;
 
-          const double k_VRH = (k_voigt + 1./invk_reuss)/2.;
-          const double mu_VRH = (mu_voigt + 1./invmu_reuss)/2.;
-          seismic_out->vp[i] = std::sqrt((k_VRH + 4./3.*mu_VRH)/composite_densities[i]);
-          seismic_out->vs[i] = std::sqrt(mu_VRH/composite_densities[i]);
+                  k_voigt += volume_fractions[i][j] * k;
+                  mu_voigt += volume_fractions[i][j] * mu;
+                  invk_reuss += volume_fractions[i][j] / k;
+                  invmu_reuss += volume_fractions[i][j] / mu;
+                }
+
+              const double k_VRH = (k_voigt + 1./invk_reuss)/2.;
+              const double mu_VRH = (mu_voigt + 1./invmu_reuss)/2.;
+              seismic_out->vp[i] = std::sqrt((k_VRH + 4./3.*mu_VRH)/composite_densities[i]);
+              seismic_out->vs[i] = std::sqrt(mu_VRH/composite_densities[i]);
+            }
         }
     }
 
@@ -452,13 +459,6 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          // Use the adiabatic pressure instead of the real one, because of oscillations
-          const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                  ?
-                                  this->get_adiabatic_conditions().pressure(in.position[i])
-                                  :
-                                  in.pressure[i];
-
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
@@ -477,13 +477,13 @@ namespace aspect
 
           for (unsigned int j=0; j<material_lookup.size(); ++j)
             {
-              densities[j] = material_lookup[j]->density(in.temperature[i],pressure);
-              compressibilities[j] = material_lookup[j]->dRhodp(in.temperature[i],pressure)/densities[j];
+              densities[j] = material_lookup[j]->density(in.temperature[i],in.pressure[i]);
+              compressibilities[j] = material_lookup[j]->dRhodp(in.temperature[i],in.pressure[i])/densities[j];
 
               if (!latent_heat)
                 {
-                  thermal_expansivities[j] = material_lookup[j]->thermal_expansivity(in.temperature[i],pressure);
-                  specific_heats[j] = material_lookup[j]->specific_heat(in.temperature[i],pressure);
+                  thermal_expansivities[j] = material_lookup[j]->thermal_expansivity(in.temperature[i],in.pressure[i]);
+                  specific_heats[j] = material_lookup[j]->specific_heat(in.temperature[i],in.pressure[i]);
                 }
             }
 
@@ -532,20 +532,17 @@ namespace aspect
             }
           average_temperature /= in.n_evaluation_points();
           average_density /= in.n_evaluation_points();
-          
+
           if (in.current_cell.state() == IteratorState::valid)
             dH = enthalpy_derivatives(in);
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
-              // Use the adiabatic pressure instead of the real one, because of oscillations
-              const double pressure = (this->get_adiabatic_conditions().is_initialized())
-                                      ?
-                                      this->get_adiabatic_conditions().pressure(in.position[i])
-                                      :
-                                      in.pressure[i];
+              // Use the adiabatic pressure instead of the real one,
+              // to stabilize against pressure oscillations in phase transitions
+              const double pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
 
-              if (this->get_adiabatic_conditions().is_initialized() && (in.current_cell.state() == IteratorState::valid)
+              if ((in.current_cell.state() == IteratorState::valid)
                   && (dH[0].second > 0) && (dH[1].second > 0))
                 {
                   out.thermal_expansion_coefficients[i] = (1 - average_density * dH[1].first) / average_temperature;
