@@ -24,7 +24,7 @@
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
-#include <deal.II/lac/full_matrix.templates.h>
+#include <deal.II/lac/lapack_full_matrix.h>
 
 #include <boost/lexical_cast.hpp>
 
