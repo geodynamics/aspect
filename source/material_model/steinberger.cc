@@ -692,17 +692,20 @@ namespace aspect
                                 "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
                                 Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
 
-        if (material_file_names.size() == this->n_compositional_fields() + 1)
-          has_background = true;
-        else
-          has_background = false;
-
+        // The Steinberger material model currently assumes that all the
+        // compositional fields correspond to materials with lookup tables.
+        // Therefore the first composition index is hard-coded as zero.
+        // If more compositional fields are needed, this parameter allows
+        // the user to declare the first compositional index which
+        // corresponds to a lookup.
         first_composition_index = 0;
+
+        // Define whether there is a background compositional field
+        has_background = (material_file_names.size() == this->n_compositional_fields() + 1);
 
         if (latent_heat)
           AssertThrow (material_file_names.size() == 1,
-                       ExcMessage("This formalism is currently only implemented for one material "
-                                  "table."));
+                       ExcMessage("Isochemical latent heat calculations are only implemented for a single material lookup."));
 
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
