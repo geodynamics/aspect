@@ -40,7 +40,7 @@ namespace aspect
           const Point<dim> position = in.position[i];
           const double temperature = in.temperature[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_field_fractions(composition);
 
           SymmetricTensor<2,dim> strain_rate;
           if (in.requests_property(MaterialProperties::viscosity))

@@ -238,8 +238,8 @@ namespace aspect
        * porosity, or trace elements). By default, all fields are included.
        */
       std::vector<double>
-      compute_volume_fractions(const std::vector<double> &compositional_fields,
-                               const ComponentMask &field_mask = ComponentMask());
+      compute_field_fractions(const std::vector<double> &compositional_fields,
+                              const ComponentMask &field_mask = ComponentMask());
 
 
 

@@ -39,28 +39,21 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          const std::vector<double> reference_volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]); // these are the reference (uncompressed) volume fractions - ASPECT does not currently compute the changes in volume fraction with pressure and temperature
+          const std::vector<double> mass_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          const unsigned int n_fields = reference_volume_fractions.size();
-          std::vector<double> mass_fractions(n_fields);
+          const unsigned int n_fields = mass_fractions.size();
           std::vector<double> volume_fractions(n_fields);
-          double sum_mass_fractions = 0.0;
           double sum_volume_fractions = 0.0;
           for (unsigned int j=0; j < n_fields; ++j)
             {
-              mass_fractions[j] = reference_volume_fractions[j] * equation_of_state.reference_densities[j];
               volume_fractions[j] = mass_fractions[j] / eos_outputs.densities[j];
-
-              sum_mass_fractions += mass_fractions[j];
               sum_volume_fractions += volume_fractions[j];
             }
+
           for (unsigned int j=0; j < n_fields; ++j)
-            {
-              mass_fractions[j] /= sum_mass_fractions;
-              volume_fractions[j] /= sum_volume_fractions;
-            }
+            volume_fractions[j] /= sum_volume_fractions;
 
           // Self-consistent averaging of material properties
           out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic); // volume fraction averaging of densities
@@ -194,7 +187,7 @@ namespace aspect
                                    "This model is for use with an arbitrary number of compositional fields, where each field"
                                    " represents a rock type which can have completely different properties from the others."
                                    " Each rock type is described by a self-consistent equation of state.  The value of the "
-                                   " compositional field is interpreted as a volume fraction. If the sum of the fields is"
+                                   " compositional field is interpreted as a mass fraction. If the sum of the fields is"
                                    " greater than one, they are renormalized.  If it is less than one, material properties "
                                    " for ``background mantle'' make up the rest. When more than one field is present, the"
                                    " bulk material properties are calculated self-consistently.  An exception is the viscosity,"

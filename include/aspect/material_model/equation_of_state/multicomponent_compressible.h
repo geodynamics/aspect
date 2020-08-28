@@ -35,19 +35,26 @@ namespace aspect
       using namespace dealii;
 
       /**
-       * An incompressible equation of state that is intended for use with multiple compositional
+       * A compressible equation of state that is intended for use with multiple compositional
        * fields. For each material property, the user supplies a comma delimited list of
        * length N+1, where N is the number of compositional fields used in the computation.
        * The first entry corresponds to the "background" (which is also why there are N+1 entries).
        *
        * If a single value is given, then all the compositional fields are given
-       * that value. Other lengths of lists are not allowed. For a given
-       * compositional field the material parameters are treated as constant,
-       * except density, which varies linearly with temperature according to the equation:
+       * that value. Other lengths of lists are not allowed. The material parameters
+       * for each compositional field are calculated self-consistently,
+       * assuming a constant pressure derivative of the bulk modulus at the reference temperature
+       * (i.e. a Murnaghan equation of state), a constant ratio of the
+       * thermal expansivity and isothermal compressibility, and a constant isochoric
+       * specific heat. This leads to the following expressions for the material
+       * properties of each material:
        *
-       * $\rho(p,T,\mathfrak c) = \left(1-\alpha_i (T-T_0)\right) \rho_0(\mathfrak c_i).$
+       * $\rho(p,T) = \rho_0 f^{1/K_T'}$
+       * $C_p(p,T) = C_v + (\alpha T \frac{\alpha}{\beta} f^{-1-(1/K_T')} / \rho_0)$
+       * $\alpha(p, T) = \alpha_0/f$
+       * $\beta(p, T) = \beta_0/f$
+       * $f = (1 + (p - \frac{\alpha}{\beta}(T-T_0)) K_T' \beta)$.
        *
-       * There is no pressure-dependence of the density.
        */
       template <int dim>
       class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>

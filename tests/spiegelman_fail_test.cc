@@ -258,7 +258,7 @@ namespace aspect
           AssertThrow(in.composition[i].size()+1 == n_fields,
                       ExcMessage("Number of compositional fields + 1 not equal to number of fields given in input file."));
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
           double density = 0.0;
           for (unsigned int c=0; c < volume_fractions.size(); ++c)
             {

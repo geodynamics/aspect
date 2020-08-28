@@ -38,7 +38,7 @@ namespace aspect
       for (unsigned int q = 0; q < heating_model_outputs.heating_source_terms.size(); ++q)
         {
           // Compute compositional volume fractions
-          const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_volume_fractions(material_model_inputs.composition[q],
+          const std::vector<double> volume_fractions = MaterialModel::MaterialUtilities::compute_field_fractions(material_model_inputs.composition[q],
                                                        fields_used_in_heat_production_averaging);
 
           // Calculate average compositional heat production

@@ -39,7 +39,7 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
