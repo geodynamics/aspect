@@ -148,40 +148,14 @@ namespace aspect
                                   const SymmetricTensor<2,dim> &strain_rate,
                                   const Point<dim>             &position) const;
 
-        virtual double density (const double temperature,
-                                const double pressure,
-                                const std::vector<double> &compositional_fields,
-                                const Point<dim> &position) const;
+        void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                             std::vector<std::vector<double>> &mass_fractions,
+                                             std::vector<std::vector<double>> &volume_fractions) const;
 
-        virtual double compressibility (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-        virtual double specific_heat (const double temperature,
-                                      const double pressure,
-                                      const std::vector<double> &compositional_fields,
-                                      const Point<dim> &position) const;
-
-        virtual double thermal_conductivity (const double temperature,
-                                             const double pressure,
-                                             const std::vector<double> &compositional_fields,
-                                             const Point<dim> &position) const;
-
-        virtual double thermal_expansion_coefficient (const double      temperature,
-                                                      const double      pressure,
-                                                      const std::vector<double> &compositional_fields,
-                                                      const Point<dim> &position) const;
-
-        virtual double seismic_Vp (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
-
-        virtual double seismic_Vs (const double      temperature,
-                                   const double      pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
+        void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
+                                      const std::vector<double> &composite_densities,
+                                      const std::vector<std::vector<double>> &volume_fractions,
+                                      SeismicAdditionalOutputs<dim> *seismic_out) const;
 
         /**
         * This function uses the MaterialModelInputs &in to fill the output_values
@@ -195,6 +169,7 @@ namespace aspect
         * equals the number of evaluation points.
         */
         void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                          const std::vector<std::vector<double>> &volume_fractions,
                                           NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
         /**
@@ -209,7 +184,7 @@ namespace aspect
          * cell is identical.
          */
         std::array<std::pair<double, unsigned int>,2>
-        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
+        enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
         /**
          * @}
          */
@@ -275,6 +250,9 @@ namespace aspect
 
 
       private:
+        bool has_background;
+        unsigned int first_composition_index;
+
         bool interpolation;
         bool latent_heat;
         bool use_lateral_average_temperature;

@@ -1,0 +1,141 @@
+# This is a copy of Steinberger compressible test,
+# but it uses two tiny property tables with constant properties to
+# test the averaging schemes for the material properties.
+# The constant mass fraction of material_2 is 0.5, which for densities of
+# 2000 kg/m^3 and 3000 kg/m^3 equates to a volume fraction of 0.4.
+#
+# The correct outputs for the properties are then:
+# volume fraction of phase A: 0.5 (volume averaged, 0.6*0.5 + 0.4*0.5)
+# volume fraction of phase B: 0.3 (volume averaged, 0.6*0.5 + 0.4*0.0)
+# volume fraction of phase C: 0.2 (volume averaged, 0.6*0.0 + 0.4*0.5)
+# Seismic Vs: 5.942027625961722 (VRH average of 6 and 6)
+# Seismic Vp: 7.922703501282297 (VRH average of 8 and 8)
+# Density: 2400 kg/m^3 (volume averaged, 0.6*2000 + 0.4*3000)
+# Thermal_expansivity: 2.4e-5 (volume averaged, 0.6*2e-5 + 0.4*3e-5)
+# Specific_heat: 1500 (mass averaged, 0.5*1000 + 0.5*2000)
+
+set CFL number                             = 1.0
+set End time                               = 0.
+set Adiabatic surface temperature          = 1600.0
+set Use years in output instead of seconds = true
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4250
+    set Outer temperature = 273
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0.5
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Opening angle = 90
+    set Outer radius  = 6371000
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = harmonic perturbation
+  subsection Harmonic perturbation
+    set Magnitude = 200.0
+  end
+end
+
+subsection Material model
+  set Model name = Steinberger
+
+  subsection Steinberger model
+    set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
+    set Material file names              = constant_material_1_tiny.txt, constant_material_2_tiny.txt
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt
+    set Radial viscosity file name       = test-radial-visc.txt
+    set Bilinear interpolation           = true
+    set Latent heat                      = false
+    set Reference viscosity              = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+
+  set Initial global refinement          = 1
+
+  set Refinement fraction                = 0.0
+  set Coarsening fraction                = 0.0
+
+  set Strategy                           = velocity
+
+  set Time steps between mesh refinement = 0
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0,1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,2,3
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization,velocity statistics, basic statistics, temperature statistics,heat flux statistics, depth average
+
+
+  subsection Visualization
+    set Interpolate output = false
+    set Output format                 = gnuplot
+    set List of output variables      = named additional outputs, material properties
+    set Time between graphical output = 0
+    subsection Vp anomaly
+      set Number of depth slices = 96
+    end
+    subsection Vs anomaly
+      set Number of depth slices = 96
+    end
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 10
+  end
+
+end
+
+subsection Heating model
+  set List of model names = adiabatic heating
+end
