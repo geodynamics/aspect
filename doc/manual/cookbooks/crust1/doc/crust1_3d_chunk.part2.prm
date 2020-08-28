@@ -1,0 +1,10 @@
+# The initial composition model reads in the Crust 1.0 layers in order,
+# from the top of the mantle to the base of the air.
+subsection Initial composition model
+  set Model name = ascii data layered
+  subsection Ascii data model
+    set Data directory        = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/crust1/
+    set Data file names       = ascii_data_crust1_9_top_mantle.txt, ascii_data_crust1_8_top_lower_crust.txt, ascii_data_crust1_7_top_middle_crust.txt, ascii_data_crust1_6_top_upper_crust.txt, ascii_data_crust1_5_top_lower_sediments.txt, ascii_data_crust1_4_top_middle_sediments.txt, ascii_data_crust1_3_top_upper_sediments.txt, ascii_data_crust1_2_top_ice.txt, ascii_data_crust1_1_top_water.txt, ascii_data_crust1_0_base_air.txt
+    set Interpolation scheme  = piecewise constant
+  end
+end
