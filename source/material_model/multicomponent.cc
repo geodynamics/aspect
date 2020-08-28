@@ -39,25 +39,39 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          const std::vector<double> mass_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
-
           equation_of_state.evaluate(in, i, eos_outputs);
 
-          out.viscosities[i] = MaterialUtilities::average_value (mass_fractions, viscosities, viscosity_averaging);
+          // Calculate volume fractions from mass fractions
+          const std::vector<double> mass_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
+          const unsigned int n_fields = mass_fractions.size();
+          std::vector<double> volume_fractions(n_fields);
+          double sum_volume_fractions = 0.0;
+          for (unsigned int j=0; j < n_fields; ++j)
+            {
+              volume_fractions[j] = mass_fractions[j] / eos_outputs.densities[j];
+              sum_volume_fractions += volume_fractions[j];
+            }
+
+          for (unsigned int j=0; j < n_fields; ++j)
+            volume_fractions[j] /= sum_volume_fractions;
+
+          // Specific quantities are mass averaged
           out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
           out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
 
-          // Arithmetic mass averaging of thermal conductivities
-          // This may not be strictly the most reasonable thing, but for most Earth materials we hope
-          // that they do not vary so much that it is a big problem.
-          out.thermal_conductivities[i] = MaterialUtilities::average_value (mass_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+          // Density, thermal expansivity and compressibility are all volume averaged
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
 
-          // not strictly correct if densities are different, since we are interpreting
-          // these compositions as mass fractions, but the error introduced should not be too bad.
-          out.densities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
-          out.compressibilities[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+          // Arithmetic volume fraction averaging of thermal conductivities
+          // This may not be the most reasonable thing, but for most Earth materials we hope
+          // that they do not vary so much that it is a big problem.
+          out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+
+          // User-defined volume fraction averaging of viscosities
+          out.viscosities[i] = MaterialUtilities::average_value (volume_fractions, viscosities, viscosity_averaging);
 
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
@@ -176,9 +190,10 @@ namespace aspect
                                    "compositional field is interpreted as a mass fraction. If the sum of the fields is "
                                    "greater than one, they are renormalized.  If it is less than one, material properties "
                                    "for ``background mantle'' make up the rest. When more than one field is present, the "
-                                   "material properties are averaged arithmetically by mass fraction. "
-                                   "An exception is the viscosity, where the averaging should make more of a difference. "
-                                   "For this, the user selects between arithmetic, harmonic, geometric, "
-                                   "or maximum composition averaging.")
+                                   "material properties are averaged arithmetically by mass fraction (for specific heat), "
+                                   "or volume fraction (for density, thermal expansivity and compressibility). "
+                                   "The thermal conductivity is also arithmetically averaged by volume fraction. "
+                                   "Finally, the viscosity is averaged by volume fraction, but the user can choose "
+                                   "between arithmetic, harmonic, geometric or maximum composition averaging.")
   }
 }
