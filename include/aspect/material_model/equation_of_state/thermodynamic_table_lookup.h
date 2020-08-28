@@ -54,52 +54,18 @@ namespace aspect
           virtual unsigned int number_of_lookups() const;
 
           /**
-           * @name Physical parameters used in the basic equations
-           * @{
+           * Returns the list of unique phase names
            */
+          std::vector<std::string> unique_phase_names_list() const;
 
-          virtual double enthalpy (const double temperature,
-                                   const double pressure,
-                                   const std::vector<double> &compositional_fields,
-                                   const Point<dim> &position) const;
+          void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                               std::vector<std::vector<double>> &mass_fractions,
+                                               std::vector<std::vector<double>> &volume_fractions) const;
 
-          virtual double density (const double temperature,
-                                  const double pressure,
-                                  const std::vector<double> &compositional_fields,
-                                  const Point<dim> &position) const;
-
-          virtual double compressibility (const double temperature,
-                                          const double pressure,
-                                          const std::vector<double> &compositional_fields,
-                                          const Point<dim> &position) const;
-
-          virtual double specific_heat (const double temperature,
-                                        const double pressure,
-                                        const std::vector<double> &compositional_fields,
-                                        const Point<dim> &position) const;
-
-          virtual double thermal_expansion_coefficient (const double      temperature,
-                                                        const double      pressure,
-                                                        const std::vector<double> &compositional_fields,
-                                                        const Point<dim> &position) const;
-
-          virtual double seismic_Vp (const double      temperature,
-                                     const double      pressure,
-                                     const std::vector<double> &compositional_fields,
-                                     const Point<dim> &position) const;
-
-          virtual double seismic_Vs (const double      temperature,
-                                     const double      pressure,
-                                     const std::vector<double> &compositional_fields,
-                                     const Point<dim> &position) const;
-
-          void evaluate_enthalpy_dependent_properties(const MaterialModel::MaterialModelInputs<dim> &in,
-                                                      const unsigned int i,
-                                                      const double pressure,
-                                                      const double average_density,
-                                                      const double average_temperature,
-                                                      const std::array<std::pair<double, unsigned int>,2> dH,
-                                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+          void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
+                                        const std::vector<double> &composite_densities,
+                                        const std::vector<std::vector<double>> &volume_fractions,
+                                        SeismicAdditionalOutputs<dim> *seismic_out) const;
 
           /**
           * This function uses the MaterialModelInputs &in to fill the output_values
@@ -113,6 +79,7 @@ namespace aspect
           * equals the number of evaluation points.
           */
           void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                            const std::vector<std::vector<double>> &volume_fractions,
                                             NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
           /**
@@ -127,7 +94,15 @@ namespace aspect
            * cell is identical.
            */
           std::array<std::pair<double, unsigned int>,2>
-          enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
+          enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
+
+          /**
+           * Compute the specific heat and thermal expansivity using the pressure
+           * and temperature derivatives of the specific enthalpy.
+           * This evaluation incorporates the effects of latent heat production.
+           */
+          void evaluate_using_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
           /**
            * @}
            */
@@ -161,7 +136,8 @@ namespace aspect
            */
           void
           evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+                   const unsigned int q,
+                   MaterialModel::EquationOfStateOutputs<dim> &out) const;
 
           /**
            * @name Functions used in dealing with run-time parameters
@@ -188,6 +164,9 @@ namespace aspect
 
 
         private:
+          bool has_background;
+          unsigned int first_composition_index;
+
           unsigned int n_material_lookups;
           bool use_bilinear_interpolation;
           bool latent_heat;
@@ -200,14 +179,9 @@ namespace aspect
           std::vector<std::string> derivatives_file_names;
 
           /**
-           * Because of the nonlinear nature of this material model many
-           * parameters need to be kept within bounds to ensure stability of the
-           * solution. These bounds can be adjusted as input parameters.
+           * The maximum number of substeps over the temperature pressure range
+           " to calculate the averaged enthalpy gradient over a cell
            */
-          double min_specific_heat;
-          double max_specific_heat;
-          double min_thermal_expansivity;
-          double max_thermal_expansivity;
           unsigned int max_latent_heat_substeps;
 
           /**
