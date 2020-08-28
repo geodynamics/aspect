@@ -1,4 +1,8 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 4,096 (on 6 levels)
 Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
 
@@ -24,7 +28,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Postprocessing:
      Writing graphical output: output-multicomponent_harmonic/solution/solution-00000
 
-*** Timestep 1:  t=56886.5 years, dt=56886.5 years
+*** Timestep 1:  t=57066.5 years, dt=57066.5 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
@@ -34,7 +38,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 
    Postprocessing:
 
-*** Timestep 2:  t=112496 years, dt=55609.6 years
+*** Timestep 2:  t=113134 years, dt=56067.2 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
@@ -47,4 +51,9 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 Termination requested by criterion: end step
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

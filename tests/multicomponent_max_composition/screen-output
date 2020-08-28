@@ -1,4 +1,8 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 4,096 (on 6 levels)
 Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
 
@@ -24,7 +28,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Postprocessing:
      Writing graphical output: output-multicomponent_max_composition/solution/solution-00000
 
-*** Timestep 1:  t=58765.3 years, dt=58765.3 years
+*** Timestep 1:  t=59024.2 years, dt=59024.2 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
@@ -34,17 +38,22 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 
    Postprocessing:
 
-*** Timestep 2:  t=117527 years, dt=58761.4 years
+*** Timestep 2:  t=118455 years, dt=59430.5 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+12 iterations.
+   Solving Stokes system... 30+9 iterations.
 
    Postprocessing:
 
 Termination requested by criterion: end step
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
