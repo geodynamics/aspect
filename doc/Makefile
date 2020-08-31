@@ -84,7 +84,7 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 	  echo 'Cross-linking deal.II documentation from the ASPECT documentation' ; \
 	  echo 'TAGFILES = deal.tag=http://www.dealii.org/developer/doxygen/deal.II'          >> aspect.dox ; \
 	 fi
-	@echo 'IMAGE_PATH = manual'                                  >> aspect.dox
+	@echo 'IMAGE_PATH = logo,manual'                             >> aspect.dox
 	@echo 'PROJECT_NAME = "ASPECT"'                              >> aspect.dox
 	@echo 'INPUT = $(aspect-files)'                              >> aspect.dox
 	@echo 'HTML_OUTPUT      = doxygen'                           >> aspect.dox

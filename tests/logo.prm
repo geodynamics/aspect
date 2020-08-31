@@ -1,0 +1,13 @@
+# A test for the model that produces the ASPECT logo. 
+set Dimension = 2
+
+include $ASPECT_SOURCE_DIR/doc/logo/logo.prm
+
+subsection Postprocess
+  set List of postprocessors = velocity statistics, temperature statistics
+end
+
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 1
+end
