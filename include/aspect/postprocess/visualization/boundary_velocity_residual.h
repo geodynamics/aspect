@@ -60,8 +60,8 @@ namespace aspect
           BoundaryVelocityResidual ();
 
           /**
-          * This function reads the specified input velocity data files, i.e., either an ascii data file or 
-          * a file from the GPlates model.          
+          * This function reads the specified input velocity data files, i.e., either an ascii data file or
+          * a file from the GPlates model.
           */
           void initialize () override;
 
