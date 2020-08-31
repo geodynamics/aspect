@@ -10,6 +10,10 @@ if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
 endif()
 
+if(POLICY CMP0058)
+  cmake_policy(SET CMP0058 NEW)
+endif()
+
 # load in version info and export it
 SET(WORLD_BUILDER_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 INCLUDE("${CMAKE_SOURCE_DIR}/cmake/version.cmake")
@@ -152,7 +156,7 @@ endif()
 
 set(SOURCES ${SOURCES_CXX} ${SOURCES_FORTAN})
 
-add_library(WorldBuilder ${SOURCES})
+add_library(WorldBuilder SHARED ${SOURCES})
 
 add_executable(WorldBuilderApp "${CMAKE_CURRENT_SOURCE_DIR}/app/main.cc")
 add_executable(WorldBuilderVisualization "${CMAKE_CURRENT_SOURCE_DIR}/visualization/main.cc")
