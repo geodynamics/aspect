@@ -7124,9 +7124,9 @@ illustrate this.
 
 
 Although van Keken's paper title suggests that the paper is really about
-thermochemical convection, the part we look here can equally be considered as
-thermal or chemical convection: all that is necessary is that we describe the
-fluid's density somehow. We can do that by using an inhomogeneous initial
+thermochemical convection, the part we examine here can equally be considered as
+thermal or chemical convection; all that is necessary is that we describe the
+fluid's density. We can do that by using an inhomogeneous initial
 temperature field, or an inhomogeneous initial composition field. We will use the
 input file in \url{cookbooks/van-keken-discontinuous.prm} as input, the central
 piece of which is as follows (go to the actual input file
@@ -7241,6 +7241,7 @@ initial conditions instead (see also the file
 \url{cookbooks/van-keken-smooth.prm}):
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/van-keken/doc/smooth.part.prm.out}
 
+
 This replaces the discontinuous initial conditions with a smoothed out version
 with a half width of around 0.01. Using this, the root mean square plot now
 looks as shown in the right panel of Fig.~\ref{fig:vk-2}. Here, the second peak
@@ -7326,6 +7327,14 @@ Compared to the results of the models using constant viscosity throughout the do
 \end{figure}
 
 We can observe that when the two-layer viscosity model is added, there is only one apparent peak for each case. The first peaks of the 0.01 viscosity contrast tests appear earlier and are larger in magnitude than those of 0.1 viscosity contrast tests.  There are no secondary plumes and the whole system tends to reach stability after around 500 time steps.
+
+
+\subsubsection{Computation of the van Keken Problem with the Volume-of-Fluid Interface Tracking Method}
+\label{sec:van-keken VOF interface tracking}
+
+\textit{This section is a co-production of Jonathan Robey and E. G. Puckett.}
+
+\input{cookbooks/van-keken-vof/doc/van-keken-vof.tex}
 
 \subsubsection{The Rayleigh-Taylor instability}
 \label{sec:benchmark-rayleigh-taylor}
