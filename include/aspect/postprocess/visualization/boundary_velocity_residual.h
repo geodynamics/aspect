@@ -59,6 +59,10 @@ namespace aspect
         public:
           BoundaryVelocityResidual ();
 
+          /**
+          * This function reads the specified input velocity data files, i.e., either an ascii data file or 
+          * a file from the GPlates model.          
+          */
           void initialize () override;
 
           /**
@@ -100,7 +104,7 @@ namespace aspect
           /**
           * Pointer to the gplates boundary velocity model
           */
-          std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup <dim> >  gplates_lookup;
+          std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup <dim> > gplates_lookup;
 
           /**
            * Pointer to the ascii data

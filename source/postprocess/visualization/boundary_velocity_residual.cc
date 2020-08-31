@@ -17,6 +17,7 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
+
 #include <aspect/simulator.h>
 #include <aspect/postprocess/visualization/boundary_velocity_residual.h>
 
@@ -35,6 +36,7 @@ namespace aspect
       {}
 
 
+
       template <int dim>
       void
       BoundaryVelocityResidual<dim>::initialize ()
@@ -42,7 +44,7 @@ namespace aspect
 
         if (use_ascii_data)
           {
-            // The input ascii table contains one data column (velocity components) in addition to the coordinate columns.
+            // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
             ascii_data_lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim> >(dim, scale_factor);
             ascii_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
           }
@@ -66,6 +68,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       BoundaryVelocityResidual<dim>::
@@ -80,7 +83,7 @@ namespace aspect
 
         for (unsigned int q=0; q<computed_quantities.size(); ++q)
           for (unsigned int d = 0; d < dim; ++d)
-            computed_quantities[q](d)= 0;
+            computed_quantities[q](d)= 0.;
 
         // We only want the output at the top boundary, so only compute it if the current cell
         // has a face at the top boundary.
@@ -122,10 +125,11 @@ namespace aspect
                   }
 
                 for (unsigned int d = 0; d < dim; ++d)
-                  computed_quantities[q](d) = (data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor) ;
+                  computed_quantities[q](d) = data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor;
               }
           }
       }
+
 
 
       template <int dim>
@@ -153,7 +157,7 @@ namespace aspect
                                  Patterns::Anything (),
                                  "The file name of the input velocity as a GPlates model or an ascii data. "
                                  "For the GPlates model, provide file in the same format as described "
-                                 "in the gplates boundary velocity plugin. "
+                                 "in the 'gplates' boundary velocity plugin. "
                                  "For the ascii data, provide file in the same format as described in "
                                  " 'ascii data' initial composition plugin." );
               prm.declare_entry ("Scale factor", "1.",
@@ -182,6 +186,7 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
 
 
       template <int dim>
@@ -216,7 +221,6 @@ namespace aspect
     }
   }
 }
-
 
 // explicit instantiations
 namespace aspect

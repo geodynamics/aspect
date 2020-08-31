@@ -96,21 +96,21 @@ Termination requested by criterion: end time
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      5.21s |            |
+| Total wallclock time elapsed since start     |      4.24s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |     0.682s |        13% |
-| Assemble temperature system      |         2 |     0.511s |       9.8% |
-| Build Stokes preconditioner      |         2 |     0.349s |       6.7% |
-| Build temperature preconditioner |         2 |   0.00291s |         0% |
-| Initialization                   |         1 |     0.697s |        13% |
-| Postprocessing                   |         2 |      1.62s |        31% |
-| Setup dof systems                |         1 |     0.058s |       1.1% |
-| Setup initial conditions         |         1 |     0.384s |       7.4% |
-| Setup matrices                   |         1 |    0.0242s |      0.46% |
-| Solve Stokes system              |         2 |     0.186s |       3.6% |
-| Solve temperature system         |         2 |   0.00312s |         0% |
+| Assemble Stokes system           |         2 |     0.662s |        16% |
+| Assemble temperature system      |         2 |     0.465s |        11% |
+| Build Stokes preconditioner      |         2 |     0.322s |       7.6% |
+| Build temperature preconditioner |         2 |   0.00968s |      0.23% |
+| Initialization                   |         1 |     0.651s |        15% |
+| Postprocessing                   |         2 |     0.945s |        22% |
+| Setup dof systems                |         1 |    0.0401s |      0.95% |
+| Setup initial conditions         |         1 |     0.339s |         8% |
+| Setup matrices                   |         1 |     0.015s |      0.35% |
+| Solve Stokes system              |         2 |     0.171s |         4% |
+| Solve temperature system         |         2 |   0.00551s |      0.13% |
 +----------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------

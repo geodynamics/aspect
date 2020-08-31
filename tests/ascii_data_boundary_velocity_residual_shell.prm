@@ -1,4 +1,4 @@
-##### simple test for ascii data
+##### simple test for boundary velocity residual visualization object in postprocessing
 
 set Dimension                              = 3
 
@@ -87,11 +87,12 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
   subsection  Visualization
-    set List of output variables      = adiabat, material properties, gravity, heat flux map, strain rate, boundary velocity residual
+    set Output format                 = gnuplot
+    set List of output variables      = boundary velocity residual
     subsection Boundary velocity residual
       set Use ascii data = true
       set Data file name       = shell_3d_boundary_velocity.txt
-      set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
+      set Data directory = $ASPECT_SOURCE_DIR/data/postprocess/boundary-velocity-residual/
     end
   end
 end
