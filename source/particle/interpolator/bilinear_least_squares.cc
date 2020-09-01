@@ -24,7 +24,7 @@
 
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/base/signaling_nan.h>
-#include <deal.II/lac/lapack_full_matrix.h>
+#include <deal.II/lac/qr.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -87,66 +87,67 @@ namespace aspect
                                "interpolation scheme does not support this case. "));
 
 
-        // Noticed that the size of matrix A is n_particles x matrix_dimension
+        // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
-        // least squares solution of Ax=r by solving the "normal" equations
-        // (A^TA) x = A^Tr.
-        const unsigned int matrix_dimension = (dim == 2) ? 4 : 8;
-        dealii::LAPACKFullMatrix<double> A(n_particles, matrix_dimension);
-        std::vector<Vector<double>> r(n_particle_properties, Vector<double>(n_particles));
+        // least squares solution of Ac=r by solving the reduced QR factorization
+        // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
+        dealii::ImplicitQR<dealii::Vector<double>> qr;
+        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
+        // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
+        // class needs.
+        std::vector<dealii::Vector<double>> A(n_matrix_columns, dealii::Vector<double>(n_particles));
+        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
+        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
+        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           if (selected_properties[property_index])
-            r[property_index] = 0;
+            b[property_index] = 0;
 
-        unsigned int positions_index = 0;
+        unsigned int particle_index = 0;
         const double cell_diameter = found_cell->diameter();
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++positions_index)
+             particle != particle_range.end(); ++particle, ++particle_index)
           {
-            const auto particle_property_value = particle->get_properties();
+            const auto &particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               if (selected_properties[property_index])
-                r[property_index][positions_index] = particle_property_value[property_index];
-
+                b[property_index][particle_index] = particle_property_value[property_index];
             const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-            A(positions_index, 0) = 1;
-            A(positions_index, 1) = relative_particle_position[0];
-            A(positions_index, 2) = relative_particle_position[1];
+            // A is accessed by A[column][row] here since we need to append
+            // columns into the qr matrix.
+            A[0][particle_index] = 1;
+            A[1][particle_index] = relative_particle_position[0];
+            A[2][particle_index] = relative_particle_position[1];
             if (dim == 2)
               {
-                A(positions_index, 3) = relative_particle_position[0] * relative_particle_position[1];
+                A[3][particle_index] = relative_particle_position[0] * relative_particle_position[1];
               }
             else
               {
-                A(positions_index, 3) = relative_particle_position[2];
-                A(positions_index, 4) = relative_particle_position[0] * relative_particle_position[1];
-                A(positions_index, 5) = relative_particle_position[0] * relative_particle_position[2];
-                A(positions_index, 6) = relative_particle_position[1] * relative_particle_position[2];
-                A(positions_index, 7) = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
+                A[3][particle_index] = relative_particle_position[2];
+                A[4][particle_index] = relative_particle_position[0] * relative_particle_position[1];
+                A[5][particle_index] = relative_particle_position[0] * relative_particle_position[2];
+                A[6][particle_index] = relative_particle_position[1] * relative_particle_position[2];
+                A[7][particle_index] = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
               }
           }
 
-        dealii::LAPACKFullMatrix<double> B(matrix_dimension, matrix_dimension);
-
-        std::vector<Vector<double>> c_ATr(n_particle_properties, Vector<double>(matrix_dimension));
-        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(matrix_dimension));
-
-        constexpr double threshold = 1e-15;
-        unsigned int index_positions = 0;
-
-        // Form the matrix B=A^TA and right hand side A^Tr of the normal equation.
-        A.Tmmult(B, A, false);
-        dealii::LAPACKFullMatrix<double> B_inverse(B);
-        B_inverse.compute_inverse_svd(threshold);
+        for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
+          qr.append_column(A[column_index]);
+        // If A is rank deficent, qr.append_column will not append the column.
+        // We check that all columns were added through this assertion
+        AssertThrow(qr.size() == n_matrix_columns,
+                    ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
 
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
             if (selected_properties[property_index])
               {
-                A.Tvmult(c_ATr[property_index],r[property_index]);
-                B_inverse.vmult(c[property_index], c_ATr[property_index]);
+                qr.multiply_with_QT(QTb[property_index], b[property_index]);
+                qr.solve(c[property_index], QTb[property_index]);
               }
           }
+        unsigned int index_positions = 0;
         for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
           {
             const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
