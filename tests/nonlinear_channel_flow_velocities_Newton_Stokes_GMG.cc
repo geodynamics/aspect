@@ -1,1 +1,1 @@
-#include "nonlinear_channel_flow_velocities_Newton_Stokes.cc"
+#include "../benchmarks/nonlinear_channel_flow/simple_nonlinear.cc"
