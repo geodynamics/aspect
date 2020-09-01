@@ -281,7 +281,7 @@ namespace aspect
                                             "bilinear least squares",
                                             "Interpolates particle properties onto a vector of points using a "
                                             "bilinear least squares method. "
-                                            "Note that deal.II must be configured BLAS and LAPACK to "
+                                            "Note that deal.II must be configured with BLAS and LAPACK to "
                                             "support this operation.")
     }
   }
