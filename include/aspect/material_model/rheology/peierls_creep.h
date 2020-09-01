@@ -33,6 +33,26 @@ namespace aspect
     namespace Rheology
     {
       /**
+       * Data structure for Peierls creep parameters.
+       */
+      struct PeierlsCreepParameters
+      {
+        /**
+         * The Peierls creep prefactor, stress exponent, activation energy,
+         * activation volume, Peierls stress, glide parameters p and q
+         * and fitting parameter,
+         */
+        double prefactor;
+        double stress_exponent;
+        double activation_energy;
+        double activation_volume;
+        double peierls_stress;
+        double glide_parameter_p;
+        double glide_parameter_q;
+        double fitting_parameter;
+      };
+
+      /**
        * Peierls creep is a low temperature, high stress viscous deformation mechanism.
        * Crystal deformation occurs through dislocation glide, which requires high stresses.
        * It is considered an important deformation mechanism in the lithosphere and subducting
@@ -50,6 +70,12 @@ namespace aspect
           PeierlsCreep();
 
           /**
+           * Compute the creep parameters for the Peierls creep law.
+           */
+          const PeierlsCreepParameters
+          compute_creep_parameters (const unsigned int composition) const;
+
+          /**
            * Declare the parameters this function takes through input files.
            */
           static
@@ -63,7 +89,27 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
+           * Compute the viscosity based on the approximate Peierls creep flow law.
+           */
+          double
+          compute_approximate_viscosity (const double strain_rate,
+                                         const double pressure,
+                                         const double temperature,
+                                         const unsigned int composition) const;
+
+          /**
+           * Compute the viscosity based on the exact Peierls creep flow law.
+           */
+          double
+          compute_exact_viscosity (const double strain_rate,
+                                   const double pressure,
+                                   const double temperature,
+                                   const unsigned int composition) const;
+
+          /**
            * Compute the viscosity based on the selected Peierls creep flow law.
+           * This function uses either the compute_approximate_viscosity
+           * or the compute_exact_viscosity function.
            */
           double
           compute_viscosity (const double strain_rate,
@@ -71,11 +117,46 @@ namespace aspect
                              const double temperature,
                              const unsigned int composition) const;
 
+          /**
+           * Compute the strain rate and first stress derivative
+           * as a function of stress based on the approximate Peierls creep law.
+           */
+          std::pair<double, double>
+          compute_approximate_strain_rate_and_derivative (const double stress,
+                                                          const double pressure,
+                                                          const double temperature,
+                                                          const PeierlsCreepParameters creep_parameters) const;
+
+          /**
+           * Compute the strain rate and first stress derivative
+           * as a function of stress based on the exact Peierls creep law.
+           */
+          std::pair<double, double>
+          compute_exact_strain_rate_and_derivative (const double stress,
+                                                    const double pressure,
+                                                    const double temperature,
+                                                    const PeierlsCreepParameters creep_parameters) const;
+
+          /**
+           * Compute the strain rate and first stress derivative
+           * as a function of stress based on the selected Peierls creep law.
+           * This function uses either the
+           * compute_approximate_strain_rate_and_derivative
+           * or the compute_exact_strain_rate_and_derivative function.
+           */
+          std::pair<double, double>
+          compute_strain_rate_and_derivative (const double stress,
+                                              const double pressure,
+                                              const double temperature,
+                                              const PeierlsCreepParameters creep_parameters) const;
+
         private:
           /**
            * Enumeration for selecting which type of Peierls creep flow law to use.
-           * Currently, the only available option directly calculates the viscosity
-           * using an approximation where the strain rate, rather than stress is used.
+           * The options are currently "exact" (which requires a Newton-Raphson iteration
+           * in compute_viscosity) and "viscosity_approximation", which
+           * uses a simplified expression where the strain rate has a power law dependence
+           * on the stress (so that the equation can be directly inverted for viscosity).
            * This approximation requires specifying one fitting parameter (gamma) to
            * obtain the best fit in the expected stress range for a given problem
            * (gamma = stress / peierls_stress). The derivation for this approximation
@@ -84,7 +165,8 @@ namespace aspect
            */
           enum PeierlsCreepScheme
           {
-            viscosity_approximation
+            viscosity_approximation,
+            exact
           } peierls_creep_flow_law;
 
           /**
@@ -128,6 +210,13 @@ namespace aspect
            * to dislocation glide (q).
            */
           std::vector<double> glide_parameters_q;
+
+          /**
+           * Parameters governing the iteration for the exact
+           * Peierls viscosity.
+           */
+          double strain_rate_residual_threshold;
+          unsigned int stress_max_iteration_number;
 
       };
     }
