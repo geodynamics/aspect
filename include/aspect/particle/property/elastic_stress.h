@@ -58,7 +58,7 @@ namespace aspect
                                             std::vector<double> &particle_properties) const override;
 
           /**
-          * @copydoc aspect::Particle::Property::update_particle_property()
+          * @copydoc aspect::Particle::Property::Interface::update_particle_property()
           **/
           void
           update_particle_property (const unsigned int data_position,

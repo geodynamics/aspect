@@ -107,7 +107,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Description:} The maximal number of nonlinear iterations to be performed.
 
 
-{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Max nonlinear iterations in pre-refinement}
 \phantomsection\label{parameters:Max nonlinear iterations in pre_2drefinement}
 \label{parameters:Max_20nonlinear_20iterations_20in_20pre_2drefinement}
@@ -155,7 +155,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 2147483647
 
 
-{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5. Units: \%
+{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5. Units: \%.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -194,7 +194,7 @@ For more information, see the section in the manual that discusses the general m
 The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.
 
 
-{\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, no Advection, single Stokes, iterated Advection and Newton Stokes, single Advection, iterated Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only, first timestep only, single Stokes, no Advection, no Stokes
+{\it Possible values:} Any one of single Advection, single Stokes, iterated Advection and Stokes, single Advection, iterated Stokes, no Advection, iterated Stokes, no Advection, single Stokes, no Advection, iterated defect correction Stokes, single Advection, iterated defect correction Stokes, iterated Advection and defect correction Stokes, iterated Advection and Newton Stokes, single Advection, iterated Newton Stokes, single Advection, no Stokes, IMPES, iterated IMPES, iterated Stokes, Newton Stokes, Stokes only, Advection only, first timestep only, single Stokes, no Advection, no Stokes
 \item {\it Parameter name:} {\tt Nonlinear solver tolerance}
 \phantomsection\label{parameters:Nonlinear solver tolerance}
 \label{parameters:Nonlinear_20solver_20tolerance}
@@ -438,7 +438,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} \$ASPECT\_SOURCE\_DIR/tests/adiabatic-conditions/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -455,7 +455,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -867,7 +867,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-composition/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -884,7 +884,7 @@ Because this class simply takes what the initial composition had described, this
 {\it Default:} box\_2d\_\%s.\%d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 
 
 {\it Possible values:} Any string
@@ -1669,7 +1669,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-temperature/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -1686,7 +1686,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} box\_2d\_\%s.\%d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 
 
 {\it Possible values:} Any string
@@ -2067,7 +2067,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 12.5e3
 
 
-{\it Description:} Density of the core. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Density of the core. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -2084,7 +2084,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 840.
 
 
-{\it Description:} Heat capacity of the core. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} Heat capacity of the core. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2186,7 +2186,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 750e3
 
 
-{\it Description:} The latent heat of core freeze. Units: \si{\joule\per\kilo\gram}.
+{\it Description:} The latent heat of core freeze. Units: \si{\joule\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2203,7 +2203,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 30000
 
 
-{\it Description:} The max iterations for nonliner core energy solver.
+{\it Description:} The max iterations for nonlinear core energy solver.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -2237,7 +2237,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} -27.7e6
 
 
-{\it Description:} The heat of reaction. Units: \si{\joule\per\kilo\gram}.
+{\it Description:} The heat of reaction. Units: \si{\joule\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -2254,7 +2254,7 @@ Because this class simply takes what the initial temperature had described, this
 {\it Default:} 7.019e3
 
 
-{\it Description:} Core density at zero pressure. Units: \si{\kilo\gram\per\meter\cubed}. See \cite{NPB+04} for more details.
+{\it Description:} Core density at zero pressure. Units: \si{\kilogram\per\meter\cubed}. See \cite{NPB+04} for more details.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -2754,7 +2754,7 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-traction/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -2771,7 +2771,7 @@ The format of valid entries for this parameter is that of a map given as ``key1 
 {\it Default:} box\_2d\_\%s.\%d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 
 
 {\it Possible values:} Any string
@@ -2957,7 +2957,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1000
 
 
-{\it Description:} The number of integration points over which we integrate the lithostatic pressure downwards. 
+{\it Description:} The number of integration points over which we integrate the lithostatic pressure downwards.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -2974,7 +2974,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 
 
 
-{\it Description:} The point where the pressure profile will be calculated. Cartesian coordinates when geometry is a box, otherwise enter radius, longitude, and in 3D latitude.Units: \si{\meter} or degrees.
+{\it Description:} The point where the pressure profile will be calculated. Cartesian coordinates $(x,y,z)$ when geometry is a box, otherwise enter radius, longitude, and in 3D latitude. Note that the coordinate related to the depth ($y$ in 2D cartesian, $z$ in 3D cartesian and radius in spherical coordinates) is not used. Units: \si{\meter} or degrees.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -3078,7 +3078,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -3095,7 +3095,7 @@ The names of the boundaries listed here can either by numbers (in which case the
 {\it Default:} box\_2d\_\%s.\%d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data. Provide file in format: (File name).\%s\%d, where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model), and \%d is any sprintf integer qualifier specifying the format of the current file number.
 
 
 {\it Possible values:} Any string
@@ -3417,7 +3417,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.570796,0.0
 
 
-{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.
+{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
 
 
 {\it Possible values:} Any string
@@ -3434,7 +3434,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 1.570796,1.570796
 
 
-{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle)  and phi in radians.
+{\it Description:} Point that determines the plane in which a 2D model lies in. Has to be in the format `a,b' where a and b are theta (polar angle) and phi in radians. This value is not utilized in 3D geometries, and can therefore be set to the default or any user-defined quantity.
 
 
 {\it Possible values:} Any string
@@ -3794,7 +3794,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} 1.7976931348623157e+308
 
 
-{\it Description:} The maximum global composition values that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition maximum' values separated by ',' has to be the same as the number of the compositional fields
+{\it Description:} The maximum global composition values that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition maximum' values separated by ',' has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -3811,7 +3811,7 @@ For an in-depth discussion of these issues and a quantitative evaluation of the 
 {\it Default:} -1.7976931348623157e+308
 
 
-{\it Description:} The minimum global composition value that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition minimum' values separated by ',' has to be the same as the number of the compositional fields
+{\it Description:} The minimum global composition value that will be used in the bound preserving limiter for the discontinuous solutions from composition advection fields. The number of the input 'Global composition minimum' values separated by ',' has to be one or the same as the number of the compositional fields. When only one value is supplied, this same value is assumed for all compositional fields.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -5049,7 +5049,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -5066,7 +5066,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 {\it Default:} box\_2d\_\%s.0.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -5302,7 +5302,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} 3481000.
 
 
-{\it Description:} Inner radius of the spherical shell. Units: \si{\meter}. 
+{\it Description:} Inner radius of the spherical shell. Units: \si{\meter}.
 
 \note{The default value of 3,481,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the core-mantle boundary (i.e., 2890 km).}
 
@@ -5372,7 +5372,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} 6336000.
 
 
-{\it Description:} Outer radius of the spherical shell. Units: \si{\meter}. 
+{\it Description:} Outer radius of the spherical shell. Units: \si{\meter}.
 
 \note{The default value of 6,336,000 m equals the radius of a sphere with equal volume as Earth (i.e., 6371 km) minus the average depth of the mantle-crust interface (i.e., 35 km).}
 
@@ -5434,7 +5434,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/gravity-model/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -5451,7 +5451,7 @@ In either case, this parameter is ignored unless the opening angle of the domain
 {\it Default:} prem.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -5575,7 +5575,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 10.7
 
 
-{\it Description:} Magnitude of the radial gravity vector at the bottom of the domain. `Bottom' means themaximum depth in the chosen geometry, and for example represents the core-mantle boundary in the case of the `spherical shell' geometry model, and the center in the case of the `sphere' geometry model. Units: \si{\meter\per\second\squared}
+{\it Description:} Magnitude of the radial gravity vector at the bottom of the domain. `Bottom' means themaximum depth in the chosen geometry, and for example represents the core-mantle boundary in the case of the `spherical shell' geometry model, and the center in the case of the `sphere' geometry model. Units: \si{\meter\per\second\squared}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -5592,7 +5592,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 9.8
 
 
-{\it Description:} Magnitude of the radial gravity vector at the surface of the domain. Units: \si{\meter\per\second\squared}
+{\it Description:} Magnitude of the radial gravity vector at the surface of the domain. Units: \si{\meter\per\second\squared}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -5741,7 +5741,7 @@ The formula is interpreted as having units W/kg.
 {\it Default:} 0.
 
 
-{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value correponds to the background material, and N is the number of compositional fields. Units: \si{\watt\per\meter\cubed}.
+{\it Description:} List of heat production per unit volume values for background and compositional fields, for a total of N+1 values, where the first value corresponds to the background material, and N is the number of compositional fields. Units: \si{\watt\per\meter\cubed}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -5865,7 +5865,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} -300.
 
 
-{\it Description:} The entropy change for the phase transition from solid to melt. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The entropy change for the phase transition from solid to melt. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -5922,7 +5922,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0.
 
 
-{\it Description:} Depth of the crust when crust if defined by depth. Units: \si{\meter}
+{\it Description:} Depth of the crust when crust if defined by depth. Units: \si{\meter}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -6038,7 +6038,7 @@ The following composition models are available:
 
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the lcompositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -6084,7 +6084,7 @@ The following composition models are available:
 
 `ascii data': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2', etc. in a 2d model and `x', `y', `z', `composition1', `composition2', etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the radial distance of the point to the bottom of the model, `y' by the azimuth angle and `z' by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r', `phi', `theta' and not `r', `theta', `phi', since this allows for dimension independent expressions.
 
-`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the lcompositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
+`ascii data layered': Implementation of a model in which the initial composition is derived from files containing data in ascii format. Each file defines a surface on which compositional fields are defined. Between the surfaces, the fields can be chosen to be constant (with a value defined by the nearest shallower surface), or linearly interpolated between surfaces. Note the required format of the input ascii data file: The first lines may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 3 3'. The order of the data columns has to be `x', `y', `composition1', `composition2' etc. in a 2d model and `x', `y', `z', `composition1', `composition2' etc. in a 3d model; i.e. the columns before the compositional field always contains the position of the surface along the vertical direction. The first column needs to ascend first, followed by the second in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x' will be replaced by the azimuth angle and `y' (if 3D) by the polar angle measured positive from the north pole. The last column will be the distance of the point from the origin (i.e. radial position). The grid in this case will be a latitude-longitude grid. Note that the order of spherical coordinates in 3D is `phi', `theta', `r', `T'and not `theta', `phi', `r', `T' as this is more consistent with other ASPECT plugins. Outside of the region defined by the grid, the plugin will use the value at the edge of the region.
 
 `function': Specify the composition in terms of an explicit formula. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -6155,7 +6155,7 @@ When ``composition is specified, the initial model is treated as a standard comp
 {\it Default:} initial\_composition\_top\_mantle\_box\_3d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -6340,7 +6340,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 `inclusion shape perturbation': An initial temperature field in which there is an inclusion in a constant-temperature box field. The size, shape, gradient, position, and temperature of the inclusion are defined by parameters.
 
-`lithosphere mask': Implementation of a model in which the initial temperature is set to a specified lithosphere temperature above the lithosphere-asthenosphere boundary (specified by an ascii file or maximum lithosphere depth value). Below this the initial temperature is set as NaN.  Note the required format of the input data file: The first lines may contain any number of comments if they begin with ‘\#’, but one of these lines needs to contain the number of grid points in each dimension as for example‘\# POINTS: 3 3’. For a spherical model, the order of the data columns has to be'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the polar angle measured positive from the north pole. This plug-in can be combined with another using the 'replace if valid' operator. 
+`lithosphere mask': Implementation of a model in which the initial temperature is set to a specified lithosphere temperature above the lithosphere-asthenosphere boundary (specified by an ascii file or maximum lithosphere depth value). Below this the initial temperature is set as NaN.  Note the required format of the input data file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. For a spherical model, the order of the data columns has to be 'phi', 'theta', 'depth (m)', where phi is the azimuth angle and theta is the polar angle measured positive from the north pole. This plug-in can be combined with another using the 'replace if valid' operator. 
 
 `mandelbox': Fractal-shaped temperature field.
 
@@ -6419,7 +6419,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 
 `inclusion shape perturbation': An initial temperature field in which there is an inclusion in a constant-temperature box field. The size, shape, gradient, position, and temperature of the inclusion are defined by parameters.
 
-`lithosphere mask': Implementation of a model in which the initial temperature is set to a specified lithosphere temperature above the lithosphere-asthenosphere boundary (specified by an ascii file or maximum lithosphere depth value). Below this the initial temperature is set as NaN.  Note the required format of the input data file: The first lines may contain any number of comments if they begin with ‘\#’, but one of these lines needs to contain the number of grid points in each dimension as for example‘\# POINTS: 3 3’. For a spherical model, the order of the data columns has to be'phi', 'theta','depth (m)', where phi is the  azimuth angle and theta is the polar angle measured positive from the north pole. This plug-in can be combined with another using the 'replace if valid' operator. 
+`lithosphere mask': Implementation of a model in which the initial temperature is set to a specified lithosphere temperature above the lithosphere-asthenosphere boundary (specified by an ascii file or maximum lithosphere depth value). Below this the initial temperature is set as NaN.  Note the required format of the input data file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of grid points in each dimension as for example '\# POINTS: 3 3'. For a spherical model, the order of the data columns has to be 'phi', 'theta', 'depth (m)', where phi is the azimuth angle and theta is the polar angle measured positive from the north pole. This plug-in can be combined with another using the 'replace if valid' operator. 
 
 `mandelbox': Fractal-shaped temperature field.
 
@@ -6650,7 +6650,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/adiabatic-boundary/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -6667,7 +6667,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} adiabatic\_boundary.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -6758,7 +6758,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} initial\_isotherm\_500K\_box\_3d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -6832,7 +6832,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/ascii-profile/tests/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -6849,7 +6849,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} simple\_test.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -6889,7 +6889,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 30000.
 
 
-{\it Description:} List of the 3 thicknesses of the lithospheric layers 'upper\_crust', 'lower\_crust' and 'mantle\_lithosphere'. If only one thickness is given, then the same thickness is used for all layers. Units: \si{meter}
+{\it Description:} List of the 3 thicknesses of the lithospheric layers 'upper\_crust', 'lower\_crust' and 'mantle\_lithosphere'. If only one thickness is given, then the same thickness is used for all layers. Units: \si{meter}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -7407,7 +7407,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/patch-on-S40RTS/test/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -7424,7 +7424,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} upper\_shell\_3d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -7676,7 +7676,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/S40RTS/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -7693,7 +7693,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} vs\_to\_density\_Steinberger.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -7945,7 +7945,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/initial-temperature/S40RTS/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -7962,7 +7962,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} vs\_to\_density\_Steinberger.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -8218,7 +8218,7 @@ Viscosity is interpolated from this file using linear interpolation. ``None'': n
 
 where $d$ is grain size, $i$ corresponds to diffusion or dislocation creep, $\dot{\varepsilon}$ is the square root of the second invariant of the strain rate tensor, $R$ is the gas constant, $T$ is temperature, and $P$ is pressure. $A_i$ are prefactors, $n_i$ and $m_i$ are stress and grain size exponents $E_i$ are the activation energies and $V_i$ are the activation volumes. 
 
-This form of the viscosity equation is commonly used in geodynamic simulatons See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined.  
+This form of the viscosity equation is commonly used in geodynamic simulations See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined.  
 
 The ratio of diffusion to dislocation strain rate is found by Newton's method, iterating to find the stress which satisfies the above equations. The value for the components of this formula and additional parameters are read from the parameter file in subsection 'Material model/DiffusionDislocation'.
 
@@ -8308,7 +8308,7 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
-The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stess > yield stress. 
+The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stress > yield stress. 
 
 Viscous stress may also be limited by a non-linear stress limiter that has a form similar to the Peierls creep mechanism. This stress limiter assigns an effective viscosity $\sigma_{\text{eff}} = \frac{\tau_y}{2\varepsilon_y} {\frac{\varepsilon_{ii}}{\varepsilon_y}}^{\frac{1}{n_y}-1}$ Above $\tau_y$ is a yield stress, $\varepsilon_y$ is the reference strain rate, $\varepsilon_{ii}$ is the strain rate and $n_y$ is the stress limiter exponent.  The yield stress, $\tau_y$, is defined through the Drucker Prager yield criterion formulation. This method of limiting viscous stress has been used in various forms within the geodynamic literature \cite{chri92,vavv02,cibi13,cibi15}.When $n_y$ is 1, it essentially becomes a linear viscosity model, and in the limit $n_y\rightarrow \infty$ it converges to the standard viscosity rescaling method (concretely, values $n_y>20$ are large enough).
 
@@ -8320,19 +8320,18 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  The overview below directly follows Moresi et al. (2003) eqns. 23-38. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than tracers, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with tracers is implemented. 
 
- Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\triangledown}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\triangledown}{\tau}$ is the Jaumann corotational stress rate. If plasticity is included the deviatoric rate of deformation may be written as: $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$ is the plastic component. As defined in the second paragraph, $\hat{D_{p}}$ decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield stress and $\eta_{y}$ is the viscosity rescaled to the yield surface. 
+ Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\nabla}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\nabla}{\tau}$ is the Jaumann corotational stress rate. This later term (eqn. 24) contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\nabla}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
 
- Above, the Jaimann corotational stress rate (eqn. 24) from the elastic component contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\triangledown}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
+ If plasticity is included, the deviatoric rate of deformation may be written as: $\hat{D} = \hat{D_{e}} + \hat{D_{v}} + \hat{D_{p}}$, where $\hat{D_{p}}$ is the plastic component. $\hat{D_{p}}$ decomposes to $\frac{\tau_{y}}{2\eta_{y}}$, where $\tau_{y}$ is the yield stress and $\eta_{y}$ is the viscosity rescaled to the yield surface. The Jaumann stress-rate can also be approximated using terms from the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\nabla}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time.
 
- The Jaumann stress-rate can also be approximated using terms from the time at the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\triangledown}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is a selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time. 
-
- The formulation above allows rewriting the total rate of deformation (eqn. 29) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
+ The formulation above allows rewriting the total rate of deformation (eqn. 29) as
+ $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
 
  The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
 
  Elastic effects are introduced into the governing Stokes equations through an elastic force term (eqn. 30) using stresses from the previous time step: $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$. This force term is added onto the right-hand side force vector in the system of equations. 
 
- When plastic yielding occurs, the effective viscosity in equation 29 and 30 is the plastic viscosity (equation 35). If the current stress is below the plastic yield stress, the effective viscosity is still as defined in equation 28. During non-linear iterations, we define the current stress prior to yielding (e.g., value compared to yield stress) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} \right ) $
+ When plastic yielding occurs, the effective viscosity in equation 29 and 30 is the plastic viscosity (equation 36). If the current stress is below the plastic yield stress, the effective viscosity is still as defined in equation 28. During non-linear iterations, we define the current stress prior to yielding (e.g., value compared to yield stress) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} \right ) $
 
  Compositional fields can each be assigned individual values of thermal diffusivity, heat capacity, density, thermal expansivity and rheological parameters. 
 
@@ -8348,9 +8347,10 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\nabla}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\nabla}{\tau}$ is the Jaumann corotational stress rate. This later term (eqn. 24) contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\nabla}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
 
- The Jaumann stress-rate can also be approximated using terms from the time at the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\nabla}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is a selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time.
+ The Jaumann stress-rate can also be approximated using terms from the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\nabla}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time.
 
- The formulation above allows rewriting the total rate of deformation (eqn. 29) as $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
+ The formulation above allows rewriting the total deviatoric stress (eqn. 29) as
+ $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
 
  The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
 
@@ -8495,7 +8495,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/adiabatic-conditions/ascii-data/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -8512,7 +8512,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -8802,7 +8802,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 0.
 
 
-{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilo\gram\per\meter\cubed}/unit change in composition.
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -8819,7 +8819,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 0.
 
 
-{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilo\gram\per\meter\cubed}/unit change in composition.
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_2(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -8853,7 +8853,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 3300
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -8870,7 +8870,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -8955,7 +8955,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 5e24
 
 
-{\it Description:} The value of the constant viscosity. Units: \si{\kilo\gram\per\meter\per\second}.
+{\it Description:} The value of the constant viscosity. Units: \si{\kilogram\per\meter\per\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -8989,13 +8989,13 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 \index[prmindex]{Data directory}
 \index[prmindexfull]{Material model!Depth dependent model!Data directory}
-{\it Value:} ./
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/material-model/depth-dependent/
 
 
-{\it Default:} ./
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/material-model/depth-dependent/
 
 
-{\it Description:} The path to the model data. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The path to the model data. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -9012,7 +9012,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} None
 
 
-{\it Description:} Method that is used to specify how the viscosity should vary with depth. 
+{\it Description:} Method that is used to specify how the viscosity should vary with depth.
 
 
 {\it Possible values:} Any one of Function, File, List, None
@@ -9029,7 +9029,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 
 
 
-{\it Description:} A comma-separated list of depth values for use with the ``List'' ``Depth dependence method''. The list must be provided in order of increasing depth, and the last value must be greater than or equal to the maximal depth of the model. The depth list is interpreted as a layered viscosity structure and the depth values specify the maximum depths of each layer. 
+{\it Description:} A comma-separated list of depth values for use with the ``List'' ``Depth dependence method''. The list must be provided in order of increasing depth, and the last value must be greater than or equal to the maximal depth of the model. The depth list is interpreted as a layered viscosity structure and the depth values specify the maximum depths of each layer.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9040,13 +9040,13 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
 \index[prmindex]{Viscosity depth file}
 \index[prmindexfull]{Material model!Depth dependent model!Viscosity depth file}
-{\it Value:} visc-depth.txt
+{\it Value:} visc\_depth.txt
 
 
-{\it Default:} visc-depth.txt
+{\it Default:} visc\_depth.txt
 
 
-{\it Description:} The name of the file containing depth-dependent viscosity data. 
+{\it Description:} The name of the file containing depth-dependent viscosity data.
 
 
 {\it Possible values:} Any string
@@ -9063,7 +9063,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 {\it Default:} 
 
 
-{\it Description:} A comma-separated list of viscosity values, corresponding to the depth values provided in ``Depth list''. The number of viscosity values specified here must be the same as the number of depths provided in ``Depth list'' 
+{\it Description:} A comma-separated list of viscosity values, corresponding to the depth values provided in ``Depth list''. The number of viscosity values specified here must be the same as the number of depths provided in ``Depth list''.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9144,10 +9144,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 375e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Activation energies for dislocation creep}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Activation energies for dislocation creep}
 \label{parameters:Material_20model/Diffusion_20dislocation/Activation_20energies_20for_20dislocation_20creep}
@@ -9161,10 +9161,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 530e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Activation volumes for diffusion creep}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Activation volumes for diffusion creep}
 \label{parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20diffusion_20creep}
@@ -9178,10 +9178,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 6e-6
 
 
-{\it Description:} List of activation volumes, $V_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}
+{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Activation volumes for dislocation creep}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Activation volumes for dislocation creep}
 \label{parameters:Material_20model/Diffusion_20dislocation/Activation_20volumes_20for_20dislocation_20creep}
@@ -9195,10 +9195,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.4e-5
 
 
-{\it Description:} List of activation volumes, $V_a$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}
+{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Densities}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Densities}
 \label{parameters:Material_20model/Diffusion_20dislocation/Densities}
@@ -9212,7 +9212,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities, $\rho$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9246,7 +9246,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1e-3
 
 
-{\it Description:} Units: \si{\meter}
+{\it Description:} Units: \si{\meter}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9263,10 +9263,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3.
 
 
-{\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Heat capacity}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Heat capacity}
 \label{parameters:Material_20model/Diffusion_20dislocation/Heat_20capacity}
@@ -9280,7 +9280,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.25e3
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9314,7 +9314,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1e28
 
 
-{\it Description:} Upper cutoff for effective viscosity. Units: \si{\pascal\second}
+{\it Description:} Upper cutoff for effective viscosity. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9331,7 +9331,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.4e-20
 
 
-{\it Description:} Stabilizes strain dependent viscosity. Units: \si{\per\second}
+{\it Description:} Stabilizes strain dependent viscosity. Units: \si{\per\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9348,7 +9348,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1e17
 
 
-{\it Description:} Lower cutoff for effective viscosity. Units: \si{\pascal\second}
+{\it Description:} Lower cutoff for effective viscosity. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9365,10 +9365,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\per\pascal} \si{\meter}$^{m_{\text{diffusion}}}$ \si{\per\second}
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Prefactors for dislocation creep}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Prefactors for dislocation creep}
 \label{parameters:Material_20model/Diffusion_20dislocation/Prefactors_20for_20dislocation_20creep}
@@ -9382,10 +9382,10 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$\si{\per\second}
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Reference temperature}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Reference temperature}
 \label{parameters:Material_20model/Diffusion_20dislocation/Reference_20temperature}
@@ -9399,7 +9399,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 293.
 
 
-{\it Description:} For calculating density by thermal expansivity. Units: \si{\kelvin}
+{\it Description:} For calculating density by thermal expansivity. Units: \si{\kelvin}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9420,7 +9420,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
 
-Units: \si{\pascal\second}
+Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9454,7 +9454,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9471,10 +9471,10 @@ Units: \si{\pascal\second}
 {\it Default:} 3.5
 
 
-{\it Description:} List of stress exponents, $n_{\text{dislocation}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_{\text{dislocation}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Thermal diffusivity}
 \phantomsection\label{parameters:Material model/Diffusion dislocation/Thermal diffusivity}
 \label{parameters:Material_20model/Diffusion_20dislocation/Thermal_20diffusivity}
@@ -9488,7 +9488,7 @@ Units: \si{\pascal\second}
 {\it Default:} 0.8e-6
 
 
-{\it Description:} Units: \si{\meter\squared\per\second}
+{\it Description:} Units: \si{\meter\squared\per\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9505,7 +9505,7 @@ Units: \si{\pascal\second}
 {\it Default:} 3.5e-5
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9545,7 +9545,7 @@ Units: \si{\pascal\second}
 {\it Default:} 3300
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9562,7 +9562,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9600,7 +9600,7 @@ Units: \si{\pascal\second}
 
 For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
 
-Units: \si{\pascal\second}
+Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -9750,7 +9750,7 @@ Units: \si{\pascal\second}
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} Any string
@@ -9767,7 +9767,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1250.
 
 
-{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} Any string
@@ -9828,7 +9828,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.000040
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} Any string
@@ -9870,7 +9870,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.e20
 
 
-{\it Description:} List of background viscosities for mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}
+{\it Description:} List of background viscosities for mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9887,7 +9887,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.4
 
 
-{\it Description:} List of coefficients of dynamic friction for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: dimensionless
+{\it Description:} List of coefficients of dynamic friction for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: dimensionless.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9904,7 +9904,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.5
 
 
-{\it Description:} List of coefficients of static friction for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: dimensionless
+{\it Description:} List of coefficients of static friction for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: dimensionless.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -9921,7 +9921,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 4.e6
 
 
-{\it Description:} List of cohesions for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal}
+{\it Description:} List of cohesions for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10131,7 +10131,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3.
 
 
-{\it Description:} The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of vescosity on grain size. Units: none.
+{\it Description:} The diffusion creep grain size exponent $p_{diff}$ that determines the dependence of viscosity on grain size. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10590,7 +10590,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 
 
 
-{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition ocurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
+{\it Description:} A list of temperatures where phase transitions occur. Higher or lower temperatures lead to phase transition occurring in smaller or greater depths than given in Phase transition depths, depending on the Clapeyron slope given in Phase transition Clapeyron slopes. List must have the same number of entries as Phase transition depths. Units: \si{\kelvin}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -10675,7 +10675,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300
 
 
-{\it Description:} The reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} The reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -10692,7 +10692,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $cp$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $cp$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -10919,7 +10919,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilo\gram\per\meter\cubed}/unit change in composition.
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -10987,7 +10987,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 
 
 
-{\it Description:} A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} A list of density jumps at each phase transition. A positive value means that the density increases with depth. The corresponding entry in Corresponding phase for density jump determines if the density jump occurs in peridotite, eclogite or none of them.List must have the same number of entries as Phase transition depths. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -11089,7 +11089,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300.
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -11106,7 +11106,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -11469,7 +11469,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilo\gram\per\meter\cubed}/unit change in composition.
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the density only depends on the first one in such a way that the density has an additional term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -11554,7 +11554,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} -300.
 
 
-{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -11571,7 +11571,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} -400.
 
 
-{\it Description:} The entropy change for the phase transition from solid to melt of pyroxenite. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The entropy change for the phase transition from solid to melt of pyroxenite. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -11588,7 +11588,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300.
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -11605,7 +11605,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -11798,7 +11798,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.0
 
 
-{\it Description:} The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -11987,7 +11987,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 2500.
 
 
-{\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12055,7 +12055,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 3000.
 
 
-{\it Description:} Reference density of the solid $\rho_{s,0}$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density of the solid $\rho_{s,0}$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12072,7 +12072,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12367,7 +12367,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 0.0
 
 
-{\it Description:} The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} The density contrast between material with a depletion of 1 and a depletion of zero. Negative values indicate lower densities of depleted material. Depletion is indicated by the compositional field with the name peridotite. Not used if this field does not exist in the model. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -12522,7 +12522,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} -300.
 
 
-{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The entropy change for the phase transition from solid to melt of peridotite. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -12556,7 +12556,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 2500.
 
 
-{\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density of the melt/fluid$\rho_{f,0}$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12624,7 +12624,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 3000.
 
 
-{\it Description:} Reference density of the solid $\rho_{s,0}$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density of the solid $\rho_{s,0}$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12641,7 +12641,7 @@ Also note that the melting time scale has to be larger than or equal to the reac
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -12887,7 +12887,7 @@ Note that melt does not freeze unless the 'Freezing rate' parameter is set to a 
 {\it Default:} 3300.
 
 
-{\it Description:} The density at the reference pressure and temperature. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} The density at the reference pressure and temperature. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13070,7 +13070,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} Any string
@@ -13087,7 +13087,7 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 {\it Default:} 1250.
 
 
-{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} Any string
@@ -13148,7 +13148,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.000040
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} Any string
@@ -13165,7 +13165,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.e21
 
 
-{\it Description:} List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}
+{\it Description:} List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} Any string
@@ -13205,7 +13205,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250.
 
 
-{\it Description:} List of isochoric specific heats $C_v$ for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} List of isochoric specific heats $C_v$ for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -13239,7 +13239,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -13290,7 +13290,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 4.e-5
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -13324,7 +13324,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.e21
 
 
-{\it Description:} List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}
+{\it Description:} List of viscosities for background mantle and compositional fields,for a total of N+1 values, where N is the number of compositional fields.If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} Any string
@@ -13398,7 +13398,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.0
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13415,7 +13415,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.0
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13756,7 +13756,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300.
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13773,7 +13773,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250.
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13864,7 +13864,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilo\gram\per\meter\cubed}/unit change in composition.
+{\it Description:} If compositional fields are used, then one would frequently want to make the density depend on these fields. In this simple material model, we make the following assumptions: if no compositional fields are used in the current simulation, then the density is simply the usual one with its linear dependence on the temperature. If there are compositional fields, then the material model determines how many of them influence the density. The composition-dependence adds a term of the kind $+\Delta \rho \; c_1(\mathbf x)$. This parameter describes the value of $\Delta \rho$. Units: \si{\kilogram\per\meter\cubed}/unit change in composition.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -13915,7 +13915,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -13932,7 +13932,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14040,7 +14040,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 3300
 
 
-{\it Description:} Reference density $\rho_0$. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Reference density $\rho_0$. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14057,7 +14057,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1250
 
 
-{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilo\gram}.
+{\it Description:} The value of the specific heat $C_p$. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14216,7 +14216,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} pyr-ringwood88.txt
 
 
-{\it Description:} The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are three options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a `background composition' that is modified by the compositional fields. If there are exactly as many files as compositional fields, the fields are assumed to represent the fractions of different materials and the average property is computed as a sum of the value of the compositional field times the material property of that field.
+{\it Description:} The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are three options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a `background composition' that is modified by the compositional fields. If there are exactly as many files as compositional fields, the fields are assumed to represent the mass fractions of different materials and the average property is computed as a sum of the value of the compositional field times the material property of that field.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
@@ -14322,7 +14322,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
 
-Units: \si{\pascal\second}
+Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14366,6 +14366,23 @@ Units: \si{\pascal\second}
 \label{parameters:Material_20model/Visco_20Plastic}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Activation energies for Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Activation energies for Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20Peierls_20creep}
+
+
+\index[prmindex]{Activation energies for Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Activation energies for Peierls creep}
+{\it Value:} 320e3
+
+
+{\it Default:} 320e3
+
+
+{\it Description:} List of activation energies, $E$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Activation energies for diffusion creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Activation energies for diffusion creep}
 \label{parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20diffusion_20creep}
@@ -14379,10 +14396,10 @@ Units: \si{\pascal\second}
 {\it Default:} 375e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Activation energies for dislocation creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Activation energies for dislocation creep}
 \label{parameters:Material_20model/Visco_20Plastic/Activation_20energies_20for_20dislocation_20creep}
@@ -14396,7 +14413,24 @@ Units: \si{\pascal\second}
 {\it Default:} 530e3
 
 
-{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}
+{\it Description:} List of activation energies, $E_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\joule\per\mole}.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Activation volumes for Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Activation volumes for Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20Peierls_20creep}
+
+
+\index[prmindex]{Activation volumes for Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Activation volumes for Peierls creep}
+{\it Value:} 1.4e-5
+
+
+{\it Default:} 1.4e-5
+
+
+{\it Description:} List of activation volumes, $V$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14413,10 +14447,10 @@ Units: \si{\pascal\second}
 {\it Default:} 6e-6
 
 
-{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}
+{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Activation volumes for dislocation creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Activation volumes for dislocation creep}
 \label{parameters:Material_20model/Visco_20Plastic/Activation_20volumes_20for_20dislocation_20creep}
@@ -14430,10 +14464,10 @@ Units: \si{\pascal\second}
 {\it Default:} 1.4e-5
 
 
-{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}
+{\it Description:} List of activation volumes, $V_a$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\meter\cubed\per\mole}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Adiabat temperature gradient for viscosity}
 \phantomsection\label{parameters:Material model/Visco Plastic/Adiabat temperature gradient for viscosity}
 \label{parameters:Material_20model/Visco_20Plastic/Adiabat_20temperature_20gradient_20for_20viscosity}
@@ -14447,7 +14481,7 @@ Units: \si{\pascal\second}
 {\it Default:} 0.0
 
 
-{\it Description:} Add an adiabatic temperature gradient to the temperature used in the flow law so that the activation volume is consistent with what one would use in a earth-like (compressible) model. Default is set so this is off. Note that this is a linear approximation of the real adiabatic gradient, which is okay for the upper mantle, but is not really accurate for the lower mantle. Using a pressure gradient of 32436 Pa/m, then a value of 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.Units: \si{\kelvin\per\pascal}
+{\it Description:} Add an adiabatic temperature gradient to the temperature used in the flow law so that the activation volume is consistent with what one would use in a earth-like (compressible) model. Default is set so this is off. Note that this is a linear approximation of the real adiabatic gradient, which is okay for the upper mantle, but is not really accurate for the lower mantle. Using a pressure gradient of 32436 Pa/m, then a value of 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.Units: \si{\kelvin\per\pascal}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14481,7 +14515,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of cohesion strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of cohesion strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14515,7 +14549,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.0
 
 
-{\it Description:} List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of compositional fields. Units: none
+{\it Description:} List of constant viscosity prefactors (i.e., multiplicative factors) for background material and compositional fields, for a total of N+1 where N is the number of compositional fields. Units: none.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14566,7 +14600,7 @@ Units: \si{\pascal\second}
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} Any string
@@ -14600,7 +14634,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of strain weakening interval final strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of strain weakening interval final strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14617,7 +14651,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of strain weakening interval final strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of strain weakening interval final strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14651,7 +14685,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of friction strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of friction strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -14668,7 +14702,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1e-3
 
 
-{\it Description:} Units: \si{\meter}
+{\it Description:} Units: \si{\meter}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14685,10 +14719,10 @@ Units: \si{\pascal\second}
 {\it Default:} 3.
 
 
-{\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None
+{\it Description:} List of grain size exponents, $m_{\text{diffusion}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Heat capacities}
 \phantomsection\label{parameters:Material model/Visco Plastic/Heat capacities}
 \label{parameters:Material_20model/Visco_20Plastic/Heat_20capacities}
@@ -14702,10 +14736,27 @@ Units: \si{\pascal\second}
 {\it Default:} 1250.
 
 
-{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Include Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Include Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Include_20Peierls_20creep}
+
+
+\index[prmindex]{Include Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Include Peierls creep}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to include Peierls creep in the rheological formulation.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Include viscoelasticity}
 \phantomsection\label{parameters:Material model/Visco Plastic/Include viscoelasticity}
 \label{parameters:Material_20model/Visco_20Plastic/Include_20viscoelasticity}
@@ -14736,7 +14787,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1e28
 
 
-{\it Description:} Upper cutoff for effective viscosity. Units: \si{\pascal\second}
+{\it Description:} Upper cutoff for effective viscosity. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14753,7 +14804,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1e12
 
 
-{\it Description:} Limits the maximum value of the yield stress determined by the drucker-prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}
+{\it Description:} Limits the maximum value of the yield stress determined by the drucker-prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14770,7 +14821,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.0e-20
 
 
-{\it Description:} Stabilizes strain dependent viscosity. Units: \si{\per\second}
+{\it Description:} Stabilizes strain dependent viscosity. Units: \si{\per\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14787,10 +14838,95 @@ Units: \si{\pascal\second}
 {\it Default:} 1e17
 
 
-{\it Description:} Lower cutoff for effective viscosity. Units: \si{\pascal\second}
+{\it Description:} Lower cutoff for effective viscosity. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Peierls creep flow law}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls creep flow law}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20creep_20flow_20law}
+
+
+\index[prmindex]{Peierls creep flow law}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls creep flow law}
+{\it Value:} viscosity approximation
+
+
+{\it Default:} viscosity approximation
+
+
+{\it Description:} Select what type of Peierls creep flow law to use. Currently, the only available option is an approximation to Peierls creep, which uses the strain rate invariant, rather than stress, as an input. 
+
+
+{\it Possible values:} Any one of viscosity approximation
+\item {\it Parameter name:} {\tt Peierls fitting parameters}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls fitting parameters}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20fitting_20parameters}
+
+
+\index[prmindex]{Peierls fitting parameters}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls fitting parameters}
+{\it Value:} 0.17
+
+
+{\it Default:} 0.17
+
+
+{\it Description:} List of fitting parameters $\gamma$ between stress $\sigma$ and the Peierls stress $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: none
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Peierls glide parameters p}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls glide parameters p}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20p}
+
+
+\index[prmindex]{Peierls glide parameters p}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls glide parameters p}
+{\it Value:} 0.5
+
+
+{\it Default:} 0.5
+
+
+{\it Description:} List of the first Peierls creep glide parameters, $p$, for background and compositional fields for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: none
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Peierls glide parameters q}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls glide parameters q}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20glide_20parameters_20q}
+
+
+\index[prmindex]{Peierls glide parameters q}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls glide parameters q}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} List of the second Peierls creep glide parameters, $q$, for background and compositional fields for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: none
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Peierls stresses}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls stresses}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20stresses}
+
+
+\index[prmindex]{Peierls stresses}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls stresses}
+{\it Value:} 5.e9
+
+
+{\it Default:} 5.e9
+
+
+{\it Description:} List of stress limits for Peierls creep $\sigma_{\text{peierls}}$ for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Phase transition Clapeyron slopes}
 \phantomsection\label{parameters:Material model/Visco Plastic/Phase transition Clapeyron slopes}
 \label{parameters:Material_20model/Visco_20Plastic/Phase_20transition_20Clapeyron_20slopes}
@@ -14906,10 +15042,44 @@ Units: \si{\pascal\second}
 {\it Default:} 1.
 
 
-{\it Description:} List of viscous strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of viscous strain weakening factors for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq 1$]
+\item {\it Parameter name:} {\tt Prefactors for Frank Kamenetskii}
+\phantomsection\label{parameters:Material model/Visco Plastic/Prefactors for Frank Kamenetskii}
+\label{parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Frank_20Kamenetskii}
+
+
+\index[prmindex]{Prefactors for Frank Kamenetskii}
+\index[prmindexfull]{Material model!Visco Plastic!Prefactors for Frank Kamenetskii}
+{\it Value:} 1.e21
+
+
+{\it Default:} 1.e21
+
+
+{\it Description:} A viscosity prefactor for the viscosity approximation, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Prefactors for Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Prefactors for Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20Peierls_20creep}
+
+
+\index[prmindex]{Prefactors for Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Prefactors for Peierls creep}
+{\it Value:} 1.4e-19
+
+
+{\it Default:} 1.4e-19
+
+
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{peierls}}}$ \si{\per\second}
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Prefactors for diffusion creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Prefactors for diffusion creep}
 \label{parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20diffusion_20creep}
@@ -14923,10 +15093,10 @@ Units: \si{\pascal\second}
 {\it Default:} 1.5e-15
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\per\pascal\meter}$^{m_{\text{diffusion}}}$\si{\per\second}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Prefactors for dislocation creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Prefactors for dislocation creep}
 \label{parameters:Material_20model/Visco_20Plastic/Prefactors_20for_20dislocation_20creep}
@@ -14940,10 +15110,10 @@ Units: \si{\pascal\second}
 {\it Default:} 1.1e-16
 
 
-{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}
+{\it Description:} List of viscosity prefactors, $A$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal}$^{-n_{\text{dislocation}}}$ \si{\per\second}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Reference strain rate}
 \phantomsection\label{parameters:Material model/Visco Plastic/Reference strain rate}
 \label{parameters:Material_20model/Visco_20Plastic/Reference_20strain_20rate}
@@ -14957,7 +15127,7 @@ Units: \si{\pascal\second}
 {\it Default:} 1.0e-15
 
 
-{\it Description:} Reference strain rate for first time step. Units: \si{\per\second}
+{\it Description:} Reference strain rate for first time step. Units: \si{\per\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -14995,7 +15165,7 @@ Units: \si{\pascal\second}
 
 For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
 
-Units: \si{\pascal\second}
+Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -15022,7 +15192,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} List of strain weakening interval initial strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None
+{\it Description:} List of strain weakening interval initial strains for the cohesion and friction angle parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15039,7 +15209,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.
 
 
-{\it Description:} List of strain weakening interval initial strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of strain weakening interval initial strains for the diffusion and dislocation prefactor parameters of the background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15078,6 +15248,40 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any one of none, finite strain tensor, total strain, plastic weakening with plastic strain only, plastic weakening with total strain only, plastic weakening with plastic strain and viscous weakening with viscous strain, viscous weakening with viscous strain only, default
+\item {\it Parameter name:} {\tt Stress exponents for Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20Peierls_20creep}
+
+
+\index[prmindex]{Stress exponents for Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Stress exponents for Peierls creep}
+{\it Value:} 2.0
+
+
+{\it Default:} 2.0
+
+
+{\it Description:} List of stress exponents, $n_{\text{peierls}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Stress exponents for diffusion creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for diffusion creep}
+\label{parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20diffusion_20creep}
+
+
+\index[prmindex]{Stress exponents for diffusion creep}
+\index[prmindexfull]{Material model!Visco Plastic!Stress exponents for diffusion creep}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} List of stress exponents, $n_{\text{diffusion}}$, for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The stress exponent for diffusion creep is almost always equal to one. If only one value is given, then all use the same value.  Units: None.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Stress exponents for dislocation creep}
 \phantomsection\label{parameters:Material model/Visco Plastic/Stress exponents for dislocation creep}
 \label{parameters:Material_20model/Visco_20Plastic/Stress_20exponents_20for_20dislocation_20creep}
@@ -15091,10 +15295,10 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 3.5
 
 
-{\it Description:} List of stress exponents, $n_{\text{dislocation}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None
+{\it Description:} List of stress exponents, $n_{\text{dislocation}}$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: None.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Stress limiter exponents}
 \phantomsection\label{parameters:Material model/Visco Plastic/Stress limiter exponents}
 \label{parameters:Material_20model/Visco_20Plastic/Stress_20limiter_20exponents}
@@ -15125,7 +15329,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 3.0
 
 
-{\it Description:} List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}
+{\it Description:} List of thermal conductivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15142,7 +15346,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 0.8e-6
 
 
-{\it Description:} List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: \si{\meter\squared\per\second}
+{\it Description:} List of thermal diffusivities, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value.  Units: \si{\meter\squared\per\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15159,7 +15363,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 0.000035
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} Any string
@@ -15214,6 +15418,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any one of arithmetic, harmonic, geometric, maximum composition
+\item {\it Parameter name:} {\tt Viscosity ratios for Frank Kamenetskii}
+\phantomsection\label{parameters:Material model/Visco Plastic/Viscosity ratios for Frank Kamenetskii}
+\label{parameters:Material_20model/Visco_20Plastic/Viscosity_20ratios_20for_20Frank_20Kamenetskii}
+
+
+\index[prmindex]{Viscosity ratios for Frank Kamenetskii}
+\index[prmindexfull]{Material model!Visco Plastic!Viscosity ratios for Frank Kamenetskii}
+{\it Value:} 15.
+
+
+{\it Default:} 15.
+
+
+{\it Description:} An adjusted viscosity ratio, $E$, for the viscosity approximation, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: None
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Viscous flow law}
 \phantomsection\label{parameters:Material model/Visco Plastic/Viscous flow law}
 \label{parameters:Material_20model/Visco_20Plastic/Viscous_20flow_20law}
@@ -15227,10 +15448,10 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} composite
 
 
-{\it Description:} Select what type of viscosity law to use between diffusion, dislocation and composite options. Soon there will be an option to select a specific flow law for each assigned composition 
+{\it Description:} Select what type of viscosity law to use between diffusion, dislocation, frank kamenetskii, and composite options. Soon there will be an option to select a specific flow law for each assigned composition 
 
 
-{\it Possible values:} Any one of diffusion, dislocation, composite
+{\it Possible values:} Any one of diffusion, dislocation, frank kamenetskii, composite
 \item {\it Parameter name:} {\tt Yield mechanism}
 \phantomsection\label{parameters:Material model/Visco Plastic/Yield mechanism}
 \label{parameters:Material_20model/Visco_20Plastic/Yield_20mechanism}
@@ -15267,7 +15488,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 3300.
 
 
-{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilo\gram\per\meter\cubed}
+{\it Description:} List of densities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} Any string
@@ -15318,7 +15539,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} 1250.
 
 
-{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilo\gram}
+{\it Description:} List of specific heats $C_p$ for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\joule\per\kelvin\per\kilogram}.
 
 
 {\it Possible values:} Any string
@@ -15362,7 +15583,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 4.7
 
 
-{\it Description:} List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin} 
+{\it Description:} List of thermal conductivities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\watt\per\meter\per\kelvin}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15379,7 +15600,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 0.000035
 
 
-{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}
+{\it Description:} List of thermal expansivities for background mantle and compositional fields,for a total of N+M+1 values, where N is the number of compositional fields and M is the number of phases. If only one value is given, then all use the same value. Units: \si{\per\kelvin}.
 
 
 {\it Possible values:} Any string
@@ -15430,7 +15651,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.e21
 
 
-{\it Description:} List of viscosities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal\second}
+{\it Description:} List of viscosities for background mantle and compositional fields, for a total of N+1 values, where N is the number of compositional fields. If only one value is given, then all use the same value. Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
@@ -15746,7 +15967,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0.05
 
 
-{\it Description:} The fraction of cells with the smallest error that should be flagged for coarsening.
+{\it Description:} Cells are sorted from largest to smallest by their total error (determined by the Strategy). Then the cells with the smallest error (bottom of this sorted list) that account for the given fraction of the error are coarsened.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -15763,7 +15984,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0
 
 
-{\it Description:} The number of adaptive refinement steps performed after initial global refinement but while still within the first time step.
+{\it Description:} The number of adaptive refinement steps performed after initial global refinement but while still within the first time step. These refinement steps (n) are added to the value for initial global refinement (m) so that the final mesh has cells that are at most on refinement level $n+m$.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
@@ -15831,7 +16052,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} max
 
 
-{\it Description:} If multiple mesh refinement criteria are computed for each cell (by passing a list of more than element to the \texttt{Strategy} parameter in this section of the input file) then one will have to decide which one should win when deciding which cell to refine. The operation that selects from these competing criteria is the one that is selected here. The options are:
+{\it Description:} If multiple mesh refinement criteria are computed for each cell (by passing a list of more than element to the \texttt{Strategy} parameter in this section of the input file) then one will have to decide which criteria should win when deciding which cells to refine. The operation that determines how to combine these competing criteria is the one that is selected here. The options are:
 
 \begin{itemize}
 \item \texttt{plus}: Add the various error indicators together and refine those cells on which the sum of indicators is largest.
@@ -15876,7 +16097,7 @@ If the list of indicators given in this parameter is empty, then this indicates 
 {\it Default:} 0.3
 
 
-{\it Description:} The fraction of cells with the largest error that should be flagged for refinement.
+{\it Description:} Cells are sorted from largest to smallest by their total error (determined by the Strategy). Then the cells with the largest error (top of this sorted list) that account for given fraction of the error are refined.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
@@ -15893,7 +16114,7 @@ If the list of indicators given in this parameter is empty, then this indicates 
 {\it Default:} false
 
 
-{\it Description:} Whether or not the postprocessors should be executed after each of the initial adaptive refinement cycles that are run at the start of the simulation.
+{\it Description:} Whether or not the postprocessors should be executed after each of the initial adaptive refinement cycles that are run at the start of the simulation. This is useful for plotting/analyzing how the mesh refinement parameters are working for a particular model.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -15910,7 +16131,7 @@ If the list of indicators given in this parameter is empty, then this indicates 
 {\it Default:} false
 
 
-{\it Description:} Whether or not the initial conditions should be set up during the the adaptive refinement cycles that are run at the start of the simulation.
+{\it Description:} Whether or not the initial conditions should be set up during the adaptive refinement cycles that are run at the start of the simulation.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -16749,7 +16970,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 0.
 
 
-{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter `Density above' allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. crustal rock, and the density of the material that is displaced (generally water or air). While the density of crustal rock is part of the material model, this parameter `Density above' allows the user to specify the density value of material that is displaced above the solid surface. By default this material is assumed to be air, with a density of 0. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -16766,7 +16987,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 9900.
 
 
-{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilo\gram\per\meter\cubed}.
+{\it Description:} Dynamic topography is calculated as the excess or lack of mass that is supported by mantle flow. This value depends on the density of material that is moved up or down, i.e. mantle above CMB, and the density of the material that is displaced (generally outer core material). While the density of mantle rock is part of the material model, this parameter `Density below' allows the user to specify the density value of material that is displaced below the solid surface. By default this material is assumed to be outer core material with a density of 9900. Units: \si{\kilogram\per\meter\cubed}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -17425,7 +17646,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 
 
 
-{\it Description:} A comma seperated list of strings which exclude all particleproperty fields which contain these strings. If one of the entries is 'all', only a id will be provided for every point.
+{\it Description:} A comma separated list of strings which exclude all particleproperty fields which contain these strings. If one of the entries is 'all', only a id will be provided for every point.
 
 
 {\it Possible values:} Any string
@@ -17473,7 +17694,7 @@ Select one of the following models:
 
 {\it Description:} Select one of the following models:
 
-`bilinear least squares': Interpolates particle properties onto a vector of points using a bilinear least squares method. Currently only 2D models are supported. Note that deal.II must be configured with BLAS/LAPACK.
+`bilinear least squares': Interpolates particle properties onto a vector of points using a bilinear least squares method. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 `cell average': Return the average of all particle properties in the given cell.
 
@@ -17481,8 +17702,10 @@ Select one of the following models:
 
 `nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty.
 
+`quadratic least squares': Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
-{\it Possible values:} Any one of bilinear least squares, cell average, harmonic average, nearest neighbor
+
+{\it Possible values:} Any one of bilinear least squares, cell average, harmonic average, nearest neighbor, quadratic least squares
 \item {\it Parameter name:} {\tt List of particle properties}
 \phantomsection\label{parameters:Postprocess/Particles/List of particle properties}
 \label{parameters:Postprocess/Particles/List_20of_20particle_20properties}
@@ -17501,6 +17724,8 @@ Select one of the following models:
 The following properties are available:
 
 `composition': Implementation of a plugin in which the particle property is defined by the compositional fields in the model. This can be used to track solid compositionevolution over time.
+
+`elastic stress': A plugin in which the particle property tensor is defined as the total elastic stress a particle has accumulated. See the viscoelastic material model documentation for more detailed information.
 
 `function': Implementation of a model in which the particle property is set by evaluating an explicit function at the initial position of each particle. The function is defined in the parameters in section ``Particles|Function''. The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
@@ -17523,7 +17748,7 @@ The following properties are available:
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}
@@ -18316,6 +18541,63 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
+\subsection{Parameters in section \tt Postprocess/Particles/Interpolator/Quadratic least squares}
+\label{parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Global particle property maximum}
+\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Quadratic least squares/Global particle property maximum}
+\label{parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Global_20particle_20property_20maximum}
+
+
+\index[prmindex]{Global particle property maximum}
+\index[prmindexfull]{Postprocess!Particles!Interpolator/Quadratic least squares/Global particle property maximum}
+{\it Value:} 1.7976931348623157e+308
+
+
+{\it Default:} 1.7976931348623157e+308
+
+
+{\it Description:} The maximum global particle property values that will be used as a limiter for the quadratic least squares interpolation. The number of the input 'Global particle property maximum' values separated by ',' has to be the same as the number of particle properties.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Global particle property minimum}
+\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Quadratic least squares/Global particle property minimum}
+\label{parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Global_20particle_20property_20minimum}
+
+
+\index[prmindex]{Global particle property minimum}
+\index[prmindexfull]{Postprocess!Particles!Interpolator/Quadratic least squares/Global particle property minimum}
+{\it Value:} -1.7976931348623157e+308
+
+
+{\it Default:} -1.7976931348623157e+308
+
+
+{\it Description:} The minimum global particle property that will be used as a limiter for the quadratic least squares interpolation. The number of the input 'Global particle property minimum' values separated by ',' has to be the same as the number of particle properties.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Use limiter}
+\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Quadratic least squares/Use limiter}
+\label{parameters:Postprocess/Particles/Interpolator/Quadratic_20least_20squares/Use_20limiter}
+
+
+\index[prmindex]{Use limiter}
+\index[prmindexfull]{Postprocess!Particles!Interpolator/Quadratic least squares/Use limiter}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to apply a global particle property limiting scheme to the interpolated particle properties.
+
+
+{\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
 \subsection{Parameters in section \tt Postprocess/Particles/Melt particle}
 \label{parameters:Postprocess/Particles/Melt_20particle}
 
@@ -18559,6 +18841,8 @@ The following postprocessors are available:
 
 Strictly speaking, the dynamic topography is of course a quantity that is only of interest at the surface. However, we compute it everywhere to make things fit into the framework within which we produce data for visualization. You probably only want to visualize whatever data this postprocessor generates at the surface of your domain and simply ignore the rest of the data generated.
 
+Alternatively, consider using the "surface dynamic topography" visualization postprocessor to only output the dynamic topography at the boundary of the domain.
+
 `error indicator': A visualization output object that generates output showing the estimated error or other mesh refinement indicator as a spatially variable function with one value per cell.
 
 `geoid': Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation. Units: \si{\meter}.
@@ -18621,6 +18905,12 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 `stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
 
+`surface dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
+
+In contrast to the `dynamic topography' visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to `bottom' and `top' boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
+
+`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
+
 `temperature anomaly': A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the ``depth average'' postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''
 
 `vertical heat flux': A visualization output object that generates output for the heat flux in the vertical direction, which is the sum of the advective and the conductive heat flux, with the sign convention of positive flux upwards.
@@ -18630,7 +18920,7 @@ The variable that is outputted this way is computed by taking the pressure at ea
 `volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 
-{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
+{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, surface dynamic topography, surface stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 \label{parameters:Postprocess/Visualization/Number_20of_20grouped_20files}
@@ -19273,7 +19563,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} true
 
 
-{\it Description:} If true, use the specified boundary temepratures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature. 
+{\it Description:} If true, use the specified boundary temperatures as average temperatures at the surface. If false, extrapolate the temperature gradient between the first and second cells to the surface. This option will only work for models with a fixed surface temperature. 
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -19290,7 +19580,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} true
 
 
-{\it Description:} Whether to use the minimal speficied boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature. 
+{\it Description:} Whether to use the minimal specified boundary temperature as the bottom boundary temperature. This option will only work for models with a fixed bottom boundary temperature. 
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -19464,7 +19754,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} \$ASPECT\_SOURCE\_DIR/data/prescribed-stokes-solution/
 
 
-{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT. 
+{\it Description:} The name of a directory that contains the model data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
 
 
 {\it Possible values:} A directory name
@@ -19481,7 +19771,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} box\_2d.txt
 
 
-{\it Description:} The file name of the model data. Provide file in format: (Velocity file name).\%s\%d where \%s is a string specifying the boundary of the model according to the names of the boundary indicators (of the chosen geometry model).\%d is any sprintf integer qualifier, specifying the format of the current file number. 
+{\it Description:} The file name of the model data.
 
 
 {\it Possible values:} Any string
@@ -20604,6 +20894,98 @@ These choices correspond to the following methods by which the temperature field
 
 
 {\it Possible values:} an input filename
+\end{itemize}
+
+\subsection{Parameters in section \tt Time stepping}
+\label{parameters:Time_20stepping}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of model names}
+\phantomsection\label{parameters:Time stepping/List of model names}
+\label{parameters:Time_20stepping/List_20of_20model_20names}
+
+
+\index[prmindex]{List of model names}
+\index[prmindexfull]{Time stepping!List of model names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of time stepping plugins that will be used to calculate the time step size. The minimum of the  result of each plugin will be used.
+
+The following plugins are available:
+
+`conduction time step': This model computes the conduction time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
+
+`convection time step': This model computes the convection time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
+
+`function': This model uses a time step specified in the parameter file specified as a function of time. This plugin will always request advancing to the next time step.
+
+
+{\it Possible values:} A comma-separated list of any of conduction time step, convection time step, function
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Time stepping/Function}
+\label{parameters:Time_20stepping/Function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Time stepping/Function/Function constants}
+\label{parameters:Time_20stepping/Function/Function_20constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Time stepping!Function!Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Time stepping/Function/Function expression}
+\label{parameters:Time_20stepping/Function/Function_20expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Time stepping!Function!Function expression}
+{\it Value:} 1.0
+
+
+{\it Default:} 1.0
+
+
+{\it Description:} Expression for the time step size as a function of 'time'.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Time stepping/Function/Variable names}
+\label{parameters:Time_20stepping/Function/Variable_20names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Time stepping!Function!Variable names}
+{\it Value:} time
+
+
+{\it Default:} time
+
+
+{\it Description:} Name for the variable representing the current time.
+
+
+{\it Possible values:} Any string
 \end{itemize}
 
 \subsection{Parameters in section \tt Volume of Fluid}
