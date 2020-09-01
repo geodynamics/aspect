@@ -124,7 +124,7 @@ namespace aspect
          * A generalised Peierls creep formulation. The Peierls creep expression
          * for the strain rate has multiple stress-dependent terms, and cannot be
          * directly inverted to find an expression for viscosity in terms of
-         * strain rate. For this reason, a Newton Raphson iteration is required,
+         * strain rate. For this reason, a Newton-Raphson iteration is required,
          * which can be quite expensive.
          * The equation for the strain rate is given in
          * compute_exact_strain_rate_and_derivative.
@@ -132,7 +132,7 @@ namespace aspect
         const PeierlsCreepParameters p = compute_creep_parameters(composition);
 
         // The generalized Peierls creep flow law cannot be expressed as viscosity in
-        // terms of strain rate, because there are multiple stress-dependent terms
+        // terms of strain rate, because there are two stress-dependent terms
         // in the strain rate expression.
         // We use Newton's method to find the second invariant of the stress tensor.
 
@@ -157,6 +157,26 @@ namespace aspect
               stress_ii -= strain_rate_residual/strain_rate_deriv;
 
             stress_iteration += 1;
+
+            // If anything that would be used in the next iteration is not finite, the
+            // Newton iteration would trigger an exception and we want to abort the
+            // iteration instead.
+            // Currently, we still throw an exception, but if this exception is thrown,
+            // another more robust iterative scheme should be implemented
+            // (similar to that seen in the diffusion-dislocation material model).
+            const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
+                                                || !numbers::is_finite(strain_rate_residual)
+                                                || !numbers::is_finite(strain_rate_deriv)
+                                                || strain_rate_deriv < std::numeric_limits<double>::min()
+                                                || !numbers::is_finite(std::pow(stress_ii, p.stress_exponent))
+                                                || stress_iteration == stress_max_iteration_number;
+            AssertThrow(!abort_newton_iteration,
+                        ExcMessage("No convergence has been reached in the loop that determines "
+                                   "the Peierls creep viscosity. Aborting! "
+                                   "Residual is " + Utilities::to_string(strain_rate_residual) +
+                                   " after " + Utilities::to_string(stress_iteration) + " iterations. "
+                                   "You can increase the number of iterations by adapting the "
+                                   "parameter 'Maximum Peierls strain rate iterations'."));
           }
 
         viscosity = 0.5*stress_ii/strain_rate;
@@ -304,14 +324,14 @@ namespace aspect
         prm.declare_entry ("Peierls creep flow law", "viscosity approximation",
                            Patterns::Selection("viscosity approximation|exact"),
                            "Select what type of Peierls creep flow law to use. Currently, the "
-                           "available options are 'exact', which uses a Newton-Raphson iteration "
+                           "available options are 'exact', which uses a Newton-Raphson iterative method "
                            "to find the stress and then compute viscosity, and 'viscosity approximation', "
                            "in which viscosity is an explicit function of the strain rate invariant, "
                            "rather than stress. ");
 
         // Viscosity iteration parameters
         prm.declare_entry ("Peierls strain rate residual tolerance", "1e-22", Patterns::Double(0.),
-                           "Tolerance for correct Peierls creep strain rate.");
+                           "Tolerance for the iterative solve to find the correct Peierls creep strain rate.");
         prm.declare_entry ("Maximum Peierls strain rate iterations", "40", Patterns::Integer(0),
                            "Maximum number of iterations to find the correct "
                            "Peierls strain rate.");

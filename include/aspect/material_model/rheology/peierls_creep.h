@@ -108,6 +108,8 @@ namespace aspect
 
           /**
            * Compute the viscosity based on the selected Peierls creep flow law.
+           * This function uses either the compute_approximate_viscosity
+           * or the compute_exact_viscosity function.
            */
           double
           compute_viscosity (const double strain_rate,
@@ -138,6 +140,9 @@ namespace aspect
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the selected Peierls creep law.
+           * This function uses either the
+           * compute_approximate_strain_rate_and_derivative
+           * or the compute_exact_strain_rate_and_derivative function.
            */
           std::pair<double, double>
           compute_strain_rate_and_derivative (const double stress,
