@@ -3,14 +3,10 @@
 # of the Newton Stokes solver.
 
 set Dimension = 2
-set CFL number                             = 1.0
-set Maximum time step                      = 1
+
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm 
+
 set End time                               = 2
-set Start time                             = 0
-set Adiabatic surface temperature          = 0
-set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 100 
 set Nonlinear solver tolerance = 1e-10
 
@@ -18,128 +14,8 @@ subsection Solver parameters
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations = 100
     set Nonlinear Newton solver switch tolerance = 1e-20 
-    set Max Newton line search iterations = 5
+    set Max Newton line search iterations = 0
     set Maximum linear Stokes solver tolerance = 1e-1
     set Use Eisenstat Walker method for Picard iterations = true
-  end
-end
-
-subsection Boundary temperature model
-  set List of model names = box
-  subsection Box
-    set Left temperature = 0
-  end
-end
-
-
- subsection Initial temperature model
-   set Model name = function
-   subsection Function
-    set Function expression = 0
-   end
- end
-
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 0
-  end
-end
-
-
-subsection Geometry model
-  set Model name = box
-
-  subsection Box
-    set X extent = 10e3 
-    set Y extent = 8e3 
-    set Y repetitions = 1 
-  end
-end
-
-subsection Material model
-  set Model name = simple nonlinear
-
-  subsection Simple nonlinear 
-    set Minimum viscosity = 1e19
-    set Maximum viscosity = 1e24
-    set Stress exponent = 3
-    set Viscosity averaging p = 10000
-    set Viscosity prefactor = 1e-37 
-    set Reference viscosity = 1e5
-  end
-end
-
-
-subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2, 3
-end
-
-subsection Boundary velocity model
-  set Zero velocity boundary indicators       = 0, 1
-end
-
-subsection Boundary velocity model
-#  set Prescribed velocity boundary indicators = 2 x: function, 3 x: function # pressure bc: Prescribe a zero vertical velocity component on the vertical boundaries 
-  set Prescribed velocity boundary indicators = 2: function, 3: function # velocity bc
-end
-
-
-subsection Boundary traction model
-  subsection Function
-    set Variable names = x,z
-    # We want to prescribe a pressure of 2 at the left boundary
-    # and -2 at the right boundary. 
-    # The traction in this case is defined as:
-    # tau =  - pressure * normal_vector.
-    # On the left boundary, the outward pointing normal vector is 
-    # (-1;0). On the right (1;0).
-    # Therefore:
-    # Left boundary:  tau = - pressure(left) (-1;0) = - (2) (-1;0) = (2;0).
-    # Right boundary: tau = - pressure(right) (1;0) = - (-2) (1;0) = (2;0). 
-    # Conveniently, the traction is the same on both boundaries.
-    set Function expression = 0;if(z>0,0,1e9)
-  end
-end
-
-
-subsection Boundary velocity model
-  subsection Function
-    set Function constants = n = 3
-    set Variable names = x,z
-    # For velocity boundary conditions both are used, for pressure boundary conditions only the first (x) component 
-    set Function expression = 0;(1e-37/(n+1))*((1e9/8e3)^n)*(((5e3)^(n+1))-((x-(5e3))^(n+1)));  
-  end
-end
-
-
-subsection Postprocess
-  set List of postprocessors = velocity statistics, pressure statistics, mass flux statistics, visualization #, depth average
-  subsection Depth average
-    set List of output variables = viscosity
-  end
-  subsection Visualization
-    set Interpolate output = false
-    set List of output variables = material properties,strain rate, spd factor
-    set Output format = gnuplot
-    set Time between graphical output = 2
-  end
-end
-
-
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-8
   end
 end
