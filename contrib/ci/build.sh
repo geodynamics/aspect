@@ -5,4 +5,6 @@
 # communicate with the docker daemon without root user privileges (see the docker
 # webpage for an explanation).
 
-docker build -t geodynamics/aspect-tester .
+docker build -t geodynamics/aspect-tester:latest .
+
+docker build -t geodynamics/aspect-tester:optimized -f Dockerfile.optimized .
