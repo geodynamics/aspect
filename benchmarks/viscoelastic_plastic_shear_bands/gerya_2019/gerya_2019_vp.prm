@@ -8,7 +8,7 @@
 # provided by gerya_2019_vep.prm within this folder.
 #
 # In detail, the benchmark examines shortening of a viscoelastic
-# plastic (here, visco plastic) block, which contains a weak 
+# plastic (here, visco-plastic) block, which contains a weak 
 # inclusion in the center and a weak medium layer (i.e., sticky 
 # air) on the top and bottom. The thickness of the weak layers
 # and dimensions of the square inclusion have also been modified
@@ -21,7 +21,7 @@
 # the following material properties: viscosity = 1e23 Pa s, 
 # cohesion = 1e8 Pa, and internal friction angle = 37 degrees.
 # Gravity is set to zero and the average pressure is required
-# to have a zero average. 
+# to be equal to zero. 
 
 #  Global parameters
 set Dimension                              = 2
@@ -46,7 +46,7 @@ subsection Solver parameters
   end
   subsection Newton solver parameters
     set Max Newton line search iterations        = 0
-    set Max pre-Newton nonlinear iterations      = 500 # Ensures only defect-correct Picard method is used
+    set Max pre-Newton nonlinear iterations      = 500 # Ensures only defect-correction Picard method is used
     set Maximum linear Stokes solver tolerance   = 1e-2
     set Nonlinear Newton solver switch tolerance = 1e-5
     set SPD safety factor                        = 0.9
@@ -71,7 +71,7 @@ subsection Geometry model
   end
 end
 
-# Globally refine to the mesh. A minimum of 3 global refinements
+# Globally refine the mesh. A minimum of 3 global refinements
 # is needed to resolve the edges of the weak viscous inclusion.
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -94,7 +94,7 @@ subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
     set Function constants  = vel=0.15778463
-    set Function expression = if (x<50e3 , vel, -vel); if (y<50e3, -vel, vel);
+    set Function expression = if (x<50e3, vel, -vel); if (y<50e3, -vel, vel);
   end
 end
 

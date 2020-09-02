@@ -1,7 +1,7 @@
 # This parameter file modifies the benchmark gerya_2019_vp.prm 
 # to include viscoelasticity.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019_vp.prm
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
 
 #  Global parameters
 set Dimension                              = 2
@@ -46,7 +46,8 @@ subsection Material model
     set Maximum viscosity           = 1.e23
     set Minimum viscosity           = 1.e17
 
-    # Nonsensical Prefactor values (1e-50) are assigned to the compositional fields tracking elastic stresses
+    # For identification purposes, nonsensical Prefactor values (1e-50) are assigned to the compositional 
+    # fields tracking elastic stresses, which are not included in the volume fractions computation.
     set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
