@@ -1,0 +1,20 @@
+# This parameter file modifies the benchmark gerya_2019_vp.prm 
+# to use a coarser resolution
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
+
+#  Global parameters
+set Dimension                              = 2
+set Max nonlinear iterations               = 2
+set Output directory                       = visco_plastic_gerya_2019_vp
+
+# Reduce the number of global refinements from 5 to 3
+subsection Mesh refinement
+  set Initial global refinement          = 3
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, material statistics, velocity statistics
+  set Run postprocessors on nonlinear iterations = false
+end
