@@ -7,4 +7,4 @@
 
 docker build -t geodynamics/aspect-tester:latest .
 
-docker build -t geodynamics/aspect-tester:optimized -f Dockerfile.optimized .
+docker build -t geodynamics/aspect-tester:o1 -f Dockerfile.optimized .
