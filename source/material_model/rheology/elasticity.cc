@@ -334,12 +334,12 @@ namespace aspect
         // We also use this parameter when we are still *before* the first time step,
         // i.e., if the time step number is numbers::invalid_unsigned_int.
         const double dte = ( ( this->get_timestep_number() > 0 &&
-                         this->simulator_is_past_initialization() &&
-                         use_fixed_elastic_time_step == false )
-                         ?
-                         this->get_timestep() * stabilization_time_scale_factor
-                         :
-                         fixed_elastic_time_step);
+                               this->simulator_is_past_initialization() &&
+                               use_fixed_elastic_time_step == false )
+                             ?
+                             this->get_timestep() * stabilization_time_scale_factor
+                             :
+                             fixed_elastic_time_step);
         return dte;
       }
 
