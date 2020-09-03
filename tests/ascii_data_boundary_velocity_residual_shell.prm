@@ -4,7 +4,7 @@ set Dimension                              = 3
 
 set Use years in output instead of seconds = true
 set Output directory                       = ascii_data_boundary_velocity_residual_shell 
-set End time                               = 1e3
+set End time                               = 0 
 
 set Adiabatic surface temperature          = 1613.0
 

@@ -10,7 +10,7 @@
 -----------------------------------------------------------------------------
 
 
-   Loading Ascii data boundary file /home/asaxena/opt/Aspect2.0/aspect/data/boundary-velocity/ascii-data/test/shell_3d_bottom.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_bottom.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -21,7 +21,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file /home/asaxena/opt/Aspect2.0/aspect/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_top.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -32,7 +32,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file /home/asaxena/opt/Aspect2.0/aspect/data/boundary-velocity/ascii-data/test/shell_3d_east.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_east.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -43,7 +43,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file /home/asaxena/opt/Aspect2.0/aspect/data/boundary-velocity/ascii-data/test/shell_3d_west.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_west.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -54,7 +54,7 @@
    will continue unchanged from the last known state into the future).
 
 
-   Loading Ascii data boundary file /home/asaxena/opt/Aspect2.0/aspect/data/boundary-velocity/ascii-data/test/shell_3d_south.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_south.0.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -82,35 +82,25 @@ Number of degrees of freedom: 1,277 (915+57+305)
      Heat fluxes through boundary parts: -2.907e+13 W, -6.212e+13 W, -1.125e+15 W, 1.134e+15 W, 0.007838 W
      Writing graphical output:           ascii_data_boundary_velocity_residual_shell/solution/solution-00000
 
-*** Timestep 1:  t=1000 years
-   Solving temperature system... 8 iterations.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
-
-   Postprocessing:
-     RMS, max velocity:                  0.376 m/year, 1.12 m/year
-     Temperature min/avg/max:            273 K, 1488 K, 3000 K
-     Heat fluxes through boundary parts: -6.636e+14 W, 2.288e+15 W, -1.125e+15 W, 1.134e+15 W, 0.007837 W
-
 Termination requested by criterion: end time
 
 
 +----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      4.24s |            |
+| Total wallclock time elapsed since start     |      2.59s |            |
 |                                              |            |            |
 | Section                          | no. calls |  wall time | % of total |
 +----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |     0.662s |        16% |
-| Assemble temperature system      |         2 |     0.465s |        11% |
-| Build Stokes preconditioner      |         2 |     0.322s |       7.6% |
-| Build temperature preconditioner |         2 |   0.00968s |      0.23% |
-| Initialization                   |         1 |     0.651s |        15% |
-| Postprocessing                   |         2 |     0.945s |        22% |
-| Setup dof systems                |         1 |    0.0401s |      0.95% |
-| Setup initial conditions         |         1 |     0.339s |         8% |
-| Setup matrices                   |         1 |     0.015s |      0.35% |
-| Solve Stokes system              |         2 |     0.171s |         4% |
-| Solve temperature system         |         2 |   0.00551s |      0.13% |
+| Assemble Stokes system           |         1 |     0.321s |        12% |
+| Assemble temperature system      |         1 |     0.174s |       6.7% |
+| Build Stokes preconditioner      |         1 |      0.15s |       5.8% |
+| Build temperature preconditioner |         1 |  0.000939s |         0% |
+| Initialization                   |         1 |     0.625s |        24% |
+| Postprocessing                   |         1 |     0.502s |        19% |
+| Setup dof systems                |         1 |     0.037s |       1.4% |
+| Setup initial conditions         |         1 |     0.324s |        13% |
+| Setup matrices                   |         1 |    0.0163s |      0.63% |
+| Solve Stokes system              |         1 |     0.134s |       5.1% |
+| Solve temperature system         |         1 |  0.000972s |         0% |
 +----------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------

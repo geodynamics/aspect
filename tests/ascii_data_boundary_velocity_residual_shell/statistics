@@ -22,4 +22,3 @@
 # 22: Visualization file name
 # 23: Surface visualization file name
 0 0.000000000000e+00 0.000000000000e+00 24 972 305 0 102 106 212 3.76333584e-01 1.11973264e+00 2.73000000e+02 1.48854480e+03 3.00000000e+03 4.45744333e-01 -2.90672074e+13 -6.21208071e+13 -1.12506468e+15 1.13429758e+15 7.83775571e-03 ascii_data_boundary_velocity_residual_shell/solution/solution-00000 ascii_data_boundary_velocity_residual_shell/solution_surface/solution_surface-00000 
-1 1.000000000000e+03 1.000000000000e+03 24 972 305 8  18  20  40 3.76337012e-01 1.11969492e+00 2.73000000e+02 1.48840469e+03 3.00000000e+03 4.45692955e-01 -6.63563045e+14  2.28785910e+15 -1.12501814e+15 1.13425035e+15 7.83651257e-03                                                                  ""                                                                                  "" 
