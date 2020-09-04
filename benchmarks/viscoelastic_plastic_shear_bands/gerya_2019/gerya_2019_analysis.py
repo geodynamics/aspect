@@ -1,9 +1,18 @@
 # Python script to load the solution data into a
 # numpy array, interpolate the data to a new
 # uniform grid, and plot the results.
-# Within a python interpreter, the script can 
-# executed with the command:
+# From a terminal, execute the script with
+#   python gerya_2019_analysis.py. 
+# Within a python interpreter (e.g., ipython), 
+# the script can be executed with the command:
 #   exec(open("gerya_2019_analysis.py").read())
+# This script was tested with the following 
+# package versions:
+#   python     - 3.7.7
+#   numpy      - 1.19.1
+#   scipy      - 1.5.2
+#   vtk        - 8.2.0
+#   matplotlib - 3.3.1
 
 # Load modules
 import numpy as np
