@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -64,7 +64,7 @@ namespace aspect
           void
           parse_parameters (ParameterHandler &prm,
                             const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
-                              std::shared_ptr<std::vector<unsigned int>>());
+                            std::shared_ptr<std::vector<unsigned int>>());
 
           /**
            * Compute the viscosity based on the composite viscous creep law.
@@ -78,6 +78,7 @@ namespace aspect
                              const double temperature,
                              const unsigned int composition,
                              const SymmetricTensor<2,dim> &strain_rate,
+                             std::vector<double> &partial_strain_rates,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
