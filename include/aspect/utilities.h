@@ -1249,32 +1249,6 @@ namespace aspect
                               const double SPD_safety_factor);
 
     /**
-     * Computes the current_edot_ii and current_stress, with the option for
-     * viscous and viscoelastic contribution.
-     */
-    template <int dim>
-    double compute_current_edot_ii (const unsigned int j,  // the volume fraction
-                                    const std::vector<double> &composition,
-                                    const double ref_strain_rate,
-                                    const double min_strain_rate,
-                                    const SymmetricTensor<2,dim> &strain_rate,
-                                    const std::vector<double> &elastic_shear_moduli,
-                                    const bool use_elasticity,
-                                    const bool use_reference_strainrate,
-                                    const double dte);
-
-    /**
-     * Calculate the square root of the second moment invariant for the deviatoric
-     * strain rate tensor, including viscoelastic stresses.
-     */
-    template <int dim>
-    double
-    calculate_viscoelastic_strain_rate (const SymmetricTensor<2,dim> &strain_rate,
-                                        const SymmetricTensor<2,dim> &stress,
-                                        const double shear_modulus,
-                                        const double dte);
-
-    /**
      * Converts an array of size dim to a Point of size dim.
      */
     template <int dim>

@@ -1018,6 +1018,80 @@ namespace aspect
       }
 
 
+    template <int dim>
+    double compute_current_edot_ii (const unsigned int j,  // the volume fraction
+                                    const std::vector<double> &composition,
+                                    const double ref_strain_rate,
+                                    const double min_strain_rate,
+                                    const SymmetricTensor<2,dim> &strain_rate,
+                                    const std::vector<double> &elastic_shear_moduli,
+                                    const bool use_elasticity,
+                                    const bool use_reference_strainrate,
+                                    const double dte)
+    {
+      // Assemble stress tensor if elastic behavior is enabled
+      SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
+      if (use_elasticity == true)
+        {
+          for (unsigned int q=0; q < SymmetricTensor<2,dim>::n_independent_components; ++q)
+            stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(q)] = composition[q];
+        }
+
+      double edot_ii;
+      if (use_reference_strainrate)
+        edot_ii = ref_strain_rate;
+      else
+        // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
+        edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate)))),
+                           min_strain_rate);
+
+      // Step 2: calculate the viscous stress magnitude
+      // and strain rate. If requested compute visco-elastic contribution
+      double current_edot_ii = numbers::signaling_nan<double>();
+
+      if (use_elasticity == false)
+        {
+          current_edot_ii = edot_ii;
+        }
+      else
+        {
+          if (use_reference_strainrate == true)
+            current_edot_ii = ref_strain_rate;
+          else
+            {
+              const double viscoelastic_strain_rate_invariant = calculate_viscoelastic_strain_rate(strain_rate,
+                                                                stress_old,
+                                                                elastic_shear_moduli[j],
+                                                                dte);
+
+              current_edot_ii = std::max(viscoelastic_strain_rate_invariant,
+                                         min_strain_rate);
+            }
+
+          // The viscoelastic strain rate is divided by 2 here as the Drucker Prager
+          // viscosity calculation below assumes stress = 2 * viscosity * strain_rate_invariant,
+          // whereas the combined viscoelastic + viscous stresses already include the
+          // 2x factor (see computation of edot inside elastic_rheology).
+          current_edot_ii /= 2.;
+        }
+
+      return current_edot_ii;
+    }
+
+    template <int dim>
+    double calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
+                                              const SymmetricTensor<2,dim> &stress,
+                                              const double shear_modulus,
+                                              const double dte)
+    {
+      const SymmetricTensor<2,dim> edot = 2. * (deviator(strain_rate)) + stress /
+                                          (shear_modulus * dte);
+
+      return std::sqrt(std::fabs(second_invariant(edot)));
+    }
+
+
+
 
       template <int dim>
       void
@@ -1165,6 +1239,25 @@ namespace aspect
       ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
+
+    template double compute_current_edot_ii (const unsigned int j,
+                                             const std::vector<double> &composition,
+                                             const double ref_strain_rate,
+                                             const double min_strain_rate,
+                                             const SymmetricTensor<2,2> &strain_rate,
+                                             const std::vector<double> &elastic_shear_moduli,
+                                             const bool use_elasticity,
+                                             const bool use_reference_strainrate,
+                                             const double dte);
+    template double compute_current_edot_ii (const unsigned int j,
+                                             const std::vector<double> &composition,
+                                             const double ref_strain_rate,
+                                             const double min_strain_rate,
+                                             const SymmetricTensor<2,3> &strain_rate,
+                                             const std::vector<double> &elastic_shear_moduli,
+                                             const bool use_elasticity,
+                                             const bool use_reference_strainrate,
+                                             const double dte);
     }
   }
 }
