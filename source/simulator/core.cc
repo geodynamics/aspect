@@ -1968,24 +1968,44 @@ namespace aspect
               }
           }
 
+        // Prepare the next time step:
+        time_stepping_manager.update();
 
+        const double new_time_step_size = time_stepping_manager.get_next_time_step_size();
 
         // if we postprocess nonlinear iterations, this function is called within
         // solve_timestep () in the individual solver schemes
-        if (!parameters.run_postprocessors_on_nonlinear_iterations)
+        if (!time_stepping_manager.should_repeat_time_step()
+            && !parameters.run_postprocessors_on_nonlinear_iterations)
           postprocess ();
 
-        // get new time step size
-        const double new_time_step = time_stepping_manager.compute_time_step_size();
+        if (time_stepping_manager.should_refine_mesh())
+          {
+            pcout << "Refining the mesh based on the time stepping manager ..." << std::endl;
+            refine_mesh(max_refinement_level);
+          }
+        else
+          maybe_refine_mesh(new_time_step_size, max_refinement_level);
 
-        // see if we want to refine the mesh
-        maybe_refine_mesh(new_time_step, max_refinement_level);
+        if (time_stepping_manager.should_repeat_time_step())
+          {
+            pcout << "Repeating the current time step based on the time stepping manager ..." << std::endl;
+
+            // TODO: We need to make a copy of the particle world and then restore it here.
+            AssertThrow(!this->particle_world,
+                        ExcNotImplemented("Repeating time steps with particles is currently not supported!"));
+
+            // adjust time and time_step size:
+            time = time - time_step + new_time_step_size;
+            time_step = new_time_step_size;
+            continue; // repeat time step loop
+          }
 
         // see if we want to write a timing summary
         maybe_write_timing_output();
 
         // update values for timestep, increment time step by one.
-        advance_time(new_time_step);
+        advance_time(new_time_step_size);
 
         // Check whether to terminate the simulation:
         const bool should_terminate = time_stepping_manager.should_simulation_terminate_now();

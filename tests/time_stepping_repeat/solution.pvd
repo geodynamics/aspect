@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+#This file was generated 
+<VTKFile type="Collection" version="0.1" ByteOrder="LittleEndian">
+  <Collection>
+    <DataSet timestep="0" group="" part="0" file="solution/solution-00000.pvtu"/>
+    <DataSet timestep="0.0625" group="" part="0" file="solution/solution-00001.pvtu"/>
+    <DataSet timestep="0.125" group="" part="0" file="solution/solution-00002.pvtu"/>
+    <DataSet timestep="0.1875" group="" part="0" file="solution/solution-00003.pvtu"/>
+    <DataSet timestep="0.25" group="" part="0" file="solution/solution-00004.pvtu"/>
+    <DataSet timestep="0.3125" group="" part="0" file="solution/solution-00005.pvtu"/>
+    <DataSet timestep="0.375" group="" part="0" file="solution/solution-00006.pvtu"/>
+    <DataSet timestep="0.4375" group="" part="0" file="solution/solution-00007.pvtu"/>
+    <DataSet timestep="0.5" group="" part="0" file="solution/solution-00008.pvtu"/>
+    <DataSet timestep="0.5625" group="" part="0" file="solution/solution-00009.pvtu"/>
+    <DataSet timestep="0.625" group="" part="0" file="solution/solution-00010.pvtu"/>
+    <DataSet timestep="0.6875" group="" part="0" file="solution/solution-00011.pvtu"/>
+    <DataSet timestep="0.71875" group="" part="0" file="solution/solution-00012.pvtu"/>
+    <DataSet timestep="0.7346875" group="" part="0" file="solution/solution-00013.pvtu"/>
+    <DataSet timestep="0.742815625" group="" part="0" file="solution/solution-00014.pvtu"/>
+    <DataSet timestep="0.74696096875" group="" part="0" file="solution/solution-00015.pvtu"/>
+    <DataSet timestep="0.749075094063" group="" part="0" file="solution/solution-00016.pvtu"/>
+    <DataSet timestep="0.751231501881" group="" part="0" file="solution/solution-00017.pvtu"/>
+    <DataSet timestep="0.751856501881" group="" part="0" file="solution/solution-00018.pvtu"/>
+    <DataSet timestep="0.752481501881" group="" part="0" file="solution/solution-00019.pvtu"/>
+    <DataSet timestep="0.753106501881" group="" part="0" file="solution/solution-00020.pvtu"/>
+    <DataSet timestep="0.753731501881" group="" part="0" file="solution/solution-00021.pvtu"/>
+    <DataSet timestep="0.754356501881" group="" part="0" file="solution/solution-00022.pvtu"/>
+    <DataSet timestep="0.754981501881" group="" part="0" file="solution/solution-00023.pvtu"/>
+    <DataSet timestep="0.755" group="" part="0" file="solution/solution-00024.pvtu"/>
+  </Collection>
+</VTKFile>
