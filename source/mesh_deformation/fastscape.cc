@@ -193,7 +193,7 @@ namespace aspect
                                  */
                                 const double index = indx+nx*ys;
 
-                                temporary_variables[0].push_back(vertex(dim-1));
+                                temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);
                                 temporary_variables[1].push_back(index-1);
 
                                 for (unsigned int i=0; i<dim; ++i)
@@ -214,7 +214,7 @@ namespace aspect
 
                             const double index = (indy-1)*nx+indx;
 
-                            temporary_variables[0].push_back(vertex(dim-1));   //z component
+                            temporary_variables[0].push_back(vertex(dim-1) - grid_extent[dim-1].second);   //z component
                             temporary_variables[1].push_back(index-1);
 
                             for (unsigned int i=0; i<dim; ++i)
