@@ -2,8 +2,8 @@
 # numpy array, interpolate the data to a new
 # uniform grid, and plot the results.
 # From a terminal, execute the script with
-#   python gerya_2019_analysis.py. 
-# Within a python interpreter (e.g., ipython), 
+#   python gerya_2019_analysis.py
+# Within a python interpreter (e.g., a Jupyter notebook), 
 # the script can be executed with the command:
 #   exec(open("gerya_2019_analysis.py").read())
 # This script was tested with the following 
