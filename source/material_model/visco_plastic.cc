@@ -273,12 +273,11 @@ namespace aspect
           // and strain rate. If requested compute visco-elastic contributions.
           const double dte = elastic_rheology.elastic_timestep();
           const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
-          const double current_edot_ii = MaterialUtilities::compute_current_edot_ii(j,
-                                                                                    in.composition[i],
+          const double current_edot_ii = MaterialUtilities::compute_current_edot_ii(in.composition[i],
                                                                                     ref_strain_rate,
                                                                                     min_strain_rate,
                                                                                     in.strain_rate[i],
-                                                                                    elastic_shear_moduli,
+                                                                                    elastic_shear_moduli[j],
                                                                                     use_elasticity,
                                                                                     use_reference_strainrate,
                                                                                     dte);

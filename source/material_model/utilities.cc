@@ -1019,12 +1019,11 @@ namespace aspect
 
 
       template <int dim>
-      double compute_current_edot_ii (const unsigned int j,  // the volume fraction
-                                      const std::vector<double> &composition,
+      double compute_current_edot_ii (const std::vector<double> &composition,
                                       const double ref_strain_rate,
                                       const double min_strain_rate,
                                       const SymmetricTensor<2,dim> &strain_rate,
-                                      const std::vector<double> &elastic_shear_moduli,
+                                      const double elastic_shear_module,
                                       const bool use_elasticity,
                                       const bool use_reference_strainrate,
                                       const double dte)
@@ -1061,7 +1060,7 @@ namespace aspect
               {
                 const double viscoelastic_strain_rate_invariant = calculate_viscoelastic_strain_rate(strain_rate,
                                                                   stress_old,
-                                                                  elastic_shear_moduli[j],
+                                                                  elastic_shear_module,
                                                                   dte);
 
                 current_edot_ii = std::max(viscoelastic_strain_rate_invariant,
@@ -1240,21 +1239,19 @@ namespace aspect
 
 #undef INSTANTIATE
 
-      template double compute_current_edot_ii (const unsigned int j,
-                                               const std::vector<double> &composition,
+      template double compute_current_edot_ii (const std::vector<double> &composition,
                                                const double ref_strain_rate,
                                                const double min_strain_rate,
                                                const SymmetricTensor<2,2> &strain_rate,
-                                               const std::vector<double> &elastic_shear_moduli,
+                                               const double elastic_shear_module,
                                                const bool use_elasticity,
                                                const bool use_reference_strainrate,
                                                const double dte);
-      template double compute_current_edot_ii (const unsigned int j,
-                                               const std::vector<double> &composition,
+      template double compute_current_edot_ii (const std::vector<double> &composition,
                                                const double ref_strain_rate,
                                                const double min_strain_rate,
                                                const SymmetricTensor<2,3> &strain_rate,
-                                               const std::vector<double> &elastic_shear_moduli,
+                                               const double elastic_shear_module,
                                                const bool use_elasticity,
                                                const bool use_reference_strainrate,
                                                const double dte);
