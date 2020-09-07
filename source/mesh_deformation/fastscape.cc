@@ -55,8 +55,9 @@ namespace aspect
           const std::vector<std::string> names = mesh_deformation_boundary_indicators_map[*p];
           for (unsigned int i = 0; i < names.size(); ++i )
             {
-              AssertThrow((names[i] == "fastscape") && (*p == relevant_boundary),
-                          ExcMessage("Fastscape can only be called on the surface boundary."));
+                if(names[i] == "fastscape")
+                  AssertThrow((*p == relevant_boundary),
+                            ExcMessage("Fastscape can only be called on the surface boundary."));
             }
         }
 
