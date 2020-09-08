@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/base/parsed_function.h>
+#include <aspect/material_model/rheology/ascii_depth_profile.h>
 
 namespace aspect
 {
@@ -110,9 +111,9 @@ namespace aspect
          * Function to read depth-dependent lookup table and set up interpolating function
          * for File depth dependence method
          */
-        void
-        read_viscosity_file(const std::string &filename,
-                            const MPI_Comm &comm);
+        // void
+        // read_viscosity_file(const std::string &filename,
+        //                     const MPI_Comm &comm);
 
         /**
          * Data structures to store depth and viscosity lookup tables as well as interpolating
@@ -154,6 +155,11 @@ namespace aspect
          * Pointer to the material model used as the base model
          */
         std::unique_ptr<MaterialModel::Interface<dim> > base_model;
+
+        /**
+         * Pointer to the rheology model used for depth-dependence from an ascii file
+        */
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim> > depth_dependent_rheology;
     };
   }
 }

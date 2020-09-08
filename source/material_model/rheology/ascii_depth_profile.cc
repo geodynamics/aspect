@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -42,15 +42,15 @@ namespace aspect
       AsciiDepthProfile<dim>::initialize ()
       {
         this->initialize(this->get_mpi_communicator());
-        viscosity_index = this->get_column_index_from_name("Viscosity");
+        viscosity_index = this->get_column_index_from_name("viscosity");
       }
 
 
 
       template <int dim>
-      double AsciiDepthProfile<dim>::get_viscosity (const Point<dim> &p) const
+      double
+      AsciiDepthProfile<dim>::get_viscosity (const double depth) const
       {
-        const double depth = this->get_geometry_model().depth(p);
         return this->get_data_component (Point<1>(depth), viscosity_index);
       }
 
@@ -61,8 +61,8 @@ namespace aspect
       AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm)
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/material-model/depth-dependent/",
-                                                          "rheology_depth.txt");
+                                                          "$ASPECT_SOURCE_DIR/data/material-model/depth-dependent/rheology/",
+                                                          "ascii_depth_profile.txt", "Ascii profile data");
       }
 
 
@@ -71,7 +71,7 @@ namespace aspect
       void
       AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Ascii profile data");
       }
     }
   }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2016 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_material_model_ascii_depth_profile_h
-#define _aspect_material_model_ascii_depth_profile_h
+#ifndef _aspect_material_model_rheology_ascii_depth_profile_h
+#define _aspect_material_model_rheology_ascii_depth_profile_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/utilities.h>
@@ -64,7 +64,7 @@ namespace aspect
           /**
           * Return the viscosity at a given point of the domain.
           */
-          double get_viscosity (const Point<dim> &p) const;
+          double get_viscosity (const double depth) const;
 
           /**
            * Declare the parameters for the input files.
