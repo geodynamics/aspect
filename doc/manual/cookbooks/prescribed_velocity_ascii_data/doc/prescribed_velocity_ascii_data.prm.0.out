@@ -1,0 +1,2 @@
+# Load the signal library.
+set Additional shared libraries = ./libprescribed_velocity_ascii_data.so

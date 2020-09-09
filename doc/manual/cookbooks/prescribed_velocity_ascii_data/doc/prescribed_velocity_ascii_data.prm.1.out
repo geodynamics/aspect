@@ -1,0 +1,16 @@
+# Turn prescribed velocities on
+set Prescribe internal velocities = true
+
+# Use the Ascii data plugin to read in the prescribed velocity ASCII file
+subsection Prescribed velocities
+  subsection Ascii data model
+    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
+    set Data file name       = aspect_name.txt
+  end
+
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function expression = 0;0
+  end
+end

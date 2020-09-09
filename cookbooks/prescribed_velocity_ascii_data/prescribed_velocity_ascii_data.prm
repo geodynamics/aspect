@@ -89,10 +89,10 @@ subsection Initial composition model
 end
 
 
-## Turn prescribed velocities on
+# Turn prescribed velocities on
 set Prescribe internal velocities = true
 
-# We use the ascii data plugin to read in the file created with geomIO.
+# Use the Ascii data plugin to read in the prescribed velocity ASCII file
 subsection Prescribed velocities
   subsection Ascii data model
     set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/

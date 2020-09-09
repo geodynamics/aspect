@@ -223,23 +223,23 @@ namespace aspect
                                       AffineConstraints<double> &current_constraints)
   {
     if (!prescribed_velocity_ascii_file_loaded)
-    {
-      if (dim == 2)
       {
-        const std::string filename = prescribed_velocity_field_params_2d.data_directory + prescribed_velocity_field_params_2d.data_file_name;
-        prescribed_velocity_field_data_2d.load_file(filename, simulator_access.get_mpi_communicator());
+        if (dim == 2)
+          {
+            const std::string filename = prescribed_velocity_field_params_2d.data_directory + prescribed_velocity_field_params_2d.data_file_name;
+            prescribed_velocity_field_data_2d.load_file(filename, simulator_access.get_mpi_communicator());
 
-        std::cout << "Loaded 2D prescribed velocity ascii file" << std::endl;
-      }
-      else
-      {
-        const std::string filename = prescribed_velocity_field_params_3d.data_directory + prescribed_velocity_field_params_3d.data_file_name;
-        prescribed_velocity_field_data_3d.load_file(filename, simulator_access.get_mpi_communicator());
+            std::cout << "Loaded 2D prescribed velocity ascii file" << std::endl;
+          }
+        else
+          {
+            const std::string filename = prescribed_velocity_field_params_3d.data_directory + prescribed_velocity_field_params_3d.data_file_name;
+            prescribed_velocity_field_data_3d.load_file(filename, simulator_access.get_mpi_communicator());
 
-        std::cout << "Loaded 3D prescribed velocity ascii file" << std::endl;
+            std::cout << "Loaded 3D prescribed velocity ascii file" << std::endl;
+          }
+        prescribed_velocity_ascii_file_loaded = true;
       }
-      prescribed_velocity_ascii_file_loaded = true;
-    }
 
     if (prescribe_internal_velocities)
       {

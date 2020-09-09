@@ -5621,6 +5621,38 @@ it is possible to produce many interesting flow fields such as the ones visualiz
     \label{fig:prescribed-velocity}
 \end{figure}
 
+\subsubsection{Prescribing internal velocity constraints with ASCII files}
+\label{sec:prescribed-velocities-ascii-data}
+\textit{This section was contributed by Bob Myhill}
+
+Building on \ref{sec:prescribed-velocities}, the \url{cookbooks/prescribed_velocity_ascii_data}
+directory contains a plugin which uses an ASCII data file to specify where to prescribe
+internal velocities. Velocities are prescribed wherever the field value indicated by the ASCII data file
+is less than 0.5. As before, the plugin is loaded in parameter files as an additional shared library:
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.0.out}
+
+An example parameter file using this plugin can be found at
+\url{cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm}.
+In this file, the velocities are constrained to be zero within the letters ``ASPECT''.
+The part of this file which provides the location of the ASCII file and the
+prescribed velocity field function is:
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.1.out}
+A temperature gradient is applied within the letters, while the temperature field outside the letters is set to be constant.
+This initial temperature field is specified by another ASCII data file:
+\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.2.out}
+
+During the simulation, excess heat diffuses out from the tops of the letters, and
+into the bases of the letters. The temperature gradients in the unconstrained
+part of the domain then generate convective flow. Figure~\ref{fig:prescribed-velocity-ascii-data}
+illustrates the resulting flow field.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.png}
+    \caption{Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
+    \label{fig:prescribed-velocity-ascii-data}
+\end{figure}
+
+
 \subsubsection{Artificial viscosity smoothing}
 \label{sec:artificial-viscosity-smoothing}
 \textit{This section was contributed by Ryan Grove}
