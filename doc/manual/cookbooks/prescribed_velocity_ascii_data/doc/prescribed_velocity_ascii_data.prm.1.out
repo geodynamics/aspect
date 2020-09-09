@@ -2,10 +2,11 @@
 set Prescribe internal velocities = true
 
 # Use the Ascii data plugin to read in the prescribed velocity ASCII file
+# In this cookbook, we use the initial composition file.
 subsection Prescribed velocities
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
-    set Data file name       = aspect_name.txt
+    set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/
+    set Data file name       = aspect_name_initial_composition.txt
   end
 
   subsection Velocity function

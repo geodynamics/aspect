@@ -1,3 +1,8 @@
+# Before running this cookbook, you must first compile the shared library
+# (with cmake . && make) and also run the local python file
+# (python make_ascii_files_from_png.py)
+
+
 ## First we set the dimension
 set Dimension   = 2
 
@@ -83,8 +88,8 @@ subsection Initial composition model
   set Model name = ascii data
 
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
-    set Data file name       = aspect_name.txt
+    set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/
+    set Data file name       = aspect_name_initial_composition.txt
   end
 end
 
@@ -93,10 +98,11 @@ end
 set Prescribe internal velocities = true
 
 # Use the Ascii data plugin to read in the prescribed velocity ASCII file
+# In this cookbook, we use the initial composition file.
 subsection Prescribed velocities
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
-    set Data file name       = aspect_name.txt
+    set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/
+    set Data file name       = aspect_name_initial_composition.txt
   end
 
   subsection Velocity function
@@ -109,13 +115,9 @@ end
 subsection Initial temperature model
   set Model name = ascii data
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
-    set Data file name       = aspect_name.txt
+  set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/
+  set Data file name       = aspect_name_initial_temperature.txt
   end
-end
-
-subsection Boundary temperature model
-  set List of model names = box
 end
 
 subsection Boundary velocity model

@@ -1,7 +1,7 @@
 subsection Initial temperature model
   set Model name = ascii data
   subsection Ascii data model
-    set Data directory       = $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
-    set Data file name       = aspect_name.txt
+    set Data directory       = $ASPECT_SOURCE_DIR/cookbooks/prescribed_velocity_ascii_data/
+    set Data file name       = aspect_name_initial_temperature.txt
   end
 end

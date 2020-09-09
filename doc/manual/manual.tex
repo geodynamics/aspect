@@ -5628,18 +5628,28 @@ it is possible to produce many interesting flow fields such as the ones visualiz
 Building on \ref{sec:prescribed-velocities}, the \url{cookbooks/prescribed_velocity_ascii_data}
 directory contains a plugin which uses an ASCII data file to specify where to prescribe
 internal velocities. Velocities are prescribed wherever the field value indicated by the ASCII data file
-is less than 0.5. As before, the plugin is loaded in parameter files as an additional shared library:
+is greater than 0.5. As before, the plugin is loaded in parameter files as an additional shared library:
 \lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.0.out}
 
 An example parameter file using this plugin can be found at
 \url{cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm}.
-In this file, the velocities are constrained to be zero within the letters ``ASPECT''.
+In this file, the velocities are constrained to be zero within the letters ``ASPECT'' (Figure~\ref{fig:prescribed-velocity-ascii-data-init}).
 The part of this file which provides the location of the ASCII file and the
 prescribed velocity field function is:
 \lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.1.out}
 A temperature gradient is applied within the letters, while the temperature field outside the letters is set to be constant.
 This initial temperature field is specified by another ASCII data file:
 \lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.2.out}
+These two ASCII data files are generated from \texttt{aspect\_name.png} by the python file \texttt{make\_ascii\_files\_from\_png.py},
+both of which can be found in the same directory as the parameter file.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocities_ascii_data_initial_conditions.png}
+    \caption{\it Initial composition and temperature conditions for the prescribed velocity ascii data cookbook,
+             as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
+    \label{fig:prescribed-velocity-ascii-data-init}
+\end{figure}
 
 During the simulation, excess heat diffuses out from the tops of the letters, and
 into the bases of the letters. The temperature gradients in the unconstrained
@@ -5648,7 +5658,7 @@ illustrates the resulting flow field.
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.png}
-    \caption{Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
+    \caption{\it Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
     \label{fig:prescribed-velocity-ascii-data}
 \end{figure}
 
@@ -9526,22 +9536,22 @@ We wish to compute the gravity potential $U$ and the gravity vector ${\mathbf g}
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/gravity_thin_shell/doc/thinshell_c.prm.out}
 
-The Gauss-Legendre Quadrature (GLQ) algorithm is central to the \aspect{} code as it is used to compute the elemental integrals stemming from the discretization of the weak form of the PDEs. Logically, the gravity postprocessor is also based on the GLQ since the potential $U$ at any location in space is given by the integral 
+The Gauss-Legendre Quadrature (GLQ) algorithm is central to the \aspect{} code as it is used to compute the elemental integrals stemming from the discretization of the weak form of the PDEs. Logically, the gravity postprocessor is also based on the GLQ since the potential $U$ at any location in space is given by the integral
 \begin{equation}
 U({\mathbf r}) = \iiint_\Omega \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
 = \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
 \end{equation}
-where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\si{\cubic\metre\per\kg\per\square\second}$ is the gravitational constant. The gravity acceleration vector is obtained via ${\mathbf g}=-{\mathbf \nabla} U$, or 
+where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\si{\cubic\metre\per\kg\per\square\second}$ is the gravitational constant. The gravity acceleration vector is obtained via ${\mathbf g}=-{\mathbf \nabla} U$, or
 \begin{equation}
-{\mathbf g}({\mathbf r}) = 
+{\mathbf g}({\mathbf r}) =
 \iiint_\Omega  \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'
-= 
+=
 \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'.
 \end{equation}
 
 The default number of quadrature points for each cell in the postprocessor is $2\textsuperscript{ndim}$, where ndim is the number of dimensions. The $n$-point GLQ allows exact integration of $(2n-1)$-order polynomials. However, the integrand of the Newton integral is not a polynomial (it contains a term $\sim r^{-m}$), so there is not an optimal number of quadrature points to use. Therefore, the postprocessor allows the user to choose how many additional points per dimension are used with an expectation that an increase in the number of quadrature points inside the cells leads to a more accurate calculation. This increase number $I$ is set to 1 in the example above, although it can also be chosen to be 0, 1, 2 or even -1. The case $I=-1$ approximates the cell as a point mass since there is a single quadrature point in the middle of the cell.
 
-Given the symmetry of the problem the value of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(R\textsubscript{s}) = - GM/R\textsubscript{s}$ and $|{\mathbf g}(R\textsubscript{s})|= g_r(R\textsubscript{s})=GM/R\textsubscript{s}^2$. 
+Given the symmetry of the problem the value of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(R\textsubscript{s}) = - GM/R\textsubscript{s}$ and $|{\mathbf g}(R\textsubscript{s})|= g_r(R\textsubscript{s})=GM/R\textsubscript{s}^2$.
 
 Minimum, maximum, and average values of both the potential and the acceleration are printed in the statistics file while measurements at all the desired points are written in the output\_gravity folder inside the output folder. We ran the input file for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results are presented in Table~\ref{tab:thin_shell_gravity_benchmark} alongside the analytical values.
 
@@ -9549,13 +9559,13 @@ Minimum, maximum, and average values of both the potential and the acceleration 
 \center
 \begin{tabular}{|c|c|c|ccc|ccc|}
 \hline
-D  & 
+D  &
 $I$ & $n_q$& & $g_r$ (mGal)  & && $U$ (\si{\joule\per\kg}) &\\
-(\si{\km})&&& avrg.  & min  & max  & 
+(\si{\km})&&& avrg.  & min  & max  &
 avrg. & min & max    \\
 \hline
 0 & -1 & $1^3$ &
-2563.6541 & 
+2563.6541 &
 2530.6859 &
 2607.5210 &
 -169764.4978 &
@@ -9565,7 +9575,7 @@ avrg. & min & max    \\
 2562.8680 &
 2553.5683 &
 2571.9157 &
--169676.4060 & 
+-169676.4060 &
 -169681.1065 &
 -169671.6199 \\
 &1  & $3^3$ &
@@ -9591,21 +9601,21 @@ avrg. & min & max    \\
 -164477.2574 &
 -164520.0786 &
 -164472.4899 \\
-&0 & $2^3$ & 
+&0 & $2^3$ &
 2482.9027 &
 2481.7033 &
 2484.0834 &
 -164391.6151 &
 -164392.2246 &
 -164390.9963 \\
-&+1 & $3^3$ &  
+&+1 & $3^3$ &
 2482.8799 &
 2482.7731 &
 2482.9959 &
 -164391.6031 &
 -164391.6623 &
 -164391.5473 \\
-&+2 & $4^3$ & 
+&+2 & $4^3$ &
 2482.8819 &
 2482.8759 &
 2482.8865 &
@@ -9614,28 +9624,28 @@ avrg. & min & max    \\
 -164391.6012\\
 & a.v. & & 2482.8818 & & & -164391.6041 & &\\
 \hline\hline
-500&-1 & $1^3$&  
+500&-1 & $1^3$&
 2177.3562 &
 2177.2415 &
 2179.8737 &
 -144163.9859 &
 -144178.2736 &
 -144162.2361 \\
-& 0 & $2^3$ & 
+& 0 & $2^3$ &
 2176.2392 &
 2176.2253 &
 2176.2404 &
 -144088.7939 &
 -144088.7971 &
 -144088.7538 \\
-& 0 & $3^3$ & 
+& 0 & $3^3$ &
 2176.2391 &
 2176.2391 &
 2176.2392 &
--144088.7937 & 
+-144088.7937 &
 -144088.7938 &
 -144088.7936 \\
-& 0 & $4^3$ & 
+& 0 & $4^3$ &
 2176.2391 &
 2176.2391 &
 2176.2391 &
@@ -9644,7 +9654,7 @@ avrg. & min & max    \\
 -144088.7937 \\
 & a.v. && 2176.2391 &&& -144088.7937 & &\\
 \hline\hline
-1500&-1 & $1^3$ & 
+1500&-1 & $1^3$ &
 1498.7997 &
 1498.7569 &
 1499.0522 &
@@ -9660,7 +9670,7 @@ avrg. & min & max    \\
 -99184.1647 \\
 & 1 & $3^3$ &
 1498.0240 &
-1498.0240 & 
+1498.0240 &
 1498.0240 &
 -99184.1672 &
 -99184.1672 &
@@ -9674,28 +9684,28 @@ avrg. & min & max    \\
 -99184.1672 \\
 & a.v. && 1498.0240 &&& -99184.1672 &&\\
 \hline\hline
-3000 &-1 & $1^3$ &   
+3000 &-1 & $1^3$ &
 717.8387 &
-717.8315 & 
+717.8315 &
 717.8533 &
 -47528.1777 &
 -47528.3488 &
 -47528.0725 \\
- & 0 & $2^3$ &   
+ & 0 & $2^3$ &
 717.4641 &
 717.4640 &
 717.4641 &
 -47503.2981 &
 -47503.2982 &
 -47503.2980 \\
- & 1 & $3^3$ &   
+ & 1 & $3^3$ &
 717.4641 &
 717.4641 &
 717.4641 &
 -47503.2981 &
 -47503.2981 &
 -47503.2981 \\
-& 2 & $4^3$ & 
+& 2 & $4^3$ &
 717.4641 &
 717.4641 &
 717.4641 &

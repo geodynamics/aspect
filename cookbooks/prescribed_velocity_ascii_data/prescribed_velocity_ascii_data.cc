@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -37,11 +37,11 @@ namespace aspect
   // Because we do not initially know what dimension we're in, we need
   // function parser objects for both 2d and 3d.
 
-  aspect::Utilities::AsciiDataBase<2> prescribed_velocity_field_params_2d;
-  aspect::Utilities::AsciiDataBase<3> prescribed_velocity_field_params_3d;
+  aspect::Utilities::AsciiDataBase<2> prescribed_velocity_data_file_2d;
+  aspect::Utilities::AsciiDataBase<3> prescribed_velocity_data_file_3d;
 
-  aspect::Utilities::AsciiDataLookup<2> prescribed_velocity_field_data_2d(1, 1.);
-  aspect::Utilities::AsciiDataLookup<3> prescribed_velocity_field_data_3d(1, 1.);
+  aspect::Utilities::StructuredDataLookup<2> prescribed_velocity_field_data_2d(1, 1.);
+  aspect::Utilities::StructuredDataLookup<3> prescribed_velocity_field_data_3d(1, 1.);
 
   Functions::ParsedFunction<2> prescribed_velocity_function_2d (2);
   Functions::ParsedFunction<3> prescribed_velocity_function_3d (3);
@@ -68,15 +68,9 @@ namespace aspect
     {
       {
         if (dim == 2)
-          {
-            prescribed_velocity_field_params_2d.declare_parameters(prm, "blob", "blob", "Ascii data model");
-            //prescribed_velocity_field_data_2d.initialize(1);
-          }
+          prescribed_velocity_data_file_2d.declare_parameters(prm, "./", "prescribed_velocities.txt", "Ascii data model");
         else
-          {
-            prescribed_velocity_field_params_3d.declare_parameters(prm, "blob", "blob", "Ascii data model");
-            //prescribed_velocity_field_data_3d.initialize(1);
-          }
+          prescribed_velocity_data_file_3d.declare_parameters(prm, "./", "prescribed_velocities.txt", "Ascii data model");
       }
 
       prm.enter_subsection ("Velocity function");
@@ -100,13 +94,9 @@ namespace aspect
     {
       {
         if (dim == 2)
-          {
-            prescribed_velocity_field_params_2d.parse_parameters(prm, "Ascii data model");
-          }
+          prescribed_velocity_data_file_2d.parse_parameters(prm, "Ascii data model");
         else
-          {
-            prescribed_velocity_field_params_3d.parse_parameters(prm, "Ascii data model");
-          }
+          prescribed_velocity_data_file_3d.parse_parameters(prm, "Ascii data model");
       }
 
       prm.enter_subsection("Velocity function");
@@ -190,22 +180,22 @@ namespace aspect
    */
   namespace
   {
-    const Point<2> as_2d(const Point<3> &/*p*/)
+    Point<2> as_2d(const Point<3> &/*p*/)
     {
-      return Point<2>();
+      Assert (false, ExcInternalError());
     }
 
-    const Point<2> &as_2d(const Point<2> &p)
+    Point<2> as_2d(const Point<2> &p)
     {
       return p;
     }
 
-    const Point<3> as_3d(const Point<2> &/*p*/)
+    Point<3> as_3d(const Point<2> &/*p*/)
     {
-      return Point<3>();
+      Assert (false, ExcInternalError());
     }
 
-    const Point<3> &as_3d(const Point<3> &p)
+    Point<3> as_3d(const Point<3> &p)
     {
       return p;
     }
@@ -226,14 +216,14 @@ namespace aspect
       {
         if (dim == 2)
           {
-            const std::string filename = prescribed_velocity_field_params_2d.data_directory + prescribed_velocity_field_params_2d.data_file_name;
+            const std::string filename = prescribed_velocity_data_file_2d.data_directory + prescribed_velocity_data_file_2d.data_file_name;
             prescribed_velocity_field_data_2d.load_file(filename, simulator_access.get_mpi_communicator());
 
             std::cout << "Loaded 2D prescribed velocity ascii file" << std::endl;
           }
         else
           {
-            const std::string filename = prescribed_velocity_field_params_3d.data_directory + prescribed_velocity_field_params_3d.data_file_name;
+            const std::string filename = prescribed_velocity_data_file_3d.data_directory + prescribed_velocity_data_file_3d.data_file_name;
             prescribed_velocity_field_data_3d.load_file(filename, simulator_access.get_mpi_communicator());
 
             std::cout << "Loaded 3D prescribed velocity ascii file" << std::endl;
@@ -249,16 +239,23 @@ namespace aspect
         typename DoFHandler<dim>::active_cell_iterator cell;
 
         // Loop over all cells
-        for (cell = simulator_access.get_dof_handler().begin_active();
-             cell != simulator_access.get_dof_handler().end();
-             ++cell)
+        for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
           if (! cell->is_artificial())
             {
               fe_values.reinit (cell);
               std::vector<types::global_dof_index> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
               cell->get_dof_indices (local_dof_indices);
 
-              for (unsigned int q=0; q<quadrature.size(); q++)
+              // we get time passed as seconds (always) but may want
+              // to reinterpret it in years
+              double time = simulator_access.get_time();
+              if (simulator_access.convert_output_to_years())
+                time /= year_in_seconds;
+
+              prescribed_velocity_function_2d.set_time (time);
+              prescribed_velocity_function_3d.set_time (time);
+
+              for (unsigned int q=0; q<quadrature.size(); ++q)
                 // If it's okay to constrain this DOF
                 if (current_constraints.can_store_line(local_dof_indices[q]) &&
                     !current_constraints.is_constrained(local_dof_indices[q]))
@@ -278,15 +275,6 @@ namespace aspect
                         const unsigned int component_direction
                           = (c_idx
                              - simulator_access.introspection().component_indices.velocities[0]);
-
-                        // we get time passed as seconds (always) but may want
-                        // to reinterpret it in years
-                        double time = simulator_access.get_time();
-                        if (simulator_access.convert_output_to_years())
-                          time /= year_in_seconds;
-
-                        prescribed_velocity_function_2d.set_time (time);
-                        prescribed_velocity_function_3d.set_time (time);
 
                         const Point<dim> p = fe_values.quadrature_point(q);
 

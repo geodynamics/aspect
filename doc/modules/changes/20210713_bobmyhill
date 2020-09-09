@@ -1,0 +1,4 @@
+<li> New: ASPECT now has a cookbook which shows how velocities can be
+prescribed at positions specified by an ASCII input file.
+<br>
+(Bob Myhill, 2021/07/13)
