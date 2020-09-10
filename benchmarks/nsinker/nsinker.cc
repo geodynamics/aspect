@@ -34,8 +34,6 @@ namespace aspect
          */
         NSinkerMaterial ();
 
-        double value (const Point<dim> &/*p*/) const;
-
         /**
          * @name Physical parameters used in the basic equations
          * @{
@@ -47,8 +45,8 @@ namespace aspect
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
-              const double chi = value(in.position[i]);
-              out.viscosities[i] = (sqrt_dynamic_viscosity_ratio - 1/sqrt_dynamic_viscosity_ratio)*(1-chi) + 1/sqrt_dynamic_viscosity_ratio;
+              const double chi = inside_outside_factor(in.position[i]);
+              out.viscosities[i] = (sqrt_dynamic_viscosity_ratio - 1./sqrt_dynamic_viscosity_ratio)*(1-chi) + 1./sqrt_dynamic_viscosity_ratio;
               out.densities[i] = sinker_density * (1.0 - chi);
               out.compressibilities[i] = 0;
               out.specific_heat[i] = 0;
@@ -174,6 +172,15 @@ namespace aspect
          */
         double delta;
         double omega;
+
+        /**
+         * Return a factor that indicates whether a point is inside or
+         * outside the sinker spheres. The function can be thought of
+         * as a 1 (outside) vs 0 (inside) factor, but is in reality a
+         * smoothed version of this that takes into account the
+         * distance from the centers of the sinkers.
+         */
+        double inside_outside_factor (const Point<dim> &p) const;
     };
 
 
@@ -261,9 +268,11 @@ namespace aspect
       centers[74] = Point<3>(8.2308128282e-01, 5.2712029523e-01, 3.1080186614e-01);
     }
 
+
+
     template <>
     double
-    NSinkerMaterial<2>::value (const Point<2> &p) const
+    NSinkerMaterial<2>::inside_outside_factor (const Point<2> &p) const
     {
       double chi = 1.0;
 
@@ -281,7 +290,7 @@ namespace aspect
 
     template <>
     double
-    NSinkerMaterial<3>::value (const Point<3> &p) const
+    NSinkerMaterial<3>::inside_outside_factor (const Point<3> &p) const
     {
       double chi = 1.0;
 
