@@ -1779,18 +1779,18 @@ namespace aspect
 
           // Iterated Advection schemes still consider advection of the particles
           // after all nonlinear iterations, instead of before the composition solve.
-          if (particle_world.get() != nullptr)
-            {
-              // Do not advect the particles in the initial refinement stage
-              const bool in_initial_refinement = (timestep_number == 0)
-                                                 && (pre_refinement_step < parameters.initial_adaptive_refinement);
-              if (!in_initial_refinement)
-                // Advance the particles in the world to the current time
-                particle_world->advance_timestep();
+//          if (particle_world.get() != nullptr)
+//            {
+//              // Do not advect the particles in the initial refinement stage
+//              const bool in_initial_refinement = (timestep_number == 0)
+//                                                 && (pre_refinement_step < parameters.initial_adaptive_refinement);
+//              if (!in_initial_refinement)
+//                // Advance the particles in the world to the current time
+//                particle_world->advance_timestep();
 
-              if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-                particle_world->update_particles();
-            }
+//              if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+//                particle_world->update_particles();
+//            }
           break;
         }
 
