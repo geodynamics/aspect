@@ -159,7 +159,7 @@ namespace aspect
                            "strain healing applied to plastic yielding and viscosity terms, similar "
                            "to the temperature-dependent Frank Kamenetskii formulation, computes "
                            "strain healing as removing strain as a function of temperature, time, "
-                           "and a user-defined healing rate and prefactor"
+                           "and a user-defined healing rate and prefactor "
                            "as done in Fuchs and Becker, 2019, for mantle convection");
 
         prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
