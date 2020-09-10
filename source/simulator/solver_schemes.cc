@@ -951,8 +951,27 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
+
+    // Copy particle handler to restore particle location and properites
+    // after each nonlinear iteration.
+    dealii::Particles::ParticleHandler<dim> particle_handler_copy;
+    if (particle_world.get() != nullptr)
+      {
+        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
+                                              particle_handler_copy);
+      }
+
     do
       {
+        // Restore particles through stored copy of particle handler,
+        // but only if they have already been displaced in a nonlinear
+        // iteration (in the assemble_and_solve_composition call).
+        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+          {
+            particle_world->copy_particle_handler(particle_handler_copy,
+                                                 particle_world->get_particle_handler());
+          }
+
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
 
