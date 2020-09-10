@@ -5,15 +5,14 @@ set End time                               = 0.5
 set Start time                             = 0
 set Nonlinear solver scheme                = single Advection, no Stokes
 set CFL number                             = 1.0
-set Maximum first time step       = 0.5
-set Pressure normalization       = no
+set Maximum first time step                = 0.5
+set Pressure normalization                 = no
 set Use years in output instead of seconds = false
 set Output directory                       = mesh_def_particles
 
 subsection Prescribed Stokes solution
   set Model name = function
 end
-
 
 subsection Geometry model
   set Model name = box
@@ -26,7 +25,6 @@ subsection Geometry model
   end
 end
 
-
 subsection Mesh deformation
 # When only the top boundary function is specified, the entire cell moves up by 0.5
   set Mesh deformation boundary indicators = top: boundary function
@@ -37,9 +35,6 @@ subsection Mesh deformation
     set Function expression = 0;if(y<1,0,1)
   end
 end
-
-
-
 
 subsection Gravity model
   set Model name = vertical
@@ -52,7 +47,6 @@ end
 subsection Mesh refinement
   set Initial global refinement = 0
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, particles

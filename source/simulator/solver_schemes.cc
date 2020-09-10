@@ -194,25 +194,18 @@ namespace aspect
   {
     // Advect the particles before they are potentially used to
     // set up the compositional fields.
-    // TODO for the iterated Advection schemes, the particle positions
-    // and properties have to be reset after each nonlinear iteration.
-    // At the moment, there is no functionality to copy the ParticleHandler
-    // and use the copy to reset it after the nonlinear iterations.
-    // Therefore we exclude the iterated Advection schemes from the
-    // particle advection reordering, and still advect particles after
-    // all nonlinear iterations in this case.
     if (particle_world.get() != nullptr)
-        {
-          // Do not advect the particles in the initial refinement stage
-          const bool in_initial_refinement = (timestep_number == 0)
-                                             && (pre_refinement_step < parameters.initial_adaptive_refinement);
-          if (!in_initial_refinement)
-            // Advance the particles in the world to the current time
-            particle_world->advance_timestep();
+      {
+        // Do not advect the particles in the initial refinement stage
+        const bool in_initial_refinement = (timestep_number == 0)
+                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        if (!in_initial_refinement)
+          // Advance the particles in the world to the current time
+          particle_world->advance_timestep();
 
-          if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
-            particle_world->update_particles();
-        }
+        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_world->update_particles();
+      }
 
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
@@ -969,7 +962,7 @@ namespace aspect
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
           {
             particle_world->copy_particle_handler(particle_handler_copy,
-                                                 particle_world->get_particle_handler());
+                                                  particle_world->get_particle_handler());
           }
 
         const double relative_temperature_residual =
@@ -1101,7 +1094,7 @@ namespace aspect
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
           {
             particle_world->copy_particle_handler(particle_handler_copy,
-                                                 particle_world->get_particle_handler());
+                                                  particle_world->get_particle_handler());
           }
 
         const double relative_temperature_residual =
@@ -1264,11 +1257,10 @@ namespace aspect
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
           {
             particle_world->copy_particle_handler(particle_handler_copy,
-                                                 particle_world->get_particle_handler());
+                                                  particle_world->get_particle_handler());
           }
 
         assemble_and_solve_temperature();
-
         assemble_and_solve_composition();
 
         if (use_picard == true &&
