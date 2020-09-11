@@ -1,0 +1,102 @@
+# A test for the point values postprocessor
+# using natural coordinates
+set Dimension = 2
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 1613.0
+    set Outer temperature = 1613.0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell 
+    set Inner radius  = 3481000
+    set Outer radius  = 6371000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 3300
+    set Reference specific heat       = 1250
+    set Reference temperature         = 1613 # default: 293
+    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal expansion coefficient = 2e-5
+    set Viscosity                     = 1e22    # default: 5e24
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function 
+    set Variable names      = x,y
+    set Function expression = if((sqrt((x-3483208.)^2+(y-3483208.)^2)<5e5) , 1800.0, 1613.0)
+  end
+end
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0, 2, 3
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = 1
+end
+
+subsection Heating model
+  set List of model names = shear heating
+end
+
+subsection Postprocess
+  set List of postprocessors = point values
+
+  subsection Point values
+    # Get values at 45 degrees longitude and 1 and 1445 km depth.
+    # The former should give a temperature of 1613 K and the latter
+    # of 1800 K.
+    set Evaluation points = 6370e3, 0.7854; \
+                            4926e3, 0.7854 
+    set Use natural coordinates = true
+  end
+
+end
+
