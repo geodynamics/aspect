@@ -393,7 +393,7 @@ namespace aspect
             }
           else
             {
-              g_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
+              g_theory = G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                          / std::pow(satellites_coordinate[p][0],2);
               g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                    /  satellites_coordinate[p][0];
