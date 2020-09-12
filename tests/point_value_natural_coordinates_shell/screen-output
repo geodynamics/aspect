@@ -1,0 +1,16 @@
+
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 10,436 (6,402+833+3,201)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+     Writing point values: output-point_value_natural_coordinates_shell/point_values.txt
+
+Termination requested by criterion: end time
+
+
+

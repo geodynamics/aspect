@@ -1,0 +1,4 @@
+# <time> <evaluation_point_x> <evaluation_point_y> <velocity_x> <velocity_y> <pressure> <temperature>
+0 4.50426e+06 4.50428e+06 1.99509e-07 2.0055e-07 6.07507e+07 1613
+0 3.4832e+06 3.48321e+06 0.0180459 0.018046 4.67758e+10 1800
+
