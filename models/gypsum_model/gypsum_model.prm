@@ -24,25 +24,26 @@ subsection Solver parameters
     set Linear solver tolerance = 1e-4
     set Number of cheap Stokes solver steps = 2000
     set GMRES solver restart length = 200
-    set Maximum number of expensive Stokes solver steps = 200
+    set Maximum number of expensive Stokes solver steps = 1000
     set Use full A block as preconditioner = true
   end
 end
 
 
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = grain_size, Vp, Vs, vs_anomaly
-  set Compositional field methods = prescribed field, static, static, static
+  set Number of fields = 5
+  set Names of fields = grain_size, Vp, Vs, vs_anomaly, faults
+  set Compositional field methods = prescribed field, static, static, static, static
 end
 
 
 subsection Initial composition model
-  set List of model names = ascii data
+  set List of model names = ascii data, world builder
 
   subsection Ascii data model
     set Data directory = ../../input_data/
-    set Data file name = LLNL_velocity_model.txt
+    set Data file name = LLNL_velocity_model_wb.txt
+#    set Data file name = LLNL_velocity_model.txt
   end
 end
 
@@ -142,16 +143,6 @@ subsection Boundary temperature model
 end
 
 
-#subsection Initial temperature model
-#  set List of model names = adiabatic
-#
-#  subsection Adiabatic
-#    subsection Function
-#      set Function expression = 0;3300;0;0
-#    end
-#  end
-#end
-
 subsection Initial temperature model
   set List of model names = adiabatic boundary
   set List of model operators = add
@@ -166,17 +157,28 @@ subsection Initial temperature model
   end
 end
 
+
 subsection Gravity model
   set Model name = ascii data
 end
 
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
-  set Initial adaptive refinement        = 0
-  set Strategy                           = temperature
-  set Time steps between mesh refinement = 0
+  set Initial adaptive refinement = 2
+  set Initial global refinement = 3
+  set Minimum refinement level = 3
+  set Refinement fraction = 0.4
+  set Coarsening fraction = 0.05
+
+  set Strategy = nonadiabatic temperature, composition, viscosity #, minimum refinement function
+
+
+  subsection Minimum refinement function
+    set Function expression = if (depth > 2500000,5,if(depth > 660000,3,if(depth > 80000,4,5)))
+    set Variable names = depth,y,z
+  end
 end
+
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization, Stokes residual, heat flux statistics, memory statistics

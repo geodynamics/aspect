@@ -94,8 +94,14 @@ namespace aspect
       //       T'(z) = alpha |g| T / C_p
       for (unsigned int i=0; i<n_points; ++i)
         {
-          const double z = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
+          // use material properties calculated at i-1
+          // The first column in the input ascii file is the radius from the center of the Earth, 
+          // therfore we convert the depths to the radial values in the get_data_component().
+          const double model_depths = double(i)/double(n_points-1)*this->get_geometry_model().maximal_depth();
+          
+          const double radius = 6378137.;
 
+          const double density = reference_profile.get_data_component(Point<1>(radius - model_depths),density_index);
           if (i==0)
             {
               if (!use_surface_condition_function)
@@ -110,9 +116,7 @@ namespace aspect
                 }
             }
           else
-            {
-              // use material properties calculated at i-1
-              const double density = reference_profile.get_data_component(Point<1>(z),density_index);
+            {              
               const double alpha = out.thermal_expansion_coefficients[0];
               // Handle the case that cp is zero (happens in simple Stokes test problems like sol_cx). By setting
               // 1/cp = 0.0 we will have a constant temperature profile with depth.
@@ -131,7 +135,7 @@ namespace aspect
                                 temperatures[0];
             }
 
-          const Point<dim> representative_point = this->get_geometry_model().representative_point (z);
+          const Point<dim> representative_point = this->get_geometry_model().representative_point (model_depths);
           const Tensor <1,dim> g = this->get_gravity_model().gravity_vector(representative_point);
 
           in.position[0] = representative_point;
@@ -159,9 +163,9 @@ namespace aspect
           else
             AssertThrow(false,ExcNotImplemented());
 
-          this->get_material_model().evaluate(in, out);
+          densities[i] = density;
 
-          densities[i] = out.densities[0];
+          this->get_material_model().evaluate(in, out);          
         }
 
       if (gravity_direction == 1 && this->get_surface_pressure() >= 0)
