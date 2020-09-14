@@ -22,8 +22,8 @@
 #ifndef _aspect_postprocess_visualization_boundary_velocity_residual_h
 #define _aspect_postprocess_visualization_boundary_velocity_residual_h
 
+#include <aspect/postprocess/boundary_velocity_residual_statistics.h>
 #include <aspect/postprocess/visualization.h>
-#include <aspect/boundary_velocity/gplates.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
@@ -60,12 +60,6 @@ namespace aspect
           BoundaryVelocityResidual ();
 
           /**
-          * This function reads the specified input velocity data files, i.e., either an ascii data file or
-          * a file from the GPlates model.
-          */
-          void initialize () override;
-
-          /**
           * Evaluate the velocity residual for the current cell.
           *
           * @copydoc DataPostprocessorVector<dim>::evaluate_vector_field()
@@ -74,63 +68,6 @@ namespace aspect
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const override;
 
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          void
-          parse_parameters (ParameterHandler &prm) override;
-
-        private:
-          /**
-           * Determines if the input ascii data file has velocity components in
-           * spherical, i.e., (r, phi, theta) or in cartesian, i.e., (x, y, z)
-           * coordinate system.
-           */
-          bool use_spherical_unit_vectors;
-
-          /**
-          * Determines if the model velocities are compared against ascii data
-          * files, or a gplates model.
-          */
-          bool use_ascii_data;
-
-          /**
-          * Pointer to the gplates boundary velocity model
-          */
-          std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup <dim> > gplates_lookup;
-
-          /**
-           * Pointer to the ascii data
-           */
-          std::unique_ptr<Utilities::AsciiDataLookup<dim>> ascii_data_lookup;
-
-          /**
-           * Directory in which the input data files, i.e., GPlates model or ascii data
-           * are present.
-           */
-          std::string data_directory;
-
-          /**
-           * Filename of the input Gplates model or ascii data file. For GPlates, the file names
-           * can contain the specifiers %s and/or %c (in this order), meaning the name of the
-           * boundary and the number of the data file time step.
-           */
-          std::string data_file_name;
-
-          /**
-           * Scale the input data by a scalar factor. Can be used to transform
-           * the unit of the data (if they are not specified in SI units (m/s or
-           * m/yr depending on the "Use years in output instead of seconds"
-           * parameter).
-           */
-          double scale_factor;
       };
     }
   }
