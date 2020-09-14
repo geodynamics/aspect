@@ -1,0 +1,3 @@
+New: Added a visualization object in postprocessing that computes the velocity residual at the top boundary of the model domain. The residual is computed between the modeled and the input velocities that can either be in an ascii data or gplates model format. 
+<br>
+(Arushi Saxena, 2020/09/02)
