@@ -61,7 +61,7 @@ namespace aspect
       AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm)
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/material-model/depth-dependent/rheology/",
+                                                          "$ASPECT_SOURCE_DIR/data/material-model/depth-dependent/",
                                                           "ascii_depth_profile.txt", "Ascii profile data");
       }
 
