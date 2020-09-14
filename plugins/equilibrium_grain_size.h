@@ -23,6 +23,7 @@
 #define _aspect_model_equilibrium_grain_size_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/lateral_averaging.h>
 #include <aspect/material_model/grain_size.h>
 #include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
@@ -62,11 +63,24 @@ namespace aspect
       public:
         /**
          * Initialization function. Loads the material data and sets up
-         * pointers.
+         * pointers. Get the reference viscosity profile.
          */
         virtual
         void
         initialize ();
+
+        /**
+         * Compute the laterally averaged viscosity
+         */
+        virtual
+        void update();
+
+        /**
+         * Compute the scaling factors for each depth layer such that the laterally
+         * averaged viscosiy in that layer is same as the reference vicosity.
+         */
+        double
+        compute_viscosity_scaling (const double depth) const;
 
         /**
          * Return whether the model is compressible or not.  Incompressibility
@@ -188,7 +202,39 @@ namespace aspect
         std::vector<double> diffusion_activation_volume;
         std::vector<double> diffusion_creep_prefactor;
         std::vector<double> diffusion_creep_grain_size_exponent;
-        std::unique_ptr<Rheology::AsciiDepthProfile<dim> > depth_dependent_rheology;
+        /**
+         * Reference viscosity profile coordinates, and the corresponding viscosity.
+         */
+        std::vector<double> reference_viscosity_coordinates;
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim> > reference_viscosity_profile;
+
+        /**
+         * A reference profile for density scaling.
+         */
+        Utilities::AsciiDataProfile<dim> rho_vs_depth_profile;
+        /**
+         * The column indices of the density scaling column in the ascii profile file.
+         */
+        unsigned int density_scaling_index;
+
+        /**
+         * An object of ascii data boundary to input crustal depths.
+         */
+        Utilities::AsciiDataBoundary<dim> crustal_boundary_depth;
+
+        /**
+         * A depth-profile of the laterally averaged viscosity in each layer
+         * in the current model. Can be used to compare (and potentially scale)
+         * the computed viscosity to the reference profile.
+         */
+        std::vector<double> laterally_averaged_viscosity_profile;
+
+        /**
+         * Variable returned  to determine if the evaluate () funciton is called and
+         * viscosities are computed. Initially, it is set to false and then updated
+         * to true in the update () funciton.
+         */
+        bool initialized;
 
         /**
          * Because of the nonlinear nature of this material model many
@@ -212,23 +258,23 @@ namespace aspect
                                     const SymmetricTensor<2,dim> &,
                                     const Point<dim> &position) const;
 
-       /**
-        * Compute the equilibrium grain size for a given temperature and
-        * pressure.
-        * This computation is based on the rate of grain size growth
-        * (Ostwald ripening) or reduction(due to dynamic recrystallization
-        * and phase transformations) in dependence on temperature, pressure,
-        * strain rate, mineral phase and creep regime.
-        * We use the grain size growth laws as for example described
-        * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
-        * of grain size evolution on the seismic structure of the oceanic
-        * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
-        *
-        * For the rate of grain size reduction due to dynamic crystallization
-        * there is the choice between the paleowattmeter (Austins and
-        * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
-        * as described in the parameter use_paleowattmeter.
-        */
+        /**
+         * Compute the equilibrium grain size for a given temperature and
+         * pressure.
+         * This computation is based on the rate of grain size growth
+         * (Ostwald ripening) or reduction(due to dynamic recrystallization
+         * and phase transformations) in dependence on temperature, pressure,
+         * strain rate, mineral phase and creep regime.
+         * We use the grain size growth laws as for example described
+         * in Behn, M. D., Hirth, G., & Elsenbeck, J. R. (2009). Implications
+         * of grain size evolution on the seismic structure of the oceanic
+         * upper mantle. Earth and Planetary Science Letters, 282(1), 178-189.
+         *
+         * For the rate of grain size reduction due to dynamic crystallization
+         * there is the choice between the paleowattmeter (Austins and
+         * Evans, 2007) and the paleopiezometer (Hall and Parmentier, 2003)
+         * as described in the parameter use_paleowattmeter.
+         */
         void compute_equilibrium_grain_size (const typename Interface<dim>::MaterialModelInputs &in,
                                              typename Interface<dim>::MaterialModelOutputs      &out) const;
 
@@ -352,12 +398,29 @@ namespace aspect
         */
         bool use_depth_dependent_viscosity;
 
-        /** 
-         * Approximate lithosphere thickness used to separate the regions of 
+        /**
+         * Parameter value that determines whether to read the density scaling with depth
+         * from an ascii data file.
+        */
+        bool use_depth_dependent_rho_vs;
+
+        /**
+         * Parameter that determines if faults or plate boundaries are used as another
+         * compositional field.
+         */
+        bool use_faults;
+
+        /**
+         * Approximate lithosphere thickness used to separate the regions of
          * temperature derived from seismic tomography and linear temperature
          * gradient.
         */
         double lithosphere_thickness;
+
+        /**
+         * Parameter used to decribe the uppermost mantle based on Tutu (2018).
+         */
+        double uppermost_mantle_thickness;
 
         /**
          * The format of the provided material files. Currently we support

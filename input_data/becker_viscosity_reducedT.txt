@@ -1,0 +1,10 @@
+# Test data for ascii data reference state
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 5
+# Columns: depth (m), viscosity (Pa.s)
+depth viscosity
+0.0000000e+00    3.0000000e+20
+4.1000000e+05    1.0000000e+21
+5.2000000e+05    1.0000000e+21
+6.6000000e+05    5.0000000e+22
+2.8710000e+06    5.0000000e+22
