@@ -24,6 +24,9 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
+#include <aspect/postprocess/particles.h>
+#include <aspect/particle/property/interface.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -167,7 +170,7 @@ namespace aspect
                            "strain healing. Units: $1/s$");
 
         prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
-                           "Viscosity prefactor for temperature dependent "
+                           "Prefactor for temperature dependent "
                            "strain healing. Units: None");
       }
 
@@ -314,9 +317,12 @@ namespace aspect
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
         // Currently this functionality only works in field composition
-        if (healing_mechanism != no_healing && this->introspection().compositional_name_exists("particles"))
+        if (healing_mechanism != no_healing)
           {
-            AssertThrow(false, ExcMessage("This healing mechanism currently does not work with particles!"));
+            const Postprocess::Particles<dim> &particle_postprocessor = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+            const Particle::Property::Manager<dim> &particle_property_manager = particle_postprocessor.get_particle_world().get_property_manager();
+
+            AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
           }
 
         // Temperature dependent strain healing requires that adiabatic surface temperature is non zero
@@ -412,11 +418,10 @@ namespace aspect
       double
       StrainDependent<dim>::
       calculate_strain_healing(const MaterialModel::MaterialModelInputs<dim> &in,
-                               const double edot_ii,
                                const unsigned int j) const
       {
         const double reference_temperature = this->get_adiabatic_surface_temperature();
-        double healed_strain = edot_ii * this->get_timestep();
+        double healed_strain = 0.0;
 
         switch (healing_mechanism)
           {
@@ -426,9 +431,9 @@ namespace aspect
             }
             case temperature_dependent:
             {
-              healed_strain -= strain_healing_temperature_dependent_recovery_rate *
-                               std::exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - in.temperature[j]/reference_temperature))
-                               * this->get_timestep();
+              healed_strain = strain_healing_temperature_dependent_recovery_rate *
+                              std::exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - in.temperature[j]/reference_temperature))
+                              * this->get_timestep();
               break;
             }
           }
@@ -493,8 +498,11 @@ namespace aspect
 
             // Adjusting strain values to account for strain healing without exceeding an unreasonable range
             if (healing_mechanism != no_healing)
-              e_ii = std::min(std::max(calculate_strain_healing(in,edot_ii,i),0.0),1.e5);
-
+              {
+                // Never heal more strain than exists
+                const double healed_strain = std::min(calculate_strain_healing(in,i), e_ii);
+                e_ii -= healed_strain;
+              }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
               out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
             if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
