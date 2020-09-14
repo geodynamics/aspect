@@ -1,4 +1,4 @@
-FROM tjhei/dealii:v9.2.0-full-v9.2.0-r1-gcc5
+FROM tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5
 
 LABEL maintainer <rene.gassmoeller@mailbox.org>
 
