@@ -246,13 +246,13 @@ namespace aspect
               {
                 // Make sure there are no duplicated entries. If this boundary is not
                 // already in the map the first call to map[key] will create an empty entry.
-                AssertThrow(std::find(mesh_deformation_boundary_object_names[boundary_id].begin(),
-                                      mesh_deformation_boundary_object_names[boundary_id].end(), object_name)
-                            == mesh_deformation_boundary_object_names[boundary_id].end(),
+                AssertThrow(std::find(mesh_deformation_object_names[boundary_id].begin(),
+                                      mesh_deformation_object_names[boundary_id].end(), object_name)
+                            == mesh_deformation_object_names[boundary_id].end(),
                             ExcMessage("The current mesh deformation object is listed twice for boundary indicator "
                                        + dealii::Utilities::int_to_string(boundary_id)));
 
-                mesh_deformation_boundary_object_names[boundary_id].push_back(object_name);
+                mesh_deformation_object_names[boundary_id].push_back(object_name);
 
                 if (object_name == "free surface")
                   free_surface_boundary_indicators.insert(boundary_id);
@@ -311,7 +311,7 @@ namespace aspect
 
       // go through the list of object names, create objects and let them parse
       // their own parameters
-      for (const auto &boundary_and_object_names : mesh_deformation_boundary_object_names)
+      for (const auto &boundary_and_object_names : mesh_deformation_object_names)
         {
           for (const auto &object_name : boundary_and_object_names.second)
             {
@@ -396,7 +396,8 @@ namespace aspect
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
-                                                       mesh_velocity_constraints, this->get_mapping());
+                                                       mesh_velocity_constraints,
+                                                       this->get_mapping());
 
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
@@ -483,12 +484,14 @@ namespace aspect
         }
 
       // Make tangential deformation constraints for tangential boundaries
+      this->get_signals().pre_compute_no_normal_flux_constraints(sim.triangulation);
       VectorTools::compute_no_normal_flux_constraints (mesh_deformation_dof_handler,
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
                                                        initial_deformation_constraints,
                                                        this->get_mapping());
+      this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
       // Ask all plugins to add their constraints.
       // For the moment add constraints from all plugins into one matrix, then
@@ -513,8 +516,7 @@ namespace aspect
                                                         mesh_deformation_dof_handler,
                                                         boundary_id_and_deformation_objects.first,
                                                         vel,
-                                                        current_plugin_constraints,
-                                                        ComponentMask());
+                                                        current_plugin_constraints);
 
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
               for (auto index = local_lines.begin(); index != local_lines.end(); ++index)
@@ -890,7 +892,7 @@ namespace aspect
     const std::map<types::boundary_id, std::vector<std::string> > &
     MeshDeformationHandler<dim>::get_active_mesh_deformation_names () const
     {
-      return mesh_deformation_boundary_object_names;
+      return mesh_deformation_object_names;
     }
 
 

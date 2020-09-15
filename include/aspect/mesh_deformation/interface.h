@@ -419,7 +419,7 @@ namespace aspect
          * Map from boundary id to a vector of names representing
          * mesh deformation objects.
          */
-        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_object_names;
+        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_object_names;
 
         /**
          * The set of boundary indicators for which mesh deformation
