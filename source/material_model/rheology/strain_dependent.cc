@@ -494,30 +494,35 @@ namespace aspect
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
-            double e_ii = edot_ii*this->get_timestep();
+            double delta_e_ii = edot_ii*this->get_timestep();
 
             // Adjusting strain values to account for strain healing without exceeding an unreasonable range
             if (healing_mechanism != no_healing)
               {
                 // Never heal more strain than exists
-                const double healed_strain = std::min(calculate_strain_healing(in,i), e_ii);
-                e_ii -= healed_strain;
+                delta_e_ii -= calculate_strain_healing(in,i);
               }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
             if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("total_strain")]);
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
               {
                 if (plastic_yielding == true)
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
+                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
                 else
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
+                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
               }
             if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")]);
           }
       }
 
