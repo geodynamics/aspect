@@ -53,9 +53,9 @@ namespace aspect
       std::map<types::boundary_id, double> local_velocity_square_integral;
       std::map<types::boundary_id, double> local_boundary_area;
 
-      const std::set<types::boundary_id>
-      boundary_indicators
-        = this->get_geometry_model().get_used_boundary_indicators ();
+      std::set<types::boundary_id> boundary_indicators;
+      boundary_indicators.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
+
       for (const auto p : boundary_indicators)
         {
           local_max_vel[p] = -std::numeric_limits<double>::max();
@@ -84,19 +84,26 @@ namespace aspect
                 double local_fe_face_area = 0.0;
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    const double vel_mag = velocities[q].norm();
-                    local_max = std::max(vel_mag,
+                    const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
+                    Tensor<1,dim> data_vel = evaluate(point_at_surface);
+
+                    if (this->convert_output_to_years() == true)
+                      data_vel = data_vel/year_in_seconds;
+
+                    const double vel_residual_mag = (velocities[q] - data_vel).norm();
+
+                    local_max = std::max(vel_residual_mag,
                                          local_max);
-                    local_min = std::min(vel_mag,
+                    local_min = std::min(vel_residual_mag,
                                          local_min);
-                    local_sqvel += ((vel_mag * vel_mag) * fe_face_values.JxW(q));
+                    local_sqvel += ((vel_residual_mag * vel_residual_mag) * fe_face_values.JxW(q));
                     local_fe_face_area += fe_face_values.JxW(q);
                   }
 
                 // then merge them with the min/max/squared velocities
                 // and face areas we found for other faces with the same boundary indicator
                 const types::boundary_id boundary_indicator
-                  = cell->face(f)->boundary_id();
+                  = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
                 local_max_vel[boundary_indicator] = std::max(local_max,
                                                              local_max_vel[boundary_indicator]);
@@ -146,7 +153,7 @@ namespace aspect
           {
             global_max_vel[*p] = global_max_values[index];
             global_min_vel[*p] = global_min_values[index];
-            // global_rms_vel[*p] = std::sqrt(global_velocity_square_integral_values[index] / global_boundary_area_values[index]);
+            global_rms_vel[*p] = std::sqrt(global_velocity_square_integral_values[index] / global_boundary_area_values[index]);
           }
       }
 
@@ -161,19 +168,19 @@ namespace aspect
         {
           if (this->convert_output_to_years() == true)
             {
-              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
+              const std::string name_max = "Maximum residual velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_max, p->second*year_in_seconds);
-              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
+              const std::string name_min = "Minimum residual velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (a->first))
                                            + " (m/yr)";
               statistics.add_value (name_min, a->second*year_in_seconds);
-              const std::string name_rms = "RMS velocity on boundary with indicator "
+              const std::string name_rms = "RMS residual velocity on boundary with indicator "
                                            + Utilities::int_to_string(rms->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (rms->first))
@@ -190,19 +197,19 @@ namespace aspect
             }
           else
             {
-              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
+              const std::string name_max = "Maximum residual velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_max, p->second);
-              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
+              const std::string name_min = "Minimum residual velocity magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (a->first))
                                            + " (m/s)";
               statistics.add_value (name_min, a->second);
-              const std::string name_rms = "RMS velocity on boundary with indicator "
+              const std::string name_rms = "RMS residual velocity on boundary with indicator "
                                            + Utilities::int_to_string(rms->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (rms->first))
@@ -237,7 +244,7 @@ namespace aspect
 
         }
 
-      return std::pair<std::string, std::string> ("Max, min, and rms velocity along boundary parts:",
+      return std::pair<std::string, std::string> ("Max, min, and rms residual velocity along boundary parts:",
                                                   screen_text.str());
     }
 
@@ -307,17 +314,8 @@ namespace aspect
           data_velocity =  gplates_lookup->surface_velocity(p);
         }
 
-      value = data_velocity ;// [dimension] ; //- p[dimension] * velocity_scaling_factor;
+      value = data_velocity ;
 
-      // for (unsigned int ideg=min_degree, k=0; ideg < max_degree+1; ideg++)
-      //   for (unsigned int iord = 0; iord < ideg+1; iord++, k++)
-      //     {
-      //       std::pair<double,double> val = aspect::Utilities::real_spherical_harmonic( ideg, iord, theta, phi );
-
-      //       value += geoid_coecos[k] * val.first +
-      //                geoid_coesin[k] * val.second;
-
-      //     }
       return value;
     }
 

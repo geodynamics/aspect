@@ -51,7 +51,7 @@ namespace aspect
             computed_quantities[q](d)= 0.;
 
         const double velocity_scaling_factor =
-        this->convert_output_to_years() ? year_in_seconds : 1.0;
+          this->convert_output_to_years() ? year_in_seconds : 1.0;
 
         const Postprocess::BoundaryVelocityResidualStatistics<dim> &boundary_velocity_residual_statistics =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryVelocityResidualStatistics<dim> >();
@@ -68,7 +68,7 @@ namespace aspect
         if (cell_at_top_boundary)
           for (unsigned int q=0; q<computed_quantities.size(); ++q)
             for (unsigned int d = 0; d < dim; ++d)
-              computed_quantities[q](d) = boundary_velocity_residual_statistics.evaluate(input_data.evaluation_points[q])[d] - 
+              computed_quantities[q](d) = boundary_velocity_residual_statistics.evaluate(input_data.evaluation_points[q])[d] -
                                           input_data.solution_values[q][d] * velocity_scaling_factor;
       }
 
