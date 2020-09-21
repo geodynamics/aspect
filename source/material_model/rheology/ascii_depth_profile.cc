@@ -49,7 +49,7 @@ namespace aspect
 
       template <int dim>
       double
-      AsciiDepthProfile<dim>::get_viscosity (const double depth) const
+      AsciiDepthProfile<dim>::compute_viscosity (const double depth) const
       {
         return this->get_data_component (Point<1>(depth), viscosity_index);
       }
@@ -61,8 +61,8 @@ namespace aspect
       AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm)
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/material-model/depth-dependent/",
-                                                          "ascii_depth_profile.txt", "Ascii profile data");
+                                                          "$ASPECT_SOURCE_DIR/data/material-model/rheology/",
+                                                          "ascii_depth_profile.txt");
       }
 
 
@@ -71,7 +71,7 @@ namespace aspect
       void
       AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm)
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Ascii profile data");
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
       }
     }
   }

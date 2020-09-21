@@ -108,14 +108,6 @@ namespace aspect
         ViscositySource viscosity_source;
 
         /**
-         * Function to read depth-dependent lookup table and set up interpolating function
-         * for File depth dependence method
-         */
-        // void
-        // read_viscosity_file(const std::string &filename,
-        //                     const MPI_Comm &comm);
-
-        /**
          * Data structures to store depth and viscosity lookup tables as well as interpolating
          * function to calculate viscosity for File Depth dependence method
          */

@@ -64,7 +64,7 @@ namespace aspect
           /**
           * Return the viscosity at a given point of the domain.
           */
-          double get_viscosity (const double depth) const;
+          double compute_viscosity (const double depth) const;
 
           /**
            * Declare the parameters for the input files.
