@@ -58,20 +58,24 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm)
+      AsciiDepthProfile<dim>::declare_parameters (ParameterHandler &prm,
+                                                  const std::string &subsection_name)
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/material-model/rheology/",
-                                                          "ascii_depth_profile.txt");
+                                                          "ascii_depth_profile.txt",
+                                                          subsection_name);
       }
 
 
 
       template <int dim>
       void
-      AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm)
+      AsciiDepthProfile<dim>::parse_parameters (ParameterHandler &prm,
+                                                const std::string &subsection_name)
       {
-        Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm,
+                                                        subsection_name);
       }
     }
   }
