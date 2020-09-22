@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -34,8 +34,9 @@ namespace aspect
   {
 
     /**
-     * A postprocessor that computes some statistics about the velocity at
-     * different parts of the boundary.
+     * A postprocessor that computes some statistics about the velocity residual at the top surface.
+     * The velocity residual is calculated as the difference between the modeled velocities and
+     * input data velocities (GPlates model or ascii data).
      *
      * @ingroup Postprocessing
      */
@@ -44,28 +45,27 @@ namespace aspect
     {
       public:
         /**
-         * Evaluate the solution for some velocity boundary statistics.
+         * This function reads the specified input velocity data files, i.e., either an ascii data file or
+         * a file from the GPlates model.
+         */
+        void initialize () override;
+
+        /**
+         * This function returns the input data velocity, (GPlates model or ascii data)
+         * value at a point.  This function is called from execute() function.
+         */
+        Tensor<1,dim>
+        get_data_velocity (const Point<dim> &p) const;
+
+        /**
+         * Evaluate the solution statistics for some velocity residual at the top boundary.
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
 
         /**
-          * This function reads the specified input velocity data files, i.e., either an ascii data file or
-          * a file from the GPlates model.
-          */
-        void initialize () override;
-
-        /**
-         * Evaluate the boundary velocity residual solution at a point.
-         * The evaluation point must be at the top of the model domain, this function
-         * is called after the execute()
+         * Declare the parameters this class takes through input files.
          */
-        Tensor<1,dim>
-        evaluate (const Point<dim> &p) const;
-
-        /**
-           * Declare the parameters this class takes through input files.
-           */
         static
         void
         declare_parameters (ParameterHandler &prm);

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -33,6 +33,72 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
+    void
+    BoundaryVelocityResidualStatistics<dim>::initialize ()
+    {
+
+      if (use_ascii_data)
+        {
+          // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
+          ascii_data_lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim> >(dim, scale_factor);
+          ascii_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
+        }
+      else
+        {
+          // The variables pointone and pointtwo are used in gplates to find the 2D plane in which the model lies.
+          Tensor<1,2> pointone;
+          Tensor<1,2> pointtwo;
+
+          // These values are not used for 3D geometries and are thus set to the default.
+          pointone[0] = numbers::PI/2;
+          pointone[1] = 0;
+          pointtwo[0] = numbers::PI/2;
+          pointtwo[1] = numbers::PI/2;
+
+          gplates_lookup =  std_cxx14::make_unique<BoundaryVelocity::internal::GPlatesLookup<dim> > (
+                              pointone, pointtwo);
+
+          gplates_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
+        }
+    }
+
+
+
+    template <int dim>
+    Tensor<1,dim>
+    BoundaryVelocityResidualStatistics<dim>::get_data_velocity (const Point<dim> &p) const
+    {
+      Tensor<1,dim> data_velocity;
+      if (use_ascii_data)
+        {
+          Point<dim> internal_position = p;
+
+          if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
+            {
+              const std::array<double,dim> spherical_position = this->get_geometry_model().
+                                                                cartesian_to_natural_coordinates(p);
+
+              for (unsigned int d = 0; d < dim; ++d)
+                internal_position[d] = spherical_position[d];
+            }
+
+          for (unsigned int d = 0; d < dim; ++d)
+            data_velocity[d] = ascii_data_lookup->get_data(internal_position, d);
+          if (use_spherical_unit_vectors == true)
+            data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, p);
+        }
+
+      else
+        {
+          data_velocity =  gplates_lookup->surface_velocity(p);
+        }
+
+      return data_velocity;
+    }
+
+
+
+    template <int dim>
     std::pair<std::string,std::string>
     BoundaryVelocityResidualStatistics<dim>::execute (TableHandler &statistics)
     {
@@ -62,10 +128,10 @@ namespace aspect
           local_min_vel[p] = std::numeric_limits<double>::max();
         }
 
-      // for every surface face that is part of a geometry boundary
+      // for every face that is part of the selected geometry boundary
       // and that is owned by this processor,
-      // compute the maximum, minimum, and squared*area velocity magnitude,
-      // and the face area.
+      // compute the maximum, minimum, and squared*area velocity residual
+      // magnitude and the face area.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
@@ -76,7 +142,7 @@ namespace aspect
                 // extract velocities
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                     velocities);
-                // determine the max, min, and squared velocity on the face
+                // determine the max, min, and squared velocity residual on the face
                 // also determine the face area
                 double local_max = -std::numeric_limits<double>::max();
                 double local_min = std::numeric_limits<double>::max();
@@ -85,11 +151,13 @@ namespace aspect
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
                     const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
-                    Tensor<1,dim> data_vel = evaluate(point_at_surface);
+                    // Extract data velocity.
+                    Tensor<1,dim> data_vel = get_data_velocity(point_at_surface);
 
                     if (this->convert_output_to_years() == true)
                       data_vel = data_vel/year_in_seconds;
 
+                    // The velocity residual is calculated here.
                     const double vel_residual_mag = (velocities[q] - data_vel).norm();
 
                     local_max = std::max(vel_residual_mag,
@@ -168,25 +236,25 @@ namespace aspect
         {
           if (this->convert_output_to_years() == true)
             {
-              const std::string name_max = "Maximum residual velocity magnitude on boundary with indicator "
+              const std::string name_max = "Maximum velocity residual magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (p->first))
                                            + " (m/yr)";
               statistics.add_value (name_max, p->second*year_in_seconds);
-              const std::string name_min = "Minimum residual velocity magnitude on boundary with indicator "
+              const std::string name_min = "Minimum velocity residual magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (a->first))
                                            + " (m/yr)";
               statistics.add_value (name_min, a->second*year_in_seconds);
-              const std::string name_rms = "RMS residual velocity on boundary with indicator "
+              const std::string name_rms = "RMS velocity residual on boundary with indicator "
                                            + Utilities::int_to_string(rms->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (rms->first))
                                            + " (m/yr)";
               statistics.add_value (name_rms, rms->second*year_in_seconds);
-              // also make sure that the other columns filled by the this object
+              // also make sure that the other columns filled by this object
               // all show up with sufficient accuracy and in scientific notation
               statistics.set_precision (name_max, 8);
               statistics.set_scientific (name_max, true);
@@ -197,19 +265,19 @@ namespace aspect
             }
           else
             {
-              const std::string name_max = "Maximum residual velocity magnitude on boundary with indicator "
+              const std::string name_max = "Maximum velocity residua magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (p->first))
                                            + " (m/s)";
               statistics.add_value (name_max, p->second);
-              const std::string name_min = "Minimum residual velocity magnitude on boundary with indicator "
+              const std::string name_min = "Minimum velocity residual magnitude on boundary with indicator "
                                            + Utilities::int_to_string(a->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (a->first))
                                            + " (m/s)";
               statistics.add_value (name_min, a->second);
-              const std::string name_rms = "RMS residual velocity on boundary with indicator "
+              const std::string name_rms = "RMS velocity residual on boundary with indicator "
                                            + Utilities::int_to_string(rms->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (rms->first))
@@ -248,76 +316,6 @@ namespace aspect
                                                   screen_text.str());
     }
 
-
-
-    template <int dim>
-    void
-    BoundaryVelocityResidualStatistics<dim>::initialize ()
-    {
-
-      if (use_ascii_data)
-        {
-          // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
-          ascii_data_lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim> >(dim, scale_factor);
-          ascii_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
-        }
-      else
-        {
-          // The variables pointone and pointtwo are used in gplates to find the 2D plane in which the model lies.
-          Tensor<1,2> pointone;
-          Tensor<1,2> pointtwo;
-
-          // These values are not used for 3D geometries and are thus set to the default.
-          pointone[0] = numbers::PI/2;
-          pointone[1] = 0;
-          pointtwo[0] = numbers::PI/2;
-          pointtwo[1] = numbers::PI/2;
-
-          gplates_lookup =  std_cxx14::make_unique<BoundaryVelocity::internal::GPlatesLookup<dim> > (
-                              pointone, pointtwo);
-
-          gplates_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
-        }
-    }
-
-
-
-    template <int dim>
-    Tensor<1,dim>
-    BoundaryVelocityResidualStatistics<dim>::evaluate (const Point<dim> &p) const
-    {
-
-      Tensor<1,dim> value;
-
-      Tensor<1,dim> data_velocity;
-      if (use_ascii_data)
-        {
-          Point<dim> internal_position = p;
-
-          if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
-            {
-              const std::array<double,dim> spherical_position = this->get_geometry_model().
-                                                                cartesian_to_natural_coordinates(p);
-
-              for (unsigned int d = 0; d < dim; ++d)
-                internal_position[d] = spherical_position[d];
-            }
-
-          for (unsigned int d = 0; d < dim; ++d)
-            data_velocity[d] = ascii_data_lookup->get_data(internal_position, d);
-          if (use_spherical_unit_vectors == true)
-            data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, p);
-        }
-
-      else
-        {
-          data_velocity =  gplates_lookup->surface_velocity(p);
-        }
-
-      value = data_velocity ;
-
-      return value;
-    }
 
 
     template <int dim>
@@ -412,8 +410,11 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(BoundaryVelocityResidualStatistics,
                                   "boundary velocity residual statistics",
                                   "A postprocessor that computes some statistics about "
-                                  "the velocity along the boundaries. For each boundary "
-                                  "indicator (see your geometry description for which boundary "
-                                  "indicators are used), the min and max velocity magnitude is computed.")
+                                  "the velocity residual along the top boundary. The velocity residual "
+                                  "is the difference between the model solution velocities and the input "
+                                  "velocities (GPlates model or ascii data). Currently, the velocity residual "
+                                  "statistics, i.e., min, max and the rms magnitude, is computed at the top "
+                                  "suface. However, the boundary indicator can be changed to include other "
+                                  "boundaries as well.")
   }
 }

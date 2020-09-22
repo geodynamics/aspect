@@ -64,12 +64,14 @@ namespace aspect
               (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
             cell_at_top_boundary = true;
 
-
         if (cell_at_top_boundary)
           for (unsigned int q=0; q<computed_quantities.size(); ++q)
-            for (unsigned int d = 0; d < dim; ++d)
-              computed_quantities[q](d) = boundary_velocity_residual_statistics.evaluate(input_data.evaluation_points[q])[d] -
-                                          input_data.solution_values[q][d] * velocity_scaling_factor;
+            {
+              const Tensor<1,dim> data_velocity = boundary_velocity_residual_statistics.get_data_velocity(input_data.evaluation_points[q]);
+              for (unsigned int d = 0; d < dim; ++d)
+                computed_quantities[q](d) = data_velocity[d] - input_data.solution_values[q][d] * velocity_scaling_factor;
+            }
+
       }
 
     }
