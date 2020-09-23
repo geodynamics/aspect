@@ -60,15 +60,15 @@ namespace aspect
           BoundaryVelocityResidual ();
 
           /**
-          * Evaluate the velocity residual for the current cell.
-          *
-          * @copydoc DataPostprocessorVector<dim>::evaluate_vector_field()
-          */
+           * Evaluate the velocity residual for the current cell.
+           *
+           * @copydoc DataPostprocessorVector<dim>::evaluate_vector_field()
+           */
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const override;
 
-           /**
+          /**
            * Let the postprocessor manager know about the other postprocessors
            * this one depends on. Specifically, the boundary velocity residual statistics postprocessor.
            */
