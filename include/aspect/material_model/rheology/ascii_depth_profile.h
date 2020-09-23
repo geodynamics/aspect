@@ -71,13 +71,15 @@ namespace aspect
            */
           static
           void
-          declare_parameters (ParameterHandler  &prm);
+          declare_parameters (ParameterHandler  &prm,
+                              const std::string &subsection_name = "Ascii data model");
 
           /**
            * Read the parameters from the parameter file.
            */
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm,
+                            const std::string &subsection_name = "Ascii data model");
 
         private:
 

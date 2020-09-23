@@ -139,6 +139,10 @@ namespace aspect
     {
       prm.enter_subsection("Material model");
       {
+        // Depth-dependent parameters from the rheology plugin
+        Rheology::AsciiDepthProfile<dim>::declare_parameters(prm,
+                                                             "Depth dependent model");
+
         prm.enter_subsection("Depth dependent model");
         {
           prm.declare_entry("Base model","simple",
@@ -163,8 +167,7 @@ namespace aspect
                             "provided in ``Depth list''. The number of viscosity values specified here must "
                             "be the same as the number of depths provided in ``Depth list''.");
 
-          // Depth-dependent parameters from the rheology plugin
-          Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
+
           prm.declare_alias ("Data file name","Viscosity depth file");
 
           prm.enter_subsection("Viscosity depth function");
@@ -230,14 +233,6 @@ namespace aspect
                            ExcMessage("Last value in Depth list must be greater than or equal to maximal depth of domain"));
             }
 
-          if (viscosity_source == File)
-            {
-              depth_dependent_rheology = std_cxx14::make_unique<Rheology::AsciiDepthProfile<dim>>();
-              depth_dependent_rheology->initialize_simulator (this->get_simulator());
-              depth_dependent_rheology->parse_parameters(prm);
-              depth_dependent_rheology->initialize();
-            }
-
           prm.enter_subsection("Viscosity depth function");
           {
             try
@@ -256,6 +251,14 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
+        if (viscosity_source == File)
+          {
+            depth_dependent_rheology = std_cxx14::make_unique<Rheology::AsciiDepthProfile<dim>>();
+            depth_dependent_rheology->initialize_simulator (this->get_simulator());
+            depth_dependent_rheology->parse_parameters(prm, "Depth dependent model");
+            depth_dependent_rheology->initialize();
+          }
       }
       prm.leave_subsection();
 
