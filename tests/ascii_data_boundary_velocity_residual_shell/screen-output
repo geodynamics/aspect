@@ -67,10 +67,11 @@ Number of degrees of freedom: 1,277 (915+57+305)
    Solving Stokes system... 103+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:                  0.376 m/year, 1.12 m/year
-     Temperature min/avg/max:            273 K, 1489 K, 3000 K
-     Heat fluxes through boundary parts: -2.907e+13 W, -6.212e+13 W, -1.125e+15 W, 1.134e+15 W, 0.007838 W
-     Writing graphical output:           output-ascii_data_boundary_velocity_residual_shell/solution/solution-00000
+     RMS, max velocity:                                        0.376 m/year, 1.12 m/year
+     Temperature min/avg/max:                                  273 K, 1489 K, 3000 K
+     Heat fluxes through boundary parts:                       -2.907e+13 W, -6.212e+13 W, -1.125e+15 W, 1.134e+15 W, 0.007838 W
+     Max, min, and rms residual velocity along boundary parts: 0.0863 m/yr, 0 m/yr, 0.02209 m/yr
+     Writing graphical output:                                 output-ascii_data_boundary_velocity_residual_shell/solution/solution-00000
 
 Termination requested by criterion: end time
 

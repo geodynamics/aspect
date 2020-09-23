@@ -68,6 +68,12 @@ namespace aspect
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double> > &computed_quantities) const override;
 
+           /**
+           * Let the postprocessor manager know about the other postprocessors
+           * this one depends on. Specifically, the boundary velocity residual statistics postprocessor.
+           */
+          std::list<std::string>
+          required_other_postprocessors() const override;
       };
     }
   }

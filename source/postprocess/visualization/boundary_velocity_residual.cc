@@ -74,6 +74,15 @@ namespace aspect
 
       }
 
+
+
+      template <int dim>
+      std::list<std::string>
+      BoundaryVelocityResidual<dim>::required_other_postprocessors() const
+      {
+        return std::list<std::string> (1, "boundary velocity residual statistics");
+      }
+
     }
   }
 }

@@ -85,14 +85,14 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, boundary velocity residual statistics
   subsection  Visualization
     set Output format                 = gnuplot
     set List of output variables      = boundary velocity residual
-    subsection Boundary velocity residual
-      set Use ascii data = true
-      set Data file name       = shell_3d_boundary_velocity.txt
-      set Data directory = $ASPECT_SOURCE_DIR/data/postprocess/boundary-velocity-residual/
-    end
+  end
+  subsection Boundary velocity residual
+    set Use ascii data = true
+    set Data file name       = shell_3d_boundary_velocity.txt
+    set Data directory = $ASPECT_SOURCE_DIR/data/postprocess/boundary-velocity-residual/
   end
 end
