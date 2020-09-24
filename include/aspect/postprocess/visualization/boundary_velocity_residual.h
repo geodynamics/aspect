@@ -22,7 +22,6 @@
 #ifndef _aspect_postprocess_visualization_boundary_velocity_residual_h
 #define _aspect_postprocess_visualization_boundary_velocity_residual_h
 
-#include <aspect/postprocess/boundary_velocity_residual_statistics.h>
 #include <aspect/postprocess/visualization.h>
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>

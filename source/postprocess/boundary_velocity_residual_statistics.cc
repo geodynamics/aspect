@@ -152,13 +152,13 @@ namespace aspect
                   {
                     const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
                     // Extract data velocity.
-                    Tensor<1,dim> data_vel = get_data_velocity(point_at_surface);
+                    Tensor<1,dim> data_velocity = get_data_velocity(point_at_surface);
 
                     if (this->convert_output_to_years() == true)
-                      data_vel = data_vel/year_in_seconds;
+                      data_velocity = data_velocity/year_in_seconds;
 
                     // The velocity residual is calculated here.
-                    const double vel_residual_mag = (velocities[q] - data_vel).norm();
+                    const double vel_residual_mag = (velocities[q] - data_velocity).norm();
 
                     local_max = std::max(vel_residual_mag,
                                          local_max);
@@ -265,7 +265,7 @@ namespace aspect
             }
           else
             {
-              const std::string name_max = "Maximum velocity residua magnitude on boundary with indicator "
+              const std::string name_max = "Maximum velocity residual magnitude on boundary with indicator "
                                            + Utilities::int_to_string(p->first)
                                            + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
                                                                                          .translate_id_to_symbol_name (p->first))
@@ -312,7 +312,7 @@ namespace aspect
 
         }
 
-      return std::pair<std::string, std::string> ("Max, min, and rms residual velocity along boundary parts:",
+      return std::pair<std::string, std::string> ("Max, min, and RMS residual velocity along boundary parts:",
                                                   screen_text.str());
     }
 
@@ -324,7 +324,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Boundary velocity residual");
+        prm.enter_subsection("Boundary velocity residual statistics");
         {
           prm.declare_entry ("Data directory",
                              "$ASPECT_SOURCE_DIR/data/boundary-velocity/gplates/",
@@ -377,7 +377,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Boundary velocity residual");
+        prm.enter_subsection("Boundary velocity residual statistics");
         {
           // Get the path to the data files. If it contains a reference
           // to $ASPECT_SOURCE_DIR, replace it by what CMake has given us
@@ -414,7 +414,6 @@ namespace aspect
                                   "is the difference between the model solution velocities and the input "
                                   "velocities (GPlates model or ascii data). Currently, the velocity residual "
                                   "statistics, i.e., min, max and the rms magnitude, is computed at the top "
-                                  "suface. However, the boundary indicator can be changed to include other "
-                                  "boundaries as well.")
+                                  "suface.")
   }
 }
