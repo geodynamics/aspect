@@ -324,10 +324,10 @@ namespace aspect
                   {
                     const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
                     // For gravity acceleration:
-                    const double KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
+                    const double KK = - G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
                     local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                     // For gravity anomalies:
-                    const double KK_anomalies = G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
+                    const double KK_anomalies = - G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
                     local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
                     // For gravity potential:
                     local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
