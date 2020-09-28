@@ -2,7 +2,7 @@
 Number of active cells: 48 (on 2 levels)
 Number of degrees of freedom: 1,032 (480+72+240+240)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,7 +14,7 @@ Number of degrees of freedom: 1,032 (480+72+240+240)
      Temperature min/avg/max:            973 K, 1449 K, 1973 K
      Heat fluxes through boundary parts: -6.418e+06 W, -9.556e+06 W
 
-*** Timestep 1:  t=1e+06 years
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 14+0 iterations.
@@ -28,7 +28,4 @@ Number of degrees of freedom: 1,032 (480+72+240+240)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

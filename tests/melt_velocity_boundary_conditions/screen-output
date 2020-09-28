@@ -4,7 +4,7 @@ Loading shared library <./libmelt_velocity_boundary_conditions.so>
 Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...

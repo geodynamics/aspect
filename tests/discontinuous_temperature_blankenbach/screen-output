@@ -7,7 +7,7 @@ Loading shared library <./libdiscontinuous_temperature_blankenbach.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,235 (578+81+576)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -14.09 W, 14.09 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 1:  t=0.000212841 seconds
+*** Timestep 1:  t=0.000212841 seconds, dt=0.000212841 seconds
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -33.46 W, 33.46 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 2:  t=0.000422557 seconds
+*** Timestep 2:  t=0.000422557 seconds, dt=0.000209716 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -20.05 W, 20.05 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 3:  t=0.000607742 seconds
+*** Timestep 3:  t=0.000607742 seconds, dt=0.000185185 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -51,7 +51,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -19.94 W, 19.94 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 4:  t=0.000778549 seconds
+*** Timestep 4:  t=0.000778549 seconds, dt=0.000170808 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -62,7 +62,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -21.46 W, 21.46 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 5:  t=0.000947513 seconds
+*** Timestep 5:  t=0.000947513 seconds, dt=0.000168963 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -73,7 +73,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -22.5 W, 22.5 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 6:  t=0.00111936 seconds
+*** Timestep 6:  t=0.00111936 seconds, dt=0.000171846 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -84,7 +84,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -23.16 W, 23.16 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 7:  t=0.0012905 seconds
+*** Timestep 7:  t=0.0012905 seconds, dt=0.000171145 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -95,7 +95,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -23.62 W, 23.62 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 8:  t=0.00145834 seconds
+*** Timestep 8:  t=0.00145834 seconds, dt=0.000167841 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -106,7 +106,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -23.96 W, 23.96 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 9:  t=0.00162516 seconds
+*** Timestep 9:  t=0.00162516 seconds, dt=0.000166818 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -24.13 W, 24.13 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 10:  t=0.00179393 seconds
+*** Timestep 10:  t=0.00179393 seconds, dt=0.000168763 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
@@ -128,7 +128,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -24.09 W, 24.09 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 11:  t=0.00196559 seconds
+*** Timestep 11:  t=0.00196559 seconds, dt=0.000171665 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
@@ -139,7 +139,7 @@ Number of degrees of freedom: 1,235 (578+81+576)
      Heat fluxes through boundary parts: 0 W, 0 W, -23.87 W, 23.87 W
      Heating rate (average/total):       0 W/kg, 0 W
 
-*** Timestep 12:  t=0.002 seconds
+*** Timestep 12:  t=0.002 seconds, dt=3.44094e-05 seconds
    Solving temperature system... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.

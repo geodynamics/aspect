@@ -8,7 +8,7 @@
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,581 (738+105+369+369)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -20,7 +20,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.242e+08 W, 1.242e+08 W, 5.606e+05 W, 1.661e+05 W
      Compositions min/max/mass:          0/0.033/3.594e+10
 
-*** Timestep 1:  t=81806.7 years
+*** Timestep 1:  t=81806.7 years, dt=81806.7 years
    Solving temperature system... 29 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -32,7 +32,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.247e+08 W, 1.242e+08 W, 3.303e+05 W, 2.799e+05 W
      Compositions min/max/mass:          0/0.03208/3.421e+10
 
-*** Timestep 2:  t=163699 years
+*** Timestep 2:  t=163699 years, dt=81892.8 years
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
@@ -44,7 +44,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.26e+08 W, 1.242e+08 W, 4.464e+05 W, 2.896e+05 W
      Compositions min/max/mass:          0/0.3185/3.906e+10
 
-*** Timestep 3:  t=245583 years
+*** Timestep 3:  t=245583 years, dt=81883.6 years
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -56,7 +56,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.294e+08 W, 1.241e+08 W, 5.497e+05 W, 2.851e+05 W
      Compositions min/max/mass:          0/0.7279/5.374e+10
 
-*** Timestep 4:  t=327503 years
+*** Timestep 4:  t=327503 years, dt=81920.3 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.2.txt.
 
@@ -71,7 +71,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.364e+08 W, 1.241e+08 W, 5.801e+05 W, 2.819e+05 W
      Compositions min/max/mass:          0/0.8625/7.241e+10
 
-*** Timestep 5:  t=409394 years
+*** Timestep 5:  t=409394 years, dt=81891 years
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -83,7 +83,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.48e+08 W, 1.241e+08 W, 5.958e+05 W, 2.811e+05 W
      Compositions min/max/mass:          0/0.6277/8.387e+10
 
-*** Timestep 6:  t=491316 years
+*** Timestep 6:  t=491316 years, dt=81921.1 years
    Solving temperature system... 18 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -95,7 +95,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.64e+08 W, 1.241e+08 W, 6.058e+05 W, 2.807e+05 W
      Compositions min/max/mass:          0/0.5599/8.673e+10
 
-*** Timestep 7:  t=573213 years
+*** Timestep 7:  t=573213 years, dt=81897.6 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-composition/ascii-data/test/box_2d_left.3.txt.
 
@@ -118,7 +118,7 @@ Number of degrees of freedom: 1,581 (738+105+369+369)
      Heat fluxes through boundary parts: -1.827e+08 W, 1.241e+08 W, 6.129e+05 W, 2.81e+05 W
      Compositions min/max/mass:          0/0.4799/8.747e+10
 
-*** Timestep 8:  t=600000 years
+*** Timestep 8:  t=600000 years, dt=26786.9 years
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...

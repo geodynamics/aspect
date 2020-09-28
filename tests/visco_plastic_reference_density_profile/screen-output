@@ -1,17 +1,8 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre (subduction_cookbook, b720dae)
---     . using deal.II 9.0.0-pre (master, a7c2e20)
---     . using Trilinos 12.10.1
---     . using p4est 1.1.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,444 (882+121+441)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+2 iterations.
@@ -24,34 +15,8 @@ Number of degrees of freedom: 1,444 (882+121+441)
 
 
 
-| Total wallclock time elapsed since start    |     0.144s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-| Assemble Stokes system          |         1 |    0.0191s |        13% |
-| Assemble temperature system     |         1 |    0.0182s |        13% |
-| Build Stokes preconditioner     |         1 |    0.0186s |        13% |
-| Build temperature preconditioner|         1 |  0.000921s |      0.64% |
-| Solve Stokes system             |         1 |   0.00334s |       2.3% |
-| Solve temperature system        |         1 |  0.000463s |      0.32% |
-| Initialization                  |         1 |    0.0319s |        22% |
-| Postprocessing                  |         1 |   0.00236s |       1.6% |
-| Setup dof systems               |         1 |    0.0116s |         8% |
-| Setup initial conditions        |         1 |    0.0178s |        12% |
 
 Termination requested by criterion: end time
 
 
-| Total wallclock time elapsed since start    |     0.144s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-| Assemble Stokes system          |         1 |    0.0191s |        13% |
-| Assemble temperature system     |         1 |    0.0182s |        13% |
-| Build Stokes preconditioner     |         1 |    0.0186s |        13% |
-| Build temperature preconditioner|         1 |  0.000921s |      0.64% |
-| Solve Stokes system             |         1 |   0.00334s |       2.3% |
-| Solve temperature system        |         1 |  0.000463s |      0.32% |
-| Initialization                  |         1 |    0.0319s |        22% |
-| Postprocessing                  |         1 |   0.00236s |       1.6% |
-| Setup dof systems               |         1 |    0.0116s |         8% |
-| Setup initial conditions        |         1 |    0.0178s |        12% |
 

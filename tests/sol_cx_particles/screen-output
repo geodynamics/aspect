@@ -4,7 +4,7 @@ Loading shared library <./libsol_cx_particles.so>
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 159 (50+12+25+36+36)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.

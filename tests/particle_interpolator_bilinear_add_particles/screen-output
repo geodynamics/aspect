@@ -4,7 +4,7 @@ Loading shared library <./libparticle_interpolator_bilinear_add_particles.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.

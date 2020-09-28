@@ -2,70 +2,70 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00000
 
-*** Timestep 1:  t=7.26222e+14 seconds
+*** Timestep 1:  t=7.26222e+14 seconds, dt=7.26222e+14 seconds
    Solving temperature system... 23 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00001
 
-*** Timestep 2:  t=1.44286e+15 seconds
+*** Timestep 2:  t=1.44286e+15 seconds, dt=7.16638e+14 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00002
 
-*** Timestep 3:  t=2.14977e+15 seconds
+*** Timestep 3:  t=2.14977e+15 seconds, dt=7.0691e+14 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00003
 
-*** Timestep 4:  t=2.85435e+15 seconds
+*** Timestep 4:  t=2.85435e+15 seconds, dt=7.04578e+14 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00004
 
-*** Timestep 5:  t=3.5549e+15 seconds
+*** Timestep 5:  t=3.5549e+15 seconds, dt=7.00555e+14 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00005
 
-*** Timestep 6:  t=4.25408e+15 seconds
+*** Timestep 6:  t=4.25408e+15 seconds, dt=6.99174e+14 seconds
    Solving temperature system... 17 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00006
 
-*** Timestep 7:  t=4.9511e+15 seconds
+*** Timestep 7:  t=4.9511e+15 seconds, dt=6.97024e+14 seconds
    Solving temperature system... 17 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00007
 
-*** Timestep 8:  t=5.64661e+15 seconds
+*** Timestep 8:  t=5.64661e+15 seconds, dt=6.95506e+14 seconds
    Solving temperature system... 16 iterations.
    Solving Stokes system... done.
 
    Postprocessing:
      Writing graphical output: output-direct_solver_1/solution/solution-00008
 
-*** Timestep 9:  t=6e+15 seconds
+*** Timestep 9:  t=6e+15 seconds, dt=3.53393e+14 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... done.
 

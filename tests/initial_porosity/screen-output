@@ -2,7 +2,7 @@
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 5,641 (1,666+801+1,666+225+833+225+225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.

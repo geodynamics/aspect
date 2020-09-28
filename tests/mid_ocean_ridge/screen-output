@@ -2,7 +2,7 @@
 Number of active cells: 384 (on 4 levels)
 Number of degrees of freedom: 13,321 (3,234+1,577+3,234+425+1,617+1,617+1,617)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 13,321 (3,234+1,577+3,234+425+1,617+1,617+1,617)
      Compositions min/max/mass: 0/0/0 // 0/0/0
      RMS, max velocity:         0.0169 m/year, 0.0298 m/year
 
-*** Timestep 1:  t=10000 years
+*** Timestep 1:  t=10000 years, dt=10000 years
    Solving composition reactions... in 50 substep(s).
    Solving temperature system... 6 iterations.
    Skipping porosity composition solve because RHS is zero.

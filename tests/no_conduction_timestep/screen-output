@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -12,7 +12,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      RMS, max velocity:       0.000119 m/year, 0.000189 m/year
      Temperature min/avg/max: 1500 K, 1600 K, 1700 K
 
-*** Timestep 1:  t=1.3162e+08 years
+*** Timestep 1:  t=1.3162e+08 years, dt=1.3162e+08 years
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 0 iterations.
    Solving Stokes system... 14+0 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      RMS, max velocity:       0.000117 m/year, 0.000185 m/year
      Temperature min/avg/max: 1502 K, 1600 K, 1698 K
 
-*** Timestep 2:  t=2e+08 years
+*** Timestep 2:  t=2e+08 years, dt=6.83802e+07 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 0 iterations.
    Solving Stokes system... 12+0 iterations.

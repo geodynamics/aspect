@@ -3,7 +3,7 @@ Number of active cells: 400 (on 1 levels)
 Number of degrees of freedom: 12,358 (3,402+451+1,701+1,701+1,701+1,701+1,701)
 
 Number of mesh deformation degrees of freedom: 902
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving upper_crust system ... 0 iterations.
@@ -54,7 +54,7 @@ Number of mesh deformation degrees of freedom: 902
    Postprocessing:
      Temperature min/avg/max: 273 K, 1011 K, 1573 K
 
-*** Timestep 1:  t=10000 years
+*** Timestep 1:  t=10000 years, dt=10000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 7 iterations.
    Solving upper_crust system ... 9 iterations.

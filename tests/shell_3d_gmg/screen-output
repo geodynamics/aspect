@@ -3,13 +3,13 @@ Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 768 (on 2 levels)
 Number of degrees of freedom: 28,690 (20,790+970+6,930)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving Stokes system... 28+0 iterations.
 
 Number of active cells: 2,112 (on 3 levels)
 Number of degrees of freedom: 89,938 (65,142+3,082+21,714)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:

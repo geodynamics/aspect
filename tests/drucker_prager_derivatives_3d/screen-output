@@ -50,7 +50,7 @@ Some parts of the test where not succesful.
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 5,534 (3,969+242+1,323)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
 
    Postprocessing:
      RMS, max velocity:                  0 m/year, 0 m/year

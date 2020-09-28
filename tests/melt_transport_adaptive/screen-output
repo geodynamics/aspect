@@ -4,7 +4,7 @@ Loading shared library <./libmelt_transport_adaptive.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,880 (2,178+1,057+2,178+289+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -31,7 +31,7 @@ Number of degrees of freedom: 7,880 (2,178+1,057+2,178+289+1,089+1,089)
 Number of active cells: 307 (on 6 levels)
 Number of degrees of freedom: 9,971 (2,774+1,285+2,774+364+1,387+1,387)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -58,7 +58,7 @@ Number of degrees of freedom: 9,971 (2,774+1,285+2,774+364+1,387+1,387)
 Number of active cells: 448 (on 6 levels)
 Number of degrees of freedom: 14,076 (3,906+1,851+3,906+507+1,953+1,953)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...

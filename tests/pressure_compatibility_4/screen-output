@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 65+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:            0 K, 0.5066 K, 2 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
-*** Timestep 1:  t=1.85687e-05 seconds
+*** Timestep 1:  t=1.85687e-05 seconds, dt=1.85687e-05 seconds
    Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:            0 K, 8.687 K, 34.29 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
-*** Timestep 2:  t=3.71373e-05 seconds
+*** Timestep 2:  t=3.71373e-05 seconds, dt=1.85687e-05 seconds
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
@@ -35,7 +35,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Temperature min/avg/max:            0 K, 16.86 K, 67.83 K
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -459.7 kg/s, 459.3 kg/s
 
-*** Timestep 3:  t=5e-05 seconds
+*** Timestep 3:  t=5e-05 seconds, dt=1.28627e-05 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.

@@ -1,14 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libstress_vs_surface_stress.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving strain_xx system ... 0 iterations.
    Skipping strain_xy composition solve because RHS is zero.
@@ -20,7 +16,7 @@ Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)
    Postprocessing:
      Writing graphical output: output-stress_vs_surface_stress/solution/solution-00000
 
-*** Timestep 1:  t=0.025 seconds
+*** Timestep 1:  t=0.025 seconds, dt=0.025 seconds
    Skipping temperature solve because RHS is zero.
    Solving strain_xx system ... 11 iterations.
    Solving strain_xy system ... 13 iterations.
@@ -34,9 +30,4 @@ Number of degrees of freedom: 7,912 (2,178+289+1,089+1,089+1,089+1,089+1,089)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

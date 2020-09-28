@@ -4,13 +4,13 @@ Loading shared library <./libquick_mpi.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
    Solving Stokes system... XYZ iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... XYZ iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 1.87792e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.87792e-08
 
 
    Postprocessing:

@@ -3,7 +3,7 @@ Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 2,958 (902+126+126+451+451+451+451)
 
 Number of mesh deformation degrees of freedom: 252
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
@@ -24,11 +24,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 1:  t=1000 years
+*** Timestep 1:  t=1000 years, dt=1000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 11 iterations.
@@ -49,11 +46,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 2:  t=2000 years
+*** Timestep 2:  t=2000 years, dt=1000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 10 iterations.
@@ -74,11 +68,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 3:  t=3000 years
+*** Timestep 3:  t=3000 years, dt=1000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 10 iterations.
@@ -99,11 +90,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 4:  t=4000 years
+*** Timestep 4:  t=4000 years, dt=1000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 9 iterations.
@@ -124,11 +112,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 5:  t=5000 years
+*** Timestep 5:  t=5000 years, dt=1000 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 10 iterations.
@@ -149,14 +134,8 @@ Number of mesh deformation degrees of freedom: 252
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

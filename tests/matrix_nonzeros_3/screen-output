@@ -2,7 +2,7 @@
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 156 (50+9+25+36+36)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping adv_field composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...

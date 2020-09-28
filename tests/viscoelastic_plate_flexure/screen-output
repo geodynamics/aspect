@@ -3,7 +3,7 @@ Number of active cells: 140 (on 1 levels)
 Number of degrees of freedom: 8,118 (1,230+420+168+1,260+1,260+1,260+1,260+1,260)
 
 Number of mesh deformation degrees of freedom: 336
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
@@ -19,7 +19,7 @@ Number of mesh deformation degrees of freedom: 336
      RMS, max velocity:                                 1.88 m/year, 3.91 m/year
      Topography min/max:                                0 m, 0 m
 
-*** Timestep 1:  t=5 years
+*** Timestep 1:  t=5 years, dt=5 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 3 iterations.

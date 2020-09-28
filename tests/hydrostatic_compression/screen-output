@@ -4,7 +4,7 @@ Loading shared library <./libhydrostatic_compression.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 53+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -67,7 +67,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 16: 6.37208e-11
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 16: 6.37207e-11
 
 
    Postprocessing:

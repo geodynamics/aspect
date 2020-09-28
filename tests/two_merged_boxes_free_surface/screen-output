@@ -3,7 +3,7 @@ Number of active cells: 128 (on 3 levels)
 Number of degrees of freedom: 5,733 (4,131+225+1,377)
 
 Number of mesh deformation degrees of freedom: 675
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of active cells: 16 (on 2 levels)
 Number of degrees of freedom: 945 (675+45+225)
 
 Number of mesh deformation degrees of freedom: 135
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -22,7 +22,7 @@ Number of mesh deformation degrees of freedom: 135
    Postprocessing:
      Writing graphical output: output-two_merged_boxes_free_surface/solution/solution-00000
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...

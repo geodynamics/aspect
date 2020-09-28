@@ -4,7 +4,7 @@ Loading shared library <./libshear_bands.so>
 Number of active cells: 1,024 (on 5 levels)
 Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -43,7 +43,7 @@ Number of degrees of freedom: 30,824 (8,514+4,177+8,514+1,105+4,257+4,257)
      Compositions min/max/mass: 0.04952/0.05046/2e-07
      RMS, max velocity:         289 m/year, 493 m/year
 
-*** Timestep 1:  t=3e-08 years
+*** Timestep 1:  t=3e-08 years, dt=3e-08 years
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 56 iterations.
    Rebuilding Stokes preconditioner...

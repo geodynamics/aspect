@@ -4,7 +4,7 @@ Loading shared library <./libvof_circle_1.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
      Global volume of fluid volumes (m^3): 0.785
      VoF Calculation(IEstL1/FEstL1):       9.87186594e-03 / 0.00000000e+00
 
-*** Timestep 1:  t=0.0441942 seconds
+*** Timestep 1:  t=0.0441942 seconds, dt=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-*** Timestep 2:  t=0.0883883 seconds
+*** Timestep 2:  t=0.0883883 seconds, dt=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-*** Timestep 3:  t=0.132583 seconds
+*** Timestep 3:  t=0.132583 seconds, dt=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -37,7 +37,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-*** Timestep 4:  t=0.176777 seconds
+*** Timestep 4:  t=0.176777 seconds, dt=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-*** Timestep 5:  t=0.220971 seconds
+*** Timestep 5:  t=0.220971 seconds, dt=0.0441942 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.785
 
-*** Timestep 6:  t=0.25 seconds
+*** Timestep 6:  t=0.25 seconds, dt=0.0290291 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.

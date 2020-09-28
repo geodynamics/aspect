@@ -2,34 +2,34 @@
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 58+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02441e-16, 1.69854e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23157e-16, 1.69854e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0000
-     Pressure at top/bottom of domain: -7.451e-14 Pa, 6.444e+05 Pa
+     Pressure at top/bottom of domain: -1.863e-14 Pa, 6.444e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... 1+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02441e-16, 1.69854e-16, 5.20905e-13
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.20905e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23157e-16, 1.69854e-16, 5.20283e-13
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 5.20283e-13
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00000.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00000.0001
-     Pressure at top/bottom of domain: -2.786e-13 Pa, 6.444e+05 Pa
+     Pressure at top/bottom of domain: 1.971e-13 Pa, 6.444e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 1:  t=13251 years
+*** Timestep 1:  t=13251 years, dt=13251 years
    Solving temperature system... 14 iterations.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... 53+0 iterations.
@@ -39,7 +39,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0000
-     Pressure at top/bottom of domain: 1.707e-14 Pa, 6.443e+05 Pa
+     Pressure at top/bottom of domain: -1.661e-13 Pa, 6.443e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 12 iterations.
@@ -51,7 +51,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0001
-     Pressure at top/bottom of domain: 4.036e-14 Pa, 6.443e+05 Pa
+     Pressure at top/bottom of domain: -2.941e-13 Pa, 6.443e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -63,7 +63,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0002
-     Pressure at top/bottom of domain: -2.864e-13 Pa, 6.443e+05 Pa
+     Pressure at top/bottom of domain: -2.437e-13 Pa, 6.443e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
@@ -75,7 +75,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0003
-     Pressure at top/bottom of domain: -6.674e-14 Pa, 6.443e+05 Pa
+     Pressure at top/bottom of domain: -9.468e-14 Pa, 6.443e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
@@ -87,11 +87,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00001.0004
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00001.0004
-     Pressure at top/bottom of domain: 2.119e-13 Pa, 6.443e+05 Pa
+     Pressure at top/bottom of domain: 1.63e-14 Pa, 6.443e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 2:  t=26110 years
+*** Timestep 2:  t=26110 years, dt=12859.1 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 50+0 iterations.
@@ -101,7 +101,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0000
-     Pressure at top/bottom of domain: -4.657e-15 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: -1.824e-13 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -113,7 +113,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0001
-     Pressure at top/bottom of domain: -1.467e-13 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: -4.051e-13 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
@@ -125,7 +125,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0002
-     Pressure at top/bottom of domain: -3.64e-13 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: -7.683e-14 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -137,11 +137,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00002.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00002.0003
-     Pressure at top/bottom of domain: -1.707e-14 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: 1.568e-13 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 3:  t=38522.2 years
+*** Timestep 3:  t=38522.2 years, dt=12412.2 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 48+0 iterations.
@@ -151,7 +151,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0000
-     Pressure at top/bottom of domain: -3.236e-13 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: -3.446e-13 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -163,7 +163,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0001
-     Pressure at top/bottom of domain: 7.916e-14 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: -1.591e-13 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
@@ -175,7 +175,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0002
-     Pressure at top/bottom of domain: -2.763e-13 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: 7.761e-14 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -187,11 +187,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00003.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00003.0003
-     Pressure at top/bottom of domain: -4.866e-13 Pa, 6.442e+05 Pa
+     Pressure at top/bottom of domain: 7.761e-16 Pa, 6.442e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 4:  t=50507 years
+*** Timestep 4:  t=50507 years, dt=11984.8 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 49+0 iterations.
@@ -201,7 +201,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0000
-     Pressure at top/bottom of domain: -7.761e-15 Pa, 6.441e+05 Pa
+     Pressure at top/bottom of domain: -2.212e-13 Pa, 6.441e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -213,7 +213,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0001
-     Pressure at top/bottom of domain: 3.368e-13 Pa, 6.441e+05 Pa
+     Pressure at top/bottom of domain: 2.639e-14 Pa, 6.441e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
@@ -225,7 +225,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0002
-     Pressure at top/bottom of domain: 1.009e-14 Pa, 6.441e+05 Pa
+     Pressure at top/bottom of domain: -9.779e-14 Pa, 6.441e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -237,11 +237,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00004.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00004.0003
-     Pressure at top/bottom of domain: -7.994e-14 Pa, 6.441e+05 Pa
+     Pressure at top/bottom of domain: -2.701e-13 Pa, 6.441e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 5:  t=62100 years
+*** Timestep 5:  t=62100 years, dt=11593 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 49+0 iterations.
@@ -251,7 +251,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0000
-     Pressure at top/bottom of domain: -2.095e-13 Pa, 6.44e+05 Pa
+     Pressure at top/bottom of domain: 3.26e-14 Pa, 6.44e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -263,7 +263,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0001
-     Pressure at top/bottom of domain: -4.059e-13 Pa, 6.44e+05 Pa
+     Pressure at top/bottom of domain: -3.182e-14 Pa, 6.44e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
@@ -275,7 +275,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0002
-     Pressure at top/bottom of domain: -1.164e-14 Pa, 6.44e+05 Pa
+     Pressure at top/bottom of domain: -1.125e-13 Pa, 6.44e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -287,11 +287,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00005.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00005.0003
-     Pressure at top/bottom of domain: -3.337e-13 Pa, 6.44e+05 Pa
+     Pressure at top/bottom of domain: -1.04e-13 Pa, 6.44e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 6:  t=73010.9 years
+*** Timestep 6:  t=73010.9 years, dt=10910.9 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 49+0 iterations.
@@ -301,7 +301,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0000
-     Pressure at top/bottom of domain: -7.14e-14 Pa, 6.439e+05 Pa
+     Pressure at top/bottom of domain: 8.071e-14 Pa, 6.439e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -313,7 +313,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0001
-     Pressure at top/bottom of domain: 1.863e-14 Pa, 6.439e+05 Pa
+     Pressure at top/bottom of domain: -1.645e-13 Pa, 6.439e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
@@ -325,7 +325,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0002
-     Pressure at top/bottom of domain: -1.894e-13 Pa, 6.439e+05 Pa
+     Pressure at top/bottom of domain: 3.725e-14 Pa, 6.439e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -337,11 +337,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00006.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00006.0003
-     Pressure at top/bottom of domain: -2.173e-13 Pa, 6.439e+05 Pa
+     Pressure at top/bottom of domain: -3.104e-13 Pa, 6.439e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 7:  t=83267.4 years
+*** Timestep 7:  t=83267.4 years, dt=10256.5 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 49+0 iterations.
@@ -351,7 +351,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0000
-     Pressure at top/bottom of domain: 1.055e-13 Pa, 6.438e+05 Pa
+     Pressure at top/bottom of domain: -4.144e-13 Pa, 6.438e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -363,7 +363,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0001
-     Pressure at top/bottom of domain: -1.645e-13 Pa, 6.438e+05 Pa
+     Pressure at top/bottom of domain: 1.257e-13 Pa, 6.438e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
@@ -375,7 +375,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0002
-     Pressure at top/bottom of domain: -1.444e-13 Pa, 6.438e+05 Pa
+     Pressure at top/bottom of domain: -1.18e-13 Pa, 6.438e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -387,11 +387,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00007.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00007.0003
-     Pressure at top/bottom of domain: 2.173e-14 Pa, 6.438e+05 Pa
+     Pressure at top/bottom of domain: -2.002e-13 Pa, 6.438e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 8:  t=92948.5 years
+*** Timestep 8:  t=92948.5 years, dt=9681.09 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... 49+0 iterations.
@@ -401,7 +401,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0000
-     Pressure at top/bottom of domain: -6.209e-14 Pa, 6.437e+05 Pa
+     Pressure at top/bottom of domain: -4.036e-14 Pa, 6.437e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 11 iterations.
@@ -413,7 +413,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0001
-     Pressure at top/bottom of domain: -8.382e-14 Pa, 6.437e+05 Pa
+     Pressure at top/bottom of domain: -2.515e-13 Pa, 6.437e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 9 iterations.
@@ -425,7 +425,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0002
-     Pressure at top/bottom of domain: -4.796e-13 Pa, 6.437e+05 Pa
+     Pressure at top/bottom of domain: -5.743e-14 Pa, 6.437e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -437,11 +437,11 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00008.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00008.0003
-     Pressure at top/bottom of domain: -3.617e-13 Pa, 6.437e+05 Pa
+     Pressure at top/bottom of domain: 6.519e-14 Pa, 6.437e+05 Pa
      Computing dynamic topography      
 
 
-*** Timestep 9:  t=100000 years
+*** Timestep 9:  t=100000 years, dt=7051.5 years
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... 48+0 iterations.
@@ -451,7 +451,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0000
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0000
-     Pressure at top/bottom of domain: -1.723e-13 Pa, 6.436e+05 Pa
+     Pressure at top/bottom of domain: -1.257e-13 Pa, 6.436e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 10 iterations.
@@ -463,7 +463,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0001
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0001
-     Pressure at top/bottom of domain: -2.949e-14 Pa, 6.436e+05 Pa
+     Pressure at top/bottom of domain: -7.606e-14 Pa, 6.436e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 8 iterations.
@@ -475,7 +475,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0002
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0002
-     Pressure at top/bottom of domain: -6.706e-13 Pa, 6.436e+05 Pa
+     Pressure at top/bottom of domain: 3.244e-13 Pa, 6.436e+05 Pa
      Computing dynamic topography      
 
    Solving temperature system... 6 iterations.
@@ -487,7 +487,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_iterated_advection_and_stokes/solution/solution-00009.0003
      Writing heat flux map:            output-postprocess_iterations_iterated_advection_and_stokes/heat_flux.00009.0003
-     Pressure at top/bottom of domain: -1.987e-13 Pa, 6.436e+05 Pa
+     Pressure at top/bottom of domain: -3.104e-15 Pa, 6.436e+05 Pa
      Computing dynamic topography      
 
 

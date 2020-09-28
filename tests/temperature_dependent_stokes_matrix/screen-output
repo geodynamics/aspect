@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output: output-temperature_dependent_stokes_matrix/solution/solution-00000
      RMS, max velocity:        9e-09 m/s, 3.13e-08 m/s
 
-*** Timestep 1:  t=495763 seconds
+*** Timestep 1:  t=495763 seconds, dt=495763 seconds
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 40+0 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity: 1.53e-08 m/s, 5.72e-08 m/s
 
-*** Timestep 2:  t=768420 seconds
+*** Timestep 2:  t=768420 seconds, dt=272657 seconds
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 35+0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
    Postprocessing:
      RMS, max velocity: 1.78e-08 m/s, 6.63e-08 m/s
 
-*** Timestep 3:  t=1e+06 seconds
+*** Timestep 3:  t=1e+06 seconds, dt=231580 seconds
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.

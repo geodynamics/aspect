@@ -4,14 +4,14 @@ Loading shared library <./libmaterial_model_dependencies_morency_doin.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 7.02044e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 7.02062e-08
 
 
    Postprocessing:

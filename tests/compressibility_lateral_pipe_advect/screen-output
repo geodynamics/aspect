@@ -4,7 +4,7 @@ Loading shared library <./libcompressibility_lateral_pipe_advect.so>
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 270 (102+24+72+72)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -27,7 +27,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3309 kg/m^3, 1e+21 Pa s, 3.309e+14 kg
      Mass fluxes through boundary parts:                -3.841e+07 kg/yr, 3.871e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 1:  t=429570 years
+*** Timestep 1:  t=429570 years, dt=429570 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -63,7 +63,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3308 kg/m^3, 1e+21 Pa s, 3.308e+14 kg
      Mass fluxes through boundary parts:                -4.009e+07 kg/yr, 4.037e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 2:  t=841079 years
+*** Timestep 2:  t=841079 years, dt=411508 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -99,7 +99,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3307 kg/m^3, 1e+21 Pa s, 3.307e+14 kg
      Mass fluxes through boundary parts:                -4.177e+07 kg/yr, 4.203e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 3:  t=1.236e+06 years
+*** Timestep 3:  t=1.236e+06 years, dt=394918 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -111,22 +111,22 @@ Number of degrees of freedom: 270 (102+24+72+72)
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.07875e-05, 0, 6.67807e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.07875e-05, 0, 7.09065e-16
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.07875e-05
 
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.19434e-12, 0, 6.67807e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.19434e-12
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.19441e-12, 0, 7.09065e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.19441e-12
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.87711e-16, 0, 6.67807e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.67807e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.65153e-16, 0, 7.09065e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.09065e-16
 
 
    Postprocessing:
@@ -135,7 +135,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3306 kg/m^3, 1e+21 Pa s, 3.306e+14 kg
      Mass fluxes through boundary parts:                -4.344e+07 kg/yr, 4.369e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 4:  t=1.61562e+06 years
+*** Timestep 4:  t=1.61562e+06 years, dt=379626 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -147,22 +147,22 @@ Number of degrees of freedom: 270 (102+24+72+72)
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.96324e-06, 0, 6.80677e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.96324e-06, 0, 7.97022e-16
       Relative nonlinear residual (total system) after nonlinear iteration 2: 8.96324e-06
 
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.76725e-13, 0, 6.80677e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.76725e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 4.76691e-13, 0, 7.97022e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 4.76691e-13
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.02481e-16, 0, 6.80677e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.80677e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.0334e-16, 0, 7.97022e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.97022e-16
 
 
    Postprocessing:
@@ -171,7 +171,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3305 kg/m^3, 1e+21 Pa s, 3.305e+14 kg
      Mass fluxes through boundary parts:                -4.512e+07 kg/yr, 4.536e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 5:  t=1.98111e+06 years
+*** Timestep 5:  t=1.98111e+06 years, dt=365484 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -183,22 +183,22 @@ Number of degrees of freedom: 270 (102+24+72+72)
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.56297e-06, 0, 4.77599e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.56297e-06, 0, 7.84932e-16
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.56297e-06
 
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.0281e-13, 0, 4.77599e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.0281e-13
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.0279e-13, 0, 7.84932e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.0279e-13
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.31517e-16, 0, 4.77599e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 4.77599e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.09456e-16, 0, 7.84932e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.84932e-16
 
 
    Postprocessing:
@@ -207,7 +207,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3304 kg/m^3, 1e+21 Pa s, 3.304e+14 kg
      Mass fluxes through boundary parts:                -4.679e+07 kg/yr, 4.702e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 6:  t=2e+06 years
+*** Timestep 6:  t=2e+06 years, dt=18893.3 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -219,15 +219,15 @@ Number of degrees of freedom: 270 (102+24+72+72)
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.53892e-08, 0, 8.34641e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.53892e-08, 0, 6.13689e-16
       Relative nonlinear residual (total system) after nonlinear iteration 2: 1.53892e-08
 
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.48308e-16, 0, 8.34641e-16
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.34641e-16
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.78198e-16, 0, 6.13689e-16
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 6.13689e-16
 
 
    Postprocessing:

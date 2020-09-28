@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -11,7 +11,7 @@ Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
      Compositions min/max/mass: 2.778e-12/0.2/1.257e+08 // 0/0/0
      Writing graphical output:  output-rising_melt_blob_freezing/solution/solution-00000
 
-*** Timestep 1:  t=1 years
+*** Timestep 1:  t=1 years, dt=1 years
    Solving composition reactions... in 20 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 32,842 (8,450+2,178+8,450+1,089+4,225+4,225+4,225)
      Compositions min/max/mass: 1.372e-12/0.09878/6.206e+07 // -0.1265/-1.406e-12/-7.096e+07
      Writing graphical output:  output-rising_melt_blob_freezing/solution/solution-00001
 
-*** Timestep 2:  t=2 years
+*** Timestep 2:  t=2 years, dt=1 years
    Solving composition reactions... in 20 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.

@@ -2,7 +2,7 @@
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -30,7 +30,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Heat fluxes through boundary parts: 39.09 W, 12.3 W
      Writing depth average:              output-passive_comp/depth_average
 
-*** Timestep 1:  t=2.81625e+12 seconds
+*** Timestep 1:  t=2.81625e+12 seconds, dt=2.81625e+12 seconds
    Solving temperature system... 27 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
@@ -43,7 +43,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Heat fluxes through boundary parts: 296.7 W, 185 W
      Writing depth average:              output-passive_comp/depth_average
 
-*** Timestep 2:  t=5.6325e+12 seconds
+*** Timestep 2:  t=5.6325e+12 seconds, dt=2.81625e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 21 iterations.
    Rebuilding Stokes preconditioner...
@@ -56,7 +56,7 @@ Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
      Heat fluxes through boundary parts: 218 W, 167.5 W
      Writing depth average:              output-passive_comp/depth_average
 
-*** Timestep 3:  t=8e+12 seconds
+*** Timestep 3:  t=8e+12 seconds, dt=2.3675e+12 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...

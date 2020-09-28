@@ -7,7 +7,7 @@ Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
 Number of mesh deformation degrees of freedom: 5346
    Added initial topography to grid
 
-*** Timestep 2:  t=9133.17 years
+*** Timestep 2:  t=9133.17 years, dt=5362.65 years
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -18,7 +18,7 @@ Number of mesh deformation degrees of freedom: 5346
      RMS, max velocity:        0.0361 m/year, 0.144 m/year
      Writing graphical output: output1.tmp/solution/solution-00002
 
-*** Timestep 3:  t=20021.1 years
+*** Timestep 3:  t=20021.1 years, dt=10887.9 years
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -31,7 +31,7 @@ Number of mesh deformation degrees of freedom: 5346
 
 *** Snapshot created!
 
-*** Timestep 4:  t=30009.6 years
+*** Timestep 4:  t=30009.6 years, dt=9988.49 years
    Solving mesh velocity system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...

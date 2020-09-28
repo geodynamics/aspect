@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -1e+04 W, 1e+04 W
      Writing depth average:              output-depth_dependent_box_none_simple/depth_average
 
-*** Timestep 1:  t=1e+08 years
+*** Timestep 1:  t=1e+08 years, dt=1e+08 years
    Solving temperature system... 5 iterations.
    Solving Stokes system... 27+0 iterations.
 

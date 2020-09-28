@@ -4,7 +4,7 @@ Loading shared library <./libcompressibility_lateral_pipe_transient.so>
 Number of active cells: 32 (on 1 levels)
 Number of degrees of freedom: 1,062 (390+96+288+288)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -20,7 +20,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Mass fluxes through boundary parts:                0 kg/s, 0 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+21 Pa s, 3.3e+14 kg
 
-*** Timestep 1:  t=3.15576e+12 seconds
+*** Timestep 1:  t=3.15576e+12 seconds, dt=3.15576e+12 seconds
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -43,7 +43,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Mass fluxes through boundary parts:                0 kg/s, 0.02091 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3299 kg/m^3, 1e+21 Pa s, 3.299e+14 kg
 
-*** Timestep 2:  t=6.31152e+12 seconds
+*** Timestep 2:  t=6.31152e+12 seconds, dt=3.15576e+12 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -66,7 +66,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Mass fluxes through boundary parts:                0 kg/s, 0.02091 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3299 kg/m^3, 1e+21 Pa s, 3.299e+14 kg
 
-*** Timestep 3:  t=9.46728e+12 seconds
+*** Timestep 3:  t=9.46728e+12 seconds, dt=3.15576e+12 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -89,7 +89,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Mass fluxes through boundary parts:                0 kg/s, 0.0209 kg/s, 0 kg/s, 0 kg/s
      Average density / Average viscosity / Total mass:  3298 kg/m^3, 1e+21 Pa s, 3.298e+14 kg
 
-*** Timestep 4:  t=1e+13 seconds
+*** Timestep 4:  t=1e+13 seconds, dt=5.3272e+11 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...

@@ -4,7 +4,7 @@ Loading shared library <./libadvect_field_with_melt_velocity.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -30,7 +30,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // 0/1/0.4948 // 0/1/0.4948
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00000
 
-*** Timestep 1:  t=0.0156253 years
+*** Timestep 1:  t=0.0156253 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 6 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -1.692e-20/1.028/0.4948 // -0.0377/1/0.4792
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00001
 
-*** Timestep 2:  t=0.0312506 years
+*** Timestep 2:  t=0.0312506 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 9 iterations.
@@ -82,7 +82,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -6.627e-05/1.018/0.4948 // -0.01962/1/0.4635
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00002
 
-*** Timestep 3:  t=0.0468759 years
+*** Timestep 3:  t=0.0468759 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 9 iterations.
@@ -108,7 +108,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -0.0003125/1.009/0.4948 // -0.007958/1/0.4479
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00003
 
-*** Timestep 4:  t=0.0625012 years
+*** Timestep 4:  t=0.0625012 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 9 iterations.
@@ -134,7 +134,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -0.0001701/1.01/0.4948 // -0.02889/1/0.4323
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00004
 
-*** Timestep 5:  t=0.0781265 years
+*** Timestep 5:  t=0.0781265 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 9 iterations.
@@ -152,7 +152,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.91647e-15, 1.06273e-13, 9.49488e-14, 2.08777e-13, 5.77883e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.91647e-15, 1.06273e-13, 9.49487e-14, 2.08777e-13, 5.77883e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.77883e-09
 
 
@@ -160,7 +160,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -7.414e-05/1.01/0.4948 // -0.04482/1/0.4167
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00005
 
-*** Timestep 6:  t=0.0937518 years
+*** Timestep 6:  t=0.0937518 years, dt=0.0156253 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 8 iterations.
@@ -178,7 +178,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.91647e-15, 1.06273e-13, 7.85963e-13, 3.33898e-13, 5.77883e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.91647e-15, 1.06273e-13, 7.85962e-13, 3.33897e-13, 5.77883e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.77883e-09
 
 
@@ -186,7 +186,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
      Compositions min/max/mass: 0.08722/0.08722/0.08722 // -3.902e-05/1.01/0.4948 // -0.03415/1/0.4011
      Writing graphical output:  output-advect_field_with_melt_velocity/solution/solution-00006
 
-*** Timestep 7:  t=0.1 years
+*** Timestep 7:  t=0.1 years, dt=0.00624819 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 8 iterations.
@@ -204,7 +204,7 @@ Number of degrees of freedom: 39,050 (8,450+4,161+8,450+1,089+4,225+4,225+4,225+
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.87802e-15, 4.96435e-14, 5.10734e-13, 5.84423e-13, 5.77883e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 3.87802e-15, 4.96435e-14, 5.10732e-13, 5.84423e-13, 5.77883e-09
       Relative nonlinear residual (total system) after nonlinear iteration 2: 5.77883e-09
 
 

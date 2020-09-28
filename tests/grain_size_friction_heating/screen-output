@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,7 +14,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      RMS, max velocity:             0.577 m/year, 0.993 m/year
      Heating rate (average/total):  1.703e-11 W/kg, 578.9 W
 
-*** Timestep 1:  t=3125 years
+*** Timestep 1:  t=3125 years, dt=3125 years
    Solving temperature system... 12 iterations.
    Solving grain_size system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,7 +26,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      RMS, max velocity:             0.577 m/year, 0.993 m/year
      Heating rate (average/total):  1.697e-11 W/kg, 576.9 W
 
-*** Timestep 2:  t=6250 years
+*** Timestep 2:  t=6250 years, dt=3125 years
    Solving temperature system... 6 iterations.
    Solving grain_size system ... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -38,7 +38,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      RMS, max velocity:             0.577 m/year, 0.993 m/year
      Heating rate (average/total):  1.691e-11 W/kg, 575 W
 
-*** Timestep 3:  t=9375 years
+*** Timestep 3:  t=9375 years, dt=3125 years
    Solving temperature system... 6 iterations.
    Solving grain_size system ... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -50,7 +50,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      RMS, max velocity:             0.577 m/year, 0.993 m/year
      Heating rate (average/total):  1.686e-11 W/kg, 573.2 W
 
-*** Timestep 4:  t=10000 years
+*** Timestep 4:  t=10000 years, dt=625 years
    Solving temperature system... 3 iterations.
    Solving grain_size system ... 6 iterations.
    Rebuilding Stokes preconditioner...

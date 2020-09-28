@@ -4,7 +4,7 @@ Loading shared library <./libmelt_compressible_advection.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
      Max, min, and rms velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 0.1 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s, 1.1 m/s
      Error porosity_L2:                               1.164557e-04
 
-*** Timestep 1:  t=0.0142045 seconds
+*** Timestep 1:  t=0.0142045 seconds, dt=0.0142045 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
@@ -55,7 +55,7 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
      Max, min, and rms velocity along boundary parts: 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 1.096 m/s, 0.1035 m/s, 0.6658 m/s, 0.1 m/s, 0.1 m/s, 0.1 m/s, 1.1 m/s, 1.1 m/s, 1.1 m/s
      Error porosity_L2:                               1.280986e-04
 
-*** Timestep 2:  t=0.025 seconds
+*** Timestep 2:  t=0.025 seconds, dt=0.0107955 seconds
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.

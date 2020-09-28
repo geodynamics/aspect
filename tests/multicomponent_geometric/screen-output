@@ -2,7 +2,7 @@
 Number of active cells: 4,096 (on 6 levels)
 Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 104,487 (33,410+4,257+16,705+16,705+16,705+16,705)
 Number of active cells: 1,198 (on 7 levels)
 Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Postprocessing:
      Writing graphical output: output-multicomponent_geometric/solution/solution-00000
 
-*** Timestep 1:  t=58643.7 years
+*** Timestep 1:  t=58643.7 years, dt=58643.7 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 
    Postprocessing:
 
-*** Timestep 2:  t=118022 years
+*** Timestep 2:  t=118022 years, dt=59378.7 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.

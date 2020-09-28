@@ -2,23 +2,23 @@
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02441e-16, 1.69854e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23157e-16, 1.69854e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.02441e-16, 1.69854e-16, 3.41866e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 3.41866e-11
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.23157e-16, 1.69854e-16, 2.66545e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 2.66545e-11
 
 
    Postprocessing:
 
-*** Timestep 1:  t=13251 years
+*** Timestep 1:  t=13251 years, dt=13251 years
    Solving temperature system... 14 iterations.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.
@@ -52,7 +52,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 2:  t=26110 years
+*** Timestep 2:  t=26110 years, dt=12859.1 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -80,7 +80,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 3:  t=38522.2 years
+*** Timestep 3:  t=38522.2 years, dt=12412.2 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -108,7 +108,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 4:  t=50507 years
+*** Timestep 4:  t=50507 years, dt=11984.8 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -136,7 +136,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 5:  t=62100 years
+*** Timestep 5:  t=62100 years, dt=11593 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -158,13 +158,13 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
    Solving temperature system... 8 iterations.
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.97236e-07, 2.82063e-07, 1.7414e-06
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.7414e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 9.97236e-07, 2.82063e-07, 1.74141e-06
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 1.74141e-06
 
 
    Postprocessing:
 
-*** Timestep 6:  t=73010.9 years
+*** Timestep 6:  t=73010.9 years, dt=10910.9 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -192,7 +192,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 7:  t=83267.4 years
+*** Timestep 7:  t=83267.4 years, dt=10256.5 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -220,7 +220,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 8:  t=92948.5 years
+*** Timestep 8:  t=92948.5 years, dt=9681.09 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Solving Stokes system... done.
@@ -248,7 +248,7 @@ Number of degrees of freedom: 9,141 (4,851+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 9:  t=100000 years
+*** Timestep 9:  t=100000 years, dt=7051.5 years
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Solving Stokes system... done.

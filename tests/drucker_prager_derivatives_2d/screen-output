@@ -3,7 +3,7 @@ Loading shared library <./libdrucker_prager_derivatives_2d.so>
 
 * Connecting signals
 
-Testing DruckerPrager derivatives against finite difference derivatives
+Testing DruckerPrager derivatives against finite difference derivatives 
 pressure: point = 0, Finite difference = 5.42254e+10, Analytical derivative = 5.42254e+10
 pressure: point = 1, Finite difference = 4.2881e+10, Analytical derivative = 4.2881e+10
 pressure: point = 2, Finite difference = 2.49368e+10, Analytical derivative = 2.49368e+10
@@ -32,7 +32,7 @@ Some parts of the test where not succesful.
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,444 (882+121+441)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
 
    Postprocessing:
      RMS, max velocity:                  0 m/year, 0 m/year

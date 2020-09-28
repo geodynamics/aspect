@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 5,860 (2,178+289+1,089+2,304)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
@@ -10,7 +10,7 @@ Number of degrees of freedom: 5,860 (2,178+289+1,089+2,304)
 Number of active cells: 196 (on 6 levels)
 Number of degrees of freedom: 4,728 (1,818+237+909+1,764)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 4,728 (1,818+237+909+1,764)
 Number of active cells: 352 (on 7 levels)
 Number of degrees of freedom: 8,581 (3,326+424+1,663+3,168)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.
@@ -31,7 +31,7 @@ Number of degrees of freedom: 8,581 (3,326+424+1,663+3,168)
 Number of active cells: 376 (on 7 levels)
 Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 
-*** Timestep 1:  t=113316 years
+*** Timestep 1:  t=113316 years, dt=113316 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 Number of active cells: 376 (on 7 levels)
 Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 
-*** Timestep 2:  t=226632 years
+*** Timestep 2:  t=226632 years, dt=113316 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29+0 iterations.
@@ -57,7 +57,7 @@ Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 Number of active cells: 376 (on 7 levels)
 Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 
-*** Timestep 3:  t=337599 years
+*** Timestep 3:  t=337599 years, dt=110967 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 9,109 (3,518+448+1,759+3,384)
 Number of active cells: 364 (on 7 levels)
 Number of degrees of freedom: 8,858 (3,430+437+1,715+3,276)
 
-*** Timestep 4:  t=445884 years
+*** Timestep 4:  t=445884 years, dt=108285 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
@@ -83,7 +83,7 @@ Number of degrees of freedom: 8,858 (3,430+437+1,715+3,276)
 Number of active cells: 364 (on 7 levels)
 Number of degrees of freedom: 8,897 (3,454+440+1,727+3,276)
 
-*** Timestep 5:  t=500000 years
+*** Timestep 5:  t=500000 years, dt=54116.1 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.

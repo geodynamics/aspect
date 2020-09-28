@@ -3,21 +3,21 @@ Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system... 16+0 iterations.
 
 Number of active cells: 300 (on 4 levels)
 Number of degrees of freedom: 4,782 (2,928+390+1,464)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system... 20+0 iterations.
 
 Number of active cells: 480 (on 4 levels)
 Number of degrees of freedom: 7,200 (4,416+576+2,208)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving Stokes system... 18+0 iterations.
 
@@ -28,7 +28,7 @@ Number of degrees of freedom: 7,200 (4,416+576+2,208)
      Heat fluxes through boundary parts: 1.16e+06 W, 2.184e+06 W
      Writing depth average:              output-shell_2d_gmg/depth_average
 
-*** Timestep 1:  t=100000 years
+*** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 8 iterations.
    Solving Stokes system... 14+0 iterations.
 

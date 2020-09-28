@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 4 levels)
 Number of degrees of freedom: 2,804 (2,210+297+297)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+14 iterations.
@@ -38,11 +38,11 @@ Number of degrees of freedom: 2,804 (2,210+297+297)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.000933711
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.000933728
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.00085983
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.000859881
 
 
    Postprocessing:

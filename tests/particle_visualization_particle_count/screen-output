@@ -2,7 +2,7 @@
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -12,7 +12,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Number of advected particles: 30
      Writing graphical output:     output-particle_visualization_particle_count/solution/solution-00000
 
-*** Timestep 1:  t=70 seconds
+*** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 14+0 iterations.

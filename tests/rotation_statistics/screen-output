@@ -2,7 +2,7 @@
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 852 (674+89+89)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
 
    Postprocessing:

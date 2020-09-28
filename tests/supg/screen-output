@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
 
    Postprocessing:
@@ -11,7 +11,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: -6.27e-08 W, 0 W, -4.888e-07 W, -5.556e-06 W
      Writing graphical output:           output-supg/solution/solution-00000
 
-*** Timestep 1:  t=0.0883883 seconds
+*** Timestep 1:  t=0.0883883 seconds, dt=0.0883883 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -19,7 +19,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Temperature min/avg/max:            -0.07756 K, 0.1026 K, 1.184 K
      Heat fluxes through boundary parts: -7.948e-05 W, 5.274e-05 W, 0.0001216 W, 0.004249 W
 
-*** Timestep 2:  t=0.176777 seconds
+*** Timestep 2:  t=0.176777 seconds, dt=0.0883883 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -28,7 +28,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: 0.0001216 W, 7.636e-05 W, 0.0001464 W, 0.007253 W
      Writing graphical output:           output-supg/solution/solution-00001
 
-*** Timestep 3:  t=0.265165 seconds
+*** Timestep 3:  t=0.265165 seconds, dt=0.0883883 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -37,7 +37,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: -0.0009766 W, 9.932e-05 W, 0.0002566 W, 0.009818 W
      Writing graphical output:           output-supg/solution/solution-00002
 
-*** Timestep 4:  t=0.353553 seconds
+*** Timestep 4:  t=0.353553 seconds, dt=0.0883883 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -46,7 +46,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: -0.001514 W, 1.365e-05 W, 0.0002234 W, 0.01135 W
      Writing graphical output:           output-supg/solution/solution-00003
 
-*** Timestep 5:  t=0.441942 seconds
+*** Timestep 5:  t=0.441942 seconds, dt=0.0883883 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -55,7 +55,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Heat fluxes through boundary parts: -7.045e-05 W, -6.344e-05 W, 7.732e-05 W, 0.01156 W
      Writing graphical output:           output-supg/solution/solution-00004
 
-*** Timestep 6:  t=0.5 seconds
+*** Timestep 6:  t=0.5 seconds, dt=0.0580583 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:

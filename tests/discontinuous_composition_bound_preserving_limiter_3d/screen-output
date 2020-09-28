@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 4,769 (2,187+125+729+1,728)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -11,7 +11,7 @@ Number of degrees of freedom: 4,769 (2,187+125+729+1,728)
 Number of active cells: 120 (on 4 levels)
 Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -21,7 +21,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
      RMS, max velocity:         0.0258 m/year, 0.0897 m/year
      Compositions min/max/mass: 0/1/1.204e+16
 
-*** Timestep 1:  t=173561 years
+*** Timestep 1:  t=173561 years, dt=173561 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Solving Stokes system... 23+0 iterations.
@@ -30,7 +30,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
      RMS, max velocity:         0.0256 m/year, 0.0888 m/year
      Compositions min/max/mass: -0.0007594/1/1.203e+16
 
-*** Timestep 2:  t=349383 years
+*** Timestep 2:  t=349383 years, dt=175821 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Solving Stokes system... 21+0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 9,083 (4,215+223+1,405+3,240)
 Number of active cells: 176 (on 4 levels)
 Number of degrees of freedom: 13,331 (6,195+319+2,065+4,752)
 
-*** Timestep 3:  t=500000 years
+*** Timestep 3:  t=500000 years, dt=150617 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 4 iterations.
    Rebuilding Stokes preconditioner...

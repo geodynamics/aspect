@@ -3,7 +3,7 @@ Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
 Number of mesh deformation degrees of freedom: 1394
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -18,7 +18,7 @@ Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
 Number of mesh deformation degrees of freedom: 1466
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -48,7 +48,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: 0 m, 0 m
      RMS, max velocity:  0.000714 m/year, 0.00231 m/year
 
-*** Timestep 1:  t=135061 years
+*** Timestep 1:  t=135061 years, dt=135061 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -63,7 +63,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -78.72 m, 175.3 m
      RMS, max velocity:  0.00055 m/year, 0.00136 m/year
 
-*** Timestep 2:  t=371198 years
+*** Timestep 2:  t=371198 years, dt=236138 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -78,7 +78,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -106.5 m, 83.63 m
      RMS, max velocity:  0.000689 m/year, 0.0022 m/year
 
-*** Timestep 3:  t=513603 years
+*** Timestep 3:  t=513603 years, dt=142405 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -86,14 +86,14 @@ Number of mesh deformation degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.47092
 
    Solving Stokes system... 0+1 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82385e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.82384e-08
 
 
    Postprocessing:
      Topography min/max: -12.75 m, 41.28 m
      RMS, max velocity:  0.000457 m/year, 0.00177 m/year
 
-*** Timestep 4:  t=693860 years
+*** Timestep 4:  t=693860 years, dt=180257 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -108,7 +108,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -18.68 m, 58.44 m
      RMS, max velocity:  0.00044 m/year, 0.0017 m/year
 
-*** Timestep 5:  t=883321 years
+*** Timestep 5:  t=883321 years, dt=189461 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -126,7 +126,7 @@ Number of mesh deformation degrees of freedom: 1466
 
 
 
-*** Timestep 6:  t=1.07165e+06 years
+*** Timestep 6:  t=1.07165e+06 years, dt=188329 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -141,7 +141,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -16.56 m, 53.62 m
      RMS, max velocity:  0.000438 m/year, 0.00166 m/year
 
-*** Timestep 7:  t=1.26452e+06 years
+*** Timestep 7:  t=1.26452e+06 years, dt=192869 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -156,7 +156,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -15.6 m, 51.63 m
      RMS, max velocity:  0.000437 m/year, 0.00164 m/year
 
-*** Timestep 8:  t=1.45918e+06 years
+*** Timestep 8:  t=1.45918e+06 years, dt=194658 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -164,14 +164,14 @@ Number of mesh deformation degrees of freedom: 1466
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0264859
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83785e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.83786e-08
 
 
    Postprocessing:
      Topography min/max: -16.14 m, 52.86 m
      RMS, max velocity:  0.000433 m/year, 0.00161 m/year
 
-*** Timestep 9:  t=1.65712e+06 years
+*** Timestep 9:  t=1.65712e+06 years, dt=197939 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
@@ -186,7 +186,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -15.92 m, 52.43 m
      RMS, max velocity:  0.000431 m/year, 0.00159 m/year
 
-*** Timestep 10:  t=1.85763e+06 years
+*** Timestep 10:  t=1.85763e+06 years, dt=200512 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...

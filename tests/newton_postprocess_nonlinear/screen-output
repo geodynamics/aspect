@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 5 levels)
 Number of degrees of freedom: 35,978 (8,450+1,089+1,089+4,225+4,225+4,225+4,225+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
    Skipping stress_yy composition solve because RHS is zero.

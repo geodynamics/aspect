@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 8,969 (2,178+1,057+2,178+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 8,969 (2,178+1,057+2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   1000 K, 1000 K, 1000 K
      Writing graphical output:  output-melting_rate_operator_splitting/solution/solution-00000
 
-*** Timestep 1:  t=100000 years
+*** Timestep 1:  t=100000 years, dt=100000 years
    Solving composition reactions... in 100 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -35,7 +35,7 @@ Number of degrees of freedom: 8,969 (2,178+1,057+2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   1000 K, 1000 K, 1000 K
      Writing graphical output:  output-melting_rate_operator_splitting/solution/solution-00001
 
-*** Timestep 2:  t=200000 years
+*** Timestep 2:  t=200000 years, dt=100000 years
    Solving composition reactions... in 100 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.

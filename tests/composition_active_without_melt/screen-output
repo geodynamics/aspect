@@ -4,7 +4,7 @@ Loading shared library <./libcomposition_active_without_melt.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,110 (578+81+289+81+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -15,7 +15,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.375 // 0/0/0
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5019 K, 1 K
      Compositions min/max/mass: -0.0259/1.03/0.375 // 0/0/0
 
-*** Timestep 2:  t=0.125 seconds
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -37,7 +37,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5034 K, 1 K
      Compositions min/max/mass: -0.04292/1.053/0.375 // 0/0/0
 
-*** Timestep 3:  t=0.1875 seconds
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5046 K, 1 K
      Compositions min/max/mass: -0.05757/1.072/0.375 // 0/0/0
 
-*** Timestep 4:  t=0.25 seconds
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5055 K, 1 K
      Compositions min/max/mass: -0.06861/1.087/0.375 // 0/0/0
 
-*** Timestep 5:  t=0.3125 seconds
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5064 K, 1 K
      Compositions min/max/mass: -0.07678/1.098/0.375 // 0/0/0
 
-*** Timestep 6:  t=0.375 seconds
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5071 K, 1 K
      Compositions min/max/mass: -0.08245/1.106/0.375 // 0/0/0
 
-*** Timestep 7:  t=0.4375 seconds
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -92,7 +92,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5079 K, 1 K
      Compositions min/max/mass: -0.08574/1.111/0.375 // 0/0/0
 
-*** Timestep 8:  t=0.5 seconds
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -103,7 +103,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5088 K, 1 K
      Compositions min/max/mass: -0.08743/1.113/0.375 // 0/0/0
 
-*** Timestep 9:  t=0.5625 seconds
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -114,7 +114,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5095 K, 1 K
      Compositions min/max/mass: -0.08798/1.113/0.375 // 0/0/0
 
-*** Timestep 10:  t=0.625 seconds
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -125,7 +125,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5102 K, 1 K
      Compositions min/max/mass: -0.08765/1.111/0.375 // 0/0/0
 
-*** Timestep 11:  t=0.6875 seconds
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -136,7 +136,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5108 K, 1 K
      Compositions min/max/mass: -0.08669/1.105/0.375 // 0/0/0
 
-*** Timestep 12:  t=0.75 seconds
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -147,7 +147,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5116 K, 1 K
      Compositions min/max/mass: -0.08522/1.098/0.375 // 0/0/0
 
-*** Timestep 13:  t=0.8125 seconds
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -158,7 +158,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5122 K, 1 K
      Compositions min/max/mass: -0.08332/1.09/0.375 // 0/0/0
 
-*** Timestep 14:  t=0.875 seconds
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -169,7 +169,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5129 K, 1 K
      Compositions min/max/mass: -0.08099/1.081/0.375 // 0/0/0
 
-*** Timestep 15:  t=0.9375 seconds
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
@@ -180,7 +180,7 @@ Number of degrees of freedom: 1,110 (578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5135 K, 1 K
      Compositions min/max/mass: -0.07828/1.072/0.375 // 0/0/0
 
-*** Timestep 16:  t=1 seconds
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.

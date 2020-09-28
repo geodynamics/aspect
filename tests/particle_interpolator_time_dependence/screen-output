@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 67+0 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
      Writing graphical output:     output-particle_interpolator_time_dependence/solution/solution-00000
 
-*** Timestep 1:  t=0.015 seconds
+*** Timestep 1:  t=0.015 seconds, dt=0.015 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 18+0 iterations.
 

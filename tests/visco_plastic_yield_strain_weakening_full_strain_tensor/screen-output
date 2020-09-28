@@ -2,7 +2,7 @@
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving s11 system ... 0 iterations.
    Skipping s12 composition solve because RHS is zero.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
 
 
 
-*** Timestep 1:  t=100 years
+*** Timestep 1:  t=100 years, dt=100 years
    Solving temperature system... 0 iterations.
    Solving s11 system ... 6 iterations.
    Solving s12 system ... 12 iterations.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s22 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.51217e-15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.6263e-15
 
 
    Postprocessing:

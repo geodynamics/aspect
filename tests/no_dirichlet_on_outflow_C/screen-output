@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,7 +14,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00000
 
-*** Timestep 1:  t=0.24295 seconds
+*** Timestep 1:  t=0.24295 seconds, dt=0.24295 seconds
    Solving temperature system... 23 iterations.
    Solving C_1 system ... 13 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,7 +26,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.001 W, 1.001 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00001
 
-*** Timestep 2:  t=0.361638 seconds
+*** Timestep 2:  t=0.361638 seconds, dt=0.118688 seconds
    Solving temperature system... 23 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.004 W, 1.004 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00002
 
-*** Timestep 3:  t=0.422768 seconds
+*** Timestep 3:  t=0.422768 seconds, dt=0.0611306 seconds
    Solving temperature system... 21 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
@@ -50,7 +50,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.011 W, 1.011 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00003
 
-*** Timestep 4:  t=0.463574 seconds
+*** Timestep 4:  t=0.463574 seconds, dt=0.040806 seconds
    Solving temperature system... 19 iterations.
    Solving C_1 system ... 19 iterations.
    Rebuilding Stokes preconditioner...
@@ -62,7 +62,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.021 W, 1.021 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00004
 
-*** Timestep 5:  t=0.494482 seconds
+*** Timestep 5:  t=0.494482 seconds, dt=0.0309077 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -74,7 +74,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.034 W, 1.034 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00005
 
-*** Timestep 6:  t=0.519699 seconds
+*** Timestep 6:  t=0.519699 seconds, dt=0.0252167 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -86,7 +86,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.048 W, 1.048 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00006
 
-*** Timestep 7:  t=0.541279 seconds
+*** Timestep 7:  t=0.541279 seconds, dt=0.0215805 seconds
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -98,7 +98,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.064 W, 1.064 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00007
 
-*** Timestep 8:  t=0.560362 seconds
+*** Timestep 8:  t=0.560362 seconds, dt=0.0190827 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -110,7 +110,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.081 W, 1.081 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00008
 
-*** Timestep 9:  t=0.577637 seconds
+*** Timestep 9:  t=0.577637 seconds, dt=0.0172752 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -122,7 +122,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.098 W, 1.098 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00009
 
-*** Timestep 10:  t=0.593553 seconds
+*** Timestep 10:  t=0.593553 seconds, dt=0.0159164 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -134,7 +134,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.115 W, 1.115 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00010
 
-*** Timestep 11:  t=0.608419 seconds
+*** Timestep 11:  t=0.608419 seconds, dt=0.0148652 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -146,7 +146,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.132 W, 1.132 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00011
 
-*** Timestep 12:  t=0.622453 seconds
+*** Timestep 12:  t=0.622453 seconds, dt=0.0140343 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -158,7 +158,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.149 W, 1.149 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00012
 
-*** Timestep 13:  t=0.63582 seconds
+*** Timestep 13:  t=0.63582 seconds, dt=0.0133668 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 17 iterations.
    Rebuilding Stokes preconditioner...
@@ -170,7 +170,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.165 W, 1.165 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00013
 
-*** Timestep 14:  t=0.648644 seconds
+*** Timestep 14:  t=0.648644 seconds, dt=0.0128242 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -182,7 +182,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.18 W, 1.18 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00014
 
-*** Timestep 15:  t=0.661023 seconds
+*** Timestep 15:  t=0.661023 seconds, dt=0.0123792 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -194,7 +194,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.195 W, 1.195 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00015
 
-*** Timestep 16:  t=0.673035 seconds
+*** Timestep 16:  t=0.673035 seconds, dt=0.0120121 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -206,7 +206,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.209 W, 1.209 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00016
 
-*** Timestep 17:  t=0.684743 seconds
+*** Timestep 17:  t=0.684743 seconds, dt=0.0117082 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -218,7 +218,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.221 W, 1.221 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00017
 
-*** Timestep 18:  t=0.6962 seconds
+*** Timestep 18:  t=0.6962 seconds, dt=0.0114563 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -230,7 +230,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.233 W, 1.233 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00018
 
-*** Timestep 19:  t=0.707447 seconds
+*** Timestep 19:  t=0.707447 seconds, dt=0.0112477 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -242,7 +242,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.243 W, 1.243 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00019
 
-*** Timestep 20:  t=0.718523 seconds
+*** Timestep 20:  t=0.718523 seconds, dt=0.0110754 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -254,7 +254,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.253 W, 1.253 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00020
 
-*** Timestep 21:  t=0.729457 seconds
+*** Timestep 21:  t=0.729457 seconds, dt=0.0109339 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -266,7 +266,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.261 W, 1.261 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00021
 
-*** Timestep 22:  t=0.740276 seconds
+*** Timestep 22:  t=0.740276 seconds, dt=0.0108188 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -278,7 +278,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.269 W, 1.269 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00022
 
-*** Timestep 23:  t=0.751002 seconds
+*** Timestep 23:  t=0.751002 seconds, dt=0.0107262 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -290,7 +290,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.275 W, 1.275 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00023
 
-*** Timestep 24:  t=0.761655 seconds
+*** Timestep 24:  t=0.761655 seconds, dt=0.0106532 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -302,7 +302,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.281 W, 1.281 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00024
 
-*** Timestep 25:  t=0.772252 seconds
+*** Timestep 25:  t=0.772252 seconds, dt=0.0105971 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -314,7 +314,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.285 W, 1.285 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00025
 
-*** Timestep 26:  t=0.782808 seconds
+*** Timestep 26:  t=0.782808 seconds, dt=0.0105558 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -326,7 +326,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.289 W, 1.289 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00026
 
-*** Timestep 27:  t=0.793335 seconds
+*** Timestep 27:  t=0.793335 seconds, dt=0.0105274 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -338,7 +338,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.292 W, 1.292 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00027
 
-*** Timestep 28:  t=0.803846 seconds
+*** Timestep 28:  t=0.803846 seconds, dt=0.0105104 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -350,7 +350,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.294 W, 1.294 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00028
 
-*** Timestep 29:  t=0.814349 seconds
+*** Timestep 29:  t=0.814349 seconds, dt=0.0105034 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -362,7 +362,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.296 W, 1.296 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00029
 
-*** Timestep 30:  t=0.824854 seconds
+*** Timestep 30:  t=0.824854 seconds, dt=0.0105053 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -374,7 +374,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.297 W, 1.297 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00030
 
-*** Timestep 31:  t=0.83537 seconds
+*** Timestep 31:  t=0.83537 seconds, dt=0.0105152 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -386,7 +386,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.297 W, 1.297 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00031
 
-*** Timestep 32:  t=0.845902 seconds
+*** Timestep 32:  t=0.845902 seconds, dt=0.0105322 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -398,7 +398,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.297 W, 1.297 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00032
 
-*** Timestep 33:  t=0.856457 seconds
+*** Timestep 33:  t=0.856457 seconds, dt=0.0105556 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -410,7 +410,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.297 W, 1.297 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00033
 
-*** Timestep 34:  t=0.867042 seconds
+*** Timestep 34:  t=0.867042 seconds, dt=0.010585 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -422,7 +422,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.296 W, 1.296 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00034
 
-*** Timestep 35:  t=0.877662 seconds
+*** Timestep 35:  t=0.877662 seconds, dt=0.0106197 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -434,7 +434,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.295 W, 1.295 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00035
 
-*** Timestep 36:  t=0.888322 seconds
+*** Timestep 36:  t=0.888322 seconds, dt=0.0106595 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -446,7 +446,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.293 W, 1.293 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00036
 
-*** Timestep 37:  t=0.899026 seconds
+*** Timestep 37:  t=0.899026 seconds, dt=0.010704 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -458,7 +458,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.292 W, 1.292 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00037
 
-*** Timestep 38:  t=0.909778 seconds
+*** Timestep 38:  t=0.909778 seconds, dt=0.0107528 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -470,7 +470,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.29 W, 1.29 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00038
 
-*** Timestep 39:  t=0.920584 seconds
+*** Timestep 39:  t=0.920584 seconds, dt=0.0108059 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -482,7 +482,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.287 W, 1.287 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00039
 
-*** Timestep 40:  t=0.931447 seconds
+*** Timestep 40:  t=0.931447 seconds, dt=0.0108631 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -494,7 +494,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.285 W, 1.285 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00040
 
-*** Timestep 41:  t=0.942372 seconds
+*** Timestep 41:  t=0.942372 seconds, dt=0.0109243 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -506,7 +506,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.282 W, 1.282 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00041
 
-*** Timestep 42:  t=0.953361 seconds
+*** Timestep 42:  t=0.953361 seconds, dt=0.0109894 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -518,7 +518,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.28 W, 1.28 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00042
 
-*** Timestep 43:  t=0.96442 seconds
+*** Timestep 43:  t=0.96442 seconds, dt=0.0110584 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -530,7 +530,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.277 W, 1.277 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00043
 
-*** Timestep 44:  t=0.975551 seconds
+*** Timestep 44:  t=0.975551 seconds, dt=0.0111313 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -542,7 +542,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.273 W, 1.273 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00044
 
-*** Timestep 45:  t=0.986759 seconds
+*** Timestep 45:  t=0.986759 seconds, dt=0.0112081 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -554,7 +554,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.27 W, 1.27 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00045
 
-*** Timestep 46:  t=0.998048 seconds
+*** Timestep 46:  t=0.998048 seconds, dt=0.0112889 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -566,7 +566,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.267 W, 1.267 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00046
 
-*** Timestep 47:  t=1.00942 seconds
+*** Timestep 47:  t=1.00942 seconds, dt=0.0113737 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -578,7 +578,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.263 W, 1.263 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00047
 
-*** Timestep 48:  t=1.02088 seconds
+*** Timestep 48:  t=1.02088 seconds, dt=0.0114628 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -590,7 +590,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.26 W, 1.26 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00048
 
-*** Timestep 49:  t=1.03244 seconds
+*** Timestep 49:  t=1.03244 seconds, dt=0.0115562 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -602,7 +602,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.256 W, 1.256 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00049
 
-*** Timestep 50:  t=1.04409 seconds
+*** Timestep 50:  t=1.04409 seconds, dt=0.0116541 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -614,7 +614,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.252 W, 1.252 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00050
 
-*** Timestep 51:  t=1.05585 seconds
+*** Timestep 51:  t=1.05585 seconds, dt=0.0117567 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -626,7 +626,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.248 W, 1.248 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00051
 
-*** Timestep 52:  t=1.06772 seconds
+*** Timestep 52:  t=1.06772 seconds, dt=0.0118642 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -638,7 +638,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.244 W, 1.244 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00052
 
-*** Timestep 53:  t=1.07969 seconds
+*** Timestep 53:  t=1.07969 seconds, dt=0.0119769 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -650,7 +650,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.24 W, 1.24 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00053
 
-*** Timestep 54:  t=1.09179 seconds
+*** Timestep 54:  t=1.09179 seconds, dt=0.0120949 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -662,7 +662,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.236 W, 1.236 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00054
 
-*** Timestep 55:  t=1.10401 seconds
+*** Timestep 55:  t=1.10401 seconds, dt=0.0122186 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -674,7 +674,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.232 W, 1.232 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00055
 
-*** Timestep 56:  t=1.11635 seconds
+*** Timestep 56:  t=1.11635 seconds, dt=0.0123484 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -686,7 +686,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.227 W, 1.227 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00056
 
-*** Timestep 57:  t=1.12884 seconds
+*** Timestep 57:  t=1.12884 seconds, dt=0.0124845 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -698,7 +698,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.223 W, 1.223 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00057
 
-*** Timestep 58:  t=1.14147 seconds
+*** Timestep 58:  t=1.14147 seconds, dt=0.0126274 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -710,7 +710,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.218 W, 1.218 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00058
 
-*** Timestep 59:  t=1.15424 seconds
+*** Timestep 59:  t=1.15424 seconds, dt=0.0127775 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -722,7 +722,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.213 W, 1.213 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00059
 
-*** Timestep 60:  t=1.16718 seconds
+*** Timestep 60:  t=1.16718 seconds, dt=0.0129352 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -734,7 +734,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.209 W, 1.209 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00060
 
-*** Timestep 61:  t=1.18028 seconds
+*** Timestep 61:  t=1.18028 seconds, dt=0.0131012 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -746,7 +746,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.204 W, 1.204 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00061
 
-*** Timestep 62:  t=1.19356 seconds
+*** Timestep 62:  t=1.19356 seconds, dt=0.013276 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -758,7 +758,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.199 W, 1.199 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00062
 
-*** Timestep 63:  t=1.20698 seconds
+*** Timestep 63:  t=1.20698 seconds, dt=0.013424 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -770,7 +770,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.194 W, 1.194 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00063
 
-*** Timestep 64:  t=1.22055 seconds
+*** Timestep 64:  t=1.22055 seconds, dt=0.0135688 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -782,7 +782,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.189 W, 1.189 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00064
 
-*** Timestep 65:  t=1.23427 seconds
+*** Timestep 65:  t=1.23427 seconds, dt=0.0137214 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -794,7 +794,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.184 W, 1.184 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00065
 
-*** Timestep 66:  t=1.24815 seconds
+*** Timestep 66:  t=1.24815 seconds, dt=0.0138824 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -806,7 +806,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.179 W, 1.179 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00066
 
-*** Timestep 67:  t=1.26221 seconds
+*** Timestep 67:  t=1.26221 seconds, dt=0.0140525 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -818,7 +818,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.174 W, 1.174 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00067
 
-*** Timestep 68:  t=1.27644 seconds
+*** Timestep 68:  t=1.27644 seconds, dt=0.0142324 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -830,7 +830,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.168 W, 1.168 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00068
 
-*** Timestep 69:  t=1.29086 seconds
+*** Timestep 69:  t=1.29086 seconds, dt=0.0144228 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -842,7 +842,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.163 W, 1.163 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00069
 
-*** Timestep 70:  t=1.30549 seconds
+*** Timestep 70:  t=1.30549 seconds, dt=0.0146247 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -854,7 +854,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.158 W, 1.158 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00070
 
-*** Timestep 71:  t=1.32032 seconds
+*** Timestep 71:  t=1.32032 seconds, dt=0.014839 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -866,7 +866,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.152 W, 1.152 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00071
 
-*** Timestep 72:  t=1.33539 seconds
+*** Timestep 72:  t=1.33539 seconds, dt=0.0150669 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -878,7 +878,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.147 W, 1.147 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00072
 
-*** Timestep 73:  t=1.3507 seconds
+*** Timestep 73:  t=1.3507 seconds, dt=0.0153095 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -890,7 +890,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.141 W, 1.141 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00073
 
-*** Timestep 74:  t=1.36627 seconds
+*** Timestep 74:  t=1.36627 seconds, dt=0.0155684 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -902,7 +902,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.136 W, 1.136 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00074
 
-*** Timestep 75:  t=1.38211 seconds
+*** Timestep 75:  t=1.38211 seconds, dt=0.015845 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -914,7 +914,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.13 W, 1.13 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00075
 
-*** Timestep 76:  t=1.39826 seconds
+*** Timestep 76:  t=1.39826 seconds, dt=0.0161413 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -926,7 +926,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.125 W, 1.125 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00076
 
-*** Timestep 77:  t=1.41471 seconds
+*** Timestep 77:  t=1.41471 seconds, dt=0.0164593 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -938,7 +938,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.119 W, 1.119 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00077
 
-*** Timestep 78:  t=1.43152 seconds
+*** Timestep 78:  t=1.43152 seconds, dt=0.0168014 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -950,7 +950,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.114 W, 1.114 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00078
 
-*** Timestep 79:  t=1.44869 seconds
+*** Timestep 79:  t=1.44869 seconds, dt=0.0171703 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -962,7 +962,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.108 W, 1.108 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00079
 
-*** Timestep 80:  t=1.46626 seconds
+*** Timestep 80:  t=1.46626 seconds, dt=0.0175692 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -974,7 +974,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.102 W, 1.102 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00080
 
-*** Timestep 81:  t=1.48426 seconds
+*** Timestep 81:  t=1.48426 seconds, dt=0.0180018 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -986,7 +986,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.097 W, 1.097 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00081
 
-*** Timestep 82:  t=1.50273 seconds
+*** Timestep 82:  t=1.50273 seconds, dt=0.0184723 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -998,7 +998,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.091 W, 1.091 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00082
 
-*** Timestep 83:  t=1.52172 seconds
+*** Timestep 83:  t=1.52172 seconds, dt=0.0189858 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1010,7 +1010,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.086 W, 1.086 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00083
 
-*** Timestep 84:  t=1.54126 seconds
+*** Timestep 84:  t=1.54126 seconds, dt=0.0195483 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1022,7 +1022,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.08 W, 1.08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00084
 
-*** Timestep 85:  t=1.56143 seconds
+*** Timestep 85:  t=1.56143 seconds, dt=0.0201666 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1034,7 +1034,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.075 W, 1.075 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00085
 
-*** Timestep 86:  t=1.58228 seconds
+*** Timestep 86:  t=1.58228 seconds, dt=0.020849 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1046,7 +1046,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.069 W, 1.069 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00086
 
-*** Timestep 87:  t=1.60388 seconds
+*** Timestep 87:  t=1.60388 seconds, dt=0.0216055 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1058,7 +1058,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.064 W, 1.064 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00087
 
-*** Timestep 88:  t=1.62633 seconds
+*** Timestep 88:  t=1.62633 seconds, dt=0.0224477 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1070,7 +1070,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.059 W, 1.059 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00088
 
-*** Timestep 89:  t=1.64972 seconds
+*** Timestep 89:  t=1.64972 seconds, dt=0.0233895 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1082,7 +1082,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.053 W, 1.053 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00089
 
-*** Timestep 90:  t=1.67417 seconds
+*** Timestep 90:  t=1.67417 seconds, dt=0.0244475 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1094,7 +1094,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.048 W, 1.048 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00090
 
-*** Timestep 91:  t=1.69981 seconds
+*** Timestep 91:  t=1.69981 seconds, dt=0.0256408 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -1106,7 +1106,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.043 W, 1.043 W
      Writing graphical output:           output-no_dirichlet_on_outflow_C/solution/solution-00091
 
-*** Timestep 92:  t=1.7 seconds
+*** Timestep 92:  t=1.7 seconds, dt=0.000189862 seconds
    Solving temperature system... 3 iterations.
    Solving C_1 system ... 7 iterations.
    Rebuilding Stokes preconditioner...

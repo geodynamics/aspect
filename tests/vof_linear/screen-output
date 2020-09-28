@@ -4,7 +4,7 @@ Loading shared library <./libvof_linear.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
      Global volume of fluid volumes (m^3): 0.5
      VoF Calculation(IEstL1/FEstL1):       1.51815409e-16 / 0.00000000e+00
 
-*** Timestep 1:  t=0.0883883 seconds
+*** Timestep 1:  t=0.0883883 seconds, dt=0.0883883 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.457
 
-*** Timestep 2:  t=0.176777 seconds
+*** Timestep 2:  t=0.176777 seconds, dt=0.0883883 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
@@ -29,14 +29,14 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.416
 
-*** Timestep 3:  t=0.25 seconds
+*** Timestep 3:  t=0.25 seconds, dt=0.0732233 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.
 
    Postprocessing:
      Global volume of fluid volumes (m^3): 0.383
-     VoF Calculation(IEstL1/FEstL1):       1.29006506e-16 / 1.17093835e-17
+     VoF Calculation(IEstL1/FEstL1):       1.43843135e-16 / 1.69135539e-17
 
 Termination requested by criterion: end time
 

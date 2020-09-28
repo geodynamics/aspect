@@ -4,7 +4,7 @@ Loading shared library <./libedit_parameters.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
@@ -16,7 +16,7 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 1:  t=751090 seconds
+*** Timestep 1:  t=751090 seconds, dt=751090 seconds
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
@@ -28,7 +28,7 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 2:  t=1.38563e+06 seconds
+*** Timestep 2:  t=1.38563e+06 seconds, dt=634541 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 49 (on 4 levels)
 Number of degrees of freedom: 808 (492+70+246)
 
-*** Timestep 3:  t=1.9585e+06 seconds
+*** Timestep 3:  t=1.9585e+06 seconds, dt=572867 seconds
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 21+0 iterations.
@@ -52,7 +52,7 @@ Number of degrees of freedom: 808 (492+70+246)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 4:  t=2.40911e+06 seconds
+*** Timestep 4:  t=2.40911e+06 seconds, dt=450616 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
@@ -64,7 +64,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 5:  t=2.86541e+06 seconds
+*** Timestep 5:  t=2.86541e+06 seconds, dt=456300 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
@@ -77,7 +77,7 @@ Reducing CFL number!
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 6:  t=3.30995e+06 seconds
+*** Timestep 6:  t=3.30995e+06 seconds, dt=444537 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
@@ -89,7 +89,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 7:  t=3.52713e+06 seconds
+*** Timestep 7:  t=3.52713e+06 seconds, dt=217180 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -101,7 +101,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 8:  t=3.74203e+06 seconds
+*** Timestep 8:  t=3.74203e+06 seconds, dt=214896 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -113,7 +113,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 9:  t=3.95461e+06 seconds
+*** Timestep 9:  t=3.95461e+06 seconds, dt=212584 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.
@@ -125,7 +125,7 @@ Number of degrees of freedom: 844 (514+73+257)
 Number of active cells: 52 (on 4 levels)
 Number of degrees of freedom: 844 (514+73+257)
 
-*** Timestep 10:  t=4.16473e+06 seconds
+*** Timestep 10:  t=4.16473e+06 seconds, dt=210117 seconds
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 18+0 iterations.

@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -11,7 +11,7 @@ Number of degrees of freedom: 10,468 (2,178+289+1,089+2,304+2,304+2,304)
 Number of active cells: 349 (on 6 levels)
 Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -20,7 +20,7 @@ Number of degrees of freedom: 14,423 (3,066+401+1,533+3,141+3,141+3,141)
 Number of active cells: 571 (on 7 levels)
 Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -34,7 +34,7 @@ Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
 Number of active cells: 571 (on 7 levels)
 Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
 
-*** Timestep 1:  t=12.5333 seconds
+*** Timestep 1:  t=12.5333 seconds, dt=12.5333 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 6 iterations.
    Rebuilding Stokes preconditioner...
@@ -48,7 +48,7 @@ Number of degrees of freedom: 23,743 (5,112+658+2,556+5,139+5,139+5,139)
 Number of active cells: 550 (on 7 levels)
 Number of degrees of freedom: 22,909 (4,948+637+2,474+4,950+4,950+4,950)
 
-*** Timestep 2:  t=30 seconds
+*** Timestep 2:  t=30 seconds, dt=17.4667 seconds
    Skipping temperature solve because RHS is zero.
    Solving advection_field system ... 4 iterations.
    Rebuilding Stokes preconditioner...

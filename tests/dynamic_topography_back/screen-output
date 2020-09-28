@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -11,14 +11,14 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 Number of active cells: 70 (on 5 levels)
 Number of degrees of freedom: 1,390 (650+90+325+325)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 25+0 iterations.
 
    Postprocessing:
-     Pressure at top/bottom of domain: 8.477e-11 Pa, -2.31e+10 Pa
+     Pressure at top/bottom of domain: -6.782e-11 Pa, -2.31e+10 Pa
      Computing dynamic topography      
      Writing graphical output:         output-dynamic_topography_back/solution/solution-00000
 

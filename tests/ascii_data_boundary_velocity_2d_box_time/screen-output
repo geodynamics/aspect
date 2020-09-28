@@ -36,7 +36,7 @@
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 29+0 iterations.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1488 K, 1913 K
      Heat fluxes through boundary parts: 0 W, 0 W, 5.606e+05 W, 1.661e+05 W
 
-*** Timestep 1:  t=82500 years
+*** Timestep 1:  t=82500 years, dt=82500 years
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1487 K, 1955 K
      Heat fluxes through boundary parts: 0 W, 0 W, 2.073e+06 W, 2.741e+05 W
 
-*** Timestep 2:  t=165000 years
+*** Timestep 2:  t=165000 years, dt=82500 years
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1486 K, 2038 K
      Heat fluxes through boundary parts: -5.748e+07 W, 5.782e+07 W, 4.319e+05 W, 2.802e+05 W
 
-*** Timestep 3:  t=247500 years
+*** Timestep 3:  t=247500 years, dt=82500 years
    Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
@@ -76,7 +76,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1489 K, 2173 K
      Heat fluxes through boundary parts: -6.167e+07 W, 5.415e+07 W, 7.827e+05 W, -1.376e+05 W
 
-*** Timestep 4:  t=330000 years
+*** Timestep 4:  t=330000 years, dt=82500 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.2.txt.
 
@@ -89,7 +89,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1494 K, 3449 K
      Heat fluxes through boundary parts: -7.366e+07 W, 5.472e+07 W, 4.153e+05 W, 5.663e+05 W
 
-*** Timestep 5:  t=412500 years
+*** Timestep 5:  t=412500 years, dt=82500 years
    Solving temperature system... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
@@ -99,7 +99,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1505 K, 5824 K
      Heat fluxes through boundary parts: -9.523e+07 W, 5.703e+07 W, 4.348e+05 W, 1.05e+06 W
 
-*** Timestep 6:  t=495000 years
+*** Timestep 6:  t=495000 years, dt=82500 years
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
@@ -109,7 +109,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            -389.1 K, 1523 K, 8432 K
      Heat fluxes through boundary parts: -1.184e+08 W, 5.846e+07 W, 6.208e+05 W, 2.73e+06 W
 
-*** Timestep 7:  t=577500 years
+*** Timestep 7:  t=577500 years, dt=82500 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.3.txt.
 
@@ -130,7 +130,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            -953.9 K, 1548 K, 1.112e+04 K
      Heat fluxes through boundary parts: -1.427e+08 W, 5.808e+07 W, 8.306e+05 W, 2.971e+06 W
 
-*** Timestep 8:  t=600000 years
+*** Timestep 8:  t=600000 years, dt=22500 years
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.

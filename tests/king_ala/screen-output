@@ -4,7 +4,7 @@ Loading shared library <./libking_ala.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,467+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Stokes system... done.
 
@@ -15,7 +15,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Writing depth average:              output-king_ala/depth_average
      Heating rate (average/total):       -3.737e-09 W/kg, -4.246e-09 W
 
-*** Timestep 1:  t=0.107179 seconds
+*** Timestep 1:  t=0.107179 seconds, dt=0.107179 seconds
    Solving temperature system... 53 iterations.
    Solving Stokes system... done.
 
@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.06 W, 1.058 W
      Heating rate (average/total):       3.028e-05 W/kg, 3.441e-05 W
 
-*** Timestep 2:  t=0.118913 seconds
+*** Timestep 2:  t=0.118913 seconds, dt=0.0117331 seconds
    Solving temperature system... 62 iterations.
    Solving Stokes system... done.
 
@@ -35,7 +35,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -1.611 W, 1.671 W
      Heating rate (average/total):       0.0009923 W/kg, 0.001127 W
 
-*** Timestep 3:  t=0.123495 seconds
+*** Timestep 3:  t=0.123495 seconds, dt=0.00458278 seconds
    Solving temperature system... 60 iterations.
    Solving Stokes system... done.
 
@@ -45,7 +45,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -2.786 W, 3.048 W
      Heating rate (average/total):       0.004537 W/kg, 0.005154 W
 
-*** Timestep 4:  t=0.126803 seconds
+*** Timestep 4:  t=0.126803 seconds, dt=0.00330719 seconds
    Solving temperature system... 53 iterations.
    Solving Stokes system... done.
 
@@ -55,7 +55,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -4.294 W, 4.622 W
      Heating rate (average/total):       0.002425 W/kg, 0.002755 W
 
-*** Timestep 5:  t=0.129864 seconds
+*** Timestep 5:  t=0.129864 seconds, dt=0.00306123 seconds
    Solving temperature system... 45 iterations.
    Solving Stokes system... done.
 
@@ -65,7 +65,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -5.607 W, 5.691 W
      Heating rate (average/total):       -2.18e-06 W/kg, -2.476e-06 W
 
-*** Timestep 6:  t=0.133143 seconds
+*** Timestep 6:  t=0.133143 seconds, dt=0.00327895 seconds
    Solving temperature system... 41 iterations.
    Solving Stokes system... done.
 
@@ -75,7 +75,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -6.262 W, 5.967 W
      Heating rate (average/total):       -0.0003042 W/kg, -0.0003456 W
 
-*** Timestep 7:  t=0.136969 seconds
+*** Timestep 7:  t=0.136969 seconds, dt=0.00382583 seconds
    Solving temperature system... 37 iterations.
    Solving Stokes system... done.
 
@@ -85,7 +85,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -6.101 W, 5.574 W
      Heating rate (average/total):       0.0001029 W/kg, 0.0001169 W
 
-*** Timestep 8:  t=0.141597 seconds
+*** Timestep 8:  t=0.141597 seconds, dt=0.00462858 seconds
    Solving temperature system... 34 iterations.
    Solving Stokes system... done.
 
@@ -95,7 +95,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -5.351 W, 4.843 W
      Heating rate (average/total):       0.0004811 W/kg, 0.0005466 W
 
-*** Timestep 9:  t=0.147324 seconds
+*** Timestep 9:  t=0.147324 seconds, dt=0.00572695 seconds
    Solving temperature system... 35 iterations.
    Solving Stokes system... done.
 
@@ -105,7 +105,7 @@ Number of degrees of freedom: 3,556 (2,467+1,089)
      Heat fluxes through boundary parts: 0 W, 0 W, -4.396 W, 4.077 W
      Heating rate (average/total):       0.0005981 W/kg, 0.0006795 W
 
-*** Timestep 10:  t=0.15 seconds
+*** Timestep 10:  t=0.15 seconds, dt=0.00267588 seconds
    Solving temperature system... 23 iterations.
    Solving Stokes system... done.
 

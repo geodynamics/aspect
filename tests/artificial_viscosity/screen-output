@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   0.1 K, 0.1785 K, 0.5 K
      Writing graphical output:  output-artificial_viscosity/solution/solution-00000
 
-*** Timestep 1:  t=0.0015625 years
+*** Timestep 1:  t=0.0015625 years, dt=0.0015625 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
@@ -23,7 +23,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Compositions min/max/mass: 0.08406/0.5192/0.1785
      Temperature min/avg/max:   0.08406 K, 0.1785 K, 0.5192 K
 
-*** Timestep 2:  t=0.003125 years
+*** Timestep 2:  t=0.003125 years, dt=0.0015625 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
@@ -33,7 +33,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Compositions min/max/mass: 0.07378/0.5329/0.1785
      Temperature min/avg/max:   0.07378 K, 0.1785 K, 0.5329 K
 
-*** Timestep 3:  t=0.0046875 years
+*** Timestep 3:  t=0.0046875 years, dt=0.0015625 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 6 iterations.
    Rebuilding Stokes preconditioner...
@@ -44,7 +44,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   0.07007 K, 0.1785 K, 0.5396 K
      Writing graphical output:  output-artificial_viscosity/solution/solution-00001
 
-*** Timestep 4:  t=0.005 years
+*** Timestep 4:  t=0.005 years, dt=0.0003125 years
    Solving temperature system... 5 iterations.
    Solving porosity system ... 5 iterations.
    Rebuilding Stokes preconditioner...

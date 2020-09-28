@@ -1,10 +1,8 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 2,326 (882+121+441+441+441)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping plastic_strain composition solve because RHS is zero.
    Solving crust system ... 0 iterations.

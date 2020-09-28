@@ -4,55 +4,55 @@ Loading shared library <./libpostprocess_iterations_Stokes_only.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... done.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_Stokes_only/solution/solution-00000.0000
      Writing heat flux map:            output-postprocess_iterations_Stokes_only/heat_flux.00000.0000
      Top/bottom flux:                  0.9091/1
-     Pressure at top/bottom of domain: -1.927e-20 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: -3.452e-20 Pa, 9.531 Pa
      Computing dynamic topography      
 
    Solving Stokes system... done.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0138303
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0138303
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_Stokes_only/solution/solution-00000.0001
      Writing heat flux map:            output-postprocess_iterations_Stokes_only/heat_flux.00000.0001
      Top/bottom flux:                  0.9957/1
-     Pressure at top/bottom of domain: 1.236e-17 Pa, 9.543 Pa
+     Pressure at top/bottom of domain: 1.995e-17 Pa, 9.543 Pa
      Computing dynamic topography      
 
    Solving Stokes system... done.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000750098
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000750098
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_Stokes_only/solution/solution-00000.0002
      Writing heat flux map:            output-postprocess_iterations_Stokes_only/heat_flux.00000.0002
      Top/bottom flux:                  0.9999/1
-     Pressure at top/bottom of domain: 6.028e-17 Pa, 9.532 Pa
+     Pressure at top/bottom of domain: 1.006e-16 Pa, 9.532 Pa
      Computing dynamic topography      
 
    Solving Stokes system... done.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 4: 2.7127e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.7127e-05
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_Stokes_only/solution/solution-00000.0003
      Writing heat flux map:            output-postprocess_iterations_Stokes_only/heat_flux.00000.0003
      Top/bottom flux:                  1/1
-     Pressure at top/bottom of domain: 6.158e-17 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: 9.498e-17 Pa, 9.531 Pa
      Computing dynamic topography      
 
    Solving Stokes system... done.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 5: 6.74287e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 6.74287e-07
 
    Postprocessing:
      Writing graphical output:         output-postprocess_iterations_Stokes_only/solution/solution-00000.0004
      Writing heat flux map:            output-postprocess_iterations_Stokes_only/heat_flux.00000.0004
      Top/bottom flux:                  1/1
-     Pressure at top/bottom of domain: 3.209e-17 Pa, 9.531 Pa
+     Pressure at top/bottom of domain: 1.106e-16 Pa, 9.531 Pa
      Computing dynamic topography      
 
 

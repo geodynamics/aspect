@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -17,7 +17,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 9 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
-*** Timestep 2:  t=0.1875 seconds
+*** Timestep 2:  t=0.1875 seconds, dt=0.125 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 10 iterations.
@@ -47,7 +47,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
-*** Timestep 3:  t=0.3125 seconds
+*** Timestep 3:  t=0.3125 seconds, dt=0.125 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -62,7 +62,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
-*** Timestep 4:  t=0.4375 seconds
+*** Timestep 4:  t=0.4375 seconds, dt=0.125 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.
@@ -77,7 +77,7 @@ Number of degrees of freedom: 1,020 (386+55+193+193+193)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 1,020 (386+55+193+193+193)
 
-*** Timestep 5:  t=0.5 seconds
+*** Timestep 5:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 10 iterations.

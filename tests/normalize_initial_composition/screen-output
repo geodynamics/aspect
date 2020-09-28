@@ -1,11 +1,9 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 4 (on 1 levels)
 Number of degrees of freedom: 134 (50+9+25+25+25)
 
 Sum of compositional fields is not one, fields will be normalized
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.

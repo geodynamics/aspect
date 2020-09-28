@@ -2,7 +2,7 @@
 Number of active cells: 24 (on 1 levels)
 Number of degrees of freedom: 1,320 (945+60+315)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,320 (945+60+315)
 Number of active cells: 192 (on 2 levels)
 Number of degrees of freedom: 8,271 (5,967+315+1,989)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 8,271 (5,967+315+1,989)
 Number of active cells: 528 (on 3 levels)
 Number of degrees of freedom: 22,039 (15,933+795+5,311)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 22,039 (15,933+795+5,311)
    Postprocessing:
      Writing graphical output: output-parallel_refine_crash/solution/solution-00002
 
-*** Timestep 1:  t=1000 years
+*** Timestep 1:  t=1000 years, dt=1000 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 0+0 iterations.
 

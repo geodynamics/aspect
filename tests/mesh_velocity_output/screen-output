@@ -3,7 +3,7 @@ Number of active cells: 40 (on 2 levels)
 Number of degrees of freedom: 622 (378+55+189)
 
 Number of mesh deformation degrees of freedom: 110
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of active cells: 52 (on 3 levels)
 Number of degrees of freedom: 830 (506+71+253)
 
 Number of mesh deformation degrees of freedom: 142
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -39,7 +39,7 @@ Number of mesh deformation degrees of freedom: 142
      RMS, max velocity:        0.000648 m/year, 0.00217 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00000
 
-*** Timestep 1:  t=2.84834e+06 years
+*** Timestep 1:  t=2.84834e+06 years, dt=2.84834e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -50,7 +50,7 @@ Number of mesh deformation degrees of freedom: 142
      RMS, max velocity:        0.000782 m/year, 0.00234 m/year
      Writing graphical output: output-mesh_velocity_output/solution/solution-00001
 
-*** Timestep 2:  t=6.8455e+06 years
+*** Timestep 2:  t=6.8455e+06 years, dt=3.99717e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...

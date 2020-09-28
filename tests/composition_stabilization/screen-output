@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5 K, 1 K
      Compositions min/max/mass: 0/1/0.1237 // 10/1000/132.5
 
-*** Timestep 1:  t=0.03125 seconds
+*** Timestep 1:  t=0.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -25,7 +25,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5001 K, 1 K
      Compositions min/max/mass: -0.06859/1.047/0.1237 // -57.9/1046/132.5
 
-*** Timestep 2:  t=0.0625 seconds
+*** Timestep 2:  t=0.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -36,7 +36,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5002 K, 1 K
      Compositions min/max/mass: -0.09021/1.058/0.1237 // -79.3/1057/132.5
 
-*** Timestep 3:  t=0.09375 seconds
+*** Timestep 3:  t=0.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -47,7 +47,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5004 K, 1 K
      Compositions min/max/mass: -0.07443/1.046/0.1237 // -63.68/1046/132.5
 
-*** Timestep 4:  t=0.125 seconds
+*** Timestep 4:  t=0.125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5005 K, 1 K
      Compositions min/max/mass: -0.06129/1.032/0.1237 // -50.67/1032/132.5
 
-*** Timestep 5:  t=0.15625 seconds
+*** Timestep 5:  t=0.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5006 K, 1 K
      Compositions min/max/mass: -0.06566/1.018/0.1237 // -55.01/1018/132.5
 
-*** Timestep 6:  t=0.1875 seconds
+*** Timestep 6:  t=0.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5007 K, 1 K
      Compositions min/max/mass: -0.06661/1.014/0.1237 // -55.94/1014/132.5
 
-*** Timestep 7:  t=0.21875 seconds
+*** Timestep 7:  t=0.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -93,7 +93,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5009 K, 1 K
      Compositions min/max/mass: -0.0669/1.009/0.1237 // -56.23/1009/132.5
 
-*** Timestep 8:  t=0.25 seconds
+*** Timestep 8:  t=0.25 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -104,7 +104,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.501 K, 1 K
      Compositions min/max/mass: -0.0675/1.012/0.1237 // -56.83/1011/132.5
 
-*** Timestep 9:  t=0.28125 seconds
+*** Timestep 9:  t=0.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -115,7 +115,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5011 K, 1 K
      Compositions min/max/mass: -0.06608/1.011/0.1237 // -55.42/1011/132.5
 
-*** Timestep 10:  t=0.3125 seconds
+*** Timestep 10:  t=0.3125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -127,7 +127,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5012 K, 1 K
      Compositions min/max/mass: -0.06287/1.012/0.1237 // -52.24/1012/132.5
 
-*** Timestep 11:  t=0.34375 seconds
+*** Timestep 11:  t=0.34375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -138,7 +138,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5013 K, 1 K
      Compositions min/max/mass: -0.05818/1.013/0.1237 // -47.59/1013/132.5
 
-*** Timestep 12:  t=0.375 seconds
+*** Timestep 12:  t=0.375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -149,7 +149,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5015 K, 1 K
      Compositions min/max/mass: -0.05246/1.011/0.1237 // -41.94/1011/132.5
 
-*** Timestep 13:  t=0.40625 seconds
+*** Timestep 13:  t=0.40625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -161,7 +161,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5016 K, 1.001 K
      Compositions min/max/mass: -0.04908/1.007/0.1237 // -38.59/1007/132.5
 
-*** Timestep 14:  t=0.4375 seconds
+*** Timestep 14:  t=0.4375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -172,7 +172,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5017 K, 1.002 K
      Compositions min/max/mass: -0.04744/1.01/0.1237 // -36.97/1010/132.5
 
-*** Timestep 15:  t=0.46875 seconds
+*** Timestep 15:  t=0.46875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -183,7 +183,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5018 K, 1.003 K
      Compositions min/max/mass: -0.04534/1.014/0.1237 // -34.89/1014/132.5
 
-*** Timestep 16:  t=0.5 seconds
+*** Timestep 16:  t=0.5 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -195,7 +195,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5019 K, 1.004 K
      Compositions min/max/mass: -0.0428/1.016/0.1237 // -32.37/1016/132.5
 
-*** Timestep 17:  t=0.53125 seconds
+*** Timestep 17:  t=0.53125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -206,7 +206,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.502 K, 1.005 K
      Compositions min/max/mass: -0.03993/1.015/0.1237 // -29.53/1015/132.5
 
-*** Timestep 18:  t=0.5625 seconds
+*** Timestep 18:  t=0.5625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -217,7 +217,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5022 K, 1.006 K
      Compositions min/max/mass: -0.03701/1.013/0.1237 // -26.64/1012/132.5
 
-*** Timestep 19:  t=0.59375 seconds
+*** Timestep 19:  t=0.59375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -228,7 +228,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5023 K, 1.006 K
      Compositions min/max/mass: -0.03434/1.012/0.1237 // -24/1012/132.5
 
-*** Timestep 20:  t=0.625 seconds
+*** Timestep 20:  t=0.625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -240,7 +240,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5024 K, 1.007 K
      Compositions min/max/mass: -0.03214/1.015/0.1237 // -21.82/1014/132.5
 
-*** Timestep 21:  t=0.65625 seconds
+*** Timestep 21:  t=0.65625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -251,7 +251,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5025 K, 1.008 K
      Compositions min/max/mass: -0.03049/1.021/0.1237 // -20.18/1021/132.5
 
-*** Timestep 22:  t=0.6875 seconds
+*** Timestep 22:  t=0.6875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -262,7 +262,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5026 K, 1.008 K
      Compositions min/max/mass: -0.02921/1.023/0.1237 // -18.91/1023/132.5
 
-*** Timestep 23:  t=0.71875 seconds
+*** Timestep 23:  t=0.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -274,7 +274,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5028 K, 1.009 K
      Compositions min/max/mass: -0.02817/1.02/0.1237 // -17.89/1020/132.5
 
-*** Timestep 24:  t=0.75 seconds
+*** Timestep 24:  t=0.75 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -285,7 +285,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5029 K, 1.009 K
      Compositions min/max/mass: -0.0272/1.015/0.1237 // -16.92/1015/132.5
 
-*** Timestep 25:  t=0.78125 seconds
+*** Timestep 25:  t=0.78125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -296,7 +296,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.503 K, 1.01 K
      Compositions min/max/mass: -0.0262/1.018/0.1237 // -15.94/1018/132.5
 
-*** Timestep 26:  t=0.8125 seconds
+*** Timestep 26:  t=0.8125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -308,7 +308,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5031 K, 1.011 K
      Compositions min/max/mass: -0.02521/1.02/0.1237 // -14.96/1020/132.5
 
-*** Timestep 27:  t=0.84375 seconds
+*** Timestep 27:  t=0.84375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -319,7 +319,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5032 K, 1.012 K
      Compositions min/max/mass: -0.02426/1.019/0.1237 // -14.02/1019/132.5
 
-*** Timestep 28:  t=0.875 seconds
+*** Timestep 28:  t=0.875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -330,7 +330,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5033 K, 1.013 K
      Compositions min/max/mass: -0.02336/1.016/0.1237 // -13.13/1016/132.5
 
-*** Timestep 29:  t=0.90625 seconds
+*** Timestep 29:  t=0.90625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -342,7 +342,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5035 K, 1.014 K
      Compositions min/max/mass: -0.02247/1.016/0.1237 // -12.25/1015/132.5
 
-*** Timestep 30:  t=0.9375 seconds
+*** Timestep 30:  t=0.9375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -353,7 +353,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5036 K, 1.014 K
      Compositions min/max/mass: -0.02184/1.013/0.1237 // -11.62/1013/132.5
 
-*** Timestep 31:  t=0.96875 seconds
+*** Timestep 31:  t=0.96875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -364,7 +364,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5037 K, 1.015 K
      Compositions min/max/mass: -0.02123/1.018/0.1237 // -11.02/1017/132.5
 
-*** Timestep 32:  t=1 seconds
+*** Timestep 32:  t=1 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -376,7 +376,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5038 K, 1.015 K
      Compositions min/max/mass: -0.02098/1.021/0.1237 // -10.77/1020/132.5
 
-*** Timestep 33:  t=1.03125 seconds
+*** Timestep 33:  t=1.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -387,7 +387,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5039 K, 1.016 K
      Compositions min/max/mass: -0.02133/1.022/0.1237 // -11.12/1022/132.5
 
-*** Timestep 34:  t=1.0625 seconds
+*** Timestep 34:  t=1.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -398,7 +398,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.504 K, 1.017 K
      Compositions min/max/mass: -0.02158/1.022/0.1237 // -11.37/1021/132.5
 
-*** Timestep 35:  t=1.09375 seconds
+*** Timestep 35:  t=1.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -409,7 +409,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5042 K, 1.017 K
      Compositions min/max/mass: -0.02172/1.02/0.1237 // -11.5/1020/132.5
 
-*** Timestep 36:  t=1.125 seconds
+*** Timestep 36:  t=1.125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -421,7 +421,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5043 K, 1.018 K
      Compositions min/max/mass: -0.02175/1.018/0.1237 // -11.53/1018/132.5
 
-*** Timestep 37:  t=1.15625 seconds
+*** Timestep 37:  t=1.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -432,7 +432,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5044 K, 1.019 K
      Compositions min/max/mass: -0.02168/1.016/0.1237 // -11.46/1015/132.5
 
-*** Timestep 38:  t=1.1875 seconds
+*** Timestep 38:  t=1.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -443,7 +443,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5045 K, 1.019 K
      Compositions min/max/mass: -0.02354/1.012/0.1237 // -13.31/1012/132.5
 
-*** Timestep 39:  t=1.21875 seconds
+*** Timestep 39:  t=1.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -455,7 +455,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5046 K, 1.02 K
      Compositions min/max/mass: -0.02398/1.009/0.1237 // -13.74/1009/132.5
 
-*** Timestep 40:  t=1.25 seconds
+*** Timestep 40:  t=1.25 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -466,7 +466,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5047 K, 1.02 K
      Compositions min/max/mass: -0.02511/1.008/0.1237 // -14.85/1008/132.5
 
-*** Timestep 41:  t=1.28125 seconds
+*** Timestep 41:  t=1.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -477,7 +477,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5048 K, 1.021 K
      Compositions min/max/mass: -0.02554/1.007/0.1237 // -15.28/1007/132.5
 
-*** Timestep 42:  t=1.3125 seconds
+*** Timestep 42:  t=1.3125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -489,7 +489,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.505 K, 1.021 K
      Compositions min/max/mass: -0.03031/1.009/0.1237 // -20.01/1009/132.5
 
-*** Timestep 43:  t=1.34375 seconds
+*** Timestep 43:  t=1.34375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -500,7 +500,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5051 K, 1.022 K
      Compositions min/max/mass: -0.03445/1.009/0.1237 // -24.11/1009/132.5
 
-*** Timestep 44:  t=1.375 seconds
+*** Timestep 44:  t=1.375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -511,7 +511,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5052 K, 1.022 K
      Compositions min/max/mass: -0.0363/1.008/0.1237 // -25.93/1008/132.5
 
-*** Timestep 45:  t=1.40625 seconds
+*** Timestep 45:  t=1.40625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -523,7 +523,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5053 K, 1.023 K
      Compositions min/max/mass: -0.03528/1.007/0.1237 // -24.93/1007/132.5
 
-*** Timestep 46:  t=1.4375 seconds
+*** Timestep 46:  t=1.4375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -534,7 +534,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5054 K, 1.023 K
      Compositions min/max/mass: -0.03026/1.008/0.1237 // -19.96/1008/132.5
 
-*** Timestep 47:  t=1.46875 seconds
+*** Timestep 47:  t=1.46875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -545,7 +545,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5055 K, 1.024 K
      Compositions min/max/mass: -0.02302/1.009/0.1237 // -12.79/1009/132.5
 
-*** Timestep 48:  t=1.5 seconds
+*** Timestep 48:  t=1.5 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -557,7 +557,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5056 K, 1.024 K
      Compositions min/max/mass: -0.02215/1.009/0.1237 // -11.93/1009/132.5
 
-*** Timestep 49:  t=1.53125 seconds
+*** Timestep 49:  t=1.53125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -568,7 +568,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5058 K, 1.025 K
      Compositions min/max/mass: -0.01998/1.009/0.1237 // -9.782/1009/132.5
 
-*** Timestep 50:  t=1.5625 seconds
+*** Timestep 50:  t=1.5625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -579,7 +579,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5059 K, 1.025 K
      Compositions min/max/mass: -0.02089/1.007/0.1237 // -10.68/1007/132.5
 
-*** Timestep 51:  t=1.59375 seconds
+*** Timestep 51:  t=1.59375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -590,7 +590,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.506 K, 1.026 K
      Compositions min/max/mass: -0.02216/1.007/0.1237 // -11.94/1007/132.5
 
-*** Timestep 52:  t=1.625 seconds
+*** Timestep 52:  t=1.625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -602,7 +602,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5061 K, 1.027 K
      Compositions min/max/mass: -0.02654/1.01/0.1237 // -16.28/1010/132.5
 
-*** Timestep 53:  t=1.65625 seconds
+*** Timestep 53:  t=1.65625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -613,7 +613,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5062 K, 1.027 K
      Compositions min/max/mass: -0.02593/1.011/0.1237 // -15.67/1011/132.5
 
-*** Timestep 54:  t=1.6875 seconds
+*** Timestep 54:  t=1.6875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -624,7 +624,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5063 K, 1.028 K
      Compositions min/max/mass: -0.02222/1.011/0.1237 // -12/1010/132.5
 
-*** Timestep 55:  t=1.71875 seconds
+*** Timestep 55:  t=1.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -636,7 +636,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5065 K, 1.028 K
      Compositions min/max/mass: -0.01978/1.012/0.1237 // -9.586/1012/132.5
 
-*** Timestep 56:  t=1.75 seconds
+*** Timestep 56:  t=1.75 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -647,7 +647,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5066 K, 1.029 K
      Compositions min/max/mass: -0.01993/1.013/0.1237 // -9.734/1013/132.5
 
-*** Timestep 57:  t=1.78125 seconds
+*** Timestep 57:  t=1.78125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -658,7 +658,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5067 K, 1.029 K
      Compositions min/max/mass: -0.02106/1.013/0.1237 // -10.85/1013/132.5
 
-*** Timestep 58:  t=1.8125 seconds
+*** Timestep 58:  t=1.8125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -670,7 +670,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5068 K, 1.03 K
      Compositions min/max/mass: -0.0217/1.011/0.1237 // -11.49/1011/132.5
 
-*** Timestep 59:  t=1.84375 seconds
+*** Timestep 59:  t=1.84375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -681,7 +681,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5069 K, 1.03 K
      Compositions min/max/mass: -0.0198/1.009/0.1237 // -9.599/1009/132.5
 
-*** Timestep 60:  t=1.875 seconds
+*** Timestep 60:  t=1.875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -692,7 +692,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.507 K, 1.03 K
      Compositions min/max/mass: -0.01954/1.01/0.1237 // -9.347/1010/132.5
 
-*** Timestep 61:  t=1.90625 seconds
+*** Timestep 61:  t=1.90625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -704,7 +704,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5071 K, 1.031 K
      Compositions min/max/mass: -0.02198/1.012/0.1237 // -11.76/1012/132.5
 
-*** Timestep 62:  t=1.9375 seconds
+*** Timestep 62:  t=1.9375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -715,7 +715,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5073 K, 1.031 K
      Compositions min/max/mass: -0.02433/1.012/0.1237 // -14.08/1012/132.5
 
-*** Timestep 63:  t=1.96875 seconds
+*** Timestep 63:  t=1.96875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -726,7 +726,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5074 K, 1.031 K
      Compositions min/max/mass: -0.02292/1.011/0.1237 // -12.69/1011/132.5
 
-*** Timestep 64:  t=2 seconds
+*** Timestep 64:  t=2 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -738,7 +738,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5075 K, 1.032 K
      Compositions min/max/mass: -0.02124/1.009/0.1237 // -11.03/1009/132.5
 
-*** Timestep 65:  t=2.03125 seconds
+*** Timestep 65:  t=2.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -749,7 +749,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5076 K, 1.032 K
      Compositions min/max/mass: -0.02116/1.009/0.1237 // -10.95/1009/132.5
 
-*** Timestep 66:  t=2.0625 seconds
+*** Timestep 66:  t=2.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -760,7 +760,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5077 K, 1.033 K
      Compositions min/max/mass: -0.02207/1.013/0.1237 // -11.85/1013/132.5
 
-*** Timestep 67:  t=2.09375 seconds
+*** Timestep 67:  t=2.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -771,7 +771,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5078 K, 1.033 K
      Compositions min/max/mass: -0.02194/1.015/0.1237 // -11.72/1014/132.5
 
-*** Timestep 68:  t=2.125 seconds
+*** Timestep 68:  t=2.125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -783,7 +783,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5079 K, 1.033 K
      Compositions min/max/mass: -0.0201/1.014/0.1237 // -9.902/1014/132.5
 
-*** Timestep 69:  t=2.15625 seconds
+*** Timestep 69:  t=2.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -794,7 +794,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5081 K, 1.034 K
      Compositions min/max/mass: -0.02062/1.012/0.1237 // -10.41/1012/132.5
 
-*** Timestep 70:  t=2.1875 seconds
+*** Timestep 70:  t=2.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -805,7 +805,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0 K, 0.5082 K, 1.034 K
      Compositions min/max/mass: -0.02185/1.009/0.1237 // -11.63/1009/132.5
 
-*** Timestep 71:  t=2.21875 seconds
+*** Timestep 71:  t=2.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -817,7 +817,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -7.883e-05 K, 0.5083 K, 1.034 K
      Compositions min/max/mass: -0.02277/1.008/0.1237 // -12.54/1008/132.5
 
-*** Timestep 72:  t=2.25 seconds
+*** Timestep 72:  t=2.25 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -828,7 +828,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.0002347 K, 0.5084 K, 1.035 K
      Compositions min/max/mass: -0.02035/1.009/0.1237 // -10.15/1009/132.5
 
-*** Timestep 73:  t=2.28125 seconds
+*** Timestep 73:  t=2.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -839,7 +839,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.0003929 K, 0.5085 K, 1.035 K
      Compositions min/max/mass: -0.02008/1.009/0.1237 // -9.88/1009/132.5
 
-*** Timestep 74:  t=2.3125 seconds
+*** Timestep 74:  t=2.3125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -851,7 +851,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.005289 K, 0.5086 K, 1.04 K
      Compositions min/max/mass: -0.01944/1.009/0.1237 // -9.248/1009/132.5
 
-*** Timestep 75:  t=2.34375 seconds
+*** Timestep 75:  t=2.34375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -862,7 +862,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.01648 K, 0.5087 K, 1.052 K
      Compositions min/max/mass: -0.01883/1.01/0.1237 // -8.645/1010/132.5
 
-*** Timestep 76:  t=2.375 seconds
+*** Timestep 76:  t=2.375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -873,7 +873,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.0272 K, 0.5089 K, 1.063 K
      Compositions min/max/mass: -0.01823/1.009/0.1237 // -8.044/1009/132.5
 
-*** Timestep 77:  t=2.40625 seconds
+*** Timestep 77:  t=2.40625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -885,7 +885,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.03744 K, 0.509 K, 1.074 K
      Compositions min/max/mass: -0.01958/1.011/0.1237 // -9.387/1011/132.5
 
-*** Timestep 78:  t=2.4375 seconds
+*** Timestep 78:  t=2.4375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -896,7 +896,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.0472 K, 0.5091 K, 1.085 K
      Compositions min/max/mass: -0.02034/1.011/0.1237 // -10.13/1011/132.5
 
-*** Timestep 79:  t=2.46875 seconds
+*** Timestep 79:  t=2.46875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -907,7 +907,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.05648 K, 0.5092 K, 1.095 K
      Compositions min/max/mass: -0.02254/1.01/0.1237 // -12.32/1010/132.5
 
-*** Timestep 80:  t=2.5 seconds
+*** Timestep 80:  t=2.5 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -919,7 +919,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.06527 K, 0.5093 K, 1.104 K
      Compositions min/max/mass: -0.02155/1.008/0.1237 // -11.34/1008/132.5
 
-*** Timestep 81:  t=2.53125 seconds
+*** Timestep 81:  t=2.53125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -930,7 +930,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.07359 K, 0.5094 K, 1.113 K
      Compositions min/max/mass: -0.0192/1.008/0.1237 // -9.004/1008/132.5
 
-*** Timestep 82:  t=2.5625 seconds
+*** Timestep 82:  t=2.5625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -941,7 +941,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.08144 K, 0.5096 K, 1.122 K
      Compositions min/max/mass: -0.02173/1.009/0.1237 // -11.51/1009/132.5
 
-*** Timestep 83:  t=2.59375 seconds
+*** Timestep 83:  t=2.59375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -952,7 +952,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.08882 K, 0.5097 K, 1.13 K
      Compositions min/max/mass: -0.022/1.01/0.1237 // -11.78/1010/132.5
 
-*** Timestep 84:  t=2.625 seconds
+*** Timestep 84:  t=2.625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -964,7 +964,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.09574 K, 0.5098 K, 1.138 K
      Compositions min/max/mass: -0.01991/1.01/0.1237 // -9.713/1010/132.5
 
-*** Timestep 85:  t=2.65625 seconds
+*** Timestep 85:  t=2.65625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -975,7 +975,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1022 K, 0.5099 K, 1.146 K
      Compositions min/max/mass: -0.02168/1.008/0.1237 // -11.46/1008/132.5
 
-*** Timestep 86:  t=2.6875 seconds
+*** Timestep 86:  t=2.6875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -986,7 +986,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1083 K, 0.51 K, 1.153 K
      Compositions min/max/mass: -0.02471/1.009/0.1237 // -14.46/1008/132.5
 
-*** Timestep 87:  t=2.71875 seconds
+*** Timestep 87:  t=2.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -998,7 +998,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1139 K, 0.5101 K, 1.16 K
      Compositions min/max/mass: -0.02619/1.008/0.1237 // -15.93/1008/132.5
 
-*** Timestep 88:  t=2.75 seconds
+*** Timestep 88:  t=2.75 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1009,7 +1009,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1192 K, 0.5102 K, 1.166 K
      Compositions min/max/mass: -0.02422/1.01/0.1237 // -13.97/1010/132.5
 
-*** Timestep 89:  t=2.78125 seconds
+*** Timestep 89:  t=2.78125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1020,7 +1020,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.124 K, 0.5104 K, 1.172 K
      Compositions min/max/mass: -0.02483/1.01/0.1237 // -14.58/1010/132.5
 
-*** Timestep 90:  t=2.8125 seconds
+*** Timestep 90:  t=2.8125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1032,7 +1032,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1285 K, 0.5105 K, 1.178 K
      Compositions min/max/mass: -0.02492/1.01/0.1237 // -14.67/1010/132.5
 
-*** Timestep 91:  t=2.84375 seconds
+*** Timestep 91:  t=2.84375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1043,7 +1043,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1326 K, 0.5106 K, 1.184 K
      Compositions min/max/mass: -0.02311/1.008/0.1237 // -12.88/1008/132.5
 
-*** Timestep 92:  t=2.875 seconds
+*** Timestep 92:  t=2.875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1054,7 +1054,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1364 K, 0.5107 K, 1.189 K
      Compositions min/max/mass: -0.0249/1.008/0.1237 // -14.65/1008/132.5
 
-*** Timestep 93:  t=2.90625 seconds
+*** Timestep 93:  t=2.90625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1066,7 +1066,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1398 K, 0.5108 K, 1.194 K
      Compositions min/max/mass: -0.027/1.007/0.1237 // -16.73/1007/132.5
 
-*** Timestep 94:  t=2.9375 seconds
+*** Timestep 94:  t=2.9375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1077,7 +1077,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.143 K, 0.5109 K, 1.198 K
      Compositions min/max/mass: -0.0261/1.009/0.1237 // -15.84/1008/132.5
 
-*** Timestep 95:  t=2.96875 seconds
+*** Timestep 95:  t=2.96875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1088,7 +1088,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1458 K, 0.511 K, 1.203 K
      Compositions min/max/mass: -0.02479/1.01/0.1237 // -14.54/1010/132.5
 
-*** Timestep 96:  t=3 seconds
+*** Timestep 96:  t=3 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1100,7 +1100,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1484 K, 0.5112 K, 1.207 K
      Compositions min/max/mass: -0.02335/1.01/0.1237 // -13.12/1010/132.5
 
-*** Timestep 97:  t=3.03125 seconds
+*** Timestep 97:  t=3.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1111,7 +1111,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1506 K, 0.5113 K, 1.21 K
      Compositions min/max/mass: -0.02409/1.008/0.1237 // -13.85/1008/132.5
 
-*** Timestep 98:  t=3.0625 seconds
+*** Timestep 98:  t=3.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1122,7 +1122,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1526 K, 0.5114 K, 1.214 K
      Compositions min/max/mass: -0.02548/1.008/0.1237 // -15.23/1008/132.5
 
-*** Timestep 99:  t=3.09375 seconds
+*** Timestep 99:  t=3.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1133,7 +1133,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1544 K, 0.5115 K, 1.217 K
      Compositions min/max/mass: -0.02375/1.007/0.1237 // -13.51/1007/132.5
 
-*** Timestep 100:  t=3.125 seconds
+*** Timestep 100:  t=3.125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1148,7 +1148,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
 
 
-*** Timestep 101:  t=3.15625 seconds
+*** Timestep 101:  t=3.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1159,7 +1159,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.157 K, 0.5117 K, 1.222 K
      Compositions min/max/mass: -0.02522/1.01/0.1237 // -14.96/1010/132.5
 
-*** Timestep 102:  t=3.1875 seconds
+*** Timestep 102:  t=3.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1170,7 +1170,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1579 K, 0.5118 K, 1.224 K
      Compositions min/max/mass: -0.02514/1.01/0.1237 // -14.89/1010/132.5
 
-*** Timestep 103:  t=3.21875 seconds
+*** Timestep 103:  t=3.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1182,7 +1182,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1585 K, 0.5119 K, 1.226 K
      Compositions min/max/mass: -0.02525/1.012/0.1237 // -15/1012/132.5
 
-*** Timestep 104:  t=3.25 seconds
+*** Timestep 104:  t=3.25 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1193,7 +1193,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1589 K, 0.5121 K, 1.228 K
      Compositions min/max/mass: -0.02267/1.012/0.1237 // -12.44/1012/132.5
 
-*** Timestep 105:  t=3.28125 seconds
+*** Timestep 105:  t=3.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1204,7 +1204,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.159 K, 0.5122 K, 1.229 K
      Compositions min/max/mass: -0.0217/1.011/0.1237 // -11.49/1011/132.5
 
-*** Timestep 106:  t=3.3125 seconds
+*** Timestep 106:  t=3.3125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1216,7 +1216,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1588 K, 0.5123 K, 1.23 K
      Compositions min/max/mass: -0.02369/1.01/0.1237 // -13.45/1010/132.5
 
-*** Timestep 107:  t=3.34375 seconds
+*** Timestep 107:  t=3.34375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1227,7 +1227,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1584 K, 0.5124 K, 1.231 K
      Compositions min/max/mass: -0.02461/1.013/0.1237 // -14.36/1013/132.5
 
-*** Timestep 108:  t=3.375 seconds
+*** Timestep 108:  t=3.375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1238,7 +1238,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1577 K, 0.5125 K, 1.232 K
      Compositions min/max/mass: -0.02418/1.017/0.1237 // -13.94/1016/132.5
 
-*** Timestep 109:  t=3.40625 seconds
+*** Timestep 109:  t=3.40625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1250,7 +1250,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1568 K, 0.5126 K, 1.232 K
      Compositions min/max/mass: -0.02176/1.018/0.1237 // -11.54/1018/132.5
 
-*** Timestep 110:  t=3.4375 seconds
+*** Timestep 110:  t=3.4375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1261,7 +1261,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1557 K, 0.5127 K, 1.232 K
      Compositions min/max/mass: -0.02288/1.017/0.1237 // -12.66/1017/132.5
 
-*** Timestep 111:  t=3.46875 seconds
+*** Timestep 111:  t=3.46875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1272,7 +1272,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1543 K, 0.5128 K, 1.231 K
      Compositions min/max/mass: -0.02278/1.015/0.1237 // -12.56/1015/132.5
 
-*** Timestep 112:  t=3.5 seconds
+*** Timestep 112:  t=3.5 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1284,7 +1284,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1527 K, 0.5129 K, 1.231 K
      Compositions min/max/mass: -0.02557/1.013/0.1237 // -15.32/1012/132.5
 
-*** Timestep 113:  t=3.53125 seconds
+*** Timestep 113:  t=3.53125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1295,7 +1295,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1508 K, 0.513 K, 1.23 K
      Compositions min/max/mass: -0.02496/1.01/0.1237 // -14.71/1010/132.5
 
-*** Timestep 114:  t=3.5625 seconds
+*** Timestep 114:  t=3.5625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1306,7 +1306,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1488 K, 0.5132 K, 1.229 K
      Compositions min/max/mass: -0.02299/1.012/0.1237 // -12.76/1012/132.5
 
-*** Timestep 115:  t=3.59375 seconds
+*** Timestep 115:  t=3.59375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1317,7 +1317,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1465 K, 0.5133 K, 1.228 K
      Compositions min/max/mass: -0.02347/1.012/0.1237 // -13.24/1012/132.5
 
-*** Timestep 116:  t=3.625 seconds
+*** Timestep 116:  t=3.625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1329,7 +1329,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.144 K, 0.5134 K, 1.227 K
      Compositions min/max/mass: -0.02414/1.011/0.1237 // -13.89/1010/132.5
 
-*** Timestep 117:  t=3.65625 seconds
+*** Timestep 117:  t=3.65625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 15 iterations.
@@ -1340,7 +1340,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1412 K, 0.5135 K, 1.225 K
      Compositions min/max/mass: -0.02577/1.008/0.1237 // -15.51/1008/132.5
 
-*** Timestep 118:  t=3.6875 seconds
+*** Timestep 118:  t=3.6875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 15 iterations.
@@ -1351,7 +1351,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1383 K, 0.5136 K, 1.223 K
      Compositions min/max/mass: -0.02467/1.01/0.1237 // -14.42/1010/132.5
 
-*** Timestep 119:  t=3.71875 seconds
+*** Timestep 119:  t=3.71875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1363,7 +1363,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1365 K, 0.5137 K, 1.221 K
      Compositions min/max/mass: -0.02369/1.011/0.1237 // -13.45/1011/132.5
 
-*** Timestep 120:  t=3.75 seconds
+*** Timestep 120:  t=3.75 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1374,7 +1374,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1372 K, 0.5138 K, 1.219 K
      Compositions min/max/mass: -0.02351/1.012/0.1237 // -13.27/1012/132.5
 
-*** Timestep 121:  t=3.78125 seconds
+*** Timestep 121:  t=3.78125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1385,7 +1385,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1375 K, 0.5139 K, 1.217 K
      Compositions min/max/mass: -0.02744/1.014/0.1237 // -17.17/1014/132.5
 
-*** Timestep 122:  t=3.8125 seconds
+*** Timestep 122:  t=3.8125 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 15 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1397,7 +1397,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1375 K, 0.514 K, 1.215 K
      Compositions min/max/mass: -0.02805/1.015/0.1237 // -17.77/1015/132.5
 
-*** Timestep 123:  t=3.84375 seconds
+*** Timestep 123:  t=3.84375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1408,7 +1408,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1373 K, 0.5141 K, 1.214 K
      Compositions min/max/mass: -0.02642/1.014/0.1237 // -16.15/1013/132.5
 
-*** Timestep 124:  t=3.875 seconds
+*** Timestep 124:  t=3.875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1419,7 +1419,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1367 K, 0.5142 K, 1.215 K
      Compositions min/max/mass: -0.02426/1.012/0.1237 // -14.01/1012/132.5
 
-*** Timestep 125:  t=3.90625 seconds
+*** Timestep 125:  t=3.90625 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1431,7 +1431,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1358 K, 0.5143 K, 1.215 K
      Compositions min/max/mass: -0.02551/1.012/0.1237 // -15.25/1012/132.5
 
-*** Timestep 126:  t=3.9375 seconds
+*** Timestep 126:  t=3.9375 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1442,7 +1442,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1346 K, 0.5144 K, 1.215 K
      Compositions min/max/mass: -0.02896/1.01/0.1237 // -18.67/1009/132.5
 
-*** Timestep 127:  t=3.96875 seconds
+*** Timestep 127:  t=3.96875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.
@@ -1453,7 +1453,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   -0.1331 K, 0.5145 K, 1.215 K
      Compositions min/max/mass: -0.02907/1.005/0.1237 // -18.78/1005/132.5
 
-*** Timestep 128:  t=4 seconds
+*** Timestep 128:  t=4 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 14 iterations.
    Solving C_2 system ... 14 iterations.

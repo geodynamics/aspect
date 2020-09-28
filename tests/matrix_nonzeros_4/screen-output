@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
@@ -32,7 +32,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 1:  t=0.03125 seconds
+*** Timestep 1:  t=0.03125 seconds, dt=0.03125 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 11 iterations.
@@ -62,7 +62,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 2:  t=0.0625 seconds
+*** Timestep 2:  t=0.0625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
@@ -92,7 +92,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 3:  t=0.09375 seconds
+*** Timestep 3:  t=0.09375 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 13 iterations.
    Solving C_2 system ... 14 iterations.
@@ -122,7 +122,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 4:  t=0.125 seconds
+*** Timestep 4:  t=0.125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -152,7 +152,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 5:  t=0.15625 seconds
+*** Timestep 5:  t=0.15625 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -182,7 +182,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 6:  t=0.1875 seconds
+*** Timestep 6:  t=0.1875 seconds, dt=0.03125 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -212,7 +212,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 7:  t=0.21875 seconds
+*** Timestep 7:  t=0.21875 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -242,7 +242,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 8:  t=0.25 seconds
+*** Timestep 8:  t=0.25 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -272,7 +272,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 9:  t=0.28125 seconds
+*** Timestep 9:  t=0.28125 seconds, dt=0.03125 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 13 iterations.
@@ -302,7 +302,7 @@ system preconditioner matrix nnz by block:
            0           0           0           0           0
 
 
-*** Timestep 10:  t=0.3 seconds
+*** Timestep 10:  t=0.3 seconds, dt=0.01875 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.

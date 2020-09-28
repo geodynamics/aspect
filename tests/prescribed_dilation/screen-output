@@ -1,14 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libprescribed_dilation.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -26,7 +22,7 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+24 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -45,5 +41,3 @@ Termination requested by criterion: end time
 
 
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

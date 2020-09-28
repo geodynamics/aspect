@@ -4,7 +4,7 @@ Loading shared library <./libgrain_size_latent_heat.so>
 Number of active cells: 320 (on 3 levels)
 Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,7 +14,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 999.5 K, 1000 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 1:  t=2.91676e+14 seconds
+*** Timestep 1:  t=2.91676e+14 seconds, dt=2.91676e+14 seconds
    Solving temperature system... 34 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -24,7 +24,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 1000 K, 1005 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 2:  t=5.8334e+14 seconds
+*** Timestep 2:  t=5.8334e+14 seconds, dt=2.91664e+14 seconds
    Solving temperature system... 24 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -34,7 +34,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 1001 K, 1010 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 3:  t=8.75001e+14 seconds
+*** Timestep 3:  t=8.75001e+14 seconds, dt=2.91662e+14 seconds
    Solving temperature system... 25 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -44,7 +44,7 @@ Number of degrees of freedom: 6,201 (2,898+405+1,449+1,449)
      Temperature min/avg/max:   999 K, 1001 K, 1015 K
      Compositions min/max/mass: 8e-05/8e-05/4e+06
 
-*** Timestep 4:  t=1e+15 seconds
+*** Timestep 4:  t=1e+15 seconds, dt=1.24999e+14 seconds
    Solving temperature system... 15 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...

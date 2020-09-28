@@ -4,7 +4,7 @@ Loading shared library <./libsegregation_heating.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Heating rate (average/total):  0.3906 W/kg, 0.7812 W
      Writing graphical output:      output-segregation_heating/solution/solution-00000
 
-*** Timestep 1:  t=0.1 seconds
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
    Solving temperature system... 6 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -54,7 +54,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Heating rate (average/total):  0.3906 W/kg, 0.7812 W
      Writing graphical output:      output-segregation_heating/solution/solution-00001
 
-*** Timestep 2:  t=0.1 seconds
+*** Timestep 2:  t=0.1 seconds, dt=1.39331e-11 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.

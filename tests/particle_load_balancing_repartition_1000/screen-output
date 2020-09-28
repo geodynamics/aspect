@@ -2,7 +2,7 @@
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -16,7 +16,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 Number of active cells: 28 (on 4 levels)
 Number of degrees of freedom: 605 (282+41+141+141)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -30,7 +30,7 @@ Number of degrees of freedom: 605 (282+41+141+141)
 Number of active cells: 31 (on 4 levels)
 Number of degrees of freedom: 673 (314+45+157+157)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -44,7 +44,7 @@ Number of degrees of freedom: 673 (314+45+157+157)
 Number of active cells: 40 (on 4 levels)
 Number of degrees of freedom: 827 (386+55+193+193)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -58,7 +58,7 @@ Number of degrees of freedom: 827 (386+55+193+193)
 Number of active cells: 52 (on 5 levels)
 Number of degrees of freedom: 1,112 (520+72+260+260)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...

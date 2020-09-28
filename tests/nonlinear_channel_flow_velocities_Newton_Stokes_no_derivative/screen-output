@@ -4,7 +4,7 @@ Loading shared library <./libnonlinear_channel_flow_velocities_Newton_Stokes_no_
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 7.28522e+17, v = 7.28522e+17, p = 7.70426e+13
 
@@ -129,7 +129,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_velocities_Newton_Stokes_no_derivative/solution/solution-00000
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 7.28522e+17, v = 7.28522e+17, p = 7.70426e+13
 
@@ -143,7 +143,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure min/avg/max:               -1.202e+07 Pa, 5.008e+08 Pa, 1.014e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
-*** Timestep 2:  t=2 seconds
+*** Timestep 2:  t=2 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 7.28522e+17, v = 7.28522e+17, p = 7.70426e+13
 

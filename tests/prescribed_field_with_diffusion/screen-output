@@ -4,7 +4,7 @@ Loading shared library <./libprescribed_field_with_diffusion.so>
 Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 10,628 (4,010+603+2,005+2,005+2,005)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping normal_field composition solve because RHS is zero.
    Copying properties into prescribed compositional field diffused_field.

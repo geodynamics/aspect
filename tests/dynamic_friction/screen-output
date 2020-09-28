@@ -3,7 +3,7 @@ Number of active cells: 256 (on 4 levels)
 Number of degrees of freedom: 4,717 (2,210+297+1,105+1,105)
 
 Number of mesh deformation degrees of freedom: 594
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
@@ -19,7 +19,7 @@ Number of active cells: 964 (on 5 levels)
 Number of degrees of freedom: 17,169 (8,062+1,045+4,031+4,031)
 
 Number of mesh deformation degrees of freedom: 2090
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.

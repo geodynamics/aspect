@@ -4,7 +4,7 @@ Loading shared library <./libentropy_adiabat.so>
 Number of active cells: 10 (on 1 levels)
 Number of degrees of freedom: 337 (126+22+63+63+63)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 0 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -61,7 +61,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.363e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2360/2534/3.993e+13 // 3363/4397/6.617e+13
 
-*** Timestep 1:  t=650000 years
+*** Timestep 1:  t=650000 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -102,7 +102,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.392e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/3.994e+13 // 3363/4397/6.617e+13
 
-*** Timestep 2:  t=1.3e+06 years
+*** Timestep 2:  t=1.3e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -143,7 +143,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.393e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2347/2534/3.996e+13 // 3363/4397/6.617e+13
 
-*** Timestep 3:  t=1.95e+06 years
+*** Timestep 3:  t=1.95e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -168,7 +168,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.394e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2343/2534/3.997e+13 // 3363/4397/6.617e+13
 
-*** Timestep 4:  t=2.6e+06 years
+*** Timestep 4:  t=2.6e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -201,7 +201,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.398e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2341/2534/3.998e+13 // 3363/4397/6.617e+13
 
-*** Timestep 5:  t=3.25e+06 years
+*** Timestep 5:  t=3.25e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -234,7 +234,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.398e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2341/2534/3.999e+13 // 3363/4397/6.616e+13
 
-*** Timestep 6:  t=3.9e+06 years
+*** Timestep 6:  t=3.9e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -259,7 +259,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.398e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2343/2534/4e+13 // 3363/4397/6.616e+13
 
-*** Timestep 7:  t=4.55e+06 years
+*** Timestep 7:  t=4.55e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -284,7 +284,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.399e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2347/2534/4.002e+13 // 3363/4397/6.616e+13
 
-*** Timestep 8:  t=5.2e+06 years
+*** Timestep 8:  t=5.2e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -317,7 +317,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2352/2534/4.003e+13 // 3363/4397/6.616e+13
 
-*** Timestep 9:  t=5.85e+06 years
+*** Timestep 9:  t=5.85e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -350,7 +350,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2352/2534/4.005e+13 // 3363/4397/6.615e+13
 
-*** Timestep 10:  t=6.5e+06 years
+*** Timestep 10:  t=6.5e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -383,7 +383,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2351/2534/4.006e+13 // 3363/4397/6.615e+13
 
-*** Timestep 11:  t=7.15e+06 years
+*** Timestep 11:  t=7.15e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -408,7 +408,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2351/2534/4.007e+13 // 3363/4397/6.615e+13
 
-*** Timestep 12:  t=7.8e+06 years
+*** Timestep 12:  t=7.8e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -433,7 +433,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2352/2534/4.009e+13 // 3363/4397/6.615e+13
 
-*** Timestep 13:  t=8.45e+06 years
+*** Timestep 13:  t=8.45e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -458,7 +458,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2353/2534/4.01e+13 // 3363/4397/6.614e+13
 
-*** Timestep 14:  t=9.1e+06 years
+*** Timestep 14:  t=9.1e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -491,7 +491,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.403e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2354/2534/4.012e+13 // 3363/4397/6.614e+13
 
-*** Timestep 15:  t=9.75e+06 years
+*** Timestep 15:  t=9.75e+06 years, dt=650000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 6 iterations.
    Copying properties into prescribed compositional field density_field.
@@ -524,7 +524,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.403e+05 kg/yr, -4.372e+05 kg/yr
      Compositions min/max/mass:          2357/2534/4.013e+13 // 3363/4397/6.614e+13
 
-*** Timestep 16:  t=1e+07 years
+*** Timestep 16:  t=1e+07 years, dt=250000 years
    Copying properties into prescribed temperature field.
    Solving entropy system ... 5 iterations.
    Copying properties into prescribed compositional field density_field.

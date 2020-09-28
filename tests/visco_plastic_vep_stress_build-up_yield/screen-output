@@ -2,7 +2,7 @@
 Number of active cells: 400 (on 1 levels)
 Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
    Skipping stress_yy composition solve because RHS is zero.
@@ -22,18 +22,15 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 1:  t=1000 years
+*** Timestep 1:  t=1000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 11 iterations.
    Solving stress_yy system ... 11 iterations.
    Solving stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64934e-08
 
 
    Postprocessing:
@@ -42,18 +39,15 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
-*** Timestep 2:  t=2000 years
+*** Timestep 2:  t=2000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 12 iterations.
    Solving stress_yy system ... 12 iterations.
    Solving stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64933e-08
 
 
    Postprocessing:
@@ -62,14 +56,8 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
