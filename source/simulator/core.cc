@@ -548,16 +548,15 @@ namespace aspect
   start_timestep ()
   {
     // first produce some output for the screen to show where we are
-    if (parameters.convert_to_years == true)
+    {
+      const char *unit = (parameters.convert_to_years) ? "years" : "seconds";
+      const double factor = (parameters.convert_to_years) ? 1./year_in_seconds : 1.0;
+
       pcout << "*** Timestep " << timestep_number
-            << ":  t=" << time/year_in_seconds
-            << " years"
+            << ":  t=" << time *factor << ' ' << unit
+            << ", dt=" << time_step *factor << ' ' << unit
             << std::endl;
-    else
-      pcout << "*** Timestep " << timestep_number
-            << ":  t=" << time
-            << " seconds"
-            << std::endl;
+    }
 
     nonlinear_iteration = 0;
 
