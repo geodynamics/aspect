@@ -1,17 +1,15 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,524 (578+81+289+576)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
 
 Number of active cells: 112 (on 5 levels)
 Number of degrees of freedom: 2,802 (1,098+147+549+1,008)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
 
@@ -21,7 +19,7 @@ Number of degrees of freedom: 2,802 (1,098+147+549+1,008)
 Number of active cells: 112 (on 5 levels)
 Number of degrees of freedom: 2,802 (1,098+147+549+1,008)
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -31,7 +29,7 @@ Number of degrees of freedom: 2,802 (1,098+147+549+1,008)
 Number of active cells: 76 (on 5 levels)
 Number of degrees of freedom: 1,904 (746+101+373+684)
 
-*** Timestep 2:  t=0.125 seconds
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -41,7 +39,7 @@ Number of degrees of freedom: 1,904 (746+101+373+684)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
-*** Timestep 3:  t=0.1875 seconds
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -51,7 +49,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 2,543 (1,006+134+503+900)
 
-*** Timestep 4:  t=0.25 seconds
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -61,7 +59,7 @@ Number of degrees of freedom: 2,543 (1,006+134+503+900)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
-*** Timestep 5:  t=0.3125 seconds
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -71,7 +69,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 2,543 (1,006+134+503+900)
 
-*** Timestep 6:  t=0.375 seconds
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -81,7 +79,7 @@ Number of degrees of freedom: 2,543 (1,006+134+503+900)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
-*** Timestep 7:  t=0.4375 seconds
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -91,7 +89,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
-*** Timestep 8:  t=0.5 seconds
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -101,7 +99,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 9:  t=0.5625 seconds
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -111,7 +109,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 10:  t=0.625 seconds
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -121,7 +119,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 11:  t=0.6875 seconds
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -131,7 +129,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 12:  t=0.75 seconds
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -141,7 +139,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 13:  t=0.8125 seconds
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -151,7 +149,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 3,078 (1,202+159+601+1,116)
 
-*** Timestep 14:  t=0.875 seconds
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -161,7 +159,7 @@ Number of degrees of freedom: 3,078 (1,202+159+601+1,116)
 Number of active cells: 124 (on 5 levels)
 Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 
-*** Timestep 15:  t=0.9375 seconds
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -171,7 +169,7 @@ Number of degrees of freedom: 2,974 (1,138+151+569+1,116)
 Number of active cells: 136 (on 5 levels)
 Number of degrees of freedom: 3,313 (1,278+172+639+1,224)
 
-*** Timestep 16:  t=1 seconds
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -181,7 +179,7 @@ Number of degrees of freedom: 3,313 (1,278+172+639+1,224)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 17:  t=1.0625 seconds
+*** Timestep 17:  t=1.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -191,7 +189,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 18:  t=1.125 seconds
+*** Timestep 18:  t=1.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -201,7 +199,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 19:  t=1.1875 seconds
+*** Timestep 19:  t=1.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -211,7 +209,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 20:  t=1.25 seconds
+*** Timestep 20:  t=1.25 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -221,7 +219,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 21:  t=1.3125 seconds
+*** Timestep 21:  t=1.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -231,7 +229,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 22:  t=1.375 seconds
+*** Timestep 22:  t=1.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -241,7 +239,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 23:  t=1.4375 seconds
+*** Timestep 23:  t=1.4375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -251,7 +249,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 24:  t=1.5 seconds
+*** Timestep 24:  t=1.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -261,7 +259,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 25:  t=1.5625 seconds
+*** Timestep 25:  t=1.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -271,7 +269,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 
-*** Timestep 26:  t=1.625 seconds
+*** Timestep 26:  t=1.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -281,7 +279,7 @@ Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 27:  t=1.6875 seconds
+*** Timestep 27:  t=1.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -291,7 +289,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 
-*** Timestep 28:  t=1.75 seconds
+*** Timestep 28:  t=1.75 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -301,7 +299,7 @@ Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 29:  t=1.8125 seconds
+*** Timestep 29:  t=1.8125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -311,7 +309,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 
-*** Timestep 30:  t=1.875 seconds
+*** Timestep 30:  t=1.875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -321,7 +319,7 @@ Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 31:  t=1.9375 seconds
+*** Timestep 31:  t=1.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -331,7 +329,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 32:  t=2 seconds
+*** Timestep 32:  t=2 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -341,7 +339,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 33:  t=2.0625 seconds
+*** Timestep 33:  t=2.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -351,7 +349,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 34:  t=2.125 seconds
+*** Timestep 34:  t=2.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -361,7 +359,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 35:  t=2.1875 seconds
+*** Timestep 35:  t=2.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -371,7 +369,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 36:  t=2.25 seconds
+*** Timestep 36:  t=2.25 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -381,7 +379,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 37:  t=2.3125 seconds
+*** Timestep 37:  t=2.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -391,7 +389,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 38:  t=2.375 seconds
+*** Timestep 38:  t=2.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -401,7 +399,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 39:  t=2.4375 seconds
+*** Timestep 39:  t=2.4375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -411,7 +409,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 40:  t=2.5 seconds
+*** Timestep 40:  t=2.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -421,7 +419,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 41:  t=2.5625 seconds
+*** Timestep 41:  t=2.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -431,7 +429,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 42:  t=2.625 seconds
+*** Timestep 42:  t=2.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -441,7 +439,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 43:  t=2.6875 seconds
+*** Timestep 43:  t=2.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -451,7 +449,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 
-*** Timestep 44:  t=2.75 seconds
+*** Timestep 44:  t=2.75 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -461,7 +459,7 @@ Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 
-*** Timestep 45:  t=2.8125 seconds
+*** Timestep 45:  t=2.8125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -471,7 +469,7 @@ Number of degrees of freedom: 3,824 (1,458+197+729+1,440)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 
-*** Timestep 46:  t=2.875 seconds
+*** Timestep 46:  t=2.875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -481,7 +479,7 @@ Number of degrees of freedom: 3,605 (1,390+188+695+1,332)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 47:  t=2.9375 seconds
+*** Timestep 47:  t=2.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -491,7 +489,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 48:  t=3 seconds
+*** Timestep 48:  t=3 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -501,7 +499,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 49:  t=3.0625 seconds
+*** Timestep 49:  t=3.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -511,7 +509,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 50:  t=3.125 seconds
+*** Timestep 50:  t=3.125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -521,7 +519,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 51:  t=3.1875 seconds
+*** Timestep 51:  t=3.1875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -531,7 +529,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 
-*** Timestep 52:  t=3.25 seconds
+*** Timestep 52:  t=3.25 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -541,7 +539,7 @@ Number of degrees of freedom: 4,359 (1,654+222+827+1,656)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 53:  t=3.3125 seconds
+*** Timestep 53:  t=3.3125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -551,7 +549,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 160 (on 5 levels)
 Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 
-*** Timestep 54:  t=3.375 seconds
+*** Timestep 54:  t=3.375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -561,7 +559,7 @@ Number of degrees of freedom: 3,744 (1,410+189+705+1,440)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 55:  t=3.4375 seconds
+*** Timestep 55:  t=3.4375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -571,7 +569,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 56:  t=3.5 seconds
+*** Timestep 56:  t=3.5 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -581,7 +579,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 57:  t=3.5625 seconds
+*** Timestep 57:  t=3.5625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -591,7 +589,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 58:  t=3.625 seconds
+*** Timestep 58:  t=3.625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -601,7 +599,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 59:  t=3.6875 seconds
+*** Timestep 59:  t=3.6875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -611,7 +609,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 60:  t=3.75 seconds
+*** Timestep 60:  t=3.75 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -621,7 +619,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 
-*** Timestep 61:  t=3.8125 seconds
+*** Timestep 61:  t=3.8125 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -631,7 +629,7 @@ Number of degrees of freedom: 4,279 (1,606+214+803+1,656)
 Number of active cells: 148 (on 5 levels)
 Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 
-*** Timestep 62:  t=3.875 seconds
+*** Timestep 62:  t=3.875 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -641,7 +639,7 @@ Number of degrees of freedom: 3,509 (1,334+176+667+1,332)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,303 (1,622+214+811+1,656)
 
-*** Timestep 63:  t=3.9375 seconds
+*** Timestep 63:  t=3.9375 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 
@@ -651,7 +649,7 @@ Number of degrees of freedom: 4,303 (1,622+214+811+1,656)
 Number of active cells: 184 (on 5 levels)
 Number of degrees of freedom: 4,303 (1,622+214+811+1,656)
 
-*** Timestep 64:  t=4 seconds
+*** Timestep 64:  t=4 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 2 iterations.
 

@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 6,686 (2,187+125+729+729+729+729+729+729)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving unrelated1 system ... 0 iterations.
    Solving vec_x system ... 0 iterations.

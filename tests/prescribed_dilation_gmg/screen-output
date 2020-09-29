@@ -5,33 +5,33 @@ Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... 24+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.01158e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 9.09805e-13
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.82 m/s
-     Errors u_L2, p_L2:        1.794314e-04, 8.890774e-05
+     Errors u_L2, p_L2:        1.794314e-04, 8.890715e-05
      Writing graphical output: output-prescribed_dilation_gmg/solution/solution-00000
 
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... 24+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.09552e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 8.15083e-13
 
 
    Postprocessing:
      RMS, max velocity:        2.13 m/s, 4.88 m/s
-     Errors u_L2, p_L2:        2.245433e-05, 5.959027e-06
+     Errors u_L2, p_L2:        2.245433e-05, 5.956866e-06
      Writing graphical output: output-prescribed_dilation_gmg/solution/solution-00001
 
 Termination requested by criterion: end time

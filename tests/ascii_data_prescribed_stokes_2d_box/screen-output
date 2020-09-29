@@ -5,7 +5,7 @@
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 84 (50+9+25)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 9 iterations.
 
    Postprocessing:
@@ -13,7 +13,7 @@ Number of degrees of freedom: 84 (50+9+25)
      Temperature min/avg/max:            -1.232e-17 K, 0.08333 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -17.17 W, -1.906e-16 W
 
-*** Timestep 1:  t=0.0025 seconds
+*** Timestep 1:  t=0.0025 seconds, dt=0.0025 seconds
    Solving temperature system... 8 iterations.
 
    Postprocessing:
@@ -21,7 +21,7 @@ Number of degrees of freedom: 84 (50+9+25)
      Temperature min/avg/max:            -0.01782 K, 0.1536 K, 1 K
      Heat fluxes through boundary parts: 0 W, 0 W, -28.3 W, 0.1839 W
 
-*** Timestep 2:  t=0.005 seconds
+*** Timestep 2:  t=0.005 seconds, dt=0.0025 seconds
    Solving temperature system... 7 iterations.
 
    Postprocessing:

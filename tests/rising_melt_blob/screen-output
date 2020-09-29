@@ -4,7 +4,7 @@ Loading shared library <./librising_melt_blob.so>
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -28,7 +28,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00000
 
-*** Timestep 1:  t=3443.44 years
+*** Timestep 1:  t=3443.44 years, dt=3443.44 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -79,7 +79,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -1.979e-06/0.1989/1.257e+08 // -5.063e-10/0.199/1.256e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00001
 
-*** Timestep 2:  t=6797.35 years
+*** Timestep 2:  t=6797.35 years, dt=3353.91 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -112,7 +112,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -4.497e-06/0.1981/1.257e+08 // -1.66e-09/0.1987/1.256e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00002
 
-*** Timestep 3:  t=10088.6 years
+*** Timestep 3:  t=10088.6 years, dt=3291.27 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -145,7 +145,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -8.79e-06/0.1974/1.257e+08 // -2.398e-09/0.1985/1.256e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00003
 
-*** Timestep 4:  t=13329.1 years
+*** Timestep 4:  t=13329.1 years, dt=3240.44 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -178,7 +178,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -1.414e-05/0.1965/1.257e+08 // -2.887e-09/0.1984/1.255e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00004
 
-*** Timestep 5:  t=16524.3 years
+*** Timestep 5:  t=16524.3 years, dt=3195.23 years
    Solving temperature system... 5 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 8 iterations.
@@ -211,7 +211,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -1.828e-05/0.1955/1.257e+08 // -3.292e-09/0.1984/1.255e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00005
 
-*** Timestep 6:  t=19677.7 years
+*** Timestep 6:  t=19677.7 years, dt=3153.4 years
    Solving temperature system... 5 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 8 iterations.
@@ -244,7 +244,7 @@ Number of degrees of freedom: 17,673 (4,290+2,097+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -2.465e-05/0.1943/1.257e+08 // -3.67e-09/0.1984/1.254e+08
      Writing graphical output:  output-rising_melt_blob/solution/solution-00006
 
-*** Timestep 7:  t=20000 years
+*** Timestep 7:  t=20000 years, dt=322.314 years
    Solving temperature system... 4 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 7 iterations.

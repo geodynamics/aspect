@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
    Skipping stress_yy composition solve because RHS is zero.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 1/1/1
 
-*** Timestep 1:  t=0.01 seconds
+*** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 12 iterations.
    Solving stress_yy system ... 12 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -1.939e-14/1.9e-14/-3.288e-18 // -1.9e-14/1.939e-14/3.288e-18 // 0.0495/0.0495/0.0495 // 1/1/1
 
-*** Timestep 2:  t=0.02 seconds
+*** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 11 iterations.
    Solving stress_yy system ... 11 iterations.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Postprocessing:
      Compositions min/max/mass: 3.268e-05/3.268e-05/3.268e-05 // -3.268e-05/-3.268e-05/-3.268e-05 // 0.09836/0.09836/0.09836 // 1/1/1
 
-*** Timestep 3:  t=0.03 seconds
+*** Timestep 3:  t=0.03 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 11 iterations.
    Solving stress_yy system ... 11 iterations.
@@ -62,7 +62,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Postprocessing:
      Compositions min/max/mass: 9.172e-05/9.172e-05/9.172e-05 // -9.172e-05/-9.172e-05/-9.172e-05 // 0.1467/0.1467/0.1467 // 1/1/1
 
-*** Timestep 4:  t=0.04 seconds
+*** Timestep 4:  t=0.04 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 11 iterations.
    Solving stress_yy system ... 11 iterations.
@@ -76,7 +76,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Postprocessing:
      Compositions min/max/mass: 0.0001748/0.0001748/0.0001748 // -0.0001748/-0.0001748/-0.0001748 // 0.1945/0.1945/0.1945 // 1/1/1
 
-*** Timestep 5:  t=0.05 seconds
+*** Timestep 5:  t=0.05 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 10 iterations.
    Solving stress_yy system ... 10 iterations.

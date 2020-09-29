@@ -2,7 +2,7 @@
 Number of active cells: 448 (on 3 levels)
 Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 95+0 iterations.
@@ -11,7 +11,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      RMS, max velocity:                                     0.0867 m/s, 0.185 m/s
      Angular momentum, Moment of inertia, Angular velocity: 1.05e-07 kg*m^2/s, 2.48 kg*m^2, 4.23e-08 1/s
 
-*** Timestep 1:  t=0.285925 seconds
+*** Timestep 1:  t=0.285925 seconds, dt=0.285925 seconds
    Solving temperature system... 47 iterations.
    Solving Stokes system... 94+0 iterations.
 
@@ -19,7 +19,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
      RMS, max velocity:                                     0.0214 m/s, 0.0465 m/s
      Angular momentum, Moment of inertia, Angular velocity: 1.01e-07 kg*m^2/s, 2.73 kg*m^2, 3.7e-08 1/s
 
-*** Timestep 2:  t=1 seconds
+*** Timestep 2:  t=1 seconds, dt=0.714075 seconds
    Solving temperature system... 49 iterations.
    Solving Stokes system... 95+0 iterations.
 

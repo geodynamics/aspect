@@ -4,7 +4,7 @@ Loading shared library <./libmelting_rate.so>
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: 1.438e-28/0.2/1.257e+08 // 1.438e-28/0.2/1.257e+08
      Writing graphical output:  output-melting_rate/solution/solution-00000
 
-*** Timestep 1:  t=163.194 years
+*** Timestep 1:  t=163.194 years, dt=163.194 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 8 iterations.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 17,673 (6,387+4,290+561+2,145+2,145+2,145)
      Compositions min/max/mass: -3.472e-09/0.2001/1.257e+08 // -5.583e-12/0.2001/1.257e+08
      Writing graphical output:  output-melting_rate/solution/solution-00001
 
-*** Timestep 2:  t=200 years
+*** Timestep 2:  t=200 years, dt=36.8061 years
    Solving temperature system... 5 iterations.
    Solving porosity system ... 8 iterations.
    Solving peridotite system ... 8 iterations.

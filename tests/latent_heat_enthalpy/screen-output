@@ -4,7 +4,7 @@ Loading shared library <./liblatent_heat_enthalpy.so>
 Number of active cells: 1,600 (on 3 levels)
 Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
@@ -12,7 +12,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
    Postprocessing:
      Temperature min/avg/max: 999 K, 999.5 K, 1000 K
 
-*** Timestep 1:  t=5.83511e+13 seconds
+*** Timestep 1:  t=5.83511e+13 seconds, dt=5.83511e+13 seconds
    Solving temperature system... 63 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
@@ -20,7 +20,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
    Postprocessing:
      Temperature min/avg/max: 999 K, 999.6 K, 1001 K
 
-*** Timestep 2:  t=1.16702e+14 seconds
+*** Timestep 2:  t=1.16702e+14 seconds, dt=5.83511e+13 seconds
    Solving temperature system... 46 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
@@ -28,7 +28,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
    Postprocessing:
      Temperature min/avg/max: 999 K, 999.7 K, 1002 K
 
-*** Timestep 3:  t=1.75053e+14 seconds
+*** Timestep 3:  t=1.75053e+14 seconds, dt=5.83511e+13 seconds
    Solving temperature system... 46 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
@@ -36,7 +36,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
    Postprocessing:
      Temperature min/avg/max: 999 K, 999.8 K, 1003 K
 
-*** Timestep 4:  t=2.33404e+14 seconds
+*** Timestep 4:  t=2.33404e+14 seconds, dt=5.83511e+13 seconds
    Solving temperature system... 44 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 23,632 (14,418+2,005+7,209)
    Postprocessing:
      Temperature min/avg/max: 999 K, 999.9 K, 1004 K
 
-*** Timestep 5:  t=2.5e+14 seconds
+*** Timestep 5:  t=2.5e+14 seconds, dt=1.65957e+13 seconds
    Solving temperature system... 23 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.

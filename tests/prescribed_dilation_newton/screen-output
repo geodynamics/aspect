@@ -4,7 +4,7 @@ Loading shared library <./libprescribed_dilation_newton.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 441.548, v = 432.304, p = 89.8806
 
@@ -24,7 +24,7 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 605.137, v = 601.449, p = 66.7075
 

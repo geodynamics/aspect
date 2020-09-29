@@ -4,7 +4,7 @@ Loading shared library <./libmelt_material_1.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving peridotite system ... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: 0/0.3/3.749e+10 // 0/0.3/3.008e+10
 
-*** Timestep 1:  t=1.01999e-09 years
+*** Timestep 1:  t=1.01999e-09 years, dt=1.01999e-09 years
    Solving temperature system... 18 iterations.
    Solving peridotite system ... 14 iterations.
    Solving porosity system ... 16 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.01951/0.3202/3.749e+10 // -0.01226/0.3131/3.008e+10
 
-*** Timestep 2:  t=2.02274e-09 years
+*** Timestep 2:  t=2.02274e-09 years, dt=1.00275e-09 years
    Solving temperature system... 17 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.01595/0.3168/3.749e+10 // -0.01207/0.3149/3.008e+10
 
-*** Timestep 3:  t=3.00987e-09 years
+*** Timestep 3:  t=3.00987e-09 years, dt=9.87128e-10 years
    Solving temperature system... 16 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.0118/0.3185/3.749e+10 // -0.007651/0.3185/3.008e+10
 
-*** Timestep 4:  t=3.98274e-09 years
+*** Timestep 4:  t=3.98274e-09 years, dt=9.72872e-10 years
    Solving temperature system... 16 iterations.
    Solving peridotite system ... 18 iterations.
    Solving porosity system ... 18 iterations.
@@ -54,7 +54,7 @@ Number of degrees of freedom: 34,825 (12,611+8,450+1,089+4,225+4,225+4,225)
    Postprocessing:
      Compositions min/max/mass: -0.01282/0.3167/3.749e+10 // -0.005148/0.3196/3.008e+10
 
-*** Timestep 5:  t=4e-09 years
+*** Timestep 5:  t=4e-09 years, dt=1.72611e-11 years
    Solving temperature system... 7 iterations.
    Solving peridotite system ... 8 iterations.
    Solving porosity system ... 8 iterations.

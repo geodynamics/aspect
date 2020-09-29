@@ -4,7 +4,7 @@ Loading shared library <./libartificial_postprocess.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 430 (162+25+81+81+81)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 0 iterations.
@@ -21,7 +21,7 @@ EV composition 1:
      Compositions min/max/mass: 0/0/0 // 50/100/1.823e+13
      EV norms:                  25.9225 0 0 
 
-*** Timestep 1:  t=2.13881e+10 years
+*** Timestep 1:  t=2.13881e+10 years, dt=2.13881e+10 years
    Solving temperature system... 18 iterations.
    Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 12 iterations.
@@ -37,7 +37,7 @@ EV composition 1:
      Compositions min/max/mass: 0/0/0 // 47.8/102.3/1.823e+13
      EV norms:                  0.00790208 2.68279e-09 2.68279e-09 
 
-*** Timestep 2:  t=6.66465e+10 years
+*** Timestep 2:  t=6.66465e+10 years, dt=4.52584e+10 years
    Solving temperature system... 19 iterations.
    Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 14 iterations.
@@ -53,7 +53,7 @@ EV composition 1:
      Compositions min/max/mass: 0/0/0 // 50.08/100/1.823e+13
      EV norms:                  0.00554841 1.92188e-09 1.58261e-09 
 
-*** Timestep 3:  t=1e+11 years
+*** Timestep 3:  t=1e+11 years, dt=3.33535e+10 years
    Solving temperature system... 16 iterations.
    Skipping comp1 composition solve because RHS is zero.
    Solving comp2 system ... 10 iterations.

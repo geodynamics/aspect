@@ -2,7 +2,7 @@
 Number of active cells: 1,600 (on 3 levels)
 Number of degrees of freedom: 34,486 (13,122+1,681+6,561+6,561+6,561)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
 
    Postprocessing:
      RMS, max velocity:                                 0 m/year, 0 m/year

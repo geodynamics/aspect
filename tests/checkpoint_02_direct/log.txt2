@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Stokes system... done.
 
@@ -12,7 +12,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1 K, 1.041 K, 1.1 K
      RMS, max velocity:        5.92e-09 m/s, 1.52e-08 m/s
 
-*** Timestep 1:  t=1.02774e+06 seconds
+*** Timestep 1:  t=1.02774e+06 seconds, dt=1.02774e+06 seconds
    Solving temperature system... 25 iterations.
    Solving Stokes system... done.
 
@@ -22,7 +22,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.001 K, 1.041 K, 1.099 K
      RMS, max velocity:        5.75e-09 m/s, 1.46e-08 m/s
 
-*** Timestep 2:  t=2.1003e+06 seconds
+*** Timestep 2:  t=2.1003e+06 seconds, dt=1.07256e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -32,7 +32,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.002 K, 1.041 K, 1.097 K
      RMS, max velocity:        5.58e-09 m/s, 1.39e-08 m/s
 
-*** Timestep 3:  t=3.22036e+06 seconds
+*** Timestep 3:  t=3.22036e+06 seconds, dt=1.12006e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -42,7 +42,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.003 K, 1.041 K, 1.096 K
      RMS, max velocity:        5.4e-09 m/s, 1.34e-08 m/s
 
-*** Timestep 4:  t=4.39059e+06 seconds
+*** Timestep 4:  t=4.39059e+06 seconds, dt=1.17022e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -54,7 +54,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Snapshot created!
 
-*** Timestep 5:  t=5.61338e+06 seconds
+*** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -64,7 +64,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.004 K, 1.041 K, 1.093 K
      RMS, max velocity:        5.03e-09 m/s, 1.22e-08 m/s
 
-*** Timestep 6:  t=6.89231e+06 seconds
+*** Timestep 6:  t=6.89231e+06 seconds, dt=1.27893e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -74,7 +74,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
      RMS, max velocity:        4.84e-09 m/s, 1.17e-08 m/s
 
-*** Timestep 7:  t=8.23159e+06 seconds
+*** Timestep 7:  t=8.23159e+06 seconds, dt=1.33928e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -84,7 +84,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.006 K, 1.041 K, 1.09 K
      RMS, max velocity:        4.65e-09 m/s, 1.11e-08 m/s
 
-*** Timestep 8:  t=9.63611e+06 seconds
+*** Timestep 8:  t=9.63611e+06 seconds, dt=1.40452e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -94,7 +94,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.088 K
      RMS, max velocity:        4.45e-09 m/s, 1.06e-08 m/s
 
-*** Timestep 9:  t=1.11115e+07 seconds
+*** Timestep 9:  t=1.11115e+07 seconds, dt=1.4754e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -106,7 +106,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Snapshot created!
 
-*** Timestep 10:  t=1.26639e+07 seconds
+*** Timestep 10:  t=1.26639e+07 seconds, dt=1.55237e+06 seconds
    Solving temperature system... 20 iterations.
    Solving Stokes system... done.
 
@@ -119,7 +119,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 Number of active cells: 982 (on 6 levels)
 Number of degrees of freedom: 13,282 (9,204+4,078)
 
-*** Timestep 11:  t=1.4e+07 seconds
+*** Timestep 11:  t=1.4e+07 seconds, dt=1.33611e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -132,7 +132,4 @@ Number of degrees of freedom: 13,282 (9,204+4,078)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

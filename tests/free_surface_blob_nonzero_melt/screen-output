@@ -5,7 +5,7 @@ Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 19,352 (5,346+2,617+5,346+697+2,673+2,673)
 
 Number of mesh deformation degrees of freedom: 1394
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -17,7 +17,7 @@ Number of active cells: 760 (on 5 levels)
 Number of degrees of freedom: 23,646 (6,550+3,138+6,550+858+3,275+3,275)
 
 Number of mesh deformation degrees of freedom: 1716
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -29,7 +29,7 @@ Number of active cells: 1,360 (on 6 levels)
 Number of degrees of freedom: 42,688 (11,842+5,621+11,842+1,541+5,921+5,921)
 
 Number of mesh deformation degrees of freedom: 3082
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
@@ -43,7 +43,7 @@ Number of mesh deformation degrees of freedom: 3082
      Writing graphical output:  output-free_surface_blob_nonzero_melt/solution/solution-00000
      Compositions min/max/mass: 0/0.02/5.948e+08
 
-*** Timestep 1:  t=5986.37 years
+*** Timestep 1:  t=5986.37 years, dt=5986.37 years
    Solving mesh velocity system... 8 iterations.
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.
@@ -57,7 +57,7 @@ Number of mesh deformation degrees of freedom: 3082
      Writing graphical output:  output-free_surface_blob_nonzero_melt/solution/solution-00001
      Compositions min/max/mass: -6.114e-07/0.02008/5.948e+08
 
-*** Timestep 2:  t=10000 years
+*** Timestep 2:  t=10000 years, dt=4013.63 years
    Solving mesh velocity system... 8 iterations.
    Solving temperature system... 9 iterations.
    Solving porosity system ... 9 iterations.

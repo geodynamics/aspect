@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
-*** Timestep 1:  t=15625 years
+*** Timestep 1:  t=15625 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -24,7 +24,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
-*** Timestep 2:  t=31250 years
+*** Timestep 2:  t=31250 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 13 iterations.
    Rebuilding Stokes preconditioner...
@@ -35,7 +35,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
-*** Timestep 3:  t=46874.9 years
+*** Timestep 3:  t=46874.9 years, dt=15625 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -46,7 +46,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Temperature min/avg/max:   1600 K, 1600 K, 1600 K
      RMS, max velocity:         0.1 m/year, 0.1 m/year
 
-*** Timestep 4:  t=50000 years
+*** Timestep 4:  t=50000 years, dt=3125.07 years
    Solving temperature system... 0 iterations.
    Solving grain_size system ... 5 iterations.
    Rebuilding Stokes preconditioner...

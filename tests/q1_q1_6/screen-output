@@ -1,14 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libq1_q1_6.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 4,096 (on 7 levels)
 Number of degrees of freedom: 29,316 (8,450+4,225+16,641)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+27 iterations.
@@ -22,5 +18,3 @@ Termination requested by criterion: end time
 
 
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

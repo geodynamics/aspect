@@ -4,7 +4,7 @@ Loading shared library <./libspiegelman_fail_test.so>
 Number of active cells: 1,024 (on 5 levels)
 Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Initial Newton Stokes residual = 1.65633e+16, v = 7.74176e+15, p = 1.46427e+16
@@ -44,7 +44,7 @@ Number of degrees of freedom: 18,133 (8,514+1,105+4,257+4,257)
      Mass fluxes through boundary parts: -0.03241 kg/s, -0.03241 kg/s, 0 kg/s, 0.05883 kg/s
      Writing graphical output:           output-spiegelman_fail_test/solution/solution-00000
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Initial Newton Stokes residual = 1.67102e+16, v = 8.05115e+15, p = 1.46427e+16

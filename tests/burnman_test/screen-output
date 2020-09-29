@@ -22,7 +22,7 @@
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
@@ -30,7 +30,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 Number of active cells: 480 (on 4 levels)
 Number of degrees of freedom: 7,056 (4,320+576+2,160)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
@@ -41,7 +41,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
      Heat fluxes through boundary parts: -9.148e+07 W, 3.063e+06 W
      Writing depth average:              output-burnman_test/depth_average
 
-*** Timestep 1:  t=896882 years
+*** Timestep 1:  t=896882 years, dt=896882 years
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
@@ -51,7 +51,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
      Temperature min/avg/max:            273 K, 2029 K, 3500 K
      Heat fluxes through boundary parts: -8.425e+07 W, 3.24e+06 W
 
-*** Timestep 2:  t=1e+06 years
+*** Timestep 2:  t=1e+06 years, dt=103118 years
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 36+0 iterations.

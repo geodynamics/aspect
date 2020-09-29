@@ -4,7 +4,7 @@ Loading shared library <./libvelocity_divergence.so>
 Number of active cells: 8,192 (on 7 levels)
 Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,19 +26,19 @@ Number of degrees of freedom: 140,997 (66,306+8,385+33,153+33,153)
      RMS, max velocity:                  0.539 m/year, 0.998 m/year
      Mass fluxes through boundary parts: -5.25e+07 kg/yr, 5.25e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 1:  t=250 years
+*** Timestep 1:  t=250 years, dt=250 years
    Solving temperature system... 16 iterations.
    Solving porosity system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000654052, 0.993777, 4.16921e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0.000653756, 0.993777, 4.16921e-08
       Relative nonlinear residual (total system) after nonlinear iteration 1: 0.993777
 
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 7.58309e-13, 3.44293e-11, 4.16921e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 6.65493e-13, 3.44293e-11, 4.16921e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 4.16921e-08
 
 

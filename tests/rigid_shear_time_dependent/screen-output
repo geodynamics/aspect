@@ -4,7 +4,7 @@ Loading shared library <./librigid_shear_time_dependent.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Writing particle output:               output-rigid_shear_time_dependent/particles/particles-00000
      Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.371782e-04, 1.860197e-02, 3.469862e-04, 2.600713e-02, 4.055665e-03
 
-*** Timestep 1:  t=0.0624734 seconds
+*** Timestep 1:  t=0.0624734 seconds, dt=0.0624734 seconds
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 0+0 iterations.
 
@@ -22,7 +22,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
      Number of advected particles:          5184
      Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.371782e-04, 1.860197e-02, 3.469862e-04, 2.600713e-02, 4.055665e-03
 
-*** Timestep 2:  t=0.1 seconds
+*** Timestep 2:  t=0.1 seconds, dt=0.0375266 seconds
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 9+0 iterations.
 

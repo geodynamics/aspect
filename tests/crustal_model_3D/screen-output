@@ -3,7 +3,7 @@ Number of active cells: 192 (on 2 levels)
 Number of degrees of freedom: 8,937 (6,435+357+2,145)
 
 Number of mesh deformation degrees of freedom: 1071
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...

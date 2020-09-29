@@ -2,7 +2,7 @@
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Initial Newton Stokes residual = 8.98822e+07, v = 8.98822e+07, p = 0
@@ -20,7 +20,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 1:  t=13251 years
+*** Timestep 1:  t=13251 years, dt=13251 years
    Solving temperature system... 14 iterations.
    Solving porosity system ... 11 iterations.
    Initial Newton Stokes residual = 4.55548e+07, v = 4.55548e+07, p = 0
@@ -38,7 +38,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 2:  t=26136.7 years
+*** Timestep 2:  t=26136.7 years, dt=12885.7 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.59293e+07, v = 4.59293e+07, p = 0
@@ -56,7 +56,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 3:  t=38584.2 years
+*** Timestep 3:  t=38584.2 years, dt=12447.5 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.62984e+07, v = 4.62984e+07, p = 0
@@ -74,7 +74,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 4:  t=50605.6 years
+*** Timestep 4:  t=50605.6 years, dt=12021.4 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.67525e+07, v = 4.67525e+07, p = 0
@@ -92,7 +92,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 5:  t=62234.1 years
+*** Timestep 5:  t=62234.1 years, dt=11628.4 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.72245e+07, v = 4.72245e+07, p = 0
@@ -110,7 +110,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 6:  t=73225 years
+*** Timestep 6:  t=73225 years, dt=10990.9 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.77163e+07, v = 4.77163e+07, p = 0
@@ -128,7 +128,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 7:  t=83553.7 years
+*** Timestep 7:  t=83553.7 years, dt=10328.7 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.83119e+07, v = 4.83119e+07, p = 0
@@ -146,7 +146,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 8:  t=93302.1 years
+*** Timestep 8:  t=93302.1 years, dt=9748.4 years
    Solving temperature system... 13 iterations.
    Solving porosity system ... 12 iterations.
    Initial Newton Stokes residual = 4.91279e+07, v = 4.91279e+07, p = 0
@@ -164,7 +164,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 9:  t=100000 years
+*** Timestep 9:  t=100000 years, dt=6697.89 years
    Solving temperature system... 12 iterations.
    Solving porosity system ... 11 iterations.
    Initial Newton Stokes residual = 4.99014e+07, v = 4.99014e+07, p = 0

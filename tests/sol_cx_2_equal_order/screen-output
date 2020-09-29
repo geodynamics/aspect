@@ -4,7 +4,7 @@ Loading shared library <./libsol_cx_2_equal_order.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 100 (50+25+25)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1

@@ -4,7 +4,7 @@ Loading shared library <./libsolidus_initial_conditions.so>
 Number of active cells: 768 (on 4 levels)
 Number of degrees of freedom: 10,656 (6,528+864+3,264)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 75+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
      Temperature min/avg/max: 250 K, 1590 K, 2255 K
      Writing depth average:   output-solidus_initial_conditions/depth_average
 
-*** Timestep 1:  t=1.5e-09 years
+*** Timestep 1:  t=1.5e-09 years, dt=1.5e-09 years
    Solving temperature system... 0 iterations.
    Solving Stokes system... 13+0 iterations.
 

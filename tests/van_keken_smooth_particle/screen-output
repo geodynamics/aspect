@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
      Compositions min/max/mass: 0/1/0.1825
      Writing particle output:   output-van_keken_smooth_particle/particles/particles-00000
 
-*** Timestep 1:  t=70 seconds
+*** Timestep 1:  t=70 seconds, dt=70 seconds
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Solving Stokes system... 35+0 iterations.

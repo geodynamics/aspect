@@ -6,7 +6,7 @@ Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 Updating boundary heat flux to time step 0!
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
 Updating boundary heat flux to time step 0!
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,10 +14,10 @@ Updating boundary heat flux to time step 0!
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90 K
-     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 7.197e-13 W
+     Heat fluxes through boundary parts: 0 W, 0 W, 0 W, 1.509e-12 W
      Writing graphical output:           output-boundary_heatflux_update/solution/solution-00000
 
-*** Timestep 1:  t=1e+12 seconds
+*** Timestep 1:  t=1e+12 seconds, dt=1e+12 seconds
 Updating boundary heat flux to time step 1!
    Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -25,10 +25,10 @@ Updating boundary heat flux to time step 1!
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90.07 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -10 W, -9.465e-12 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -10 W, -7.415e-12 W
      Writing graphical output:           output-boundary_heatflux_update/solution/solution-00001
 
-*** Timestep 2:  t=2e+12 seconds
+*** Timestep 2:  t=2e+12 seconds, dt=1e+12 seconds
 Updating boundary heat flux to time step 2!
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -36,7 +36,7 @@ Updating boundary heat flux to time step 2!
 
    Postprocessing:
      Temperature min/avg/max:            90 K, 90 K, 90.16 K
-     Heat fluxes through boundary parts: 0 W, 0 W, -20 W, -1.415e-11 W
+     Heat fluxes through boundary parts: 0 W, 0 W, -20 W, -1.15e-11 W
      Writing graphical output:           output-boundary_heatflux_update/solution/solution-00002
 
 Termination requested by criterion: end time

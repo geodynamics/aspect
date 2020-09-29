@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+13 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1

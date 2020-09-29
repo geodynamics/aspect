@@ -4,20 +4,20 @@ Loading shared library <./libannulus.so>
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.43272e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.42896e-13
 
 
    Postprocessing:
      Writing graphical output:               output-annulus/solution/solution-00000
      RMS, max velocity:                      1.08 m/s, 2.15 m/s
-     Pressure at top/bottom of domain:       6.488e-16 Pa, 1000 Pa
+     Pressure at top/bottom of domain:       6.068e-16 Pa, 1000 Pa
      Computing dynamic topography            
      Errors u_L1, p_L1, u_L2, p_L2, topo_L2: 3.418620e-02, 5.834851e-01, 1.106336e-02, 3.426667e-01, 5.533547e-02
 

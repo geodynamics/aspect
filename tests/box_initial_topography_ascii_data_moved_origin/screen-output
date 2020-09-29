@@ -13,7 +13,7 @@
 Number of active cells: 8 (on 2 levels)
 Number of degrees of freedom: 527 (375+27+125)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
@@ -23,7 +23,7 @@ Number of degrees of freedom: 1,968 (1,413+84+471)
 
    Added initial topography to grid
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 34+0 iterations.

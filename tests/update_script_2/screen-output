@@ -8,7 +8,7 @@ Running ASPECT with updated parameter file:
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -25,7 +25,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Pressure at top/bottom of domain:   1.288e-08 Pa, 1.136e+11 Pa
      Computing dynamic topography        
 
-*** Timestep 1:  t=100000 years
+*** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 15 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Solving Stokes system... 15+0 iterations.

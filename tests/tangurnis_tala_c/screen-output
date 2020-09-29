@@ -4,25 +4,25 @@ Loading shared library <./libtangurnis_tala_c.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 26+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 1.41808
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.41808
 
    Solving Stokes system... 21+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 3: 0.068011
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.068011
 
    Solving Stokes system... 15+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00197734
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 0.00197734
 
    Solving Stokes system... 11+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000153853
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 0.000153853
 
    Solving Stokes system... 5+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 6: 7.53277e-06
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 7.53277e-06
 
 
    Postprocessing:
@@ -30,9 +30,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output:      output-tangurnis_tala_c/solution/solution-00000
      Heating rate (average/total):  -3.664e-05 W/kg, -4.754e-05 W
 
-*** Timestep 1:  t=0.0001 seconds
+*** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
    Solving Stokes system... 2+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 2.41668e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.41668e-07
 
 
    Postprocessing:

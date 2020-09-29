@@ -10,7 +10,7 @@ found N6aspect12TestMaterialILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE
 found label="simpler"
 found Simulator -> SimulatorAccess
 found N6aspect19BoundaryComposition9AsciiDataILi2EEE [label="ascii data"
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.

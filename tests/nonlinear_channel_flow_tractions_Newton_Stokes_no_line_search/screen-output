@@ -4,7 +4,7 @@ Loading shared library <./libnonlinear_channel_flow_tractions_Newton_Stokes_no_l
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 1.85171e+12, v = 1.85171e+12, p = 0
 
@@ -210,7 +210,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes_no_line_search/solution/solution-00000
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
 
@@ -241,7 +241,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure min/avg/max:               -0.002416 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
-*** Timestep 2:  t=2 seconds
+*** Timestep 2:  t=2 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
 
@@ -266,7 +266,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes_no_line_search/solution/solution-00001
 
-*** Timestep 3:  t=3 seconds
+*** Timestep 3:  t=3 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
 
@@ -297,7 +297,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Pressure min/avg/max:               -0.0006581 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
-*** Timestep 4:  t=4 seconds
+*** Timestep 4:  t=4 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Initial Newton Stokes residual = 3.43965e+11, v = 3.43965e+11, p = 0
 

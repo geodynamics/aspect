@@ -3,7 +3,7 @@ Number of active cells: 640 (on 4 levels)
 Number of degrees of freedom: 8,716 (5,346+697+2,673)
 
 Number of mesh deformation degrees of freedom: 1394
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of active cells: 664 (on 5 levels)
 Number of degrees of freedom: 9,184 (5,634+733+2,817)
 
 Number of mesh deformation degrees of freedom: 1466
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -38,7 +38,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: 0 m, 0 m
      RMS, max velocity:  0.000714 m/year, 0.00231 m/year
 
-*** Timestep 1:  t=675303 years
+*** Timestep 1:  t=675303 years, dt=675303 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 18 iterations.
    Rebuilding Stokes preconditioner...
@@ -48,7 +48,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -393.6 m, 876.5 m
      RMS, max velocity:  0.000764 m/year, 0.00216 m/year
 
-*** Timestep 2:  t=2.10724e+06 years
+*** Timestep 2:  t=2.10724e+06 years, dt=1.43194e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 21 iterations.
    Rebuilding Stokes preconditioner...
@@ -58,7 +58,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -2260 m, 1102 m
      RMS, max velocity:  0.00121 m/year, 0.00303 m/year
 
-*** Timestep 3:  t=2.68831e+06 years
+*** Timestep 3:  t=2.68831e+06 years, dt=581067 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -68,7 +68,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -479.8 m, 226.1 m
      RMS, max velocity:  0.000781 m/year, 0.00211 m/year
 
-*** Timestep 4:  t=3.42746e+06 years
+*** Timestep 4:  t=3.42746e+06 years, dt=739149 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -78,7 +78,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -337.9 m, 711.3 m
      RMS, max velocity:  0.000599 m/year, 0.00159 m/year
 
-*** Timestep 5:  t=5.36138e+06 years
+*** Timestep 5:  t=5.36138e+06 years, dt=1.93392e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
@@ -91,7 +91,7 @@ Number of mesh deformation degrees of freedom: 1466
 
 
 
-*** Timestep 6:  t=6.10599e+06 years
+*** Timestep 6:  t=6.10599e+06 years, dt=744609 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 15 iterations.
    Rebuilding Stokes preconditioner...
@@ -101,7 +101,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -592.2 m, 299.3 m
      RMS, max velocity:  0.000748 m/year, 0.00182 m/year
 
-*** Timestep 7:  t=6.96246e+06 years
+*** Timestep 7:  t=6.96246e+06 years, dt=856475 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -111,7 +111,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -376.6 m, 742.7 m
      RMS, max velocity:  0.000556 m/year, 0.00147 m/year
 
-*** Timestep 8:  t=9.05809e+06 years
+*** Timestep 8:  t=9.05809e+06 years, dt=2.09562e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 24 iterations.
    Rebuilding Stokes preconditioner...
@@ -121,7 +121,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -2392 m, 1295 m
      RMS, max velocity:  0.000928 m/year, 0.00221 m/year
 
-*** Timestep 9:  t=9.9229e+06 years
+*** Timestep 9:  t=9.9229e+06 years, dt=864814 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
@@ -131,7 +131,7 @@ Number of mesh deformation degrees of freedom: 1466
      Topography min/max: -450.6 m, 239.6 m
      RMS, max velocity:  0.000571 m/year, 0.00138 m/year
 
-*** Timestep 10:  t=1.1057e+07 years
+*** Timestep 10:  t=1.1057e+07 years, dt=1.1341e+06 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...

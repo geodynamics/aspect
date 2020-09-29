@@ -1,20 +1,10 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (DoneaHuertaBench, e84c31e)
---     . using deal.II 8.5.1
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
--- How to cite ASPECT: https://aspect.geodynamics.org/cite.html
------------------------------------------------------------------------------
 
 Loading shared library <./libdoneahuerta_3.so>
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+23 iterations.
@@ -27,15 +17,4 @@ Number of degrees of freedom: 948 (578+81+289)
 Termination requested by criterion: end time
 
 
-| Total wallclock time elapsed since start    |    0.0919s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-| Assemble Stokes system          |         1 |   0.00593s |       6.5% |
-| Assemble temperature system     |         1 |   0.00456s |         5% |
-| Build Stokes preconditioner     |         1 |   0.00708s |       7.7% |
-| Solve Stokes system             |         1 |   0.00811s |       8.8% |
-| Initialization                  |         1 |    0.0385s |        42% |
-| Postprocessing                  |         1 |   0.00797s |       8.7% |
-| Setup dof systems               |         1 |   0.00258s |       2.8% |
-| Setup initial conditions        |         1 |   0.00325s |       3.5% |
 

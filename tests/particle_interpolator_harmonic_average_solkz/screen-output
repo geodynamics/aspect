@@ -4,7 +4,7 @@ Loading shared library <./libparticle_interpolator_harmonic_average_solkz.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 8,164 (2,178+289+1,089+2,304+2,304)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 37+0 iterations.

@@ -4,7 +4,7 @@ Loading shared library <./libadvection_reaction.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -15,7 +15,7 @@ Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
      Writing graphical output:  output-advection_reaction/solution/solution-00000
      Errors                     time=0.000000e+00 ndofs= 17989 C_L2_current= 3.076482e-05 C_L2_max= 3.076482e-05 T_L2_current= 3.076482e-05 T_L2_max= 3.076482e-05
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Solving composition reactions... in 500 substep(s).
    Solving temperature system... 22 iterations.
    Solving C_1 system ... 22 iterations.

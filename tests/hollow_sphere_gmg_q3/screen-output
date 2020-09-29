@@ -5,7 +5,7 @@ Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 96 (on 2 levels)
 Number of degrees of freedom: 11,054 (9,114+970+970)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... 20+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.456639
 
@@ -23,7 +23,7 @@ Number of degrees of freedom: 11,054 (9,114+970+970)
 Number of active cells: 180 (on 3 levels)
 Number of degrees of freedom: 23,080 (18,924+2,078+2,078)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... 48+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.484418
 

@@ -5,7 +5,7 @@ Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
 adding constraint idx= 162 to value= 100
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -31,7 +31,7 @@ system preconditioner matrix nnz by block:
            0           0           0
 
 
-*** Timestep 1:  t=0.1 seconds
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
 adding constraint idx= 162 to value= 100
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...

@@ -2,7 +2,7 @@
 Number of active cells: 150 (on 1 levels)
 Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping stress_xx composition solve because RHS is zero.
    Skipping stress_yy composition solve because RHS is zero.
@@ -15,7 +15,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
      RMS, max velocity:     0.00708 m/year, 0.014 m/year
      Writing depth average: output-viscoelastic_bending_beam/depth_average
 
-*** Timestep 1:  t=1000 years
+*** Timestep 1:  t=1000 years, dt=1000 years
    Solving temperature system... 0 iterations.
    Solving stress_xx system ... 4 iterations.
    Solving stress_yy system ... 4 iterations.

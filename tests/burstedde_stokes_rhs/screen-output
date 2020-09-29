@@ -4,14 +4,14 @@ Loading shared library <./libburstedde_stokes_rhs.so>
 Number of active cells: 64 (on 3 levels)
 Number of degrees of freedom: 3,041 (2,187+125+729)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+XYZ iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+XYZ iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 6.95385e-13
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.85628e-13
 
 
    Postprocessing:

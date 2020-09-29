@@ -2,7 +2,7 @@
 Number of active cells: 320 (on 3 levels)
 Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
-*** Timestep 1:  t=1.14712e+13 seconds
+*** Timestep 1:  t=1.14712e+13 seconds, dt=1.14712e+13 seconds
    Solving temperature system... 7 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -41,7 +41,7 @@ Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
-*** Timestep 2:  t=2.29425e+13 seconds
+*** Timestep 2:  t=2.29425e+13 seconds, dt=1.14712e+13 seconds
    Solving temperature system... 13 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 9,825 (2,898+1,365+2,898+405+1,449+405+405)
      Temperature min/avg/max:       1723 K, 1755 K, 1788 K
      Heating rate (average/total):  -3.191e-11 W/kg, -177.4 W
 
-*** Timestep 3:  t=2.5e+13 seconds
+*** Timestep 3:  t=2.5e+13 seconds, dt=2.0575e+12 seconds
    Solving temperature system... 6 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.

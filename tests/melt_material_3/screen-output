@@ -4,7 +4,7 @@ Loading shared library <./libmelt_material_3.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving Stokes system... done.

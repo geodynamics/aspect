@@ -5,7 +5,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Dynamic core initialized as:
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
      4100           2019.44        0.0465437      0              0              0              
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 68+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      CMB heat flux out of the core 0.953 TW,
 
-*** Timestep 1:  t=897652 years
+*** Timestep 1:  t=897652 years, dt=897652 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
      4100.03        2019.21        0.046542       3.48112e-08    -2.46563e-07   -1.84407e-12   
@@ -23,7 +23,7 @@ Number of degrees of freedom: 10,656 (6,528+864+3,264)
    Postprocessing:
      CMB heat flux out of the core 0.953 TW,
 
-*** Timestep 2:  t=1e+06 years
+*** Timestep 2:  t=1e+06 years, dt=102348 years
    Dynamic core data updated.
      Tc(K)          Ri(km)         Xi             dT/dt(K/year)  dR/dt(km/year) dX/dt(1/year)  
      4100.03        2019.19        0.0465418      3.5177e-08     -2.49243e-07   -1.86381e-12   

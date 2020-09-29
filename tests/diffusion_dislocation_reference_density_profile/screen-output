@@ -1,37 +1,28 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.0.0-pre (fix_thermal_diffusivity, b720dae)
---     . using deal.II 9.0.0-pre (master, a7c2e20)
---     . using Trilinos 12.10.1
---     . using p4est 1.1.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15502e-16, 1.05609e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 0.000712092
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000712092
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15502e-16, 1.05609e-16, 0.000712086
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000712086
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 1.47593e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.47593e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.15502e-16, 1.05609e-16, 1.47579e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.47579e-07
 
 
    Postprocessing:
@@ -39,20 +30,4 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
 Termination requested by criterion: end step
 
 
-| Total wallclock time elapsed since start    |     0.224s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-| Assemble Stokes system          |         3 |    0.0287s |        13% |
-| Assemble composition system     |         3 |    0.0324s |        14% |
-| Assemble temperature system     |         3 |    0.0374s |        17% |
-| Build Stokes preconditioner     |         3 |    0.0305s |        14% |
-| Build composition preconditioner|         3 |   0.00131s |      0.58% |
-| Build temperature preconditioner|         3 |   0.00141s |      0.63% |
-| Solve Stokes system             |         3 |   0.00642s |       2.9% |
-| Solve composition system        |         3 |  0.000684s |       0.3% |
-| Solve temperature system        |         3 |  0.000854s |      0.38% |
-| Initialization                  |         1 |    0.0233s |        10% |
-| Postprocessing                  |         1 |  0.000126s |         0% |
-| Setup dof systems               |         1 |   0.00803s |       3.6% |
-| Setup initial conditions        |         1 |    0.0108s |       4.8% |
 

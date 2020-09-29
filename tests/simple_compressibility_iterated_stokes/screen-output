@@ -4,26 +4,26 @@ Loading shared library <./libsimple_compressibility_iterated_stokes.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0138303
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0138303
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000750092
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.000750092
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 4: 2.71246e-05
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.71246e-05
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 5: 6.81727e-07
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 6.81727e-07
 
 
    Postprocessing:

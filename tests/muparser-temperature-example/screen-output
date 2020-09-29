@@ -1,18 +1,8 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.1.0-pre (temp-adiabat, 1b4796486)
---     . using deal.II 9.0.0
---     . using Trilinos 12.10.1
---     . using p4est 2.0.0
---     . running in DEBUG mode
---     . running with 1 MPI process
--- How to cite ASPECT: https://aspect.geodynamics.org/cite.html
------------------------------------------------------------------------------
 
 Number of active cells: 20 (on 2 levels)
 Number of degrees of freedom: 348 (210+33+105)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
@@ -20,7 +10,7 @@ Number of degrees of freedom: 348 (210+33+105)
 Number of active cells: 50 (on 3 levels)
 Number of degrees of freedom: 845 (514+74+257)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
@@ -28,7 +18,7 @@ Number of degrees of freedom: 845 (514+74+257)
 Number of active cells: 110 (on 4 levels)
 Number of degrees of freedom: 1,832 (1,118+155+559)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 9+0 iterations.
@@ -44,19 +34,4 @@ Number of degrees of freedom: 1,832 (1,118+155+559)
 Termination requested by criterion: end time
 
 
-| Total wallclock time elapsed since start    |     0.352s |            |
-|                                             |            |            |
-| Section                         | no. calls |  wall time | % of total |
-| Assemble Stokes system          |         3 |    0.0427s |        12% |
-| Assemble temperature system     |         3 |    0.0351s |        10% |
-| Build Stokes preconditioner     |         3 |    0.0415s |        12% |
-| Build temperature preconditioner|         3 |   0.00187s |      0.53% |
-| Solve Stokes system             |         3 |    0.0128s |       3.6% |
-| Solve temperature system        |         3 |   0.00105s |       0.3% |
-| Initialization                  |         1 |    0.0595s |        17% |
-| Postprocessing                  |         1 |    0.0415s |        12% |
-| Refine mesh structure, part 1   |         3 |    0.0178s |         5% |
-| Refine mesh structure, part 2   |         3 |   0.00368s |         1% |
-| Setup dof systems               |         4 |    0.0306s |       8.7% |
-| Setup initial conditions        |         3 |    0.0189s |       5.4% |
 

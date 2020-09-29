@@ -3,7 +3,7 @@ Number of active cells: 128 (on 4 levels)
 Number of degrees of freedom: 1,836 (1,122+153+561)
 
 Number of mesh deformation degrees of freedom: 306
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -13,7 +13,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -9.313e-10 m, 9.313e-10 m
      RMS, max velocity:  0.292 m/year, 0.816 m/year
 
-*** Timestep 1:  t=22998.4 years
+*** Timestep 1:  t=22998.4 years, dt=22998.4 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -23,7 +23,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -5484 m, 1.173e+04 m
      RMS, max velocity:  0.318 m/year, 0.74 m/year
 
-*** Timestep 2:  t=47191.2 years
+*** Timestep 2:  t=47191.2 years, dt=24192.8 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -33,7 +33,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -6953 m, 3720 m
      RMS, max velocity:  0.319 m/year, 0.845 m/year
 
-*** Timestep 3:  t=69430.9 years
+*** Timestep 3:  t=69430.9 years, dt=22239.7 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -43,7 +43,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -2893 m, 5735 m
      RMS, max velocity:  0.212 m/year, 0.482 m/year
 
-*** Timestep 4:  t=108153 years
+*** Timestep 4:  t=108153 years, dt=38722.1 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -53,7 +53,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -7643 m, 4409 m
      RMS, max velocity:  0.275 m/year, 0.777 m/year
 
-*** Timestep 5:  t=132301 years
+*** Timestep 5:  t=132301 years, dt=24148.1 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -66,7 +66,7 @@ Number of mesh deformation degrees of freedom: 306
 
 
 
-*** Timestep 6:  t=165277 years
+*** Timestep 6:  t=165277 years, dt=32976.3 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -76,7 +76,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -518.2 m, 420.5 m
      RMS, max velocity:  0.198 m/year, 0.635 m/year
 
-*** Timestep 7:  t=194830 years
+*** Timestep 7:  t=194830 years, dt=29552.4 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -86,7 +86,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -1005 m, 2099 m
      RMS, max velocity:  0.185 m/year, 0.577 m/year
 
-*** Timestep 8:  t=227476 years
+*** Timestep 8:  t=227476 years, dt=32646.6 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
@@ -96,7 +96,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -273.8 m, 377.3 m
      RMS, max velocity:  0.193 m/year, 0.618 m/year
 
-*** Timestep 9:  t=257847 years
+*** Timestep 9:  t=257847 years, dt=30370.8 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -106,7 +106,7 @@ Number of mesh deformation degrees of freedom: 306
      Topography min/max: -832.6 m, 1794 m
      RMS, max velocity:  0.187 m/year, 0.584 m/year
 
-*** Timestep 10:  t=290068 years
+*** Timestep 10:  t=290068 years, dt=32220.9 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 9 iterations.
    Rebuilding Stokes preconditioner...

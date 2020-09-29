@@ -2,7 +2,7 @@
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 31 (18+4+9)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
@@ -10,7 +10,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+21 Pa s, 3.3e+13 kg
 
-*** Timestep 1:  t=5e+06 years
+*** Timestep 1:  t=5e+06 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  3221 kg/m^3, 5.971e+20 Pa s, 3.221e+13 kg
 
-*** Timestep 2:  t=1e+07 years
+*** Timestep 2:  t=1e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  3110 kg/m^3, 2.955e+20 Pa s, 3.11e+13 kg
 
-*** Timestep 3:  t=1.5e+07 years
+*** Timestep 3:  t=1.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  3035 kg/m^3, 1.636e+20 Pa s, 3.035e+13 kg
 
-*** Timestep 4:  t=2e+07 years
+*** Timestep 4:  t=2e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2991 kg/m^3, 1.165e+20 Pa s, 2.991e+13 kg
 
-*** Timestep 5:  t=2.5e+07 years
+*** Timestep 5:  t=2.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -50,7 +50,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2972 kg/m^3, 1.016e+20 Pa s, 2.972e+13 kg
 
-*** Timestep 6:  t=3e+07 years
+*** Timestep 6:  t=3e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -58,7 +58,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2967 kg/m^3, 9.817e+19 Pa s, 2.967e+13 kg
 
-*** Timestep 7:  t=3.5e+07 years
+*** Timestep 7:  t=3.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2968 kg/m^3, 9.828e+19 Pa s, 2.968e+13 kg
 
-*** Timestep 8:  t=4e+07 years
+*** Timestep 8:  t=4e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -74,7 +74,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.907e+19 Pa s, 2.969e+13 kg
 
-*** Timestep 9:  t=4.5e+07 years
+*** Timestep 9:  t=4.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -82,7 +82,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2969 kg/m^3, 9.964e+19 Pa s, 2.969e+13 kg
 
-*** Timestep 10:  t=5e+07 years
+*** Timestep 10:  t=5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -90,7 +90,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 9.992e+19 Pa s, 2.97e+13 kg
 
-*** Timestep 11:  t=5.5e+07 years
+*** Timestep 11:  t=5.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -98,7 +98,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 12:  t=6e+07 years
+*** Timestep 12:  t=6e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -106,7 +106,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 13:  t=6.5e+07 years
+*** Timestep 13:  t=6.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -114,7 +114,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 14:  t=7e+07 years
+*** Timestep 14:  t=7e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -122,7 +122,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 15:  t=7.5e+07 years
+*** Timestep 15:  t=7.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -130,7 +130,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 16:  t=8e+07 years
+*** Timestep 16:  t=8e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -138,7 +138,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 17:  t=8.5e+07 years
+*** Timestep 17:  t=8.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -146,7 +146,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 18:  t=9e+07 years
+*** Timestep 18:  t=9e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -154,7 +154,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 19:  t=9.5e+07 years
+*** Timestep 19:  t=9.5e+07 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -162,7 +162,7 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
-*** Timestep 20:  t=1e+08 years
+*** Timestep 20:  t=1e+08 years, dt=5e+06 years
    Solving temperature system... 1 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.

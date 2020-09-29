@@ -4,7 +4,7 @@ Loading shared library <./libvof_linear_periodic_amr.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -12,7 +12,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 6,693 (2,178+289+1,089+1,089+256+768+1,024)
 Number of active cells: 205 (on 5 levels)
 Number of degrees of freedom: 5,595 (1,854+247+927+927+205+615+820)
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -35,7 +35,7 @@ Number of degrees of freedom: 5,595 (1,854+247+927+927+205+615+820)
 Number of active cells: 244 (on 5 levels)
 Number of degrees of freedom: 6,435 (2,102+279+1,051+1,051+244+732+976)
 
-*** Timestep 2:  t=0.1 seconds
+*** Timestep 2:  t=0.1 seconds, dt=0.0375 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.

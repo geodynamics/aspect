@@ -2,7 +2,7 @@
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
@@ -10,70 +10,70 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00000
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 17 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00001
 
-*** Timestep 2:  t=0.125 seconds
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 16 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00002
 
-*** Timestep 3:  t=0.1875 seconds
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 15 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00003
 
-*** Timestep 4:  t=0.25 seconds
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00004
 
-*** Timestep 5:  t=0.3125 seconds
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00005
 
-*** Timestep 6:  t=0.375 seconds
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00006
 
-*** Timestep 7:  t=0.4375 seconds
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00007
 
-*** Timestep 8:  t=0.5 seconds
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00008
 
-*** Timestep 9:  t=0.5625 seconds
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00009
 
-*** Timestep 10:  t=0.625 seconds
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving Stokes system... 15+0 iterations.
 
@@ -83,7 +83,7 @@ Number of degrees of freedom: 268 (162+25+81)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 11:  t=0.6875 seconds
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
@@ -91,35 +91,35 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00011
 
-*** Timestep 12:  t=0.75 seconds
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00012
 
-*** Timestep 13:  t=0.8125 seconds
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00013
 
-*** Timestep 14:  t=0.875 seconds
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00014
 
-*** Timestep 15:  t=0.9375 seconds
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00015
 
-*** Timestep 16:  t=1 seconds
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving Stokes system... 15+0 iterations.
 

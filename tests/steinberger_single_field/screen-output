@@ -2,7 +2,7 @@
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 3,557 (1,666+225+833+833)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -15,7 +15,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
      Heat fluxes through boundary parts: 1.657e+06 W, -4.27e+06 W, 0 W, 0 W
      Writing depth average:              output-steinberger_single_field/depth_average
 
-*** Timestep 1:  t=100000 years
+*** Timestep 1:  t=100000 years, dt=100000 years
    Solving temperature system... 14 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...

@@ -2,7 +2,7 @@
 Number of active cells: 40 (on 1 levels)
 Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -43,7 +43,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
 Number of active cells: 40 (on 1 levels)
 Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -89,7 +89,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Temperature min/avg/max:            273 K, 613.4 K, 2200 K
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00000
 
-*** Timestep 1:  t=2399.9 years
+*** Timestep 1:  t=2399.9 years, dt=2399.9 years
    Solving composition reactions... in 11 substep(s).
    Solving temperature system... 19 iterations.
    Solving porosity system ... 1 iterations.
@@ -135,7 +135,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Heating rate (average/total):       -1.059e-08 W/kg, -8.201e+04 W
      Temperature min/avg/max:            282.7 K, 636 K, 2200 K
 
-*** Timestep 2:  t=4799.9 years
+*** Timestep 2:  t=4799.9 years, dt=2400 years
    Solving composition reactions... in 12 substep(s).
    Solving temperature system... 16 iterations.
    Solving porosity system ... 1 iterations.
@@ -170,8 +170,8 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.54889e-12, 5.15988e-17, 2.02892e-16, 3.64301e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.64301e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 8.54892e-12, 2.08001e-16, 1.03905e-16, 3.64302e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 3.64302e-08
 
 
    Postprocessing:
@@ -182,7 +182,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Temperature min/avg/max:            289.4 K, 658.3 K, 2200 K
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00001
 
-*** Timestep 3:  t=7199.9 years
+*** Timestep 3:  t=7199.9 years, dt=2400 years
    Solving composition reactions... in 12 substep(s).
    Solving temperature system... 16 iterations.
    Solving porosity system ... 1 iterations.
@@ -220,7 +220,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Temperature min/avg/max:            296.4 K, 680.4 K, 2200 K
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00002
 
-*** Timestep 4:  t=9599.9 years
+*** Timestep 4:  t=9599.9 years, dt=2400 years
    Solving composition reactions... in 12 substep(s).
    Solving temperature system... 15 iterations.
    Solving porosity system ... 1 iterations.
@@ -246,7 +246,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61702e-08, 1.03443e-06, 3.38149e-09, 1.13764e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.61702e-08, 1.03443e-06, 3.38144e-09, 1.13764e-08
       Relative nonlinear residual (total system) after nonlinear iteration 3: 1.03443e-06
 
 
@@ -258,7 +258,7 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
      Temperature min/avg/max:            304 K, 702.4 K, 2200 K
      Writing graphical output:           output-shear_heating_with_melt/solution/solution-00003
 
-*** Timestep 5:  t=10000 years
+*** Timestep 5:  t=10000 years, dt=400.102 years
    Solving composition reactions... in 10 substep(s).
    Solving temperature system... 7 iterations.
    Solving porosity system ... 1 iterations.
@@ -284,8 +284,8 @@ Number of degrees of freedom: 1,663 (486+202+486+82+243+82+82)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.20411e-09, 2.36105e-06, 1.991e-08, 2.34527e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.36105e-06
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 5.20412e-09, 2.36106e-06, 1.991e-08, 2.34527e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 2.36106e-06
 
 
    Postprocessing:

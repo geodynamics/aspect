@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -11,7 +11,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Writing graphical output: output-gravity_function_time/solution/solution-00000
      RMS, max velocity:        0 m/s, 0 m/s
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Solving temperature system... 5 iterations.
    Solving Stokes system... 21+0 iterations.
 

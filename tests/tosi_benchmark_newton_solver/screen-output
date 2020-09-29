@@ -4,7 +4,7 @@ Loading shared library <./libtosi_benchmark_newton_solver.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Initial Newton Stokes residual = 1.97927, v = 1.97927, p = 0
 
@@ -84,7 +84,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing depth average:                           output-tosi_benchmark_newton_solver/depth_average
      Max, min, and rms velocity along boundary parts: 4.078 m/s, 0.001682 m/s, 1.925 m/s, 3.705 m/s, 0.001647 m/s, 1.741 m/s, 15.58 m/s, 0.3344 m/s, 11.01 m/s, 0.07246 m/s, 0.00166 m/s, 0.05188 m/s
 
-*** Timestep 1:  t=0.00200722 seconds
+*** Timestep 1:  t=0.00200722 seconds, dt=0.00200722 seconds
    Solving temperature system... 19 iterations.
    Initial Newton Stokes residual = 0.0421701, v = 0.0421701, p = 0
 
@@ -180,7 +180,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heat fluxes through boundary parts:              0 W, 0 W, -3.04 W, 1 W
      Max, min, and rms velocity along boundary parts: 423.3 m/s, 0.01123 m/s, 179.1 m/s, 218.6 m/s, 0.005867 m/s, 84.46 m/s, 375.7 m/s, 19.74 m/s, 237.2 m/s, 0.326 m/s, 0.00609 m/s, 0.2364 m/s
 
-*** Timestep 2:  t=0.00208105 seconds
+*** Timestep 2:  t=0.00208105 seconds, dt=7.38267e-05 seconds
    Solving temperature system... 10 iterations.
    Initial Newton Stokes residual = 0.196523, v = 0.196523, p = 0
 
@@ -264,7 +264,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Heat fluxes through boundary parts:              0 W, 0 W, -3.143 W, 1 W
      Max, min, and rms velocity along boundary parts: 455.3 m/s, 0.01158 m/s, 193.1 m/s, 269.8 m/s, 0.005559 m/s, 104.3 m/s, 391 m/s, 18.27 m/s, 252.8 m/s, 0.3303 m/s, 0.005823 m/s, 0.2388 m/s
 
-*** Timestep 3:  t=0.0021 seconds
+*** Timestep 3:  t=0.0021 seconds, dt=1.8952e-05 seconds
    Solving temperature system... 7 iterations.
    Initial Newton Stokes residual = 0.202446, v = 0.202446, p = 0
 

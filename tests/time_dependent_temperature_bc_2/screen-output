@@ -4,7 +4,7 @@ Loading shared library <./libtime_dependent_temperature_bc_2.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 268 (162+25+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
@@ -12,7 +12,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Postprocessing:
      Temperature min/avg/max: 0 K, 0 K, 0 K
 
-*** Timestep 1:  t=1 seconds
+*** Timestep 1:  t=1 seconds, dt=1 seconds
    Solving temperature system... 11 iterations.
    Solving Stokes system... 9+0 iterations.
 

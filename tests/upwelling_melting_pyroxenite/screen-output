@@ -2,7 +2,7 @@
 Number of active cells: 1,280 (on 4 levels)
 Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -11,7 +11,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Postprocessing:
      Temperature min/avg/max: 1447 K, 1597 K, 1747 K
 
-*** Timestep 1:  t=5.73562e+12 seconds
+*** Timestep 1:  t=5.73562e+12 seconds, dt=5.73562e+12 seconds
    Solving temperature system... 15 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -20,7 +20,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Postprocessing:
      Temperature min/avg/max: 1448 K, 1597 K, 1747 K
 
-*** Timestep 2:  t=1.14712e+13 seconds
+*** Timestep 2:  t=1.14712e+13 seconds, dt=5.73562e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -29,7 +29,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Postprocessing:
      Temperature min/avg/max: 1448 K, 1597 K, 1747 K
 
-*** Timestep 3:  t=1.72069e+13 seconds
+*** Timestep 3:  t=1.72069e+13 seconds, dt=5.73562e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -38,7 +38,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Postprocessing:
      Temperature min/avg/max: 1449 K, 1597 K, 1747 K
 
-*** Timestep 4:  t=2.29425e+13 seconds
+*** Timestep 4:  t=2.29425e+13 seconds, dt=5.73562e+12 seconds
    Solving temperature system... 17 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -47,7 +47,7 @@ Number of degrees of freedom: 23,277 (10,914+1,449+5,457+5,457)
    Postprocessing:
      Temperature min/avg/max: 1449 K, 1597 K, 1747 K
 
-*** Timestep 5:  t=2.5e+13 seconds
+*** Timestep 5:  t=2.5e+13 seconds, dt=2.05751e+12 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...

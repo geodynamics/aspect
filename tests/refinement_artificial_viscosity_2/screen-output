@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving Alice system ... 0 iterations.
    Solving Bob system ... 0 iterations.
@@ -12,7 +12,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0.1 K, 0.1773 K, 0.5 K
      Compositions min/max/mass: 0.1/1/0.1692 // 0/100/80.37
 
-*** Timestep 1:  t=0.0220971 seconds
+*** Timestep 1:  t=0.0220971 seconds, dt=0.0220971 seconds
    Solving temperature system... 13 iterations.
    Solving Alice system ... 10 iterations.
    Solving Bob system ... 14 iterations.
@@ -22,7 +22,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
      Temperature min/avg/max:   0.08232 K, 0.1773 K, 0.5277 K
      Compositions min/max/mass: 0.06856/1.039/0.1693 // -4.204/101.8/79.26
 
-*** Timestep 2:  t=0.0441942 seconds
+*** Timestep 2:  t=0.0441942 seconds, dt=0.0220971 seconds
    Solving temperature system... 16 iterations.
    Solving Alice system ... 13 iterations.
    Solving Bob system ... 19 iterations.
@@ -35,7 +35,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 Number of active cells: 262 (on 6 levels)
 Number of degrees of freedom: 5,934 (2,254+299+1,127+1,127+1,127)
 
-*** Timestep 3:  t=0.0662913 seconds
+*** Timestep 3:  t=0.0662913 seconds, dt=0.0220971 seconds
    Solving temperature system... 16 iterations.
    Solving Alice system ... 13 iterations.
    Solving Bob system ... 19 iterations.
@@ -45,7 +45,7 @@ Number of degrees of freedom: 5,934 (2,254+299+1,127+1,127+1,127)
      Temperature min/avg/max:   0.08667 K, 0.1773 K, 0.522 K
      Compositions min/max/mass: 0.03012/1.057/0.1695 // -4.439/100.3/77
 
-*** Timestep 4:  t=0.08 seconds
+*** Timestep 4:  t=0.08 seconds, dt=0.0137087 seconds
    Solving temperature system... 13 iterations.
    Solving Alice system ... 11 iterations.
    Solving Bob system ... 13 iterations.

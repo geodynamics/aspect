@@ -4,7 +4,7 @@ Loading shared library <./librigid_shear_instantaneous.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 17,989 (8,450+1,089+4,225+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 39+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1

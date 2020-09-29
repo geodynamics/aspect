@@ -5,7 +5,7 @@ Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving Stokes system... 8+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
@@ -33,7 +33,7 @@ Number of degrees of freedom: 948 (578+81+289)
      Writing graphical output:      output-tangurnis_tala_gmg/solution/solution-00000
      Heating rate (average/total):  4.251e-05 W/kg, 5.515e-05 W
 
-*** Timestep 1:  t=0.0001 seconds
+*** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.67884e-08
 

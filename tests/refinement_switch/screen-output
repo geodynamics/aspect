@@ -2,7 +2,7 @@
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving heat system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -17,7 +17,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 Number of active cells: 28 (on 4 levels)
 Number of degrees of freedom: 639 (298+43+149+149)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving heat system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -32,7 +32,7 @@ Number of degrees of freedom: 639 (298+43+149+149)
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving heat system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -44,7 +44,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
      Writing graphical output:           output-refinement_switch/solution/solution-00002
 
-*** Timestep 1:  t=0.0246642 seconds
+*** Timestep 1:  t=0.024664 seconds, dt=0.024664 seconds
    Solving temperature system... 19 iterations.
    Solving heat system ... 14 iterations.
    Solving Stokes system... 10+0 iterations.

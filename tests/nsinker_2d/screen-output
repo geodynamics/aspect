@@ -1,14 +1,10 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libnsinker_2d.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 87 (50+12+25)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -21,5 +17,3 @@ Termination requested by criterion: end time
 
 
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

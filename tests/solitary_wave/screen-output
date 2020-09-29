@@ -5,7 +5,7 @@ Initialize solitary wave solution
 Number of active cells: 640 (on 3 levels)
 Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -19,8 +19,8 @@ Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 9 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57727e-16, 9.36476e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.36476e-11
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57727e-16, 9.36472e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 9.36472e-11
 
 
    Postprocessing:
@@ -29,7 +29,7 @@ Number of degrees of freedom: 20,864 (5,778+2,725+5,778+805+2,889+2,889)
      RMS, max velocity:                 0.000166 m/year, 0.000167 m/year
      Errors e_f, e_p_c_bar, e_c, delta: 2.027221e-04, 1.080947e+00, 0.000000e+00, 4.179663e-16
 
-*** Timestep 1:  t=2000 years
+*** Timestep 1:  t=2000 years, dt=2000 years
    Skipping temperature solve because RHS is zero.
    Solving porosity system ... 13 iterations.
    Rebuilding Stokes preconditioner...

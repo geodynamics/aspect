@@ -5,7 +5,7 @@
 Number of active cells: 8 (on 2 levels)
 Number of degrees of freedom: 652 (375+27+125+125)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -14,7 +14,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1489 K, 3000 K
 
-*** Timestep 1:  t=4014.13 years
+*** Timestep 1:  t=4014.13 years, dt=4014.13 years
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 21+0 iterations.
@@ -22,7 +22,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1487 K, 3000 K
 
-*** Timestep 2:  t=8022.72 years
+*** Timestep 2:  t=8022.72 years, dt=4008.59 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -30,7 +30,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1486 K, 3000 K
 
-*** Timestep 3:  t=12025.5 years
+*** Timestep 3:  t=12025.5 years, dt=4002.8 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -38,7 +38,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1485 K, 3000 K
 
-*** Timestep 4:  t=16022.2 years
+*** Timestep 4:  t=16022.2 years, dt=3996.72 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 9 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -46,7 +46,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1484 K, 3000 K
 
-*** Timestep 5:  t=20012.6 years
+*** Timestep 5:  t=20012.6 years, dt=3990.34 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -54,7 +54,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1483 K, 3000 K
 
-*** Timestep 6:  t=23996.3 years
+*** Timestep 6:  t=23996.3 years, dt=3983.69 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -62,7 +62,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1481 K, 3000 K
 
-*** Timestep 7:  t=27973.1 years
+*** Timestep 7:  t=27973.1 years, dt=3976.79 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1480 K, 3000 K
 
-*** Timestep 8:  t=31942.7 years
+*** Timestep 8:  t=31942.7 years, dt=3969.67 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -78,7 +78,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1479 K, 3000 K
 
-*** Timestep 9:  t=35905.1 years
+*** Timestep 9:  t=35905.1 years, dt=3962.37 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -86,7 +86,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1477 K, 3000 K
 
-*** Timestep 10:  t=39860 years
+*** Timestep 10:  t=39860 years, dt=3954.92 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -94,7 +94,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1476 K, 3000 K
 
-*** Timestep 11:  t=43807.4 years
+*** Timestep 11:  t=43807.4 years, dt=3947.36 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -102,7 +102,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1474 K, 3118 K
 
-*** Timestep 12:  t=47747.1 years
+*** Timestep 12:  t=47747.1 years, dt=3939.72 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -110,7 +110,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1473 K, 3250 K
 
-*** Timestep 13:  t=51679.1 years
+*** Timestep 13:  t=51679.1 years, dt=3932.05 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -118,7 +118,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1471 K, 3377 K
 
-*** Timestep 14:  t=55603.5 years
+*** Timestep 14:  t=55603.5 years, dt=3924.38 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -126,7 +126,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1470 K, 3498 K
 
-*** Timestep 15:  t=59520.3 years
+*** Timestep 15:  t=59520.3 years, dt=3916.76 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -134,7 +134,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1468 K, 3614 K
 
-*** Timestep 16:  t=63429.5 years
+*** Timestep 16:  t=63429.5 years, dt=3909.23 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -142,7 +142,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1467 K, 3723 K
 
-*** Timestep 17:  t=67331.3 years
+*** Timestep 17:  t=67331.3 years, dt=3901.82 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -150,7 +150,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1465 K, 3824 K
 
-*** Timestep 18:  t=71225.9 years
+*** Timestep 18:  t=71225.9 years, dt=3894.57 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -158,7 +158,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1463 K, 3917 K
 
-*** Timestep 19:  t=75113.4 years
+*** Timestep 19:  t=75113.4 years, dt=3887.54 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -166,7 +166,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1461 K, 4002 K
 
-*** Timestep 20:  t=78994.2 years
+*** Timestep 20:  t=78994.2 years, dt=3880.75 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -174,7 +174,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1459 K, 4081 K
 
-*** Timestep 21:  t=82868.4 years
+*** Timestep 21:  t=82868.4 years, dt=3874.24 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -182,7 +182,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1457 K, 4152 K
 
-*** Timestep 22:  t=86736.5 years
+*** Timestep 22:  t=86736.5 years, dt=3868.06 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -190,7 +190,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1455 K, 4212 K
 
-*** Timestep 23:  t=90598.7 years
+*** Timestep 23:  t=90598.7 years, dt=3862.23 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -198,7 +198,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1453 K, 4262 K
 
-*** Timestep 24:  t=94455.5 years
+*** Timestep 24:  t=94455.5 years, dt=3856.79 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 7 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -206,7 +206,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1450 K, 4302 K
 
-*** Timestep 25:  t=98307.2 years
+*** Timestep 25:  t=98307.2 years, dt=3851.76 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving Stokes system... 19+0 iterations.
@@ -214,7 +214,7 @@ Number of degrees of freedom: 652 (375+27+125+125)
    Postprocessing:
      Temperature min/avg/max: 273 K, 1448 K, 4331 K
 
-*** Timestep 26:  t=100000 years
+*** Timestep 26:  t=100000 years, dt=1692.75 years
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 7 iterations.
    Solving Stokes system... 18+0 iterations.

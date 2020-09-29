@@ -2,7 +2,7 @@
 Number of active cells: 1,000 (on 1 levels)
 Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 0 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_RHS/solution/solution-00000
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 1:  t=48350 years
+*** Timestep 1:  t=48350 years, dt=48350 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 18 iterations.
@@ -40,7 +40,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_RHS/solution/solution-00001
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 2:  t=96700 years
+*** Timestep 2:  t=96700 years, dt=48350 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_RHS/solution/solution-00002
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 3:  t=145050 years
+*** Timestep 3:  t=145050 years, dt=48350 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_RHS/solution/solution-00003
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 4:  t=193400 years
+*** Timestep 4:  t=193400 years, dt=48350 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 19 iterations.
@@ -79,7 +79,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_RHS/solution/solution-00004
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 5:  t=200000 years
+*** Timestep 5:  t=200000 years, dt=6600.03 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 10 iterations.

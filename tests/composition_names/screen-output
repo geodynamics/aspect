@@ -2,7 +2,7 @@
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 49 (18+4+9+9+9)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
    Skipping eclogite composition solve because RHS is zero.

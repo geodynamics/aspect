@@ -4,7 +4,7 @@ Loading shared library <./libno_adiabatic_heating_03.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
@@ -47,7 +47,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      RMS, max velocity:       1.05 m/s, 1.1 m/s
      Writing depth average:   output-no_adiabatic_heating_03/depth_average
 
-*** Timestep 1:  t=0.0284091 seconds
+*** Timestep 1:  t=0.0284091 seconds, dt=0.0284091 seconds
    Solving temperature system... 17 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
@@ -58,7 +58,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Temperature min/avg/max: 0 K, 0.003199 K, 0.003461 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 2:  t=0.0568181 seconds
+*** Timestep 2:  t=0.0568181 seconds, dt=0.0284091 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
@@ -69,7 +69,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Temperature min/avg/max: 0 K, 0.006334 K, 0.006918 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 3:  t=0.0852272 seconds
+*** Timestep 3:  t=0.0852272 seconds, dt=0.0284091 seconds
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
@@ -80,7 +80,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Temperature min/avg/max: 0 K, 0.009388 K, 0.01037 K
      RMS, max velocity:       1.05 m/s, 1.1 m/s
 
-*** Timestep 4:  t=0.1 seconds
+*** Timestep 4:  t=0.1 seconds, dt=0.0147728 seconds
    Solving temperature system... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.

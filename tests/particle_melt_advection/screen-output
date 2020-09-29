@@ -4,7 +4,7 @@ Loading shared library <./libparticle_melt_advection.so>
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 14,505 (4,290+2,097+4,290+561+2,145+561+561)
      Writing depth average:     output-particle_melt_advection/depth_average
      Writing particle output:   output-particle_melt_advection/particles/particles-00000
 
-*** Timestep 1:  t=3000 years
+*** Timestep 1:  t=3000 years, dt=3000 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 4 iterations.
    Solving peridotite system ... 4 iterations.

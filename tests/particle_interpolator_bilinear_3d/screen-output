@@ -2,7 +2,7 @@
 Number of active cells: 512 (on 4 levels)
 Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
      Compositions min/max/mass:    -1.25/2.25/0.3984 // -0.5/1.5/0.375
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
-*** Timestep 1:  t=0.1 seconds
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
    Solving temperature system... 9 iterations.
    Solving Stokes system... 16+0 iterations.
 

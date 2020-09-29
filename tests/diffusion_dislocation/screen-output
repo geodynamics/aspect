@@ -2,27 +2,27 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 0.000712092
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000712092
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 0.000712086
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000712086
 
    Solving temperature system... 0 iterations.
    Solving depleted_lithosphere system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 3+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 2.04449e-16, 1.05609e-16, 1.47593e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.47593e-07
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.68721e-16, 1.05609e-16, 1.47579e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 1.47579e-07
 
 
    Postprocessing:

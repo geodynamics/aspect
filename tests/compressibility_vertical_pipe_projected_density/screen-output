@@ -4,7 +4,7 @@ Loading shared library <./libcompressibility_vertical_pipe_projected_density.so>
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 270 (102+24+72+72)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -83,7 +83,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Mass fluxes through boundary parts:                0 kg/yr, 0 kg/yr, 3.779e+05 kg/yr, -3.779e+05 kg/yr
      Average density / Average viscosity / Total mass:  3529 kg/m^3, 1e+21 Pa s, 3.529e+13 kg
 
-*** Timestep 1:  t=436595 years
+*** Timestep 1:  t=436595 years, dt=436595 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -133,7 +133,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Mass fluxes through boundary parts:                0 kg/yr, 0 kg/yr, 3.779e+05 kg/yr, -3.779e+05 kg/yr
      Average density / Average viscosity / Total mass:  3529 kg/m^3, 1e+21 Pa s, 3.529e+13 kg
 
-*** Timestep 2:  t=873190 years
+*** Timestep 2:  t=873190 years, dt=436594 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -183,7 +183,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Mass fluxes through boundary parts:                0 kg/yr, 0 kg/yr, 3.779e+05 kg/yr, -3.779e+05 kg/yr
      Average density / Average viscosity / Total mass:  3529 kg/m^3, 1e+21 Pa s, 3.529e+13 kg
 
-*** Timestep 3:  t=1e+06 years
+*** Timestep 3:  t=1e+06 years, dt=126810 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...

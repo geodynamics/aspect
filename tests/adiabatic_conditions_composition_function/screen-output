@@ -2,7 +2,7 @@
 Number of active cells: 3,072 (on 6 levels)
 Number of degrees of freedom: 53,381 (25,090+3,201+12,545+12,545)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping C_1 composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -25,9 +25,9 @@ Number of degrees of freedom: 53,381 (25,090+3,201+12,545+12,545)
      Rayleigh number:                               0
 
      Writing graphical output:           output-adiabatic_conditions_composition_function/solution/solution-00000
-     RMS, max velocity:                  3.02e-15 m/s, 9.08e-15 m/s
+     RMS, max velocity:                  3.02e-15 m/s, 9.09e-15 m/s
      Temperature min/avg/max:            1613 K, 1613 K, 1613 K
-     Heat fluxes through boundary parts: -7.8e-16 W, -5.747e-18 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -1.987e-16 W, 1.031e-17 W, 0 W, 0 W
      Writing depth average:              output-adiabatic_conditions_composition_function/depth_average
 
 Termination requested by criterion: end time

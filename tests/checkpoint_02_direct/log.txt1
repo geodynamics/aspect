@@ -4,7 +4,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (9,539+4,225)
 
-*** Timestep 5:  t=5.61338e+06 seconds
+*** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... done.
 
@@ -14,7 +14,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.009 K, 1.041 K, 1.085 K
      RMS, max velocity:        4.09e-09 m/s, 9.62e-09 m/s
 
-*** Timestep 6:  t=7.23779e+06 seconds
+*** Timestep 6:  t=7.23779e+06 seconds, dt=1.62441e+06 seconds
    Solving temperature system... 21 iterations.
    Solving Stokes system... done.
 
@@ -24,7 +24,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.01 K, 1.041 K, 1.083 K
      RMS, max velocity:        3.88e-09 m/s, 9.09e-09 m/s
 
-*** Timestep 7:  t=8.95675e+06 seconds
+*** Timestep 7:  t=8.95675e+06 seconds, dt=1.71896e+06 seconds
    Solving temperature system... 22 iterations.
    Solving Stokes system... done.
 
@@ -34,7 +34,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.011 K, 1.041 K, 1.081 K
      RMS, max velocity:        3.68e-09 m/s, 8.57e-09 m/s
 
-*** Timestep 8:  t=1.07783e+07 seconds
+*** Timestep 8:  t=1.07783e+07 seconds, dt=1.82159e+06 seconds
    Solving temperature system... 22 iterations.
    Solving Stokes system... done.
 
@@ -44,7 +44,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
      Temperature min/avg/max:  1.012 K, 1.041 K, 1.079 K
      RMS, max velocity:        3.48e-09 m/s, 8.07e-09 m/s
 
-*** Timestep 9:  t=1.27134e+07 seconds
+*** Timestep 9:  t=1.27134e+07 seconds, dt=1.93503e+06 seconds
    Solving temperature system... 22 iterations.
    Solving Stokes system... done.
 
@@ -56,7 +56,7 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
 
 *** Snapshot created!
 
-*** Timestep 10:  t=1.4e+07 seconds
+*** Timestep 10:  t=1.4e+07 seconds, dt=1.28662e+06 seconds
    Solving temperature system... 18 iterations.
    Solving Stokes system... done.
 

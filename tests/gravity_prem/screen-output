@@ -2,7 +2,7 @@
 Number of active cells: 160 (on 3 levels)
 Number of degrees of freedom: 2,392 (1,458+205+729)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.

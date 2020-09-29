@@ -4,32 +4,32 @@ Loading shared library <./libterminate_user_request.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
 
-*** Timestep 1:  t=1.02774e+06 seconds
+*** Timestep 1:  t=1.02774e+06 seconds, dt=1.02774e+06 seconds
    Solving temperature system... 25 iterations.
    Solving Stokes system... 36+0 iterations.
 
    Postprocessing:
 
-*** Timestep 2:  t=2.1003e+06 seconds
+*** Timestep 2:  t=2.1003e+06 seconds, dt=1.07256e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... 30+0 iterations.
 
    Postprocessing:
 
-*** Timestep 3:  t=3.22036e+06 seconds
+*** Timestep 3:  t=3.22036e+06 seconds, dt=1.12006e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
 
-*** Timestep 4:  t=4.39059e+06 seconds
+*** Timestep 4:  t=4.39059e+06 seconds, dt=1.17022e+06 seconds
    Solving temperature system... 19 iterations.
    Solving Stokes system... 30+0 iterations.
 
@@ -37,7 +37,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
 *** Snapshot created!
 
-*** Timestep 5:  t=5.61338e+06 seconds
+*** Timestep 5:  t=5.61338e+06 seconds, dt=1.2228e+06 seconds
    Solving temperature system... 19 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 30+0 iterations.

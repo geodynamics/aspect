@@ -4,14 +4,14 @@ Loading shared library <./libtangurnis_tala_implicit.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 5.71643e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.71643e-08
 
 
    Postprocessing:
@@ -19,10 +19,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing graphical output:      output-tangurnis_tala_implicit/solution/solution-00000
      Heating rate (average/total):  4.234e-05 W/kg, 5.493e-05 W
 
-*** Timestep 1:  t=0.0001 seconds
+*** Timestep 1:  t=0.0001 seconds, dt=0.0001 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 8.05901e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 8.05901e-08
 
 
    Postprocessing:

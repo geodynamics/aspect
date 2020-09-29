@@ -4,7 +4,7 @@ Loading shared library <./libexponential_decay.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,237 (578+81+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -15,7 +15,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00000
      Errors                     time=0.000000e+00 ndofs= 1237 C_L2_current= 1.100813e-16 C_L2_max= 1.100813e-16 T_L2_current= 1.100813e-16 T_L2_max= 1.100813e-16
 
-*** Timestep 1:  t=10 seconds
+*** Timestep 1:  t=10 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -26,7 +26,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00001
      Errors                     time=1.000000e+01 ndofs= 1237 C_L2_current= 3.854009e-04 C_L2_max= 3.854009e-04 T_L2_current= 3.854009e-04 T_L2_max= 3.854009e-04
 
-*** Timestep 2:  t=20 seconds
+*** Timestep 2:  t=20 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -37,7 +37,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00002
      Errors                     time=2.000000e+01 ndofs= 1237 C_L2_current= 3.852524e-04 C_L2_max= 3.854009e-04 T_L2_current= 3.852524e-04 T_L2_max= 3.854009e-04
 
-*** Timestep 3:  t=30 seconds
+*** Timestep 3:  t=30 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00003
      Errors                     time=3.000000e+01 ndofs= 1237 C_L2_current= 2.888279e-04 C_L2_max= 3.854009e-04 T_L2_current= 2.888279e-04 T_L2_max= 3.854009e-04
 
-*** Timestep 4:  t=40 seconds
+*** Timestep 4:  t=40 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00004
      Errors                     time=4.000000e+01 ndofs= 1237 C_L2_current= 1.924778e-04 C_L2_max= 3.854009e-04 T_L2_current= 1.924778e-04 T_L2_max= 3.854009e-04
 
-*** Timestep 5:  t=50 seconds
+*** Timestep 5:  t=50 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -70,7 +70,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00005
      Errors                     time=5.000000e+01 ndofs= 1237 C_L2_current= 1.202523e-04 C_L2_max= 3.854009e-04 T_L2_current= 1.202523e-04 T_L2_max= 3.854009e-04
 
-*** Timestep 6:  t=60 seconds
+*** Timestep 6:  t=60 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00006
      Errors                     time=6.000000e+01 ndofs= 1237 C_L2_current= 7.212356e-05 C_L2_max= 3.854009e-04 T_L2_current= 7.212356e-05 T_L2_max= 3.854009e-04
 
-*** Timestep 7:  t=70 seconds
+*** Timestep 7:  t=70 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -92,7 +92,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00007
      Errors                     time=7.000000e+01 ndofs= 1237 C_L2_current= 4.205588e-05 C_L2_max= 3.854009e-04 T_L2_current= 4.205588e-05 T_L2_max= 3.854009e-04
 
-*** Timestep 8:  t=80 seconds
+*** Timestep 8:  t=80 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -103,7 +103,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00008
      Errors                     time=8.000000e+01 ndofs= 1237 C_L2_current= 2.402267e-05 C_L2_max= 3.854009e-04 T_L2_current= 2.402267e-05 T_L2_max= 3.854009e-04
 
-*** Timestep 9:  t=90 seconds
+*** Timestep 9:  t=90 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
@@ -114,7 +114,7 @@ Number of degrees of freedom: 1,237 (578+81+289+289)
      Writing graphical output:  output-exponential_decay/solution/solution-00009
      Errors                     time=9.000000e+01 ndofs= 1237 C_L2_current= 1.350755e-05 C_L2_max= 3.854009e-04 T_L2_current= 1.350755e-05 T_L2_max= 3.854009e-04
 
-*** Timestep 10:  t=100 seconds
+*** Timestep 10:  t=100 seconds, dt=10 seconds
    Solving composition reactions... in 312 substep(s).
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.

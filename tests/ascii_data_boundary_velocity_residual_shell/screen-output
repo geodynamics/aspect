@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/shell_3d_bottom.0.txt.
@@ -56,12 +54,10 @@
    that time-dependence ends at this timestep  (i.e. the boundary condition
    will continue unchanged from the last known state into the future).
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 24 (on 2 levels)
 Number of degrees of freedom: 1,277 (915+57+305)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 103+0 iterations.
@@ -75,9 +71,4 @@ Number of degrees of freedom: 1,277 (915+57+305)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

@@ -4,10 +4,10 @@ Loading shared library <./libinclusion_adaptive.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 19+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -17,10 +17,10 @@ Number of degrees of freedom: 948 (578+81+289)
 Number of active cells: 100 (on 5 levels)
 Number of degrees of freedom: 1,520 (930+125+465)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -30,10 +30,10 @@ Number of degrees of freedom: 1,520 (930+125+465)
 Number of active cells: 172 (on 6 levels)
 Number of degrees of freedom: 2,664 (1,634+213+817)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 23+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -43,10 +43,10 @@ Number of degrees of freedom: 2,664 (1,634+213+817)
 Number of active cells: 268 (on 7 levels)
 Number of degrees of freedom: 4,172 (2,562+329+1,281)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 143+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -56,10 +56,10 @@ Number of degrees of freedom: 4,172 (2,562+329+1,281)
 Number of active cells: 433 (on 8 levels)
 Number of degrees of freedom: 6,824 (4,194+533+2,097)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 144+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
@@ -69,10 +69,10 @@ Number of degrees of freedom: 6,824 (4,194+533+2,097)
 Number of active cells: 706 (on 9 levels)
 Number of degrees of freedom: 11,153 (6,858+866+3,429)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 131+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:

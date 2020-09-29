@@ -4,7 +4,7 @@ Loading shared library <./libnonlinear_convergence_for_small_composition.so>
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Skipping peridotite composition solve because RHS is zero.
@@ -25,7 +25,7 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass: 0/0/0 // 0/0/0
 
-*** Timestep 1:  t=6329.51 years
+*** Timestep 1:  t=6329.51 years, dt=6329.51 years
    Solving temperature system... 18 iterations.
    Solving porosity system ... 7 iterations.
    Solving peridotite system ... 7 iterations.
@@ -190,7 +190,7 @@ Number of degrees of freedom: 15,942 (8,450+1,089+4,225+1,089+1,089)
    Postprocessing:
      Compositions min/max/mass: -7.028e-09/1.383e-08/6.166e-06 // -7.028e-09/1.383e-08/6.166e-06
 
-*** Timestep 2:  t=10000 years
+*** Timestep 2:  t=10000 years, dt=3670.49 years
    Solving temperature system... 16 iterations.
    Solving porosity system ... 6 iterations.
    Solving peridotite system ... 6 iterations.

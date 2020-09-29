@@ -3,7 +3,7 @@ Number of active cells: 3,328 (on 5 levels)
 Number of degrees of freedom: 44,836 (27,522+3,553+13,761)
 
 Number of mesh deformation degrees of freedom: 7106
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -12,12 +12,9 @@ Number of mesh deformation degrees of freedom: 7106
    Postprocessing:
      Topography min/max:                 -2.794e-09 m, 2.794e-09 m
      RMS, max velocity:                  3.71e-05 m/year, 4.67e-05 m/year
-     Heat fluxes through boundary parts: 3.55e-12 W, 0.5068 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -1.869e-14 W, 0.5068 W, 0 W, 0 W
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 

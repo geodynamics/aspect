@@ -4,7 +4,7 @@ Loading shared library <./libvof_linear_amr_mpi.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -12,7 +12,7 @@ Number of degrees of freedom: 1,749 (578+81+289+289+64+192+256)
 Number of active cells: 208 (on 5 levels)
 Number of degrees of freedom: 5,541 (1,818+241+909+909+208+624+832)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 5,541 (1,818+241+909+909+208+624+832)
 Number of active cells: 172 (on 5 levels)
 Number of degrees of freedom: 4,665 (1,542+205+771+771+172+516+688)
 
-*** Timestep 1:  t=0.04 seconds
+*** Timestep 1:  t=0.04 seconds, dt=0.04 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 1 iterations.
    Solving volume of fluid system... 1 iterations.

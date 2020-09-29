@@ -4,7 +4,7 @@ Loading shared library <./libno_dirichlet_on_outflow_melt.so>
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving peridotite system ... 0 iterations.
@@ -30,7 +30,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -8.79e-13 W, 3.683e+04 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00000
 
-*** Timestep 1:  t=39.5348 years
+*** Timestep 1:  t=39.5348 years, dt=39.5348 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -173,7 +173,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -8.067e+07 W, 3.285e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00001
 
-*** Timestep 2:  t=64.751 years
+*** Timestep 2:  t=64.751 years, dt=25.2162 years
    Solving temperature system... 8 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -253,7 +253,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -6.935e+07 W, 3.819e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00002
 
-*** Timestep 3:  t=85.7523 years
+*** Timestep 3:  t=85.7523 years, dt=21.0013 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -324,7 +324,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -2.328e+07 W, 2.74e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00003
 
-*** Timestep 4:  t=105.453 years
+*** Timestep 4:  t=105.453 years, dt=19.7011 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 9 iterations.
    Solving peridotite system ... 9 iterations.
@@ -395,7 +395,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 3.04e+07 W, 3.927e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00004
 
-*** Timestep 5:  t=124.604 years
+*** Timestep 5:  t=124.604 years, dt=19.1511 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -457,7 +457,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 7.064e+07 W, -4.001e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00005
 
-*** Timestep 6:  t=143.916 years
+*** Timestep 6:  t=143.916 years, dt=19.312 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -519,7 +519,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 8.302e+07 W, 1.184e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00006
 
-*** Timestep 7:  t=164.319 years
+*** Timestep 7:  t=164.319 years, dt=20.4021 years
    Solving temperature system... 6 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -581,7 +581,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 6.011e+07 W, 1.272e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00007
 
-*** Timestep 8:  t=186.852 years
+*** Timestep 8:  t=186.852 years, dt=22.5331 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -652,7 +652,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 4.564e+06 W, 1.398e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00008
 
-*** Timestep 9:  t=213.122 years
+*** Timestep 9:  t=213.122 years, dt=26.2707 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -732,7 +732,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -6.097e+07 W, 4.627e+06 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00009
 
-*** Timestep 10:  t=242.232 years
+*** Timestep 10:  t=242.232 years, dt=29.1095 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 10 iterations.
@@ -848,7 +848,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -8.131e+07 W, 1.613e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00010
 
-*** Timestep 11:  t=265.754 years
+*** Timestep 11:  t=265.754 years, dt=23.5217 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 10 iterations.
@@ -964,7 +964,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -4.471e+07 W, 1.264e+07 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00011
 
-*** Timestep 12:  t=281.579 years
+*** Timestep 12:  t=281.579 years, dt=15.8258 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -1062,7 +1062,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, -3.232e+06 W, 5.772e+05 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00012
 
-*** Timestep 13:  t=295.499 years
+*** Timestep 13:  t=295.499 years, dt=13.9198 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 10 iterations.
    Solving peridotite system ... 9 iterations.
@@ -1133,7 +1133,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 3.437e+07 W, 1.202e+09 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00013
 
-*** Timestep 14:  t=366.432 years
+*** Timestep 14:  t=366.432 years, dt=70.9326 years
    Solving temperature system... 9 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 14 iterations.
@@ -1231,7 +1231,7 @@ Number of degrees of freedom: 2,377 (578+273+578+81+289+289+289)
      Heat fluxes through boundary parts: 0 W, 0 W, 2.873e+07 W, -3.212e+08 W
      Writing graphical output:           output-no_dirichlet_on_outflow_melt/solution/solution-00014
 
-*** Timestep 15:  t=500 years
+*** Timestep 15:  t=500 years, dt=133.568 years
    Solving temperature system... 7 iterations.
    Solving porosity system ... 11 iterations.
    Solving peridotite system ... 9 iterations.

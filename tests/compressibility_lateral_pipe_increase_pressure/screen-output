@@ -4,7 +4,7 @@ Loading shared library <./libcompressibility_lateral_pipe_increase_pressure.so>
 Number of active cells: 32 (on 1 levels)
 Number of degrees of freedom: 1,062 (390+96+288+288)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -28,7 +28,7 @@ Number of degrees of freedom: 1,062 (390+96+288+288)
      Average density / Average viscosity / Total mass:  3301 kg/m^3, 1e+20 Pa s, 3.301e+14 kg
      Pressure min/avg/max:                              1e+08 Pa, 1e+08 Pa, 1e+08 Pa
 
-*** Timestep 1:  t=1e+12 seconds
+*** Timestep 1:  t=1e+12 seconds, dt=1e+12 seconds
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...

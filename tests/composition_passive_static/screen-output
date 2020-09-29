@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -12,7 +12,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00000
      Compositions min/max/mass: 0/1/0.4583 // 0/1/0.4583
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.006159/1.046/0.4583 // 0/1/0.4583
 
-*** Timestep 2:  t=0.125 seconds
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -31,7 +31,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00001
      Compositions min/max/mass: -0.008121/1.062/0.4583 // 0/1/0.4583
 
-*** Timestep 3:  t=0.1875 seconds
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -40,7 +40,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.007571/1.055/0.4583 // 0/1/0.4583
 
-*** Timestep 4:  t=0.25 seconds
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -50,7 +50,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00002
      Compositions min/max/mass: -0.00554/1.041/0.4583 // 0/1/0.4583
 
-*** Timestep 5:  t=0.3125 seconds
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -60,7 +60,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00003
      Compositions min/max/mass: -0.003538/1.031/0.4583 // 0/1/0.4583
 
-*** Timestep 6:  t=0.375 seconds
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -69,7 +69,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.003283/1.023/0.4583 // 0/1/0.4583
 
-*** Timestep 7:  t=0.4375 seconds
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -79,7 +79,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00004
      Compositions min/max/mass: -0.003079/1.021/0.4583 // 0/1/0.4583
 
-*** Timestep 8:  t=0.5 seconds
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -89,7 +89,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00005
      Compositions min/max/mass: -0.002888/1.019/0.4583 // 0/1/0.4583
 
-*** Timestep 9:  t=0.5625 seconds
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -98,7 +98,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.002662/1.018/0.4583 // 0/1/0.4583
 
-*** Timestep 10:  t=0.625 seconds
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -108,7 +108,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00006
      Compositions min/max/mass: -0.002485/1.017/0.4583 // 0/1/0.4583
 
-*** Timestep 11:  t=0.6875 seconds
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.00279/1.014/0.4583 // 0/1/0.4583
 
-*** Timestep 12:  t=0.75 seconds
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -127,7 +127,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00007
      Compositions min/max/mass: -0.003117/1.013/0.4583 // 0/1/0.4583
 
-*** Timestep 13:  t=0.8125 seconds
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -137,7 +137,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00008
      Compositions min/max/mass: -0.003305/1.012/0.4583 // 0/1/0.4583
 
-*** Timestep 14:  t=0.875 seconds
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -146,7 +146,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Compositions min/max/mass: -0.003368/1.011/0.4583 // 0/1/0.4583
 
-*** Timestep 15:  t=0.9375 seconds
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -156,7 +156,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output:  output-composition_passive_static/solution/solution-00009
      Compositions min/max/mass: -0.003344/1.01/0.4583 // 0/1/0.4583
 
-*** Timestep 16:  t=1 seconds
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...

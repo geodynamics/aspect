@@ -4,13 +4,13 @@ Loading shared library <./libsol_kz_2_q3.so>
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 500 (338+81+81)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative  nonlinear residual (Stokes system) after nonlinear iteration 2: 5.57567e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.57567e-08
 
 
    Postprocessing:

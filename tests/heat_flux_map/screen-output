@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 32+0 iterations.
@@ -11,7 +11,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
      Writing heat flux map:              output-heat_flux_map/heat_flux.00000
      Heat fluxes through boundary parts: 0 W, 0 W, -1 W, 1 W
 
-*** Timestep 1:  t=0.01 seconds
+*** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
    Solving temperature system... 35 iterations.
    Solving Stokes system... 33+0 iterations.
 

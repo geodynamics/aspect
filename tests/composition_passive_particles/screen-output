@@ -2,7 +2,7 @@
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 1,526 (578+81+289+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -13,7 +13,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00000
      Writing particle output:  output-composition_passive_particles/particles/particles-00000
 
-*** Timestep 1:  t=0.0625 seconds
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 9 iterations.
    Solving C_2 system ... 10 iterations.
@@ -23,7 +23,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 2:  t=0.125 seconds
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -34,7 +34,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00001
      Writing particle output:  output-composition_passive_particles/particles/particles-00001
 
-*** Timestep 3:  t=0.1875 seconds
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -44,7 +44,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 4:  t=0.25 seconds
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
@@ -55,7 +55,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00002
      Writing particle output:  output-composition_passive_particles/particles/particles-00002
 
-*** Timestep 5:  t=0.3125 seconds
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -66,7 +66,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00003
      Writing particle output:  output-composition_passive_particles/particles/particles-00003
 
-*** Timestep 6:  t=0.375 seconds
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
@@ -76,7 +76,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 7:  t=0.4375 seconds
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
@@ -87,7 +87,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00004
      Writing particle output:  output-composition_passive_particles/particles/particles-00004
 
-*** Timestep 8:  t=0.5 seconds
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -98,7 +98,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00005
      Writing particle output:  output-composition_passive_particles/particles/particles-00005
 
-*** Timestep 9:  t=0.5625 seconds
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 11 iterations.
@@ -108,7 +108,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 10:  t=0.625 seconds
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
@@ -119,7 +119,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00006
      Writing particle output:  output-composition_passive_particles/particles/particles-00006
 
-*** Timestep 11:  t=0.6875 seconds
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 12:  t=0.75 seconds
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
    Solving temperature system... 13 iterations.
    Solving C_1 system ... 12 iterations.
    Solving C_2 system ... 12 iterations.
@@ -140,7 +140,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00007
      Writing particle output:  output-composition_passive_particles/particles/particles-00007
 
-*** Timestep 13:  t=0.8125 seconds
+*** Timestep 13:  t=0.8125 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
@@ -151,7 +151,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00008
      Writing particle output:  output-composition_passive_particles/particles/particles-00008
 
-*** Timestep 14:  t=0.875 seconds
+*** Timestep 14:  t=0.875 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
@@ -161,7 +161,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
    Postprocessing:
      Number of advected particles: 10
 
-*** Timestep 15:  t=0.9375 seconds
+*** Timestep 15:  t=0.9375 seconds, dt=0.0625 seconds
    Solving temperature system... 11 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.
@@ -172,7 +172,7 @@ Number of degrees of freedom: 1,526 (578+81+289+289+289)
      Writing graphical output: output-composition_passive_particles/solution/solution-00009
      Writing particle output:  output-composition_passive_particles/particles/particles-00009
 
-*** Timestep 16:  t=1 seconds
+*** Timestep 16:  t=1 seconds, dt=0.0625 seconds
    Solving temperature system... 12 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 11 iterations.

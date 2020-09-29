@@ -2,7 +2,7 @@
 Number of active cells: 24 (on 2 levels)
 Number of degrees of freedom: 1,277 (915+57+305)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
 
    Postprocessing:
      Writing graphical output: output-solve_no_advection_no_stokes/solution/solution-00000

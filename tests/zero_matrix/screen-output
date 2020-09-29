@@ -2,7 +2,7 @@
 Number of active cells: 1,000 (on 1 levels)
 Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Skipping C_1 composition solve because RHS is zero.
    Solving C_2 system ... 0 iterations.
@@ -27,7 +27,7 @@ Number of degrees of freedom: 22,216 (8,442+1,111+4,221+4,221+4,221)
      Writing graphical output: output-zero_matrix/solution/solution-00000
      RMS, max velocity:        0.0102 m/year, 0.0103 m/year
 
-*** Timestep 1:  t=48350 years
+*** Timestep 1:  t=48350 years, dt=48350 years
    Solving temperature system... 
 An error occurred in file <trilinos_vector.h> in function
 (line in output replaced by default.sh script)

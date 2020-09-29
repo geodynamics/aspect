@@ -2,7 +2,7 @@
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 31 (18+4+9)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 1+0 iterations.
@@ -26,70 +26,70 @@ Number of degrees of freedom: 31 (18+4+9)
      RMS, max velocity:        403 m/year, 487 m/year
      Writing graphical output: output-periodic_box_mpi4/solution/solution-00000
 
-*** Timestep 1:  t=171.419 years
+*** Timestep 1:  t=171.419 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 2:  t=342.838 years
+*** Timestep 2:  t=342.838 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 3:  t=514.258 years
+*** Timestep 3:  t=514.258 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 4:  t=685.677 years
+*** Timestep 4:  t=685.677 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 5:  t=857.096 years
+*** Timestep 5:  t=857.096 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 6:  t=1028.52 years
+*** Timestep 6:  t=1028.52 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 7:  t=1199.93 years
+*** Timestep 7:  t=1199.93 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 8:  t=1371.35 years
+*** Timestep 8:  t=1371.35 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 9:  t=1542.77 years
+*** Timestep 9:  t=1542.77 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      RMS, max velocity: 403 m/year, 487 m/year
 
-*** Timestep 10:  t=1714.19 years
+*** Timestep 10:  t=1714.19 years, dt=171.419 years
    Skipping temperature solve because RHS is zero.
    Solving Stokes system... 1+0 iterations.
 

@@ -2,7 +2,7 @@
 Number of active cells: 1,024 (on 6 levels)
 Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 36+0 iterations.
@@ -11,7 +11,7 @@ Number of degrees of freedom: 13,764 (8,450+1,089+4,225)
      Writing graphical output: output-ascii_data_gravity/solution/solution-00000
      Writing depth average:    output-ascii_data_gravity/depth_average
 
-*** Timestep 1:  t=1e+06 years
+*** Timestep 1:  t=1e+06 years, dt=1e+06 years
    Solving temperature system... 3 iterations.
    Solving Stokes system... 36+0 iterations.
 

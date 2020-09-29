@@ -2,7 +2,7 @@
 Number of active cells: 512 (on 5 levels)
 Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
@@ -19,7 +19,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 1:  t=13251 years
+*** Timestep 1:  t=13251 years, dt=13251 years
    Solving temperature system... 14 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 53+0 iterations.
@@ -53,7 +53,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 2:  t=26110 years
+*** Timestep 2:  t=26110 years, dt=12859.1 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 50+0 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 3:  t=38522.2 years
+*** Timestep 3:  t=38522.2 years, dt=12412.2 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 48+0 iterations.
@@ -109,7 +109,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 4:  t=50507 years
+*** Timestep 4:  t=50507 years, dt=11984.8 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 49+0 iterations.
@@ -137,7 +137,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 5:  t=62100 years
+*** Timestep 5:  t=62100 years, dt=11593 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 49+0 iterations.
@@ -165,7 +165,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 6:  t=73010.9 years
+*** Timestep 6:  t=73010.9 years, dt=10910.9 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 49+0 iterations.
@@ -193,7 +193,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 7:  t=83267.4 years
+*** Timestep 7:  t=83267.4 years, dt=10256.5 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 49+0 iterations.
@@ -221,7 +221,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 8:  t=92948.5 years
+*** Timestep 8:  t=92948.5 years, dt=9681.09 years
    Solving temperature system... 13 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 49+0 iterations.
@@ -249,7 +249,7 @@ Number of degrees of freedom: 9,141 (4,290+561+2,145+2,145)
 
    Postprocessing:
 
-*** Timestep 9:  t=100000 years
+*** Timestep 9:  t=100000 years, dt=7051.5 years
    Solving temperature system... 12 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving Stokes system... 48+0 iterations.

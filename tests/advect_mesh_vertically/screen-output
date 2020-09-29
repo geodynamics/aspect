@@ -3,7 +3,7 @@ Number of active cells: 160 (on 3 levels)
 Number of degrees of freedom: 2,977 (1,394+189+697+697)
 
 Number of mesh deformation degrees of freedom: 378
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
@@ -14,7 +14,7 @@ Number of active cells: 88 (on 4 levels)
 Number of degrees of freedom: 1,877 (878+121+439+439)
 
 Number of mesh deformation degrees of freedom: 242
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
@@ -25,7 +25,7 @@ Number of active cells: 112 (on 5 levels)
 Number of degrees of freedom: 2,354 (1,102+150+551+551)
 
 Number of mesh deformation degrees of freedom: 300
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
@@ -37,7 +37,7 @@ Number of mesh deformation degrees of freedom: 300
      Topography min/max:       0 m, 0 m
      RMS, max velocity:        0.413 m/year, 0.976 m/year
 
-*** Timestep 1:  t=320.442 years
+*** Timestep 1:  t=320.442 years, dt=320.442 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
@@ -48,7 +48,7 @@ Number of mesh deformation degrees of freedom: 300
      Topography min/max: -298.1 m, 140.7 m
      RMS, max velocity:  0.373 m/year, 0.921 m/year
 
-*** Timestep 2:  t=660.04 years
+*** Timestep 2:  t=660.04 years, dt=339.597 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -59,7 +59,7 @@ Number of mesh deformation degrees of freedom: 300
      Topography min/max: -592.9 m, 265.5 m
      RMS, max velocity:  0.346 m/year, 0.875 m/year
 
-*** Timestep 3:  t=1017.41 years
+*** Timestep 3:  t=1017.41 years, dt=357.372 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -70,7 +70,7 @@ Number of mesh deformation degrees of freedom: 300
      Topography min/max: -885.6 m, 380.4 m
      RMS, max velocity:  0.321 m/year, 0.828 m/year
 
-*** Timestep 4:  t=1395.22 years
+*** Timestep 4:  t=1395.22 years, dt=377.806 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -81,7 +81,7 @@ Number of mesh deformation degrees of freedom: 300
      Topography min/max: -1176 m, 485.7 m
      RMS, max velocity:  0.297 m/year, 0.782 m/year
 
-*** Timestep 5:  t=1795.06 years
+*** Timestep 5:  t=1795.06 years, dt=399.848 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -96,7 +96,7 @@ Number of active cells: 136 (on 5 levels)
 Number of degrees of freedom: 2,788 (1,306+176+653+653)
 
 Number of mesh deformation degrees of freedom: 352
-*** Timestep 6:  t=2212 years
+*** Timestep 6:  t=2212 years, dt=416.931 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -107,7 +107,7 @@ Number of mesh deformation degrees of freedom: 352
      Topography min/max: -1744 m, 665.7 m
      RMS, max velocity:  0.257 m/year, 0.715 m/year
 
-*** Timestep 7:  t=2649.67 years
+*** Timestep 7:  t=2649.67 years, dt=437.675 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -118,7 +118,7 @@ Number of mesh deformation degrees of freedom: 352
      Topography min/max: -2019 m, 740.2 m
      RMS, max velocity:  0.238 m/year, 0.676 m/year
 
-*** Timestep 8:  t=3112.58 years
+*** Timestep 8:  t=3112.58 years, dt=462.907 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -129,7 +129,7 @@ Number of mesh deformation degrees of freedom: 352
      Topography min/max: -2289 m, 805.1 m
      RMS, max velocity:  0.222 m/year, 0.639 m/year
 
-*** Timestep 9:  t=3602.21 years
+*** Timestep 9:  t=3602.21 years, dt=489.627 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -140,7 +140,7 @@ Number of mesh deformation degrees of freedom: 352
      Topography min/max: -2555 m, 860.5 m
      RMS, max velocity:  0.207 m/year, 0.604 m/year
 
-*** Timestep 10:  t=4120.14 years
+*** Timestep 10:  t=4120.14 years, dt=517.931 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -155,7 +155,7 @@ Number of active cells: 190 (on 5 levels)
 Number of degrees of freedom: 3,927 (1,842+243+921+921)
 
 Number of mesh deformation degrees of freedom: 486
-*** Timestep 11:  t=4667.37 years
+*** Timestep 11:  t=4667.37 years, dt=547.231 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
@@ -166,7 +166,7 @@ Number of mesh deformation degrees of freedom: 486
      Topography min/max: -3070 m, 945.1 m
      RMS, max velocity:  0.184 m/year, 0.547 m/year
 
-*** Timestep 12:  t=5238.95 years
+*** Timestep 12:  t=5238.95 years, dt=571.586 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -177,7 +177,7 @@ Number of mesh deformation degrees of freedom: 486
      Topography min/max: -3319 m, 975.7 m
      RMS, max velocity:  0.174 m/year, 0.519 m/year
 
-*** Timestep 13:  t=5841.35 years
+*** Timestep 13:  t=5841.35 years, dt=602.399 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -188,7 +188,7 @@ Number of mesh deformation degrees of freedom: 486
      Topography min/max: -3562 m, 999.3 m
      RMS, max velocity:  0.165 m/year, 0.493 m/year
 
-*** Timestep 14:  t=6474.86 years
+*** Timestep 14:  t=6474.86 years, dt=633.508 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -199,7 +199,7 @@ Number of mesh deformation degrees of freedom: 486
      Topography min/max: -3797 m, 1016 m
      RMS, max velocity:  0.158 m/year, 0.47 m/year
 
-*** Timestep 15:  t=7139.48 years
+*** Timestep 15:  t=7139.48 years, dt=664.618 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -214,7 +214,7 @@ Number of active cells: 232 (on 5 levels)
 Number of degrees of freedom: 4,685 (2,198+289+1,099+1,099)
 
 Number of mesh deformation degrees of freedom: 578
-*** Timestep 16:  t=7834.14 years
+*** Timestep 16:  t=7834.14 years, dt=694.661 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -225,7 +225,7 @@ Number of mesh deformation degrees of freedom: 578
      Topography min/max: -4247 m, 1035 m
      RMS, max velocity:  0.147 m/year, 0.432 m/year
 
-*** Timestep 17:  t=8557.02 years
+*** Timestep 17:  t=8557.02 years, dt=722.882 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -236,7 +236,7 @@ Number of mesh deformation degrees of freedom: 578
      Topography min/max: -4462 m, 1038 m
      RMS, max velocity:  0.142 m/year, 0.417 m/year
 
-*** Timestep 18:  t=9306.64 years
+*** Timestep 18:  t=9306.64 years, dt=749.622 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -247,7 +247,7 @@ Number of mesh deformation degrees of freedom: 578
      Topography min/max: -4668 m, 1039 m
      RMS, max velocity:  0.139 m/year, 0.403 m/year
 
-*** Timestep 19:  t=10081.5 years
+*** Timestep 19:  t=10081.5 years, dt=774.807 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
@@ -259,7 +259,7 @@ Number of mesh deformation degrees of freedom: 578
      Topography min/max:       -4867 m, 1039 m
      RMS, max velocity:        0.136 m/year, 0.391 m/year
 
-*** Timestep 20:  t=10879.9 years
+*** Timestep 20:  t=10879.9 years, dt=798.405 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.

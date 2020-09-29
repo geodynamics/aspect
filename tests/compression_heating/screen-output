@@ -4,7 +4,7 @@ Loading shared library <./libcompression_heating.so>
 Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Skipping peridotite composition solve because RHS is zero.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 7,369 (2,178+1,057+2,178+289+1,089+289+289)
      Heating rate (average/total):  0.51 W/kg, 1.02 W
      Writing graphical output:      output-compression_heating/solution/solution-00000
 
-*** Timestep 1:  t=0.3 seconds
+*** Timestep 1:  t=0.3 seconds, dt=0.3 seconds
    Solving temperature system... 8 iterations.
    Solving porosity system ... 5 iterations.
    Skipping peridotite composition solve because RHS is zero.

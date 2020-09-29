@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libvisco_plastic_derivatives_3d.so>
 
@@ -159,12 +157,10 @@ strain-rate: point = 2, component = 5, Finite difference = -3.20297e+27, Analyti
 strain-rate: point = 3, component = 5, Finite difference = 0, Analytical derivative = 0
 strain-rate: point = 4, component = 5, Finite difference = -1.72133e+32, Analytical derivative = -1.72133e+32
 OK
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 9,503 (3,969+242+1,323+1,323+1,323+1,323)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
 
    Postprocessing:
      RMS, max velocity:                  0 m/year, 0 m/year
@@ -174,9 +170,4 @@ Number of degrees of freedom: 9,503 (3,969+242+1,323+1,323+1,323+1,323)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

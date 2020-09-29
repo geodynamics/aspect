@@ -2,7 +2,7 @@
 Number of active cells: 3,072 (on 6 levels)
 Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Solving C_2 system ... 0 iterations.
@@ -14,7 +14,7 @@ Number of degrees of freedom: 65,926 (25,090+3,201+12,545+12,545+12,545)
      Temperature min/avg/max:   0 K, 0.2417 K, 1 K
      Compositions min/max/mass: 0/1/0.08914 // 0/1/0.2124
 
-*** Timestep 1:  t=20 seconds
+*** Timestep 1:  t=20 seconds, dt=20 seconds
    Solving temperature system... 8 iterations.
    Solving C_1 system ... 8 iterations.
    Solving C_2 system ... 5 iterations.

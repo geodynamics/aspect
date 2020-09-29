@@ -8,7 +8,7 @@
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
@@ -18,7 +18,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1488 K, 1913 K
      Heat fluxes through boundary parts: -1.242e+08 W, 1.242e+08 W, 5.606e+05 W, 1.661e+05 W
 
-*** Timestep 1:  t=62057.2 years
+*** Timestep 1:  t=62057.2 years, dt=62057.2 years
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 22+0 iterations.
@@ -28,7 +28,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1490 K, 2367 K
      Heat fluxes through boundary parts: -1.342e+08 W, 1.252e+08 W, 2.569e+05 W, 3.277e+05 W
 
-*** Timestep 2:  t=124122 years
+*** Timestep 2:  t=124122 years, dt=62064.6 years
    Solving temperature system... 18 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 27+0 iterations.
@@ -38,7 +38,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1495 K, 3716 K
      Heat fluxes through boundary parts: -1.492e+08 W, 1.261e+08 W, 4.946e+05 W, 3.942e+05 W
 
-*** Timestep 3:  t=203329 years
+*** Timestep 3:  t=203329 years, dt=79206.9 years
    Solving temperature system... 32 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 28+0 iterations.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1505 K, 5990 K
      Heat fluxes through boundary parts: -1.757e+08 W, 1.253e+08 W, 5.425e+05 W, -4.115e+06 W
 
-*** Timestep 4:  t=273802 years
+*** Timestep 4:  t=273802 years, dt=70473.6 years
    Solving temperature system... 22 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 24+0 iterations.
@@ -58,7 +58,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1527 K, 8384 K
      Heat fluxes through boundary parts: -2.025e+08 W, 1.247e+08 W, 5.958e+05 W, -8.105e+06 W
 
-*** Timestep 5:  t=337947 years
+*** Timestep 5:  t=337947 years, dt=64144.2 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.2.txt.
 
@@ -71,7 +71,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            0 K, 1558 K, 1.074e+04 K
      Heat fluxes through boundary parts: -2.224e+08 W, 1.252e+08 W, 4.939e+05 W, -8.245e+06 W
 
-*** Timestep 6:  t=403068 years
+*** Timestep 6:  t=403068 years, dt=65121.2 years
    Solving temperature system... 21 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 26+0 iterations.
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            -1151 K, 1596 K, 1.308e+04 K
      Heat fluxes through boundary parts: -2.364e+08 W, 1.26e+08 W, 4.801e+05 W, -6.376e+06 W
 
-*** Timestep 7:  t=474187 years
+*** Timestep 7:  t=474187 years, dt=71119.4 years
    Solving temperature system... 20 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 25+0 iterations.
@@ -91,7 +91,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            -2360 K, 1642 K, 1.532e+04 K
      Heat fluxes through boundary parts: -2.486e+08 W, 1.261e+08 W, 5.218e+05 W, -2.087e+06 W
 
-*** Timestep 8:  t=553157 years
+*** Timestep 8:  t=553157 years, dt=78969.5 years
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top_non_equidistant.3.txt.
 
@@ -112,7 +112,7 @@ Number of degrees of freedom: 1,212 (738+105+369)
      Temperature min/avg/max:            -2675 K, 1703 K, 1.788e+04 K
      Heat fluxes through boundary parts: -2.679e+08 W, 1.252e+08 W, 5.623e+05 W, -3.532e+05 W
 
-*** Timestep 9:  t=600000 years
+*** Timestep 9:  t=600000 years, dt=46843.4 years
    Solving temperature system... 16 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 25+0 iterations.

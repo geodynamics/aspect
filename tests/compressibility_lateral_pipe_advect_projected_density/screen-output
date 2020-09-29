@@ -4,7 +4,7 @@ Loading shared library <./libcompressibility_lateral_pipe_advect_projected_densi
 Number of active cells: 8 (on 1 levels)
 Number of degrees of freedom: 270 (102+24+72+72)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -62,7 +62,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3309 kg/m^3, 1e+21 Pa s, 3.309e+14 kg
      Mass fluxes through boundary parts:                -3.841e+07 kg/yr, 3.841e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 1:  t=429570 years
+*** Timestep 1:  t=429570 years, dt=429570 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -105,7 +105,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3308 kg/m^3, 1e+21 Pa s, 3.308e+14 kg
      Mass fluxes through boundary parts:                -4.009e+07 kg/yr, 4.037e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 2:  t=841070 years
+*** Timestep 2:  t=841070 years, dt=411500 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -141,7 +141,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3307 kg/m^3, 1e+21 Pa s, 3.307e+14 kg
      Mass fluxes through boundary parts:                -4.177e+07 kg/yr, 4.203e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 3:  t=1.23598e+06 years
+*** Timestep 3:  t=1.23598e+06 years, dt=394909 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -177,7 +177,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3306 kg/m^3, 1e+21 Pa s, 3.306e+14 kg
      Mass fluxes through boundary parts:                -4.344e+07 kg/yr, 4.369e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 4:  t=1.6156e+06 years
+*** Timestep 4:  t=1.6156e+06 years, dt=379620 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -213,7 +213,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3305 kg/m^3, 1e+21 Pa s, 3.305e+14 kg
      Mass fluxes through boundary parts:                -4.512e+07 kg/yr, 4.536e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 5:  t=1.98108e+06 years
+*** Timestep 5:  t=1.98108e+06 years, dt=365482 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...
@@ -249,7 +249,7 @@ Number of degrees of freedom: 270 (102+24+72+72)
      Average density / Average viscosity / Total mass:  3304 kg/m^3, 1e+21 Pa s, 3.304e+14 kg
      Mass fluxes through boundary parts:                -4.679e+07 kg/yr, 4.702e+07 kg/yr, 0 kg/yr, 0 kg/yr
 
-*** Timestep 6:  t=2e+06 years
+*** Timestep 6:  t=2e+06 years, dt=18918.2 years
    Solving temperature system... 1 iterations.
    Copying properties into prescribed compositional field density_field.
    Rebuilding Stokes preconditioner...

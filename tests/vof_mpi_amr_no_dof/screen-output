@@ -2,7 +2,7 @@
 Number of active cells: 4 (on 2 levels)
 Number of degrees of freedom: 141 (50+9+25+25+4+12+16)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.
@@ -10,7 +10,7 @@ Number of degrees of freedom: 141 (50+9+25+25+4+12+16)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 477 (162+25+81+81+16+48+64)
 
-*** Timestep 0:  t=0 seconds
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Solving volume of fluid system... 0 iterations.
    Solving volume of fluid system... 0 iterations.

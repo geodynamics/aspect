@@ -2,7 +2,7 @@
 Number of active cells: 512 (on 4 levels)
 Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -26,7 +26,7 @@ Number of degrees of freedom: 25,294 (14,739+729+4,913+4,913)
 
      RMS, max velocity:                               0.00277 m/year, 0.0271 m/year
      Max, min, and rms velocity along boundary parts: 0.003662 m/yr, 0.001259 m/yr, 0.002664 m/yr, 0.0008522 m/yr, 3.898e-05 m/yr, 0.0004614 m/yr, 0.003161 m/yr, 2.796e-05 m/yr, 0.001515 m/yr, 0.003161 m/yr, 2.796e-05 m/yr, 0.001515 m/yr, 0.003993 m/yr, 3.584e-05 m/yr, 0.002295 m/yr, 0.003993 m/yr, 3.584e-05 m/yr, 0.002295 m/yr
-     Pressure at top/bottom of domain:                4.174e-09 Pa, 9.411e+10 Pa
+     Pressure at top/bottom of domain:                4.775e-09 Pa, 9.411e+10 Pa
 
 Termination requested by criterion: end time
 
