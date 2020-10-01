@@ -6096,13 +6096,13 @@ The following composition models are available:
 
 
 {\it Possible values:} Any one of adiabatic density, ascii data, ascii data layered, function, porosity, world builder, unspecified
-\item {\it Parameter name:} {\tt Volume of fluid intialization type}
-\phantomsection\label{parameters:Initial composition model/Volume of fluid intialization type}
-\label{parameters:Initial_20composition_20model/Volume_20of_20fluid_20intialization_20type}
+\item {\it Parameter name:} {\tt Volume of fluid initialization type}
+\phantomsection\label{parameters:Initial composition model/Volume of fluid initialization type}
+\label{parameters:Initial_20composition_20model/Volume_20of_20fluid_20initialization_20type}
 
 
-\index[prmindex]{Volume of fluid intialization type}
-\index[prmindexfull]{Initial composition model!Volume of fluid intialization type}
+\index[prmindex]{Volume of fluid initialization type}
+\index[prmindexfull]{Initial composition model!Volume of fluid initialization type}
 {\it Value:} 
 
 
@@ -14774,6 +14774,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Maximum Peierls strain rate iterations}
+\phantomsection\label{parameters:Material model/Visco Plastic/Maximum Peierls strain rate iterations}
+\label{parameters:Material_20model/Visco_20Plastic/Maximum_20Peierls_20strain_20rate_20iterations}
+
+
+\index[prmindex]{Maximum Peierls strain rate iterations}
+\index[prmindexfull]{Material model!Visco Plastic!Maximum Peierls strain rate iterations}
+{\it Value:} 40
+
+
+{\it Default:} 40
+
+
+{\it Description:} Maximum number of iterations to find the correct Peierls strain rate.
+
+
+{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Maximum viscosity}
 \phantomsection\label{parameters:Material model/Visco Plastic/Maximum viscosity}
 \label{parameters:Material_20model/Visco_20Plastic/Maximum_20viscosity}
@@ -14855,10 +14872,10 @@ Units: \si{\pascal\second}.
 {\it Default:} viscosity approximation
 
 
-{\it Description:} Select what type of Peierls creep flow law to use. Currently, the only available option is an approximation to Peierls creep, which uses the strain rate invariant, rather than stress, as an input. 
+{\it Description:} Select what type of Peierls creep flow law to use. Currently, the available options are 'exact', which uses a Newton-Raphson iterative method to find the stress and then compute viscosity, and 'viscosity approximation', in which viscosity is an explicit function of the strain rate invariant, rather than stress. 
 
 
-{\it Possible values:} Any one of viscosity approximation
+{\it Possible values:} Any one of viscosity approximation, exact
 \item {\it Parameter name:} {\tt Peierls fitting parameters}
 \phantomsection\label{parameters:Material model/Visco Plastic/Peierls fitting parameters}
 \label{parameters:Material_20model/Visco_20Plastic/Peierls_20fitting_20parameters}
@@ -14910,6 +14927,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Peierls strain rate residual tolerance}
+\phantomsection\label{parameters:Material model/Visco Plastic/Peierls strain rate residual tolerance}
+\label{parameters:Material_20model/Visco_20Plastic/Peierls_20strain_20rate_20residual_20tolerance}
+
+
+\index[prmindex]{Peierls strain rate residual tolerance}
+\index[prmindexfull]{Material model!Visco Plastic!Peierls strain rate residual tolerance}
+{\it Value:} 1e-22
+
+
+{\it Default:} 1e-22
+
+
+{\it Description:} Tolerance for the iterative solve to find the correct Peierls creep strain rate.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Peierls stresses}
 \phantomsection\label{parameters:Material model/Visco Plastic/Peierls stresses}
 \label{parameters:Material_20model/Visco_20Plastic/Peierls_20stresses}
@@ -18833,6 +18867,8 @@ The following postprocessors are available:
 
 `boundary indicators': A visualization output object that generates output about the used boundary indicators. In a loop over the active cells, if a cell lies at a domain boundary, the boundary indicator of the face along the boundary is requested. In case the cell does not lie along any domain boundary, the cell is assigned the value of the largest used boundary indicator plus one. When a cell is situated in one of the corners of the domain, multiple faces will have a boundary indicator. This postprocessor returns the value of the first face along a boundary that is encountered in a loop over all the faces. 
 
+`boundary velocity residual': A visualization output object that generates output for the velocity residual at the top surface. The residual is computed at each point at the surface as the difference between the modeled velocities and the input data velocities for each vector component. The user has an option to choose the input data as ascii data files (e.g. GPS velocities) with columns in the same format as described for the 'ascii data' initial temperature plugin or a velocity field computed from the GPlates program as described in the gplates boundary velocity plugin. 
+
 `compositional vector': A visualization output object that outputs vectors whose components are derived from compositional fields. Input parameters for this postprocessor are defined in section Postprocess/Visualization/Compositional fields as vectors
 
 `depth': A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.
@@ -18920,7 +18956,7 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 `volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 
-{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, surface dynamic topography, surface stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
+{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, boundary velocity residual, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, surface dynamic topography, surface stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 \label{parameters:Postprocess/Visualization/Number_20of_20grouped_20files}
@@ -19102,6 +19138,97 @@ The effect of using this option can be seen in the following picture:
 
 
 {\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Boundary velocity residual}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Data directory}
+\phantomsection\label{parameters:Postprocess/Visualization/Boundary velocity residual/Data directory}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual/Data_20directory}
+
+
+\index[prmindex]{Data directory}
+\index[prmindexfull]{Postprocess!Visualization!Boundary velocity residual/Data directory}
+{\it Value:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/gplates/
+
+
+{\it Default:} \$ASPECT\_SOURCE\_DIR/data/boundary-velocity/gplates/
+
+
+{\it Description:} The name of a directory that contains the GPlates model or the ascii data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `\$ASPECT\_SOURCE\_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
+
+
+{\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Data file name}
+\phantomsection\label{parameters:Postprocess/Visualization/Boundary velocity residual/Data file name}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual/Data_20file_20name}
+
+
+\index[prmindex]{Data file name}
+\index[prmindexfull]{Postprocess!Visualization!Boundary velocity residual/Data file name}
+{\it Value:} current\_day.gpml
+
+
+{\it Default:} current\_day.gpml
+
+
+{\it Description:} The file name of the input velocity as a GPlates model or an ascii data. For the GPlates model, provide file in the same format as described in the 'gplates' boundary velocity plugin. For the ascii data, provide file in the same format as described in  'ascii data' initial composition plugin.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Scale factor}
+\phantomsection\label{parameters:Postprocess/Visualization/Boundary velocity residual/Scale factor}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual/Scale_20factor}
+
+
+\index[prmindex]{Scale factor}
+\index[prmindexfull]{Postprocess!Visualization!Boundary velocity residual/Scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+
+
+{\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Use ascii data}
+\phantomsection\label{parameters:Postprocess/Visualization/Boundary velocity residual/Use ascii data}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual/Use_20ascii_20data}
+
+
+\index[prmindex]{Use ascii data}
+\index[prmindexfull]{Postprocess!Visualization!Boundary velocity residual/Use ascii data}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Use ascii data files (e.g., GPS) for computing residual velocities instead of GPlates data.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Use spherical unit vectors}
+\phantomsection\label{parameters:Postprocess/Visualization/Boundary velocity residual/Use spherical unit vectors}
+\label{parameters:Postprocess/Visualization/Boundary_20velocity_20residual/Use_20spherical_20unit_20vectors}
+
+
+\index[prmindex]{Use spherical unit vectors}
+\index[prmindexfull]{Postprocess!Visualization!Boundary velocity residual/Use spherical unit vectors}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.GPlates data is always interpreted to be in east and north directions and is not affected by this parameter.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Compositional fields as vectors}
