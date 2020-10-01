@@ -98,6 +98,12 @@ namespace aspect
 
       new_time_step = Utilities::MPI::min(new_time_step, this->get_mpi_communicator());
 
+      // Do not go below a minimum time step size as given by the user. Note that
+      // we first apply the minimum and then apply further restrictions that might
+      // lower this value. Hitting the end time is more important than a minimum
+      // time step size, for example.
+      new_time_step = std::max(minimum_time_step_size, new_time_step);
+
       // Make sure we do not exceed the maximum time step length. This can happen
       // if velocities get too small or even zero in models that are stably stratified
       // or use prescribed velocities.
@@ -266,6 +272,10 @@ namespace aspect
 
       prm.enter_subsection("Time stepping");
       {
+        prm.declare_entry("Minimum time step size", "0.",
+                          Patterns::Double (0.),
+                          "Specifiy a minimum time step size (or 0 to disable).");
+
         const std::string pattern_of_names
           = std::get<dim>(registered_plugins).get_pattern_of_names ();
 
@@ -300,6 +310,10 @@ namespace aspect
 
       {
         prm.enter_subsection("Time stepping");
+
+        minimum_time_step_size = prm.get_double("Minimum time step size")
+                                 * (this->convert_output_to_years() ? year_in_seconds : 1.0);
+
         std::vector<std::string>
         model_names
           = Utilities::split_string_list(prm.get("List of model names"));
