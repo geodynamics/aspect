@@ -13,4 +13,4 @@
 # 13: Pressure at top (Pa)
 # 14: Pressure at bottom (Pa)
 # 15: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 96 3060 970 2 151 157 935 1.00000000e+00 1.00000000e+00 -3.11454801e-01 1.96000032e+06 output-geoid_visualization/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 2 151 157 935 1.00000000e+00 1.00000000e+00 -3.11454854e-01 1.96000032e+06 output-geoid_visualization/solution/solution-00000 
