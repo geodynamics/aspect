@@ -80,9 +80,9 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 	@echo "=====aspect=================== Generating documentation"
 	@echo '@INCLUDE = options.dox'                                > aspect.dox
 	@echo 'DOT_IMAGE_FORMAT = png'                               >> aspect.dox
-	@if wget -N http://www.dealii.org/developer/doxygen/deal.tag ; then \
+	@if wget -N https://www.dealii.org/developer/doxygen/deal.tag ; then \
 	  echo 'Cross-linking deal.II documentation from the ASPECT documentation' ; \
-	  echo 'TAGFILES = deal.tag=http://www.dealii.org/developer/doxygen/deal.II'          >> aspect.dox ; \
+	  echo 'TAGFILES = deal.tag=https://www.dealii.org/developer/doxygen/deal.II'          >> aspect.dox ; \
 	 fi
 	@echo 'IMAGE_PATH = logo manual'                             >> aspect.dox
 	@echo 'PROJECT_NAME = "ASPECT"'                              >> aspect.dox
