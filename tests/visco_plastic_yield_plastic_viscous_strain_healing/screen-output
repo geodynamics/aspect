@@ -1,0 +1,25 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 2,326 (882+121+441+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving plastic_strain system ... 0 iterations.
+   Solving viscous_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+6 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Writing graphical output:           output-visco_plastic_yield_plastic_viscous_strain_healing/solution/solution-00000
+
+
+
+
+Termination requested by criterion: end time
+
+
+

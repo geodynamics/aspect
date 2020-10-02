@@ -1,0 +1,4 @@
+<li> New: Added calculation for temperature-dependent strain healing in the strain 
+dependent rheology module.
+<br>
+(Erin Heilman, 2020/08/12)

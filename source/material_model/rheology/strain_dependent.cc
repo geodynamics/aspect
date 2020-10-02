@@ -24,6 +24,9 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
+#include <aspect/postprocess/particles.h>
+#include <aspect/particle/property/interface.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
@@ -147,6 +150,28 @@ namespace aspect
                            "for background material and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: None.");
+
+        prm.declare_entry ("Strain healing mechanism", "no healing",
+                           Patterns::Selection("no healing|temperature dependent"),
+                           "Whether to apply strain healing to plastic yielding and viscosity terms, "
+                           "and if yes, which method to use. The following methods are available:"
+                           "\n\n"
+                           "\\item ``no healing'': No strain healing is applied. "
+                           "\n\n"
+                           "\\item ``temperature dependent'': Purely temperature dependent "
+                           "strain healing applied to plastic yielding and viscosity terms, similar "
+                           "to the temperature-dependent Frank Kamenetskii formulation, computes "
+                           "strain healing as removing strain as a function of temperature, time, "
+                           "and a user-defined healing rate and prefactor "
+                           "as done in Fuchs and Becker, 2019, for mantle convection");
+
+        prm.declare_entry ("Strain healing temperature dependent recovery rate", "1.e-15", Patterns::Double(0),
+                           "Recovery rate prefactor for temperature dependent "
+                           "strain healing. Units: $1/s$");
+
+        prm.declare_entry ("Strain healing temperature dependent prefactor", "15.", Patterns::Double(0),
+                           "Prefactor for temperature dependent "
+                           "strain healing. Units: None");
       }
 
       template <int dim>
@@ -283,6 +308,35 @@ namespace aspect
         friction_strain_weakening_factors = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Friction strain weakening factors"))),
                                                                                     n_fields,
                                                                                     "Friction strain weakening factors");
+
+        if (prm.get ("Strain healing mechanism") == "no healing")
+          healing_mechanism = no_healing;
+        else if (prm.get ("Strain healing mechanism") == "temperature dependent")
+          healing_mechanism = temperature_dependent;
+        else
+          AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
+
+        // Currently this functionality only works in field composition
+        if (healing_mechanism != no_healing && this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim> >())
+          {
+            const Postprocess::Particles<dim> &particle_postprocessor = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+            const Particle::Property::Manager<dim> &particle_property_manager = particle_postprocessor.get_particle_world().get_property_manager();
+
+            AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
+          }
+
+        // Temperature dependent strain healing requires that adiabatic surface temperature is non zero
+        if (healing_mechanism == temperature_dependent)
+          {
+            AssertThrow (this->get_adiabatic_surface_temperature() > 0.0,
+                         ExcMessage("The temperature dependent strain healing can only be used when the adiabatic "
+                                    "surface temperature (reference_temperature in equation for strain healing) "
+                                    "is non-zero."));
+          }
+
+        strain_healing_temperature_dependent_recovery_rate = prm.get_double ("Strain healing temperature dependent recovery rate");
+
+        strain_healing_temperature_dependent_prefactor = prm.get_double ("Strain healing temperature dependent prefactor");
       }
 
 
@@ -360,6 +414,31 @@ namespace aspect
 
       }
 
+      template <int dim>
+      double
+      StrainDependent<dim>::
+      calculate_strain_healing(const MaterialModel::MaterialModelInputs<dim> &in,
+                               const unsigned int j) const
+      {
+        const double reference_temperature = this->get_adiabatic_surface_temperature();
+        double healed_strain = 0.0;
+
+        switch (healing_mechanism)
+          {
+            case no_healing:
+            {
+              break;
+            }
+            case temperature_dependent:
+            {
+              healed_strain = strain_healing_temperature_dependent_recovery_rate *
+                              std::exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - in.temperature[j]/reference_temperature))
+                              * this->get_timestep();
+              break;
+            }
+          }
+        return healed_strain;
+      }
 
       template <int dim>
       std::pair<double, double>
@@ -415,22 +494,35 @@ namespace aspect
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
-            const double e_ii = edot_ii*this->get_timestep();
+            double delta_e_ii = edot_ii*this->get_timestep();
+
+            // Adjusting strain values to account for strain healing without exceeding an unreasonable range
+            if (healing_mechanism != no_healing)
+              {
+                // Never heal more strain than exists
+                delta_e_ii -= calculate_strain_healing(in,i);
+              }
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_only && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
             if (weakening_mechanism == viscous_weakening_with_viscous_strain_only && plastic_yielding == false)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
             if (weakening_mechanism == total_strain || weakening_mechanism == plastic_weakening_with_total_strain_only)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("total_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("total_strain")]);
             if (weakening_mechanism == plastic_weakening_with_plastic_strain_and_viscous_weakening_with_viscous_strain)
               {
                 if (plastic_yielding == true)
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] = e_ii;
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("plastic_strain")] =
+                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("plastic_strain")]);
                 else
-                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] = e_ii;
+                  out.reaction_terms[i][this->introspection().compositional_index_for_name("viscous_strain")] =
+                    std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("viscous_strain")]);
               }
             if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
-              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] = e_ii;
+              out.reaction_terms[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")] =
+                std::max(delta_e_ii, -in.composition[i][this->introspection().compositional_index_for_name("noninitial_plastic_strain")]);
           }
       }
 
@@ -534,6 +626,13 @@ namespace aspect
         return weakening_mechanism;
       }
 
+      template <int dim>
+      HealingMechanism
+      StrainDependent<dim>::
+      get_healing_mechanism() const
+      {
+        return healing_mechanism;
+      }
     }
   }
 }
