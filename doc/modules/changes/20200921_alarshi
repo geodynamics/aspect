@@ -1,0 +1,5 @@
+New: Added a rheology model that computes viscosity as depth-dependent values
+taken from an input ascii data file. The existing depth-dependent material
+model is modified to utilize the new rheology. 
+<br>
+(Arushi Saxena, 2020/09/21)
