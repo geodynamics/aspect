@@ -88,16 +88,29 @@ namespace aspect
         virtual void update();
 
         /**
+         * A function that returns the initial deformation of points on the
+         * boundary (e.g. the surface vertices). @p position is the undeformed
+         * position and this function is expected to return the
+         * displacement vector of this position. The default implementation
+         * returns a zero displacement (= no initial deformation).
+         */
+        virtual
+        Tensor<1,dim>
+        compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
+                                                const Point<dim> &position) const;
+
+        /**
          * A function that creates constraints for the velocity of certain mesh
          * vertices (e.g. the surface vertices) for a specific set of boundaries.
          * The calling class will respect
          * these constraints when computing the new vertex positions.
+         * The default implementation creates no constraints.
          */
         virtual
         void
         compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                  AffineConstraints<double> &mesh_velocity_constraints,
-                                                 const std::set<types::boundary_id> &boundary_id) const = 0;
+                                                 const std::set<types::boundary_id> &boundary_id) const;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -290,10 +303,23 @@ namespace aspect
 
       private:
         /**
-         * A map of boundary ids to mesh deformation objects that have been requested
-         * in the parameter file.
+        * Set the boundary conditions for the solution of the elliptic
+        * problem, which computes the initial displacements of the internal
+        * vertices so that the mesh does not become too distorted due to
+        * motion of the surface. Displacements of vertices on the
+        * deforming surface are fixed according to the selected deformation
+        * plugins.
+        */
+        AffineConstraints<double> make_initial_constraints ();
+
+        /**
+         * Deform the initial mesh by solving a Laplace equation
+         * for the interior mesh vertices. The boundary deformation
+         * is prescribed as given by the
+         * compute_initial_deformation_on_boundary() function of
+         * the individual mesh deformation plugins.
          */
-        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects_map;
+        void deform_initial_mesh ();
 
         /**
          * Set the boundary conditions for the solution of the elliptic
@@ -384,32 +410,44 @@ namespace aspect
         AffineConstraints<double> mesh_vertex_constraints;
 
         /**
-         * A set of boundary indicators that denote those boundaries that are
-         * allowed to move their mesh tangential to the boundary. All
-         * boundaries that have tangential material velocity boundary
-         * conditions are in this set by default, but it can be extended by
-         * open boundaries, boundaries with traction boundary conditions, or
-         * boundaries with prescribed material velocities if requested in
-         * the parameter file.
+         * A map of boundary ids to mesh deformation objects that have been requested
+         * in the parameter file.
          */
-        std::set<types::boundary_id> tangential_mesh_boundary_indicators;
+        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects;
 
         /**
          * Map from boundary id to a vector of names representing
          * mesh deformation objects.
          */
-        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_indicators_map;
+        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_object_names;
 
         /**
          * The set of boundary indicators for which mesh deformation
-         * objects are set.
+         * objects are set and that therefore can deform over time as
+         * prescribed in the mesh_deformation_objects.
          */
-        std::set<types::boundary_id> mesh_deformation_boundary_indicators_set;
+        std::set<types::boundary_id> prescribed_mesh_deformation_boundary_indicators;
 
         /**
-         * The boundary indicator(s) of the free surface(s).
+         * A set of boundary indicators that denote those boundaries that are
+         * allowed to move their mesh tangential to the boundary.
          */
-        std::set<types::boundary_id> free_surface_boundary_ids;
+        std::set<types::boundary_id> tangential_mesh_deformation_boundary_indicators;
+
+        /**
+         * A set of boundary indicators, on which mesh deformation is prescribed to
+         * be zero (fixed boundaries that never move). All boundaries except those
+         * in prescribed_mesh_deformation_boundary_indicators and
+         * tangential_mesh_deformation_boundary_indicators are in this set.
+         */
+        std::set<types::boundary_id> zero_mesh_deformation_boundary_indicators;
+
+        /**
+         * The boundary indicator(s) of the free surface(s). This is the
+         * subset of prescribed_mesh_deformation_boundary_indicators for which
+         * the 'free surface' plugin was selected.
+         */
+        std::set<types::boundary_id> free_surface_boundary_indicators;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
@@ -424,8 +462,8 @@ namespace aspect
     MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
     {
       for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
-           = mesh_deformation_objects_map.begin();
-           boundary_id != mesh_deformation_objects_map.end(); ++boundary_id)
+           = mesh_deformation_objects.begin();
+           boundary_id != mesh_deformation_objects.end(); ++boundary_id)
         for (const auto &p : boundary_id->second)
           if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
             return true;
@@ -448,8 +486,8 @@ namespace aspect
                              "mesh deformation in the input file."));
 
       for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
-           = mesh_deformation_objects_map.begin();
-           boundary_id != mesh_deformation_objects_map.end(); ++boundary_id)
+           = mesh_deformation_objects.begin();
+           boundary_id != mesh_deformation_objects.end(); ++boundary_id)
         {
           typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator mesh_def;
           for (const auto &p : boundary_id->second)

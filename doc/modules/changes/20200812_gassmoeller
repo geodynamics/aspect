@@ -1,0 +1,7 @@
+<li> New: The 'mesh deformation' plugins can now prescribe an initial
+deformation to the mesh that acts as a starting point for deformations during
+the model run. This can be used to prescribe an initial topography and will
+replace the less general 'initial topography' plugin system in a future
+version. 
+<br>
+(Rene Gassmoeller, 2020/08/12)

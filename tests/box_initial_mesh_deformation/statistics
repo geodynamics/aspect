@@ -8,7 +8,9 @@
 # 8: Iterations for Stokes solver
 # 9: Velocity iterations in Stokes preconditioner
 # 10: Schur complement iterations in Stokes preconditioner
-# 11: Minimum topography (m)
-# 12: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089  0 70 73  72 -9.31322575e-10 9.31322575e-10 
-1 6.499830210694e+01 6.499830210694e+01 256 2467 1089 11 58 61 122 -7.12921391e+04 0.00000000e+00 
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimum topography (m)
+# 15: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 0 11 13 24 output-box_initial_mesh_deformation/solution/solution-00000 4.84190771e-10 1.19820812e-09 -2.00000000e+04 1.41421356e+04 
