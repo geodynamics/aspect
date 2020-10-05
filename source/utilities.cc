@@ -1691,6 +1691,19 @@ namespace aspect
 
 
     template <int dim>
+    const std::vector<double> &
+    AsciiDataLookup<dim>::get_coordinates(const unsigned int dimension) const
+    {
+      AssertThrow(dimension < dim,
+                  ExcMessage("There is no spatial dimension number " + std::to_string(dimension)
+                             + " in the current data file."));
+
+      return coordinate_values[dimension];
+    }
+
+
+
+    template <int dim>
     unsigned int
     AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
     {
@@ -2906,6 +2919,15 @@ namespace aspect
                         const unsigned int                   component) const
     {
       return lookup->get_data(position,component);
+    }
+
+
+
+    template <int dim>
+    const std::vector<double> &
+    AsciiDataProfile<dim>::get_coordinates() const
+    {
+      return lookup->get_coordinates(0);
     }
 
 

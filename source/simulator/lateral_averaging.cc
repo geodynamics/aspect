@@ -389,17 +389,21 @@ namespace aspect
 
   template <int dim>
   std::vector<std::vector<double> >
-  LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
+  LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_bounds,
                                                   std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const
   {
     Assert (functors.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
                         "number of properties to compute."));
-    Assert (n_slices > 0,
-            ExcMessage ("To call this function, you need to request a positive "
-                        "number of depth slices."));
+    Assert (depth_bounds.size() > 1,
+            ExcMessage ("To call this function, you need to request at least two "
+                        "depth boundaries."));
+    Assert(std::is_sorted(depth_bounds.begin(),depth_bounds.end()),
+           ExcMessage ("To call this function the depth boundaries need to be ordered "
+                       "with increasing depth."));
 
     const unsigned int n_properties = functors.size();
+    const unsigned int n_slices = depth_bounds.size()-1;
 
     std::vector<std::vector<double> > values(n_properties,
                                              std::vector<double>(n_slices,0.0));
@@ -444,7 +448,6 @@ namespace aspect
       quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
 
     const unsigned int n_q_points = quadrature_formula->size();
-    const double max_depth = this->get_geometry_model().maximal_depth();
 
     FEValues<dim> fe_values (this->get_mapping(),
                              this->get_fe(),
@@ -492,9 +495,15 @@ namespace aspect
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(q));
-              // make sure we are rounding down and never end up with idx==num_slices:
-              const double magic = 1.0-2.0*std::numeric_limits<double>::epsilon();
-              const unsigned int idx = static_cast<unsigned int>(std::floor((depth*n_slices)/max_depth*magic));
+
+              if (depth < depth_bounds.front() || depth > depth_bounds.back())
+                continue;
+
+              // this makes sure depth == front() and depth == back() are handled correctly
+              unsigned int idx = std::distance(depth_bounds.begin(),
+                                               std::lower_bound(depth_bounds.begin(),depth_bounds.end(),depth));
+              if (idx > 0)
+                idx -= 1;
 
               Assert(idx<n_slices, ExcInternalError());
 
@@ -632,6 +641,23 @@ namespace aspect
   LateralAveraging<dim>::get_averages(const unsigned int n_slices,
                                       const std::vector<std::string> &property_names) const
   {
+    const double maximal_depth = this->get_geometry_model().maximal_depth();
+    std::vector<double> depth_bounds(n_slices+1, 0.0);
+
+    // Leave index 0 at 0.0, and generate an increasing range of equidistant depth bounds
+    std::generate(depth_bounds.begin()+1, depth_bounds.end(),
+                  [n = 0.0, step = maximal_depth / n_slices] () mutable {return n += step; });
+
+    return get_averages(depth_bounds, property_names);
+  }
+
+
+
+  template <int dim>
+  std::vector<std::vector<double> >
+  LateralAveraging<dim>::get_averages(const std::vector<double> &depth_thresholds,
+                                      const std::vector<std::string> &property_names) const
+  {
     std::vector<std::unique_ptr<internal::FunctorBase<dim> > > functors;
     for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
       {
@@ -696,14 +722,19 @@ namespace aspect
       }
 
     // Now compute values for all selected properties.
-    return compute_lateral_averages(n_slices, functors);
+    return compute_lateral_averages(depth_thresholds, functors);
   }
 }
 
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class LateralAveraging<dim>;
+  template class LateralAveraging<dim>; \
+  namespace internal \
+  { \
+    template class FunctorBase<dim>; \
+  }
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
