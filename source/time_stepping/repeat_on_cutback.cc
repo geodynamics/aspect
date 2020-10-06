@@ -39,13 +39,6 @@ namespace aspect
     std::pair<Reaction, double>
     RepeatOnCutback<dim>::determine_reaction (const TimeStepInfo &info)
     {
-      std::cout
-          << "RepeatOnCutback old:" << this->get_old_timestep()
-          << " last: " << this->get_timestep()
-          << " next: " << info.next_time_step_size
-          << " last? " << info.reduced_by_termination_plugin
-          << std::endl;
-
       if (info.next_time_step_size < this->get_timestep()*this->repeat_threshold
           && !info.reduced_by_termination_plugin)
         return
@@ -112,8 +105,8 @@ namespace aspect
     ASPECT_REGISTER_TIME_STEPPING_MODEL(RepeatOnCutback,
                                         "repeat on cutback",
                                         "This time stepping plugin will detect a situation where the computed time step "
-                                        "shrinks by more than a user-controlled factor. In that situation, the time step "
-                                        "will be repeated with a smaller step size.\n"
+                                        "shrinks by more than a user-controlled factor. In that situation, the previous "
+                                        "time step will be repeated with a smaller step size.\n"
                                         "A large reduction in time step size typically happens when velocities change "
                                         "abruptly. Repeating the time step ensure properly resolving this event. It is "
                                         "useful to consider setting the \"Maximum relative increase in time step\" option "

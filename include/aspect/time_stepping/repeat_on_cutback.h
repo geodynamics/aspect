@@ -68,7 +68,17 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
       private:
+        /**
+         * Parameter to determine how much smaller the time step should be
+         * repeated as.
+         */
         double cut_back_amount;
+
+        /**
+         * Parameter that controls when to repeat a time step. If the newly
+         * computed step size is smaller than the last step size multiplied by
+         * this factor, the step is repeated.
+         */
         double repeat_threshold;
     };
   }

@@ -143,11 +143,11 @@ namespace aspect
       reaction = static_cast<Reaction>(Utilities::MPI::min(static_cast<int>(reaction), this->get_mpi_communicator()));
       repeat_step_size = Utilities::MPI::min(repeat_step_size, this->get_mpi_communicator());
 
-      this->current_reaction = reaction;
+      current_reaction = reaction;
       if (should_repeat_time_step())
-        this->next_time_step_size = repeat_step_size;
+        next_time_step_size = repeat_step_size;
       else
-        this->next_time_step_size = new_time_step;
+        next_time_step_size = new_time_step;
     }
 
 
@@ -156,7 +156,7 @@ namespace aspect
     double
     Manager<dim>::get_next_time_step_size() const
     {
-      return this->next_time_step_size;
+      return next_time_step_size;
     }
 
 
@@ -165,7 +165,7 @@ namespace aspect
     bool
     Manager<dim>::should_repeat_time_step() const
     {
-      switch (this->current_reaction)
+      switch (current_reaction)
         {
           case Reaction::refine_and_repeat_step:
             return true;
@@ -188,7 +188,7 @@ namespace aspect
     bool
     Manager<dim>::should_refine_mesh() const
     {
-      switch (this->current_reaction)
+      switch (current_reaction)
         {
           case Reaction::refine_and_repeat_step:
             return true;

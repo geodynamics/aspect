@@ -65,21 +65,22 @@ namespace aspect
     };
 
     /**
-     * Information passed to Interface::determine_reaction with information about the time
-     * step.
+     * Information passed to Interface::determine_reaction with information
+     * about the time step.
      */
     struct TimeStepInfo
     {
       /**
-       * The proposed time step size for the next step as computed by querying plugins
-       * and applying other logic.
+       * The proposed time step size for the next step as computed by querying
+       * plugins and applying other logic.
        */
       double next_time_step_size;
+
       /**
-       * If true, a termination criterion decided to shorten the time step size.
+       * If true, a termination criterion decided to shorten the time step
+       * size.
        */
       bool reduced_by_termination_plugin;
-
     };
 
     /**
@@ -133,9 +134,9 @@ namespace aspect
          * repeat, refinement, etc.. The second return value is the time step
          * size to take in case the plugin requests a repeated time step.
          *
-         * The argument @p time_step_size is the step size that would be taken
-         * in this time step (determined as the minimum of the return value of
-         * execute() from all plugins).
+         * The argument @p info contains information like the step size that
+         * would be taken in this time step (determined as the minimum of the
+         * return value of execute() from all plugins).
          *
          * The default implementation of this function will always advance
          * to the next time step.
