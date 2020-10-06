@@ -59,7 +59,7 @@ rm -f ${DIFF_OUTPUT}.failed ${DIFF_OUTPUT}
 
 case ${DIFF_EXE} in
     *numdiff)
-	${DIFF_EXE} -V -a 1e-6 -r 1e-8 -s ' \t\r\n:<>=,;' \
+	${DIFF_EXE} -V -a 1e-10 -r 1e-8 -s ' \t\r\n:<>=,;' \
 	    ${REF_FILE} ${GEN_FILE} > ${DIFF_OUTPUT}.tmp
 	;;
     *)
