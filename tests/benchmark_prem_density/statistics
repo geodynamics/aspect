@@ -8,4 +8,10 @@
 # 8: Average density (kg/m^3)
 # 9: Average viscosity (Pa s)
 # 10: Total mass (kg)
-0 0.000000000000e+00 0.000000000000e+00 7 253 79 0 5.15270530e+03 0.00000000e+00 5.57847694e+24 
+# 11: Average gravity acceleration (m/s^2)
+# 12: Minimum gravity acceleration (m/s^2)
+# 13: Maximum gravity acceleration (m/s^2)
+# 14: Average gravity potential (m^2/s^2)
+# 15: Minimum gravity potential (m^2/s^2)
+# 16: Maximum gravity potential (m^2/s^2)
+0 0.000000000000e+00 0.000000000000e+00 7 253 79 0 5.15270530e+03 0.00000000e+00 5.57847694e+24 4.044579289168e+00 5.063700317712e-15 8.089158578335e+00 -8.958660316070e+07 -1.156241424369e+08 -6.354906388454e+07 

@@ -48,8 +48,39 @@ subsection Material model
   set Model name = premDensity
 end
 
-# We output some statistics.
+# We output the gravity and some statistics.
 subsection Postprocess
-  set List of postprocessors = basic statistics, material statistics
+  set List of postprocessors = basic statistics, material statistics, gravity calculation
+
+# subsection A: calculate gravity along the radial profile 
+# at the 'random' spherical coordinate [R,115,87]
+  subsection Gravity calculation
+    set Sampling scheme             = map
+   
+    # The density is evaluated at the quadrature points. You
+    # may increase the base number of quadrature points:
+    # e.g. if the base number is 2 (Q2) then an increase of
+    # the quadrature point degree by 2 means that the total 
+    # number of quadrature points in a cell is (2+2)^dim. 
+    set Quadrature degree increase  = 0
+    
+    # Specify the longitude coordinate of the profile
+    set Number points longitude     = 1
+    set Minimum longitude           = 115
+    set Maximum longitude           = 115
+    
+    # Specify the latitude coordinate of the profile
+    set Number points latitude      = 1
+    set Minimum latitude            = 87
+    set Maximum latitude            = 87
+    
+    # Specify the number of point along the profile and 
+    # its length between minimum and maximum radius
+    set Number points radius        = 2
+    set Minimum radius              = 0
+    set Maximum radius              = 6371000
+
+  end
+
 end
 
