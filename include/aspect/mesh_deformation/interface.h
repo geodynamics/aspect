@@ -258,6 +258,11 @@ namespace aspect
          * The internal nodes get the same initial topography as the
          * corresponding surface node. In other words, there is
          * no decrease of the initial topography with depth.
+         * However, only the topography stored at the surface nodes
+         * is taken into account in the diffusion plugin that
+         * uses this function. TODO Once all initial_topography
+         * is prescribed through initial_mesh_deformation, this
+         * function can be removed.
          */
         const LinearAlgebra::Vector &
         get_initial_topography () const;
@@ -355,14 +360,17 @@ namespace aspect
         /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
-         * topography plugin. We set all entries to the initial topography
+         * topography plugin based on the surface coordinates of the
+         * mesh nodes. We set all entries to the initial topography
          * based on its surface coordinates, i.e. the initial topography
          * is not corrected for depth from the surface as it is
          * for the initial mesh deformation. TODO this is ok for now,
          * because the surface diffusion plugin only cares about the
          * initial topography at the surface, but it would be more correct if it
          * sets the initial topography to the actual initial distortion of
-         * the mesh cells.
+         * the mesh cells. When all initial_topography plugins are converted
+         * to the new initial_mesh_deformation functionality, this function
+         * can be removed.
          */
         void set_initial_topography ();
 
@@ -484,11 +492,6 @@ namespace aspect
          * the 'free surface' plugin was selected.
          */
         std::set<types::boundary_id> free_surface_boundary_indicators;
-
-        /**
-         * A pointer to the initial topography model.
-         */
-        InitialTopographyModel::Interface<dim> *topo_model;
 
         bool include_initial_topography;
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2018 by the authors of the ASPECT code.
+  Copyright (C) 2020 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -106,7 +106,6 @@ namespace aspect
          * surface.
          */
         double diffusivity;
-
 
         /**
          * Maximum number of steps between the application of diffusion.

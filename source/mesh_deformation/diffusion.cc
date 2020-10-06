@@ -317,6 +317,13 @@ namespace aspect
                     const Tensor<2, dim, double> projection = unit_symmetric_tensor<dim>() -
                                                               outer_product(fs_fe_face_values.normal_vector(point), fs_fe_face_values.normal_vector(point));
 
+
+                    // The shape values for the i-loop
+                    std::vector<double> phi(dofs_per_cell);
+
+                    // The projected gradients of the shape values for the i-loop
+                    std::vector<Tensor<1, dim, double> > projected_grad_phi(dofs_per_cell);
+
                     // Loop over the shape functions
                     for (unsigned int i=0; i<dofs_per_cell; ++i)
                       {
@@ -328,10 +335,13 @@ namespace aspect
                                     ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
                         if (mesh_deformation_dof_handler.get_fe().system_to_component_index(i).first == dim-1)
                           {
+                            // Precompute shape values and projected shape value gradients
+                            phi[i] = fs_fe_face_values.shape_value (i, point);
+                            projected_grad_phi[i] = projection * fs_fe_face_values.shape_grad(i, point);
+
                             // Assemble the RHS
                             // RHS = M*H_old
-                            cell_vector(i) += fs_fe_face_values.shape_value (i, point) * displacement * fs_fe_face_values.JxW(point);
-
+                            cell_vector(i) += phi[i] * displacement * fs_fe_face_values.JxW(point);
 
                             for (unsigned int j=0; j<dofs_per_cell; ++j)
                               {
@@ -343,9 +353,9 @@ namespace aspect
                                     // Matrix := (M+dt*K) = (M+dt*B^T*kappa*B)
                                     cell_matrix(i,j) +=
                                       (
-                                        fs_fe_face_values.shape_value (i, point) * fs_fe_face_values.shape_value (j, point) +
+                                        phi[i] * fs_fe_face_values.shape_value (j, point) +
                                         this->get_timestep() * diffusivity *
-                                        (projection * fs_fe_face_values.shape_grad(i, point)) *
+                                        projected_grad_phi[i] *
                                         (projection * fs_fe_face_values.shape_grad(j, point))
                                       )
                                       * fs_fe_face_values.JxW(point);
@@ -395,14 +405,13 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void Diffusion<dim>::check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
       // Initialize Gauss-Legendre quadrature for degree+1 quadrature points of the surface faces
       const QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
-
-      FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), mesh_deformation_dof_handler.get_fe(), face_quadrature, update_default);
 
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
@@ -418,9 +427,6 @@ namespace aspect
                 // Only consider the requested boundaries
                 if (boundary_ids.find(boundary_indicator) == boundary_ids.end())
                   continue;
-
-                // Reinitialize update flags for current cell face
-                fs_fe_face_values.reinit (fscell, face_no);
 
                 // Calculate the corresponding conduction timestep
                 min_local_conduction_timestep = std::min(min_local_conduction_timestep,
@@ -443,12 +449,7 @@ namespace aspect
     }
 
 
-    /**
-     * A function that creates constraints for the velocity of certain mesh
-     * vertices (e.g. the surface vertices) for a specific boundary.
-     * The calling class will respect
-     * these constraints when computing the new vertex positions.
-     */
+
     template <int dim>
     void
     Diffusion<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
@@ -492,6 +493,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void Diffusion<dim>::declare_parameters(ParameterHandler &prm)
     {
@@ -503,7 +505,7 @@ namespace aspect
                             Patterns::Double(0),
                             "The hillslope transport coefficient $\\kappa$ used to "
                             "diffuse the free surface, either as a  "
-                            "stabilization step or a to mimic erosional "
+                            "stabilization step or to mimic erosional "
                             "and depositional processes. Units: $\\si{m^2/s}$. ");
           prm.declare_entry("Time steps between diffusion", "1",
                             Patterns::Integer(0,std::numeric_limits<int>::max()),
@@ -514,6 +516,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
