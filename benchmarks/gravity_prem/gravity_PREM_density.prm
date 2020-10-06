@@ -1,0 +1,143 @@
+# This prm file is for the branchmark gravity_prem only:
+# it describes the model setup to calculate gravity of a
+# sphere filled with PREM densities. 
+
+# Define the number of space dimensions we would like to work in
+set Dimension                              = 3 
+
+# The shared library includes the material model that has been 
+# writen specifically for the benchmark. 
+set Additional shared libraries  = ./libgravity_prem.so 
+
+# The model is instantaneous so that no stokes or advection  
+# is required. 
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory = output-gravity_prem_profile
+#set Output directory = output-gravity_prem_spiral
+#set Output directory = output-gravity_prem_map
+set Nonlinear solver scheme = no Advection, no Stokes 
+
+# Specify the mesh refinement: with GMR=5, the model ran for 
+# 13min on 1 core. The mesh is first created, then refined 
+# before the initial conditions are set up.
+subsection Mesh refinement
+  set Initial global refinement             = 4
+  set Initial adaptive refinement           = 0
+  set Skip solvers on initial refinement    = true
+  set Skip setup initial conditions on initial refinement = true
+end
+
+# Here we specify the geometry of the domain, which is 
+# a sphere with a radius of 6371km
+subsection Geometry model
+  set Model name = sphere
+  subsection Sphere
+    set Radius = 6371000
+  end
+end
+
+# Here, we choose a zero average pressure at the surface 
+# of the domain 
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Element types: we can decrease the temperature polynomial 
+# degree to 1 because temperature is not taken into account. 
+# NOTE that the gravity postrpocessor uses the Stokes velocity
+# polynomial degree as the base for the number of quadrature
+# points on which the density evaluation is performed. 
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+  set Use locally conservative discretization = true
+end
+
+# A gravity model always have to be specified. This does not
+# affect the gravity calculaton.
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# Call the premDensity material model pluggin written specifically
+# for this benchmark.
+subsection Material model
+  set Model name = premDensity
+end
+
+# We output the density, gravity and some statistics.
+# Are shown here 2 subsections of the gravity calculation:
+#  - subsection A: along a radial profile. 
+#  - subsection B: on a uniformly distributed map using the
+#                  fibonacci spiral sampling scheme.
+subsection Postprocess
+  set List of postprocessors = visualization, basic statistics, gravity calculation
+
+  subsection Visualization
+    set Output format                 = vtu
+    set List of output variables      = density
+    set Time between graphical output = 0
+    set Number of grouped files       = 1 
+  end
+
+# subsection A: calculate gravity along the radial profile 
+# at the 'random' spherical coordinate [R,115,87]
+  subsection Gravity calculation
+    set Sampling scheme             = map
+   
+    # The density is evaluated at the quadrature points. You
+    # may increase the base number of quadrature points:
+    # e.g. if the base number is 2 (Q2) then an increase of
+    # the quadrature point degree by 2 means that the total 
+    # number of quadrature points in a cell is (2+2)^dim. 
+    set Quadrature degree increase  = 2
+    
+    # Specify the longitude coordinate of the profile
+    set Number points longitude     = 1
+    set Minimum longitude           = 115
+    set Maximum longitude           = 115
+    
+    # Specify the latitude coordinate of the profile
+    set Number points latitude      = 1
+    set Minimum latitude            = 87
+    set Maximum latitude            = 87
+    
+    # Specify the number of point along the profile and 
+    # its length between minimum and maximum radius
+    set Number points radius        = 151
+    set Minimum radius              = 0
+    set Maximum radius              = 15000000
+
+  end
+
+# subsection B: calculate gravity on a uniformly distributed 
+# map at GOCE height (225km above Earth surface) using the
+# fibonacci spiral sampling scheme.
+  #subsection Gravity calculation
+  #  set Sampling scheme             = fibonacci spiral #map
+ 
+    # The density is evaluated at the quadrature points. You
+    # may increase the base number of quadrature points:
+    # e.g. if the base number is 2 (Q2) then an increase of
+    # the quadrature point degree by 2 means that the total 
+    # number of quadrature points is (2+2)^dim. 
+  #  set Quadrature degree increase  = 2
+ 
+    # Specify the number of query points defining the spiral 
+    # field 
+  #  set Number points fibonacci spiral = 2701
+  
+    # Specify the height of GOCE where the map is produced
+  #  set Minimum radius              = 6596000 
+  #  set Number points radius        = 1
+  #  #set Number points longitude     = 73
+  #  #set Number points latitude      = 37
+
+  #end
+
+end
+
