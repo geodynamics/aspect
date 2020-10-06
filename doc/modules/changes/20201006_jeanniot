@@ -1,0 +1,12 @@
+New: Benchmarks of the gravity postprocessor with a PREM density 
+material model plugin. The first benchmark consists in calculating
+gravity acceleration and potential for a hollow sphere filled with
+a single material of constant density, compared with the analytical
+solution. The second benchmark calculates gravity acceleration, 
+potential and gradients for a full sphere filled with PREM density.
+Both benchmarks also serve as a tutorial to use the functionality of 
+the postprocessor gravity_point_values, including a list of points, 
+a radial profile, an equiangular or equidistant (uniform) field of 
+points, the latter using the Fibonacci spiral sampling scheme.
+<br>
+(L. Jeanniot & C. Thieulot, 2020/10/06)
