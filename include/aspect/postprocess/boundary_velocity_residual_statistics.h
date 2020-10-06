@@ -93,7 +93,7 @@ namespace aspect
         /**
         * Pointer to the gplates boundary velocity model
         */
-        std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup <dim> > gplates_lookup;
+        std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup<dim>> gplates_lookup;
 
         /**
          * Pointer to the ascii data

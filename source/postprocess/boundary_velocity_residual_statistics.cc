@@ -36,7 +36,6 @@ namespace aspect
     void
     BoundaryVelocityResidualStatistics<dim>::initialize ()
     {
-
       if (use_ascii_data)
         {
           // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
@@ -45,18 +44,14 @@ namespace aspect
         }
       else
         {
-          // The variables pointone and pointtwo are used in gplates to find the 2D plane in which the model lies.
-          Tensor<1,2> pointone;
-          Tensor<1,2> pointtwo;
-
-          // These values are not used for 3D geometries and are thus set to the default.
-          pointone[0] = numbers::PI/2;
-          pointone[1] = 0;
-          pointtwo[0] = numbers::PI/2;
-          pointtwo[1] = numbers::PI/2;
+          // The two points are used in GPlates to find the 2D plane in which
+          // the model lies.  These values are not used for 3D geometries and
+          // are thus set to the default.
+          Point<2> point_one(numbers::PI/2., 0.);
+          Point<2> point_two(numbers::PI/2., numbers::PI/2.);
 
           gplates_lookup =  std_cxx14::make_unique<BoundaryVelocity::internal::GPlatesLookup<dim> > (
-                              pointone, pointtwo);
+                              point_one, point_two);
 
           gplates_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
         }
@@ -87,7 +82,6 @@ namespace aspect
           if (use_spherical_unit_vectors == true)
             data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, p);
         }
-
       else
         {
           data_velocity =  gplates_lookup->surface_velocity(p);
@@ -132,16 +126,19 @@ namespace aspect
       // and that is owned by this processor,
       // compute the maximum, minimum, and squared*area velocity residual
       // magnitude and the face area.
+
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() ==
-                this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
+            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == top_boundary_id)
               {
                 fe_face_values.reinit (cell, f);
-                // extract velocities
+
                 fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
                     velocities);
+
                 // determine the max, min, and squared velocity residual on the face
                 // also determine the face area
                 double local_max = -std::numeric_limits<double>::max();
@@ -170,15 +167,12 @@ namespace aspect
 
                 // then merge them with the min/max/squared velocities
                 // and face areas we found for other faces with the same boundary indicator
-                const types::boundary_id boundary_indicator
-                  = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-
-                local_max_vel[boundary_indicator] = std::max(local_max,
-                                                             local_max_vel[boundary_indicator]);
-                local_min_vel[boundary_indicator] = std::min(local_min,
-                                                             local_min_vel[boundary_indicator]);
-                local_velocity_square_integral[boundary_indicator] += local_sqvel;
-                local_boundary_area[boundary_indicator] += local_fe_face_area;
+                local_max_vel[top_boundary_id] = std::max(local_max,
+                                                          local_max_vel[top_boundary_id]);
+                local_min_vel[top_boundary_id] = std::min(local_min,
+                                                          local_min_vel[top_boundary_id]);
+                local_velocity_square_integral[top_boundary_id] += local_sqvel;
+                local_boundary_area[top_boundary_id] += local_fe_face_area;
               }
 
       // now communicate to get the global values
