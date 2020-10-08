@@ -1393,8 +1393,11 @@ namespace aspect
     // using MG transfer objects. This transfer is based on the same linear operator used to
     // transfer data inside a v-cycle.
     MGTransferMatrixFree<dim,GMGNumberType> transfer;
-
     transfer.build(dof_handler_projection);
+
+    // Explicitly pick the version with template argument double to convert
+    // double-valued active_viscosity_vector to GMGNumberType-valued
+    // level_viscosity_vector:
     transfer.template interpolate_to_mg<double>(dof_handler_projection,
                                                 level_viscosity_vector,
                                                 active_viscosity_vector);
@@ -1448,7 +1451,8 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       level_viscosity_tables[level](cell,q)[i]
-                        = std::min(std::max(values_on_quad[q], (GMGNumberType)min_el), (GMGNumberType)max_el);
+                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(min_el)),
+                                   static_cast<GMGNumberType>(max_el));
                   }
               }
           }
