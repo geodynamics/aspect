@@ -1,0 +1,34 @@
+This directory contains two benchmarks of a 2D hill diffusing away
+over time. In the first benchmark, 1_sine_zero_flux.prm, the left
+and right boundary condition for diffusion is zero flux, so the
+topography of the left and right mesh corner point increases
+over time, while the maximum height of the hill decreases.
+The second benchmark, 2_sine_const_h.prm, fixes the topography
+at the left and right boundary. 
+Note that in both cases we do not solve for velocity or temperature 
+and only the mesh is deforming. 
+
+The postprocessor analytical_topography.cc should be compiled
+with `cmake` and `make` using the provided CMakeLists:
+```
+$cmake -D Aspect_DIR=path/to/aspect/build/dir/ .
+$make
+```
+This postprocessor outputs the topography
+of the ASPECT mesh, as well as what the topography should be
+according to the analytical solution. To run the benchmarks:
+`$./aspect 1_sine_zero_flux.prm` 
+
+The topography and analytical solution can be plotted with gnuplot
+using the provided scripts:
+```
+$gnuplot plot_topo_error_benchmark_2.gnuplot
+$gnuplot plot_topo_error_benchmark_1.gnuplot
+$gnuplot plot_topo_benchmark_2.gnuplot
+$gnuplot plot_topo_benchmark_1.gnuplot
+```
+of which the first 2 plot the percentage error between the topography
+and analytical solution, and the last two the actual values.
+
+When playing with the parameters of the input file, you will notice
+a dependence of the error on timestep and mesh resolution.

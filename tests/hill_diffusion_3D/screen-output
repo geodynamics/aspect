@@ -1,0 +1,31 @@
+
+Number of active cells: 512 (on 4 levels)
+Number of degrees of freedom: 20,381 (14,739+729+4,913)
+
+Number of mesh deformation degrees of freedom: 2187
+   Added initial topography to grid
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh velocity system... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-hill_diffusion_3D/solution/solution-00000
+
+*** Timestep 1:  t=0.0005 seconds, dt=0.0005 seconds
+   Solving mesh surface diffusion
+   Solving mesh velocity system... 11 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-hill_diffusion_3D/solution/solution-00001
+
+*** Timestep 2:  t=0.001 seconds, dt=0.0005 seconds
+   Solving mesh surface diffusion
+   Solving mesh velocity system... 11 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-hill_diffusion_3D/solution/solution-00002
+
+Termination requested by criterion: end time
+
+
+

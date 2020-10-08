@@ -1,0 +1,11 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 4096 37507 16641 0 output-hill_diffusion/solution/solution-00000 
+1 5.000000000000e-04 5.000000000000e-04 4096 37507 16641 0 output-hill_diffusion/solution/solution-00001 
+2 1.000000000000e-03 5.000000000000e-04 4096 37507 16641 0 output-hill_diffusion/solution/solution-00002 

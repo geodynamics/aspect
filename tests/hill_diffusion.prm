@@ -1,0 +1,122 @@
+set Dimension                              = 2
+set Use years in output instead of seconds = false
+set End time                               = 0.001
+set Maximum time step                      = 0.0005
+set Nonlinear solver scheme = no Advection, no Stokes
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+
+# 1x1 box with an initial hill topography
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+  subsection Initial topography model
+    set Model name = function
+    subsection Function
+      set Function constants = A=0.075, L=1.
+      set Function expression = \
+                                A * sin(x*pi)
+    end
+  end
+end
+
+
+# Temperature effects are ignored
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Function expression = 0 
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature 
+
+end
+
+
+# Free slip on all boundaries
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom, top
+end
+
+
+# The mesh will be deformed according to the displacement
+# of the surface nodes due to diffusion of the topography.
+# The mesh is allowed to move verticall along the left and 
+# right boundary.
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: diffusion
+  set Additional tangential mesh velocity boundary indicators = left, right
+
+  subsection Diffusion
+    # The diffusivity
+    set Hillslope transport coefficient = 0.25
+  end
+end
+
+
+# Vertical gravity
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 1 
+  end
+end
+
+
+# One material with unity properties
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Reference density             = 1
+    set Reference specific heat       = 1
+    set Reference temperature         = 0
+    set Thermal conductivity          = 1
+    set Thermal expansion coefficient = 1
+    set Viscosity                     = 1
+  end
+end
+
+
+# We also have to specify that we want to use the Boussinesq
+# approximation (assuming the density in the temperature
+# equation to be constant, and incompressibility).
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+# We here use a globally refined mesh without
+# adaptive mesh refinement.
+subsection Mesh refinement
+  set Initial global refinement                = 6
+  set Initial adaptive refinement              = 0
+  set Time steps between mesh refinement       = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Time between graphical output = 0
+    set Output mesh velocity = true
+    set Interpolate output = false
+    set Output format = gnuplot
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance                         = 1e-7
+  end
+end
