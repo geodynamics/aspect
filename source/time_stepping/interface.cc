@@ -92,9 +92,8 @@ namespace aspect
 
       for (const auto &plugin : active_plugins)
         {
-          double this_time = plugin->execute();
-
-          new_time_step = std::min(new_time_step, this_time);
+          const double this_time_step = plugin->execute();
+          new_time_step = std::min(new_time_step, this_time_step);
         }
 
       new_time_step = Utilities::MPI::min(new_time_step, this->get_mpi_communicator());
