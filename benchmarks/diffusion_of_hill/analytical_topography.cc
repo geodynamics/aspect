@@ -69,7 +69,11 @@ namespace aspect
       // loop over all of the surface cells and save the elevation to stored_value
       for (const auto &cell : this->get_triangulation().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
+#if DEAL_II_VERSION_GTE(9,3,0)
+          for (const unsigned int face_no : cell->face_indices())
+#else
           for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+#endif
             if (cell->face(face_no)->at_boundary())
               {
                 if ( cell->face(face_no)->boundary_id() != relevant_boundary)

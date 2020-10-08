@@ -410,9 +410,6 @@ namespace aspect
     void Diffusion<dim>::check_diffusion_time_step (const DoFHandler<dim> &mesh_deformation_dof_handler,
                                                     const std::set<types::boundary_id> &boundary_ids) const
     {
-      // Initialize Gauss-Legendre quadrature for degree+1 quadrature points of the surface faces
-      const QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
-
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
 
       for (const auto &fscell : mesh_deformation_dof_handler.active_cell_iterators())
