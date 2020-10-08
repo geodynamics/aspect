@@ -27,7 +27,7 @@ namespace aspect
   namespace TimeStepping
   {
     template <int dim>
-    std::pair<Reaction, double>
+    double
     ConvectionTimeStep<dim>::execute()
     {
       const QIterated<dim> quadrature_formula (QTrapez<1>(),
@@ -87,7 +87,7 @@ namespace aspect
                               "but the computed step length was: " + std::to_string(min_convection_timestep) + ". "
                               "Please check for non-positive material properties."));
 
-      return std::make_pair(Reaction::advance, min_convection_timestep);
+      return min_convection_timestep;
     }
 
 

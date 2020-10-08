@@ -19,11 +19,10 @@
 */
 
 
-#ifndef _aspect_time_stepping_function_h
-#define _aspect_time_stepping_function_h
+#ifndef _aspect_time_stepping_repeat_on_cutback_h
+#define _aspect_time_stepping_repeat_on_cutback_h
 
 #include <aspect/time_stepping/interface.h>
-#include <deal.II/base/parsed_function.h>
 
 namespace aspect
 {
@@ -32,26 +31,33 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements a time stepping plugin on a function
-     * description provided in the input file.
+     * A class that implements a time stepping plugin to repeat a time step if the
+     * next time step is significantly smaller than the last step.
      *
      * @ingroup TimeStepping
      */
     template <int dim>
-    class Function : public Interface<dim>, public SimulatorAccess<dim>
+    class RepeatOnCutback : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
          * Constructor.
          */
-        Function () = default;
+        RepeatOnCutback () = default;
+
+        /**
+         * @copydoc aspect::TimeStepping::Interface<dim>::execute()
+         */
+        virtual
+        double
+        execute() override;
 
         /**
          * The main execute() function.
          */
         virtual
-        double
-        execute() override;
+        std::pair<Reaction, double>
+        determine_reaction(const TimeStepInfo &info) override;
 
         static
         void
@@ -63,9 +69,17 @@ namespace aspect
 
       private:
         /**
-         * The function object.
+         * Parameter to determine how much smaller the time step should be
+         * repeated as.
          */
-        Functions::ParsedFunction<1> function;
+        double cut_back_amount;
+
+        /**
+         * Parameter that controls when to repeat a time step. If the newly
+         * computed step size is smaller than the last step size multiplied by
+         * this factor, the step is repeated.
+         */
+        double repeat_threshold;
     };
   }
 }

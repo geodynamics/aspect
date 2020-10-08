@@ -27,7 +27,7 @@ namespace aspect
   namespace TimeStepping
   {
     template <int dim>
-    std::pair<Reaction, double>
+    double
     Function<dim>::execute()
     {
       double new_time_step = function.value(Point<1>(this->get_time()));
@@ -37,7 +37,7 @@ namespace aspect
                               "but the computed step length of the \"function\" plugin was: " +
                               std::to_string(new_time_step) + "."));
 
-      return std::make_pair(Reaction::advance, new_time_step);
+      return new_time_step;
     }
 
 

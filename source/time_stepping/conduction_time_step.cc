@@ -28,7 +28,7 @@ namespace aspect
   namespace TimeStepping
   {
     template <int dim>
-    std::pair<Reaction, double>
+    double
     ConductionTimeStep<dim>::execute()
     {
       double min_local_conduction_timestep = std::numeric_limits<double>::max();
@@ -107,7 +107,7 @@ namespace aspect
                               "but the computed step length was: " + std::to_string(min_conduction_timestep) + ". "
                               "Please check for non-positive material properties."));
 
-      return std::make_pair(Reaction::advance, min_conduction_timestep);
+      return min_conduction_timestep;
     }
 
 

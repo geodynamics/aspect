@@ -51,7 +51,7 @@ namespace aspect
          * @copydoc aspect::TimeStepping::Interface<dim>::execute()
          */
         virtual
-        std::pair<Reaction, double>
+        double
         execute() override;
 
       private:

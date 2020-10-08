@@ -1,0 +1,238 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00000
+
+*** Timestep 1:  t=0.0625 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00001
+
+*** Timestep 2:  t=0.125 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00002
+
+*** Timestep 3:  t=0.1875 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00003
+
+*** Timestep 4:  t=0.25 seconds, dt=0.0625 seconds
+   Solving temperature system... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00004
+
+*** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00005
+
+*** Timestep 6:  t=0.375 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00006
+
+*** Timestep 7:  t=0.4375 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00007
+
+*** Timestep 8:  t=0.5 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00008
+
+*** Timestep 9:  t=0.5625 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00009
+
+*** Timestep 10:  t=0.625 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00010
+
+*** Timestep 11:  t=0.6875 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00011
+
+*** Timestep 12:  t=0.75 seconds, dt=0.0625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 12:  t=0.71875 seconds, dt=0.03125 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00012
+
+*** Timestep 13:  t=0.750625 seconds, dt=0.031875 seconds
+   Solving temperature system... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 13:  t=0.734688 seconds, dt=0.0159375 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00013
+
+*** Timestep 14:  t=0.750944 seconds, dt=0.0162562 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 14:  t=0.742816 seconds, dt=0.00812812 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00014
+
+*** Timestep 15:  t=0.751106 seconds, dt=0.00829069 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 15:  t=0.746961 seconds, dt=0.00414534 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00015
+
+*** Timestep 16:  t=0.751189 seconds, dt=0.00422825 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 16:  t=0.749075 seconds, dt=0.00211413 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00016
+
+*** Timestep 17:  t=0.751232 seconds, dt=0.00215641 seconds
+   Solving temperature system... 7 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00017
+
+*** Timestep 18:  t=0.751857 seconds, dt=0.000625 seconds
+   Solving temperature system... 15 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00018
+
+*** Timestep 19:  t=0.752482 seconds, dt=0.000625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00019
+
+*** Timestep 20:  t=0.753107 seconds, dt=0.000625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00020
+
+*** Timestep 21:  t=0.753732 seconds, dt=0.000625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00021
+
+*** Timestep 22:  t=0.754357 seconds, dt=0.000625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 3+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00022
+
+*** Timestep 23:  t=0.754982 seconds, dt=0.000625 seconds
+   Solving temperature system... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00023
+
+*** Timestep 24:  t=0.755 seconds, dt=1.84981e-05 seconds
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-time_stepping_repeat/solution/solution-00024
+
+Termination requested by criterion: end time
+
+
+

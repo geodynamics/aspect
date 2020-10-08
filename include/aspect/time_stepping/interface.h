@@ -65,6 +65,25 @@ namespace aspect
     };
 
     /**
+     * Information passed to Interface::determine_reaction with information
+     * about the time step.
+     */
+    struct TimeStepInfo
+    {
+      /**
+       * The proposed time step size for the next step as computed by querying
+       * plugins and applying other logic.
+       */
+      double next_time_step_size;
+
+      /**
+       * If true, a termination criterion decided to shorten the time step
+       * size.
+       */
+      bool reduced_by_termination_plugin;
+    };
+
+    /**
      * A base class for parameterizations of the time stepping models.
      *
      * @ingroup TimeStepping
@@ -107,9 +126,24 @@ namespace aspect
          *
          */
         virtual
-        std::pair<Reaction, double>
+        double
         execute() = 0;
 
+        /**
+         * Determine what we want with the simulation to happen next: advance,
+         * repeat, refinement, etc.. The second return value is the time step
+         * size to take in case the plugin requests a repeated time step.
+         *
+         * The argument @p info contains information like the step size that
+         * would be taken in this time step (determined as the minimum of the
+         * return value of execute() from all plugins).
+         *
+         * The default implementation of this function will always advance
+         * to the next time step.
+         */
+        virtual
+        std::pair<Reaction, double>
+        determine_reaction(const TimeStepInfo &info);
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -147,12 +181,32 @@ namespace aspect
          */
         virtual void initialize_simulator (const Simulator<dim> &simulator_object) override;
 
+
         /**
-         * Compute the size of the next time step potentially taking into account
-         * the current solution (convection time step, conduction time step), settings
-         * from parameters, and termination criteria (to hit the end time exactly).
+         * Update the current state and determine what needs to happen based on the
+         * last computed solution (see functions below). This computes the size of
+         * the next time step potentially taking into account the current solution
+         * (convection time step, conduction time step), settings from parameters,
+         * and termination criteria (to hit the end time exactly).
          */
-        double compute_time_step_size() const;
+        void update();
+
+        /**
+         * Return the next step size as computed from update().
+         */
+        double get_next_time_step_size() const;
+
+        /**
+         * If true, a plugin requested to redo the last computed time step. Updated
+         * when calling update().
+         */
+        bool should_repeat_time_step() const;
+
+        /**
+          * If true, execute a mesh refinement step now (potentially before repeating
+          * the current time step).
+          */
+        bool should_refine_mesh() const;
 
         /**
          * If true, the simulator should perform a checkpoint before terminating.
@@ -220,6 +274,16 @@ namespace aspect
                                       Interface<dim> *(*factory_function) ());
 
       private:
+
+        /**
+         * The current Reaction computed by update().
+         */
+        Reaction current_reaction;
+
+        /**
+         * The next time step size computed by update().
+         */
+        double next_time_step_size;
 
         /**
          * Whether to do a final checkpoint before termination. This is

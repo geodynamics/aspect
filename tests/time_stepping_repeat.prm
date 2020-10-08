@@ -1,0 +1,119 @@
+# Test TimeStepping plugin "repeat on cutback" by having a change in
+# prescribed surface velocity
+
+set Dimension                              = 2
+set End time                               = 0.755
+set Use years in output instead of seconds = false
+  set Maximum relative increase in time step     = 2
+
+subsection Time stepping
+
+  set List of model names = convection time step, repeat on cutback
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 2
+    set Y extent = 1
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = top, bottom
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top: function
+end
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 1
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  subsection Function
+    set Variable names      = x,z,t
+    set Function constants  = pi=3.1415926
+    set Function expression = if(t<0.75, if(x<0.5,-1,1), 100); 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+end
+
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = if(z<0.2, 1, 0)
+  end
+end
+
+
+subsection Material model
+  set Model name = simple
+
+  subsection Simple model
+    set Thermal conductivity          = 1e-7
+    set Thermal expansion coefficient = 1e-4
+    set Viscosity                     = 1
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Interpolate output = false
+    set Time between graphical output = 1e-5
+#    set Output format                 = gnuplot
+ end
+end
+
+
+# This is the new part: We declare that there will
+# be two compositional fields with same initial condition
+# and only the first one will be advected along.
+subsection Compositional fields
+  set Number of fields = 0
+#  set Compositional field methods = field,static
+end
+
+subsection Initial composition model
+#  set Model name = function
+
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(y<0.2, 1, 0) ; if(y<0.2, 1, 0)
+  end
+end
