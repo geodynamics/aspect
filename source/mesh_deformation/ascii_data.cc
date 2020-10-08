@@ -57,7 +57,7 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     AsciiData<dim>::compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
-                                                                         const Point<dim> &position) const
+                                                            const Point<dim> &position) const
     {
       const double topo = Utilities::AsciiDataBoundary<dim>::get_data_component(boundary_indicator,
                                                                                 position,
@@ -89,7 +89,7 @@ namespace aspect
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
                                                           "$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/",
-                                                            "box_2d_%s.0.txt");
+                                                          "box_2d_%s.0.txt");
       }
       prm.leave_subsection();
     }
@@ -114,35 +114,35 @@ namespace aspect
   namespace MeshDeformation
   {
     ASPECT_REGISTER_MESH_DEFORMATION_MODEL(AsciiData,
-                                             "ascii data",
-                                             "Implementation of a model in which the initial mesh "
-                                             "deformation (initial topography) is "
-                                             "derived from a file containing data "
-                                             "in ascii format. The following geometry models "
-                                             "are currently supported: box, chunk, spherical. "
-                                             "Note the required format of the "
-                                             "input data: The first lines may contain any number of comments "
-                                             "if they begin with `#', but one of these lines needs to "
-                                             "contain the number of grid points in each dimension as "
-                                             "for example `# POINTS: 3 3'. "
-                                             "The order of the data columns "
-                                             "has to be `x', `Topography [m]' in a 2d model and "
-                                             " `x', `y', `Topography [m]' in a 3d model, which means that "
-                                             "there has to be a single column "
-                                             "containing the topography. "
-                                             "Note that the data in the input "
-                                             "file needs to be sorted in a specific order: "
-                                             "the first coordinate needs to ascend first, "
-                                             "followed by the second in order to "
-                                             "assign the correct data to the prescribed coordinates. "
-                                             "If you use a spherical model, "
-                                             "then the assumed grid changes. "
-                                             "`x' will be replaced by the azimuth angle in radians "
-                                             " and `y' by the polar angle in radians measured "
-                                             "positive from the north pole. The grid will be assumed to be "
-                                             "a longitude-colatitude grid. Note that the order "
-                                             "of spherical coordinates is `phi', `theta' "
-                                             "and not `theta', `phi', since this allows "
-                                             "for dimension independent expressions.")
+                                           "ascii data",
+                                           "Implementation of a model in which the initial mesh "
+                                           "deformation (initial topography) is "
+                                           "derived from a file containing data "
+                                           "in ascii format. The following geometry models "
+                                           "are currently supported: box, chunk, spherical. "
+                                           "Note the required format of the "
+                                           "input data: The first lines may contain any number of comments "
+                                           "if they begin with `#', but one of these lines needs to "
+                                           "contain the number of grid points in each dimension as "
+                                           "for example `# POINTS: 3 3'. "
+                                           "The order of the data columns "
+                                           "has to be `x', `Topography [m]' in a 2d model and "
+                                           " `x', `y', `Topography [m]' in a 3d model, which means that "
+                                           "there has to be a single column "
+                                           "containing the topography. "
+                                           "Note that the data in the input "
+                                           "file needs to be sorted in a specific order: "
+                                           "the first coordinate needs to ascend first, "
+                                           "followed by the second in order to "
+                                           "assign the correct data to the prescribed coordinates. "
+                                           "If you use a spherical model, "
+                                           "then the assumed grid changes. "
+                                           "`x' will be replaced by the azimuth angle in radians "
+                                           " and `y' by the polar angle in radians measured "
+                                           "positive from the north pole. The grid will be assumed to be "
+                                           "a longitude-colatitude grid. Note that the order "
+                                           "of spherical coordinates is `phi', `theta' "
+                                           "and not `theta', `phi', since this allows "
+                                           "for dimension independent expressions.")
   }
 }

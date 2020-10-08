@@ -67,7 +67,7 @@ namespace aspect
          */
         Tensor<1,dim>
         compute_initial_deformation_on_boundary(const types::boundary_id boundary_indicator,
-                                                 const Point<dim> &position) const override;
+                                                const Point<dim> &position) const override;
 
         /**
          * Return the gradient of the surface topography for a given position
