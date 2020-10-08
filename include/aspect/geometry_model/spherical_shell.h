@@ -210,6 +210,13 @@ namespace aspect
         double
         opening_angle () const;
 
+        /**
+         * Collects periodic boundaries constraints for the given geometry,
+         * which will be added to the existing @p constraints.
+         */
+        void
+        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
+
       private:
         /**
          * Specify the radial subdivision of the spherical shell
@@ -267,14 +274,6 @@ namespace aspect
          * Flag whether the 2D quarter shell is periodic in phi.
          */
         bool periodic;
-
-        /**
-         * Collects periodic boundaries constraints for the given geometry,
-         * which will be added to the existing @p constraints.
-         */
-        virtual
-        void
-        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
     };
   }
 }

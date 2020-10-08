@@ -26,6 +26,7 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/dofs/dof_tools.h>
 
 #include <functional>
 
@@ -331,6 +332,26 @@ namespace aspect
         position_point[i] = position_tensor[i];
 
       return position_point;
+    }
+
+
+
+    template <int dim>
+    void
+    TwoMergedBoxes<dim>::make_periodicity_constraints(AffineConstraints<double> &constraints) const
+    {
+      using periodic_boundary_set
+        = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+      periodic_boundary_set pbs = get_periodic_boundary_pairs();
+
+      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+        {
+          DoFTools::make_periodicity_constraints(this->get_dof_handler(),
+                                                 (*p).first.first,  // first boundary id
+                                                 (*p).first.second, // second boundary id
+                                                 (*p).second,       // cartesian direction for translational symmetry
+                                                 constraints);
+        }
     }
 
 

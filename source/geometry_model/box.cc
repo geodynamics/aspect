@@ -345,6 +345,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void
     Box<dim>::
