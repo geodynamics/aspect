@@ -355,6 +355,8 @@ namespace aspect
       return std::map<std::string,types::boundary_id>();
     }
 
+
+
     template <int dim>
     std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
     SphericalShell<dim>::
@@ -367,6 +369,8 @@ namespace aspect
         }
       return periodic_boundaries;
     }
+
+
 
     template <int dim>
     double
@@ -515,6 +519,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     SphericalShell<dim>::make_periodicity_constraints(AffineConstraints<double> &constraints) const
@@ -546,6 +551,8 @@ namespace aspect
 #endif
         }
     }
+
+
 
     template <int dim>
     void

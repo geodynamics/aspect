@@ -353,7 +353,6 @@ namespace aspect
         virtual
         void
         make_periodicity_constraints(AffineConstraints<double> &constraints) const;
-
     };
 
 

@@ -326,13 +326,14 @@ namespace aspect
                                                             out);
     }
 
+
+
     template <int dim>
     void
     Interface<dim>::make_periodicity_constraints(AffineConstraints<double> & /*constraints*/) const
     {
       // do nothing
     }
-
   }
 }
 
