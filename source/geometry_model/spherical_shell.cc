@@ -519,21 +519,32 @@ namespace aspect
     void
     SphericalShell<dim>::make_periodicity_constraints(AffineConstraints<double> &constraints) const
     {
-      std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator> >
-      matched_pairs;
-      FullMatrix<double> rotation_matrix(dim);
-      rotation_matrix[0][1] = 1.;
-      rotation_matrix[1][0] = -1.;
+      if (periodic)
+        {
+          std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator> >
+          matched_pairs;
+          FullMatrix<double> rotation_matrix(dim);
+          rotation_matrix[0][1] = 1.;
+          rotation_matrix[1][0] = -1.;
 
-      GridTools::collect_periodic_faces(this->get_dof_handler(), /*b_id1*/ 2, /*b_id2*/ 3,
-                                        /*direction*/ 1, matched_pairs,
-                                        Tensor<1, dim>(), rotation_matrix);
+          GridTools::collect_periodic_faces(this->get_dof_handler(), /*b_id1*/ 2, /*b_id2*/ 3,
+                                            /*direction*/ 1, matched_pairs,
+                                            Tensor<1, dim>(), rotation_matrix);
 
-      DoFTools::make_periodicity_constraints<DoFHandler<dim>,double>(matched_pairs,
-                                                                     constraints,
-                                                                     ComponentMask(),
-      {0},
-      1.);
+#if DEAL_II_VERSION_GTE(9,3,0)
+          DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
+                                                                 constraints,
+                                                                 ComponentMask(),
+          {0},
+          1.);
+#else
+          DoFTools::make_periodicity_constraints<DoFHandler<dim>,double>(matched_pairs,
+                                                                         constraints,
+                                                                         ComponentMask(),
+          {0},
+          1.);
+#endif
+        }
     }
 
     template <int dim>

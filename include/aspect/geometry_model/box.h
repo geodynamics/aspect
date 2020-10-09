@@ -192,6 +192,13 @@ namespace aspect
         Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
 
         /**
+         * Collects periodic boundaries constraints for the given geometry,
+         * which will be added to the existing @p constraints.
+         */
+        void
+        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
+
+        /**
          * Declare the parameters this class takes through input files.
          */
         static
@@ -229,15 +236,6 @@ namespace aspect
          * A pointer to the initial topography model.
          */
         InitialTopographyModel::Interface<dim> *topo_model;
-
-        /**
-         * Collects periodic boundaries constraints for the given geometry,
-         * which will be added to the existing @p constraints.
-         */
-        virtual
-        void
-        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
-
     };
   }
 }
