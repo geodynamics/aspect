@@ -1,0 +1,36 @@
+# This test checks whether the viscoelastic bending beam benchmark
+# runs successfully. In particular, this benchmark is a good test to 
+# ensure that a model with compositional fields that affect material 
+# properties works, and that material averaging works in combination
+# with elasticity.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm 
+
+set End time  = 1e3
+
+# Significantly reduce resolution 
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 10
+  end
+end
+
+# Use material averaging. The only options that can be used
+# with elasticity, aside from 'none', are 'harmonic average
+# only viscosity' and 'project to Q1 only viscosity'.
+subsection Material model
+  set Material averaging = harmonic average only viscosity
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, depth average
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 5
+    set List of output variables = composition
+    set Output format = txt
+  end
+end
