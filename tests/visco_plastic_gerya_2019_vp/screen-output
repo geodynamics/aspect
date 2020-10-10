@@ -2,7 +2,7 @@
 Number of active cells: 256 (on 4 levels)
 Number of degrees of freedom: 6,023 (2,178+289+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving block system ... 0 iterations.
    Solving air system ... 0 iterations.
@@ -22,6 +22,9 @@ Number of degrees of freedom: 6,023 (2,178+289+289+1,089+1,089+1,089)
      Compositions min/max/mass:                         0/1/4.579e+09 // 0/1/5.208e+09 // 0/1/2.127e+08
      Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.098e+21 Pa s, 2.7e+13 kg
      RMS, max velocity:                                 0.146 m/year, 0.229 m/year
+
+
+
 
 Termination requested by criterion: end time
 
