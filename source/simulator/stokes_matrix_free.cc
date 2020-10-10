@@ -1314,12 +1314,13 @@ namespace aspect
                                         fe_projection,
                                         quadrature_formula,
                                         update_values);
-    std::vector<double> values_on_quad;
 
     // Create active mesh viscosity table.
     {
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
       const unsigned int n_q_points = quadrature_formula.size();
+
+      std::vector<double> values_on_quad;
 
       // One value per cell is required for DGQ0 projection and n_q_points
       // values per cell for DGQ1.
@@ -1391,19 +1392,24 @@ namespace aspect
     // Project the active level viscosity vector to multilevel vector representations
     // using MG transfer objects. This transfer is based on the same linear operator used to
     // transfer data inside a v-cycle.
-    MGTransferMatrixFree<dim,double> transfer;
+    MGTransferMatrixFree<dim,GMGNumberType> transfer;
     transfer.build(dof_handler_projection);
-    transfer.interpolate_to_mg(dof_handler_projection,
-                               level_viscosity_vector,
-                               active_viscosity_vector);
+
+    // Explicitly pick the version with template argument double to convert
+    // double-valued active_viscosity_vector to GMGNumberType-valued
+    // level_viscosity_vector:
+    transfer.template interpolate_to_mg<double>(dof_handler_projection,
+                                                level_viscosity_vector,
+                                                active_viscosity_vector);
 
     level_viscosity_tables.resize(0,n_levels-1);
-
     for (unsigned int level=0; level<n_levels; ++level)
       {
         // Create viscosity tables on each level.
         const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_macro_cells();
         const unsigned int n_q_points = quadrature_formula.size();
+
+        std::vector<GMGNumberType> values_on_quad;
 
         // One value per cell is required for DGQ0 projection and n_q_points
         // values per cell for DGQ1.
@@ -1445,7 +1451,8 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       level_viscosity_tables[level](cell,q)[i]
-                        = std::min(std::max(values_on_quad[q], min_el), max_el);
+                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(min_el)),
+                                   static_cast<GMGNumberType>(max_el));
                   }
               }
           }
@@ -1549,12 +1556,12 @@ namespace aspect
     double final_linear_residual      = numbers::signaling_nan<double>();
 
     // Below we define all the objects needed to build the GMG preconditioner:
-    using VectorType = dealii::LinearAlgebra::distributed::Vector<double>;
+    using VectorType = dealii::LinearAlgebra::distributed::Vector<GMGNumberType>;
 
     // ABlock GMG Smoother: Chebyshev, degree 4. Parameter values were chosen
     // by trial and error. We use a more powerful version of the smoother on the
     // coarsest level than on the other levels.
-    using ASmootherType = PreconditionChebyshev<ABlockMatrixType,VectorType>;
+    using ASmootherType = PreconditionChebyshev<GMGABlockMatrixType,VectorType>;
     mg::SmootherRelaxation<ASmootherType, VectorType>
     mg_smoother_A;
     {
@@ -1582,7 +1589,7 @@ namespace aspect
     // Schur complement matrix GMG Smoother: Chebyshev, degree 4. Parameter values
     // were chosen by trial and error. We use a more powerful version of the smoother
     // on the coarsest level than on the other levels.
-    using MSmootherType = PreconditionChebyshev<SchurComplementMatrixType,VectorType>;
+    using MSmootherType = PreconditionChebyshev<GMGSchurComplementMatrixType,VectorType>;
     mg::SmootherRelaxation<MSmootherType, VectorType>
     mg_smoother_Schur(4);
     {
@@ -1636,14 +1643,14 @@ namespace aspect
 
     // Interface matrices
     // Ablock GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<ABlockMatrixType> > mg_interface_matrices_A;
+    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGABlockMatrixType> > mg_interface_matrices_A;
     mg_interface_matrices_A.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_A[level].initialize(mg_matrices_A_block[level]);
     mg::Matrix<VectorType > mg_interface_A(mg_interface_matrices_A);
 
     // Schur complement matrix GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<SchurComplementMatrixType> > mg_interface_matrices_Schur;
+    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGSchurComplementMatrixType> > mg_interface_matrices_Schur;
     mg_interface_matrices_Schur.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_Schur[level].initialize(mg_matrices_Schur_complement[level]);
@@ -1671,7 +1678,7 @@ namespace aspect
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMatrixFree<dim,double> >;
+    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMatrixFree<dim,GMGNumberType> >;
     GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 
@@ -2206,14 +2213,14 @@ namespace aspect
             }
 
           {
-            typename MatrixFree<dim,double>::AdditionalData additional_data;
+            typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
             additional_data.tasks_parallel_scheme =
-              MatrixFree<dim,double>::AdditionalData::none;
+              MatrixFree<dim,GMGNumberType>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
                                                     update_quadrature_points);
             additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,double> >
-            mg_mf_storage_level(new MatrixFree<dim,double>());
+            std::shared_ptr<MatrixFree<dim,GMGNumberType> >
+            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
@@ -2237,14 +2244,14 @@ namespace aspect
           level_constraints.close();
 
           {
-            typename MatrixFree<dim,double>::AdditionalData additional_data;
+            typename MatrixFree<dim,GMGNumberType>::AdditionalData additional_data;
             additional_data.tasks_parallel_scheme =
-              MatrixFree<dim,double>::AdditionalData::none;
+              MatrixFree<dim,GMGNumberType>::AdditionalData::none;
             additional_data.mapping_update_flags = (update_values | update_JxW_values |
                                                     update_quadrature_points);
             additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,double> >
-            mg_mf_storage_level(new MatrixFree<dim,double>());
+            std::shared_ptr<MatrixFree<dim,GMGNumberType> >
+            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
@@ -2342,7 +2349,7 @@ namespace aspect
                   DG_cell->get_active_or_mg_dof_indices(dg_dof_indices);
 
                   // For DGQ1, project viscosity from DoF vector to quadrature.
-                  std::vector<double> visc_on_quad(n_q_points);
+                  std::vector<GMGNumberType> visc_on_quad(n_q_points);
                   if (dof_handler_projection.get_fe().degree == 1)
                     {
                       fe_values_projection.reinit(DG_cell);
@@ -2388,7 +2395,11 @@ namespace aspect
                 }
 
             diagonal_matrix.compress(VectorOperation::add);
-            mg_matrices_A_block[level].set_diagonal(diagonal_matrix.get_vector());
+
+            dealii::LinearAlgebra::distributed::Vector<GMGNumberType> diagonal;
+            // This assignment converts from type double to GMGNumberType (float).
+            diagonal = diagonal_matrix.get_vector();
+            mg_matrices_A_block[level].set_diagonal(diagonal);
           }
         else
           {
@@ -2443,7 +2454,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const MGTransferMatrixFree<dim,double> &
+  const MGTransferMatrixFree<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
     return mg_transfer_A_block;
@@ -2451,7 +2462,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const MGTransferMatrixFree<dim,double> &
+  const MGTransferMatrixFree<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
     return mg_transfer_Schur_complement;
@@ -2467,7 +2478,7 @@ namespace aspect
 
 
   template <int dim, int velocity_degree>
-  const MGLevelObject<Table<2, VectorizedArray<double>>> &
+  const MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_level_viscosity_tables() const
   {
     return level_viscosity_tables;
