@@ -19,8 +19,8 @@
 */
 
 
-#ifndef _aspect_mesh_deformation_model_ascii_data_h
-#define _aspect_mesh_deformation_model_ascii_data_h
+#ifndef _aspect_mesh_deformation_ascii_data_h
+#define _aspect_mesh_deformation_ascii_data_h
 
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/simulator_access.h>
