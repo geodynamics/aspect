@@ -34,7 +34,7 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A class that implements topography determined
+     * A class that implements initial topography determined
      * from an AsciiData input file.
      *
      * @ingroup InitialTopographyModel
