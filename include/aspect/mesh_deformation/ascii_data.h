@@ -58,7 +58,6 @@ namespace aspect
         // avoid -Woverloaded-virtual:
         using Utilities::AsciiDataBoundary<dim>::initialize;
 
-
         /**
          * Return the surface topography as a function of position along the surface.
          * For the current class, this function returns a value from the text files.

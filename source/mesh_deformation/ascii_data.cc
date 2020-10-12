@@ -28,7 +28,6 @@
 #include <array>
 
 
-
 namespace aspect
 {
   namespace MeshDeformation
@@ -38,6 +37,7 @@ namespace aspect
       :
       surface_boundary_id(1)
     {}
+
 
 
     template <int dim>
@@ -52,6 +52,7 @@ namespace aspect
       Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
                                                     1);
     }
+
 
 
     template <int dim>
@@ -73,12 +74,14 @@ namespace aspect
     }
 
 
+
     template <int dim>
     Tensor<1,dim-1>
     AsciiData<dim>::vector_gradient(const Point<dim> &point) const
     {
       return Utilities::AsciiDataBoundary<dim>::vector_gradient(surface_boundary_id, point,0);
     }
+
 
 
     template <int dim>
@@ -88,11 +91,12 @@ namespace aspect
       prm.enter_subsection("Mesh deformation");
       {
         Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/",
-                                                          "box_2d_%s.0.txt");
+                                                          "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
+                                                          "box_3d_%s.0.txt");
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
@@ -107,6 +111,7 @@ namespace aspect
     }
   }
 }
+
 
 // explicit instantiations
 namespace aspect

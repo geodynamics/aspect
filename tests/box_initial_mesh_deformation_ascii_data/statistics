@@ -1,0 +1,16 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: RMS velocity (m/year)
+# 13: Max. velocity (m/year)
+# 14: Minimum topography (m)
+# 15: Maximum topography (m)
+0 0.000000000000e+00 0.000000000000e+00 36 1497 471 0 8 10 37 output-box_initial_mesh_deformation_ascii_data/solution/solution-00000 4.73519597e-01 1.44934450e+00 2.00000000e+04 5.50000000e+04 
