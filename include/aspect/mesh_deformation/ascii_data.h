@@ -69,13 +69,6 @@ namespace aspect
                                                 const Point<dim> &position) const override;
 
         /**
-         * Return the gradient of the surface topography for a given position
-         * along the surface.
-         */
-        Tensor<1,dim-1>
-        vector_gradient(const Point<dim> &p) const;
-
-        /**
          * Declare the parameters this class takes through input files.
          */
         static
