@@ -1,0 +1,107 @@
+# This input file tests the box geometry in
+# combination with the ascii data initial
+# mesh deformation model.
+
+set Dimension = 3
+set CFL number                             = 1.0
+set End time                               = 0
+set Start time                             = 0
+set Adiabatic surface temperature          = 1613.0
+set Surface pressure                       = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+
+# We take a box geometry and increase the repetitions
+# of the coarse mesh to capture the initial topography.
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 660000
+    set Y extent = 660000
+    set Z extent = 660000
+    set X repetitions = 1
+    set Y repetitions = 1
+    set Z repetitions = 1
+  end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: ascii data
+# This specifies parameters for initial topography from ascii data
+  subsection Ascii data model
+    set Data directory = $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
+    set Data file name = box_3d_top.0.txt
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Boundary temperature model
+  set List of model names = function 
+  subsection Function
+    set Function expression = 1613.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3340
+    set Reference specific heat = 1200
+    set Thermal expansion coefficient = 3e-5
+    set Viscosity = 1e21
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 1
+  set Strategy                           = minimum refinement function
+  subsection Minimum refinement function 
+     set Function expression             = if(x<200000, 2,1)
+  end
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 5
+end
+
+# Unlike in the geometry_model/initial_topography_model test
+# we must use free-slip boundaries, otherwise the mesh will not
+# deform at the boundaries of the box
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators       = 0,1,2,3,4
+end
+
+# The maximum topography in the ascii file is 350 km and the minimum is 20 km.
+# The topography statistics should not exceed these bounds.
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, topography
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = boundary indicators, depth
+    set Output format            = gnuplot
+  end
+end
+
