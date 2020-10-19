@@ -69,9 +69,7 @@ res = x[1] - x[0]
 xi = np.linspace(np.min(x), np.max(x), int((np.max(x) - np.min(x))/res)*2 + 1 )
 yi = np.linspace(np.min(y), np.max(y), int((np.max(y) - np.min(y))/res)*2 + 1 )
 
-# Generate data interpolation grid. This is a helpful step as the VTU data format
-# has more than value specified at each grid point. This is due to setting
-# 'set Interpolate output = true' in ASPECT.
+# Generate data interpolation grid. 
 X, Y = np.meshgrid(xi,yi)
 
 # Interpolate strain rate onto new grid
