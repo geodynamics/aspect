@@ -24,6 +24,7 @@
 #include <aspect/utilities.h>
 #include <aspect/citation_info.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/simulator/assemblers/advection.h>
 #include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_tools.h>
@@ -1673,7 +1674,13 @@ namespace aspect
     assemblers.advection_system.push_back(
       std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim> > ());
 
-
+    if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
+      {
+        assemblers.advection_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
+        assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
+        assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
+      }
   }
 
 
