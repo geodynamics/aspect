@@ -1,0 +1,4 @@
+Fix: Fixed heatflow boundaries for the Newton solver and refactor the
+code so it is more maintainable in the future.
+<br>
+(Menno Fraters, 2020/10/21)
