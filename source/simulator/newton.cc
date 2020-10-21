@@ -99,34 +99,6 @@ namespace aspect
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
         std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
-
-    assemblers.advection_system.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
-
-    if (this->get_parameters().use_discontinuous_temperature_discretization ||
-        this->get_parameters().use_discontinuous_composition_discretization)
-      {
-        assemblers.advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim> >());
-
-        assemblers.advection_system_on_interior_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim> >());
-      }
-
-    if (this->get_parameters().use_discontinuous_temperature_discretization)
-      {
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
-        assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
-      }
-
-    if (this->get_parameters().use_discontinuous_composition_discretization)
-      {
-        for (unsigned int i = 1; i<=this->introspection().n_compositional_fields; ++i)
-          {
-            assemblers.advection_system_assembler_on_face_properties[i].need_face_material_model_data = true;
-            assemblers.advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
-          }
-      }
   }
 
 

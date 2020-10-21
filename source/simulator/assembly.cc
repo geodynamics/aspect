@@ -120,7 +120,7 @@ namespace aspect
   template <int dim>
   void
   Simulator<dim>::
-  set_default_assemblers()
+  set_stokes_assemblers()
   {
     assemblers->stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesPreconditioner<dim> >());
     assemblers->stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim> >());
@@ -189,6 +189,13 @@ namespace aspect
       assemblers->stokes_system.push_back(
         std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
 
+  }
+
+  template <int dim>
+  void
+  Simulator<dim>::
+  set_advection_assemblers()
+  {
     assemblers->advection_system.push_back(
       std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
 
@@ -257,7 +264,8 @@ namespace aspect
     if (!parameters.include_melt_transport
         && !assemble_newton_stokes_system)
       {
-        set_default_assemblers();
+        set_advection_assemblers();
+        set_stokes_assemblers();
       }
     else if (parameters.include_melt_transport
              && !assemble_newton_stokes_system)
@@ -267,6 +275,7 @@ namespace aspect
     else if (!parameters.include_melt_transport
              && assemble_newton_stokes_system)
       {
+        set_advection_assemblers();
         newton_handler->set_assemblers(*assemblers);
       }
     else if (parameters.include_melt_transport

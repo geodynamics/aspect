@@ -1031,14 +1031,25 @@ namespace aspect
       /**
        * Determine, based on the run-time parameters of the current simulation,
        * which functions need to be called in order to assemble linear systems,
-       * matrices, and right hand side vectors. This function handles the
-       * default operation mode of ASPECT, i.e. without considering two-phase
-       * flow, or Newton solvers.
+       * matrices, and right hand side vectors for the advection. This function
+       * is used by both the default full Stokes solver and the Newton solvers,
+       * but not by the two-phase flow solver.
        *
        * This function is implemented in
        * <code>source/simulator/assembly.cc</code>.
        */
-      void set_default_assemblers ();
+      void set_advection_assemblers ();
+
+      /**
+       * Determine, based on the run-time parameters of the current simulation,
+       * which functions need to be called in order to assemble linear systems,
+       * matrices, and right hand side vectors for the default full Stokes solver
+       * i.e. without considering two-phase flow, or Newton solvers.
+       *
+       * This function is implemented in
+       * <code>source/simulator/assembly.cc</code>.
+       */
+      void set_stokes_assemblers ();
 
       /**
        * Initiate the assembly of the preconditioner for the Stokes system.
