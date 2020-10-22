@@ -1,0 +1,411 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 22+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 1:  t=300 seconds, dt=300 seconds
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 2:  t=592.98 seconds, dt=292.98 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 6+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 3:  t=866.488 seconds, dt=273.507 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 4:  t=1112.86 seconds, dt=246.368 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 5:  t=1330.03 seconds, dt=217.175 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 6:  t=1520.02 seconds, dt=189.991 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 7:  t=1686.77 seconds, dt=166.749 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 8:  t=1834.63 seconds, dt=147.862 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 9:  t=1967.63 seconds, dt=132.998 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 10:  t=2089.22 seconds, dt=121.584 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 11:  t=2202.27 seconds, dt=113.055 seconds
+   Solving temperature system... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 12:  t=2309.21 seconds, dt=106.937 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 13:  t=2412.08 seconds, dt=102.873 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 14:  t=2513.08 seconds, dt=101 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 15:  t=2614.08 seconds, dt=101 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 16:  t=2715.1 seconds, dt=101.017 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 17:  t=2818.71 seconds, dt=103.614 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 18:  t=2926.6 seconds, dt=107.888 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 19:  t=3040.59 seconds, dt=113.993 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 20:  t=3162.75 seconds, dt=122.155 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 21:  t=3295.41 seconds, dt=132.666 seconds
+   Solving temperature system... 2 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 22:  t=3441.28 seconds, dt=145.866 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 23:  t=3603.37 seconds, dt=162.095 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 24:  t=3784.97 seconds, dt=181.595 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 25:  t=3989.27 seconds, dt=204.303 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 26:  t=4218.8 seconds, dt=229.526 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 27:  t=4474.28 seconds, dt=255.479 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 28:  t=4753.17 seconds, dt=278.895 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 29:  t=5048.37 seconds, dt=295.194 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 30:  t=5353.41 seconds, dt=305.048 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 31:  t=5658.77 seconds, dt=305.353 seconds
+   Solving temperature system... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 32:  t=5964.43 seconds, dt=305.659 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 33:  t=6270.39 seconds, dt=305.964 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 34:  t=6576.66 seconds, dt=306.27 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 35:  t=6883.24 seconds, dt=306.577 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 36:  t=7190.12 seconds, dt=306.883 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 37:  t=7497.31 seconds, dt=307.19 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 38:  t=7804.81 seconds, dt=307.497 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 39:  t=8112.61 seconds, dt=307.805 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 40:  t=8420.73 seconds, dt=308.113 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 41:  t=8729.15 seconds, dt=308.421 seconds
+   Solving temperature system... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 42:  t=9037.88 seconds, dt=308.729 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 43:  t=9346.91 seconds, dt=309.038 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 44:  t=9656.26 seconds, dt=309.347 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 45:  t=9965.92 seconds, dt=309.656 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 46:  t=10275.9 seconds, dt=309.966 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 47:  t=10586.2 seconds, dt=310.276 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 48:  t=10896.7 seconds, dt=310.586 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 49:  t=11207.6 seconds, dt=310.897 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 50:  t=11518.8 seconds, dt=311.208 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 51:  t=11830.4 seconds, dt=311.519 seconds
+   Solving temperature system... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 52:  t=12142.2 seconds, dt=311.83 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 53:  t=12454.3 seconds, dt=312.142 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 54:  t=12766.8 seconds, dt=312.454 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 55:  t=13079.6 seconds, dt=312.767 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 56:  t=13392.6 seconds, dt=313.08 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 2+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 57:  t=13706 seconds, dt=313.393 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 58:  t=14019.7 seconds, dt=313.706 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 59:  t=14333.8 seconds, dt=314.02 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 60:  t=14648.1 seconds, dt=314.334 seconds
+   Solving temperature system... 3 iterations.
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 61:  t=14962.7 seconds, dt=314.648 seconds
+   Solving temperature system... 3 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 1+0 iterations.
+
+   Postprocessing:
+
+*** Timestep 62:  t=15000 seconds, dt=37.2581 seconds
+   Solving temperature system... 2 iterations.
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+
+Termination requested by criterion: end time
+
+
+

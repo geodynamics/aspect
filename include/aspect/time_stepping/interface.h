@@ -286,6 +286,11 @@ namespace aspect
         double next_time_step_size;
 
         /**
+         * The minimum time step size specified by the user (in seconds).
+         */
+        double minimum_time_step_size;
+
+        /**
          * Whether to do a final checkpoint before termination. This is
          * specified in the parameters.
          */
