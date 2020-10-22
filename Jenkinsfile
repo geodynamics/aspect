@@ -40,6 +40,7 @@ pipeline {
           not {changeRequest authorEmail: "jbnaliboff@ucdavis.edu"}
           not {changeRequest authorEmail: "menno.fraters@outlook.com"}
           not {changeRequest authorEmail: "a.c.glerum@uu.nl"}
+          not {changeRequest authorEmail: "myhill.bob@gmail.com"}
         }
       }
       steps {
