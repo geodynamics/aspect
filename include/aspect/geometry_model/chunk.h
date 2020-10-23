@@ -216,7 +216,7 @@ namespace aspect
      * mesh nodes.
      */
     template <int dim>
-    class Chunk : public Interface<dim>, public SimulatorAccess<dim>
+    class Chunk : public Interface<dim>
     {
       public:
 

@@ -37,7 +37,7 @@ namespace aspect
      * depth (in 3d), and, possibly, topography.
      */
     template <int dim>
-    class Box : public Interface<dim>, public SimulatorAccess<dim>
+    class Box : public Interface<dim>
     {
       public:
         /**
@@ -190,13 +190,6 @@ namespace aspect
          * Cartesian coordinates.
          */
         Point<dim> natural_to_cartesian_coordinates(const std::array<double,dim> &position) const override;
-
-        /**
-         * Collects periodic boundaries constraints for the given geometry,
-         * which will be added to the existing @p constraints.
-         */
-        void
-        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
 
         /**
          * Declare the parameters this class takes through input files.

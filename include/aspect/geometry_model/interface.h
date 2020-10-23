@@ -56,7 +56,7 @@ namespace aspect
      * @ingroup GeometryModels
      */
     template <int dim>
-    class Interface
+    class Interface: public SimulatorAccess<dim>
     {
       public:
         /**
@@ -347,7 +347,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Collects periodic boundaries constraints for the given geometry,
+         * Collects periodic boundary constraints for the given geometry,
          * which will be added to the existing @p constraints.
          */
         virtual

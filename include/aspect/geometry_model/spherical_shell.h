@@ -44,7 +44,7 @@ namespace aspect
      * angle of the section of the shell we want to build.
      */
     template <int dim>
-    class SphericalShell : public Interface<dim>, public SimulatorAccess<dim>
+    class SphericalShell : public Interface<dim>
     {
       public:
         /**

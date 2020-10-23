@@ -43,7 +43,7 @@ namespace aspect
      * @author This plugin is a joined effort of Menno Fraters, D. Sarah Stamps and Wolfgang Bangerth
      */
     template <int dim>
-    class EllipsoidalChunk : public Interface<dim>, public SimulatorAccess<dim>
+    class EllipsoidalChunk : public Interface<dim>
     {
       public:
         /**

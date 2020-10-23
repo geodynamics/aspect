@@ -31,7 +31,7 @@ namespace aspect
     using namespace dealii;
 
     template <int dim>
-    class Sphere : public Interface<dim>, public SimulatorAccess<dim>
+    class Sphere : public Interface<dim>
     {
       public:
         /**
