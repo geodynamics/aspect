@@ -5,7 +5,7 @@
 # solves. This likely reflects that elastic stresses buildup prior to yielding 
 # and the solution does not change significantly during this time. 
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/kaus_2010_extension.prm
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/kaus_2010/kaus_2010_extension.prm
 
 set Dimension                              = 2
 set End time                               = 5e3

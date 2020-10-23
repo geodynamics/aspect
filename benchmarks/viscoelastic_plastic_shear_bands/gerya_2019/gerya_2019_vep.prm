@@ -1,0 +1,68 @@
+# This parameter file modifies the benchmark gerya_2019_vp.prm 
+# to include viscoelasticity.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
+
+#  Global parameters
+set End time                               = 500
+set Output directory                       = output_gerya_2019_vep
+
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = stress_xx, stress_yy, stress_xy, block, air, inclusion
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; \
+                              if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
+                              if (y<=25.e3 || y>=75.e3, 1, 0); \
+                              if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);  
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Material averaging = harmonic average only viscosity
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    # For identification purposes, nonsensical Prefactor values (1e-50) are assigned to the compositional 
+    # fields tracking elastic stresses, which are not included in the volume fractions computation.
+    set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Include viscoelasticity = true
+ 
+    set Elastic shear moduli        = 1e11 
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 20
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = harmonic
+  
+    # Nonsensical cohesion values (1e50) are assigned to the compositional fields tracking elastic stresses
+    set Angles of internal friction = 37.,       0.,    0.,    0.,    37.,    0.,    0.
+    set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
+
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set Run postprocessors on nonlinear iterations = false
+end

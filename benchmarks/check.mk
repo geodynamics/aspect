@@ -173,3 +173,6 @@ compressibility_formulations/: dummy
 	@$(def); run_prm $@/lateral_pipe_transient lateral_pipe.prm
 	@$(def); run_prm $@/vertical_pipe vertical_pipe.prm
 
+viscoelastic_plastic_shear_bands/: dummy
+	@$(def); run_all_prms $@/gerya_2019
+	@$(def); run_all_prms $@/kaus_2010

@@ -1,0 +1,32 @@
+
+Number of active cells: 256 (on 4 levels)
+Number of degrees of freedom: 6,023 (2,178+289+289+1,089+1,089+1,089)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving block system ... 0 iterations.
+   Solving air system ... 0 iterations.
+   Solving inclusion system ... 0 iterations.
+   Initial Newton Stokes residual = 2.04511e+14, v = 2.74768e+13, p = 2.02657e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 131+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 2.04511e+14
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 189+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.0126826, norm of the rhs: 2.59373e+12, newton_derivative_scaling_factor: 0
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0/1/4.579e+09 // 0/1/5.208e+09 // 0/1/2.127e+08
+     Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.098e+21 Pa s, 2.7e+13 kg
+     RMS, max velocity:                                 0.146 m/year, 0.229 m/year
+
+
+
+
+Termination requested by criterion: end time
+
+
+

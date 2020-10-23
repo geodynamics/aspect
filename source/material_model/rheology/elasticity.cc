@@ -182,11 +182,17 @@ namespace aspect
                                "'single Advection, iterated Stokes'"));
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
-        // This enforces that the variable 'Material averaging' is set to 'none'.
-        AssertThrow(this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none,
-                    ExcMessage("Material models with elasticity cannot be used with "
-                               "material averaging. The variable 'Material averaging' "
-                               "in the 'Material model' subsection must be set to 'none'."));
+        // Consequently, it is only possible to use elasticity with the Material averaging schemes
+        // 'none', 'harmonic average only viscosity', 'project to Q1 only viscosity'.
+        AssertThrow((this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none
+                     ||
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::harmonic_average_only_viscosity
+                     ||
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::project_to_Q1_only_viscosity),
+                    ExcMessage("Material models with elasticity can only be used with the material "
+                               "averaging schemes 'none', 'harmonic average only viscosity', and "
+                               "project to Q1 only viscosity'. This parameter ('Material averaging') "
+                               "is located within the 'Material model' subsection."));
       }
 
 

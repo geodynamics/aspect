@@ -1,0 +1,196 @@
+# Shortening of a visco-plastic block in the absence of gravity
+# modified from Exercise 13.2 in Gerya 2019 (Introduction to
+# Numerical Geodynamic Modeling). The benchmark has been modified
+# to remove viscoelasticity and use slightly different geometries
+# for different materials, which allows the edges of features to
+# always align with the edges of the mesh with additional global
+# refinements. The viscoelastic-plastic version of this setup is 
+# provided by gerya_2019_vep.prm within this folder.
+#
+# In detail, the benchmark examines shortening of a viscoelastic
+# plastic (here, visco-plastic) block, which contains a weak 
+# inclusion in the center and a weak medium layer (i.e., sticky 
+# air) on the top and bottom. The thickness of the weak layers
+# and dimensions of the square inclusion have also been modified
+# so that element edges always align with these material interfaces
+# for uniformly refined meshes of level 3 and up. The velocity on
+# the boundaries is 5e-9 m/s, giving a background strain rate of
+# 1e-13 1/s. The weak medium and weak inclusion have the following
+# material properties: viscosity = 1e17 Pa s, cohesion = 1e7 Pa,
+# and internal friction angle = 0. The visco-plastic block has
+# the following material properties: viscosity = 1e23 Pa s, 
+# cohesion = 1e8 Pa, and internal friction angle = 37 degrees.
+# Gravity is set to zero and the average pressure is required
+# to be equal to zero. 
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 500
+set CFL number                             = 0.5
+set Maximum time step                      = 20
+set Output directory                       = output_gerya_2019_vp
+set Timing output frequency                = 1
+set Pressure normalization                 = volume
+
+# Solver parameters
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance = 1e-7
+    set Number of cheap Stokes solver steps = 200
+  end
+  subsection Newton solver parameters
+    set Max Newton line search iterations        = 0
+    set Max pre-Newton nonlinear iterations      = 500 # Ensures only defect-correction Picard method is used
+    set Maximum linear Stokes solver tolerance   = 1e-2
+    set Nonlinear Newton solver switch tolerance = 1e-5
+    set SPD safety factor                        = 0.9
+    set Stabilization preconditioner             = SPD
+    set Stabilization velocity block             = SPD
+    set Use Newton failsafe                      = false
+    set Use Newton residual scaling method       = false
+    set Use Eisenstat Walker method for Picard iterations = true
+  end
+end
+
+
+# Model geometry (100x100 km, initial 50 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 2
+    set Y repetitions = 2
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Globally refine the mesh. A minimum of 3 global refinements
+# is needed to resolve the edges of the weak viscous inclusion.
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 5
+  set Time steps between mesh refinement = 0
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree     = 2
+  set Stokes velocity polynomial degree = 2
+  set Temperature polynomial degree     = 1
+end
+
+# Velocity boundary conditions (5e-9 m/s on each boundary)
+# The imposed velocity produces a background strain-rate
+# of 10e-13 1/s. 
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left x: function, right x:function, top y: function, bottom y: function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = vel=0.15778463
+    set Function expression = if (x<50e3, vel, -vel); if (y<50e3, -vel, vel);
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = block, air, inclusion
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = if ( ( x<43.75e3 && y>25.e3 && y<75.e3) || (x>56.25e3 && y>25.e3 && y<75.e3) || (y>56.25e3 && y<75.e3 && x>=43.75e3 && x<=56.25e3) || (y<43.75e3 && y>25.e3 && x>=43.75e3 && x<=56.25e3), 1, 0); \
+                              if (y<=25.e3 || y>=75.e3, 1, 0); \
+                              if (y<=56.25e3 && y>=43.75e3 && x>=43.75e3 && x<=56.25e3, 1, 0);  
+  end
+end
+
+# Composition boundary conditions
+subsection Boundary composition model
+  set Fixed composition boundary indicators  = 
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions (isothermal)
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Material averaging = harmonic average
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    set Densities                   = 2700
+    set Reference viscosity         = 1.e21
+    set Reference strain rate       = 1.e-13
+    set Maximum viscosity           = 1.e23
+    set Minimum viscosity           = 1.e17
+
+    set Prefactors for dislocation creep          = 5e-24, 5e-24, 5.e-18, 5e-18
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+  
+    set Angles of internal friction = 37.,       37.,    0.,    0.
+    set Cohesions                   = 100.e6, 100.e6, 10.e6, 10.e6
+
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, named additional outputs
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 0e3
+    set Interpolate output            = true
+    set Write higher order output     = true
+   
+  end
+  set Run postprocessors on nonlinear iterations = true
+end
+
+# Termination criteria
+subsection Termination criteria
+ set Termination criteria = end time
+end
