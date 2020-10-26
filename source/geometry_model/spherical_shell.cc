@@ -522,7 +522,8 @@ namespace aspect
 
     template <int dim>
     void
-    SphericalShell<dim>::make_periodicity_constraints(AffineConstraints<double> &constraints) const
+    SphericalShell<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
+                                                      AffineConstraints<double> &constraints) const
     {
       if (periodic)
         {
@@ -532,7 +533,7 @@ namespace aspect
           rotation_matrix[0][1] = 1.;
           rotation_matrix[1][0] = -1.;
 
-          GridTools::collect_periodic_faces(this->get_dof_handler(), /*b_id1*/ 2, /*b_id2*/ 3,
+          GridTools::collect_periodic_faces(dof_handler, /*b_id1*/ 2, /*b_id2*/ 3,
                                             /*direction*/ 1, matched_pairs,
                                             Tensor<1, dim>(), rotation_matrix);
 

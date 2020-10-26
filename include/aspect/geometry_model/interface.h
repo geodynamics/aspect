@@ -56,7 +56,7 @@ namespace aspect
      * @ingroup GeometryModels
      */
     template <int dim>
-    class Interface: public SimulatorAccess<dim>
+    class Interface
     {
       public:
         /**
@@ -347,12 +347,13 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Collects periodic boundary constraints for the given geometry,
-         * which will be added to the existing @p constraints.
+         * Collects periodic boundary constraints for the given geometry
+         * and @p dof_handler, which will be added to the existing @p constraints.
          */
         virtual
         void
-        make_periodicity_constraints(AffineConstraints<double> &constraints) const;
+        make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
+                                     AffineConstraints<double> &constraints) const;
     };
 
 

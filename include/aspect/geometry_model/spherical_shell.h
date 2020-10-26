@@ -44,7 +44,7 @@ namespace aspect
      * angle of the section of the shell we want to build.
      */
     template <int dim>
-    class SphericalShell : public Interface<dim>
+    class SphericalShell : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
@@ -215,7 +215,8 @@ namespace aspect
          * which will be added to the existing @p constraints.
          */
         void
-        make_periodicity_constraints(AffineConstraints<double> &constraints) const override;
+        make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
+                                     AffineConstraints<double> &constraints) const override;
 
       private:
         /**

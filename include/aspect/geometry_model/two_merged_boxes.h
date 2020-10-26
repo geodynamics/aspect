@@ -37,7 +37,7 @@ namespace aspect
      * for the lithospheric part of the vertical boundaries.
      */
     template <int dim>
-    class TwoMergedBoxes : public Interface<dim>
+    class TwoMergedBoxes : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
 

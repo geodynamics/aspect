@@ -1392,7 +1392,8 @@ namespace aspect
 
     // Note: this has to happen _before_ we do hanging node constraints,
     // because inconsistent constraints could be generated in parallel otherwise.
-    geometry_model->make_periodicity_constraints(constraints);
+    geometry_model->make_periodicity_constraints(dof_handler,
+                                                 constraints);
 
     //  Make hanging node constraints:
     DoFTools::make_hanging_node_constraints (dof_handler,

@@ -37,7 +37,7 @@ namespace aspect
      * depth (in 3d), and, possibly, topography.
      */
     template <int dim>
-    class Box : public Interface<dim>
+    class Box : public Interface<dim>, public SimulatorAccess<dim>
     {
       public:
         /**
