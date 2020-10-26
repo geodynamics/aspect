@@ -1,0 +1,78 @@
+# This test is a copy of visco_plastic_peierls_mei_viscosity_exact.prm
+# but one in which phase transitions take place within the domain.
+# The viscosities, densities, thermal expansivities and heat capacities
+# change within the domain.
+
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_peierls_mei_exact.prm
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = right
+  set Compositional field methods = field
+end
+
+subsection Initial composition model
+  set List of model names = function
+  set List of model operators = add
+  subsection Function
+     set Coordinate system = cartesian
+     set Variable names = x, y
+     set Function constants = XMAX=100e3
+     set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0
+  end
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Phase transition depths = background:50e3|75e3, right:50e3|75e3
+    set Phase transition widths = background:1e3|1e3, right:1e3|1e3
+    set Phase transition temperatures = background:273|273, right:273|273
+    set Phase transition Clapeyron slopes = background:0|0, right:0|0
+
+    set Densities = background:3300|3400|3500, right:3600|3700|3800
+    set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5
+    set Heat capacities = background:1200|1000|900, right:1200|1000|900
+
+    set Reference strain rate                     = 9.326722654162315e-11
+    set Minimum strain rate                       = 9.326722654162315e-11
+    # dislocation creep parameters
+    # These values produce such a sufficiently high viscosity that the
+    # composite viscosity between the diffusion and dislocation creep
+    # is effectively equal to the Peierls creep viscosity.
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep          = background:1e-50|1e-50|1e-50, right:1e-50|1e-50|1e-50
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0
+    set Activation volumes for dislocation creep  = 0
+    # Peierls creep parameters
+    set Include Peierls creep                     = true
+    set Peierls creep flow law                    = exact
+    set Prefactors for Peierls creep              = background:2.8e-19|1.4e-19|0.7e-19, right:2.8e-18|1.4e-18|0.7e-18
+    set Activation energies for Peierls creep     = background:320.e3|320.e3|320.e3, right:320.e3|320.e3|320.e3
+    set Activation volumes for Peierls creep      = background:0.|0.|0., right:0.|0.|0.
+    set Peierls stresses                          = background:5.9e9|5.9e9|5.9e9, right:5.9e9|5.9e9|5.9e9
+    set Stress exponents for Peierls creep        = background:2.0|2.0|2.0, right:2.0|2.0|2.0
+    set Peierls fitting parameters                = background:0.15|0.15|0.15, right:0.15|0.15|0.15
+    set Peierls glide parameters p                = background:0.5|0.5|0.5, right:0.5|0.5|0.5
+    set Peierls glide parameters q                = background:1.0|1.0|1.0, right:1.0|1.0|1.0
+
+    set Peierls strain rate residual tolerance = 1e-22
+    set Maximum Peierls strain rate iterations = 40
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format = gnuplot
+    set List of output variables = material properties
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+
+    subsection Material properties
+      set List of material properties = density, thermal expansivity, specific heat, viscosity
+    end
+  end
+end

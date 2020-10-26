@@ -270,7 +270,9 @@ namespace aspect
           // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
           if (use_peierls_creep)
             {
-              const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j);
+              const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                                                                                phase_function_values,
+                                                                                phase_function.n_phase_transitions_for_each_composition());
               viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
             }
 
