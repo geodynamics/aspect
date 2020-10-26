@@ -349,6 +349,8 @@ namespace aspect
         /**
          * Collects periodic boundary constraints for the given geometry
          * and @p dof_handler, which will be added to the existing @p constraints.
+         * The default implementation creates cartesian periodic boundary conditions
+         * for all periodic boundary indicators.
          */
         virtual
         void

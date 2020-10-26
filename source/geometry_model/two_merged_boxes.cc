@@ -26,7 +26,6 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/tria_accessor.h>
 #include <deal.II/grid/grid_tools.h>
-#include <deal.II/dofs/dof_tools.h>
 
 #include <functional>
 
@@ -322,6 +321,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     Point<dim>
     TwoMergedBoxes<dim>::natural_to_cartesian_coordinates(const std::array<double,dim> &position_tensor) const
@@ -332,6 +332,7 @@ namespace aspect
 
       return position_point;
     }
+
 
 
     template <int dim>
