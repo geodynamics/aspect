@@ -491,7 +491,7 @@ namespace aspect
       // up the next time we need output:
       set_last_output_time (this->get_time());
       last_output_timestep = this->get_timestep_number();
-      return std::pair<std::string, std::string> ("gravity computation file:", filename);
+      return std::pair<std::string, std::string> ("Writing gravity output:", filename);
     }
 
 
