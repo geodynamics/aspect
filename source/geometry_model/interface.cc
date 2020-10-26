@@ -24,6 +24,7 @@
 #include <aspect/simulator_access.h>
 #include <deal.II/base/exceptions.h>
 #include <tuple>
+#include <deal.II/dofs/dof_tools.h>
 
 namespace aspect
 {
@@ -324,6 +325,27 @@ namespace aspect
     {
       std::get<dim>(registered_plugins).write_plugin_graph ("Geometry model interface",
                                                             out);
+    }
+
+
+
+    template <int dim>
+    void
+    Interface<dim>::make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
+                                                 AffineConstraints<double> &constraints) const
+    {
+      using periodic_boundary_set
+        = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+      periodic_boundary_set pbs = get_periodic_boundary_pairs();
+
+      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+        {
+          DoFTools::make_periodicity_constraints(dof_handler,
+                                                 (*p).first.first,  // first boundary id
+                                                 (*p).first.second, // second boundary id
+                                                 (*p).second,       // cartesian direction for translational symmetry
+                                                 constraints);
+        }
     }
   }
 }

@@ -324,6 +324,7 @@ namespace aspect
       return position_point;
     }
 
+
     template <int dim>
     void
     Box<dim>::

@@ -1,0 +1,4 @@
+New: The 'spherical shell' geometry model now supports periodic boundary conditions
+in polar angle direction for a 2D quarter shell (90 degree opening angle).
+<br>
+(Kiran Chotalia, Timo Heister, Rene Gassmoeller, 2020/10/08)

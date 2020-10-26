@@ -229,7 +229,6 @@ namespace aspect
          * A pointer to the initial topography model.
          */
         InitialTopographyModel::Interface<dim> *topo_model;
-
     };
   }
 }

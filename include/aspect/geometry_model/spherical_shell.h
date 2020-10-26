@@ -130,6 +130,13 @@ namespace aspect
         get_symbolic_boundary_names_map () const override;
 
         /**
+         * Return the set of periodic boundaries as described in the input
+         * file.
+         */
+        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >
+        get_periodic_boundary_pairs () const override;
+
+        /**
          * @copydoc Interface::has_curved_elements()
          *
          * Return true because we have a curved boundary.
@@ -203,6 +210,14 @@ namespace aspect
         double
         opening_angle () const;
 
+        /**
+         * Collects periodic boundaries constraints for the given geometry,
+         * which will be added to the existing @p constraints.
+         */
+        void
+        make_periodicity_constraints(const DoFHandler<dim> &dof_handler,
+                                     AffineConstraints<double> &constraints) const override;
+
       private:
         /**
          * Specify the radial subdivision of the spherical shell
@@ -256,6 +271,10 @@ namespace aspect
          */
         void set_manifold_ids (parallel::distributed::Triangulation<dim> &triangulation) const;
 
+        /**
+         * Flag whether the 2D quarter shell is periodic in phi.
+         */
+        bool periodic;
     };
   }
 }
