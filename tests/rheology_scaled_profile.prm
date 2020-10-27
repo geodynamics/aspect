@@ -74,7 +74,7 @@ subsection Postprocess
     set Output format                 = vtu
     set Time between graphical output = 0
     set Number of grouped files       = 0
-    set List of output variables      = material properties
+    set List of output variables      = material properties, named additional outputs
   end
 
   subsection Depth average

@@ -679,8 +679,10 @@ namespace aspect
          * data only at exactly the positions at which it is available (avoiding
          * interpolation).
          *
-         * @param dimension The spatial dimension for which to return the data
-         * coordinates.
+         * @param dimension The spatial direction for which to return the data
+         * coordinates, e.g. 0 for x-direction, 1 for y-direction, or equivalent
+         * values if your data coordinates are other dimensions such as
+         * temperature, pressure.
          */
         const std::vector<double> &
         get_coordinates(const unsigned int dimension) const;

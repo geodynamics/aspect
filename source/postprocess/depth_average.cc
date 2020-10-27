@@ -105,7 +105,7 @@ namespace aspect
         const std::vector<std::string> averaging_variables = filter_non_averaging_variables(variables);
 
         // Compute averaged variables
-        data_point.values = this->get_lateral_averaging().get_averages(depth_bounds,averaging_variables);
+        data_point.values = this->get_lateral_averaging().compute_lateral_averages(depth_bounds,averaging_variables);
 
         // Grow data_point.values to include adiabatic properties, and reorder
         // starting from end (to avoid unnecessary copies), and fill in the adiabatic variables.
@@ -298,14 +298,15 @@ namespace aspect
           prm.declare_entry ("Depth boundaries of zones", "",
                              Patterns::List (Patterns::Double()),
                              "The depth boundaries of zones within which we "
-                             "are to compute averages. By default, we subdivide the entire "
+                             "are to compute averages. By default this list is empty "
+                             "and we subdivide the entire "
                              "domain into equidistant depth zones and compute "
-                             "averages within each of these zones. If this parameter is "
-                             "set it has to contain a list of depths with one more entry "
+                             "averages within each of these zones. If this list is not "
+                             "empty it has to contain one more entry "
                              "than the 'Number of zones' parameter, representing the upper "
                              "and lower depth boundary of each zone. It is not necessary to "
                              "cover the whole depth-range (i.e. you can select to only average in "
-                             "a single narrow layer by choosing 2 depths as the boundaries "
+                             "a single layer by choosing 2 arbitrary depths as the boundaries "
                              "of that layer).");
           prm.declare_entry ("Output format", "gnuplot, txt",
                              Patterns::MultipleSelection(DataOutBase::get_output_format_names().append("|txt")),
@@ -357,9 +358,10 @@ namespace aspect
             {
               const double maximal_depth = this->get_geometry_model().maximal_depth();
               depth_bounds.resize(n_depth_zones+1);
+
               // Leave index 0 at 0.0, and generate an increasing range of equidistant depth bounds
-              std::generate(depth_bounds.begin()+1, depth_bounds.end(),
-                            [n = 0.0, step = maximal_depth / n_depth_zones] () mutable {return n += step; });
+              for (unsigned int i=1; i<depth_bounds.size(); ++i)
+                depth_bounds[i] = depth_bounds[i-1] + maximal_depth / n_depth_zones;
             }
           else
             for (unsigned int i=1; i<depth_bounds.size(); ++i)

@@ -111,30 +111,43 @@ namespace aspect
   {
     public:
       /**
-       * Return a depth profile of lateral averages of the selected
-       * @p property_names. This function is a convenience interface for
-       * the other function of the same name. This function creates
-       * @p n_slices of equidistant depth slices to compute averages
-       * in.
-       *
-       * @param n_slices The number of equidistant depth slices
-       * to perform the averaging in.
-       * @return The output vector of laterally averaged values. Each vector
-       * has the same size of @p n_slices, and there are
-       * as many vectors returned as names in @p property_names.
-       * @param property_names Names of the available quantities to average.
-       * Check the implementation of this function for available names.
+       * @deprecated: This function is deprecated and only maintained for backward compatibilty.
+       * Use the function compute_lateral_averages() with the same arguments instead.
        */
+      DEAL_II_DEPRECATED
       std::vector<std::vector<double> >
       get_averages(const unsigned int n_slices,
                    const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
-       * @p property_names. See the implementation of this function for
-       * a range of accepted names. This function is more efficient than
-       * calling multiple of the other functions that compute one property
-       * each.
+       * @p property_names. This function is a convenience interface for
+       * the other functions of the same name and is more efficient for
+       * multiple properties than calling multiple of the single property functions
+       * sequentially. This version of the function creates @p n_slices
+       * equidistant depth slices to compute averages in.
+       *
+       * @param n_slices The number of equidistant depth slices
+       * to perform the averaging in.
+       * @param property_names Names of the available quantities to average.
+       * Check the implementation of this function for available names.
+       * @return The output vector of laterally averaged values. Each vector
+       * has the same size of @p n_slices, and there are
+       * as many vectors returned as names in @p property_names.
+       */
+      std::vector<std::vector<double> >
+      compute_lateral_averages(const unsigned int n_slices,
+                               const std::vector<std::string> &property_names) const;
+
+      /**
+       * Return a depth profile of lateral averages of the selected
+       * @p property_names. This function is a convenience interface for
+       * the other functions of the same name and is more efficient for
+       * multiple properties than calling multiple of the single property
+       * functions sequentially. This version of the function uses @p depth_bounds
+       * to determine the upper and lower boundary of each depth slice,
+       * and returns one averaged value per slice (= one less than the
+       * number of depth bounds).
        *
        * @param depth_bounds The boundaries of the depth slices to compute
        * averages in. It is expected to be a vector of monotonically increasing
@@ -144,13 +157,47 @@ namespace aspect
        * between entries 0 and 1 fall into depth slice 0, and so on.
        * @param property_names Names of the available quantities to average.
        * Check the implementation of this function for available names.
-       * @return The output vector of laterally averaged values. Each vector
-       * has the same length as @p depth_thresholds, and there are
-       * as many vectors returned as names in @p property_names.
+       * @return The output vector of laterally averaged values. The length
+       * of each vector is one less than the number of @p depth_bounds,
+       * and there are as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double> >
-      get_averages(const std::vector<double> &depth_bounds,
-                   const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               const std::vector<std::string> &property_names) const;
+
+      /**
+       * Return a depth profile of lateral averages. This function is the
+       * low-level implementation for the other functions of the same name
+       * and is more efficient for multiple properties than calling multiple
+       * of the single property functions sequentially. This version of the
+       * function uses @p depth_bounds to determine the upper and lower
+       * boundary of each depth slice, and returns one averaged value per slice
+       * (= one less than the number of depth bounds).
+       * The vector of functors @p functors must contain one or more
+       * objects of classes that are derived from FunctorBase and are used to
+       * fill the values vectors. All of the other functions in this class use
+       * this low-level implementation for the actual computation.
+       * Using this function allows to provide user-defined functors to average
+       * properties not already implemented (e.g. to average additional
+       * material model outputs).
+       *
+       * @param depth_bounds The boundaries of the depth slices to compute
+       * averages in. It is expected to be a vector of monotonically increasing
+       * depth values with consecutive entries representing the minimum and
+       * maximum depth of each depth slice. All depths smaller than
+       * entry 0 or larger than the last entry are ignored, and depths
+       * between entries 0 and 1 fall into depth slice 0, and so on.
+       * @param functors Instances of a class derived from FunctorBase
+       * that are used to compute the averaged properties.
+       * @return The output vectors of depth averaged values. The
+       * function returns one vector of doubles per property and uses
+       * @p depth_bounds to determine the depth extents of each slice.
+       * Each returned vector has the same size (one entry less than
+       * the number of @p depth_bounds).
+       */
+      std::vector<std::vector<double> >
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current
@@ -249,40 +296,9 @@ namespace aspect
        * (both down- and upward motion counted positively).
        *
        * @param values The output vector of laterally averaged values.
-       * @param depth_thresholds Optional: The boundaries of the depth slices to
-       * compute averages in. It is expected to be a vector of monotonically increasing
-       * depth values representing the maximum depth of each depth slice (i.e.
-       * each depth smaller than entry 0 falls into the first slice, and so on).
-       * If no vector is given the pre-existing size of @p values is used to create
-       * a number of equidistant depth slices.
        */
       void
       get_vertical_mass_flux_averages(std::vector<double> &values) const;
-
-      /**
-       * Internal routine to compute the depth averages of several quantities.
-       * All of the public functions that compute a single field also call this
-       * function. The vector of functors @p functors must contain one or more
-       * objects of classes that are derived from FunctorBase and are used to
-       * fill the values vectors.
-       *
-       * @param depth_bounds The boundaries of the depth slices to compute
-       * averages in. It is expected to be a vector of monotonically increasing
-       * depth values with consecutive entries representing the minimum and
-       * maximum depth of each depth slice. All depths smaller than
-       * entry 0 or larger than the last entry are ignored, and depths
-       * between entries 0 and 1 fall into depth slice 0, and so on.
-       * @param functors Instances of a class derived from FunctorBase
-       * that are used to compute the averaged properties.
-       * @return The output vectors of depth averaged values. The
-       * function returns one vector of doubles per property and uses
-       * @p depth_bounds to determine the depth extents of each slice.
-       * Each returned vector has the same size (one entry less than
-       * the number of @p depth_bounds).
-       */
-      std::vector<std::vector<double> >
-      compute_lateral_averages(const std::vector<double> &depth_bounds,
-                               std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
   };
 }
 

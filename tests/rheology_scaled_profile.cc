@@ -66,8 +66,11 @@ namespace aspect
         create_additional_material_model_outputs (const unsigned int n_points,
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
-          outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+          if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+            {
+              outputs.additional_outputs.push_back(
+                std_cxx14::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+            }
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
@@ -90,17 +93,22 @@ namespace aspect
   namespace MaterialModel
   {
     /**
-     * A material model for the stationary form of the rigid shear benchmark. All properties
-     * are defined in dependence of position.
+     * A material model that tests the variable depth averaging routines. The material properties are
+     * constant, except that the viscosity is set to a reference viscosity profile by first computing
+     * an unscaled (constant) viscosity profile, which is then scaled by the quotient between reference
+     * profile and unscaled viscosity.
      */
     template<int dim>
     class ScaledViscosityProfileMaterial : public MaterialModel::Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
-        void update() override
+        void initialize() override
         {
           reference_viscosity_coordinates = reference_viscosity_profile->get_coordinates();
+        }
 
+        void update() override
+        {
           std::vector<std::unique_ptr<internal::FunctorBase<dim> > > lateral_averaging_properties;
           lateral_averaging_properties.push_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
 
@@ -141,21 +149,18 @@ namespace aspect
           else
             {
               depth_index = std::distance(reference_viscosity_coordinates.begin(),
-                                          std::lower_bound(reference_viscosity_coordinates.begin(),reference_viscosity_coordinates.end(),depth));
+                                          std::lower_bound(reference_viscosity_coordinates.begin(),
+                                                           reference_viscosity_coordinates.end(),
+                                                           depth));
               if (depth_index > 0)
                 depth_index -= 1;
             }
 
-          double reference_viscosity;
-
-          if (false)
-            {
-              reference_viscosity = reference_viscosity_profile->compute_viscosity(depth);
-            }
-          else
-            {
-              reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
-            }
+          // When evaluating reference viscosity, evaluate at the next lower depth that is stored
+          // in the reference profile instead of the actual depth. This makes the profile piecewise
+          // constant. This will be specific to the viscosity profile used (and ignore the entry with
+          // the largest depth in the profile).
+          const double reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
 
           const double average_viscosity = laterally_averaged_viscosity_profile[depth_index];
 
@@ -167,12 +172,25 @@ namespace aspect
         void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                       MaterialModel::MaterialModelOutputs<dim> &out) const override
         {
+          UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_out =
+            out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim> >();
+
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const double depth = this->get_geometry_model().depth(in.position[i]);
+              const std::array<double, dim> spherical_coordinates =
+                Utilities::Coordinates::cartesian_to_spherical_coordinates(in.position[i]);
 
               out.densities[i] = 3300.0;
-              out.viscosities[i] = 1.e21;
+              out.viscosities[i] = (1 - 2. * spherical_coordinates[1]/numbers::PI) * 1e20 +
+                                   2. * spherical_coordinates[1]/numbers::PI * 1e21;
+
+              // store unscaled viscosity to compute averaged profile use for compute scaling factor
+              if (unscaled_viscosity_out != nullptr)
+                {
+                  unscaled_viscosity_out->output_values[0][i] = out.viscosities[i];
+                }
+
               if (this->simulator_is_past_initialization() == true && this->get_timestep_number() > 0)
                 out.viscosities[i] *= compute_viscosity_scaling(depth);
 
@@ -180,15 +198,6 @@ namespace aspect
               out.specific_heat[i] = 1200;
               out.thermal_expansion_coefficients[i] = 3e-5;
               out.thermal_conductivities[i] = 4.7;
-
-              // store unscaled viscosity to compute averaged profile use for compute scaling factor
-              UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_out =
-                out.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim> >();
-
-              if (unscaled_viscosity_out != NULL)
-                {
-                  unscaled_viscosity_out->output_values[0][i] = 1.e21;
-                }
             }
         }
 
@@ -200,6 +209,17 @@ namespace aspect
         double reference_viscosity() const override
         {
           return 1;
+        }
+
+        void
+        create_additional_named_outputs (MaterialModelOutputs<dim> &outputs) const override
+        {
+          if (outputs.template get_additional_output<UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+            {
+              const unsigned int n_points = outputs.n_evaluation_points();
+              outputs.additional_outputs.push_back(
+                std_cxx14::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+            }
         }
 
         static
