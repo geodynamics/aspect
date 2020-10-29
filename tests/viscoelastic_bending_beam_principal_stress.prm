@@ -1,0 +1,33 @@
+# This test checks whether the viscoelastic bending beam benchmark
+# runs successfully. This test extends viscoelastic_bending_beam by
+# also outputting the principal stresses including the elastic stresses.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm 
+
+set End time  = 1e3
+
+# Significantly reduce resolution 
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 10
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, depth average, visualization
+
+  subsection Visualization
+    set List of output variables = principal stress
+    set Output format = gnuplot
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 5
+    set List of output variables = composition
+    set Output format = txt
+  end
+end

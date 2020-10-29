@@ -1,0 +1,32 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for composition solver 4
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Number of advected particles
+# 17: Particle file name
+# 18: Minimal value for composition strain_xx
+# 19: Maximal value for composition strain_xx
+# 20: Global mass for composition strain_xx
+# 21: Minimal value for composition strain_xy
+# 22: Maximal value for composition strain_xy
+# 23: Global mass for composition strain_xy
+# 24: Minimal value for composition strain_yx
+# 25: Maximal value for composition strain_yx
+# 26: Global mass for composition strain_yx
+# 27: Minimal value for composition strain_yy
+# 28: Maximal value for composition strain_yy
+# 29: Global mass for composition strain_yy
+# 30: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 1156 0 0  0  0 0          0 2 5 1 output-principal_deviatoric_stress/particles/particles-00000 1.00000000e+00 1.00000000e+00 1.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 1.00000000e+00 1.00000000e+00 output-principal_deviatoric_stress/solution/solution-00000 
+1 2.500000000000e-02 2.500000000000e-02 64 659 289 1156 0 0 11 11 0 4294967295 0 0 1                                                           "" 1.00000000e+00 1.00000000e+00 1.00000000e+00 5.00000000e-02 5.00000000e-02 5.00000000e-02 -2.90742661e-17 2.18682878e-17 4.69920500e-32 1.00000000e+00 1.00000000e+00 1.00000000e+00                                                         "" 
