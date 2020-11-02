@@ -63,6 +63,7 @@ namespace aspect
                                                                                        std::max(pressure,0.0),
                                                                                        std::sqrt(strain_rate_dev_inv2),
                                                                                        std::numeric_limits<double>::infinity(),
+                                                                                       false,
                                                                                        0.0,
                                                                                        1.0);
 

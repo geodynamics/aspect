@@ -13,6 +13,7 @@ subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
     set Allow negative pressures in plasticity = true
+    set Use plastic damper = true
     set Plastic damper viscosity = 1e19 
   end
 end

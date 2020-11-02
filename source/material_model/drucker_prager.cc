@@ -110,6 +110,7 @@ namespace aspect
                                                                                          pressure,
                                                                                          std::sqrt(strain_rate_effective),
                                                                                          std::numeric_limits<double>::infinity(),
+                                                                                         false,
                                                                                          0.0,
                                                                                          1.0);
 

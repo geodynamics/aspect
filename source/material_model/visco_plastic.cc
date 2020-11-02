@@ -332,7 +332,7 @@ namespace aspect
 
           // Determine if the pressure used in Drucker Prager plasticity will be capped at 0 (default).
           // This may be necessary in models without gravity and the dynamic stresses are much higher
-          // than the lithostatic prssure.
+          // than the lithostatic pressure.
 
           double pressure_for_plasticity = in.pressure[i];
           if (allow_negative_pressures_in_plasticity == false)
@@ -369,6 +369,7 @@ namespace aspect
                                                                                   pressure_for_plasticity,
                                                                                   current_edot_ii,
                                                                                   drucker_prager_parameters.max_yield_stress,
+                                                                                  drucker_prager_parameters.use_plastic_damper,
                                                                                   drucker_prager_parameters.damper_viscosity,
                                                                                   viscosity_pre_yield);
                     composition_yielding[j] = true;
