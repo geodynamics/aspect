@@ -523,6 +523,9 @@ SimulatorAccess -> N6aspect11Postprocess17BoundaryDensitiesILi2EEE [style="dotte
 N6aspect11Postprocess17BoundaryPressuresILi2EEE [label="boundary\npressures", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess17BoundaryPressuresILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess17BoundaryPressuresILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess34BoundaryVelocityResidualStatisticsILi2EEE [label="boundary\nvelocity\nresidual\nstatistics", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess34BoundaryVelocityResidualStatisticsILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess34BoundaryVelocityResidualStatisticsILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess7CommandILi2EEE [label="command", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess7CommandILi2EEE -> N6aspect11Postprocess9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess7CommandILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
