@@ -110,6 +110,14 @@ namespace aspect
         unsigned int n_depth_zones;
 
         /**
+         * The boundaries of the depth zones.
+         * This vector contains exactly n_depth_zones + 1 entries,
+         * and entries i and i+1 represent the lower and upper depth bound
+         * of zone i.
+         */
+        std::vector<double> depth_bounds;
+
+        /**
          * List of the quantities to calculate for each depth zone.
          */
         std::vector<std::string> variables;

@@ -389,17 +389,21 @@ namespace aspect
 
   template <int dim>
   std::vector<std::vector<double> >
-  LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
+  LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_bounds,
                                                   std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const
   {
     Assert (functors.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
                         "number of properties to compute."));
-    Assert (n_slices > 0,
-            ExcMessage ("To call this function, you need to request a positive "
-                        "number of depth slices."));
+    Assert (depth_bounds.size() > 1,
+            ExcMessage ("To call this function, you need to request at least two "
+                        "depth boundaries."));
+    Assert(std::is_sorted(depth_bounds.begin(),depth_bounds.end()),
+           ExcMessage ("To call this function the depth boundaries need to be ordered "
+                       "with increasing depth."));
 
     const unsigned int n_properties = functors.size();
+    const unsigned int n_slices = depth_bounds.size()-1;
 
     std::vector<std::vector<double> > values(n_properties,
                                              std::vector<double>(n_slices,0.0));
@@ -444,7 +448,6 @@ namespace aspect
       quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
 
     const unsigned int n_q_points = quadrature_formula->size();
-    const double max_depth = this->get_geometry_model().maximal_depth();
 
     FEValues<dim> fe_values (this->get_mapping(),
                              this->get_fe(),
@@ -492,16 +495,25 @@ namespace aspect
           for (unsigned int q = 0; q < n_q_points; ++q)
             {
               const double depth = this->get_geometry_model().depth(fe_values.quadrature_point(q));
-              // make sure we are rounding down and never end up with idx==num_slices:
-              const double magic = 1.0-2.0*std::numeric_limits<double>::epsilon();
-              const unsigned int idx = static_cast<unsigned int>(std::floor((depth*n_slices)/max_depth*magic));
 
-              Assert(idx<n_slices, ExcInternalError());
+              if (depth < depth_bounds.front() || depth > depth_bounds.back())
+                continue;
+
+              // This makes sure depth == front() and depth == back() are handled correctly.
+              // lower_bound returns the first layer boundary larger than depth, the correct
+              // layer index is then one less than this (except for depth == depth_bounds[0],
+              // in which case the depth_bounds index is also the layer_index, namely 0).
+              unsigned int layer_index = std::distance(depth_bounds.begin(),
+                                                       std::lower_bound(depth_bounds.begin(),depth_bounds.end(),depth));
+              if (layer_index > 0)
+                layer_index -= 1;
+
+              Assert(layer_index<n_slices, ExcInternalError());
 
               for (unsigned int i = 0; i < n_properties; ++i)
-                values[i][idx] += output_values[i][q] * fe_values.JxW(q);
+                values[i][layer_index] += output_values[i][q] * fe_values.JxW(q);
 
-              volume[idx] += fe_values.JxW(q);
+              volume[layer_index] += fe_values.JxW(q);
             }
         }
 
@@ -548,8 +560,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_temperature_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"temperature"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"temperature"))[0];
   }
 
 
@@ -558,8 +570,8 @@ namespace aspect
   void LateralAveraging<dim>::get_composition_averages(const unsigned int c,
                                                        std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"C_" + Utilities::int_to_string(c)))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"C_" + Utilities::int_to_string(c)))[0];
   }
 
 
@@ -567,8 +579,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_viscosity_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"viscosity"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"viscosity"))[0];
   }
 
 
@@ -576,8 +588,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_velocity_magnitude_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"velocity_magnitude"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"velocity_magnitude"))[0];
   }
 
 
@@ -585,8 +597,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_sinking_velocity_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"sinking_velocity"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"sinking_velocity"))[0];
   }
 
 
@@ -594,8 +606,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"Vs"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"Vs"))[0];
   }
 
 
@@ -603,8 +615,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_Vp_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"Vp"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"Vp"))[0];
   }
 
 
@@ -612,8 +624,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_vertical_heat_flux_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"vertical_heat_flux"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"vertical_heat_flux"))[0];
   }
 
 
@@ -621,8 +633,8 @@ namespace aspect
   template <int dim>
   void LateralAveraging<dim>::get_vertical_mass_flux_averages(std::vector<double> &values) const
   {
-    values = get_averages(values.size(),
-                          std::vector<std::string>(1,"vertical_mass_flux"))[0];
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"vertical_mass_flux"))[0];
   }
 
 
@@ -631,6 +643,33 @@ namespace aspect
   std::vector<std::vector<double> >
   LateralAveraging<dim>::get_averages(const unsigned int n_slices,
                                       const std::vector<std::string> &property_names) const
+  {
+    return compute_lateral_averages(n_slices, property_names);
+  }
+
+
+
+  template <int dim>
+  std::vector<std::vector<double> >
+  LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
+                                                  const std::vector<std::string> &property_names) const
+  {
+    const double maximal_depth = this->get_geometry_model().maximal_depth();
+    std::vector<double> depth_bounds(n_slices+1, 0.0);
+
+    // Leave index 0 at 0.0, and generate an increasing range of equidistant depth bounds
+    for (unsigned int i=1; i<depth_bounds.size(); ++i)
+      depth_bounds[i] = depth_bounds[i-1] + maximal_depth / n_slices;
+
+    return compute_lateral_averages(depth_bounds, property_names);
+  }
+
+
+
+  template <int dim>
+  std::vector<std::vector<double> >
+  LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_thresholds,
+                                                  const std::vector<std::string> &property_names) const
   {
     std::vector<std::unique_ptr<internal::FunctorBase<dim> > > functors;
     for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
@@ -696,14 +735,19 @@ namespace aspect
       }
 
     // Now compute values for all selected properties.
-    return compute_lateral_averages(n_slices, functors);
+    return compute_lateral_averages(depth_thresholds, functors);
   }
 }
 
 namespace aspect
 {
 #define INSTANTIATE(dim) \
-  template class LateralAveraging<dim>;
+  template class LateralAveraging<dim>; \
+  namespace internal \
+  { \
+    template class FunctorBase<dim>; \
+  }
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE

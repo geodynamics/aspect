@@ -674,6 +674,20 @@ namespace aspect
         has_equidistant_coordinates() const;
 
         /**
+         * Returns the coordinates at which data is stored. This function
+         * can be used to determine the number of data points, or to query
+         * data only at exactly the positions at which it is available (avoiding
+         * interpolation).
+         *
+         * @param dimension The spatial direction for which to return the data
+         * coordinates, e.g. 0 for x-direction, 1 for y-direction, or equivalent
+         * values if your data coordinates are other dimensions such as
+         * temperature, pressure.
+         */
+        const std::vector<double> &
+        get_coordinates(const unsigned int dimension) const;
+
+        /**
          * Returns the column index of a column with the given name
          * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
@@ -1134,6 +1148,15 @@ namespace aspect
          */
         std::vector<std::string>
         get_column_names() const;
+
+        /**
+        * Returns the coordinates at which profile data is stored. This function
+        * can be used to determine the number of data points, or to query
+        * data only at exactly the positions at which it is available (avoiding
+        * interpolation).
+        */
+        const std::vector<double> &
+        get_coordinates() const;
 
         /**
          * Returns the column index of a column with the given name

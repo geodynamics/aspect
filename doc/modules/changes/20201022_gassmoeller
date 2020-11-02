@@ -1,0 +1,5 @@
+<li> New: Added the functionality to compute averages in user defined depth
+layers (e.g. lithosphere, asthenosphere, transition zone, lower mantle)
+to the depth average postprocessor and the lateral averaging plugin.
+<br>
+(Rene Gassmoeller, 2020/10/22)

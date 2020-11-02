@@ -1,0 +1,35 @@
+
+Loading shared library <./librheology_scaled_profile.so>
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 192 (on 4 levels)
+Number of degrees of freedom: 2,724 (1,666+225+833)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 12+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-rheology_scaled_profile/solution/solution-00000
+     RMS, max velocity:                                 0.00659 m/year, 0.0415 m/year
+     Temperature min/avg/max:                           973 K, 2486 K, 4273 K
+     Heat fluxes through boundary parts:                -2.884e+05 W, 2.421e+05 W, 0 W, 0 W
+     Writing depth average:                             output-rheology_scaled_profile/depth_average
+     Average density / Average viscosity / Total mass:  3300 kg/m^3, 5.5e+20 Pa s, 7.264e+16 kg
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 15+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                          output-rheology_scaled_profile/solution/solution-00001
+     RMS, max velocity:                                 0.00219 m/year, 0.017 m/year
+     Temperature min/avg/max:                           973 K, 2487 K, 4273 K
+     Heat fluxes through boundary parts:                4.147e+05 W, 5.315e+04 W, 0 W, 0 W
+     Writing depth average:                             output-rheology_scaled_profile/depth_average
+     Average density / Average viscosity / Total mass:  3300 kg/m^3, 1.352e+22 Pa s, 7.264e+16 kg
+
+Termination requested by criterion: end time
+
+
+

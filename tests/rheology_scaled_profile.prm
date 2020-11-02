@@ -1,0 +1,91 @@
+# 2d quarter shell using a scaled viscosity profile
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 1.0e5
+
+subsection Material model
+  set Model name = scaled viscosity profile
+
+  set Material averaging = harmonic average
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+    set Opening angle = 90
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = top, left, right
+end
+
+
+subsection Heating model
+  set List of model names =  shear heating
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+
+  subsection Spherical constant
+    set Inner temperature = 4273
+    set Outer temperature = 973
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = spherical hexagonal perturbation
+end
+
+
+subsection Gravity model
+  set Model name = ascii data
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 15
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average, material statistics
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
+    set List of output variables      = material properties, named additional outputs
+  end
+
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 3
+    set Depth boundaries of zones = 0, 1e6, 2e6, 3e6
+  end
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
