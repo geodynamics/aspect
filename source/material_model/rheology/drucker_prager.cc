@@ -89,6 +89,28 @@ namespace aspect
 
       template <int dim>
       double
+      DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
+                                                              const double pressure,
+                                                              const unsigned int composition,
+                                                              const DruckerPragerParameters p) const
+      {
+
+        const double yield_stress = compute_yield_stress(p.cohesions[composition], p.angles_internal_friction[composition], pressure, p.max_yield_stress);
+
+        if (stress > yield_stress)
+          {
+            return std::make_pair((stress - yield_stress)/(2.*p.damper_viscosity), 1./(2.*p.damper_viscosity));
+          }
+        else
+          {
+            return std::make_pair(0., 0.);
+          }
+      }
+
+
+
+      template <int dim>
+      double
       DruckerPrager<dim>::compute_derivative (const double angle_internal_friction,
                                               const double effective_strain_rate) const
       {
