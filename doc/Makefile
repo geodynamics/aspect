@@ -110,7 +110,11 @@ manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
 		pdflatex --interaction=batchmode manual.tex    && \
 		pdflatex --interaction=batchmode manual.tex)   && \
 	   mv manual/manual.pdf . || \
-	   (echo "Error compiling manual.pdf, check manual/manual.log" && false); \
+	   (echo                                                      && \
+	    echo "    Error: There were errors compiling manual.tex." && \
+	    echo "           Check manual/manual.log for details"     && \
+	    echo                                                      && \
+	    false); \
          else \
 	  echo "------------------------------------------------------" ; \
 	  echo "Can't find either 'pdflatex', 'bibtex' or 'makeindex'." ; \
