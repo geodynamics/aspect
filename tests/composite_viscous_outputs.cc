@@ -91,57 +91,57 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   std::vector<double> partial_strain_rates;
 
   for (unsigned int i=0; i <= 10; i++)
-  {
-    temperature = 1000. + i*100.;
-
-    // Compute the viscosity
-    viscosity = composite_creep->compute_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
-    total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
-
-    // Print the output
-    std::cout << temperature << " " << viscosity << " " << total_strain_rate;
-    for (unsigned int i=0; i < partial_strain_rates.size(); ++i)
     {
-      std::cout << " " << partial_strain_rates[i]/total_strain_rate;
+      temperature = 1000. + i*100.;
+
+      // Compute the viscosity
+      viscosity = composite_creep->compute_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
+      total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
+
+      // Print the output
+      std::cout << temperature << " " << viscosity << " " << total_strain_rate;
+      for (unsigned int i=0; i < partial_strain_rates.size(); ++i)
+        {
+          std::cout << " " << partial_strain_rates[i]/total_strain_rate;
+        }
+      std::cout << std::endl;
+
+      // The following lines test that each individual creep mechanism
+      // experiences the same creep stress
+
+      // The creep strain rate is calculated by subtracting the strain rate
+      // of the max viscosity dashpot from the total strain rate
+      // The creep stress is then calculated by subtracting the stress running
+      // through the strain rate limiter from the total stress
+      creep_strain_rate = total_strain_rate - partial_strain_rates[3];
+      creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
+
+      // Each creep mechanism should experience the same stress
+      diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, composition);
+      disl_stress = 2.*partial_strain_rates[1]*dislocation_creep->compute_viscosity(partial_strain_rates[1], pressure, temperature, composition);
+      prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
+
+      if ((std::fabs((diff_stress - creep_stress)/creep_stress) > 1e-6)
+          || (std::fabs((disl_stress - creep_stress)/creep_stress) > 1e-6)
+          || (std::fabs((prls_stress - creep_stress)/creep_stress) > 1e-6))
+        {
+          error = true;
+          std::cout << "   creep stress: " << creep_stress;
+          std::cout << " diffusion stress: " << diff_stress;
+          std::cout << " dislocation stress: " << disl_stress;
+          std::cout << " peierls stress: " << prls_stress << std::endl;
+        }
     }
-    std::cout << std::endl;
-
-    // The following lines test that each individual creep mechanism
-    // experiences the same creep stress
-
-    // The creep strain rate is calculated by subtracting the strain rate
-    // of the max viscosity dashpot from the total strain rate
-    // The creep stress is then calculated by subtracting the stress running
-    // through the strain rate limiter from the total stress
-    creep_strain_rate = total_strain_rate - partial_strain_rates[3];
-    creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
-
-    // Each creep mechanism should experience the same stress
-    diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, composition);
-    disl_stress = 2.*partial_strain_rates[1]*dislocation_creep->compute_viscosity(partial_strain_rates[1], pressure, temperature, composition);
-    prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
-
-    if ((std::fabs((diff_stress - creep_stress)/creep_stress) > 1e-6)
-        || (std::fabs((disl_stress - creep_stress)/creep_stress) > 1e-6)
-        || (std::fabs((prls_stress - creep_stress)/creep_stress) > 1e-6))
-    {
-      error = true;
-      std::cout << "   creep stress: " << creep_stress;
-      std::cout << " diffusion stress: " << diff_stress;
-      std::cout << " dislocation stress: " << disl_stress;
-      std::cout << " peierls stress: " << prls_stress << std::endl;
-    }
-  }
 
   if (error)
-  {
-    std::cout << "   Error: The individual creep stresses differ by more than the required tolerance." << std::endl;
-    std::cout << "Some parts of the test were not successful." << std::endl;
-  }
+    {
+      std::cout << "   Error: The individual creep stresses differ by more than the required tolerance." << std::endl;
+      std::cout << "Some parts of the test were not successful." << std::endl;
+    }
   else
-  {
-    std::cout << "OK" << std::endl;
-  }
+    {
+      std::cout << "OK" << std::endl;
+    }
 
 }
 

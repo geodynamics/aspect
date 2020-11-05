@@ -84,22 +84,22 @@ namespace aspect
 
 
         if (use_diffusion_creep)
-        {
-          diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-          eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phases_per_composition);
-        }
+          {
+            diffusion_creep_parameters = diffusion_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
+            eta_diff = diffusion_creep->compute_viscosity(pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+          }
 
         if (use_dislocation_creep)
-        {
-          dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-          eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phases_per_composition);
-        }
+          {
+            dislocation_creep_parameters = dislocation_creep->compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
+            eta_disl = dislocation_creep->compute_viscosity(edot_ii, pressure, temperature, composition, phase_function_values, n_phases_per_composition);
+          }
 
         if (use_peierls_creep)
-        {
-          peierls_creep_parameters = peierls_creep->compute_creep_parameters(composition);
-          eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
-        }
+          {
+            peierls_creep_parameters = peierls_creep->compute_creep_parameters(composition);
+            eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
+          }
         // First guess at a stress using diffusion, dislocation, and Peierls creep viscosities calculated with the total second strain rate invariant.
         const double eta_guess = std::min(std::max(min_viscosities[composition], eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), max_viscosities[composition]);
 
@@ -169,22 +169,22 @@ namespace aspect
         // The components of partial_strain_rates must be provided in the order
         // dictated by make_strain_rate_additional_outputs_names
         if (use_diffusion_creep)
-        {
-          const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
-          partial_strain_rates[0] = diff_edot_and_deriv.first;
-        }
+          {
+            const std::pair<double, double> diff_edot_and_deriv = diffusion_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, diffusion_creep_parameters);
+            partial_strain_rates[0] = diff_edot_and_deriv.first;
+          }
 
         if (use_dislocation_creep)
-        {
-          const std::pair<double, double> disl_edot_and_deriv = dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);
-          partial_strain_rates[1] = disl_edot_and_deriv.first;
-        }
+          {
+            const std::pair<double, double> disl_edot_and_deriv = dislocation_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, dislocation_creep_parameters);
+            partial_strain_rates[1] = disl_edot_and_deriv.first;
+          }
 
         if (use_peierls_creep)
-        {
-          const std::pair<double, double> prls_edot_and_deriv = peierls_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, peierls_creep_parameters);
-          partial_strain_rates[2] = prls_edot_and_deriv.first;
-        }
+          {
+            const std::pair<double, double> prls_edot_and_deriv = peierls_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, peierls_creep_parameters);
+            partial_strain_rates[2] = prls_edot_and_deriv.first;
+          }
 
         partial_strain_rates[3] = total_stress/(2.*max_viscosities[composition]);
 
@@ -195,8 +195,9 @@ namespace aspect
 
 
       // Overload the + operator to act on two pairs of doubles.
-      std::pair<double,double> operator+(const std::pair<double,double>& x, const std::pair<double,double>& y) {
-          return std::make_pair(x.first+y.first, x.second+y.second);
+      std::pair<double,double> operator+(const std::pair<double,double> &x, const std::pair<double,double> &y)
+      {
+        return std::make_pair(x.first+y.first, x.second+y.second);
       }
 
 
@@ -240,8 +241,8 @@ namespace aspect
                            "Whether to include diffusion creep in the rheological formulation.");
 
         prm.declare_entry ("Include dislocation creep", "true",
-                          Patterns::Bool (),
-                          "Whether to include dislocation creep in the rheological formulation.");
+                           Patterns::Bool (),
+                           "Whether to include dislocation creep in the rheological formulation.");
 
         prm.declare_entry ("Include Peierls creep", "true",
                            Patterns::Bool (),
