@@ -9,7 +9,7 @@ set Dimension                              = 3
 # is required. 
 set End time                               = 0
 set Use years in output instead of seconds = true
-set Output directory = output-gravity_constant_list
+set Output directory = output-gravity_constant_list_nq2
 #set Output directory = output-gravity_constant_profile
 set Nonlinear solver scheme = no Advection, no Stokes 
 
@@ -50,7 +50,7 @@ subsection Geometry model
 
     # Specify the initial lateral refinement (pre-GMR)
     # before the extrusion.
-    set Initial lateral refinement = 5
+    set Initial lateral refinement = 4
 
   end
 end
@@ -102,7 +102,7 @@ end
 
 # We output the density, gravity and some statistics.
 # Are shown here 2 subsections of the gravity calculation:
-#  - subsection A: at a list of query points
+#  - subsection A: at a list of measurement points
 #  - subsection B: along a radial profile. 
 subsection Postprocess
   set List of postprocessors = visualization, basic statistics, gravity calculation
@@ -114,7 +114,7 @@ subsection Postprocess
     set Number of grouped files       = 1 
   end
 
-# subsection A: calculate gravity at the query points specified
+# subsection A: calculate gravity at the measurement points specified
 # in the list sampling scheme.
   subsection Gravity calculation
     set Sampling scheme             = list of points 
@@ -130,9 +130,9 @@ subsection Postprocess
     # number of quadrature points in a cell is (2+2)^dim. 
     set Quadrature degree increase  = 2
     
-    # Gravity is calculated at the following query points:
+    # Gravity is calculated at the following measurement points:
     # NOTE that you don't have to specify the radius to
-    # every query points if it is the same for all.
+    # every measurement points if it is the same for all.
     set List of radius              = 6596000
     set List of longitude           = 38.7578, 174.7633, -157.8583,   85.324, -77.0428,   2.3522, -21.9426, -122.4194, 139.6917,  16.3738
     set List of latitude            =  8.9806, -36.8485,   21.3069,  27.7172, -12.0464,  48.8566,  64.1466,   37.7749,  35.6895,  48.2082 

@@ -127,7 +127,7 @@ subsection Postprocess
     # number of quadrature points is (2+2)^dim. 
   #  set Quadrature degree increase  = 2
  
-    # Specify the number of query points defining the spiral 
+    # Specify the number of measurement points defining the spiral 
     # field 
   #  set Number points fibonacci spiral = 2701
   

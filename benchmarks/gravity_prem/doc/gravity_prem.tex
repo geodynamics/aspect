@@ -8,16 +8,16 @@ The post-processor \textit{gravity calculation} implemented in ASPECT computes g
 As opposed to standard geophysical techniques using spherical harmonics
 \cite{sjoberg2017gravity}, the post-processor relies on the Gauss-Legendre quadrature method (GLQM) which is already implemented in the code 
 as it is part of the finite element methodology. The post-processor also relies on the domain decomposition of the mesh when run in parallel. 
-However, because the quantities that we wish to integrate are not polynomials, these cannot be integrated exactly by means of the GLQM and there is no best adequate number of quadrature points per element. We therefore allows the user to request an increase of the quadrature degree with respect to the one used for the finite elements.
+However, because the quantities that we wish to integrate are not polynomials, they cannot be integrated exactly by means of the GLQM and there is no best adequate number of quadrature points per element. We therefore allow the user to request an increase of the quadrature degree with respect to the one used for the finite elements.
 
-The gravity calculation procedure in the post-processor is as follows. Once the density has been evaluated at the quadrature points, if the model runs in parallel then each processor performs the gravity calculation at the requested query points on the part of the domain assigned to it.
-Results obtained on each processor are then summed and written in ASCII format in \texttt{/output\_gravity/gravity-00000} in the output directory, where the 5 digits refer to the time step number of the main computation.
-Query points may be a list of points located at the specified coordinates longitude, latitude and radial distance, or a swarm of points defined by a minimum and a maximum longitude, latitude and radial distance. If the swarm of points is set at fixed radial distance (e.g. the Gravity Field and Steady-State Ocean Circulation Explorer - GOCE satellite height) and varied longitude and latitude, it is therefore possible to create an equiangular or equidistant field of points. Due to the nature of longitude and latitude, the equiangular distribution results in oversampling the number of query points at the poles, which may affect the calculation of the average gravity over the spherical shell. Conversely, the equidistant field forms a uniform grid using a Fibonacci spiral sampling scheme based on \cite{gonzalez2010measurement} and \cite{carlson2011made}. Both equiangular and equidistant distributions are shown in Fig.~\ref{fig:gravityspiral} 
+The gravity calculation procedure in the post-processor is as follows. Once the density has been evaluated at the quadrature points, each processor performs the gravity calculation at the requested measurement points on the part of the domain assigned to it.
+Results obtained on each processor are then summed and written in ASCII format into the file \texttt{/output\_gravity/gravity-XXXXX} in the output directory, where the 5 digits are the index of the current gravity output file among all gravity files that have already been written.
+Measurement points may be a list of points located at the specified coordinates longitude, latitude and radial distance, or a swarm of points defined by a minimum and a maximum longitude, latitude and radial distance. The swarm of points could for example be located at a fixed distance from the Earth's center (e.g. the Gravity Field and Steady-State Ocean Circulation Explorer - GOCE satellite height). It is possible to create either an equiangular or an equidistant distribution of points. Due to the nature of spherical coordinate systems, the equiangular distribution results in oversampling the number of measurement points at the poles, which biases the calculation of the average gravity over the spherical shell. In contrast, the equidistant distribution approximates a uniform distribution using a Fibonacci spiral sampling scheme based on \cite{gonzalez2010measurement} and \cite{carlson2011made}. Both equiangular and equidistant distributions are shown in Fig.~\ref{fig:gravityspiral} 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.75]{../../benchmarks/gravity_prem/doc/spiral_VS_map_sampling.jpg}
-\caption{Fibonacci spiral vs. equiangular map sampling scheme. The gray sphere represents the Earth and the blue dots are the query points located 225\si{km} above the Earth surface. Both sampling schemes counts 200 points.}
+\caption{Fibonacci spiral vs. equiangular map sampling scheme. The gray sphere represents the Earth and the blue dots are the measurement points located 225\si{km} above the Earth surface. Both sampling schemes create 200 points in this example.}
 \label{fig:gravityspiral}
 \end{figure}
 
@@ -54,14 +54,14 @@ A surface mesh at the outer radius is first generated and refined as desired acc
 \centering
 \includegraphics[width=0.48\linewidth]{../../benchmarks/gravity_prem/doc/custom_shell_full.png}
 \includegraphics[width=0.48\linewidth]{../../benchmarks/gravity_prem/doc/custom_shell_zoom.png}
-\caption{Hollow sphere mesh using the custom spherical mesh method. The surface mesh is first generated with an initial mesh refinement (here 4). Then the surface mesh is extruded radially at the specified radii (here 5000, 6000, 6300 and 6366 \si{km}) before it is globally refined as desired (here level 2 refinement). This produces a hollow sphere of 61440 elements.}
+\caption{Hollow sphere mesh using the custom spherical mesh method. The surface mesh is first generated with an initial mesh refinement (here 4). Then the surface mesh is extruded radially and subdivided at the specified radii (here 5000, 6000, 6300 and 6366 \si{km}) before it is globally refined as desired (here by two levels of refinement). This produces a hollow sphere of 61440 elements.}
 \label{fig:gravityline}
 \end{figure}
 
 The gravity potential $U$ is solution to the Poisson equation 
 ${\mathbf \nabla}^2 U = 4\pi {\cal G} \rho$ \cite{TS14}, where ${\cal G}$ is the gravitational constant.
-The density is constant and equal to $\rho_0$ for $R_1\leq r \leq R_2$.
-Outside the spherical shell the Poisson equation then becomes the Laplace equation $\Delta U=0$ which simplifies to: 
+In this first benchmark the density is constant and equal to $\rho_0$ for $R_1\leq r \leq R_2$, which allows us to compute an analytical solution as described below.
+Outside the spherical shell the Poisson equation then becomes the Laplace equation $\Delta U=0$, which in spherical coordinates simplifies to: 
 \begin{equation}
 \frac{1}{r^2} \frac{\partial }{\partial r} \left(r^2 \frac{\partial U}{\partial r} \right) = 0 
 \end{equation}
@@ -99,7 +99,7 @@ where $E$ is a constant. Continuity of the potential at $r=R_2$ requires that
 \begin{equation}
 E=-2\pi\rho_0 {\cal G}R_2^2.
 \end{equation}
-Since gravity is zero for $r\leq R_1$ the potential is there constant and a continuity requirement yields
+Since gravity is zero for $r\leq R_1$ the potential is constant there and a continuity requirement yields
 \begin{equation}
 U(r)=2\pi {\cal G}\rho_0 (R_1^2-R_2^2).
 \end{equation}
@@ -129,9 +129,9 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-The sampling scheme is a map, where there is only one point longitude and one point latitude, but there are 151 number of points radius. To set the location of the longitude and latitude point where the radial line passes through, one must specify the minimum longitude (115\si{\degree}) and minimum latitude (87\si{\degree}). Setting a maximum longitude/latitude is not required because only one point is set, and the sampling always starts from the minimum longitude/latitude. Along the radial line, the 151 number of points radius are scattered equally from the minimum radius 0 \si{km} to maximum radius 15000 \si{km}, which results in sampling every 100 \si{km} along the profile. Results are shown in Fig.~\ref{fig:gravityline} and match the analytical solution presented above. 
+The sampling scheme is a map with only a single point in longitude and a single point in latitude, but 151 points in radius. To set the location of the longitude and latitude point where the radial line passes through the surface, we specify the minimum longitude (115\si{\degree}) and minimum latitude (87\si{\degree}). Setting a maximum longitude/latitude is not required because only one point is set, and the sampling always starts from the minimum longitude/latitude. Along the radial line, the 151 points are scattered equally from the minimum radius 0 \si{km} to maximum radius 15000 \si{km}, which results in sampling every 100 \si{km} along the profile. Results are shown in Fig.~\ref{fig:gravityline} and match the analytical solution presented above. 
 
-Gravity can also be measured at a set of desired locations in space. We have chosen 10 points at an altitude of 225 \si{km} corresponding to the 10 cities listed in Table~\ref{tab:cities}. If all points share the same altitude/radius, then one may only specify it once. It translates as follows in the prm file:
+Gravity can also be measured at a set of desired locations in space. We have chosen 10 points at an altitude of 225 \si{km} corresponding to the 10 cities listed in Table~\ref{tab:cities}. Listing a single value for a radius will be interpreted as all points sharing the same altitude/radius. This translates as follows into the prm file:
 
 \begin{lstlisting}
 subsection Postprocess
@@ -145,7 +145,7 @@ subsection Postprocess
 end
 \end{lstlisting}
 
-Results are shown in Fig.~\ref{fig:gravitycities}. Measurements agree well with the expected analytical value but the presence of under- and overshoot is the unavoidable consequence of the type of mesh used and quadrature order.
+Results are shown in Fig.~\ref{fig:gravitycities}. Measurements agree well with the expected analytical value. The remaining anomalies are consequence of the mesh resolution and the quadrature order, and disappear with higher resolution.
   
 \begin{table}
 \centering
@@ -181,7 +181,7 @@ Index & City & Latitute & Longitude \\
 \centering
 \includegraphics[width=0.48\linewidth]{../../benchmarks/gravity_prem/doc/cities_gravity_const_g.pdf}
 \includegraphics[width=0.48\linewidth]{../../benchmarks/gravity_prem/doc/cities_gravity_const_U.pdf}
-\caption{Gravity acceleration $|{\mathbf g}|$ and potential $U$ at GOCE height  (225 \si{km}) above 10 cities query points for a hollow sphere of constant density of 3000 \si{\kilogram\per\cubic\metre} counting 61440 elements. We varied the increased quadrature point degree from 2 to 4 to illustrate the rapid convergence of the gravity and potential toward the analytical solution shown in black.}
+\caption{Gravity acceleration $|{\mathbf g}|$ and potential $U$ at GOCE height  (225 \si{km}) above 10 cities measurement points for a hollow sphere of constant density of 3000 \si{\kilogram\per\cubic\metre} counting 61440 elements. We varied the increased quadrature point degree from 2 to 4 to illustrate the rapid convergence of the gravity and potential toward the analytical solution shown in black.}
 \label{fig:gravitycities}
 \end{figure}
 
@@ -210,18 +210,18 @@ Upper Crust &$6356<r<6368$\si{km} & $\rho(r)=2.6$\\
 Ocean &$6368<r<6371$\si{km} & $\rho(r)=1.020$\\
 \hline
 \end{tabular}
-\caption{List of ten layers making the PREM model and their corresponding polynomial expression for the density as a function of $x=r/R_{Earth}$.
+\caption{List of ten layers defining the PREM model and their corresponding polynomial expression for the density as a function of $x=r/R_{Earth}$.
 Note that the returned densities should be multiplied by 1000 to obtain
 units of \si{\kilogram\per\cubic\metre}.}
 \label{tab:premdensity}
 \end{table}
 
-As in the first benchmark, gravity is computed on a line and results are shown in Fig.~\ref{fig:gravityline2}. The PREM article also specifies the gravity inside the planet and we see that the results agree with the PREM profile. Also, we recover a value of 9.81 \si{\metre\per\square\second} at the surface of the Earth as expected. 
+As in the first benchmark, gravity is computed on a line and results are shown in Fig.~\ref{fig:gravityline2}. The PREM publication also specifies the gravity inside the planet and we show that the benchmark results agree with the published PREM profile. Also, we recover a value of 9.81 \si{\metre\per\square\second} at the surface of the Earth as expected. 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.30]{../../benchmarks/gravity_prem/doc/default_shell_full.png}
-\caption{Whole sphere mesh filled using the default mesh generation method. The sphere counts 28672 elements and is filled with the PREM densities.}
+\caption{Full spherical mesh generated using the default mesh generation method. The sphere counts 28672 elements and its density is defined using the PREM densities.}
 \label{fig:gravitywholesphere}
 \end{figure}
 
@@ -283,7 +283,7 @@ Note that sampling becomes more uniform with increasing number point fibonacci s
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=.4]{../../benchmarks/gravity_prem/doc/spiral_prem.png}
-\caption{Gravity acceleration $|{\mathbf g}|$ at GOCE height using the Fibonacci spiral sampling scheme with 2701 query points.}
+\caption{Gravity acceleration $|{\mathbf g}|$ at GOCE height using the Fibonacci spiral sampling scheme with 2701 measurement points.}
 \label{fig:gravitypremspirals}
 \end{figure}
 
