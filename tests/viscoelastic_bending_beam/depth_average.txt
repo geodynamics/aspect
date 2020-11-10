@@ -1,4 +1,4 @@
-#       time        depth C_0 C_1 C_2 C_3
+#       time        depth stress_xx stress_yy stress_xy beam
            0          500            0            0            0            0
            0         1500            0            0            0    0.0505956
            0         2500            0            0            0     0.356151

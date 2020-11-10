@@ -1,4 +1,4 @@
-#       time        depth C_0 C_1 C_2
+#       time        depth stress_xx stress_yy stress_xy
            0        10000            0            0            0
            0        30000            0            0            0
            0        50000            0            0            0
