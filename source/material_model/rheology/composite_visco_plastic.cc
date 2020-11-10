@@ -38,6 +38,14 @@ namespace aspect
       //
       // It will provide useful output when a material model which
       // uses the CompositeViscoPlastic rheology has been implemented.
+      //
+      // The composite visco plastic rheology calculates the decomposed strain
+      // rates for each of the following deformation mechanisms:
+      // diffusion creep, dislocation creep, Peierls creep and a
+      // constant (high) viscosity limiter. The values are provided in
+      // this order as a vector of additional outputs. If the user declares
+      // one or more mechanisms inactive (by assigning use_mechanism = False)
+      // then the corresponding strain rate output will be equal to zero.
       //namespace
       //{
       //  std::vector<std::string> make_strain_rate_additional_outputs_names()
@@ -257,12 +265,13 @@ namespace aspect
         // Dislocation creep parameters
         Rheology::PeierlsCreep<dim>::declare_parameters(prm);
 
-        // Some of the parameters below are shared with the rheology models,
+        // Some of the parameters below are shared with the subordinate
+        // rheology models (diffusion, dislocation, ...),
         // and will already have been declared. This is fine, the deal.II
         // parameter handler allows repeated declarations. The default values
-        // below will override any defaults given in the rheology models.
-        // The new defaults will apply to both the material model and the
-        // underlying rheology modules.
+        // below will override any defaults given in the subordinate
+        // rheology models. The new defaults will apply both to
+        // this rheology model and to the subordinate rheology modules.
         prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.),
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
 
