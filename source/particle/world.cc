@@ -24,6 +24,7 @@
 #include <aspect/compat.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/spherical_shell.h>
 #include <aspect/citation_info.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -440,8 +441,6 @@ namespace aspect
 
           if (periodic_boundaries.size() != 0)
             {
-              const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
-
               std::vector<bool> periodic(dim,false);
               std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
                 periodic_boundaries.begin();
@@ -479,8 +478,6 @@ namespace aspect
 
           if (periodic_boundaries.size() != 0)
             {
-              const std::map<types::subdomain_id, unsigned int> subdomain_to_neighbor_map(get_subdomain_id_to_neighbor_map());
-
               std::vector<bool> periodic(dim,false);
               std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
                 periodic_boundaries.begin();
@@ -506,11 +503,53 @@ namespace aspect
                 }
             }
         }
+      else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
+        {
+          const GeometryModel::SphericalShell<dim> &geometry
+            = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model());
+
+          const auto &periodic_boundaries = geometry.get_periodic_boundary_pairs();
+
+          if (periodic_boundaries.size() != 0)
+            {
+              AssertThrow(dim == 2,
+                          ExcMessage("Periodic boundaries combined with particles currently "
+                                     "only work with 2D spherical shell."));
+              AssertThrow(geometry.opening_angle() == 90,
+                          ExcMessage("Periodic boundaries combined with particles currently "
+                                     "only work with 90 degree opening angle in spherical shell."));
+
+              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
+              for (; particle != particle_handler->end(); ++particle)
+                {
+                  // modify the particle position if it crossed a periodic boundary
+                  Point<dim> particle_position = particle->get_location();
+
+                  if (particle_position[0] < 0.)
+                    {
+                      const double temp = particle_position[0];
+                      particle_position[0] = particle_position[1];
+                      particle_position[1] = -temp;
+                    }
+                  else if (particle_position[1] < 0.)
+                    {
+                      const double temp = particle_position[0];
+                      particle_position[0] = -particle_position[1];
+                      particle_position[1] = temp;
+                    }
+                  else
+                    continue;
+
+                  particle->set_location(particle_position);
+                }
+            }
+
+        }
       else
         {
           AssertThrow(this->get_geometry_model().get_periodic_boundary_pairs().size() == 0,
                       ExcMessage("Periodic boundaries combined with particles currently "
-                                 "only work with box and two merged boxes geometry models."));
+                                 "only work with box, two merged boxes, and spherical shell geometry models."));
         }
     }
 
