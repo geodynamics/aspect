@@ -308,6 +308,42 @@ namespace aspect
         const GravityModel::Interface<dim> *gravity_model;
         std::vector<Tensor<1,dim> > velocity_values;
     };
+
+
+
+    template <int dim>
+    class FunctorDepthAverageFieldMass: public internal::FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageFieldMass(const FEValuesExtractors::Scalar &field)
+          : field_(field)
+        {}
+
+        bool need_material_properties() const override
+        {
+          return true;
+        }
+
+        void setup(const unsigned int q_points) override
+        {
+          field_values.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                        const MaterialModel::MaterialModelOutputs<dim> &out,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output) override
+        {
+          fe_values[field_].get_function_values (solution, field_values);
+
+          for (unsigned int q=0; q<output.size(); ++q)
+            output[q] = field_values[q] * out.densities[q];
+        }
+
+        const FEValuesExtractors::Scalar field_;
+        std::vector<double> field_values;
+    };
   }
 
   namespace internal
@@ -679,10 +715,10 @@ namespace aspect
             functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>>
                                (this->introspection().extractors.temperature));
           }
-        else if (property_names[property_index].substr(0,2) == "C_")
+        else if (this->introspection().compositional_name_exists(property_names[property_index]))
           {
             const unsigned int c =
-              Utilities::string_to_int(property_names[property_index].substr(2,std::string::npos));
+              this->introspection().compositional_index_for_name(property_names[property_index]);
 
             functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>> (
                                  this->introspection().extractors.compositional_fields[c]));
@@ -724,6 +760,15 @@ namespace aspect
             functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalMassFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model()));
+          }
+        else if (this->introspection().compositional_name_exists(property_names[property_index].substr(0, property_names[property_index].size()-5)) &&
+                 property_names[property_index].substr(property_names[property_index].size()-5) == "_mass")
+          {
+            const unsigned int c =
+              this->introspection().compositional_index_for_name(property_names[property_index].substr(0, property_names[property_index].size()-5));
+
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageFieldMass<dim>> (
+                                 this->introspection().extractors.compositional_fields[c]));
           }
         else
           {
