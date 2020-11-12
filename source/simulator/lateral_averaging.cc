@@ -761,7 +761,8 @@ namespace aspect
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model()));
           }
-        else if (property_names[property_index].substr(property_names[property_index].size()-5) == "_mass")
+        else if (this->introspection().compositional_name_exists(property_names[property_index].substr(0, property_names[property_index].size()-5)) &&
+                 property_names[property_index].substr(property_names[property_index].size()-5) == "_mass")
           {
             const unsigned int c =
               this->introspection().compositional_index_for_name(property_names[property_index].substr(0, property_names[property_index].size()-5));
