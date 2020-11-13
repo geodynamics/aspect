@@ -41,11 +41,12 @@ namespace aspect
       //
       // The composite visco plastic rheology calculates the decomposed strain
       // rates for each of the following deformation mechanisms:
-      // diffusion creep, dislocation creep, Peierls creep and a
-      // constant (high) viscosity limiter. The values are provided in
-      // this order as a vector of additional outputs. If the user declares
-      // one or more mechanisms inactive (by assigning use_mechanism = False)
-      // then the corresponding strain rate output will be equal to zero.
+      // diffusion creep, dislocation creep, Peierls creep,
+      // Drucker-Prager plasticity and a constant (high) viscosity limiter.
+      // The values are provided in this order as a vector of additional
+      // outputs. If the user declares one or more mechanisms inactive
+      // (by assigning use_mechanism = False) then the corresponding
+      // strain rate output will be equal to zero.
       //namespace
       //{
       //  std::vector<std::string> make_strain_rate_additional_outputs_names()
@@ -54,6 +55,7 @@ namespace aspect
       //    names.emplace_back("edot_diffusion");
       //    names.emplace_back("edot_dislocation");
       //    names.emplace_back("edot_peierls");
+      //    names.emplace_back("edot_drucker_prager");
       //    names.emplace_back("edot_limiter");
       //    return names;
       //  }
