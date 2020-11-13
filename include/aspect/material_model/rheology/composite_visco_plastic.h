@@ -27,6 +27,7 @@
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
+#include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -94,27 +95,34 @@ namespace aspect
           compute_strain_rate_and_derivative (const double creep_stress,
                                               const double pressure,
                                               const double temperature,
+                                              const unsigned int composition,
                                               const DiffusionCreepParameters diffusion_creep_parameters,
                                               const DislocationCreepParameters dislocation_creep_parameters,
                                               const PeierlsCreepParameters peierls_creep_parameters,
+                                              const DruckerPragerParameters drucker_prager_parameters,
                                               const double min_viscosity,
                                               const double max_viscosity) const;
 
         private:
 
           /**
-           * Whether to use different creep mechanisms
+           * Whether to use different deformation mechanisms
            */
           bool use_diffusion_creep;
           bool use_dislocation_creep;
           bool use_peierls_creep;
+          bool use_drucker_prager;
 
           /**
-           * Pointers to objects for computing viscous creep viscosities.
+           * Pointers to objects for computing deformation mechanism
+           * strain rates and effective viscosities.
            */
           std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
           std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
+          std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
+
+          DruckerPragerParameters drucker_prager_parameters;
 
           std::vector<double> min_viscosities;
           std::vector<double> max_viscosities;

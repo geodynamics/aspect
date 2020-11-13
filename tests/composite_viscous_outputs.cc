@@ -24,6 +24,9 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep = std_cxx14::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
+  prm.set("Use plastic damper", "true");
+  prm.set("Plastic damper viscosity", "1.e17");
+  prm.set("Maximum yield stress", "5e8");
   composite_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
@@ -43,6 +46,14 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   peierls_creep->initialize_simulator (simulator_access.get_simulator());
   peierls_creep->declare_parameters(prm);
   peierls_creep->parse_parameters(prm); // multiple phases not yet implemented for peierls
+
+  std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
+  drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+  drucker_prager->declare_parameters(prm);
+  prm.set("Use plastic damper", "true");
+  prm.set("Plastic damper viscosity", "1.e17");
+  prm.set("Maximum yield stress", "5e8");
+  Rheology::DruckerPragerParameters p = drucker_prager->parse_parameters(1, prm);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with
@@ -76,7 +87,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   strain_rate[2][1] = 0.;
   strain_rate[2][2] = 0.;
 
-  std::cout << "temperature (K)   eta (Pas)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, max)" << std::endl;
+  std::cout << "temperature (K)   eta (Pas)   creep stress (Pa)   edot_ii (/s)   edot_ii fractions (diff, disl, prls, drpr, max)" << std::endl;
 
   // Loop through strain rates, tracking whether there is a discrepancy in
   // the decomposed strain rates.
@@ -88,6 +99,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double diff_stress;
   double disl_stress;
   double prls_stress;
+  double drpr_stress;
   std::vector<double> partial_strain_rates;
 
   for (unsigned int i=0; i <= 10; i++)
@@ -98,8 +110,15 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       viscosity = composite_creep->compute_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
+      // The creep strain rate is calculated by subtracting the strain rate
+      // of the max viscosity dashpot from the total strain rate
+      // The creep stress is then calculated by subtracting the stress running
+      // through the strain rate limiter from the total stress
+      creep_strain_rate = total_strain_rate - partial_strain_rates[4];
+      creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
+
       // Print the output
-      std::cout << temperature << " " << viscosity << " " << total_strain_rate;
+      std::cout << temperature << " " << viscosity << " " << creep_stress << " " << total_strain_rate;
       for (unsigned int i=0; i < partial_strain_rates.size(); ++i)
         {
           std::cout << " " << partial_strain_rates[i]/total_strain_rate;
@@ -109,27 +128,37 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       // The following lines test that each individual creep mechanism
       // experiences the same creep stress
 
-      // The creep strain rate is calculated by subtracting the strain rate
-      // of the max viscosity dashpot from the total strain rate
-      // The creep stress is then calculated by subtracting the stress running
-      // through the strain rate limiter from the total stress
-      creep_strain_rate = total_strain_rate - partial_strain_rates[3];
-      creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
-
       // Each creep mechanism should experience the same stress
       diff_stress = 2.*partial_strain_rates[0]*diffusion_creep->compute_viscosity(pressure, temperature, composition);
       disl_stress = 2.*partial_strain_rates[1]*dislocation_creep->compute_viscosity(partial_strain_rates[1], pressure, temperature, composition);
       prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
+      if (partial_strain_rates[3] > 0.)
+        {
+          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesions[0],
+                                                                                     p.angles_internal_friction[0],
+                                                                                     pressure,
+                                                                                     partial_strain_rates[3],
+                                                                                     p.max_yield_stress,
+                                                                                     p.use_plastic_damper,
+                                                                                     p.damper_viscosity,
+                                                                                     std::numeric_limits<double>::infinity());
+        }
+      else
+        {
+          drpr_stress = creep_stress;
+        }
 
       if ((std::fabs((diff_stress - creep_stress)/creep_stress) > 1e-6)
           || (std::fabs((disl_stress - creep_stress)/creep_stress) > 1e-6)
-          || (std::fabs((prls_stress - creep_stress)/creep_stress) > 1e-6))
+          || (std::fabs((prls_stress - creep_stress)/creep_stress) > 1e-6)
+          || (std::fabs((drpr_stress - creep_stress)/creep_stress) > 1e-6))
         {
           error = true;
           std::cout << "   creep stress: " << creep_stress;
           std::cout << " diffusion stress: " << diff_stress;
           std::cout << " dislocation stress: " << disl_stress;
-          std::cout << " peierls stress: " << prls_stress << std::endl;
+          std::cout << " peierls stress: " << prls_stress;
+          std::cout << " drucker prager stress: " << drpr_stress << std::endl;
         }
     }
 
