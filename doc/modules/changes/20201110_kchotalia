@@ -1,0 +1,4 @@
+New: Particles now supported for a spherical shell geometry with periodicity
+in polar angle direction for a 2D quarter shell (90 degree opening angle).
+<br>
+(Kiran Chotalia, Rene Gassmoeller, 2020/11/10)

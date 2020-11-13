@@ -1,0 +1,60 @@
+
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 13,637 (6,402+833+3,201+3,201)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0129 m/s, 0.0409 m/s
+     Compositions min/max/mass: 0/1/4.4
+     Writing particle output:   output-particle_periodic_quarter_shell/particles/particles-00000
+     Writing graphical output:  output-particle_periodic_quarter_shell/solution/solution-00000
+
+*** Timestep 1:  t=1.47215 seconds, dt=1.47215 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 17 iterations.
+   Solving Stokes system... 42+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.0136 m/s, 0.0421 m/s
+     Compositions min/max/mass:    -0.06231/1.073/4.39
+     Number of advected particles: 20
+
+*** Timestep 2:  t=2.9007 seconds, dt=1.42854 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 17 iterations.
+   Solving Stokes system... 40+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.0143 m/s, 0.0431 m/s
+     Compositions min/max/mass:    -0.06825/1.107/4.379
+     Number of advected particles: 20
+
+*** Timestep 3:  t=4.29292 seconds, dt=1.39222 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 17 iterations.
+   Solving Stokes system... 40+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.015 m/s, 0.0441 m/s
+     Compositions min/max/mass:    -0.0808/1.104/4.369
+     Number of advected particles: 20
+
+*** Timestep 4:  t=5 seconds, dt=0.707078 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 14 iterations.
+   Solving Stokes system... 40+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.0154 m/s, 0.0447 m/s
+     Compositions min/max/mass: -0.08184/1.09/4.363
+     Writing particle output:   output-particle_periodic_quarter_shell/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+
