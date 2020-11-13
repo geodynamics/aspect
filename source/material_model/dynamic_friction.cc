@@ -65,7 +65,7 @@ namespace aspect
                                                                                        std::numeric_limits<double>::infinity(),
                                                                                        false,
                                                                                        0.0,
-                                                                                       1.0);
+                                                                                       std::numeric_limits<double>::infinity());
 
           // Cut off the viscosity between a minimum and maximum value to avoid
           // a numerically unfavourable large viscosity range.
