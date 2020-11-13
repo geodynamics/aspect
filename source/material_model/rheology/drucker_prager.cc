@@ -88,7 +88,7 @@ namespace aspect
 
 
       template <int dim>
-      double
+      std::pair<double, double>
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
                                                               const unsigned int composition,
