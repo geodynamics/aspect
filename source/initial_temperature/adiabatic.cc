@@ -62,7 +62,15 @@ namespace aspect
     Adiabatic<dim>::
     initial_temperature (const Point<dim> &position) const
     {
-      double age_top = 0;
+      // convert input ages to seconds
+      // TODO: make old parameter deprecated
+      Utilities::NaturalCoordinate<dim> point =
+        this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
+
+      double age_top = age_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
+      if (this->convert_output_to_years())
+    	age_top *= year_in_seconds;
+
       const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
                                  : age_bottom_boundary_layer);
       if (read_from_ascii_file)
@@ -363,6 +371,29 @@ namespace aspect
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);
           }
           prm.leave_subsection();
+          prm.enter_subsection("Age function");
+          {
+            /**
+             * Choose the coordinates to evaluate the age
+             * function. The function can be declared in dependence of depth,
+             * cartesian coordinates or spherical coordinates. Note that the order
+             * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+             * this allows for dimension independent expressions.
+             */
+            prm.declare_entry ("Coordinate system", "cartesian",
+                               Patterns::Selection ("cartesian|spherical|depth"),
+                               "A selection that determines the assumed coordinate "
+                               "system for the function variables. Allowed values "
+                               "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                               "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                               "respectively with theta being the polar angle. `depth' "
+                               "will create a function, in which only the first "
+                               "parameter is non-zero, which is interpreted to "
+                               "be the depth of the point.");
+
+            Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
+          }
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
       }
@@ -419,6 +450,26 @@ namespace aspect
 
               prm.leave_subsection();
             }
+          prm.enter_subsection("Age function");
+          {
+        	coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          }
+          try
+            {
+              age_function.parse_parameters (prm);
+            }
+          catch (...)
+            {
+              std::cerr << "ERROR: FunctionParser failed to parse\n"
+                        << "\t'Initial temperature model.Adiabatic.Age Function'\n"
+                        << "with expression\n"
+                        << "\t'" << prm.get("Function expression") << "'"
+                        << "More information about the cause of the parse error \n"
+                        << "is shown below.\n";
+              throw;
+            }
+
+          prm.leave_subsection();
         }
         prm.leave_subsection ();
       }

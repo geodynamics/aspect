@@ -129,6 +129,17 @@ namespace aspect
          * diffusivity. The function depends only on depth.
          */
         std::unique_ptr<Functions::ParsedFunction<1>> function;
+
+        /**
+         * A function object representing the age of the top boundary layer.
+         */
+        Functions::ParsedFunction<dim> age_function;
+
+        /**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
     };
   }
 }
