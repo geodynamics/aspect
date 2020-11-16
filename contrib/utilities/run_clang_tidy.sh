@@ -55,8 +55,11 @@ if test ! -d "$SRC/source" -o ! -d "$SRC/include" -o ! -f "$SRC/CMakeLists.txt" 
 fi
 echo "SRC-DIR=$SRC"
 
-# export compile commands (so that run-clang-tidy.py works)
-ARGS=("-D" "CMAKE_EXPORT_COMPILE_COMMANDS=ON" "$@")
+# set cmake arguments:
+# - export compile commands (so that run-clang-tidy.py works)
+# - disable unity/precompiled headers (they confuse clang tidy)
+# - append user arguments if present
+ARGS=("-D" "CMAKE_EXPORT_COMPILE_COMMANDS=ON" "-D" "ASPECT_UNITY_BUILD=OFF" "-D" "ASPECT_PRECOMPILE_HEADERS=OFF" "$@")
 
 # for a list of checks, see /.clang-tidy
 cat "$SRC/.clang-tidy"
