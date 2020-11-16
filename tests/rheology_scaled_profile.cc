@@ -152,9 +152,15 @@ namespace aspect
                                           std::lower_bound(reference_viscosity_coordinates.begin(),
                                                            reference_viscosity_coordinates.end(),
                                                            depth));
-              if (depth_index > 0)
-                depth_index -= 1;
             }
+          // depth_index calculated above is the first layer boundary larger than depth,
+          // the correct layer index is then one less than this (except for depth == depth_bounds[0],
+          // in which case the depth_bounds index is also the layer_index, namely 0).
+          // For depths > depth_bounds[n-1], where, n is the size of the depth_bounds, we need to use
+          // the depth_bound one less than this, i.e. depth_bounds[n-2] to compute the averages of the
+          // last layer.
+          if (depth_index > 0)
+            depth_index -= 1;
 
           // When evaluating reference viscosity, evaluate at the next lower depth that is stored
           // in the reference profile instead of the actual depth. This makes the profile piecewise
