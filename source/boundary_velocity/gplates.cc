@@ -922,6 +922,16 @@ namespace aspect
 {
   namespace BoundaryVelocity
   {
+    namespace internal
+    {
+#define INSTANTIATE(dim) \
+  template class GPlatesLookup<dim>;
+
+      ASPECT_INSTANTIATE(INSTANTIATE)
+
+#undef INSTANTIATE
+    }
+
     ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL(GPlates,
                                             "gplates",
                                             "Implementation of a model in which the boundary "
