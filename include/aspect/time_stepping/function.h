@@ -49,7 +49,6 @@ namespace aspect
         /**
          * The main execute() function.
          */
-        virtual
         double
         execute() override;
 
@@ -57,7 +56,6 @@ namespace aspect
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
         parse_parameters (ParameterHandler &prm) override;
 
