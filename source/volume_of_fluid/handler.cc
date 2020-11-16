@@ -199,11 +199,17 @@ namespace aspect
     assembler.initialize_simulator(sim);
     parse_parameters (prm);
 
-    this->get_signals().edit_finite_element_variables.connect(std::bind(&aspect::VolumeOfFluidHandler<dim>::edit_finite_element_variables,
-                                                                        std::ref(*this),
-                                                                        std::placeholders::_1));
-    this->get_signals().post_set_initial_state.connect(std::bind(&aspect::VolumeOfFluidHandler<dim>::set_initial_volume_fractions,
-                                                                 std::ref(*this)));
+    this->get_signals().edit_finite_element_variables.connect(
+      [&](std::vector<VariableDeclaration<dim> > &vars)
+    {
+      this->edit_finite_element_variables(vars);
+    });
+
+    this->get_signals().post_set_initial_state.connect(
+      [&](const SimulatorAccess<dim> &)
+    {
+      this->set_initial_volume_fractions();
+    });
   }
 
 

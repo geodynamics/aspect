@@ -83,7 +83,7 @@ namespace aspect
       const double average_temperature = global_temperature_integral / this->get_volume();
 
       // Keep a list of times and temperatures at those times
-      time_temperature.push_back(std::make_pair(this->get_time(), average_temperature));
+      time_temperature.emplace_back(this->get_time(), average_temperature);
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation

@@ -127,8 +127,8 @@ namespace aspect
                                                                                       n_fields,
                                                                                       "Angles of internal friction");
         // Convert angles from degrees to radians
-        for (unsigned int i = 0; i<parameters.angles_internal_friction.size(); ++i)
-          parameters.angles_internal_friction[i] *= numbers::PI/180.0;
+        for (double &i : parameters.angles_internal_friction)
+          i *= numbers::PI/180.0;
 
         parameters.cohesions = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Cohesions"))),
                                                                        n_fields,

@@ -45,8 +45,7 @@ namespace aspect
                                                                std::pair<std::string,unsigned int> > > &properties)
       {
         unsigned int global_component_index = 0;
-        for (unsigned int plugin_index = 0;
-             plugin_index < properties.size(); ++plugin_index)
+        for (const auto &property : properties)
           {
             unsigned int component_per_plugin = 0;
             unsigned int field_per_plugin = 0;
@@ -54,10 +53,10 @@ namespace aspect
             position_per_plugin.push_back(global_component_index);
 
             for (unsigned int field_index = 0;
-                 field_index < properties[plugin_index].size(); ++field_index)
+                 field_index < property.size(); ++field_index)
               {
-                const std::string  name         = properties[plugin_index][field_index].first;
-                const unsigned int n_components = properties[plugin_index][field_index].second;
+                const std::string  name         = property[field_index].first;
+                const unsigned int n_components = property[field_index].second;
 
                 field_names.push_back(name);
                 components_per_field.push_back(n_components);
@@ -624,11 +623,11 @@ namespace aspect
 
         // then go through the list, create objects and let them parse
         // their own parameters
-        for (unsigned int name=0; name<plugin_names.size(); ++name)
+        for (auto &plugin_name : plugin_names)
           {
             aspect::Particle::Property::Interface<dim> *
             particle_property = std::get<dim>(registered_plugins)
-                                .create_plugin (plugin_names[name],
+                                .create_plugin (plugin_name,
                                                 "Particle property plugins");
 
             property_list.push_back (std::unique_ptr<Property::Interface<dim> >

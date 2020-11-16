@@ -313,15 +313,13 @@ namespace aspect
           // in case we output all nonlinear iterations, we only want one
           // entry per time step, so replace the last line with the current iteration
           if (this->get_nonlinear_iteration() == 0)
-            output_history.times_and_pvtu_names.push_back(std::make_pair
-                                                          (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+            output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_master_filename);
           else
             output_history.times_and_pvtu_names.back() = (std::make_pair
                                                           (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
         }
       else
-        output_history.times_and_pvtu_names.push_back(std::make_pair
-                                                      (time_in_years_or_seconds, "solution/"+pvtu_master_filename));
+        output_history.times_and_pvtu_names.emplace_back(time_in_years_or_seconds, "solution/"+pvtu_master_filename);
 
       const std::string pvd_master_filename = (this->get_output_directory() +
                                                (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
@@ -343,6 +341,7 @@ namespace aspect
         // the global .visit file needs the relative path because it sits a
         // directory above
         std::vector<std::string> filenames_with_path;
+        filenames_with_path.reserve(filenames.size());
         for (const auto &filename : filenames)
           {
             filenames_with_path.push_back("solution/" + filename);

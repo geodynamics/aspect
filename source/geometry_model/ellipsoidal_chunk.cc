@@ -821,7 +821,7 @@ namespace aspect
     EllipsoidalChunk<2>::natural_to_cartesian_coordinates(const std::array<double,2> &/*position_tensor*/) const
     {
       Assert(false, ExcMessage("This geometry model doesn't support 2d."));
-      return Point<2>();
+      return {};
     }
 
   }

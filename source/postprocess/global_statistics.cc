@@ -112,7 +112,7 @@ namespace aspect
           column_position = i;
 
       if (column_position == numbers::invalid_unsigned_int)
-        advection_iterations.push_back(std::make_pair(column_name,std::vector<unsigned int>(1,solver_control.last_step())));
+        advection_iterations.emplace_back(column_name,std::vector<unsigned int>(1,solver_control.last_step()));
       else
         advection_iterations[column_position].second.push_back(solver_control.last_step());
     }

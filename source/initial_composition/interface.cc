@@ -140,11 +140,11 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int i=0; i<model_names.size(); ++i)
+      for (const auto &model_name : model_names)
         {
           initial_composition_objects.push_back (std::unique_ptr<Interface<dim> >
                                                  (std::get<dim>(registered_plugins)
-                                                  .create_plugin (model_names[i],
+                                                  .create_plugin (model_name,
                                                                   "Initial composition model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*initial_composition_objects.back()))

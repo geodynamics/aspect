@@ -2085,19 +2085,19 @@ namespace aspect
       mg_constrained_dofs_A_block.initialize(dof_handler_v);
 
       std::set<types::boundary_id> dirichlet_boundary = sim.boundary_velocity_manager.get_zero_boundary_velocity_indicators();
-      for (auto it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
+      for (const auto &it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
         {
-          types::boundary_id bdryid = it.first;
-          std::string component=it.second.first;
+          const types::boundary_id bdryid = it.first;
+          const std::string component=it.second.first;
           Assert(component=="", ExcNotImplemented());
           dirichlet_boundary.insert(bdryid);
         }
       mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
 
       {
-        std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+        const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
         if (!no_flux_boundary.empty() && !sim.geometry_model->has_curved_elements())
-          for (auto bid : no_flux_boundary)
+          for (const auto bid : no_flux_boundary)
             {
               internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_box(dof_handler_v,
                                                                                             bid,

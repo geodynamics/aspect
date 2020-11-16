@@ -187,11 +187,11 @@ namespace aspect
 
       // go through the list, create objects and let them parse
       // their own parameters
-      for (unsigned int name=0; name<model_names.size(); ++name)
+      for (auto &model_name : model_names)
         {
           heating_model_objects.push_back (std::unique_ptr<Interface<dim> >
                                            (std::get<dim>(registered_plugins)
-                                            .create_plugin (model_names[name],
+                                            .create_plugin (model_name,
                                                             "Heating model::Model names")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*heating_model_objects.back()))
@@ -255,8 +255,8 @@ namespace aspect
       // the rates of temperature change. To make sure these (incorrect) values are never used anywhere,
       // overwrite them with signaling_NaNs.
       if (reaction_rate_outputs == nullptr)
-        for (unsigned int q=0; q<heating_model_outputs.rates_of_temperature_change.size(); ++q)
-          heating_model_outputs.rates_of_temperature_change[q] = numbers::signaling_nan<double>();
+        for (double &q : heating_model_outputs.rates_of_temperature_change)
+          q = numbers::signaling_nan<double>();
     }
 
 

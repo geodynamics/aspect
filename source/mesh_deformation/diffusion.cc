@@ -87,7 +87,7 @@ namespace aspect
                                           const IndexSet &mesh_locally_owned,
                                           const IndexSet &mesh_locally_relevant,
                                           LinearAlgebra::Vector &output,
-                                          const std::set<types::boundary_id> boundary_ids) const
+                                          const std::set<types::boundary_id> &boundary_ids) const
     {
       // Check that the current timestep does not exceed the diffusion timestep
       check_diffusion_time_step(mesh_deformation_dof_handler, boundary_ids);
@@ -99,12 +99,12 @@ namespace aspect
       std::set< types::boundary_id > periodic_boundary_indicators;
       using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
-      for (periodic_boundary_pairs::const_iterator p = pbp.begin(); p != pbp.end(); ++p)
+      for (const auto &p : pbp)
         {
           DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
-                                                 (*p).first.first, (*p).first.second, (*p).second, matrix_constraints);
-          periodic_boundary_indicators.insert((*p).first.first);
-          periodic_boundary_indicators.insert((*p).first.second);
+                                                 p.first.first, p.first.second, p.second, matrix_constraints);
+          periodic_boundary_indicators.insert(p.first.first);
+          periodic_boundary_indicators.insert(p.first.second);
         }
 
       // A boundary can be:

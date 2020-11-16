@@ -56,7 +56,7 @@ namespace aspect
                 || (variables[i] == "adiabatic_pressure")
                 || (variables[i] == "adiabatic_density")
                 || (variables[i] == "adiabatic_density_derivative")))
-            averaging_variables.push_back(variables[i]);
+            averaging_variables.emplace_back(variables[i]);
         return averaging_variables;
       }
     }
@@ -400,29 +400,29 @@ namespace aspect
           // we have to parse the list in this order to match the output columns
           {
             if (output_all_variables || std::find( output_variables.begin(), output_variables.end(), "temperature") != output_variables.end() )
-              variables.push_back("temperature");
+              variables.emplace_back("temperature");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition") != output_variables.end() )
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                variables.push_back(this->introspection().name_for_compositional_index(c));
+                variables.emplace_back(this->introspection().name_for_compositional_index(c));
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic temperature") != output_variables.end() )
-              variables.push_back("adiabatic_temperature");
+              variables.emplace_back("adiabatic_temperature");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic pressure") != output_variables.end() )
-              variables.push_back("adiabatic_pressure");
+              variables.emplace_back("adiabatic_pressure");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density") != output_variables.end() )
-              variables.push_back("adiabatic_density");
+              variables.emplace_back("adiabatic_density");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "adiabatic density derivative") != output_variables.end() )
-              variables.push_back("adiabatic_density_derivative");
+              variables.emplace_back("adiabatic_density_derivative");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "velocity magnitude") != output_variables.end() )
-              variables.push_back("velocity_magnitude");
+              variables.emplace_back("velocity_magnitude");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
-              variables.push_back("sinking_velocity");
+              variables.emplace_back("sinking_velocity");
 
             // handle seismic velocities, because they may, or may not be provided by the material model
             {
@@ -444,29 +444,29 @@ namespace aspect
 
               if (output_all_variables && material_model_provides_seismic_output)
                 {
-                  variables.push_back("Vs");
-                  variables.push_back("Vp");
+                  variables.emplace_back("Vs");
+                  variables.emplace_back("Vp");
                 }
 
               if (output_vs)
-                variables.push_back("Vs");
+                variables.emplace_back("Vs");
 
               if (output_vp)
-                variables.push_back("Vp");
+                variables.emplace_back("Vp");
             }
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
-              variables.push_back("viscosity");
+              variables.emplace_back("viscosity");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
-              variables.push_back("vertical_heat_flux");
+              variables.emplace_back("vertical_heat_flux");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical mass flux") != output_variables.end() )
-              variables.push_back("vertical_mass_flux");
+              variables.emplace_back("vertical_mass_flux");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "composition mass") != output_variables.end() )
               for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                variables.push_back(this->introspection().name_for_compositional_index(c) + std::string("_mass"));
+                variables.emplace_back(this->introspection().name_for_compositional_index(c) + std::string("_mass"));
           }
 
           output_formats = Utilities::split_string_list(prm.get("Output format"));
