@@ -56,7 +56,7 @@ namespace aspect
        */
       bool plastic_yielding = false;
 
-      MaterialModel::MaterialModelInputs <dim> in (in.n_evaluation_points(), this->n_compositional_fields());
+      MaterialModel::MaterialModelInputs <dim> in (1 /*n_evaluation_points*/, this->n_compositional_fields());
       unsigned int i = 0;
 
       in.pressure[i] = pressure;
