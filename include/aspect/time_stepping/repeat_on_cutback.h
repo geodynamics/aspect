@@ -48,14 +48,12 @@ namespace aspect
         /**
          * @copydoc aspect::TimeStepping::Interface<dim>::execute()
          */
-        virtual
         double
         execute() override;
 
         /**
          * The main execute() function.
          */
-        virtual
         std::pair<Reaction, double>
         determine_reaction(const TimeStepInfo &info) override;
 
@@ -63,7 +61,6 @@ namespace aspect
         void
         declare_parameters (ParameterHandler &prm);
 
-        virtual
         void
         parse_parameters (ParameterHandler &prm) override;
 
