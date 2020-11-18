@@ -358,8 +358,8 @@ namespace aspect
       calculate_viscoelastic_viscosity (const double viscosity,
                                         const double elastic_shear_modulus) const
       {
-        const double dte = elastic_timestep();
-        return ( viscosity * dte ) / ( dte + ( viscosity / elastic_shear_modulus ) );
+        const double elastic_viscosity = elastic_shear_modulus*elastic_timestep();
+        return 1. / (1./elastic_viscosity + 1./viscosity);
       }
 
 
