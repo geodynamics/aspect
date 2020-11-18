@@ -371,10 +371,14 @@ namespace aspect
                                          const SymmetricTensor<2,dim> &stress,
                                          const double shear_modulus) const
       {
-        const SymmetricTensor<2,dim> edot = deviator(strain_rate) + 0.5*stress /
-                                            (shear_modulus * elastic_timestep());
+        // The second term in the following expression corresponds to the
+        // elastic part of the strain rate deviator. Note the parallels with the
+        // viscous part of the strain rate deviator,
+        // which is equal to 0.5 * stress / viscosity.
+        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stress /
+                                                     (shear_modulus * elastic_timestep());
 
-        return std::sqrt(std::fabs(second_invariant(edot)));
+        return std::sqrt(std::fabs(second_invariant(edot_deviator)));
       }
     }
   }
