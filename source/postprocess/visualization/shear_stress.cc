@@ -73,7 +73,8 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            const SymmetricTensor<2,dim> shear_stress = 2*eta*compressible_strain_rate;
+            // Compressive stress is positive in geoscience applications
+            const SymmetricTensor<2,dim> shear_stress = -2.*eta*compressible_strain_rate;
 
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)

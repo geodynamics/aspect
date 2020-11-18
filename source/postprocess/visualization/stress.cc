@@ -72,8 +72,9 @@ namespace aspect
                  strain_rate);
 
             const double eta = out.viscosities[q];
-
-            const SymmetricTensor<2,dim> stress = 2*eta*compressible_strain_rate +
+       
+            // Compressive stress is positive in geoscience applications
+            const SymmetricTensor<2,dim> stress = -2.*eta*compressible_strain_rate +
                                                   in.pressure[q] * unit_symmetric_tensor<dim>();
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
