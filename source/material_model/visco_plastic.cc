@@ -304,7 +304,7 @@ namespace aspect
                                                                                       elastic_shear_moduli[j]);
             }
 
-          // Step 2b: calculate current (viscous + elastic) stress magnitude
+          // Step 2b: calculate current (viscous or viscous + elastic) stress magnitude
           const double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
 
           // Step 3: strain weakening
