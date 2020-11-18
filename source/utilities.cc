@@ -3248,8 +3248,6 @@ namespace aspect
         return std::max(0.0, SPD_safety_factor * ((2.0 * eta) / denom));
     }
 
-
-
     template <int dim>
     Point<dim> convert_array_to_point(const std::array<double,dim> &array)
     {
