@@ -281,15 +281,9 @@ namespace aspect
 
           // Step 2: calculate the viscous stress magnitude
           // and strain rate. If requested compute visco-elastic contributions.
-          double current_edot_ii = numbers::signaling_nan<double>();
-          double current_stress = numbers::signaling_nan<double>();
+          double current_edot_ii = edot_ii;
 
-          if (use_elasticity == false)
-            {
-              current_edot_ii = edot_ii;
-              current_stress = 2. * viscosity_pre_yield * current_edot_ii;
-            }
-          else
+          if (use_elasticity)
             {
               const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
 
@@ -308,10 +302,10 @@ namespace aspect
               // Step 2a: calculate viscoelastic (effective) viscosity
               viscosity_pre_yield = elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield,
                                                                                       elastic_shear_moduli[j]);
-
-              // Step 2b: calculate current (viscous + elastic) stress magnitude
-              current_stress = 2. * viscosity_pre_yield * current_edot_ii;
             }
+
+          // Step 2b: calculate current (viscous + elastic) stress magnitude
+          const double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
 
           // Step 3: strain weakening
 
