@@ -1,0 +1,6 @@
+Fixed: The visualization postprocessors that output stresses now use the 
+correct sign for the shear stress term (under the convention of positive
+compressive stress), i.e. -2*eta*strain_rate+pressure*I instead of
+2*eta*strain_rate+pressure*I.
+<br>
+(Anne Glerum, Sungho Lee, 2020/11/19)
