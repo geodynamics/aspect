@@ -1,0 +1,6 @@
+<li> New: There is a new visualization postprocessor called 'principal stress',
+which outputs the principal stress values and directions at every point in the
+model. The postprocessor can either operate on the full stress tensor
+(including pressure) or on the trace-free deviatoric stress tensor.
+<br>
+(Rene Gassmoeller, 2020/10/30)
