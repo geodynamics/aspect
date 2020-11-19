@@ -61,7 +61,7 @@ namespace aspect
               const double x = position_point_sph[0] / 6371e3;
 
               if (position_point_sph[0] > 6371e3)
-                out.densities[i]=0;
+                out.densities[i]=1;
               else if (position_point_sph[0] <= 1221.5e3)
                 out.densities[i]=(13.0885-8.8381*std::pow(x,2))*1e3;
               else if ((position_point_sph[0] > 1221.5e3) && (position_point_sph[0] < 3480.e3))
