@@ -21,6 +21,7 @@ who have and are providing substantial technical contributions to ASPECT:
 * Anne Glerum (Geoforschungszentrum Potsdam, Germany)
 * Timo Heister (Clemson University, USA)
 * John Naliboff (New Mexico Tech, USA)
+* Bob Myhill (University of Bristol, UK)
 
 A complete and growing list of the many authors that have contributed
 over the years can be found at [here](https://github.com/geodynamics/aspect/graphs/contributors).

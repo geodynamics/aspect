@@ -67,8 +67,11 @@ For more information see:
  - ASPECT is being developed by a large, collaborative, and inclusive community. It is currently maintained by the following people:
      - Wolfgang Bangerth: bangerth@math.colostate.edu
      - Juliane Dannberg: judannberg@gmail.com
+     - Menno Fraters: mrfraters@ucdavis.edu
      - Rene Gassmoeller: rene.gassmoeller@mailbox.org
+     - Anne Glerum: acglerum@gfz-potsdam.de
      - Timo Heister: heister@clemson.edu
+     - John Naliboff: john.naliboff@nmt.edu
 
  - The following people have significantly contributed and furthered ASPECT's goals and are therefore Principal Developers:
 
@@ -79,6 +82,7 @@ For more information see:
    - Rene Gassmoeller
    - Anne Glerum
    - Timo Heister
+   - Bob Myhill
    - John Naliboff
 
  - A complete and growing list of the many authors that have contributed over the years can be found at [GitHub contributors](https://github.com/geodynamics/aspect/graphs/contributors).
