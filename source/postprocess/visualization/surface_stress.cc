@@ -63,7 +63,8 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            const SymmetricTensor<2,dim> stress = 2*eta*compressible_strain_rate +
+            // Compressive stress is positive in geoscience applications
+            const SymmetricTensor<2,dim> stress = -2.*eta*compressible_strain_rate +
                                                   in.pressure[q] * unit_symmetric_tensor<dim>();
             for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
               computed_quantities[q](i) = stress[stress.unrolled_to_component_indices(i)];
@@ -144,9 +145,9 @@ namespace aspect
                                                   "on the surface of the domain "
                                                   "for the 3 (in 2d) or 6 (in 3d) components of the stress "
                                                   "tensor, i.e., for the components of the tensor "
-                                                  "$2\\eta\\varepsilon(\\mathbf u)+pI$ "
+                                                  "$-2\\eta\\varepsilon(\\mathbf u)+pI$ "
                                                   "in the incompressible case and "
-                                                  "$2\\eta\\left[\\varepsilon(\\mathbf u)-"
+                                                  "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]+pI$ "
                                                   "in the compressible case.")
     }
