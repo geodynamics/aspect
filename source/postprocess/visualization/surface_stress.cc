@@ -149,7 +149,8 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]+pI$ "
-                                                  "in the compressible case.")
+                                                  "in the compressible case. Note that the convention of positive "
+                                                  "compressive stress is followed. ")
     }
   }
 }
