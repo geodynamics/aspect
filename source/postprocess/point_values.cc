@@ -112,8 +112,7 @@ namespace aspect
         }
 
       // finally push these point values all onto the list we keep
-      point_values.push_back (std::make_pair (this->get_time(),
-                                              current_point_values));
+      point_values.emplace_back (this->get_time(), current_point_values);
 
       // now write all of the data to the file of choice. start with a pre-amble that
       // explains the meaning of the various fields

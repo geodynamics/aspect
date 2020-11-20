@@ -869,8 +869,8 @@ namespace aspect
 
           // We require one more entry for density, etc as there are phase transitions
           // (for the low-pressure phase before any transition).
-          for (unsigned int i=0; i<n_phase_transitions_for_each_composition.size(); ++i)
-            n_phase_transitions_for_each_composition[i] += 1;
+          for (unsigned int &n : n_phase_transitions_for_each_composition)
+            n += 1;
 
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());

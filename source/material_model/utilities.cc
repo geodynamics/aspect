@@ -641,8 +641,8 @@ namespace aspect
           enthalpy_values.reinit(n_temperature,n_pressure);
 
           phase_volume_fractions.resize(phase_column_names.size());
-          for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
-            phase_volume_fractions[n].reinit(n_temperature,n_pressure);
+          for (auto &phase_volume_fraction : phase_volume_fractions)
+            phase_volume_fraction.reinit(n_temperature,n_pressure);
 
           unsigned int i = 0;
           std::vector<double> previous_row_values(n_columns, 0.);

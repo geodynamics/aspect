@@ -390,7 +390,7 @@ namespace aspect
       // their own parameters
       for (const auto &boundary_id : boundary_velocity_indicators)
         {
-          for (const auto name : boundary_id.second.second)
+          for (const auto &name : boundary_id.second.second)
             {
               boundary_velocity_objects[boundary_id.first].push_back(
                 std::unique_ptr<Interface<dim> > (std::get<dim>(registered_plugins)

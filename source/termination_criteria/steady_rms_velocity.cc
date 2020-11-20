@@ -66,7 +66,7 @@ namespace aspect
       const double vrms = std::sqrt(global_velocity_square_integral) / std::sqrt(this->get_volume());
 
       // Keep a list of times and RMS velocities at those times
-      time_rmsvel.push_back(std::make_pair(this->get_time(), vrms));
+      time_rmsvel.emplace_back(this->get_time(), vrms);
 
       // If the length of the simulation time covered in the list is shorter than the
       // specified parameter, we must continue the simulation

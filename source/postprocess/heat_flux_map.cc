@@ -463,7 +463,7 @@ namespace aspect
                                             heat_flux_and_area[cell->active_cell_index()][f].second;
 
                 // store final position and heat flow
-                stored_values.push_back (std::make_pair(midpoint_at_surface, flux_density));
+                stored_values.emplace_back (midpoint_at_surface, flux_density);
               }
 
 

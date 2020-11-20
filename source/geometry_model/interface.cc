@@ -188,8 +188,9 @@ namespace aspect
                                      const std::map<std::string,types::boundary_id> &boundary_names_mapping)
       {
         std::vector<types::boundary_id> results;
-        for (unsigned int i=0; i<names.size(); ++i)
-          results.push_back (translate_boundary_indicator(names[i], boundary_names_mapping));
+        results.reserve(names.size());
+        for (const auto &name : names)
+          results.push_back (translate_boundary_indicator(name, boundary_names_mapping));
 
         return results;
       }
@@ -338,12 +339,12 @@ namespace aspect
         = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
       periodic_boundary_set pbs = get_periodic_boundary_pairs();
 
-      for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+      for (const auto &pb : pbs)
         {
           DoFTools::make_periodicity_constraints(dof_handler,
-                                                 (*p).first.first,  // first boundary id
-                                                 (*p).first.second, // second boundary id
-                                                 (*p).second,       // cartesian direction for translational symmetry
+                                                 pb.first.first,  // first boundary id
+                                                 pb.first.second, // second boundary id
+                                                 pb.second,       // cartesian direction for translational symmetry
                                                  constraints);
         }
     }

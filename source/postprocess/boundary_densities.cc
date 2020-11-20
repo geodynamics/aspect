@@ -131,10 +131,10 @@ namespace aspect
         const char *columns[] = { "Density at top (kg/m^3)",
                                   "Density at bottom (kg/m^3)"
                                 };
-        for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+        for (auto &column : columns)
           {
-            statistics.set_precision (columns[i], 8);
-            statistics.set_scientific (columns[i], true);
+            statistics.set_precision (column, 8);
+            statistics.set_scientific (column, true);
           }
       }
 

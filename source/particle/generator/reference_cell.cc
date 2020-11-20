@@ -148,8 +148,8 @@ namespace aspect
                 std::vector<double> n_particles_tmp = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
                                                                                               dim,
                                                                                               "Number of particles per cell per direction");
-                for (std::vector<double>::const_iterator itr = n_particles_tmp.begin(); itr != n_particles_tmp.end(); itr++)
-                  number_of_particles.push_back(static_cast<unsigned int>(*itr));
+                for (double itr : n_particles_tmp)
+                  number_of_particles.push_back(static_cast<unsigned int>(itr));
               }
               prm.leave_subsection();
             }

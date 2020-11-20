@@ -2,7 +2,9 @@
 
 # This file is automatically discovered by clang-tidy when you run it on a
 # file in a subdirectory.
-
+#
+# This is based on https://github.com/dealii/dealii/blob/master/.clang-tidy
+#
 # Usage:
 #
 # see ./contrib/utilities/run_clang_tidy.sh
@@ -25,11 +27,13 @@
 # run-clang-tidy.py -p . -quiet -header-filter="$SRC/include/*"
 
 
-# enabled checks:
-Checks: '-*,modernize-use-emplace,modernize-make-shared,mpi-*,modernize-use-nullptr,modernize-replace-autoptr,modernize-make-unique,performance-*,-performance-inefficient-string-concatenation,modernize-use-override'
 
-
-
-# other options to be used in the future as soon as we compile cleanly:
+# Rationale for disabling warnings:
 #
-# modernize-avoid-bind
+# - modernize-concat-nested-namespaces: This is c++17 only.
+# - performance-inefficient-string-concatenation: We don't care about "a"+to_string(5)+...
+# - performance-no-automatic-move: All modern compiler perform the return value optimization and we prefer to keep things const.
+# - modernize-avoid-bind: We use std::bind() in core.cc where replacement doesn't make sense (astyle fails to format)
+#
+Checks: "-*,cppcoreguidelines-pro-type-static-cast-downcast,google-readability-casting,modernize-*,-modernize-pass-by-value,-modernize-raw-string-literal,-modernize-use-auto,-modernize-use-override,-modernize-use-default-member-init,-modernize-use-transparent-functors,-modernize-use-trailing-return-type,-modernize-use-nodiscard,-modernize-avoid-c-arrays,-modernize-concat-nested-namespaces,use-emplace,mpi-*,performance-*,-performance-inefficient-string-concatenation,-performance-no-automatic-move,-modernize-avoid-bind"
+

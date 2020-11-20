@@ -89,7 +89,7 @@ namespace aspect
                                const IndexSet &mesh_locally_owned,
                                const IndexSet &mesh_locally_relevant,
                                LinearAlgebra::Vector &output,
-                               const std::set<types::boundary_id> boundary_id) const;
+                               const std::set<types::boundary_id> &boundary_id) const;
 
         /**
          * Check that the size of the next time step is not larger than the conduction

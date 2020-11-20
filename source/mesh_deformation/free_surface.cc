@@ -176,10 +176,12 @@ namespace aspect
         AssertThrow(velocity_boundary_indicators.find(p) == velocity_boundary_indicators.end(),
                     ExcMessage("The free surface mesh deformation plugin cannot be used with the current velocity boundary conditions"));
 
-      this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
-                                                           std::cref(*this),
-                                                           std::placeholders::_1,
-                                                           std::placeholders::_2));
+      this->get_signals().set_assemblers.connect(
+        [&](const SimulatorAccess<dim> &sim_access,
+            aspect::Assemblers::Manager<dim> &assemblers)
+      {
+        this->set_assemblers(sim_access, assemblers);
+      });
     }
 
 
@@ -239,9 +241,9 @@ namespace aspect
 
       using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
-      for (periodic_boundary_pairs::iterator p = pbp.begin(); p != pbp.end(); ++p)
+      for (const auto &p : pbp)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
-                                               (*p).first.first, (*p).first.second, (*p).second, mass_matrix_constraints);
+                                               p.first.first, p.first.second, p.second, mass_matrix_constraints);
 
       mass_matrix_constraints.close();
 

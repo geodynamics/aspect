@@ -265,14 +265,14 @@ namespace aspect
             if (face_idx != numbers::invalid_unsigned_int && at_upper_surface)
               {
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  surface_stored_values.emplace_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
+                  surface_stored_values.emplace_back (fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q]));
               }
 
             // if the cell at bottom boundary, add its contributions dynamic topography storage vector
             if (face_idx != numbers::invalid_unsigned_int && !at_upper_surface)
               {
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  CMB_stored_values.emplace_back (std::make_pair(fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q])));
+                  CMB_stored_values.emplace_back (fe_face_values.quadrature_point(q), std::make_pair(fe_face_values.JxW(q), topo_values[q]));
               }
           }
 
@@ -309,10 +309,10 @@ namespace aspect
                                                                        });
         }
 
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes;
-      SH_surface_dyna_topo_coes = std::make_pair(top_layer_average_density,to_spherical_harmonic_coefficients(surface_topo_spherical_function));
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes;
-      SH_CMB_dyna_topo_coes = std::make_pair(bottom_layer_average_density,to_spherical_harmonic_coefficients(CMB_topo_spherical_function));
+      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes
+        = std::make_pair(top_layer_average_density,to_spherical_harmonic_coefficients(surface_topo_spherical_function));
+      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes
+        = std::make_pair(bottom_layer_average_density,to_spherical_harmonic_coefficients(CMB_topo_spherical_function));
       return std::make_pair(SH_surface_dyna_topo_coes,SH_CMB_dyna_topo_coes);
     }
 

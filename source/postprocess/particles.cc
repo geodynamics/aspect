@@ -44,7 +44,7 @@ namespace aspect
       {
         // First store the names of the data fields that should be written
         dataset_names.reserve(property_information.n_components()+1);
-        dataset_names.push_back("id");
+        dataset_names.emplace_back("id");
 
         // This is a map from an index for the particle property vector to an index in the output
         // vector. Values equal 0 indicate a property will not be written, values bigger 0
@@ -266,8 +266,7 @@ namespace aspect
 
       // now also generate a .pvd file that matches simulation
       // time and corresponding .pvtu record
-      times_and_pvtu_file_names.push_back(std::make_pair
-                                          (time_in_years_or_seconds, "particles/"+pvtu_master_filename));
+      times_and_pvtu_file_names.emplace_back(time_in_years_or_seconds, "particles/"+pvtu_master_filename);
 
       const std::string
       pvd_master_filename = (this->get_output_directory() + "particles.pvd");
@@ -303,8 +302,8 @@ namespace aspect
 
       std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names.size(); ++timestep)
-        times_and_output_file_names.push_back(std::make_pair(times_and_pvtu_file_names[timestep].first,
-                                                             output_file_names_by_timestep[timestep]));
+        times_and_output_file_names.emplace_back(times_and_pvtu_file_names[timestep].first,
+                                                 output_file_names_by_timestep[timestep]);
       DataOutBase::write_visit_record (global_visit_master, times_and_output_file_names);
     }
 

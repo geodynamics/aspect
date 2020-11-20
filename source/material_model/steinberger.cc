@@ -153,13 +153,13 @@ namespace aspect
           // unique names into the unique_phase_names vector and
           // filling the unique_phase_indices object.
           std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
-          for (unsigned int j = 0; j < phase_volume_column_names.size(); j++)
+          for (const auto &phase_volume_column_name : phase_volume_column_names)
             {
               // iterate over the present unique_phase_names object
               // to find phase_volume_column_names[j].
               std::vector<std::string>::iterator it = std::find(unique_phase_names.begin(),
                                                                 unique_phase_names.end(),
-                                                                phase_volume_column_names[j]);
+                                                                phase_volume_column_name);
 
               // If phase_volume_column_names[j] already exists in unique_phase_names,
               // std::distance finds its index. Otherwise, std::distance will return
@@ -172,7 +172,7 @@ namespace aspect
               // If phase_volume_column_names[j] did not already exist
               // in unique_phase_names, we add it here.
               if (it == unique_phase_names.end())
-                unique_phase_names.push_back(phase_volume_column_names[j]);
+                unique_phase_names.push_back(phase_volume_column_name);
             }
         }
 
@@ -195,8 +195,8 @@ namespace aspect
       if (use_lateral_average_temperature)
         {
           this->get_lateral_averaging().get_temperature_averages(avg_temp);
-          for (unsigned int i = 0; i < avg_temp.size(); ++i)
-            AssertThrow(numbers::is_finite(avg_temp[i]),
+          for (double temperature : avg_temp)
+            AssertThrow(numbers::is_finite(temperature),
                         ExcMessage("In computing depth averages, there is at"
                                    " least one depth band that does not have"
                                    " any quadrature points in it."

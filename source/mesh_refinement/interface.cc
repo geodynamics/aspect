@@ -51,8 +51,8 @@ namespace aspect
     void
     Interface<dim>::execute (Vector<float> &error_indicators) const
     {
-      for (unsigned int i=0; i<error_indicators.size(); ++i)
-        error_indicators[i] = 0;
+      for (float &error_indicator : error_indicators)
+        error_indicator = 0;
     }
 
 
@@ -476,11 +476,11 @@ namespace aspect
       // their own parameters
       AssertThrow (plugin_names.size() >= 1,
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
-      for (unsigned int name=0; name<plugin_names.size(); ++name)
+      for (auto &plugin_name : plugin_names)
         {
           mesh_refinement_objects.push_back (std::unique_ptr<Interface<dim> >
                                              (std::get<dim>(registered_plugins)
-                                              .create_plugin (plugin_names[name],
+                                              .create_plugin (plugin_name,
                                                               "Mesh refinement::Refinement criteria merge operation")));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*mesh_refinement_objects.back()))
