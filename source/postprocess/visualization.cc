@@ -344,7 +344,7 @@ namespace aspect
         filenames_with_path.reserve(filenames.size());
         for (const auto &filename : filenames)
           {
-            filenames_with_path.push_back("solution/" + filename);
+            filenames_with_path.emplace_back("solution/" + filename);
           }
 
         if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)

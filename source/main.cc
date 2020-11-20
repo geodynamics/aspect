@@ -276,17 +276,17 @@ void possibly_load_shared_libs (const std::string &parameters)
       const std::vector<std::string>
       shared_libs_list = Utilities::split_string_list (shared_libs);
 
-      for (const auto &p : shared_libs_list)
+      for (const auto &shared_lib : shared_libs_list)
         {
           if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
             std::cout << "Loading shared library <"
-                      << p
+                      << shared_lib
                       << ">" << std::endl;
 
-          void *handle = dlopen (p.c_str(), RTLD_LAZY);
+          void *handle = dlopen (shared_lib.c_str(), RTLD_LAZY);
           AssertThrow (handle != nullptr,
                        ExcMessage (std::string("Could not successfully load shared library <")
-                                   + p + ">. The operating system reports "
+                                   + shared_lib + ">. The operating system reports "
                                    + "that the error is this: <"
                                    + dlerror() + ">."));
 

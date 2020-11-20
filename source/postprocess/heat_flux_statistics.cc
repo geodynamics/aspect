@@ -63,7 +63,7 @@ namespace aspect
         std::vector<double> local_values;
         local_values.reserve(boundary_indicators.size());
         for (const auto p : boundary_indicators)
-          local_values.push_back (local_boundary_fluxes[p]);
+          local_values.emplace_back (local_boundary_fluxes[p]);
 
         // then collect contributions from all processors
         std::vector<double> global_values (local_values.size());

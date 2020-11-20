@@ -195,8 +195,8 @@ namespace aspect
       if (use_lateral_average_temperature)
         {
           this->get_lateral_averaging().get_temperature_averages(avg_temp);
-          for (double i : avg_temp)
-            AssertThrow(numbers::is_finite(i),
+          for (double temperature : avg_temp)
+            AssertThrow(numbers::is_finite(temperature),
                         ExcMessage("In computing depth averages, there is at"
                                    " least one depth band that does not have"
                                    " any quadrature points in it."
