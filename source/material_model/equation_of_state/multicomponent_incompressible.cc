@@ -39,7 +39,7 @@ namespace aspect
       {
 
         // If adiabatic heating is used, the reference temperature used to calculate density should be the adiabatic
-        // temperature at the current position. This definition is consistent with the Extended Boussinesq approximation.
+        // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
         const double reference_temperature = (this->include_adiabatic_heating() && this->get_adiabatic_conditions().is_initialized()
                                               ?
                                               this->get_adiabatic_conditions().temperature(in.position[input_index])

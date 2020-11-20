@@ -10,8 +10,15 @@
 # material model (3300):
 #   density = background_density * ( 1 - thermal_expansivity * (temperature - reference_temperature)),
 # where the reference_temperature is the adiabatic temperature.
-# At the base of the model the density should be lower than at the surface
-# due to the increase in adiabatic temperature with depth.
+# At the base of the model the density should be higher than at the surface
+# due to the increase in adiabatic temperature with depth, while the temperature
+# within the model is constant. The fact that the temperature does not deviate
+# from the initial (1573 K) constant value reflects there are no internal 
+# perturbations or boundary conditions that drive deformation within the model.
+# As the adiabatic heating terms are scaled with velocity, the temperature within
+# the model remains constant although the density still reflects the initial
+# adiabatic temperature profile. Notably, if one were to use an adiabatic profile 
+# for the intial temperature the density would be constant with depth.
 
 # Global parameters
 set Dimension                              = 2
@@ -103,7 +110,7 @@ end
 
 # Post processing
 subsection Postprocess
-  set List of postprocessors = mass flux statistics, material statistics, temperature statistics, visualization
+  set List of postprocessors = material statistics, temperature statistics, visualization
   subsection Visualization
     set Interpolate output = false
     set List of output variables = adiabat, density
