@@ -3,7 +3,7 @@
 # (z,0), which then is also the velocity everywhere. This yields
 # a constant strain rate [[0,1/2],[1/2,0]]
 #
-# the shear stress is then simply this tensor times 2*eta and we set
+# the shear stress is then simply this tensor times -2*eta and we set
 # eta=42 below.
 
 set Dimension = 2
