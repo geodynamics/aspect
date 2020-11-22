@@ -96,9 +96,8 @@ namespace aspect
                             std::vector<Vector<double> > &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        const unsigned int n_output_components = dim*dim + dim;
         Assert (computed_quantities.size() == n_quadrature_points, ExcInternalError());
-        Assert (computed_quantities[0].size() == n_output_components, ExcInternalError());
+        Assert (computed_quantities[0].size() == dim*dim + dim, ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
 
