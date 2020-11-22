@@ -182,7 +182,7 @@ namespace aspect
       radial_viscosity_lookup
         = std_cxx14::make_unique<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
                                                                   this->get_mpi_communicator());
-      avg_temp.resize(n_lateral_slices);
+      average_temperature.resize(n_lateral_slices);
     }
 
 
@@ -194,8 +194,8 @@ namespace aspect
     {
       if (use_lateral_average_temperature)
         {
-          this->get_lateral_averaging().get_temperature_averages(avg_temp);
-          for (double temperature : avg_temp)
+          this->get_lateral_averaging().get_temperature_averages(average_temperature);
+          for (double temperature : average_temperature)
             AssertThrow(numbers::is_finite(temperature),
                         ExcMessage("In computing depth averages, there is at"
                                    " least one depth band that does not have"
@@ -223,8 +223,8 @@ namespace aspect
       double delta_temperature;
       if (use_lateral_average_temperature)
         {
-          const unsigned int idx = static_cast<unsigned int>((avg_temp.size()-1) * depth / this->get_geometry_model().maximal_depth());
-          delta_temperature = temperature-avg_temp[idx];
+          const unsigned int idx = static_cast<unsigned int>((average_temperature.size()-1) * depth / this->get_geometry_model().maximal_depth());
+          delta_temperature = temperature-average_temperature[idx];
         }
       else
         delta_temperature = temperature-adiabatic_temperature;
