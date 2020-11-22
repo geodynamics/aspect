@@ -272,7 +272,7 @@ namespace aspect
         /**
          * Information about lateral temperature averages.
          */
-        std::vector<double> avg_temp;
+        std::vector<double> average_temperature;
         unsigned int n_lateral_slices;
 
         /**
