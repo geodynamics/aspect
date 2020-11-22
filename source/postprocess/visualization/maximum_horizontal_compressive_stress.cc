@@ -56,7 +56,7 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> compressible_strain_rate
+            const SymmetricTensor<2,dim> deviatoric_strain_rate
               = (this->get_material_model().is_compressible()
                  ?
                  strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
@@ -73,7 +73,7 @@ namespace aspect
             //
             // note that the *compressive* stress is simply the
             // negative stress
-            const SymmetricTensor<2,dim> compressive_stress = -2*eta*compressible_strain_rate;
+            const SymmetricTensor<2,dim> compressive_stress = -2*eta*deviatoric_strain_rate;
 
             // then find a set of (dim-1) horizontal, unit-length, mutually orthogonal vectors
             const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (in.position[q]);

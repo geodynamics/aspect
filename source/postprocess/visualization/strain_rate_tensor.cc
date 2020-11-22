@@ -57,7 +57,7 @@ namespace aspect
               grad_u[d] = input_data.solution_gradients[q][d];
 
             const SymmetricTensor<2,dim> strain_rate = symmetrize(grad_u);
-            const Tensor<2,dim> compressible_strain_rate
+            const Tensor<2,dim> deviatoric_strain_rate
               = (this->get_material_model().is_compressible()
                  ?
                  strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
@@ -67,7 +67,7 @@ namespace aspect
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
-                  = compressible_strain_rate[d][e];
+                  = deviatoric_strain_rate[d][e];
           }
 
         const auto &viz = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Visualization<dim> >();
