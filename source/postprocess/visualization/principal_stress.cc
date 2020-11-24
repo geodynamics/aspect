@@ -112,7 +112,7 @@ namespace aspect
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> compressible_strain_rate
+            const SymmetricTensor<2,dim> deviatoric_strain_rate
               = (this->get_material_model().is_compressible()
                  ?
                  strain_rate - 1./3. * trace(strain_rate) * unit_symmetric_tensor<dim>()
@@ -122,7 +122,7 @@ namespace aspect
             const double eta = out.viscosities[q];
 
             // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2,dim> stress = -2. * eta * compressible_strain_rate + in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress = -2. * eta * deviatoric_strain_rate + in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == true)
