@@ -69,15 +69,15 @@ namespace aspect
             // unique names into the unique_phase_names vector and
             // filling the unique_phase_indices object.
             std::vector<std::string> phase_volume_column_names = material_lookup[i]->phase_volume_column_names();
-            for (unsigned int j = 0; j < phase_volume_column_names.size(); j++)
+            for (const auto &phase_volume_column_name : phase_volume_column_names)
               {
                 // iterate over the present unique_phase_names object
-                // to find phase_volume_column_names[j].
+                // to find phase_volume_column_name.
                 std::vector<std::string>::iterator it = std::find(unique_phase_names.begin(),
                                                                   unique_phase_names.end(),
-                                                                  phase_volume_column_names[j]);
+                                                                  phase_volume_column_name);
 
-                // If phase_volume_column_names[j] already exists in unique_phase_names,
+                // If phase_volume_column_name already exists in unique_phase_names,
                 // std::distance finds its index. Otherwise, std::distance will return
                 // the size of the present object, which is the index where we are
                 // about to push the new name. Either way, this is the index we want
@@ -85,10 +85,10 @@ namespace aspect
                 unsigned int i_unique = std::distance(unique_phase_names.begin(), it);
                 unique_phase_indices[i].push_back(i_unique);
 
-                // If phase_volume_column_names[j] did not already exist
+                // If phase_volume_column_name did not already exist
                 // in unique_phase_names, we add it here.
                 if (it == unique_phase_names.end())
-                  unique_phase_names.push_back(phase_volume_column_names[j]);
+                  unique_phase_names.push_back(phase_volume_column_name);
               }
           }
       }
