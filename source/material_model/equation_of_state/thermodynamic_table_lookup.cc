@@ -21,6 +21,8 @@
 
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator_access.h>
+#include <aspect/adiabatic_conditions/interface.h>
 
 
 namespace aspect
