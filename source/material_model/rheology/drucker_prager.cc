@@ -59,8 +59,6 @@ namespace aspect
                                              const double pressure,
                                              const double effective_strain_rate,
                                              const double max_yield_stress,
-                                             const bool use_plastic_damper,
-                                             const double damper_viscosity,
                                              const double pre_yield_viscosity) const
       {
         const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
@@ -168,10 +166,10 @@ namespace aspect
         parameters.max_yield_stress = prm.get_double("Maximum yield stress");
 
         // Whether to include a plastic damper when computing the drucker-prager plastic viscosity
-        parameters.use_plastic_damper = prm.get_bool("Use plastic damper");
+        use_plastic_damper = prm.get_bool("Use plastic damper");
 
         // Stabalize plasticity through a viscous damper
-        parameters.damper_viscosity = prm.get_double("Plastic damper viscosity");
+        damper_viscosity = prm.get_double("Plastic damper viscosity");
 
         return parameters;
       }
