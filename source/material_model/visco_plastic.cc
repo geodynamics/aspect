@@ -369,8 +369,6 @@ namespace aspect
                                                                                   pressure_for_plasticity,
                                                                                   current_edot_ii,
                                                                                   drucker_prager_parameters.max_yield_stress,
-                                                                                  drucker_prager_parameters.use_plastic_damper,
-                                                                                  drucker_prager_parameters.damper_viscosity,
                                                                                   viscosity_pre_yield);
                     composition_yielding[j] = true;
                   }

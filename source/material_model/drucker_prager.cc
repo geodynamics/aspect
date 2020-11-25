@@ -109,9 +109,6 @@ namespace aspect
                                                                                          angle_of_internal_friction,
                                                                                          pressure,
                                                                                          std::sqrt(strain_rate_effective),
-                                                                                         std::numeric_limits<double>::infinity(),
-                                                                                         false,
-                                                                                         0.0,
                                                                                          std::numeric_limits<double>::infinity());
 
                   const double viscosity_pressure_derivative = drucker_prager_plasticity.compute_derivative(angle_of_internal_friction,std::sqrt(strain_rate_effective));

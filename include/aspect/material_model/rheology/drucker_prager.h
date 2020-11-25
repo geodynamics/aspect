@@ -51,17 +51,6 @@ namespace aspect
          * Limit maximum yield stress from drucker prager yield criterion.
          */
         double max_yield_stress;
-
-        /**
-         * Whether to add a plastic damper in the computation
-         * of the drucker prager plastic viscosity.
-         */
-        bool use_plastic_damper;
-
-        /**
-         * Viscosity of a damper used to stabilize plasticity
-         */
-        double damper_viscosity;
       };
 
       template <int dim>
@@ -108,9 +97,7 @@ namespace aspect
                              const double pressure,
                              const double effective_strain_rate,
                              const double max_yield_stress,
-                             const bool use_plastic_damper,
-                             const double damper_viscosity,
-                             const double pre_yield_viscosity) const;
+                             const double pre_yield_viscosity = std::numeric_limits<double>::infinity()) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
@@ -118,6 +105,18 @@ namespace aspect
           double
           compute_derivative (const double angle_internal_friction,
                               const double effective_strain_rate) const;
+
+        private:
+          /**
+           * Whether to add a plastic damper in the computation
+           * of the drucker prager plastic viscosity.
+           */
+          bool use_plastic_damper;
+
+          /**
+           * Viscosity of a damper used to stabilize plasticity
+           */
+          double damper_viscosity;
       };
     }
   }
