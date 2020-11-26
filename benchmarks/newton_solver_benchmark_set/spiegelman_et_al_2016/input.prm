@@ -1,7 +1,7 @@
 set Additional shared libraries            = ./libdrucker_prager_compositions.so
 
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme                = Newton Stokes
+set Nonlinear solver scheme                = iterated Advection and Newton Stokes
 set Max nonlinear iterations               = 150
 set Nonlinear solver tolerance             = 1e-14
 set Pressure normalization                 = no
@@ -25,7 +25,7 @@ subsection Solver parameters
 end
 
 subsection Boundary temperature model
-  set Model name = box
+  set List of model names = box
 end
 
 

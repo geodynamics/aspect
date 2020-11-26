@@ -250,7 +250,7 @@ namespace aspect
       MaterialModelDerivatives<dim> *derivatives;
       derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
