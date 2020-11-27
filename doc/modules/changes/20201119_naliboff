@@ -1,0 +1,7 @@
+<li> New: The Drucker Prager rheology module now has an option
+to include a plastic damper, which acts to stabilize the
+plasticity formulation. At sufficient resolutions for a given
+plastic damper viscosity, the plastic shear band characteristics
+will be resolution independent.
+<br>
+(John Naliboff and Cedric Thieulot, 2020/11/19)

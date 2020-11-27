@@ -40,6 +40,7 @@ namespace aspect
         const double cos_phi = std::cos(angle_internal_friction);
         const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
 
+        // Initial yield stress (no stabilization terms)
         double yield_stress = ( (dim==3)
                                 ?
                                 ( 6.0 * cohesion * cos_phi + 6.0 * pressure * sin_phi) * stress_inv_part
@@ -57,13 +58,31 @@ namespace aspect
                                              const double angle_internal_friction,
                                              const double pressure,
                                              const double effective_strain_rate,
-                                             const double max_yield_stress) const
+                                             const double max_yield_stress,
+                                             const double pre_yield_viscosity) const
       {
         const double yield_stress = compute_yield_stress(cohesion, angle_internal_friction, pressure, max_yield_stress);
 
         const double strain_rate_effective_inv = 1./(2.*effective_strain_rate);
 
-        return yield_stress * strain_rate_effective_inv;
+        double plastic_viscosity = yield_stress * strain_rate_effective_inv;
+
+        if (use_plastic_damper == true)
+          {
+            const double total_stress = ( yield_stress + ( 2. * damper_viscosity * effective_strain_rate ) ) /
+                                        ( 1 + ( damper_viscosity / pre_yield_viscosity ) );
+
+            const double pre_yield_strain_rate = total_stress / ( 2. * pre_yield_viscosity);
+
+            const double plastic_strain_rate = effective_strain_rate - pre_yield_strain_rate;
+
+            plastic_viscosity = yield_stress / (2.*plastic_strain_rate) + damper_viscosity;
+
+            // Effective viscosity
+            plastic_viscosity = 1. / (1./plastic_viscosity + 1./pre_yield_viscosity);
+          }
+
+        return plastic_viscosity;
       }
 
 
@@ -112,6 +131,15 @@ namespace aspect
                            "drucker-prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                            "in previous models. Units: \\si{\\pascal}.");
+        prm.declare_entry ("Use plastic damper","false",
+                           Patterns::Bool (),
+                           "Whether to use a plastic damper when computing the drucker-prager "
+                           "plastic viscosity. The damper acts to stabilize the plastic shear "
+                           "band width and remove associated mesh-dependent behavior at "
+                           "sufficient resolutions.");
+        prm.declare_entry ("Plastic damper viscosity", "0.0", Patterns::Double(0),
+                           "Viscous damper that acts in parallel with the plastic viscosity "
+                           "to produce mesh-independent behavior at sufficient resolutions. Units: \\si{\\pascal\\second}");
       }
 
 
@@ -136,6 +164,12 @@ namespace aspect
 
         // Limit maximum value of the drucker-prager yield stress
         parameters.max_yield_stress = prm.get_double("Maximum yield stress");
+
+        // Whether to include a plastic damper when computing the drucker-prager plastic viscosity
+        use_plastic_damper = prm.get_bool("Use plastic damper");
+
+        // Stabalize plasticity through a viscous damper
+        damper_viscosity = prm.get_double("Plastic damper viscosity");
 
         return parameters;
       }

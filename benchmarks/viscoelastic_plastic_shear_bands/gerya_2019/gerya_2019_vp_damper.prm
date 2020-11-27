@@ -1,0 +1,20 @@
+# This parameter file modifies the benchmark gerya_2019_vp.prm 
+# to include a viscous damper in the plastic viscosity calculation.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
+
+set Output directory = output_gerya_2019_damper
+
+subsection Mesh refinement
+  set Initial global refinement = 5
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Allow negative pressures in plasticity = true
+    set Use plastic damper = true
+    set Plastic damper viscosity = 1e19 
+  end
+end
+

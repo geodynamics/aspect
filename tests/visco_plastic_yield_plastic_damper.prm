@@ -1,0 +1,26 @@
+# This test modifies the benchmark gerya_2019_vp.prm 
+# to include a viscous damper in the plastic viscosity calculation.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm
+
+set Max nonlinear iterations = 1
+
+set Output directory = visco_plastic_yield_plastic_damper
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Allow negative pressures in plasticity = true
+    set Use plastic damper = true
+    set Plastic damper viscosity = 1e19 
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, composition statistics, material statistics, velocity statistics
+  set Run postprocessors on nonlinear iterations = false
+end
