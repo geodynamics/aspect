@@ -284,7 +284,7 @@ namespace aspect
 
         prm.declare_entry ("Include Drucker Prager plasticity", "true",
                            Patterns::Bool (),
-                           "Whether to include Drucker Prager plasticity in the rheological formulation.");
+                           "Whether to include Drucker-Prager plasticity in the rheological formulation.");
 
 
         // Diffusion creep parameters
@@ -395,8 +395,8 @@ namespace aspect
             drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
             drucker_prager_parameters = drucker_prager->parse_parameters(list_of_composition_names.size() + 1, prm);
 
-            AssertThrow(drucker_prager_parameters.use_plastic_damper == true && drucker_prager_parameters.damper_viscosity > 0.,
-                        ExcMessage("If Drucker Prager is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
+            AssertThrow(prm.get_bool("Use plastic damper") && prm.get_double("Plastic damper viscosity") > 0.,
+                        ExcMessage("If Drucker-Prager plasticity is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
           }
 
         AssertThrow(use_diffusion_creep == true || use_dislocation_creep == true || use_peierls_creep == true || use_drucker_prager == true,

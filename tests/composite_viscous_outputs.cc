@@ -139,8 +139,6 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
                                                                                      pressure,
                                                                                      partial_strain_rates[3],
                                                                                      p.max_yield_stress,
-                                                                                     p.use_plastic_damper,
-                                                                                     p.damper_viscosity,
                                                                                      std::numeric_limits<double>::infinity());
         }
       else

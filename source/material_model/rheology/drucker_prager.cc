@@ -67,7 +67,7 @@ namespace aspect
 
         double plastic_viscosity = yield_stress * strain_rate_effective_inv;
 
-        if (use_plastic_damper == true)
+        if (use_plastic_damper)
           {
             const double total_stress = ( yield_stress + ( 2. * damper_viscosity * effective_strain_rate ) ) /
                                         ( 1 + ( damper_viscosity / pre_yield_viscosity ) );
@@ -99,7 +99,7 @@ namespace aspect
 
         if (stress > yield_stress)
           {
-            return std::make_pair((stress - yield_stress)/(2.*p.damper_viscosity), 1./(2.*p.damper_viscosity));
+            return std::make_pair((stress - yield_stress)/(2.*damper_viscosity), 1./(2.*damper_viscosity));
           }
         else
           {
@@ -150,17 +150,17 @@ namespace aspect
                            "exceeding the yield stress. Units: \\si{\\pascal}.");
         prm.declare_entry ("Maximum yield stress", "1e12", Patterns::Double (0.),
                            "Limits the maximum value of the yield stress determined by the "
-                           "drucker-prager plasticity parameters. Default value is chosen so this "
+                           "Drucker-Prager plasticity parameters. Default value is chosen so this "
                            "is not automatically used. Values of 100e6--1000e6 $Pa$ have been used "
                            "in previous models. Units: \\si{\\pascal}.");
         prm.declare_entry ("Use plastic damper","false",
                            Patterns::Bool (),
-                           "Whether to use a plastic damper when computing the drucker-prager "
+                           "Whether to use a plastic damper when computing the Drucker-Prager "
                            "plastic viscosity. The damper acts to stabilize the plastic shear "
                            "band width and remove associated mesh-dependent behavior at "
                            "sufficient resolutions.");
         prm.declare_entry ("Plastic damper viscosity", "0.0", Patterns::Double(0),
-                           "Viscous damper that acts in parallel with the plastic viscosity "
+                           "Viscosity of the damper that acts in parallel with the plastic viscosity "
                            "to produce mesh-independent behavior at sufficient resolutions. Units: \\si{\\pascal\\second}");
       }
 
@@ -184,14 +184,18 @@ namespace aspect
                                                                        n_fields,
                                                                        "Cohesions");
 
-        // Limit maximum value of the drucker-prager yield stress
+        // Limit maximum value of the Drucker-Prager yield stress
         parameters.max_yield_stress = prm.get_double("Maximum yield stress");
 
-        // Whether to include a plastic damper when computing the drucker-prager plastic viscosity
+        // Whether to include a plastic damper when computing the Drucker-Prager plastic viscosity
         use_plastic_damper = prm.get_bool("Use plastic damper");
 
-        // Stabalize plasticity through a viscous damper
-        damper_viscosity = prm.get_double("Plastic damper viscosity");
+        // Stabilize plasticity through a viscous damper.
+        // The viscosity of the damper is implicitly zero if it is not used
+        if (use_plastic_damper)
+          damper_viscosity = prm.get_double("Plastic damper viscosity");
+        else
+          damper_viscosity = 0.;
 
         return parameters;
       }
