@@ -1,0 +1,11 @@
+<li> New: ASPECT now includes a CompositeViscoPlastic rheology module.
+This rheology is an isostress composite of diffusion, dislocation and
+Peierls creep rheologies. The composite viscosity and partial strain rates
+are calculated using an internal Newton-Raphson iterative scheme.
+For improved stability, the composite rheology is arranged in parallel with a
+constant viscosity strain rate limiter and the whole package is then arranged in
+series with a constant high viscosity limiter. This ensures that the viscosity
+function is continuous, differentiable and bounded. The new rheology can be used
+with multiple compositional fields.
+<br>
+(Bob Myhill, 2020/11/05)
