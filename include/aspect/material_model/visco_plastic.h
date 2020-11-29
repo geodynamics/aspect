@@ -279,31 +279,6 @@ namespace aspect
       private:
 
         /**
-        * For some reason enums need to be copied...
-        */
-        /**
-         * Enumeration for selecting which type of viscous flow law to use.
-         * Select between diffusion, dislocation or composite.
-         */
-        enum ViscosityScheme
-        {
-          diffusion,
-          dislocation,
-          frank_kamenetskii,
-          composite
-        } viscous_flow_law;
-
-        /**
-         * Enumeration for selecting which type of yield mechanism to use.
-         * Select between Drucker Prager and stress limiter.
-         */
-        enum YieldScheme
-        {
-          stress_limiter,
-          drucker_prager
-        } yield_mechanism;
-
-        /**
          * Object for computing viscosities.
          */
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;

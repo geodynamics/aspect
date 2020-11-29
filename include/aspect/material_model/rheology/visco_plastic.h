@@ -108,16 +108,38 @@ namespace aspect
                             const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
                               std::shared_ptr<std::vector<unsigned int>>());
 
-          double min_strain_rate;
-          double ref_strain_rate;
-          double min_visc;
-          double max_visc;
+
+
           double ref_visc;
+          double min_strain_rate;
 
           /**
            * Enumeration for selecting which viscosity averaging scheme to use.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
+
+
+          Rheology::StrainDependent<dim> strain_rheology;
+          /*
+           * Input parameters for the drucker prager plasticity.
+           */
+          Rheology::DruckerPragerParameters drucker_prager_parameters;
+          /**
+           * Object for computing viscoelastic viscosities and stresses.
+           */
+          Rheology::Elasticity<dim> elastic_rheology;
+
+          /**
+           * Whether to include viscoelasticity in the constitutive formulation.
+           */
+          bool use_elasticity;
+
+
+        private:
+
+          double ref_strain_rate;
+          double min_visc;
+          double max_visc;
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
@@ -154,8 +176,6 @@ namespace aspect
            */
           double adiabatic_temperature_gradient_for_viscosity;
 
-          Rheology::StrainDependent<dim> strain_rheology;
-
           /**
            * Objects for computing viscous creep viscosities.
            */
@@ -184,22 +204,6 @@ namespace aspect
            * Objects for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
-
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
-          /**
-           * Object for computing viscoelastic viscosities and stresses.
-           */
-          Rheology::Elasticity<dim> elastic_rheology;
-
-          /**
-           * Whether to include viscoelasticity in the constitutive formulation.
-           */
-          bool use_elasticity;
-
-          //private:
 
       };
     }
