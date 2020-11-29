@@ -22,9 +22,13 @@
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
-
+#include <aspect/newton.h>
+#include <aspect/adiabatic_conditions/interface.h>
+#include <aspect/gravity_model/interface.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/fe/fe_values.h>
+#include <deal.II/base/signaling_nan.h>
 
 
 namespace aspect
@@ -244,6 +248,141 @@ namespace aspect
             composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
           }
         return std::make_pair (composition_viscosities, composition_yielding);
+      }
+
+
+
+      template <int dim>
+      void
+      ViscoPlastic<dim>::
+      compute_viscosity_derivatives(const unsigned int i,
+                                    const std::vector<double> &volume_fractions,
+                                    const std::vector<double> &composition_viscosities,
+                                    const MaterialModel::MaterialModelInputs<dim> &in,
+                                    MaterialModel::MaterialModelOutputs<dim> &out,
+                                    const std::vector<double> &phase_function_values,
+                                    const std::vector<unsigned int> &n_phases_per_composition) const
+      {
+        MaterialModel::MaterialModelDerivatives<dim> *derivatives =
+          out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+        if (derivatives != nullptr)
+          {
+            // compute derivatives if necessary
+            std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
+            std::vector<double> composition_dviscosities_dpressure(volume_fractions.size());
+
+            const double finite_difference_accuracy = 1e-7;
+
+            // A new material model inputs variable that uses the strain rate and pressure difference.
+            MaterialModel::MaterialModelInputs<dim> in_derivatives = in;
+
+            // For each independent component, compute the derivative.
+            for (unsigned int component = 0; component < SymmetricTensor<2,dim>::n_independent_components; ++component)
+              {
+                const TableIndices<2> strain_rate_indices = SymmetricTensor<2,dim>::unrolled_to_component_indices (component);
+
+                // components that are not on the diagonal are multiplied by 0.5, because the symmetric tensor
+                // is modified by 0.5 in both symmetric directions (xy/yx) simultaneously and we compute the combined
+                // derivative
+                const SymmetricTensor<2,dim> strain_rate_difference = in.strain_rate[i]
+                                                                      + std::max(std::fabs(in.strain_rate[i][strain_rate_indices]), min_strain_rate)
+                                                                      * (component > dim-1 ? 0.5 : 1 )
+                                                                      * finite_difference_accuracy
+                                                                      * Utilities::nth_basis_for_symmetric_tensors<dim>(component);
+
+                in_derivatives.strain_rate[i] = strain_rate_difference;
+
+                std::vector<double> eta_component =
+                  calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+                                                  phase_function_values, n_phases_per_composition).first;
+
+                // For each composition of the independent component, compute the derivative.
+                for (unsigned int composition_index = 0; composition_index < eta_component.size(); ++composition_index)
+                  {
+                    // compute the difference between the viscosity with and without the strain-rate difference.
+                    double viscosity_derivative = eta_component[composition_index] - composition_viscosities[composition_index];
+                    if (viscosity_derivative != 0)
+                      {
+                        // when the difference is non-zero, divide by the difference.
+                        viscosity_derivative /= std::max(std::fabs(strain_rate_difference[strain_rate_indices]), min_strain_rate)
+                                                * finite_difference_accuracy;
+                      }
+                    composition_viscosities_derivatives[composition_index][strain_rate_indices] = viscosity_derivative;
+                  }
+              }
+
+            /**
+             * Now compute the derivative of the viscosity to the pressure
+             */
+            const double pressure_difference = in.pressure[i] + (std::fabs(in.pressure[i]) * finite_difference_accuracy);
+
+            in_derivatives.pressure[i] = pressure_difference;
+
+            // Modify the in_derivatives object again to take the original strain rate.
+            in_derivatives.strain_rate[i] = in.strain_rate[i];
+
+            const std::vector<double> viscosity_difference =
+              calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
+                                              phase_function_values, n_phases_per_composition).first;
+
+            for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
+              {
+                double viscosity_derivative = viscosity_difference[composition_index] - composition_viscosities[composition_index];
+                if (viscosity_difference[composition_index] != 0)
+                  {
+                    if (in.pressure[i] != 0)
+                      {
+                        viscosity_derivative /= std::fabs(in.pressure[i]) * finite_difference_accuracy;
+                      }
+                    else
+                      {
+                        viscosity_derivative = 0;
+                      }
+                  }
+                composition_dviscosities_dpressure[composition_index] = viscosity_derivative;
+              }
+
+            double viscosity_averaging_p = 0; // Geometric
+            if (viscosity_averaging == MaterialUtilities::harmonic)
+              viscosity_averaging_p = -1;
+            if (viscosity_averaging == MaterialUtilities::arithmetic)
+              viscosity_averaging_p = 1;
+            if (viscosity_averaging == MaterialUtilities::maximum_composition)
+              viscosity_averaging_p = 1000;
+
+
+            derivatives->viscosity_derivative_wrt_strain_rate[i] =
+              Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                               volume_fractions,
+                                                               composition_viscosities,
+                                                               composition_viscosities_derivatives,
+                                                               viscosity_averaging_p);
+            derivatives->viscosity_derivative_wrt_pressure[i] =
+              Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
+                                                               volume_fractions,
+                                                               composition_viscosities,
+                                                               composition_dviscosities_dpressure,
+                                                               viscosity_averaging_p);
+          }
+      }
+
+
+      template <int dim>
+      ComponentMask
+      ViscoPlastic<dim>::
+      get_volumetric_composition_mask() const
+      {
+        // Store which components to exclude during the volume fraction computation.
+        ComponentMask composition_mask = strain_rheology.get_strain_composition_mask();
+
+        if (use_elasticity)
+          {
+            for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+              composition_mask.set(i,false);
+          }
+
+        return composition_mask;
       }
 
 

@@ -34,6 +34,8 @@
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
 
+#include<deal.II/fe/component_mask.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -63,6 +65,29 @@ namespace aspect
                                             const std::vector<double> &phase_function_values = std::vector<double>(),
                                             const std::vector<unsigned int> &n_phases_per_composition =
                                               std::vector<unsigned int>()) const;
+
+          /**
+           * A function that fills the viscosity derivatives in the
+           * MaterialModelOutputs object that is handed over, if they exist.
+           * Does nothing otherwise.
+           */
+          void compute_viscosity_derivatives(const unsigned int point_index,
+                                             const std::vector<double> &volume_fractions,
+                                             const std::vector<double> &composition_viscosities,
+                                             const MaterialModel::MaterialModelInputs<dim> &in,
+                                             MaterialModel::MaterialModelOutputs<dim> &out,
+                                             const std::vector<double> &phase_function_values = std::vector<double>(),
+                                             const std::vector<unsigned int> &n_phases_per_composition =
+                                               std::vector<unsigned int>()) const;
+
+
+          /**
+           * A function that returns a ComponentMask that represents all compositional
+           * fields that should be considered 'volumetric', that is representing a
+           * physical proportion of the material, e.g. volume fraction of peridotite
+           * (as opposed to non-volumetric quantities like the amount of finite-strain).
+           */
+          ComponentMask get_volumetric_composition_mask() const;
 
           /**
            * Declare the parameters this function takes through input files.
