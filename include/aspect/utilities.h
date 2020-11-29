@@ -1355,9 +1355,9 @@ namespace aspect
     template <int dim>
     SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k);
 
-    /*
-    * A class that represents a point in a chosen coordinate system.
-    */
+    /**
+     * A class that represents a point in a chosen coordinate system.
+     */
     template <int dim>
     class NaturalCoordinate
     {
