@@ -21,19 +21,10 @@
 #ifndef _aspect_material_model_visco_plastic_h
 #define _aspect_material_model_visco_plastic_h
 
+#include <aspect/simulator_access.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
-#include <aspect/simulator_access.h>
 #include <aspect/material_model/rheology/visco_plastic.h>
-
-#include <aspect/material_model/rheology/strain_dependent.h>
-#include <aspect/material_model/rheology/diffusion_creep.h>
-#include <aspect/material_model/rheology/dislocation_creep.h>
-#include <aspect/material_model/rheology/frank_kamenetskii.h>
-#include <aspect/material_model/rheology/peierls_creep.h>
-#include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
-#include <aspect/material_model/rheology/drucker_prager.h>
-#include <aspect/material_model/rheology/elasticity.h>
 
 #include<deal.II/fe/component_mask.h>
 
