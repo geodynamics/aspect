@@ -22,15 +22,17 @@
 #define _aspect_material_model_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
+
+#include <aspect/material_model/rheology/strain_dependent.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
-#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 #include <aspect/material_model/rheology/elasticity.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -276,28 +278,9 @@ namespace aspect
 
       private:
 
-        double min_strain_rate;
-        double ref_strain_rate;
-        double min_visc;
-        double max_visc;
-        double ref_visc;
-
-        std::vector<double> thermal_diffusivities;
-
         /**
-         * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
-         */
-        bool define_conductivities;
-
-        std::vector<double> thermal_conductivities;
-
-        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
-
-        /**
-         * Enumeration for selecting which viscosity averaging scheme to use.
-         */
-        MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
-
+        * For some reason enums need to be copied...
+        */
         /**
          * Enumeration for selecting which type of viscous flow law to use.
          * Select between diffusion, dislocation or composite.
@@ -321,24 +304,20 @@ namespace aspect
         } yield_mechanism;
 
         /**
-         * Whether to allow negative pressures to be used in the computation
-         * of plastic yield stresses and viscosities. If false, the minimum
-         * pressure in the plasticity formulation will be set to zero.
+         * Object for computing viscosities.
          */
-        bool allow_negative_pressures_in_plasticity;
+        std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
+
+        std::vector<double> thermal_diffusivities;
 
         /**
-         * This function calculates viscosities assuming that all the compositional fields
-         * experience the same strain rate (isostrain).
+         * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
          */
-        std::pair<std::vector<double>, std::vector<bool> >
-        calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
-                                          const unsigned int i,
-                                          const std::vector<double> &volume_fractions,
-                                          const ViscosityScheme &viscous_type,
-                                          const YieldScheme &yield_type,
-                                          const std::vector<double> &phase_function_values = std::vector<double>()) const;
+        bool define_conductivities;
 
+        std::vector<double> thermal_conductivities;
+
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
         /**
          * A function that fills the plastic additional output in the
@@ -372,63 +351,11 @@ namespace aspect
          */
         ComponentMask get_volumetric_composition_mask() const;
 
-        std::vector<double> exponents_stress_limiter;
-
-        /**
-         * temperature gradient added to temperature used in the flow law.
-         */
-        double adiabatic_temperature_gradient_for_viscosity;
-
-        Rheology::StrainDependent<dim> strain_rheology;
-
-        /**
-         * Objects for computing viscous creep viscosities.
-         */
-        Rheology::DiffusionCreep<dim> diffusion_creep;
-        Rheology::DislocationCreep<dim> dislocation_creep;
-        std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
-
-        /**
-         * Whether to include peierls creep in the constitutive formulation.
-         */
-        bool use_peierls_creep;
-
-        /**
-         * Objects for computing peierls creep viscosities.
-         */
-        std::unique_ptr<Rheology::PeierlsCreep<dim> > peierls_creep;
-
-        /**
-         * Object for computing the viscosity multiplied by a constant prefactor.
-         * This multiplication step is done just prior to calculating the effective
-         * viscoelastic viscosity or plastic viscosity.
-         */
-        Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
-
-        /*
-         * Objects for computing plastic stresses, viscosities, and additional outputs
-         */
-        Rheology::DruckerPrager<dim> drucker_prager_plasticity;
-
-        /*
-         * Input parameters for the drucker prager plasticity.
-         */
-        Rheology::DruckerPragerParameters drucker_prager_parameters;
-
         /**
          * Object that handles phase transitions.
          */
         MaterialUtilities::PhaseFunction<dim> phase_function;
 
-        /**
-         * Object for computing viscoelastic viscosities and stresses.
-         */
-        Rheology::Elasticity<dim> elastic_rheology;
-
-        /**
-         * Whether to include viscoelasticity in the constitutive formulation.
-         */
-        bool use_elasticity;
     };
 
   }
