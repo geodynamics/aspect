@@ -81,7 +81,7 @@ namespace aspect
       const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
       const unsigned int entropy_index = this->introspection().compositional_index_for_name("entropy");
 
-      for (unsigned int i=0; i < in.temperature.size(); ++i)
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           // Use the adiabatic pressure instead of the real one,
           // to stabilize against pressure oscillations in phase transitions.
@@ -198,14 +198,14 @@ namespace aspect
     {
       if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
       if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedFieldOutputs<dim> >
             (n_points, this->n_compositional_fields()));
@@ -213,7 +213,7 @@ namespace aspect
 
       if (out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
         {
-          const unsigned int n_points = out.viscosities.size();
+          const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim> >
             (n_points));
