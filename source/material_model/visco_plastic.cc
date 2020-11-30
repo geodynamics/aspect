@@ -31,18 +31,6 @@ namespace aspect
   namespace MaterialModel
   {
 
-    namespace
-    {
-      std::vector<std::string> make_plastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("current_cohesions");
-        names.emplace_back("current_friction_angles");
-        names.emplace_back("plastic_yielding");
-        return names;
-      }
-    }
-
     template <int dim>
     bool
     ViscoPlastic<dim>::
@@ -113,7 +101,6 @@ namespace aspect
                                                                    gravity_norm*reference_density,
                                                                    numbers::invalid_unsigned_int);
 
-
           for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
             {
               phase_inputs.phase_index = j;
@@ -124,7 +111,6 @@ namespace aspect
       /* The following returns whether or not the material is plastically yielding
        * as documented in evaluate.
        */
-
       const std::pair<std::vector<double>, std::vector<bool>> calculate_viscosities =
                                                              rheology->calculate_isostrain_viscosities(in, 0, volume_fractions, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
 
@@ -132,71 +118,6 @@ namespace aspect
       const bool plastic_yielding = calculate_viscosities.second[std::distance(volume_fractions.begin(), max_composition)];
 
       return plastic_yielding;
-    }
-
-
-
-    template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-      cohesions(n_points, numbers::signaling_nan<double>()),
-      friction_angles(n_points, numbers::signaling_nan<double>()),
-      yielding(n_points, numbers::signaling_nan<double>())
-    {}
-
-    template <int dim>
-    std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 3);
-      switch (idx)
-        {
-          case 0:
-            return cohesions;
-
-          case 1:
-            return friction_angles;
-
-          case 2:
-            return yielding;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // We will never get here, so just return something
-      return cohesions;
-    }
-
-
-
-    template <int dim>
-    void
-    ViscoPlastic<dim>::
-    fill_plastic_outputs(const unsigned int i,
-                         const std::vector<double> &volume_fractions,
-                         const bool plastic_yielding,
-                         const MaterialModel::MaterialModelInputs<dim> &in,
-                         MaterialModel::MaterialModelOutputs<dim> &out) const
-    {
-      PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
-
-      if (plastic_out != nullptr)
-        {
-          plastic_out->cohesions[i] = 0;
-          plastic_out->friction_angles[i] = 0;
-          plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
-
-          // set to weakened values, or unweakened values when strain weakening is not used
-          for (unsigned int j=0; j < volume_fractions.size(); ++j)
-            {
-              // Calculate the strain weakening factors and weakened values
-              const std::array<double, 3> weakening_factors = rheology->strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
-              plastic_out->cohesions[i]   += volume_fractions[j] * (rheology->drucker_prager_parameters.cohesions[j] * weakening_factors[0]);
-              // Also convert radians to degrees
-              plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (rheology->drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1]);
-            }
-        }
     }
 
 
@@ -329,7 +250,7 @@ namespace aspect
           rheology->strain_rheology.fill_reaction_outputs(in, i, rheology->min_strain_rate, plastic_yielding, out);
 
           // Fill plastic outputs if they exist.
-          fill_plastic_outputs(i,volume_fractions,plastic_yielding,in,out);
+          rheology->fill_plastic_outputs(i,volume_fractions,plastic_yielding,in,out);
 
           if (rheology->use_elasticity)
             {
@@ -356,6 +277,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     double
     ViscoPlastic<dim>::
@@ -363,6 +286,8 @@ namespace aspect
     {
       return rheology->ref_visc;
     }
+
+
 
     template <int dim>
     bool
@@ -372,12 +297,16 @@ namespace aspect
       return equation_of_state.is_compressible();
     }
 
+
+
     template <int dim>
     double ViscoPlastic<dim>::
     get_min_strain_rate () const
     {
       return rheology->min_strain_rate;
     }
+
+
 
     template <int dim>
     void
@@ -475,16 +404,14 @@ namespace aspect
       this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
     }
 
+
+
     template <int dim>
     void
     ViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
-        }
+      rheology->create_plastic_outputs(out);
+
       if (rheology->use_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
     }

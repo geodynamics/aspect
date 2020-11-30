@@ -42,6 +42,40 @@ namespace aspect
   {
     using namespace dealii;
 
+    /**
+     * Additional output fields for the plastic parameters weakened (or hardened)
+     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::Interface::evaluate() function.
+     */
+    template <int dim>
+    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PlasticAdditionalOutputs(const unsigned int n_points);
+
+        std::vector<double> get_nth_output(const unsigned int idx) const override;
+
+        /**
+         * Cohesions at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> cohesions;
+
+        /**
+         * Internal angles of friction at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> friction_angles;
+
+        /**
+         * The area where the viscous stress exceeds the plastic yield stress,
+         * and viscosity is rescaled back to the yield envelope.
+         */
+        std::vector<double> yielding;
+    };
+
     namespace Rheology
     {
 
@@ -108,7 +142,23 @@ namespace aspect
                             const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
                               std::shared_ptr<std::vector<unsigned int>>());
 
+          /**
+           * Create the additional material model outputs object that contains the
+           * plastic outputs.
+           */
+          void
+          create_plastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+          /**
+           * A function that fills the plastic additional output in the
+           * MaterialModelOutputs object that is handed over, if it exists.
+           * Does nothing otherwise.
+           */
+          void fill_plastic_outputs (const unsigned int point_index,
+                                     const std::vector<double> &volume_fractions,
+                                     const bool plastic_yielding,
+                                     const MaterialModel::MaterialModelInputs<dim> &in,
+                                     MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           double ref_visc;
           double min_strain_rate;
@@ -120,10 +170,7 @@ namespace aspect
 
 
           Rheology::StrainDependent<dim> strain_rheology;
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
+
           /**
            * Object for computing viscoelastic viscosities and stresses.
            */
@@ -136,7 +183,6 @@ namespace aspect
 
 
         private:
-
           double ref_strain_rate;
           double min_visc;
           double max_visc;
@@ -204,6 +250,10 @@ namespace aspect
            * Objects for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+          /*
+           * Input parameters for the drucker prager plasticity.
+           */
+          Rheology::DruckerPragerParameters drucker_prager_parameters;
 
       };
     }
