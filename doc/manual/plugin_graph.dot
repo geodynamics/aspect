@@ -700,6 +700,9 @@ SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors13ParticleC
 N6aspect11Postprocess27VisualizationPostprocessors9PartitionILi2EEE [label="partition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors9PartitionILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors9PartitionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect11Postprocess27VisualizationPostprocessors15PrincipalStressILi2EEE [label="principal\nstress", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect11Postprocess27VisualizationPostprocessors15PrincipalStressILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors15PrincipalStressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect11Postprocess27VisualizationPostprocessors11ShearStressILi2EEE [label="shear stress", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect11Postprocess27VisualizationPostprocessors11ShearStressILi2EEE -> N6aspect11Postprocess27VisualizationPostprocessors9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect11Postprocess27VisualizationPostprocessors11ShearStressILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
