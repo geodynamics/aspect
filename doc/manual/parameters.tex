@@ -8335,7 +8335,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  Combining this viscoelasticity implementation with non-linear viscous flow and plasticity produces a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
 
- The overview below directly follows Moresi et al. (2003) eqns. 23-38. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than tracers, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with tracers is implemented. 
+ The overview below directly follows Moresi et al. (2003) eqns. 23-38. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than particles, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with particles is implemented. 
 
  Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\nabla}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\nabla}{\tau}$ is the Jaumann corotational stress rate. This later term (eqn. 24) contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\nabla}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
 
@@ -8360,7 +8360,7 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 
  Expanding the model to include non-linear viscous flow (e.g., diffusion/dislocation creep) and plasticity would produce a constitutive relationship commonly referred to as partial elastoviscoplastic (e.g., pEVP) in the geodynamics community. While extensively discussed and applied within the geodynamics literature, notable references include: Moresi et al. (2003), J. Comp. Phys., v. 184, p. 476-497. Gerya and Yuen (2007), Phys. Earth. Planet. Inter., v. 163, p. 83-105. Gerya (2010), Introduction to Numerical Geodynamic Modeling. Kaus (2010), Tectonophysics, v. 484, p. 36-47. Choi et al. (2013), J. Geophys. Res., v. 118, p. 2429-2444. Keller et al. (2013), Geophys. J. Int., v. 195, p. 1406-1442. 
 
- The overview below directly follows Moresi et al. (2003) eqns. 23-32. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than tracers, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with tracers is implemented. 
+ The overview below directly follows Moresi et al. (2003) eqns. 23-32. However, an important distinction between this material model and the studies above is the use of compositional fields, rather than particles, to track individual components of the viscoelastic stress tensor. The material model will be updated when an option to track and calculate viscoelastic stresses with particles is implemented. 
 
  Moresi et al. (2003) begins (eqn. 23) by writing the deviatoric rate of deformation ($\hat{D}$) as the sum of elastic ($\hat{D_{e}}$) and viscous ($\hat{D_{v}}$) components: $\hat{D} = \hat{D_{e}} + \hat{D_{v}}$.  These terms further decompose into $\hat{D_{v}} = \frac{\tau}{2\eta}$ and $\hat{D_{e}} = \frac{\overset{\nabla}{\tau}}{2\mu}$, where $\tau$ is the viscous deviatoric stress, $\eta$ is the shear viscosity, $\mu$ is the shear modulus and $\overset{\nabla}{\tau}$ is the Jaumann corotational stress rate. This later term (eqn. 24) contains the time derivative of the deviatoric stress ($\dot{\tau}$) and terms that account for material spin (e.g., rotation) due to advection: $\overset{\nabla}{\tau} = \dot{\tau} + {\tau}W -W\tau$. Above, $W$ is the material spin tensor (eqn. 25): $W_{ij} = \frac{1}{2} \left (\frac{\partial V_{i}}{\partial x_{j}} - \frac{\partial V_{j}}{\partial x_{i}} \right )$. 
 
@@ -14529,6 +14529,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Allow negative pressures in plasticity}
+\phantomsection\label{parameters:Material model/Visco Plastic/Allow negative pressures in plasticity}
+\label{parameters:Material_20model/Visco_20Plastic/Allow_20negative_20pressures_20in_20plasticity}
+
+
+\index[prmindex]{Allow negative pressures in plasticity}
+\index[prmindexfull]{Material model!Visco Plastic!Allow negative pressures in plasticity}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to allow negative pressures to be used in the computation of plastic yield stresses and viscosities. Setting this parameter to true may be advantageous in models without gravity where the dynamic stresses are much higher than the lithostatic pressure. If false, the minimum pressure in the plasticity formulation will be set to zero.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Angles of internal friction}
 \phantomsection\label{parameters:Material model/Visco Plastic/Angles of internal friction}
 \label{parameters:Material_20model/Visco_20Plastic/Angles_20of_20internal_20friction}
@@ -15107,6 +15124,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Plastic damper viscosity}
+\phantomsection\label{parameters:Material model/Visco Plastic/Plastic damper viscosity}
+\label{parameters:Material_20model/Visco_20Plastic/Plastic_20damper_20viscosity}
+
+
+\index[prmindex]{Plastic damper viscosity}
+\index[prmindexfull]{Material model!Visco Plastic!Plastic damper viscosity}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Viscous damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Prefactor strain weakening factors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Prefactor strain weakening factors}
 \label{parameters:Material_20model/Visco_20Plastic/Prefactor_20strain_20weakening_20factors}
@@ -15517,6 +15551,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any one of true, false, unspecified
+\item {\it Parameter name:} {\tt Use plastic damper}
+\phantomsection\label{parameters:Material model/Visco Plastic/Use plastic damper}
+\label{parameters:Material_20model/Visco_20Plastic/Use_20plastic_20damper}
+
+
+\index[prmindex]{Use plastic damper}
+\index[prmindexfull]{Material model!Visco Plastic!Use plastic damper}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a plastic damper when computing the drucker-prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Use stress averaging}
 \phantomsection\label{parameters:Material model/Visco Plastic/Use stress averaging}
 \label{parameters:Material_20model/Visco_20Plastic/Use_20stress_20averaging}
@@ -17188,6 +17239,23 @@ The file format then consists of lines with Euclidean coordinates followed by th
 \label{parameters:Postprocess/Depth_20average}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Depth boundaries of zones}
+\phantomsection\label{parameters:Postprocess/Depth average/Depth boundaries of zones}
+\label{parameters:Postprocess/Depth_20average/Depth_20boundaries_20of_20zones}
+
+
+\index[prmindex]{Depth boundaries of zones}
+\index[prmindexfull]{Postprocess!Depth average!Depth boundaries of zones}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The depth boundaries of zones within which we are to compute averages. By default this list is empty and we subdivide the entire domain into equidistant depth zones and compute averages within each of these zones. If this list is not empty it has to contain one more entry than the 'Number of zones' parameter, representing the upper and lower depth boundary of each zone. It is not necessary to cover the whole depth-range (i.e. you can select to only average in a single layer by choosing 2 arbitrary depths as the boundaries of that layer).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt List of output variables}
 \phantomsection\label{parameters:Postprocess/Depth average/List of output variables}
 \label{parameters:Postprocess/Depth_20average/List_20of_20output_20variables}
@@ -17204,10 +17272,10 @@ The file format then consists of lines with Euclidean coordinates followed by th
 {\it Description:} A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass
 
 
-{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux, vertical mass flux
+{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux, vertical mass flux, composition mass
 \item {\it Parameter name:} {\tt Number of zones}
 \phantomsection\label{parameters:Postprocess/Depth average/Number of zones}
 \label{parameters:Postprocess/Depth_20average/Number_20of_20zones}
@@ -19226,7 +19294,9 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 `partition': A visualization output object that generates output for the parallel partition that every cell of the mesh is associated with.
 
-`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. The shear stress differs from the full stress tensor by the absence of the pressure.
+`principal stress': A visualization output object that outputs the principal stress values and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. The postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor.
+
+`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed. 
 
 `spd factor': A visualization output object that generates output for the spd factor. The spd factor is a factor which scales a part of the Jacobian used for the Newton solver to make sure that the Jacobian remains positive definite.
 
@@ -19236,13 +19306,13 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 `strain rate tensor': A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
 
-`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
+`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. Note that the convention of positive compressive stress is followed. 
 
 `surface dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 
 In contrast to the `dynamic topography' visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to `bottom' and `top' boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
 
-`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case.
+`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. Note that the convention of positive compressive stress is followed. 
 
 `temperature anomaly': A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the ``depth average'' postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''
 
@@ -19253,7 +19323,7 @@ In contrast to the `dynamic topography' visualization postprocessor, this plugin
 `volumetric strain rate': A visualization output object that generates output for the volumetric strain rate, i.e., for the quantity $\nabla\cdot\mathbf u = \textrm{div}\; \mathbf u = \textrm{trace}\; \varepsilon(\mathbf u)$. This should be zero (in some average sense) in incompressible convection models, but can be non-zero in compressible models and models with melt transport.
 
 
-{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, boundary velocity residual, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, surface dynamic topography, surface stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
+{\it Possible values:} A comma-separated list of any of ISA rotation timescale, Vp anomaly, Vs anomaly, adiabat, artificial viscosity, artificial viscosity composition, boundary indicators, boundary velocity residual, compositional vector, depth, dynamic topography, error indicator, geoid, grain lag angle, gravity, heat flux map, heating, material properties, maximum horizontal compressive stress, melt fraction, melt material properties, named additional outputs, nonadiabatic pressure, nonadiabatic temperature, particle count, partition, principal stress, shear stress, spd factor, spherical velocity components, strain rate, strain rate tensor, stress, surface dynamic topography, surface stress, temperature anomaly, vertical heat flux, volume of fluid values, volumetric strain rate, density, specific heat, thermal conductivity, thermal diffusivity, thermal expansivity, viscosity
 \item {\it Parameter name:} {\tt Number of grouped files}
 \phantomsection\label{parameters:Postprocess/Visualization/Number of grouped files}
 \label{parameters:Postprocess/Visualization/Number_20of_20grouped_20files}
@@ -19860,6 +19930,29 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 
 
 {\it Possible values:} A comma-separated list of any of compaction viscosity, fluid viscosity, permeability, fluid density, fluid density gradient, is melt cell, darcy coefficient, darcy coefficient no cutoff, compaction length
+\end{itemize}
+
+\subsection{Parameters in section \tt Postprocess/Visualization/Principal stress}
+\label{parameters:Postprocess/Visualization/Principal_20stress}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Use deviatoric stress}
+\phantomsection\label{parameters:Postprocess/Visualization/Principal stress/Use deviatoric stress}
+\label{parameters:Postprocess/Visualization/Principal_20stress/Use_20deviatoric_20stress}
+
+
+\index[prmindex]{Use deviatoric stress}
+\index[prmindexfull]{Postprocess!Visualization!Principal stress/Use deviatoric stress}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use the deviatoric stress tensor instead of the full stress tensor to compute principal stress directions and values.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Visualization/Temperature anomaly}
