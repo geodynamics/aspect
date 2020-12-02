@@ -80,10 +80,6 @@ namespace aspect
         {
           EquationOfState::LinearizedIncompressible<dim>::declare_parameters (prm);
 
-          prm.declare_entry ("Reference temperature", "293.",
-                             Patterns::Double (0.),
-                             "The reference temperature $T_0$. The reference temperature is used "
-                             "in the density formula. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
                              "The value of the thermal conductivity $k$. "
@@ -107,7 +103,6 @@ namespace aspect
         {
           equation_of_state.parse_parameters (prm);
 
-          reference_T                = prm.get_double ("Reference temperature");
           k_value                    = prm.get_double ("Thermal conductivity");
 
           constant_rheology.parse_parameters(prm);

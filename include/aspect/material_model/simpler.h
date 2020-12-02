@@ -76,7 +76,6 @@ namespace aspect
          */
 
       private:
-        double reference_T;
         double k_value;
 
         Rheology::ConstantViscosity constant_rheology;
