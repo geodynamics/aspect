@@ -18,7 +18,6 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
 #include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
@@ -28,8 +27,6 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/base/signaling_nan.h>
-
 
 namespace aspect
 {
