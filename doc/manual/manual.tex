@@ -1674,7 +1674,38 @@ considering velocity, pressure and temperature, we will in the following omit
 the dependence on the compositional fields used in previous sections, though
 this dependence can easily be added back into the equations stated below. A
 detailed discussion of the approximations introduced below can also be found in \cite{STO01} and
-\cite{KLKLZTTK10}.
+\cite{KLKLZTTK10}; a theoretical and practical comparison of many of
+these formulations using \aspect{} can be found in
+\cite{gassmoller2020formulations}.
+
+\note{Historically, the mantle convection community has typically used
+  one or another of these simplified formulations for computer simulations
+  -- oftentimes the simplest of them, the Boussinesq Approximation
+  (BA) discussed in Section~\ref{sec:Boussinesq}. These kinds of
+  approximations are appropriate in many contexts; for example,
+  for crustal dynamics simulations, the hydrostatic pressures are
+  never high enough to lead to noticeable compression effects and as a
+  consequence the density really is more or less independent of the
+  pressure -- as assumed in several of the approximations below. Yet,
+  it is worth pointing out that many older publications showing
+  mantle convection simulations did not
+  rely on these approximations because they describe the physical
+  situation better than equations
+  \eqref{eq:stokes-1}--\eqref{eq:temperature}, but \textit{because
+    simulation technology did not allow for anything else at the
+    time}.
+
+  This has changed today, and \aspect{} implements more realistic
+  formulations as discussed in this section and in
+  Section~\ref{sec:choosing-a-formulation}. As a consequence, you
+  should evaluate which formulation is
+  appropriate for what you want to do. The fact that someone else in
+  the past used a simplified formulation does not mean that you should do
+  the same for a similar situation: it could just indicate that they
+  did not have the technology to use a more complete formulation at the
+  time.
+  }
+
 
 The three approximations mentioned all start by writing the pressure and
 temperature as the sum of a (possibly depth dependent)
@@ -2073,12 +2104,22 @@ from previous time steps), or using a nonlinear solver scheme.
   ``isothermal compression'' for historical reasons, but the compressibility can be
   either isentropic or isothermal.}
 
+
+
 \subsection{Choosing a formulation in \aspect{}}
+\label{sec:choosing-a-formulation}
 
 After discussing different reasonable approximations for modeling compressible or
 incompressible mantle convection, we will now describe the different steps one has
-to take to use one of these approximations in a computation.
-This includes
+to take to use one of these approximations in a computation. As noted
+towards the beginning of Section~\ref{sec:approximate-equations}, one
+should choose a formulation that is adequate for the situation one
+wants to simulate, taking into account that other authors in previous
+studies may have used formulations not because they were suited to the
+situation but also because, possibly, they did not have software
+available that implemented the most suitable formulation.
+
+The choices involved in selecting a formulation include:
 \begin{enumerate}
 \item Choosing an approximation for the mass conservation equation;
 \item Choosing an approximation for the density in the energy balance, and deciding which heating terms should be included;
