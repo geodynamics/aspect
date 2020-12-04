@@ -192,8 +192,8 @@ namespace aspect
          * context, compressibility means whether we should solve the continuity
          * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
          * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-        *
-        * This material model is incompressible.
+         *
+         * This material model is incompressible.
          */
         bool is_compressible () const override;
 
@@ -236,7 +236,15 @@ namespace aspect
       private:
 
         /**
-         * Object for computing viscosities.
+         * Pointer to the object used to compute the rheological properties.
+         * In this case, the rheology in question is visco(elasto)plastic. The
+         * object contains functions for parameter declaration and parsing,
+         * and further functions that calculate viscosity and viscosity
+         * derivatives. It also contains functions that creates and fills
+         * additional material model outputs, specifically plastic outputs.
+         * The rheology itself is a composite rheology, and so the object
+         * contains further objects and/or pointers to objects that provide
+         * functions and parameters for all subordinate rheologies.
          */
         std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
 
@@ -250,7 +258,7 @@ namespace aspect
         std::vector<double> thermal_conductivities;
 
         /**
-         * Object for computing the equation of state
+         * Object for computing the equation of state.
          */
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
 
