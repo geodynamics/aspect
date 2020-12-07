@@ -321,7 +321,7 @@ namespace aspect
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
-            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|"
+            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|log viscosity|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
@@ -468,6 +468,9 @@ namespace aspect
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "viscosity") != output_variables.end() )
               variables.emplace_back("viscosity");
+
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "log viscosity") != output_variables.end() )
+              variables.emplace_back("log_viscosity");
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "vertical heat flux") != output_variables.end() )
               variables.emplace_back("vertical_heat_flux");

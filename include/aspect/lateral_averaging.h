@@ -238,6 +238,16 @@ namespace aspect
       get_viscosity_averages(std::vector<double> &values) const;
 
       /**
+       * Compute a lateral average of the log10 of the current viscosity.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_log_viscosity_averages(std::vector<double> &values) const;
+
+      /**
        * Compute a lateral average of the current velocity magnitude.
        *
        * @param values The output vector of laterally averaged values. The

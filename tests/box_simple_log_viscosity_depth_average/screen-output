@@ -1,0 +1,28 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 576 (on 1 levels)
+Number of degrees of freedom: 7,828 (4,802+625+2,401)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 94+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:                  5.45e-15 m/year, 2.27e-14 m/year
+     Temperature min/avg/max:            273 K, 1936 K, 2773 K
+     Heat fluxes through boundary parts: 0 W, 0 W, 7.575e-10 W, 1.793e-11 W
+     Writing depth average:              output-box_simple_log_viscosity_depth_average/depth_average
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
