@@ -106,6 +106,9 @@ namespace aspect
                            "case the factor needs to be increased slightly. Setting the factor to "
                            "infinity is equivalent to not applying elastic stresses at all. The "
                            "factor is multiplied with the computational time step to create a time scale. ");
+         prm.declare_entry ("Elastic damper viscosity", "0.0", Patterns::Double(0),
+                            "Viscous damper that acts in parallel with the elastic viscosity "
+                            "to stabilise behavior. Units: \\si{\\pascal\\second}");
       }
 
 
@@ -120,6 +123,9 @@ namespace aspect
         elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
                                                                        n_fields,
                                                                        "Elastic shear moduli");
+
+        // Stabilize elasticity through a viscous damper
+        elastic_damper_viscosity = prm.get_double("Elastic damper viscosity");
 
         if (prm.get ("Use fixed elastic time step") == "true")
           use_fixed_elastic_time_step = true;
@@ -241,7 +247,6 @@ namespace aspect
 
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
-            const double dte = elastic_timestep();
 
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               {
@@ -254,7 +259,7 @@ namespace aspect
                 const double average_viscoelastic_viscosity = out.viscosities[i];
 
                 // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-                force_out->elastic_force[i] = -1. * ( ( average_viscoelastic_viscosity / ( average_elastic_shear_moduli[i] * dte  ) ) * stress_old );
+                force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
 
               }
           }
@@ -311,10 +316,8 @@ namespace aspect
                 // vorticity and prior (inherited) viscoelastic stresses (see equation 29 in Moresi et al.,
                 // 2003, J. Comp. Phys.)
                 SymmetricTensor<2,dim> stress_new = ( 2. * average_viscoelastic_viscosity * deviator(in.strain_rate[i]) ) +
-                                                    ( ( average_viscoelastic_viscosity / ( average_elastic_shear_moduli[i] * dte ) ) * stress_old ) +
-                                                    ( ( average_viscoelastic_viscosity / average_elastic_shear_moduli[i] ) *
-                                                      ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) );
-
+                                                    ( ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) ) *
+                                                      (stress_old + dte * ( symmetrize(rotation * Tensor<2,dim>(stress_old) ) - symmetrize(Tensor<2,dim>(stress_old) * rotation) ) ) );
                 // Stress averaging scheme to account for difference between fixed elastic time step
                 // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
                 if (use_stress_averaging == true)
@@ -369,10 +372,20 @@ namespace aspect
       template <int dim>
       double
       Elasticity<dim>::
-      calculate_viscoelastic_viscosity (const double viscosity,
-                                        const double elastic_shear_modulus) const
+      calculate_elastic_viscosity (const double shear_modulus) const
       {
-        const double elastic_viscosity = elastic_shear_modulus*elastic_timestep();
+        return shear_modulus*elastic_timestep() + elastic_damper_viscosity;
+      }
+
+
+
+      template <int dim>
+      double
+      Elasticity<dim>::
+      calculate_viscoelastic_viscosity (const double viscosity,
+                                        const double shear_modulus) const
+      {
+        const double elastic_viscosity = calculate_elastic_viscosity(shear_modulus);
         return 1. / (1./elastic_viscosity + 1./viscosity);
       }
 
@@ -390,7 +403,7 @@ namespace aspect
         // viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
         const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stress /
-                                                     (shear_modulus * elastic_timestep());
+                                                     calculate_elastic_viscosity(shear_modulus);
 
         return std::sqrt(std::fabs(second_invariant(edot_deviator)));
       }
