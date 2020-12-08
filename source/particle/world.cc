@@ -118,6 +118,9 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        to_particle_handler.copy_from(from_particle_handler);
+#else
         // initialize to_particle_handler
         const unsigned int n_properties = property_manager->get_n_property_components();
         to_particle_handler.clear();
@@ -135,10 +138,8 @@ namespace aspect
                                                    particle.get_reference_location(),
                                                    particle.get_id());
 
-#if !DEAL_II_VERSION_GTE(9,3,0)
             new_particle.set_property_pool(to_particle_handler.get_property_pool());
             new_particle.set_properties(particle.get_properties());
-#endif
 
 #ifdef DEAL_II_WITH_CXX14
             new_particles.emplace_hint(new_particles.end(),
@@ -150,26 +151,18 @@ namespace aspect
                                                 std::move(new_particle)));
 #endif
           }
-
         to_particle_handler.insert_particles(new_particles);
-
-#if DEAL_II_VERSION_GTE(9,3,0)
-        auto from_particle = from_particle_handler.begin();
-        for (auto &particle : to_particle_handler)
-          {
-            particle.set_properties(from_particle->get_properties());
-            ++from_particle;
-          }
 #endif
-
       }
 
+#if !DEAL_II_VERSION_GTE(9,3,0)
       if (update_ghost_particles &&
           dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
           to_particle_handler.exchange_ghost_particles();
         }
+#endif
     }
 
 
