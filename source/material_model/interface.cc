@@ -283,7 +283,11 @@ namespace aspect
       velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
       strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+#if DEAL_II_VERSION_GTE(9,3,0)
+      current_cell(input_data.template get_cell<dim>()),
+#else
       current_cell(input_data.template get_cell<DoFHandler<dim> >()),
+#endif
       requested_properties(MaterialProperties::all_properties)
     {
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
