@@ -1,4 +1,4 @@
-<li> Improved: Data loading in AsciiDataLookup has been refactored to be more
+Improved: Data loading in AsciiDataLookup has been refactored to be more
 robust (errors in incorrect coordinate values are now being reported when
 detected) and data can be set directly without going through a text file by
 calling reinit() directly. This adds the possibility for other file formats in

@@ -1,4 +1,4 @@
-<li> New: We now support the CMake option ASPECT_UNITY_BUILD (ON by default)
+New: We now support the CMake option ASPECT_UNITY_BUILD (ON by default)
 and a rewritten ASPECT_PRECOMPILE_HEADERS option (ON by default) if you use
 CMake 3.16 or newer. Both options combined can speed up compilation by more
 than 3x.

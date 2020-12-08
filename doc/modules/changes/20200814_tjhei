@@ -1,4 +1,4 @@
-<li> New: A new class TimeStepping::Manager to control time stepping with a
+New: A new class TimeStepping::Manager to control time stepping with a
 plugin architecture has been added.
 <br>
 (Timo Heister, 2020/08/14)

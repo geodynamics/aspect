@@ -1,4 +1,4 @@
-<li> Fixed: The latent heat and latent heat melt material models now 
+Fixed: The latent heat and latent heat melt material models now 
 use the adiabatic temperature as the reference temperature for the 
 viscosity if adiabatic heating is switched on (and hence, the 
 geotherm is an adiabat rather than a constant temperature). 

@@ -1,4 +1,4 @@
-<li> Changed: The steinberger material model now performs
+Changed: The steinberger material model now performs
 consistent averaging of material properties when multiple
 material lookups are used. Specifically, the density,
 thermal expansivity, compressibility and phase volume fractions
