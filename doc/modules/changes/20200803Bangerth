@@ -1,4 +1,4 @@
-<li> New: ASPECT now supports the creation of visualization
+New: ASPECT now supports the creation of visualization
 postprocessors that only output data on the surface of a model. An
 example is the "surface stress" visualization postprocessor.
 <br>

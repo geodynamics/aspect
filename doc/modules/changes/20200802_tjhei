@@ -1,4 +1,4 @@
-<li> New: Additional compiler flags can be set using the CMake variable
+New: Additional compiler flags can be set using the CMake variable
 ASPECT_ADDITIONAL_CXX_FLAGS.
 <br>
 (Timo Heister, 2020/08/02)

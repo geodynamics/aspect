@@ -1,4 +1,4 @@
-<li> New: A rheology module for Peierls creep has been added
+New: A rheology module for Peierls creep has been added
 (namespace MaterialModel::Rheology::PeierlsCreep). This module 
 is used to define parameters for Peierls creep and compute an approximate
 viscosity, which is integrated in the visco_plastic material model.

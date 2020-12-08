@@ -1,4 +1,4 @@
-<li> New: Added a new benchmark that examines shortening of a
+New: Added a new benchmark that examines shortening of a
 visco-plastic or viscoelastic-plastic block in the absence of 
 gravity. The benchmark is modified from Exercise 13.2 in 
 Gerya 2019 (Introduction to Numerical Geodynamic Modeling).
