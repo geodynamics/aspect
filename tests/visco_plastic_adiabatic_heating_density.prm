@@ -1,0 +1,112 @@
+# A test with the visco_plastic material model to ensure
+# that the multicomponent_incompressible EOS module
+# uses the adiabatic temperature to compute density when
+# adiabatic heating is turned on. The formula specified
+# in this test follows the Extended Boussinesq approximation.
+# The initial temperature throughout the model is equal to 
+# the adiabatic temperature profile. As a result, the 
+# the absolute density should be constant throughout the
+# model and equal to the background values specified in 
+# material model (3300 kg m^-3):
+#   density = background_density * ( 1 - thermal_expansivity * (temperature - reference_temperature)),
+# where the reference_temperature is the depth-dependent
+# adiabatic temperature. If adiabatic heating was not 
+# used in the model, then the reference temperature 
+# would be the constant value specified in the material
+# model (273 K), which would produce different density values.
+
+# Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, iterated Stokes
+set Max nonlinear iterations               = 1
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1573
+
+# In combination with simplified adiabatic and shear heating,
+# the parameters give the Extended Boussinesq approximation.
+subsection Formulation
+  set Formulation          = custom
+  set Mass conservation    = incompressible
+  set Temperature equation = reference density profile
+end
+
+subsection Heating model
+  set List of model names = shear heating, adiabatic heating
+  subsection Adiabatic heating
+    set Use simplified adiabatic heating = true
+  end
+end
+
+# Model geometry (100x100 km, 100 km spacing)
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# No mesh refinement
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# All boundaries have a fixed temperature
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators  = bottom, top, left, right
+  set Model name = initial temperature
+end
+
+# The initial temperature profile is equal to the adiabatic temperature profile.
+subsection Initial temperature model
+  set Model name = adiabatic
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, top, left, right
+end
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    # Since adiabatic heating is used, the reference temperature
+    # specified below will be ignored and the density formulation
+    # will use the adiabatic temperature.
+    set Reference temperature = 273
+    set Thermal expansivities = 1e-5
+    set Densities             = 3300
+
+    # Constant viscosity
+    set Viscous flow law                         = diffusion
+    set Grain size exponents for diffusion creep = 0.
+    set Prefactors for diffusion creep           = 5.e-22
+    set Activation energies for diffusion creep  = 0.
+    set Activation volumes for diffusion creep   = 0.
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = material statistics, temperature statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = adiabat, density
+    set Output format            = gnuplot
+  end
+end
+

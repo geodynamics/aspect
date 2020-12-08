@@ -1,0 +1,20 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  3300 kg/m^3, 1e+21 Pa s, 3.3e+13 kg
+     Temperature min/avg/max:                           1573 K, 1579 K, 1586 K
+     Writing graphical output:                          output-visco_plastic_adiabatic_heating_density/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+
