@@ -106,9 +106,9 @@ namespace aspect
                            "case the factor needs to be increased slightly. Setting the factor to "
                            "infinity is equivalent to not applying elastic stresses at all. The "
                            "factor is multiplied with the computational time step to create a time scale. ");
-         prm.declare_entry ("Elastic damper viscosity", "0.0", Patterns::Double(0),
-                            "Viscous damper that acts in parallel with the elastic viscosity "
-                            "to stabilize behavior. Units: \\si{\\pascal\\second}");
+        prm.declare_entry ("Elastic damper viscosity", "0.0", Patterns::Double(0),
+                           "Viscosity of a viscous damper that acts in parallel with the elastic "
+                           "element to stabilize behavior. Units: \\si{\\pascal\\second}");
       }
 
 
