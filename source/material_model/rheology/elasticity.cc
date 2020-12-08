@@ -108,7 +108,7 @@ namespace aspect
                            "factor is multiplied with the computational time step to create a time scale. ");
          prm.declare_entry ("Elastic damper viscosity", "0.0", Patterns::Double(0),
                             "Viscous damper that acts in parallel with the elastic viscosity "
-                            "to stabilise behavior. Units: \\si{\\pascal\\second}");
+                            "to stabilize behavior. Units: \\si{\\pascal\\second}");
       }
 
 
