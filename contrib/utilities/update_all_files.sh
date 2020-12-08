@@ -5,16 +5,17 @@
 # effect, because all files should be on the current version, but if you change
 # the code, or add new files it can be handy to execute this script.
 
-DOC_DIR=`dirname $0`
-BASE_DIR=`pwd $DOC_DIR/..`
+UTIL_DIR=`dirname $0`
+BASE_DIR=`cd ${UTIL_DIR}/../..;pwd`
+echo "Scanning ${BASE_DIR} for changes..."
 
 # Update source files
 SOURCE_FILES=`find $BASE_DIR -type f \( -name *.cc -or -name *.h \) -and -not -name *.bak | grep -v doc`
-bash ${DOC_DIR}/update_source_files.sh $SOURCE_FILES
+bash ${UTIL_DIR}/update_source_files.sh $SOURCE_FILES
 
 # Update prm files
 PRM_FILES=`find $BASE_DIR -type f -name *.prm* -not -name *update_script* -not -name *.bak`
-bash ${DOC_DIR}/update_prm_files.sh $PRM_FILES
+bash ${UTIL_DIR}/update_prm_files.sh $PRM_FILES
 
 # To remove the backup files that are created you will likely want to use the
 # following command. It is commented out by default, because you should think
