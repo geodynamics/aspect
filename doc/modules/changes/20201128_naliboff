@@ -1,4 +1,4 @@
-<li> Fixed: The Multicomponent Incompressible equation 
+Fixed: The Multicomponent Incompressible equation 
 of state (EOS) module now uses the correct reference 
 temperature for density when adiabatic heating is used. 
 <br>
