@@ -554,6 +554,16 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+
+    // Copy particle handler to restore particle location and properties
+    // before repeating a timestep
+    if (particle_world.get() != nullptr)
+      {
+        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
+                                              particle_handler_copy);
+      }
+
+
     // Re-compute the pressure scaling factor. In some sense, it would be nice
     // if we did this not just once per time step, but once for each solve --
     // i.e., multiple times per time step if we iterate out the nonlinearity
@@ -1995,6 +2005,16 @@ namespace aspect
             // adjust time and time_step size:
             time = time - time_step + new_time_step_size;
             time_step = new_time_step_size;
+
+        // Restore particles through stored copy of particle handler,
+        // created in start_timestep(),
+        // but only if this timestep is to be repeated.
+        if ((particle_world.get() != nullptr) && (time_stepping_manager.should_repeat_time_step()))
+          {
+            particle_world->copy_particle_handler(particle_handler_copy,
+                                                  particle_world->get_particle_handler());
+          }
+
             continue; // repeat time step loop
           }
 

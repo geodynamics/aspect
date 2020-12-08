@@ -1913,6 +1913,11 @@ namespace aspect
        * The world holding the particles
        */
       std::unique_ptr<Particle::World<dim> > particle_world;
+      /**
+       * A copy of the particle handler to reset the particles
+       * when repeating a time step.
+       */
+      dealii::Particles::ParticleHandler<dim> particle_handler_copy;
 
       /**
        * @}
