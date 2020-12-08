@@ -811,10 +811,15 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
+        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+#endif
+
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
         for (unsigned int c=0; c<n_components_filled; ++c)
           one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
 
@@ -828,7 +833,12 @@ namespace aspect
               {
                 one_over_viscosity = (*viscosity)(cell, q);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+                const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
                 const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+#endif
+
                 for (unsigned int c=0; c<n_components_filled; ++c)
                   one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
               }
@@ -903,10 +913,15 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
+        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+#endif
+
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
         for (unsigned int c=0; c<n_components_filled; ++c)
           one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
 
@@ -926,7 +941,12 @@ namespace aspect
                   {
                     one_over_viscosity = (*viscosity)(cell, q);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+                    const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
                     const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
+#endif
+
                     for (unsigned int c=0; c<n_components_filled; ++c)
                       one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
                   }
@@ -1317,7 +1337,12 @@ namespace aspect
 
     // Create active mesh viscosity table.
     {
+#if DEAL_II_VERSION_GTE(9,3,0)
+      const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
+#else
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
+#endif
+
       const unsigned int n_q_points = quadrature_formula.size();
 
       std::vector<double> values_on_quad;
@@ -1337,7 +1362,12 @@ namespace aspect
       std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
       for (unsigned int cell=0; cell<n_cells; ++cell)
         {
+#if DEAL_II_VERSION_GTE(9,3,0)
+          const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
           const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_components_filled(cell);
+#endif
+
           for (unsigned int i=0; i<n_components_filled; ++i)
             {
               typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
@@ -1406,7 +1436,12 @@ namespace aspect
     for (unsigned int level=0; level<n_levels; ++level)
       {
         // Create viscosity tables on each level.
+#if DEAL_II_VERSION_GTE(9,3,0)
+        const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_cell_batches();
+#else
         const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_macro_cells();
+#endif
+
         const unsigned int n_q_points = quadrature_formula.size();
 
         std::vector<GMGNumberType> values_on_quad;
@@ -1424,7 +1459,12 @@ namespace aspect
         std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
         for (unsigned int cell=0; cell<n_cells; ++cell)
           {
+#if DEAL_II_VERSION_GTE(9,3,0)
+            const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_active_entries_per_cell_batch(cell);
+#else
             const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_components_filled(cell);
+#endif
+
             for (unsigned int i=0; i<n_components_filled; ++i)
               {
                 typename DoFHandler<dim>::level_cell_iterator FEQ_cell =
@@ -1492,10 +1532,16 @@ namespace aspect
     const bool use_viscosity_at_quadrature_points
       = (active_viscosity_table.size(1) == velocity.n_q_points);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+    const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
+#else
+    const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
+#endif
+
     // Much like the matrix-free apply_add() functions compute a matrix-vector
     // product by looping over cells and applying local matrix operations,
     // here we apply the negative of the stokes_matrix operator to u0.
-    for (unsigned int cell=0; cell<stokes_matrix.get_matrix_free()->n_macro_cells(); ++cell)
+    for (unsigned int cell=0; cell<n_cells; ++cell)
       {
         VectorizedArray<double> viscosity_x_2 = 2.0*active_viscosity_table(cell, 0);
 

@@ -104,7 +104,11 @@ namespace aspect
 
         // we need the cell as input for the material model because some heating models
         // want to access the solution vector.
+#if DEAL_II_VERSION_GTE(9,3,0)
+        in.current_cell = input_data.template get_cell<dim>();
+#else
         in.current_cell = input_data.template get_cell<DoFHandler<dim> > ();
+#endif
 
         // we need an fevalues object to get the melt velocities
         std::vector<Point<dim> > quadrature_points(n_quadrature_points);

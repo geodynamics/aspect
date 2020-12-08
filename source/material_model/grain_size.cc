@@ -711,7 +711,12 @@ namespace aspect
       if (in.current_cell.state() == IteratorState::valid)
         {
           // get the pressures and temperatures at the vertices of the cell
+#if DEAL_II_VERSION_GTE(9,3,0)
+          const QTrapezoid<dim> quadrature_formula;
+#else
           const QTrapez<dim> quadrature_formula;
+#endif
+
           const unsigned int n_q_points = quadrature_formula.size();
           FEValues<dim> fe_values (this->get_mapping(),
                                    this->get_fe(),

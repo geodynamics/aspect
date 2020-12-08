@@ -65,7 +65,11 @@ namespace aspect
         const Postprocess::Geoid<dim> &geoid =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Geoid<dim> >();
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        auto cell = input_data.template get_cell<dim>();
+#else
         auto cell = input_data.template get_cell<DoFHandler<dim> >();
+#endif
 
         bool cell_at_top_boundary = false;
         for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)

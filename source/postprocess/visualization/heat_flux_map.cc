@@ -64,7 +64,11 @@ namespace aspect
         for (unsigned int q=0; q<computed_quantities.size(); ++q)
           computed_quantities[q](0) = 0;
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        auto cell = input_data.template get_cell<dim>();
+#else
         auto cell = input_data.template get_cell<DoFHandler<dim> >();
+#endif
 
         if (output_point_wise_heat_flux)
           {
