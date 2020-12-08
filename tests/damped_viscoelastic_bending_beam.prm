@@ -1,0 +1,49 @@
+# This test checks whether the viscoelastic bending beam benchmark
+# run successfully. In particular, this benchmark is a good test to
+# ensure that a model with compositional fields that affect material
+# properties works.
+
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
+
+set End time  = 1e3
+
+# Significantly reduce resolution
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 15
+    set Y repetitions = 10
+  end
+end
+
+# Material model, adding viscous dampers to each material.
+# The material response is only significantly affected if
+# the damper viscosity is similar to or greater than
+# the product of the elastic timestep and the shear modulus.
+subsection Material model
+
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+    set Densities            =  2800,  2800,  2800,  2800,  3300
+    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
+    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Fixed elastic time step     = 1e3
+    set Elastic damper viscosity    = 1e14
+    set Use fixed elastic time step = false
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = maximum composition
+  end
+
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = velocity statistics, depth average
+  subsection Depth average
+    set Time between graphical output = 0
+    set Number of zones = 5
+    set List of output variables = composition
+    set Output format = txt
+  end
+end
