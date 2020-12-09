@@ -133,7 +133,7 @@ TEST_CASE("CPO core: Store and Load")
       prm.enter_subsection("CPO");
       {
         prm.set("Random number seed","1");
-        prm.set("Number of grains per praticle","3");
+        prm.set("Number of grains per particle","3");
         prm.set("CPO derivatives algorithm","Spin tensor");
         prm.set("Property advection method","Crank-Nicolson");
         prm.enter_subsection("Initial grains");
@@ -448,7 +448,7 @@ TEST_CASE("CPO core: Spin tensor")
         prm.enter_subsection("CPO");
         {
           prm.set("Random number seed","1");
-          prm.set("Number of grains per praticle","5");
+          prm.set("Number of grains per particle","5");
           prm.set("CPO derivatives algorithm","Spin tensor");
           prm.set("Property advection method","Forward Euler");
           prm.enter_subsection("Initial grains");
@@ -476,7 +476,7 @@ TEST_CASE("CPO core: Spin tensor")
     std::vector<double> data;
     cpo_2d.initialize_one_particle_property(dummy_point, data);
     // The CPO particles are initialized. With the same seed, the outcome should
-    // always be the same, so test that for seed = 1. Forthermore, in the data
+    // always be the same, so test that for seed = 1. Furthermore, in the data
     // I can only really test that the first entry is the water content (0) and
     // that every first entry of each particle is 1/n_grains = 1/10 = 0.1.
     CHECK(data[0] == Approx(-1.0));//isnan(data[0])); // default fabric type which is only computed on a update
@@ -576,7 +576,7 @@ TEST_CASE("CPO core: Spin tensor")
     ref_resolved_shear_stress[0] = 1;
     ref_resolved_shear_stress[1] = 2;
     ref_resolved_shear_stress[2] = 3;
-    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becomming infinite. This is the value fortran D-Rex uses.
+    ref_resolved_shear_stress[3] = 1e60; // can't really use numerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
     derivatives = cpo_2d.compute_derivatives(volume_fractions, a_cosine_matrices,
@@ -585,7 +585,7 @@ TEST_CASE("CPO core: Spin tensor")
 
     // The correct analytical solution to check against
     // Note that this still has to be multiplied with with volume fraction
-    // of each graint to get the same solution as D-Rex would get.
+    // of each grain to get the same solution as D-Rex would get.
     double solution[5] = {0.0, 0.0, 0.0, 0.0 ,0.0};
     for (unsigned int iii = 0; iii < derivatives.first.size(); ++iii)
       CHECK(derivatives.first[iii] == Approx(solution[iii]));
@@ -651,7 +651,7 @@ TEST_CASE("CPO core: Spin tensor")
         prm.enter_subsection("CPO");
         {
           prm.set("Random number seed","1");
-          prm.set("Number of grains per praticle","5");
+          prm.set("Number of grains per particle","5");
           prm.set("CPO derivatives algorithm","Spin tensor");
           prm.set("Property advection method","Forward Euler");
           prm.enter_subsection("Initial grains");
@@ -679,7 +679,7 @@ TEST_CASE("CPO core: Spin tensor")
     std::vector<double> data;
     cpo_3d.initialize_one_particle_property(dummy_point, data);
     // The CPO particles are initialized. With the same seed, the outcome should
-    // always be the same, so test that for seed = 1. Forthermore, in the data
+    // always be the same, so test that for seed = 1. Furthermore, in the data
     // I can only really test that the first entry is the water content (0) and
     // that every first entry of each particle is 1/n_grains = 1/10 = 0.1.
     CHECK(data[0] == Approx(-1.0));//isnan(data[0])); // default fabric type which is only computed on a update
@@ -779,7 +779,7 @@ TEST_CASE("CPO core: Spin tensor")
     ref_resolved_shear_stress[0] = 1;
     ref_resolved_shear_stress[1] = 2;
     ref_resolved_shear_stress[2] = 3;
-    ref_resolved_shear_stress[3] = 1e60; // can't really use nummerical limits max or infinite, because need to be able to square it without becomming infinite. This is the value fortran D-Rex uses.
+    ref_resolved_shear_stress[3] = 1e60; // can't really use numerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
 
     std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
     derivatives = cpo_3d.compute_derivatives(volume_fractions, a_cosine_matrices,
@@ -788,7 +788,7 @@ TEST_CASE("CPO core: Spin tensor")
 
     // The correct analytical solution to check against
     // Note that this still has to be multiplied with with volume fraction
-    // of each graint to get the same solution as D-Rex would get.
+    // of each grain to get the same solution as D-Rex would get.
     double solution[5] = {0.0, 0.0, 0.0, 0.0 ,0.0};
     for (unsigned int iii = 0; iii < derivatives.first.size(); ++iii)
       CHECK(derivatives.first[iii] == Approx(solution[iii]));

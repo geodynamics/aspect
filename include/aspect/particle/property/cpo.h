@@ -55,12 +55,12 @@ namespace aspect
       };
 
       /**
-       * The plugin manages and computes the evolution of Lattice/Crystal Preffered Orientations (LPO/CPO)
-       * on particles. Each ASPECT particle can contain many grains. Each grains contain a size and a orientation
+       * The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO)
+       * on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation
        * matrix. This allows for LPO evolution tracking with Polycrysal kinematic CPO evolution models such
        * as D-Rex (Kaminski and Ribe, 2001; ́Kaminski et al., 2004).
        *
-       * The layout of the data vector per perticle is the following (note that for this plugin the following dim's are always 3):
+       * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
        * 1. M mineral times
        *    1.1  Mineral deformation type   -> 1 double, at location
        *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
@@ -72,15 +72,15 @@ namespace aspect
        *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
        *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
        *
-       * Last used data entry is cpo_data_position  + n_minerals * (n_grains * 10 + 2). In case the Crank-Nickelson
+       * Last used data entry is cpo_data_position  + n_minerals * (n_grains * 10 + 2). In case the Crank-Nicolson
        * advection scheme is used, the previous deriative data is stored behind this. It stores per grain one
        * double for the volume fraction derivative and 9 doubles for the rotation matrix derivative. This results
        * the last data entry in this case being:
        * cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_n * (n_grains * 10).
        *
-       * An other note is that we store exactly the same amount of all minerals (e.g. olivine and enstatite
-       * grains), although the volume may not be the same. This has to do with that we need a minimum amount
-       * of grains per tracer to perform reliable statistics on it. This miminum should be the same for both
+       * We store the same number of grains for all minerals (e.g. olivine and enstatite
+       * grains), although their volume fractions may not be the same. This is because we need a minimum number
+       * of grains per tracer to perform reliable statistics on it. This minimum should be the same for both
        * olivine and enstatite.
        *
        * @ingroup ParticleProperties
@@ -178,7 +178,7 @@ namespace aspect
           get_property_information() const;
 
           /**
-           * Loads particle data into variables. Inteded for use by other parts of aspect.
+           * Loads particle data into variables. Intended for use by other parts of aspect.
            */
           static
           void
@@ -205,7 +205,7 @@ namespace aspect
                                       std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_mineral_derivatives) const;
 
           /**
-           * Stores information in variables into the data array. Inteded for use by other parts of aspect.
+           * Stores information in variables into the data array. Intended for use by other parts of ASPECT.
            */
           static
           void
@@ -315,7 +315,7 @@ namespace aspect
           get_number_of_minerals();
 
         private:
-          // helpful shorcuts
+          // helpful shortcuts
           double rad_to_degree = 180.0/M_PI;
           double degree_to_rad = M_PI/180.0;
 
@@ -359,4 +359,3 @@ namespace aspect
 }
 
 #endif
-
