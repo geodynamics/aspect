@@ -17,6 +17,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
   auto n_phases = std::make_shared<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
+  const std::vector<double> volume_fractions = {1.};
 
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
@@ -61,18 +62,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // The whole system is then arranged in series with a viscosity limiter with
   // viscosity max_visc.
   // lim_visc is equal to (min_visc*max_visc)/(max_visc - min_visc)
-  double min_visc = aspect::Utilities::parse_map_to_double_array(prm.get("Minimum viscosities"),
-                                                                 list_of_composition_names,
-                                                                 true,
-                                                                 "Minimum viscosities",
-                                                                 true,
-                                                                 n_phases)[composition];
-  double max_visc = aspect::Utilities::parse_map_to_double_array(prm.get("Maximum viscosities"),
-                                                                 list_of_composition_names,
-                                                                 true,
-                                                                 "Maximum viscosities",
-                                                                 true,
-                                                                 n_phases)[composition];
+  double min_visc = prm.get_double("Minimum viscosity");
+  double max_visc = prm.get_double("Maximum viscosity");
   double lim_visc = (min_visc*max_visc)/(max_visc - min_visc);
 
   // Assign values to the variables which will be passed to compute_viscosity
@@ -100,14 +91,14 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   double disl_stress;
   double prls_stress;
   double drpr_stress;
-  std::vector<double> partial_strain_rates;
+  std::vector<double> partial_strain_rates(5, 0.);
 
   for (unsigned int i=0; i <= 10; i++)
     {
       temperature = 1000. + i*100.;
 
       // Compute the viscosity
-      viscosity = composite_creep->compute_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
+      viscosity = composite_creep->compute_composition_viscosity(pressure, temperature, composition, strain_rate, partial_strain_rates);
       total_strain_rate = std::accumulate(partial_strain_rates.begin(), partial_strain_rates.end(), 0.);
 
       // The creep strain rate is calculated by subtracting the strain rate

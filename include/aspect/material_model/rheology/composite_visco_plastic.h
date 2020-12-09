@@ -77,11 +77,28 @@ namespace aspect
           double
           compute_viscosity (const double pressure,
                              const double temperature,
-                             const unsigned int composition,
+                             const std::vector<double> &volume_fractions,
                              const SymmetricTensor<2,dim> &strain_rate,
                              std::vector<double> &partial_strain_rates,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+
+          /**
+           * Compute the compositional field viscosity
+           * based on the composite viscous creep law.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers this is considered the number of phase transitions
+           * for each compositional field and viscosity will be first computed on
+           * each phase and then averaged for each compositional field.
+           */
+          double
+          compute_composition_viscosity (const double pressure,
+                                         const double temperature,
+                                         const unsigned int composition,
+                                         const SymmetricTensor<2,dim> &strain_rate,
+                                         std::vector<double> &partial_strain_rates,
+                                         const std::vector<double> &phase_function_values = std::vector<double>(),
+                                         const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
           /**
             * Compute the strain rate and first stress derivative
@@ -99,9 +116,7 @@ namespace aspect
                                               const DiffusionCreepParameters diffusion_creep_parameters,
                                               const DislocationCreepParameters dislocation_creep_parameters,
                                               const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters,
-                                              const double min_viscosity,
-                                              const double max_viscosity) const;
+                                              const DruckerPragerParameters drucker_prager_parameters) const;
 
         private:
 
@@ -124,8 +139,9 @@ namespace aspect
 
           DruckerPragerParameters drucker_prager_parameters;
 
-          std::vector<double> min_viscosities;
-          std::vector<double> max_viscosities;
+          unsigned int number_of_compositions;
+          double min_viscosity;
+          double max_viscosity;
 
           double min_strain_rate;
           double strain_rate_residual_threshold;

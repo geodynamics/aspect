@@ -72,11 +72,44 @@ namespace aspect
       double
       CompositeViscoPlastic<dim>::compute_viscosity (const double pressure,
                                                      const double temperature,
-                                                     const unsigned int composition,
+                                                     const std::vector<double> &volume_fractions,
                                                      const SymmetricTensor<2,dim> &strain_rate,
                                                      std::vector<double> &partial_strain_rates,
                                                      const std::vector<double> &phase_function_values,
                                                      const std::vector<unsigned int> &n_phases_per_composition) const
+      {
+        double viscosity = 0.;
+        partial_strain_rates.resize(5, 0.);
+
+        // Isostrain averaging
+        for (unsigned int i=0; i < number_of_compositions; ++i)
+          {
+            std::vector<double> partial_strain_rates_composition(5, 0.);
+            viscosity += (volume_fractions[i]
+                          * compute_composition_viscosity (pressure,
+                                                           temperature,
+                                                           i,
+                                                           strain_rate,
+                                                           partial_strain_rates_composition,
+                                                           phase_function_values,
+                                                           n_phases_per_composition));
+            for (unsigned int j=0; j < 5; ++j)
+              partial_strain_rates[j] += volume_fractions[i] * partial_strain_rates_composition[j];
+          }
+        return viscosity;
+      }
+
+
+
+      template <int dim>
+      double
+      CompositeViscoPlastic<dim>::compute_composition_viscosity (const double pressure,
+                                                                 const double temperature,
+                                                                 const unsigned int composition,
+                                                                 const SymmetricTensor<2,dim> &strain_rate,
+                                                                 std::vector<double> &partial_strain_rates,
+                                                                 const std::vector<double> &phase_function_values,
+                                                                 const std::vector<unsigned int> &n_phases_per_composition) const
       {
         // If strain rate is zero (like during the first time step) set it to some very small number
         // to prevent a division-by-zero, and a floating point exception.
@@ -88,10 +121,9 @@ namespace aspect
         Rheology::DiffusionCreepParameters diffusion_creep_parameters;
         Rheology::DislocationCreepParameters dislocation_creep_parameters;
         Rheology::PeierlsCreepParameters peierls_creep_parameters;
-        double eta_diff = max_viscosities[composition];
-        double eta_disl = max_viscosities[composition];
-        double eta_prls = max_viscosities[composition];
-
+        double eta_diff = max_viscosity;
+        double eta_disl = max_viscosity;
+        double eta_prls = max_viscosity;
 
         if (use_diffusion_creep)
           {
@@ -111,7 +143,7 @@ namespace aspect
             eta_prls = peierls_creep->compute_approximate_viscosity(edot_ii, pressure, temperature, composition);
           }
         // First guess at a stress using diffusion, dislocation, and Peierls creep viscosities calculated with the total second strain rate invariant.
-        const double eta_guess = std::min(std::max(min_viscosities[composition], eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), max_viscosities[composition]);
+        const double eta_guess = std::min(std::max(min_viscosity, eta_diff*eta_disl*eta_prls/(eta_diff*eta_disl + eta_diff*eta_prls + eta_disl*eta_prls)), max_viscosity);
 
         double creep_stress = 2.*eta_guess*edot_ii;
 
@@ -140,19 +172,19 @@ namespace aspect
                && stress_iteration < stress_max_iteration_number)
           {
 
-            const std::pair<double, double> edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
-                                                             pressure,
-                                                             temperature,
-                                                             composition,
-                                                             diffusion_creep_parameters,
-                                                             dislocation_creep_parameters,
-                                                             peierls_creep_parameters,
-                                                             drucker_prager_parameters,
-                                                             min_viscosities[composition],
-                                                             max_viscosities[composition]);
+            const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
+                                                                   pressure,
+                                                                   temperature,
+                                                                   composition,
+                                                                   diffusion_creep_parameters,
+                                                                   dislocation_creep_parameters,
+                                                                   peierls_creep_parameters,
+                                                                   drucker_prager_parameters);
 
-            strain_rate_residual = edot_and_deriv.first - edot_ii;
-            strain_rate_deriv = edot_and_deriv.second;
+            const double strain_rate = creep_stress/(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.first;
+            strain_rate_deriv = 1./(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.second;
+
+            strain_rate_residual = strain_rate - edot_ii;
 
             // If the strain rate derivative is zero, we catch it below.
             if (strain_rate_deriv>std::numeric_limits<double>::min())
@@ -182,12 +214,11 @@ namespace aspect
         // The creep stress is not the total stress, so we still need to do a little work to obtain the effective viscosity.
         // First, we compute the stress running through the strain rate limiter, and then add that to the creep stress
         // NOTE: The viscosity of the strain rate limiter is equal to (min_visc*max_visc)/(max_visc - min_visc)
-        const double lim_stress = 2.*min_viscosities[composition]*(edot_ii - creep_stress/(2.*max_viscosities[composition]));
+        const double lim_stress = 2.*min_viscosity*(edot_ii - creep_stress/(2.*max_viscosity));
         const double total_stress = creep_stress + lim_stress;
 
         // Compute the strain rate experienced by the different mechanisms
         // These should sum to the total strain rate
-        partial_strain_rates.resize(5, 0.);
 
         // The components of partial_strain_rates must be provided in the order
         // dictated by make_strain_rate_additional_outputs_names
@@ -215,7 +246,7 @@ namespace aspect
             partial_strain_rates[3] = drpr_edot_and_deriv.first;
           }
 
-        partial_strain_rates[4] = total_stress/(2.*max_viscosities[composition]);
+        partial_strain_rates[4] = total_stress/(2.*max_viscosity);
 
         // Now we return the viscosity using the total stress
         return total_stress/(2.*edot_ii);
@@ -240,9 +271,7 @@ namespace aspect
                                                                       const DiffusionCreepParameters diffusion_creep_parameters,
                                                                       const DislocationCreepParameters dislocation_creep_parameters,
                                                                       const PeierlsCreepParameters peierls_creep_parameters,
-                                                                      const DruckerPragerParameters drucker_prager_parameters,
-                                                                      const double min_viscosity,
-                                                                      const double max_viscosity) const
+                                                                      const DruckerPragerParameters drucker_prager_parameters) const
       {
         std::pair<double, double> creep_edot_and_deriv = std::make_pair(0., 0.);
 
@@ -258,10 +287,7 @@ namespace aspect
         if (use_drucker_prager)
           creep_edot_and_deriv = creep_edot_and_deriv + drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, composition, drucker_prager_parameters);
 
-        const double strain_rate = creep_stress/(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.first;
-        const double strain_rate_deriv = 1./(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.second;
-
-        return std::make_pair(strain_rate, strain_rate_deriv);
+        return creep_edot_and_deriv;
       }
 
 
@@ -317,13 +343,13 @@ namespace aspect
                            "creep strain rate.");
 
         // Strain rate and stress limiting parameters
-        prm.declare_entry ("Minimum viscosities", "1.e17",
-                           Patterns::List(Patterns::Double(0.)),
-                           "List of minimum effective viscosities. Units: \\si{\\pascal\\second}.");
+        prm.declare_entry ("Minimum viscosity", "1.e17",
+                           Patterns::Double(0.),
+                           "Minimum effective viscosity. Units: \\si{\\pascal\\second}.");
 
-        prm.declare_entry ("Maximum viscosities", "1.e28",
-                           Patterns::List(Patterns::Double(0.)),
-                           "List of maximum effective viscosities. Units: \\si{\\pascal\\second}.");
+        prm.declare_entry ("Maximum viscosity", "1.e28",
+                           Patterns::Double(0.),
+                           "Maximum effective viscosity. Units: \\si{\\pascal\\second}.");
       }
 
 
@@ -336,8 +362,8 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        // Establish that a background field is required here
-        const bool has_background_field = true;
+        // A background field is required by the subordinate material models
+        number_of_compositions = list_of_composition_names.size() + 1;
 
         min_strain_rate = prm.get_double("Minimum strain rate");
 
@@ -345,19 +371,9 @@ namespace aspect
         strain_rate_residual_threshold = prm.get_double ("Strain rate residual tolerance");
         stress_max_iteration_number = prm.get_integer ("Maximum creep strain rate iterations");
 
-        // Read min and max viscosity parameters, each of size of number of composition + number of phases + 1
-        min_viscosities = Utilities::parse_map_to_double_array(prm.get("Minimum viscosities"),
-                                                               list_of_composition_names,
-                                                               has_background_field,
-                                                               "Minimum viscosities",
-                                                               true,
-                                                               expected_n_phases_per_composition);
-        max_viscosities = Utilities::parse_map_to_double_array(prm.get("Maximum viscosities"),
-                                                               list_of_composition_names,
-                                                               has_background_field,
-                                                               "Maximum viscosities",
-                                                               true,
-                                                               expected_n_phases_per_composition);
+        // Read min and max viscosity parameters
+        min_viscosity = prm.get_double ("Minimum viscosity");
+        max_viscosity = prm.get_double ("Maximum viscosity");
 
         // Rheological parameters
 
@@ -393,7 +409,7 @@ namespace aspect
         if (use_drucker_prager)
           {
             drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
-            drucker_prager_parameters = drucker_prager->parse_parameters(list_of_composition_names.size() + 1, prm);
+            drucker_prager_parameters = drucker_prager->parse_parameters(number_of_compositions, prm);
 
             AssertThrow(prm.get_bool("Use plastic damper") && prm.get_double("Plastic damper viscosity") > 0.,
                         ExcMessage("If Drucker-Prager plasticity is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
