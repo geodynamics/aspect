@@ -142,7 +142,8 @@ namespace aspect
           enum ViscosityAveragingScheme
           {
             isostrain,
-            isostress
+            isostress,
+            voigt_reuss_hill
           } viscosity_averaging_scheme;
 
           /**
