@@ -248,7 +248,6 @@ namespace aspect
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(in.pressure[i],0.0);
 
-
             // Step 4a: calculate Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
                                                                                        current_friction,
@@ -398,7 +397,6 @@ namespace aspect
             if (viscosity_averaging == MaterialUtilities::maximum_composition)
               viscosity_averaging_p = 1000;
 
-
             derivatives->viscosity_derivative_wrt_strain_rate[i] =
               Utilities::derivative_of_weighted_p_norm_average(out.viscosities[i],
                                                                volume_fractions,
@@ -529,7 +527,7 @@ namespace aspect
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "Units: none.");
 
-        // Temperature in viscosity laws to include an adiabat (note units of K/Pa)
+        // Temperature gradient in viscosity laws to include an adiabat (note units of K/Pa)
         prm.declare_entry ("Adiabat temperature gradient for viscosity", "0.0", Patterns::Double (0.),
                            "Add an adiabatic temperature gradient to the temperature used in the flow law "
                            "so that the activation volume is consistent with what one would use in a "
@@ -589,7 +587,6 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
 
-        // Rheological parameters
         if (prm.get ("Yield mechanism") == "drucker")
           yield_mechanism = drucker_prager;
         else if (prm.get ("Yield mechanism") == "limiter")
@@ -603,7 +600,6 @@ namespace aspect
 
         allow_negative_pressures_in_plasticity = prm.get_bool ("Allow negative pressures in plasticity");
 
-        // Rheological parameters
         // Diffusion creep parameters
         diffusion_creep.initialize_simulator (this->get_simulator());
         diffusion_creep.parse_parameters(prm, expected_n_phases_per_composition);

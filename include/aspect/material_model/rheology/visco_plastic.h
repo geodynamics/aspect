@@ -114,7 +114,6 @@ namespace aspect
                                              const std::vector<unsigned int> &n_phases_per_composition =
                                                std::vector<unsigned int>()) const;
 
-
           /**
            * A function that returns a ComponentMask that represents all compositional
            * fields that should be considered 'volumetric', that is representing a
@@ -160,7 +159,14 @@ namespace aspect
                                      const MaterialModel::MaterialModelInputs<dim> &in,
                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+          /**
+           * Reference viscosity used by material models using this rheology.
+           */
           double ref_visc;
+
+          /**
+           * Minimum strain rate used to stabilize the strain dependent rheology.
+           */
           double min_strain_rate;
 
           /**
@@ -168,7 +174,9 @@ namespace aspect
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
-
+          /**
+           * Object for computing the strain dependence of the rheology model.
+           */
           Rheology::StrainDependent<dim> strain_rheology;
 
           /**
@@ -183,13 +191,22 @@ namespace aspect
 
 
         private:
+
+          /**
+           * Reference strain rate for the first time step.
+           */
           double ref_strain_rate;
+
+          /**
+           * Minimum and maximum viscosities used to improve the
+           * stability of the rheology model.
+           */
           double min_visc;
           double max_visc;
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
-           * Select between diffusion, dislocation or composite.
+           * Select between diffusion, dislocation, frank_kamenetskii or composite.
            */
           enum ViscosityScheme
           {
@@ -215,10 +232,15 @@ namespace aspect
            * pressure in the plasticity formulation will be set to zero.
            */
           bool allow_negative_pressures_in_plasticity;
+
+          /**
+           * List of exponents controlling the behaviour of the stress limiter
+           * yielding mechanism.
+           */
           std::vector<double> exponents_stress_limiter;
 
           /**
-           * temperature gradient added to temperature used in the flow law.
+           * Temperature gradient added to temperature used in the flow law.
            */
           double adiabatic_temperature_gradient_for_viscosity;
 
@@ -230,12 +252,12 @@ namespace aspect
           std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
 
           /**
-           * Whether to include peierls creep in the constitutive formulation.
+           * Whether to include Peierls creep in the constitutive formulation.
            */
           bool use_peierls_creep;
 
           /**
-           * Objects for computing peierls creep viscosities.
+           * Object for computing Peierls creep viscosities.
            */
           std::unique_ptr<Rheology::PeierlsCreep<dim> > peierls_creep;
 
@@ -247,9 +269,10 @@ namespace aspect
           Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
 
           /*
-           * Objects for computing plastic stresses, viscosities, and additional outputs
+           * Object for computing plastic stresses, viscosities, and additional outputs
            */
           Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
           /*
            * Input parameters for the drucker prager plasticity.
            */

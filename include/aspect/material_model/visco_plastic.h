@@ -240,7 +240,7 @@ namespace aspect
          * In this case, the rheology in question is visco(elasto)plastic. The
          * object contains functions for parameter declaration and parsing,
          * and further functions that calculate viscosity and viscosity
-         * derivatives. It also contains functions that creates and fills
+         * derivatives. It also contains functions that create and fill
          * additional material model outputs, specifically plastic outputs.
          * The rheology itself is a composite rheology, and so the object
          * contains further objects and/or pointers to objects that provide
