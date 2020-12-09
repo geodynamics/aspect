@@ -1,4 +1,4 @@
-<li> New: The CompositeViscoPlastic rheology module in ASPECT now provides the
+New: The CompositeViscoPlastic rheology module in ASPECT now provides the
 option to include a damped Drucker-Prager plastic element.
 <br>
 (Bob Myhill, 2020/11/13)
