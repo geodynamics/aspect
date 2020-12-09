@@ -82,19 +82,34 @@ namespace aspect
         partial_strain_rates.resize(5, 0.);
 
         // Isostrain averaging
-        for (unsigned int i=0; i < number_of_compositions; ++i)
+        double total_volume_fraction = 1.;
+        for (unsigned int composition=0; composition < number_of_compositions; ++composition)
           {
-            std::vector<double> partial_strain_rates_composition(5, 0.);
-            viscosity += (volume_fractions[i]
-                          * compute_composition_viscosity (pressure,
-                                                           temperature,
-                                                           i,
-                                                           strain_rate,
-                                                           partial_strain_rates_composition,
-                                                           phase_function_values,
-                                                           n_phases_per_composition));
+            // Only include the contribution to the viscosity
+            // from a given composition if the volume fraction exceeds
+            // a certain (small) fraction.
+            if (volume_fractions[composition] > 1.e-5)
+              {
+                std::vector<double> partial_strain_rates_composition(5, 0.);
+                viscosity += (volume_fractions[composition]
+                              * compute_composition_viscosity (pressure,
+                                                               temperature,
+                                                               composition,
+                                                               strain_rate,
+                                                               partial_strain_rates_composition,
+                                                               phase_function_values,
+                                                               n_phases_per_composition));
+                for (unsigned int j=0; j < 5; ++j)
+                  partial_strain_rates[j] += volume_fractions[composition] * partial_strain_rates_composition[j];
+              }
+            else
+              {
+                total_volume_fraction -= volume_fractions[composition];
+              }
+
+            viscosity /= total_volume_fraction;
             for (unsigned int j=0; j < 5; ++j)
-              partial_strain_rates[j] += volume_fractions[i] * partial_strain_rates_composition[j];
+              partial_strain_rates[j] /= total_volume_fraction;
           }
         return viscosity;
       }
