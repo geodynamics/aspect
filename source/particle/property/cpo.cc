@@ -245,9 +245,9 @@ namespace aspect
         //                                      => data_position + 3 + i_grain * 10 + mineral_i * (n_grains * 10 + 2), or
         //                                      => data_position + 3 + i_grain * (2 * Tensor<2,3>::n_independent_components+ 2) + mineral_i * (n_grains * 10 + 2)
         //
-        // Note is that we store exactly the same amount of all minerals (e.g. olivine and enstatite
-        // grains), although the volume may not be the same. This has to do with that we need a minimum amount
-        // of grains per tracer to perform reliable statistics on it. This miminum is the same for both olivine
+        // Note is that we store exactly the same number of grains of all minerals (e.g. olivine and enstatite
+        // grains), although their volume fractions may not be the same. We need a minimum amount
+        // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
 
         // fabric. This is determined in the computations, so set it to -1 for now.
@@ -262,7 +262,7 @@ namespace aspect
 
             // This will be set by the initial grain subsection.
             bool use_world_builder = false;
-            if (use_world_builder == true)
+            if (use_world_builder)
               {
 #ifdef ASPECT_WITH_WORLD_BUILDER
                 AssertThrow(false,
@@ -287,7 +287,7 @@ namespace aspect
                     // set a uniform random a_cosine_matrix per grain
                     // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
                     // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
-                    // and is licenend accourding to this website with the following licence:
+                    // and is licenced according to this website with the following licence:
                     //
                     // "The Graphics Gems code is copyright-protected. In other words, you cannot claim the text of the code as your own and
                     // resell it. Using the code is permitted in any program, product, or library, non-commercial or commercial. Giving credit
@@ -295,7 +295,7 @@ namespace aspect
                     // code, nobody involved with Gems - authors, editors, publishers, or webmasters - are to be held responsible. Basically,
                     // don't be a jerk, and remember that anything free comes with no guarantee.""
                     //
-                    // The book saids in the preface the following: "As in the first two volumes, all of the C and C++ code in this book is in
+                    // The book states in the preface the following: "As in the first two volumes, all of the C and C++ code in this book is in
                     // the public domain, and is yours to study, modify, and use."
 
                     // first generate three random numbers between 0 and 1 and multiply them with 2 PI or 2 for z. Note that these are not the same as phi_1, theta and phi_2.
@@ -510,7 +510,7 @@ namespace aspect
 
             /**
             * Now we have loaded all the data and can do the actual computation.
-            * The computation consitsts of two parts. The first part is computing
+            * The computation consists of two parts. The first part is computing
             * the derivatives for the directions and grain sizes. Then those
             * derivatives are used to advect the particle properties.
             */
@@ -948,13 +948,13 @@ namespace aspect
               prm.declare_entry ("Random number seed", "1",
                                  Patterns::Integer (0),
                                  "The seed used to generate random numbers. This will make sure that "
-                                 "results are reproducable as long as the problem is run with the "
-                                 "same amount of MPI processes. It is implemented as final seed = "
+                                 "results are reproducible as long as the problem is run with the "
+                                 "same number of MPI processes. It is implemented as final seed = "
                                  "user seed + MPI Rank. ");
 
-              prm.declare_entry ("Number of grains per praticle", "50",
+              prm.declare_entry ("Number of grains per particle", "50",
                                  Patterns::Integer (0),
-                                 "The number of grains of olivine and the number of grain of enstatite "
+                                 "The number of grains of each different mineral "
                                  "each particle contains.");
 
               prm.declare_entry ("Property advection method", "Forward Euler",
@@ -963,14 +963,14 @@ namespace aspect
 
               prm.declare_entry ("Property advection tolerance", "1e-10",
                                  Patterns::Double(0),
-                                 "The Backward Euler and Crank-Nicolson property advection methods contain an iterations. "
+                                 "The Backward Euler and Crank-Nicolson property advection methods involve internal iterations. "
                                  "This option allows for setting a tolerance. When the norm of tensor new - tensor old is "
                                  "smaller than this tolerance, the iteration is stopped.");
 
               prm.declare_entry ("Property advection max iterations", "100",
                                  Patterns::Integer(0),
-                                 "The Backward Euler and Crank-Nicolson property advection methods contain an iterations. "
-                                 "This option allows for setting the maximum ammount of iterations. Note that when the iteration "
+                                 "The Backward Euler and Crank-Nicolson property advection methods involve internal iterations. "
+                                 "This option allows for setting the maximum number of iterations. Note that when the iteration "
                                  "is ended by the max iteration amount an assert is thrown.");
 
               prm.declare_entry ("CPO derivatives algorithm", "D-Rex 2004",
@@ -981,7 +981,7 @@ namespace aspect
               {
                 prm.declare_entry("Model name","Uniform grains and Random Uniform rotations",
                                   Patterns::Anything(),
-                                  "The model used to intialize the CPO for all particles. Currently on 'Uniform grains and Random Uniform rotations' is available.");
+                                  "The model used to initialize the CPO for all particles. Currently 'Uniform grains and Random Uniform rotations' is the only valid option.");
                 prm.enter_subsection("Uniform grains and Random Uniform rotations");
                 {
                   prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
@@ -995,8 +995,8 @@ namespace aspect
 
                   prm.declare_entry ("Volume fractions minerals", "0.5, 0.5",
                                      Patterns::List(Patterns::Double(0)),
-                                     "The volume fraction for the different minerals. "
-                                     "There need to be the same amount of values as there are minerals");
+                                     "The volume fractions for the different minerals. "
+                                     "There need to be the same number of values as there are minerals");
                 }
                 prm.leave_subsection ();
               }
@@ -1021,7 +1021,7 @@ namespace aspect
             prm.enter_subsection("CPO");
             {
               random_number_seed = prm.get_integer ("Random number seed");
-              n_grains = prm.get_integer("Number of grains per praticle");
+              n_grains = prm.get_integer("Number of grains per particle");
 
               property_advection_tolerance = prm.get_double("Property advection tolerance");
               property_advection_max_iterations = prm.get_integer ("Property advection max iterations");
@@ -1083,7 +1083,7 @@ namespace aspect
                       else
                         {
                           AssertThrow(false,
-                                      ExcMessage("The  fabric needs to be one of the following: Olivine: Karato 2008, "
+                                      ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
                                                  "Olivine: A-fabric,Olivine: B-fabric,Olivine: C-fabric,Olivine: D-fabric,"
                                                  "Olivine: E-fabric, Enstatite and Passive."))
                         }
@@ -1114,11 +1114,10 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_PROPERTY(CPO,
                                         "cpo",
-                                        "The plugin manages and computes the evolution of Lattice/Crystal Preffered Orientations (LPO/CPO) "
-                                        "on particles. Each ASPECT particle can contain many grains. Each grains contain a size and a orientation "
-                                        "matrix. This allows for LPO evolution tracking with Polycrysal kinematic CPO evolution models such "
+                                        "The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) "
+                                        "on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation "
+                                        "matrix. This allows for LPO evolution tracking with polycrystalline kinematic CPO evolution models such "
                                         "as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).")
     }
   }
 }
-
