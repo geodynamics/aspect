@@ -1,0 +1,7 @@
+New: ASPECT's ViscoPlastic rheology has been migrated from the
+ViscoPlastic material model into its own rheology module. It is therefore
+accessible by not only the ViscoPlastic material model, but by other
+user-generated material models as well, without needing a large amount
+of code duplication.
+<br>
+(Bob Myhill, 2020/11/30)
