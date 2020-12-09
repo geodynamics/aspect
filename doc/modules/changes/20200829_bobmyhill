@@ -1,4 +1,4 @@
-<li> New: ASPECT now has a ThermodynamicTableLookup
+New: ASPECT now has a ThermodynamicTableLookup
 equation of state plugin. This plugin allows material models
 to read in one or more PerpleX or HeFESTo table files,
 interpolate material properties at desired pressures and
