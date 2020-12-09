@@ -165,7 +165,7 @@ namespace aspect
           double ref_visc;
 
           /**
-           * Minimum strain rate used to stabilize the strain dependent rheology.
+           * Minimum strain rate used to stabilize the strain rate dependent rheology.
            */
           double min_strain_rate;
 
@@ -193,7 +193,8 @@ namespace aspect
         private:
 
           /**
-           * Reference strain rate for the first time step.
+           * Reference strain rate for the first non-linear iteration
+           * in the first time step.
            */
           double ref_strain_rate;
 
