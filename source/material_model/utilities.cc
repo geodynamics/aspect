@@ -722,8 +722,8 @@ namespace aspect
 
 
       std::vector<double>
-      compute_field_fractions(const std::vector<double> &compositional_fields,
-                              const ComponentMask &field_mask)
+      compute_fractions_from_compositional_fields(const std::vector<double> &compositional_fields,
+                                                  const ComponentMask &field_mask)
       {
         std::vector<double> field_fractions(compositional_fields.size()+1);
 
@@ -755,6 +755,30 @@ namespace aspect
             }
 
         return field_fractions;
+      }
+
+
+
+      std::vector<double>
+      compute_volumes_from_masses(const std::vector<double> &masses,
+                                  const std::vector<double> &densities,
+                                  const bool return_as_fraction)
+      {
+        const unsigned int n_fields = masses.size();
+        std::vector<double> volumes(n_fields);
+        double sum_volumes = 0.0;
+        for (unsigned int j=0; j < n_fields; ++j)
+          {
+            volumes[j] = masses[j] / eos_outputs.densities[j];
+            sum_volumes += volumes[j];
+          }
+
+        if (return_as_fraction)
+          {
+            for (unsigned int j=0; j < n_fields; ++j)
+              volumes[j] /= sum_volumes;
+          }
+        return volumes;
       }
 
 

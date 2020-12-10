@@ -223,25 +223,34 @@ namespace aspect
 
 
       /**
-       * For multicomponent material models: Given a vector of of compositional
-       * fields of length N, this function returns a vector of volume fractions
-       * of length N+1, corresponding to the volume fraction of a ``background
-       * material'' as the first entry, and volume fractions for each of the input
+       * For multicomponent material models: Given a vector of compositional
+       * fields of length N, this function returns a vector of fractions
+       * of length N+1, corresponding to the fraction of a ``background
+       * material'' as the first entry, and fractions for each of the input
        * fields as the following entries. The returned vector will sum to one.
        * If the sum of the compositional_fields is greater than
-       * one, we assume that there is no background mantle (i.e., that field value
+       * one, we assume that there is no background field (i.e., that field value
        * is zero). Otherwise, the difference between the sum of the compositional
-       * fields and 1.0 is assumed to be the amount of background mantle.
+       * fields and 1.0 is assumed to be the amount of the background field.
        * Optionally, one can input a component mask that determines which of the
        * compositional fields to use during the computation (e.g. because
-       * some fields contain non-volumetric quantities like strain,
+       * some fields contain unrelated quantities (like strain,
        * porosity, or trace elements). By default, all fields are included.
        */
       std::vector<double>
-      compute_field_fractions(const std::vector<double> &compositional_fields,
-                              const ComponentMask &field_mask = ComponentMask());
+      compute_fractions_from_compositional_fields(const std::vector<double> &compositional_fields,
+                                                  const ComponentMask &field_mask = ComponentMask());
 
-
+      /**
+       * Given a vector of component masses,
+       * and another of the corresponding densities, calculate the volumes
+       * of each component. If return_as_fraction is true, the returned vector
+       * will sum to one.
+       */
+      std::vector<double>
+      compute_volumes_from_masses(const std::vector<double> &masses,
+                                  const std::vector<double> &densities,
+                                  const bool return_as_fraction);
 
       /**
        * For multicomponent material models:

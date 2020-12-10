@@ -42,18 +42,10 @@ namespace aspect
           equation_of_state.evaluate(in, i, eos_outputs);
 
           // Calculate volume fractions from mass fractions
-          const std::vector<double> mass_fractions = MaterialUtilities::compute_field_fractions(in.composition[i]);
-          const unsigned int n_fields = mass_fractions.size();
-          std::vector<double> volume_fractions(n_fields);
-          double sum_volume_fractions = 0.0;
-          for (unsigned int j=0; j < n_fields; ++j)
-            {
-              volume_fractions[j] = mass_fractions[j] / eos_outputs.densities[j];
-              sum_volume_fractions += volume_fractions[j];
-            }
-
-          for (unsigned int j=0; j < n_fields; ++j)
-            volume_fractions[j] /= sum_volume_fractions;
+          const std::vector<double> mass_fractions = MaterialUtilities::compute_fractions_from_compositional_fields(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
+                                                       eos_outputs.densities,
+                                                       true);
 
           // Specific quantities are mass averaged
           out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
