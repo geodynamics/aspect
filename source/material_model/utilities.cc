@@ -769,7 +769,7 @@ namespace aspect
         double sum_volumes = 0.0;
         for (unsigned int j=0; j < n_fields; ++j)
           {
-            volumes[j] = masses[j] / eos_outputs.densities[j];
+            volumes[j] = masses[j] / densities[j];
             sum_volumes += volumes[j];
           }
 
