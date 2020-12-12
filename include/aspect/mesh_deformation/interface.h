@@ -412,6 +412,11 @@ namespace aspect
         LinearAlgebra::Vector mesh_displacements;
 
         /**
+         * mesh_displacements from the last time step.
+         */
+        LinearAlgebra::Vector old_mesh_displacements;
+
+        /**
          * Vector for storing the positions of the mesh vertices at the initial timestep.
          * This must be redistributed upon mesh refinement.
          * We need to store the initial topography because it is not taken
