@@ -1,0 +1,161 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 400 (on 2 levels)
+Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+
+Number of mesh deformation degrees of freedom: 882
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+Number of active cells: 547 (on 3 levels)
+Number of degrees of freedom: 12,904 (4,676+607+607+2,338+2,338+2,338)
+
+Number of mesh deformation degrees of freedom: 1214
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping stress_xx composition solve because RHS is zero.
+   Skipping stress_yy composition solve because RHS is zero.
+   Skipping stress_xy composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        0 m, 0 m
+     RMS, max velocity:         4.3 m/year, 13.6 m/year
+     Writing graphical output:  output-free_surface_timestep_repeat/solution/solution-00000
+
+Number of active cells: 520 (on 3 levels)
+Number of degrees of freedom: 12,347 (4,474+581+581+2,237+2,237+2,237)
+
+Number of mesh deformation degrees of freedom: 1162
+*** Timestep 1:  t=0.921264 years, dt=0.921264 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 46+0 iterations.
+
+Number of active cells: 505 (on 3 levels)
+Number of degrees of freedom: 12,022 (4,356+566+566+2,178+2,178+2,178)
+
+Number of mesh deformation degrees of freedom: 1132
+Repeating the current time step based on the time stepping manager ...
+*** Timestep 1:  t=0.460632 years, dt=0.460632 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 48+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -2.36e+05/4.138e+05/3.093e+11 // -4.138e+05/2.36e+05/-3.093e+11 // -9.739e+04/5.046e+05/1.814e+16
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -11.65 m, 4.811 m
+     RMS, max velocity:         19.5 m/year, 63.2 m/year
+
+Number of active cells: 499 (on 3 levels)
+Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+
+Number of mesh deformation degrees of freedom: 1120
+*** Timestep 2:  t=0.960632 years, dt=0.5 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 49+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -2.096e+06/3.187e+06/2.942e+12 // -3.187e+06/2.096e+06/-2.942e+12 // -8.812e+05/4.289e+06/1.333e+17
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -43.31 m, 18.13 m
+     RMS, max velocity:         8.63 m/year, 27.4 m/year
+
+Number of active cells: 502 (on 3 levels)
+Number of degrees of freedom: 11,956 (4,332+563+563+2,166+2,166+2,166)
+
+Number of mesh deformation degrees of freedom: 1126
+*** Timestep 3:  t=1.46063 years, dt=0.5 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 49+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -1.204e+06/1.463e+06/1.36e+13 // -1.463e+06/1.204e+06/-1.36e+13 // -6.297e+05/2.308e+06/5.936e+16
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -29.59 m, 12.04 m
+     RMS, max velocity:         7.63 m/year, 24.4 m/year
+
+Number of active cells: 499 (on 3 levels)
+Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+
+Number of mesh deformation degrees of freedom: 1120
+*** Timestep 4:  t=1.97252 years, dt=0.511887 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 12 iterations.
+   Solving stress_yy system ... 12 iterations.
+   Solving stress_xy system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 49+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -1.958e+06/2.632e+06/7.548e+12 // -2.632e+06/1.958e+06/-7.548e+12 // -1.046e+06/3.851e+06/1.095e+17
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -42.1 m, 17.48 m
+     RMS, max velocity:         3.72 m/year, 11.6 m/year
+
+Number of active cells: 502 (on 3 levels)
+Number of degrees of freedom: 11,956 (4,332+563+563+2,166+2,166+2,166)
+
+Number of mesh deformation degrees of freedom: 1126
+*** Timestep 5:  t=2 years, dt=0.0274815 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving stress_xx system ... 10 iterations.
+   Solving stress_yy system ... 10 iterations.
+   Solving stress_xy system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 62+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -1.953e+06/2.611e+06/7.161e+12 // -2.611e+06/1.953e+06/-7.161e+12 // -1.049e+06/3.836e+06/1.086e+17
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -41.78 m, 17.33 m
+     RMS, max velocity:         65.5 m/year, 204 m/year
+     Writing graphical output:  output-free_surface_timestep_repeat/solution/solution-00001
+
+Number of active cells: 499 (on 3 levels)
+Number of degrees of freedom: 11,895 (4,310+560+560+2,155+2,155+2,155)
+
+Number of mesh deformation degrees of freedom: 1120
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

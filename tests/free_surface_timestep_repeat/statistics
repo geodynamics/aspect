@@ -1,0 +1,38 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition stress_xx
+# 16: Maximal value for composition stress_xx
+# 17: Global mass for composition stress_xx
+# 18: Minimal value for composition stress_yy
+# 19: Maximal value for composition stress_yy
+# 20: Global mass for composition stress_yy
+# 21: Minimal value for composition stress_xy
+# 22: Maximal value for composition stress_xy
+# 23: Global mass for composition stress_xy
+# 24: Minimal temperature (K)
+# 25: Average temperature (K)
+# 26: Maximal temperature (K)
+# 27: Average nondimensional temperature (K)
+# 28: Minimum topography (m)
+# 29: Maximum topography (m)
+# 30: RMS velocity (m/year)
+# 31: Max. velocity (m/year)
+# 32: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 547 5283 607 7014 0  0  0  0 45 47 184  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02  0.00000000e+00  0.00000000e+00 0.00000000e+00 4.30293509e+00 1.35647077e+01 output-free_surface_timestep_repeat/solution/solution-00000 
+1 4.606319965982e-01 4.606319965982e-01 505 4922 566 6534 0 24 24 24 92 96 384 -2.35990770e+05 4.13757522e+05 3.09264680e+11 -4.13757522e+05 2.35990770e+05 -3.09264680e+11 -9.73936215e+04 5.04577200e+05 1.81434010e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 -2.25363892e-12 -1.16534252e+01 4.81087855e+00 1.95058030e+01 6.32374775e+01                                                          "" 
+2 9.606319965982e-01 5.000000000000e-01 499 4870 560 6465 0 12 12 11 48 50 200 -2.09566822e+06 3.18669617e+06 2.94168943e+12 -3.18669617e+06 2.09566822e+06 -2.94168943e+12 -8.81154418e+05 4.28854938e+06 1.33287466e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 -7.03717910e-12 -4.33069980e+01 1.81263223e+01 8.63325280e+00 2.74078535e+01                                                          "" 
+3 1.460631996598e+00 5.000000000000e-01 502 4895 563 6498 0 12 12 12 48 50 200 -1.20360369e+06 1.46278144e+06 1.35957239e+13 -1.46278144e+06 1.20360369e+06 -1.35957239e+13 -6.29689433e+05 2.30750996e+06 5.93595609e+16 2.93000000e+02 2.93000000e+02 2.93000000e+02 -1.11336566e-14 -2.95874482e+01 1.20362044e+01 7.62814645e+00 2.44127718e+01                                                          "" 
+4 1.972518523579e+00 5.118865269810e-01 499 4870 560 6465 0 12 12 12 48 50 200 -1.95840476e+06 2.63169932e+06 7.54823733e+12 -2.63169932e+06 1.95840476e+06 -7.54823733e+12 -1.04556699e+06 3.85130712e+06 1.09491171e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 -3.39862779e-11 -4.20977952e+01 1.74799559e+01 3.72445607e+00 1.15928377e+01                                                          "" 
+5 2.000000000000e+00 2.748147642083e-02 502 4895 563 6498 0 10 10 10 61 64 256 -1.95301834e+06 2.61142893e+06 7.16139107e+12 -2.61142893e+06 1.95301834e+06 -7.16139107e+12 -1.04907636e+06 3.83568288e+06 1.08581179e+17 2.93000000e+02 2.93000000e+02 2.93000000e+02 -1.35592571e-16 -4.17788305e+01 1.73314320e+01 6.55130973e+01 2.04136978e+02 output-free_surface_timestep_repeat/solution/solution-00001 
