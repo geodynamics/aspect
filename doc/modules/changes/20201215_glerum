@@ -1,0 +1,5 @@
+Fixed: The current viscous stress that is compared to the yield stress
+in the visco_plastic material model does now include the effects
+of viscous strain weakening.
+<br>
+(Anne Glerum, 2020/12/15)
