@@ -34,7 +34,7 @@ namespace aspect
   {
 
     template <int dim>
-    AsciiDataLookup<dim>::AsciiDataLookup(const unsigned int components,
+    StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int components,
                                           const double scale_factor)
       :
       components(components),
@@ -47,7 +47,7 @@ namespace aspect
 
 
     template <int dim>
-    AsciiDataLookup<dim>::AsciiDataLookup(const double scale_factor)
+    StructuredDataLookup<dim>::StructuredDataLookup(const double scale_factor)
       :
       components(numbers::invalid_unsigned_int),
       data(),
@@ -60,7 +60,7 @@ namespace aspect
 
     template <int dim>
     std::vector<std::string>
-    AsciiDataLookup<dim>::get_column_names() const
+    StructuredDataLookup<dim>::get_column_names() const
     {
       return data_component_names;
     }
@@ -69,7 +69,7 @@ namespace aspect
 
     template <int dim>
     bool
-    AsciiDataLookup<dim>::has_equidistant_coordinates() const
+    StructuredDataLookup<dim>::has_equidistant_coordinates() const
     {
       return coordinate_values_are_equidistant;
     }
@@ -78,7 +78,7 @@ namespace aspect
 
     template <int dim>
     const std::vector<double> &
-    AsciiDataLookup<dim>::get_coordinates(const unsigned int dimension) const
+    StructuredDataLookup<dim>::get_coordinates(const unsigned int dimension) const
     {
       AssertThrow(dimension < dim,
                   ExcMessage("There is no spatial dimension number " + std::to_string(dimension)
@@ -91,7 +91,7 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    AsciiDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
+    StructuredDataLookup<dim>::get_column_index_from_name(const std::string &column_name) const
     {
       const std::vector<std::string>::const_iterator column_position =
         std::find(data_component_names.begin(),data_component_names.end(),column_name);
@@ -106,7 +106,7 @@ namespace aspect
 
     template <int dim>
     std::string
-    AsciiDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
+    StructuredDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
     {
       AssertThrow(data_component_names.size() > column_index,
                   ExcMessage("There is no data column number " + Utilities::to_string(column_index)
@@ -118,7 +118,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiDataLookup<dim>::get_maximum_component_value(const unsigned int component) const
+    StructuredDataLookup<dim>::get_maximum_component_value(const unsigned int component) const
     {
       return maximum_component_value[component];
     }
@@ -127,7 +127,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
+    StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                  const std::vector<std::vector<double>> &coordinate_values_,
                                  const std::vector<Table<dim,double> > &raw_data)
     {
@@ -217,7 +217,7 @@ namespace aspect
 
     template <int dim>
     void
-    AsciiDataLookup<dim>::load_file(const std::string &filename,
+    StructuredDataLookup<dim>::load_file(const std::string &filename,
                                     const MPI_Comm &comm)
     {
       // Grab the values already stored in this class (if they exist), this way we can
@@ -397,7 +397,7 @@ namespace aspect
 
     template <int dim>
     double
-    AsciiDataLookup<dim>::get_data(const Point<dim> &position,
+    StructuredDataLookup<dim>::get_data(const Point<dim> &position,
                                    const unsigned int component) const
     {
       Assert(component<components, ExcMessage("Invalid component index"));
@@ -406,7 +406,7 @@ namespace aspect
 
     template <int dim>
     Tensor<1,dim>
-    AsciiDataLookup<dim>::get_gradients(const Point<dim> &position,
+    StructuredDataLookup<dim>::get_gradients(const Point<dim> &position,
                                         const unsigned int component)
     {
       return data[component]->gradient(position,0);
@@ -415,7 +415,7 @@ namespace aspect
 
     template <int dim>
     TableIndices<dim>
-    AsciiDataLookup<dim>::compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const
+    StructuredDataLookup<dim>::compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const
     {
       TableIndices<dim> idx;
       idx[0] = i % sizes[0];
@@ -521,12 +521,12 @@ namespace aspect
       for (const auto &boundary_id : boundary_ids)
         {
           lookups.insert(std::make_pair(boundary_id,
-                                        std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
+                                        std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>>
                                         (components,
                                          this->scale_factor)));
 
           old_lookups.insert(std::make_pair(boundary_id,
-                                            std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>>
+                                            std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>>
                                             (components,
                                              this->scale_factor)));
 
@@ -1029,7 +1029,7 @@ namespace aspect
                                   +
                                   "> not found!"));
 
-          lookups.push_back(std_cxx14::make_unique<Utilities::AsciiDataLookup<dim-1>> (components,
+          lookups.push_back(std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>> (components,
                                                                                        this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
@@ -1186,7 +1186,7 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, or box geometry."));
 
-      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim>> (components,
+      lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim>> (components,
                                                                         this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
@@ -1238,7 +1238,7 @@ namespace aspect
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<1>> (this->scale_factor);
+      lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
@@ -1320,9 +1320,9 @@ namespace aspect
 
 // Explicit instantiations
 
-    template class AsciiDataLookup<1>;
-    template class AsciiDataLookup<2>;
-    template class AsciiDataLookup<3>;
+    template class StructuredDataLookup<1>;
+    template class StructuredDataLookup<2>;
+    template class StructuredDataLookup<3>;
     template class AsciiDataBase<2>;
     template class AsciiDataBase<3>;
     template class AsciiDataBoundary<2>;

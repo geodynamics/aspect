@@ -23,6 +23,7 @@
 #define _aspect_structured_data_h
 
 #include <aspect/global.h>
+#include <aspect/simulator_access.h>
 
 #include <array>
 
@@ -33,7 +34,10 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * AsciiDataLookup reads in files containing input data in ascii format.
+     * StructuredDataLookup (formerly AsciiDataLookup) represents structured
+     * data that can be read from files including in ascii format.
+     *
+     * For ascii files the files need to be formated as follows:
      * Note the required format of the input data: The first lines may contain
      * any number of comments if they begin with '#', but one of these lines
      * needs to contain the number of grid points in each dimension as for
@@ -49,7 +53,7 @@ namespace aspect
      * equidistant.
      */
     template <int dim>
-    class AsciiDataLookup
+    class StructuredDataLookup
     {
       public:
         /**
@@ -61,7 +65,7 @@ namespace aspect
          * and instead reading them from the input file allows for more
          * flexible files.
          */
-        AsciiDataLookup(const unsigned int components,
+        StructuredDataLookup(const unsigned int components,
                         const double scale_factor);
 
         /**
@@ -70,7 +74,7 @@ namespace aspect
          * therefore when using this constructor it is necessary to provide
          * this list in the first uncommented line of the data file.
          */
-        explicit AsciiDataLookup(const double scale_factor);
+        explicit StructuredDataLookup(const double scale_factor);
 
         /**
          * Replace the data stored in this class by the data given to this function.
@@ -430,13 +434,13 @@ namespace aspect
          * data we get from text files.
          */
         std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > lookups;
+            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> > > lookups;
 
         /**
          * Map between the boundary id and the old data objects.
          */
         std::map<types::boundary_id,
-            std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> > > old_lookups;
+            std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> > > old_lookups;
 
         /**
          * Handles the update of the data in lookup.
@@ -496,7 +500,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim> > lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim> > lookup;
     };
 
 
@@ -552,7 +556,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::vector<std::unique_ptr<aspect::Utilities::AsciiDataLookup<dim-1> >> lookups;
+        std::vector<std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim-1> >> lookups;
 
       private:
 
@@ -654,12 +658,13 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::AsciiDataLookup<1> > lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<1> > lookup;
     };
 
 
 
-
+    template<int dim>
+    using AsciiDataLookup DEAL_II_DEPRECATED = StructuredDataLookup<dim>;
   }
 }
 
