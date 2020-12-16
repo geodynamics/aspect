@@ -1,0 +1,21 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for Stokes solver
+# 12: Velocity iterations in Stokes preconditioner
+# 13: Schur complement iterations in Stokes preconditioner
+# 14: RMS velocity (m/year)
+# 15: Max. velocity (m/year)
+# 16: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 17: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 18: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 19: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 20: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 10 0 0 30 146 100 4.08254288e-04 6.90797134e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_viscous_strain_weakening/solution/solution-00000 

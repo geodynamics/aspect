@@ -1,0 +1,57 @@
+
+Number of active cells: 100 (on 1 levels)
+Number of degrees of freedom: 1,885 (882+121+441+441)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving viscous_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+6 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+5 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.000642881
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 0.00013855
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 6.76718e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 4.2521e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 3.35338e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+4 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 2.94997e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+3 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 2.71621e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+3 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 2.53871e-05
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+3 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 2.38285e-05
+
+
+   Postprocessing:
+     RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
+     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Writing graphical output:           output-visco_plastic_viscous_strain_weakening/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

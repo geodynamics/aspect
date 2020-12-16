@@ -225,7 +225,7 @@ namespace aspect
               }
 
             // Step 2b: calculate current (viscous or viscous + elastic) stress magnitude
-            const double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
+            double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
 
             // Step 3: strain weakening
 
@@ -233,10 +233,11 @@ namespace aspect
             // If no brittle and/or viscous strain weakening is applied, the factors are 1.
             const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
 
-            // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity
+            // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity and adjust the current_stress accordingly
             const double current_cohesion = drucker_prager_parameters.cohesions[j] * weakening_factors[0];
             const double current_friction = drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1];
             viscosity_pre_yield *= weakening_factors[2];
+            current_stress *= weakening_factors[2];
 
             // Step 4: plastic yielding
 
