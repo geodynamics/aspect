@@ -429,6 +429,8 @@ namespace aspect
               composition_mask.set(i,false);
           }
 
+        composition_mask = composition_mask & user_component_masks;
+
         return composition_mask;
       }
 
@@ -497,6 +499,15 @@ namespace aspect
                            "dynamic stresses are much higher than the lithostatic pressure. "
                            "If false, the minimum pressure in the plasticity formulation will "
                            "be set to zero.");
+        prm.declare_entry ("List of compositional field names to use", "",
+                           Patterns::Anything (),
+                           "Indicate which compositional field are used by the visco plastic "
+                           "rheology model by listing the names of the fields. If left empty "
+                           "all compositional fields will be used. Compositional fields not "
+                           "listed with receive a volume fraction of 0. This means that you "
+                           "still need to provide resonable values for prefactors, activation "
+                           "energies, etc. for them.");
+
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -646,6 +657,17 @@ namespace aspect
                        ExcMessage("If adiabatic heating is enabled you should not add another adiabatic gradient"
                                   "to the temperature for computing the viscosity, because the ambient"
                                   "temperature profile already includes the adiabatic gradient."));
+
+        std::vector<std::string> component_masks_string = Utilities::split_string_list(prm.get("List of compositional field names to use"));
+        user_component_masks = component_masks_string.size() == 0
+                               ?
+                               ComponentMask(this->n_compositional_fields(),true)
+                               :
+                               ComponentMask(this->n_compositional_fields(),false);
+        for (auto &&mask : component_masks_string)
+          {
+            user_component_masks.set(this->introspection().compositional_index_for_name(mask), true);
+          }
 
       }
 

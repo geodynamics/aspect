@@ -279,6 +279,12 @@ namespace aspect
            */
           Rheology::DruckerPragerParameters drucker_prager_parameters;
 
+          /**
+           * A list of user set component masks, which are compositional field names which
+           * need to be ignored by this plugin.
+           */
+          ComponentMask user_component_masks;
+
       };
     }
   }
