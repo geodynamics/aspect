@@ -140,9 +140,9 @@ namespace aspect
         std::string material_file_name;
 
         /**
-         * Pointer to the AsciiDataLookup object that holds the material data.
+         * Pointer to the StructuredDataLookup object that holds the material data.
          */
-        std::unique_ptr<Utilities::AsciiDataLookup<2>> material_lookup;
+        std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
     };
   }
 }

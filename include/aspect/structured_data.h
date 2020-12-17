@@ -66,7 +66,7 @@ namespace aspect
          * flexible files.
          */
         StructuredDataLookup(const unsigned int components,
-                        const double scale_factor);
+                             const double scale_factor);
 
         /**
          * This constructor relies on the list of column names at the beginning

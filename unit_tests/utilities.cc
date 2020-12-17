@@ -41,7 +41,7 @@ TEST_CASE("Utilities::AsciiDataLookup")
   using namespace dealii;
 
   //TODO: add support for setting data directly instead of relying on a file to load:
-  aspect::Utilities::AsciiDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
+  aspect::Utilities::StructuredDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
   lookup.load_file(ASPECT_SOURCE_DIR "/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt", MPI_COMM_WORLD);
 
   INFO(lookup.get_data(Point<1>(330000./2.0),0));
@@ -60,7 +60,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
 {
   using namespace dealii;
 
-  aspect::Utilities::AsciiDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
+  aspect::Utilities::StructuredDataLookup<1> lookup(2 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"a", "b"};
   Table<1,double> table(2);
@@ -90,7 +90,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
 {
   using namespace dealii;
 
-  aspect::Utilities::AsciiDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
+  aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
   std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));
@@ -121,7 +121,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2 equid")
 {
   using namespace dealii;
 
-  aspect::Utilities::AsciiDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
+  aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
   std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));

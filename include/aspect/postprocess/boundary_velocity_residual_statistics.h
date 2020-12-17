@@ -96,9 +96,9 @@ namespace aspect
         std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup<dim>> gplates_lookup;
 
         /**
-         * Pointer to the ascii data
+         * Pointer to the structured data
          */
-        std::unique_ptr<Utilities::AsciiDataLookup<dim>> ascii_data_lookup;
+        std::unique_ptr<Utilities::StructuredDataLookup<dim>> data_lookup;
 
         /**
          * Directory in which the input data files, i.e., GPlates model or ascii data

@@ -20,7 +20,6 @@
 #include <aspect/global.h>
 #include <aspect/structured_data.h>
 
-
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/spherical_shell.h>
@@ -35,7 +34,7 @@ namespace aspect
 
     template <int dim>
     StructuredDataLookup<dim>::StructuredDataLookup(const unsigned int components,
-                                          const double scale_factor)
+                                                    const double scale_factor)
       :
       components(components),
       data(components),
@@ -128,8 +127,8 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
-                                 const std::vector<std::vector<double>> &coordinate_values_,
-                                 const std::vector<Table<dim,double> > &raw_data)
+                                      const std::vector<std::vector<double>> &coordinate_values_,
+                                      const std::vector<Table<dim,double> > &raw_data)
     {
       Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
       for (unsigned int d=0; d<dim; ++d)
@@ -218,7 +217,7 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::load_file(const std::string &filename,
-                                    const MPI_Comm &comm)
+                                         const MPI_Comm &comm)
     {
       // Grab the values already stored in this class (if they exist), this way we can
       // check if somebody changes the size of the table over time and error out (see below)
@@ -398,7 +397,7 @@ namespace aspect
     template <int dim>
     double
     StructuredDataLookup<dim>::get_data(const Point<dim> &position,
-                                   const unsigned int component) const
+                                        const unsigned int component) const
     {
       Assert(component<components, ExcMessage("Invalid component index"));
       return data[component]->value(position);
@@ -407,7 +406,7 @@ namespace aspect
     template <int dim>
     Tensor<1,dim>
     StructuredDataLookup<dim>::get_gradients(const Point<dim> &position,
-                                        const unsigned int component)
+                                             const unsigned int component)
     {
       return data[component]->gradient(position,0);
     }
@@ -1030,7 +1029,7 @@ namespace aspect
                                   "> not found!"));
 
           lookups.push_back(std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>> (components,
-                                                                                       this->scale_factor));
+                            this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
     }
@@ -1187,7 +1186,7 @@ namespace aspect
                                "a spherical shell, chunk, or box geometry."));
 
       lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim>> (components,
-                                                                        this->scale_factor);
+                                                                             this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
