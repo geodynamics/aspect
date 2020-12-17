@@ -530,7 +530,7 @@ namespace aspect
             // again using \n to make dot/neato show these parts of
             // the name on separate lines
             const std::vector<std::string> plugin_label_parts
-              = Utilities::break_text_into_lines(p->first, 15);
+              = dealii::Utilities::break_text_into_lines(p->first, 15);
             Assert (plugin_label_parts.size()>0, ExcInternalError());
             std::string plugin_name = plugin_label_parts[0];
             for (unsigned int i=1; i<plugin_label_parts.size(); ++i)
