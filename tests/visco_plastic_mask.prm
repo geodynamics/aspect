@@ -1,0 +1,73 @@
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_complex.prm
+
+# Compositional fields used to track finite strain
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = plastic_strain, crust, water
+  set Compositional field methods = field, field, static
+  set List of normalized fields = 0,
+end
+
+# Initial composition model
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; if(y>=70.e3, 1, 0);800;
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Material model (values for background material, strain fields and crust)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    # compositional masking
+    set List of compositional field names to use = crust
+
+    # Reference values and viscosity averaging
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-16
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e28
+    set Reference viscosity = 1e22
+    set Viscosity averaging scheme = harmonic
+
+    # Thermodynamic properties
+    set Thermal diffusivities = 1.474747e-6,1.474747e-6,1.190476e-6,1.0
+    set Heat capacities = 750.
+    set Densities = 3300,3300,2800,0.
+    set Thermal expansivities = 0.
+
+    # Viscous flow laws
+    # Background: Dry olive (Hirth & Kohlstedt 2004), Crust: Wet quartzite (Rutter & Brodie 2004)
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 6.52e-16,6.52e-16,8.57e-28,1.0
+    set Stress exponents for dislocation creep = 3.5,3.5,4.0,1.0
+    set Activation energies for dislocation creep = 530.e3,530.e3,223.e3,1.0
+    set Activation volumes for dislocation creep = 18.e-6,18.e-6,0.,0.
+
+    # Yielding mechanism and values
+    set Yield mechanism = limiter
+    set Stress limiter exponents = 10, 10, 10, 2
+    set Angles of internal friction = 0.,0.,0.,0.
+    set Cohesions = 1.e6,1.e6,1.e6,1.0
+
+    # Strain weakening
+    set Strain weakening mechanism = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
+    set Cohesion strain weakening factors = 0.5
+    set Friction strain weakening factors = 0.5
+
+  end
+end
+
+# Postprocess
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics
+end
