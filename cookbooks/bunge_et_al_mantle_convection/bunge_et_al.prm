@@ -1,0 +1,93 @@
+# Setup for convection in a 2d shell.
+# Parameters from Bunge et al, Nature, 1996.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 5e9
+set Output directory                       = output_bunge_et_al
+set CFL number                             = 1
+
+subsection Material model
+  set Model name = depth dependent
+  subsection Depth dependent model
+    set Base model = simple
+    set Depth dependence method = File
+    set Data directory = $ASPECT_SOURCE_DIR/cookbooks/bunge_et_al_mantle_convection
+    set Viscosity depth file = visc_depth_a.txt
+  end
+  subsection Simple model
+    set Reference density             = 4500
+    set Thermal expansion coefficient = 2.5e-5
+    set Viscosity                     = 1e22
+    set Reference specific heat       = 1000
+    set Thermal conductivity          = 4
+  end
+end
+
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius  = 3480000
+    set Outer radius  = 6370000
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       = inner
+  set Tangential velocity boundary indicators = top
+end
+
+subsection Heating model
+  set List of model names = constant heating 
+  subsection Constant heating
+    set Radiogenic heating rate = 1e-12
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 3450
+    set Outer temperature = 1060
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names      = r,phi
+    set Function constants  = A=100, B=75, C=50, D=25, pi=3.1415926536, Ri=3480e3, Ro=6370e3, Ti=3450, To=1060
+    set Function expression = (r-Ri)/(Ro-Ri)*(To-Ti)+Ti + A*sin(7*phi) + B*sin(13*phi) + C*cos(0.123*phi+pi/3) + D*cos(0.456*phi+pi/6)
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+     set Magnitude = 10
+  end
+  #set Model name = ascii data
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 0
+  set Strategy                           = temperature
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+  subsection Visualization
+    set List of output variables = viscosity, strain rate, density, specific heat, thermal expansivity, gravity, heating 
+    set Output format                 = vtu
+    set Time between graphical output = 1e6
+    set Number of grouped files       = 0
+  end
+  subsection Depth average
+    set Time between graphical output = 1e7
+    set Number of zones = 100
+  end
+end
