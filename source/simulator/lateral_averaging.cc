@@ -105,7 +105,7 @@ namespace aspect
         {
           fe_values[field_].get_function_values (solution, velocity_values);
           for (unsigned int q=0; q<output.size(); ++q)
-            output[q] = std::sqrt( velocity_values[q] * velocity_values[q] ) *
+            output[q] = std::( velocity_values[q] * velocity_values[q] ) *
                         (convert_to_years_ ? year_in_seconds : 1.0);
         }
 
