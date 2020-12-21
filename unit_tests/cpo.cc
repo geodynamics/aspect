@@ -141,6 +141,8 @@ TEST_CASE("CPO core: Store and Load")
           prm.set("Model name","Uniform grains and Random Uniform rotations");
           prm.enter_subsection("Uniform grains and Random Uniform rotations");
           {
+            // Let the minerals just passively rotate with the rotation of
+            // the particle caused by the flow.
             prm.set("Minerals","Passive,Passive");
             prm.set("Volume fractions minerals","0.7,0.3");
           }
@@ -435,213 +437,9 @@ TEST_CASE("CPO core: Spin tensor")
   using namespace aspect;
 
   {
-    // test initialization 2d.
-    const int dim2=2;
+    // test initialization in 3d.
 
-    aspect::Particle::Property::CPO<dim2> cpo_2d;
-    aspect::ParameterHandler prm;
-    cpo_2d.declare_parameters(prm);
-    prm.enter_subsection("Postprocess");
-    {
-      prm.enter_subsection("Particles");
-      {
-        prm.enter_subsection("CPO");
-        {
-          prm.set("Random number seed","1");
-          prm.set("Number of grains per particle","5");
-          prm.set("CPO derivatives algorithm","Spin tensor");
-          prm.set("Property advection method","Forward Euler");
-          prm.enter_subsection("Initial grains");
-          {
-            prm.set("Model name","Uniform grains and Random Uniform rotations");
-            prm.enter_subsection("Uniform grains and Random Uniform rotations");
-            {
-              prm.set("Minerals","Passive,Passive");
-              prm.set("Volume fractions minerals","0.5,0.5");
-            }
-            prm.leave_subsection();
-          }
-          prm.leave_subsection();
-        }
-        prm.leave_subsection ();
-      }
-      prm.leave_subsection ();
-    }
-    prm.leave_subsection ();
-
-    cpo_2d.parse_parameters(prm);
-    cpo_2d.initialize();
-
-    Point<dim2> dummy_point;
-    std::vector<double> data;
-    cpo_2d.initialize_one_particle_property(dummy_point, data);
-    // The CPO particles are initialized. With the same seed, the outcome should
-    // always be the same, so test that for seed = 1. Furthermore, in the data
-    // I can only really test that the first entry is the water content (0) and
-    // that every first entry of each particle is 1/n_grains = 1/10 = 0.1.
-    CHECK(data[0] == Approx(-1.0));//isnan(data[0])); // default fabric type which is only computed on a update
-    CHECK(data[1] == Approx(0.5)); // default volume fraction olivine
-    CHECK(data[2] == Approx(0.2));
-    CHECK(data[3] == Approx(0.159063));
-    CHECK(data[4] == Approx(-0.11941));
-    CHECK(data[5] == Approx(0.9800204275));
-    CHECK(data[6] == Approx(-0.0888556));
-    CHECK(data[7] == Approx(-0.990362));
-    CHECK(data[8] == Approx(-0.1062486256));
-    CHECK(data[9] == Approx(0.983261702));
-    CHECK(data[10] == Approx(-0.0701800114));
-    CHECK(data[11] == Approx(-0.1681403917));
-    CHECK(data[12] == Approx(0.2));
-    CHECK(data[13] == Approx(0.4095335744));
-    CHECK(data[14] == Approx(-0.3401753011));
-    CHECK(data[15] == Approx(0.8465004524));
-    CHECK(data[16] == Approx(0.7605716382));
-    CHECK(data[17] == Approx(0.639714977));
-    CHECK(data[18] == Approx(-0.1108852174));
-    CHECK(data[19] == Approx(-0.5037986052));
-    CHECK(data[20] == Approx(0.6892354553));
-    CHECK(data[21] == Approx(0.5207124471));
-    CHECK(data[22] == Approx(0.2));
-    CHECK(data[32] == Approx(0.2));
-    CHECK(data[42] == Approx(0.2));
-    CHECK(data[52] == Approx(-1.0));// default fabric type which is only computed on a update
-    CHECK(data[53] == Approx(0.5)); // default volume fraction olivine
-    CHECK(data[54] == Approx(0.2));
-    CHECK(data[64] == Approx(0.2));
-    CHECK(data[74] == Approx(0.2));
-    CHECK(data[84] == Approx(0.2));
-    CHECK(data[94] == Approx(0.2));
-    CHECK(data[103] == Approx(-0.816855));
-
-    std::vector<double> volume_fractions(5,0.2);
-    std::vector<dealii::Tensor<2,3> > a_cosine_matrices(5);
-    a_cosine_matrices[0][0][0] = 0.5;
-    a_cosine_matrices[0][0][1] = 0.5;
-    a_cosine_matrices[0][0][2] = 0.5;
-    a_cosine_matrices[0][1][0] = 0.5;
-    a_cosine_matrices[0][1][1] = 0.5;
-    a_cosine_matrices[0][1][2] = 0.5;
-    a_cosine_matrices[0][2][0] = 0.5;
-    a_cosine_matrices[0][2][1] = 0.5;
-    a_cosine_matrices[0][2][2] = 0.5;
-
-    a_cosine_matrices[1][0][0] = 0.1;
-    a_cosine_matrices[1][0][1] = 0.2;
-    a_cosine_matrices[1][0][2] = 0.3;
-    a_cosine_matrices[1][1][0] = 0.4;
-    a_cosine_matrices[1][1][1] = 0.5;
-    a_cosine_matrices[1][1][2] = 0.6;
-    a_cosine_matrices[1][2][0] = 0.7;
-    a_cosine_matrices[1][2][1] = 0.8;
-    a_cosine_matrices[1][2][2] = 0.9;
-
-    a_cosine_matrices[2][0][0] = 0.1;
-    a_cosine_matrices[2][0][1] = 0.2;
-    a_cosine_matrices[2][0][2] = 0.3;
-    a_cosine_matrices[2][1][0] = 0.4;
-    a_cosine_matrices[2][1][1] = 0.5;
-    a_cosine_matrices[2][1][2] = 0.6;
-    a_cosine_matrices[2][2][0] = 0.7;
-    a_cosine_matrices[2][2][1] = 0.8;
-    a_cosine_matrices[2][2][2] = 0.9;
-
-    a_cosine_matrices[3][0][0] = 0.1;
-    a_cosine_matrices[3][0][1] = 0.2;
-    a_cosine_matrices[3][0][2] = 0.3;
-    a_cosine_matrices[3][1][0] = 0.4;
-    a_cosine_matrices[3][1][1] = 0.5;
-    a_cosine_matrices[3][1][2] = 0.6;
-    a_cosine_matrices[3][2][0] = 0.7;
-    a_cosine_matrices[3][2][1] = 0.8;
-    a_cosine_matrices[3][2][2] = 0.9;
-
-    a_cosine_matrices[4][0][0] = 0.1;
-    a_cosine_matrices[4][0][1] = 0.2;
-    a_cosine_matrices[4][0][2] = 0.3;
-    a_cosine_matrices[4][1][0] = 0.4;
-    a_cosine_matrices[4][1][1] = 0.5;
-    a_cosine_matrices[4][1][2] = 0.6;
-    a_cosine_matrices[4][2][0] = 0.7;
-    a_cosine_matrices[4][2][1] = 0.8;
-    a_cosine_matrices[4][2][2] = 0.9;
-
-    SymmetricTensor<2,3> strain_rate_nondimensional;
-    strain_rate_nondimensional[0][1] = 0.5959;
-
-    Tensor<2,3> velocity_gradient_tensor_nondimensional;
-    velocity_gradient_tensor_nondimensional[0][1] = 2.0* 0.5959;
-    velocity_gradient_tensor_nondimensional[1][0] = 2.0* 0.5959;
-
-    std::array<double,4> ref_resolved_shear_stress;
-    ref_resolved_shear_stress[0] = 1;
-    ref_resolved_shear_stress[1] = 2;
-    ref_resolved_shear_stress[2] = 3;
-    ref_resolved_shear_stress[3] = 1e60; // can't really use numerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
-
-    std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
-    derivatives = cpo_2d.compute_derivatives(volume_fractions, a_cosine_matrices,
-                                             strain_rate_nondimensional, velocity_gradient_tensor_nondimensional,
-                                             0.5, ref_resolved_shear_stress);
-
-    // The correct analytical solution to check against
-    // Note that this still has to be multiplied with with volume fraction
-    // of each grain to get the same solution as D-Rex would get.
-    double solution[5] = {0.0, 0.0, 0.0, 0.0 ,0.0};
-    for (unsigned int iii = 0; iii < derivatives.first.size(); ++iii)
-      CHECK(derivatives.first[iii] == Approx(solution[iii]));
-
-    Tensor<2,3> deriv_direction_solution_2_to_5;
-    deriv_direction_solution_2_to_5[0][0] = 0;
-    deriv_direction_solution_2_to_5[0][1] = 0.0;
-    deriv_direction_solution_2_to_5[0][2] = 0.0;
-    deriv_direction_solution_2_to_5[1][0] = 0.0;
-    deriv_direction_solution_2_to_5[1][1] = 0.0;
-    deriv_direction_solution_2_to_5[1][2] = 0.0;
-    deriv_direction_solution_2_to_5[2][0] = 0.0;
-    deriv_direction_solution_2_to_5[2][1] = 0.0;
-    deriv_direction_solution_2_to_5[2][2] = 0.0;
-    Tensor<2,3> deriv_direction_solution[5] = {Tensor<2,3>(),deriv_direction_solution_2_to_5,deriv_direction_solution_2_to_5,deriv_direction_solution_2_to_5,deriv_direction_solution_2_to_5};
-    for (size_t index = 0; index < 5; index++)
-      {
-        for (size_t iii = 0; iii < 3; iii++)
-          {
-            for (size_t jjj = 0; jjj < 3; jjj++)
-              {
-                CHECK(deriv_direction_solution[index][iii][jjj] == Approx(derivatives.second[index][iii][jjj]));
-              }
-          }
-      }
-    // now check if the value is the same as the D-Rex output when contracted with the direction matrix
-    Tensor<2,3> deriv_direction_full_solution_2_to_5;
-    deriv_direction_full_solution_2_to_5[0][0] = 0.0 ;
-    deriv_direction_full_solution_2_to_5[0][1] = 0.0;
-    deriv_direction_full_solution_2_to_5[0][2] = 0.0;
-    deriv_direction_full_solution_2_to_5[1][0] = 0.0;
-    deriv_direction_full_solution_2_to_5[1][1] = 0.0;
-    deriv_direction_full_solution_2_to_5[1][2] = 0.0;
-    deriv_direction_full_solution_2_to_5[2][0] = 0.0;
-    deriv_direction_full_solution_2_to_5[2][1] = 0.0;
-    deriv_direction_full_solution_2_to_5[2][2] = 0.0;
-    Tensor<2,3> deriv_direction_full_solution[5] = {Tensor<2,3>(),deriv_direction_full_solution_2_to_5,deriv_direction_full_solution_2_to_5,deriv_direction_full_solution_2_to_5,deriv_direction_full_solution_2_to_5};
-    for (size_t index = 0; index < 5; index++)
-      {
-        auto full_solution = a_cosine_matrices[index] * deriv_direction_solution[index];
-        for (size_t iii = 0; iii < 3; iii++)
-          {
-            for (size_t jjj = 0; jjj < 3; jjj++)
-              {
-                CHECK(full_solution[iii][jjj] == Approx(deriv_direction_full_solution[index][iii][jjj]));
-              }
-          }
-      }
-  }
-
-  {
-    // secondly test initialization 3d.
-    // This should be exactly the same as the 2d version
-    const int dim3=3;
-
-    aspect::Particle::Property::CPO<dim3> cpo_3d;
+    aspect::Particle::Property::CPO<3> cpo_3d;
     aspect::ParameterHandler prm;
     cpo_3d.declare_parameters(prm);
     prm.enter_subsection("Postprocess");
@@ -659,6 +457,8 @@ TEST_CASE("CPO core: Spin tensor")
             prm.set("Model name","Uniform grains and Random Uniform rotations");
             prm.enter_subsection("Uniform grains and Random Uniform rotations");
             {
+              // Let the minerals just passively rotate with the rotation of
+              // the particle caused by the flow.
               prm.set("Minerals","Passive,Passive");
               prm.set("Volume fractions minerals","0.5,0.5");
             }
@@ -675,7 +475,7 @@ TEST_CASE("CPO core: Spin tensor")
     cpo_3d.parse_parameters(prm);
     cpo_3d.initialize();
 
-    Point<dim3> dummy_point;
+    Point<3> dummy_point;
     std::vector<double> data;
     cpo_3d.initialize_one_particle_property(dummy_point, data);
     // The CPO particles are initialized. With the same seed, the outcome should
