@@ -66,7 +66,20 @@ namespace aspect
                                    std::vector<std::vector<double>> &volume_fractions_grains,
                                    std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains)
       {
-        // See class header information for layout information
+        /**
+         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
+         * 1. M mineral times
+         *    1.1  Mineral deformation type   -> 1 double, at location
+         *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
+         *    2.1. Mineral volume fraction    -> 1 double, at location
+         *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
+         *    2.2. N grains times:
+         *         2.1. volume fraction grain -> 1 double, at location:
+         *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         * See class header information for more layout information
+         */
         deformation_type.resize(n_minerals);
         volume_fraction_mineral.resize(n_minerals);
         volume_fractions_grains.resize(n_minerals);
@@ -105,7 +118,20 @@ namespace aspect
                                             std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
                                             std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains_derivatives) const
       {
-        // See class header information for layout information
+        /**
+        * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
+        * 1. M mineral times
+        *    1.1  Mineral deformation type   -> 1 double, at location
+        *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
+        *    2.1. Mineral volume fraction    -> 1 double, at location
+        *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
+        *    2.2. N grains times:
+        *         2.1. volume fraction grain -> 1 double, at location:
+        *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+        *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+        *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+        * See class header information for more layout information
+        */
         load_particle_data(cpo_data_position,
                            data,
                            deformation_type,
@@ -150,7 +176,20 @@ namespace aspect
                                     std::vector<std::vector<double>> &volume_fractions_grains,
                                     std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains)
       {
-        // See class header information for layout information
+        /**
+         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
+         * 1. M mineral times
+         *    1.1  Mineral deformation type   -> 1 double, at location
+         *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
+         *    2.1. Mineral volume fraction    -> 1 double, at location
+         *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
+         *    2.2. N grains times:
+         *         2.1. volume fraction grain -> 1 double, at location:
+         *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         * See class header information for more layout information
+         */
         for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           {
             Assert(volume_fractions_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: volume_fractions_mineral[mineral_i] is not the same as n_grains."));
@@ -188,7 +227,20 @@ namespace aspect
                                              std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
                                              std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains_derivatives) const
       {
-        // See class header information for layout information
+        /**
+         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
+         * 1. M mineral times
+         *    1.1  Mineral deformation type   -> 1 double, at location
+         *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
+         *    2.1. Mineral volume fraction    -> 1 double, at location
+         *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
+         *    2.2. N grains times:
+         *         2.1. volume fraction grain -> 1 double, at location:
+         *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
+         * See class header information for more layout information
+         */
         store_particle_data(cpo_data_position,
                             data,
                             deformation_type,
@@ -231,7 +283,7 @@ namespace aspect
       CPO<dim>::initialize_one_particle_property(const Point<dim> &,
                                                  std::vector<double> &data) const
       {
-        // the layout of the data vector per perticle is the following (note that for this plugin the following dim's are always 3):
+        // the layout of the data vector per perticle is the following:
         // 1. M mineral times
         //    1.1  olivine deformation type   -> 1 double, at location
         //                                      => data_position + 0 + mineral_i * (n_grains * 10 + 2)
@@ -241,7 +293,7 @@ namespace aspect
         //         2.1. volume fraction grain -> 1 double, at location:
         //                                      => data_position + 2 + i_grain * 10 + mineral_i *(n_grains * 10 + 2), or
         //                                      => data_position + 2 + i_grain * (2 * Tensor<2,3>::n_independent_components+ 2) + mineral_i * (n_grains * 10 + 2)
-        //         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+        //         2.2. rotation matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
         //                                      => data_position + 3 + i_grain * 10 + mineral_i * (n_grains * 10 + 2), or
         //                                      => data_position + 3 + i_grain * (2 * Tensor<2,3>::n_independent_components+ 2) + mineral_i * (n_grains * 10 + 2)
         //
@@ -249,6 +301,10 @@ namespace aspect
         // grains), although their volume fractions may not be the same. We need a minimum amount
         // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
+        //
+        // Futhermore, for this plugin the following dim's are always 3. When using 2D an infinitely thin 3D domain is assumed.
+        //
+        // The rotation matrix is a direction cosine matrix, representing the orientation of the grain in the domain.
 
         // fabric. This is determined in the computations, so set it to -1 for now.
         std::vector<double> deformation_type(n_minerals, -1.0);
@@ -587,8 +643,8 @@ namespace aspect
 
             /**
              * Correct direction cosine matrices numerical error (orthnormality) after integration
-             * Follows same method as in matlab version from Thissen of finding the nearest orthonormal
-             * matrix using the SVD
+             * Follows same method as in matlab version from Thissen (see https://github.com/cthissen/Drex-MATLAB/)
+             * of finding the nearest orthonormal matrix using the SVD
              */
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
@@ -996,7 +1052,9 @@ namespace aspect
                   prm.declare_entry ("Volume fractions minerals", "0.5, 0.5",
                                      Patterns::List(Patterns::Double(0)),
                                      "The volume fractions for the different minerals. "
-                                     "There need to be the same number of values as there are minerals");
+                                     "There need to be the same number of values as there are minerals."
+                                     "Note that the currently implemented scheme is incompressible and "
+                                     "does not allow chemical interaction or the formation of new phases");
                 }
                 prm.leave_subsection ();
               }
@@ -1014,6 +1072,10 @@ namespace aspect
       void
       CPO<dim>::parse_parameters (ParameterHandler &prm)
       {
+        AssertThrow(dim != 2, ExcMessage("CPO computations are currently only supported for 3D models. "
+                                         "2D computations will work when this assert is removed, but you will need to make sure that the "
+                                         "correct 3D strain-rate and velocity gradient tensors are provided to the algorithm."));
+
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Particles");
@@ -1090,6 +1152,14 @@ namespace aspect
                     }
 
                   volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
+                  double volume_fractions_minerals_sum = 0;
+                  for (auto &&fraction : volume_fractions_minerals)
+                    {
+                      volume_fractions_minerals_sum += fraction;
+                    }
+
+                  AssertThrow(abs(volume_fractions_minerals_sum-1.0) < 2.0 * std::numeric_limits<double>::epsilon(),
+                              ExcMessage("The sum of the CPO volume fractions should be one."));
                 }
                 prm.leave_subsection();
               }
