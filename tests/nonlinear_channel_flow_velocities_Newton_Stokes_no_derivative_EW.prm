@@ -8,7 +8,7 @@ include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes
 
 set End time                               = 2
 set Max nonlinear iterations = 100 
-set Nonlinear solver tolerance = 1e-10
+set Nonlinear solver tolerance = 1e-9
 
 subsection Solver parameters
   subsection Newton solver parameters
