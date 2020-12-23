@@ -981,9 +981,9 @@ namespace aspect
 
 
               // Temporary vector that will hold the different arrays stored in urlArray
-              std::vector<std::string> tmp;
+              std::vector<libdap::dods_float32> tmp;
               // Vector that will hold the arrays (columns) and the values within those arrays
-              std::vector<std::vector<std::string>> columns;
+              std::vector<std::vector<libdap::dods_float32>> columns;
 
               // Check dds values to make sure the arrays are of the same length and of type string
               for (libdap::DDS::Vars_iter i = dds.var_begin(); i != dds.var_end(); ++i)
@@ -994,11 +994,13 @@ namespace aspect
                       // Array to store the url data
                       libdap::Array *urlArray;
                       urlArray = static_cast <libdap::Array *>(btp);
-                      if (urlArray->var() != nullptr && urlArray->var()->type() == libdap::dods_str_c)
+                      if (urlArray->var() != nullptr && urlArray->var()->type() == libdap::dods_float32_c)
                         {
+                          tmp.resize(urlArray->length());
+
                           // The url Array contains a separate array for each column of data.
                           // This will put each of these individual arrays into its own vector.
-                          urlArray->value(tmp);
+                          urlArray->value(&tmp[0]);
                           columns.push_back(tmp);
                         }
                       else
@@ -1030,6 +1032,8 @@ namespace aspect
                   table = das.get_table(i);
                   if (table->get_attr("POINTS") != "")
                     points.push_back(table->get_attr("POINTS"));
+                  if (table->get_attr("points") != "")
+                    points.push_back(table->get_attr("points"));
                 }
 
               std::stringstream urlString;
