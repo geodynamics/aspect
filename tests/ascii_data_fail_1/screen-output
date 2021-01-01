@@ -11,7 +11,7 @@ to avoid a possible deadlock.
 
 Exception 'ExcMessage ("While reading the data file '" + filename + "' the ascii data " "plugin has encountered an error before the end of the file. " "Please check for malformed data values (e.g. NaN) or superfluous " "lines at the end of the data file.")' on rank 0 on processing: 
 
-An error occurred in file <utilities.cc> in function
+An error occurred in file <structured_data.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     in.eof()

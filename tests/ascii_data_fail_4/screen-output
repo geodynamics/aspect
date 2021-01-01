@@ -11,7 +11,7 @@ to avoid a possible deadlock.
 
 Exception 'ExcMessage (std::string("Ascii data file <") + filename + "> not found!")' on rank 0 on processing: 
 
-An error occurred in file <utilities.cc> in function
+An error occurred in file <structured_data.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     Utilities::fexists(filename) || filename_is_url(filename)
