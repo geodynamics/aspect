@@ -148,28 +148,28 @@ namespace aspect
         prm.enter_subsection ("Morency and Doin");
         {
           prm.declare_entry ("Densities", "3300.",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double(0.)),
                              "List of densities, $\\rho$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\kilogram\\per\\meter\\cubed}");
-          prm.declare_entry ("Activation energies", "500",
-                             Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Activation energies", "500.",
+                             Patterns::List(Patterns::Double(0.)),
                              "List of activation energies, $E_a$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value.  Units: \\si{\\kilo\\joule\\per\\mole}");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double(0.)),
                              "List of thermal expansivities for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
-          prm.declare_entry ("Stress exponents for viscous rheology", "3",
-                             Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Stress exponents for viscous rheology", "3.",
+                             Patterns::List(Patterns::Double(0.)),
                              "List of stress exponents, $n_v$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value.  Units: None");
-          prm.declare_entry ("Stress exponents for plastic rheology", "30",
-                             Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Stress exponents for plastic rheology", "30.",
+                             Patterns::List(Patterns::Double(0.)),
                              "List of stress exponents, $n_p$, for background mantle and compositional fields,"
                              "for a total of N+1 values, where N is the number of compositional fields."
                              "If only one value is given, then all use the same value.  Units: None");
@@ -179,13 +179,13 @@ namespace aspect
                              "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
           prm.declare_entry ("Activation volume", "6.4e-6", Patterns::Double(0), "($V_a$). Units: \\si{\\meter\\cubed\\per\\mole}");
           prm.declare_entry ("Reference strain rate", "6.4e-16", Patterns::Double(0), "($\\dot{\\epsilon}_\\text{ref}$). Units: \\si{\\per\\second}");
-          prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0), "($B$). Units: None");
-          prm.declare_entry ("Coefficient of yield stress increase with depth", "0.25", Patterns::Double(0), "($\\gamma$). Units: None");
-          prm.declare_entry ("Cohesive strength of rocks at the surface", "117", Patterns::Double(0), "($\\tau_0$). Units: \\si{\\pascal}");
-          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0), "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
-          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0), "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
+          prm.declare_entry ("Preexponential constant for viscous rheology law", "1.24e14", Patterns::Double(0.), "($B$). Units: None");
+          prm.declare_entry ("Coefficient of yield stress increase with depth", "0.25", Patterns::Double(0.), "($\\gamma$). Units: None");
+          prm.declare_entry ("Cohesive strength of rocks at the surface", "117.", Patterns::Double(0.), "($\\tau_0$). Units: \\si{\\pascal}");
+          prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.), "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
+          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::Double(0.), "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
 
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0), "Reference viscosity for nondimensionalization.");
+          prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double(0.), "Reference viscosity for nondimensionalization.");
         }
         prm.leave_subsection();
       }
