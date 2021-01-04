@@ -75,15 +75,15 @@ namespace aspect
       LinearizedIncompressible<dim>::declare_parameters (ParameterHandler &prm,
                                                          const unsigned int n_compositions)
       {
-        prm.declare_entry ("Reference density", "3300",
+        prm.declare_entry ("Reference density", "3300.",
                            Patterns::Double (0.),
                            "Reference density $\\rho_0$. "
                            "Units: \\si{\\kilogram\\per\\meter\\cubed}.");
-        prm.declare_entry ("Reference temperature", "293",
+        prm.declare_entry ("Reference temperature", "293.",
                            Patterns::Double (0.),
                            "The reference temperature $T_0$. The reference temperature is used "
                            "in both the density and viscosity formulas. Units: \\si{\\kelvin}.");
-        prm.declare_entry ("Reference specific heat", "1250",
+        prm.declare_entry ("Reference specific heat", "1250.",
                            Patterns::Double (0.),
                            "The value of the specific heat $C_p$. "
                            "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.");

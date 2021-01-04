@@ -479,48 +479,48 @@ namespace aspect
       prm.enter_subsection("Compositional fields");
       {
         prm.declare_entry ("Number of fields", "0",
-                           Patterns::Integer (0),
+                           Patterns::Integer(0),
                            "The number of fields that will be advected along with the flow field, excluding "
                            "velocity, pressure and temperature.");
         prm.declare_entry ("Conductivities", "2.25",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of thermal conductivities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("Heat capacities", "1250",
-                           Patterns::List (Patterns::Double(0)),
+        prm.declare_entry ("Heat capacities", "1250.",
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of heat capacities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("Reference temperatures", "0",
-                           Patterns::List (Patterns::Double(0)),
+        prm.declare_entry ("Reference temperatures", "0.",
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of reference temperatures equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("Reference densities", "2700",
-                           Patterns::List (Patterns::Double(0)),
+        prm.declare_entry ("Reference densities", "2700.",
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of reference densities equal to the number of "
                            "compositional fields.");
         prm.declare_entry ("Thermal expansivities", "3.5e-5",
-                           Patterns::List(Patterns::Double(0)),
+                           Patterns::List(Patterns::Double(0.)),
                            "List of thermal expansivities for background mantle and compositional fields, "
                            "for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
-        prm.declare_entry ("Stress exponents", "1",
-                           Patterns::List (Patterns::Double(0)),
+        prm.declare_entry ("Stress exponents", "1.",
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of stress exponents equal to the number of "
                            "compositional fields.");
         prm.declare_entry ("Cohesions", "1e20",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
-        prm.declare_entry ("Angles of internal friction", "30",
-                           Patterns::List (Patterns::Double(0)),
+        prm.declare_entry ("Angles of internal friction", "30.",
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
         prm.declare_entry ("Initial viscosities", "1e21",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of initial viscosities equal to the number of "
                            "compositional fields.");
         prm.declare_entry ("Viscous prefactors", "1e21",
-                           Patterns::List (Patterns::Double(0)),
+                           Patterns::List (Patterns::Double(0.)),
                            "A list of viscous viscosities equal to the number of "
                            "compositional fields.");
 
@@ -532,19 +532,19 @@ namespace aspect
         prm.enter_subsection ("Drucker prager compositions");
         {
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
+          prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.),
                              "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
-          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Minimum strain rate", "1.4e-20", Patterns::List(Patterns::Double(0.)),
                              "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
-          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0.)),
                              "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0.)),
                              "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0.)),
                              "Scaling coefficient for effective viscosity.");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0.)),
                              "Reference viscosity for nondimensionalization. Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Reference compressibility", "4e-12", Patterns::Double (0),
+          prm.declare_entry ("Reference compressibility", "4e-12", Patterns::Double(0.),
                              "The value of the reference compressibility. Units: \\si{\\per\\pascal}.");
 
           // averaging parameters

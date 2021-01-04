@@ -276,32 +276,32 @@ namespace aspect
         prm.enter_subsection ("Simple nonlinear");
         {
           // Reference and minimum/maximum values
-          prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
+          prm.declare_entry ("Reference temperature", "293.", Patterns::Double(0.),
                              "For calculating density by thermal expansivity. Units: \\si{\\kelvin}");
-          prm.declare_entry ("Minimum strain rate", "1.96e-40", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Minimum strain rate", "1.96e-40", Patterns::List(Patterns::Double(0.)),
                              "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}");
-          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Minimum viscosity", "1e10", Patterns::List(Patterns::Double(0.)),
                              "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Maximum viscosity", "1e28", Patterns::List(Patterns::Double(0.)),
                              "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
-          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0.)),
                              "Scaling coefficient for effective viscosity.");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0.)),
                              "Reference viscosity for nondimensionalization. Units: \\si{\\pascal\\second}");
 
           // Equation of state parameters
-          prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::List(Patterns::Double(0.)),
                              "Units: \\si{\\meter\\squared\\per\\second}");
-          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Heat capacity", "1.25e3", Patterns::List(Patterns::Double(0.)),
                              "Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}");
           prm.declare_entry ("Densities", "3300.",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double(0.)),
                              "List of densities, $\\rho$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\kilogram\\per\\meter\\cubed}");
           prm.declare_entry ("Thermal expansivities", "3.5e-5",
-                             Patterns::List(Patterns::Double(0)),
+                             Patterns::List(Patterns::Double(0.)),
                              "List of thermal expansivities for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: \\si{\\per\\kelvin}");
@@ -314,14 +314,14 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\pascal}$^{-n_{\\text{dislocation}}}$ \\si{\\meter}$^{n_{\\text{dislocation}}/m_{\\text{dislocation}}}$ \\si{\\per\\second}");
-          prm.declare_entry ("Stress exponent", "3",
-                             Patterns::List(Patterns::Double(0)),
+          prm.declare_entry ("Stress exponent", "3.",
+                             Patterns::List(Patterns::Double(0.)),
                              "List of stress exponents, $n_dislocation$, for background mantle and compositional fields, "
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value.  Units: None");
 
           // averaging parameters
-          prm.declare_entry ("Viscosity averaging p", "-1",
+          prm.declare_entry ("Viscosity averaging p", "-1.",
                              Patterns::Double(),
                              "This is the p value in the generalized weighed average equation: "
                              " $\\text{mean} = \\frac{1}{k}(\\sum_{i=1}^k \\big(c_i \\eta_{\\text{eff}_i}^p)\\big)^{\\frac{1}{p}}$. "
