@@ -843,7 +843,7 @@ namespace aspect
                     else
                       {
                         for (unsigned int d=1; d<dim; ++d)
-                          surface_point[d] = natural_coord[d];
+                          surface_point[d-1] = natural_coord[d];
                       }
                     // Get the topography at this point.
                     const double topo = this->get_initial_topography_model().value(surface_point);
