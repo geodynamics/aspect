@@ -729,12 +729,14 @@ namespace aspect
     {
       prm.declare_entry ("Remove nullspace", "",
                          Patterns::MultipleSelection("net rotation|angular momentum|"
+                                                     "net surface rotation|"
                                                      "net translation|linear momentum|"
                                                      "net x translation|net y translation|net z translation|"
                                                      "linear x momentum|linear y momentum|linear z momentum"),
                          "Choose none, one or several from "
                          "\n\n"
                          "\\begin{itemize} \\item net rotation \\item angular momentum \\item net translation "
+                         "\\item net surface rotation"
                          "\\item linear momentum \\item net x translation \\item net y translation "
                          "\\item net z translation \\item linear x momentum \\item linear y momentum "
                          "\\item linear z momentum \\end{itemize}"
@@ -748,7 +750,8 @@ namespace aspect
                          "The ``angular momentum'' option removes a rotation such that the net angular momentum "
                          "is zero. The ``linear * momentum'' options remove translations such that the net "
                          "momentum in the relevant direction is zero.  The ``net rotation'' option removes the "
-                         "net rotation of the domain, and the ``net * translation'' options remove the "
+                         "net rotation of the whole domain, the ``net surface rotation'' option removes the net "
+                         "rotation of the top surface, and the ``net * translation'' options remove the "
                          "net translations in the relevant directions.  For most problems there should not be a "
                          "significant difference between the momentum and rotation/translation versions of "
                          "nullspace removal, although the momentum versions are more physically motivated. "
@@ -1565,6 +1568,9 @@ namespace aspect
           if (nullspace_names[i]=="net rotation")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::net_rotation);
+          else if (nullspace_names[i]=="net surface rotation")
+            nullspace_removal = typename NullspaceRemoval::Kind(
+                                  nullspace_removal | NullspaceRemoval::net_surface_rotation);
           else if (nullspace_names[i]=="angular momentum")
             nullspace_removal = typename NullspaceRemoval::Kind(
                                   nullspace_removal | NullspaceRemoval::angular_momentum);

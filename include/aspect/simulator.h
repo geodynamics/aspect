@@ -1463,13 +1463,16 @@ namespace aspect
        * density (which corresponds to computing a net rotation instead of net
        * angular momentum).
        * @param solution Solution vector to compute the properties for.
+       * @param limit_to_top_faces allows to only compute the net angular momentum
+       * (or net rotation) of the top surface.
        *
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
       RotationProperties<dim>
       compute_net_angular_momentum(const bool use_constant_density,
-                                   const LinearAlgebra::BlockVector &solution) const;
+                                   const LinearAlgebra::BlockVector &solution,
+                                   const bool limit_to_top_faces = false) const;
 
       /**
        * Remove the angular momentum of the given vector
@@ -1480,13 +1483,17 @@ namespace aspect
        * @param relevant_dst locally relevant vector for the whole FE, will be
        * filled at the end.
        * @param tmp_distributed_stokes only contains velocity and pressure.
+       * @param limit_to_top_faces allows to only remove the net angular momentum
+       * (or net rotation) of the top surface. This can be useful to compare surface
+       * motions against plate reconstructions in no net rotation reference frames.
        *
        * This function is implemented in
        * <code>source/simulator/nullspace.cc</code>.
        */
       void remove_net_angular_momentum( const bool use_constant_density,
                                         LinearAlgebra::BlockVector &relevant_dst,
-                                        LinearAlgebra::BlockVector &tmp_distributed_stokes);
+                                        LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                        const bool limit_to_top_faces = false);
 
       /**
        * Offset the boundary id of all faces located on an outflow boundary

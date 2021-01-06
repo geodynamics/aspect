@@ -51,29 +51,36 @@ namespace aspect
     RotationStatistics<dim>::execute (TableHandler &statistics)
     {
       RotationProperties<dim> rotation = this->compute_net_angular_momentum(use_constant_density,
-                                                                            this->get_solution());
+                                                                            this->get_solution(),
+                                                                            false);
 
-      const std::vector<std::string> names = {"Angular momentum", "Moment of inertia", "Angular velocity"};
+      RotationProperties<dim> surface_rotation = this->compute_net_angular_momentum(true,
+                                                                                    this->get_solution(),
+                                                                                    true);
+
+      const std::vector<std::string> names = {"Angular momentum", "Moment of inertia", "Angular velocity", "Surface angular velocity"};
       std::vector<std::string> units;
 
       if (this->convert_output_to_years() == true)
         {
-          units = {"kg*m^2/year", "kg*m^2", "1/year"};
+          units = {"kg*m^2/year", "kg*m^2", "1/year", "1/year"};
 
           if (dim == 2)
             {
               rotation.scalar_angular_momentum *= year_in_seconds;
               rotation.scalar_rotation *= year_in_seconds;
+              surface_rotation.scalar_rotation *= year_in_seconds;
             }
           else if (dim == 3)
             {
               rotation.tensor_angular_momentum *= year_in_seconds;
               rotation.tensor_rotation *= year_in_seconds;
+              surface_rotation.tensor_rotation *= year_in_seconds;
             }
         }
       else
         {
-          units = {"kg*m^2/s", "kg*m^2", "1/s"};
+          units = {"kg*m^2/s", "kg*m^2", "1/s", "1/s"};
         }
 
       std::ostringstream output;
@@ -84,10 +91,12 @@ namespace aspect
           add_scientific_column(names[0] + " (" + units[0] +")", rotation.scalar_angular_momentum, statistics);
           add_scientific_column(names[1] + " (" + units[1] +")", rotation.scalar_moment_of_inertia, statistics);
           add_scientific_column(names[2] + " (" + units[2] +")", rotation.scalar_rotation, statistics);
+          add_scientific_column(names[3] + " (" + units[3] +")", surface_rotation.scalar_rotation, statistics);
 
           output << rotation.scalar_angular_momentum << " " << units[0] << ", "
                  << rotation.scalar_moment_of_inertia << " " << units[1] << ", "
-                 << rotation.scalar_rotation << " " << units[2];
+                 << rotation.scalar_rotation << " " << units[2] << ", "
+                 << surface_rotation.scalar_rotation << " " << units[3];
         }
       else if (dim == 3)
         {
@@ -110,13 +119,15 @@ namespace aspect
             }
 
           add_scientific_column(names[2] + " (" + units[2] +")", rotation.tensor_rotation.norm(), statistics);
+          add_scientific_column(names[3] + " (" + units[3] +")", surface_rotation.tensor_rotation.norm(), statistics);
 
           output << rotation.tensor_angular_momentum.norm() << " " << units[0] << ", "
                  << scalar_moment_of_inertia << " " << units[1] << ", "
-                 << rotation.tensor_rotation.norm() << " " << units[2];
+                 << rotation.tensor_rotation.norm() << " " << units[2] << ", "
+                 << surface_rotation.tensor_rotation.norm() << " " << units[3];
         }
 
-      return std::pair<std::string, std::string> (names[0]+ ", " + names[1] + ", " + names[2] + ":",
+      return std::pair<std::string, std::string> (names[0]+ ", " + names[1] + ", " + names[2] + ", " + names[3] + ":",
                                                   output.str());
     }
 

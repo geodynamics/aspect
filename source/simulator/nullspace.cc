@@ -228,6 +228,12 @@ namespace aspect
         // use_constant_density = true, remove net rotation
         remove_net_angular_momentum( true, relevant_dst, tmp_distributed_stokes);
       }
+    if (parameters.nullspace_removal & NullspaceRemoval::net_surface_rotation)
+      {
+        // use_constant_density = true, remove net rotation
+        // limit_to_top_faces = true, to limit to surface motions
+        remove_net_angular_momentum( true, relevant_dst, tmp_distributed_stokes, true);
+      }
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
         // use_constant_density = true, remove net translation
@@ -348,18 +354,26 @@ namespace aspect
   template <int dim>
   RotationProperties<dim>
   Simulator<dim>::compute_net_angular_momentum(const bool use_constant_density,
-                                               const LinearAlgebra::BlockVector &solution) const
+                                               const LinearAlgebra::BlockVector &solution,
+                                               const bool limit_to_top_faces) const
   {
     // compute the momentum from velocity field, by computing
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
     // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
     QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
 
-    const unsigned int n_q_points = quadrature.size();
+    const unsigned int n_q_points = (limit_to_top_faces == false) ? quadrature.size() : surface_quadrature.size();
     UpdateFlags flags = update_quadrature_points | update_JxW_values | update_values | update_gradients;
 
-    FEValues<dim> fe (*mapping, finite_element, quadrature, flags);
+    FEValues<dim> fe_values (*mapping, finite_element, quadrature, flags);
+    FEFaceValues<dim> fe_face_values (*mapping, finite_element, surface_quadrature, flags);
+    FEValuesBase<dim> *fe((limit_to_top_faces == false)
+                          ?
+                          dynamic_cast<FEValuesBase<dim> *>(&fe_values)
+                          :
+                          dynamic_cast<FEValuesBase<dim> *>(&fe_face_values));
 
     // moment of inertia and angular momentum for 3D
     SymmetricTensor<2,dim> local_moment_of_inertia;
@@ -379,19 +393,37 @@ namespace aspect
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {
-          fe.reinit (cell);
-          const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
+          if (limit_to_top_faces == false)
+            fe_values.reinit (cell);
+          else
+            {
+              // We only want the output at the top boundary, so only compute it if the current cell
+              // has a face at the top boundary.
+              bool cell_at_top_boundary = false;
+              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                if (cell->at_boundary(f) &&
+                    (geometry_model->translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
+                  {
+                    cell_at_top_boundary = true;
+                    fe_face_values.reinit(cell,f);
+                  }
+
+              if (cell_at_top_boundary == false)
+                continue;
+            }
+
+          const std::vector<Point<dim> > &q_points = fe->get_quadrature_points();
 
           if (use_constant_density == false)
             {
               // Set use_strain_rates to false since we don't need viscosity
-              in.reinit(fe, cell, introspection, solution, false);
+              in.reinit(*fe, cell, introspection, solution, false);
               material_model->evaluate(in, out);
             }
           else
             {
               // Get the velocity at each quadrature point
-              fe[introspection.extractors.velocities].get_function_values (solution, in.velocity);
+              (*fe)[introspection.extractors.velocities].get_function_values (solution, in.velocity);
             }
 
           // actually compute the moment of inertia and angular momentum
@@ -400,7 +432,7 @@ namespace aspect
               // get the position and density at this quadrature point
               const Point<dim> r_vec = q_points[k];
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
-              const double JxW = fe.JxW(k);
+              const double JxW = fe->JxW(k);
 
               if (dim == 2)
                 {
@@ -446,13 +478,15 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::remove_net_angular_momentum( const bool use_constant_density,
                                                     LinearAlgebra::BlockVector &relevant_dst,
-                                                    LinearAlgebra::BlockVector &tmp_distributed_stokes)
+                                                    LinearAlgebra::BlockVector &tmp_distributed_stokes,
+                                                    const bool limit_to_top_faces)
   {
     Assert(introspection.block_indices.velocities != introspection.block_indices.pressure,
            ExcNotImplemented());
 
     RotationProperties<dim> rotation_properties = compute_net_angular_momentum(use_constant_density,
-                                                                               relevant_dst);
+                                                                               relevant_dst,
+                                                                               limit_to_top_faces);
 
     // vector for storing the correction to the velocity field
     LinearAlgebra::Vector correction(tmp_distributed_stokes.block(introspection.block_indices.velocities));
