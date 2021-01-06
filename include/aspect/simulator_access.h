@@ -53,6 +53,7 @@ namespace aspect
   template <int dim> class Simulator;
   template <int dim> struct SimulatorSignals;
   template <int dim> class LateralAveraging;
+  template <int dim> struct RotationProperties;
 
   namespace GravityModel
   {
@@ -912,6 +913,19 @@ namespace aspect
        */
       const StokesMatrixFreeHandler<dim> &
       get_stokes_matrix_free () const;
+
+      /**
+       * Compute the angular momentum and other rotation properties
+       * of the velocities in the given solution vector.
+       *
+       * @param use_constant_density determines whether to use a constant
+       * density (which corresponds to computing a net rotation instead of net
+       * angular momentum).
+       * @param solution Solution vector to compute the properties for.
+       */
+      RotationProperties<dim>
+      compute_net_angular_momentum(const bool use_constant_density,
+                                   const LinearAlgebra::BlockVector &solution) const;
 
       /** @} */
 
