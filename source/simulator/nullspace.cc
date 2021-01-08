@@ -370,9 +370,13 @@ namespace aspect
     double local_scalar_moment = 0.0;
     double local_scalar_angular_momentum = 0.0;
 
-    // Vectors for evaluating the finite element solution
-    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
+    // Vectors for evaluating the velocities and the material model
+    std::vector<Tensor<1,dim> > velocities (n_q_points, Tensor<1,dim>());
+
+    MaterialModel::MaterialModelInputs<dim> in(n_q_points,
+                                               introspection.n_compositional_fields);
+    MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
+                                                 introspection.n_compositional_fields);
 
     // loop over all local cells
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -381,16 +385,10 @@ namespace aspect
           fe.reinit (cell);
           const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
-          // get the density at each quadrature point if necessary
-          MaterialModel::MaterialModelInputs<dim> in(n_q_points,
-                                                     introspection.n_compositional_fields);
-          MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                       introspection.n_compositional_fields);
-
           // Get the velocity at each quadrature point
-          fe[introspection.extractors.velocities].get_function_values (relevant_dst, in.velocity);
+          fe[introspection.extractors.velocities].get_function_values (relevant_dst, velocities);
 
-          if ( ! use_constant_density)
+          if (use_constant_density == false)
             {
               // Set use_strain_rates to false since we don't need viscosity
               in.reinit(fe, cell, introspection, solution, false);
@@ -403,31 +401,25 @@ namespace aspect
               // get the position and density at this quadrature point
               const Point<dim> r_vec = q_points[k];
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
+              const double JxW = fe.JxW(k);
 
               if (dim == 2)
                 {
                   // Get the velocity perpendicular to the position vector
-                  Tensor<1,dim> r_perp = cross_product_2d(r_vec);
+                  const Tensor<1,dim> r_perp = cross_product_2d(r_vec);
 
                   // calculate a signed scalar angular momentum
-                  local_scalar_angular_momentum += in.velocity[k] * r_perp * rho * fe.JxW(k);
+                  local_scalar_angular_momentum += velocities[k] * r_perp * rho * JxW;
                   // calculate a scalar moment of inertia
-                  local_scalar_moment += r_vec.norm_square() * rho * fe.JxW(k);
+                  local_scalar_moment += r_vec.norm_square() * rho * JxW;
                 }
               else
                 {
                   // calculate angular momentum vector
-                  Tensor<1,dim> r_cross_v = cross_product_3d(r_vec, in.velocity[k]);
-                  for (unsigned int i=0; i<dim; ++i)
-                    local_angular_momentum[i] += r_cross_v[i] * rho * fe.JxW(k);
+                  const Tensor<1,dim> r_cross_v = cross_product_3d(r_vec, velocities[k]);
+                  local_angular_momentum += r_cross_v * rho * JxW;
 
-                  // calculate moment of inertia
-                  local_moment_of_inertia[0][0] += (r_vec.square() - r_vec[0] * r_vec[0]) * rho * fe.JxW(k);
-                  local_moment_of_inertia[1][1] += (r_vec.square() - r_vec[1] * r_vec[1]) * rho * fe.JxW(k);
-                  local_moment_of_inertia[2][2] += (r_vec.square() - r_vec[2] * r_vec[2]) * rho * fe.JxW(k);
-                  local_moment_of_inertia[0][1] -= (r_vec[0] * r_vec[1]) * rho * fe.JxW(k);
-                  local_moment_of_inertia[0][2] -= (r_vec[0] * r_vec[2]) * rho * fe.JxW(k);
-                  local_moment_of_inertia[1][2] -= (r_vec[1] * r_vec[2]) * rho * fe.JxW(k);
+                  local_moment_of_inertia += (r_vec.norm_square() * unit_symmetric_tensor<dim>() - symmetrize(outer_product(r_vec,r_vec))) * rho * JxW;
                 }
             }
         }
