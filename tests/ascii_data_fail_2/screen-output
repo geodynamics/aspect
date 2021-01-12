@@ -11,7 +11,7 @@ to avoid a possible deadlock.
 
 Exception 'ExcMessage ("While reading the data file '" + filename + "' the ascii data " "plugin has reached the end of the file, but has not found the " "expected number of data values considering the spatial dimension, " "data columns, and number of lines prescribed by the POINTS header " "of the file. Please check the number of data " "lines against the POINTS header in the file.")' on rank 0 on processing: 
 
-An error occurred in file <utilities.cc> in function
+An error occurred in file <structured_data.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
     read_data_entries == n_expected_data_entries

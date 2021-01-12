@@ -75,9 +75,9 @@ namespace aspect
 
         private:
           /**
-           * Reads in file containing input data in ascii format.
+           * Reads in file containing input data.
            */
-          Utilities::AsciiDataLookup<2> lab_depths;
+          Utilities::StructuredDataLookup<2> lab_depths;
 
           /**
            * Directory in which the LAB depth file is present.

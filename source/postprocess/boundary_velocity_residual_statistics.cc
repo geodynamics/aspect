@@ -39,8 +39,8 @@ namespace aspect
       if (use_ascii_data)
         {
           // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
-          ascii_data_lookup = std_cxx14::make_unique<Utilities::AsciiDataLookup<dim> >(dim, scale_factor);
-          ascii_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
+          data_lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim> >(dim, scale_factor);
+          data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
         }
       else
         {
@@ -78,7 +78,7 @@ namespace aspect
             }
 
           for (unsigned int d = 0; d < dim; ++d)
-            data_velocity[d] = ascii_data_lookup->get_data(internal_position, d);
+            data_velocity[d] = data_lookup->get_data(internal_position, d);
           if (use_spherical_unit_vectors == true)
             data_velocity = Utilities::Coordinates::spherical_to_cartesian_vector(data_velocity, p);
         }

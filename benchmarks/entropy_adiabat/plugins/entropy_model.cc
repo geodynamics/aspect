@@ -46,7 +46,7 @@ namespace aspect
                    ExcMessage("The 'entropy model' material model requires the existence of a compositional field "
                               "named 'entropy'. This field does not exist."));
 
-      material_lookup = std::make_unique<Utilities::AsciiDataLookup<2>>(7,1.0);
+      material_lookup = std::make_unique<Utilities::StructuredDataLookup<2>>(7,1.0);
       material_lookup->load_file(data_directory+material_file_name,
                                  this->get_mpi_communicator());
     }
