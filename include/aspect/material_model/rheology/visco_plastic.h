@@ -76,6 +76,22 @@ namespace aspect
         std::vector<double> yielding;
     };
 
+    /**
+       * A data structure with the output of calculate_isostrain_viscosities.
+       */
+    struct IsostrainViscosities
+    {
+      /**
+       * The composition viscosity.
+       */
+      std::vector<double> composition_viscosities;
+
+      /**
+       * The composition yielding.
+       */
+      std::vector<bool> composition_yielding;
+    };
+
     namespace Rheology
     {
 
@@ -92,7 +108,7 @@ namespace aspect
            * This function calculates viscosities assuming that all the compositional fields
            * experience the same strain rate (isostrain).
            */
-          std::pair<std::vector<double>, std::vector<bool> >
+          IsostrainViscosities
           calculate_isostrain_viscosities ( const MaterialModel::MaterialModelInputs<dim> &in,
                                             const unsigned int i,
                                             const std::vector<double> &volume_fractions,

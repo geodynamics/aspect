@@ -92,7 +92,7 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<std::vector<double>, std::vector<bool> >
+      IsostrainViscosities
       ViscoPlastic<dim>::
       calculate_isostrain_viscosities (const MaterialModel::MaterialModelInputs<dim> &in,
                                        const unsigned int i,
@@ -100,10 +100,11 @@ namespace aspect
                                        const std::vector<double> &phase_function_values,
                                        const std::vector<unsigned int> &n_phases_per_composition) const
       {
+      IsostrainViscosities output_parameters;
 
         // Initialize or fill variables used to calculate viscosities
-        std::vector<bool> composition_yielding(volume_fractions.size(), false);
-        std::vector<double> composition_viscosities(volume_fractions.size(), numbers::signaling_nan<double>());
+        output_parameters.composition_yielding.resize(volume_fractions.size(), false);
+        output_parameters.composition_viscosities.resize(volume_fractions.size(), numbers::signaling_nan<double>());
 
         // Assemble stress tensor if elastic behavior is enabled
         SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
@@ -280,7 +281,7 @@ namespace aspect
                                                                                     current_edot_ii,
                                                                                     drucker_prager_parameters.max_yield_stress,
                                                                                     viscosity_pre_yield);
-                      composition_yielding[j] = true;
+                      output_parameters.composition_yielding[j] = true;
                     }
                   break;
                 }
@@ -292,9 +293,9 @@ namespace aspect
               }
 
             // Step 5: limit the viscosity with specified minimum and maximum bounds
-            composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
+            output_parameters.composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
           }
-        return std::make_pair (composition_viscosities, composition_yielding);
+        return output_parameters;
       }
 
 
@@ -342,7 +343,7 @@ namespace aspect
 
                 std::vector<double> eta_component =
                   calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                                  phase_function_values, n_phases_per_composition).first;
+                                                  phase_function_values, n_phases_per_composition).composition_viscosities;
 
                 // For each composition of the independent component, compute the derivative.
                 for (unsigned int composition_index = 0; composition_index < eta_component.size(); ++composition_index)
@@ -371,7 +372,7 @@ namespace aspect
 
             const std::vector<double> viscosity_difference =
               calculate_isostrain_viscosities(in_derivatives, i, volume_fractions,
-                                              phase_function_values, n_phases_per_composition).first;
+                                              phase_function_values, n_phases_per_composition).composition_viscosities;
 
             for (unsigned int composition_index = 0; composition_index < viscosity_difference.size(); ++composition_index)
               {
