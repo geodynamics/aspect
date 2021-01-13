@@ -100,7 +100,7 @@ namespace aspect
                                        const std::vector<double> &phase_function_values,
                                        const std::vector<unsigned int> &n_phases_per_composition) const
       {
-      IsostrainViscosities output_parameters;
+        IsostrainViscosities output_parameters;
 
         // Initialize or fill variables used to calculate viscosities
         output_parameters.composition_yielding.resize(volume_fractions.size(), false);
