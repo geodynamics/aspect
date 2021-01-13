@@ -307,7 +307,13 @@ FOREACH(_test ${_tests})
       MESSAGE(FATAL_ERROR "test ${_testname}.prm is missing a folder with reference data")
     ENDIF()
 
-    # run command
+    # Create the run command.
+    # Note that we are using the timeout.sh script (which is a wrapper around
+    # the bash timeout command not available on OSX). This might seem
+    # redundant as ctest has an option to limit test time (see below), but we
+    # "prebuild" tests on the CI system, which does not use the ctest
+    # mechanism. So without this additional timeout command, tests would hang
+    # indefinitely.
     IF("${_mpi_count}" STREQUAL "1")
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/output-${_testname}/screen-output
