@@ -187,7 +187,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(CellAverage,
                                             "cell average",
-                                            "Return the average of all particle properties in the given cell.")
+                                            "Return the arithmetic average of all particle properties in the given cell.")
     }
   }
 }
