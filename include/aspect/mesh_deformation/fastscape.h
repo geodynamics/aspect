@@ -59,6 +59,7 @@ namespace aspect
     void fastscape_set_v_(double *ux, double *uy);
     void fastscape_set_u_(double *up);
     void fastscape_set_h_(double *hp);
+    void fastscape_set_basement_(double *b);
 
     // Functions to run FastScape
     void fastscape_get_step_(int *sstep);
@@ -67,6 +68,8 @@ namespace aspect
     void fastscape_named_vtk_(double *fp, const double *vexp, int *astep, const char *c, int *length);
     // Copy the height array from FastScape back into ASPECT.
     void fastscape_copy_h_(double *hp);
+    // Copy the basement array from FastScape back into ASPECT.
+    void fastscape_copy_basement_(double *b);
     // Initialize stratigrapy, called once and handles visualization from there on.
     void fastscape_strati_(const int *nstepp, const int *nreflectorp, int *nfreqp, const double *vexp);
     //void folder_output_(int *length, int *astep, const char *c);
@@ -157,6 +160,8 @@ namespace aspect
       std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_indicators_map;
       // Whether or not to use the ghost nodes.
       bool use_ghost;
+      // Sediment rain in m/yr, added to surface every ASPECT timestep.
+      double sediment_rain;
 
 
       /**

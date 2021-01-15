@@ -243,7 +243,9 @@ namespace aspect
               std::unique_ptr<double[]> kf (new double[array_size]());
               std::unique_ptr<double[]> kd (new double[array_size]());
               std::unique_ptr<double[]> slopep (new double[array_size]());
+              std::unique_ptr<double[]> b (new double[array_size]());
               std::vector<double> h_old(array_size);
+              
 
               // Create variables for output directory and restart file
               std::string dirname = this->get_output_directory();
@@ -251,6 +253,7 @@ namespace aspect
               int length = dirname.length();
               const std::string restart_filename = dirname + "fastscape_h_restart.txt";
               const std::string restart_step_filename = dirname + "fastscape_steps_restart.txt";
+              const std::string restart_filename_basement = dirname + "fastscape_b_restart.txt";
 
               // Initialize kf and kd.
               for (int i=0; i<array_size; i++)
@@ -331,6 +334,24 @@ namespace aspect
                         }
                       else if (!in)
                         AssertThrow(false,ExcMessage("Cannot open file to restart FastScape."));
+                      
+                     // Load in b values.
+                      std::ifstream in_b;
+                      in_b.open(restart_filename_basement.c_str());
+                      if (in_b)
+                        {
+                          int line = 0;
+
+                          while (line < array_size)
+                            {
+                              in_b >> b[line];
+                              line++;
+                            }
+
+                          in_b.close();
+                        }
+                      else if (!in_b)
+                        AssertThrow(false,ExcMessage("Cannot open basement file to restart FastScape."));
 
                       /*
                        * Now load the fastscape istep at time of restart.
@@ -339,7 +360,7 @@ namespace aspect
                        */
                       std::ifstream in_step;
                       in_step.open(restart_step_filename.c_str());
-                      if (in)
+                      if (in_step)
                         {
                           in_step >> restart_step;
                           in_step.close();
@@ -363,19 +384,24 @@ namespace aspect
                   fastscape_init_h_(h.get());
 
                   // Set erosional parameters. May have to move this if sed values are updated over time.
-                  fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &g, &p);
+                  fastscape_set_erosional_parameters_(kf.get(), &kfsed, &m, &n, kd.get(), &kdsed, &g, &gsed, &p);
 
                   if (use_marine)
                     fastscape_set_marine_parameters_(&sl, &p1, &p2, &z1, &z2, &r, &l, &kds1, &kds2);
 
-                  //if (use_strat)
-                  //  folder_output_(&length, &restart_step, c);
+                  // Only set the basement if it's a restart
+                  if(current_timestep != 1)
+                    fastscape_set_basement_(b.get());
                 }
               else
                 {
-                  // If it isn't the first timestep we just want to know current h values in fastscape.
+                  // If it isn't the first timestep we ignore initialization and instead copy all height values from FastScape.
                   fastscape_copy_h_(h.get());
                 }
+                
+              /*
+               * Generally, any additional modifications should occur below this point.
+               */
 
               /*
                * The ghost nodes are added as a single layer of nodes surrounding the entire model,
@@ -600,6 +626,7 @@ namespace aspect
                     }
                 }
 
+                
               /*
                * Keep initial h values so we can calculate velocity later.
                * In the first timestep, h will be given from other processors.
@@ -617,6 +644,21 @@ namespace aspect
                       const double h_seed = (std::rand()%100)/10 - 5;
                       h[i] = h[i] + h_seed;
                     }
+                    
+                   // Here we add the sediment rain (m/yr) as a flat increase in height.
+                   // This is done because adding it as an uplift rate would affect the basement.
+                   if(sediment_rain > 0)
+                   {
+                     // Only apply sediment rain to areas below sea level.
+                     if(h[i] < sl)
+                     {
+                     // If the rain would put us above sea level, set height to sea level.
+                     if(h[i] + sediment_rain*a_dt > sl)
+                       h[i] = sl; 
+                     else
+                       h[i] = h[i] + sediment_rain*a_dt; 	
+                     }
+                   }   
                 }
 
               // Get current fastscape timestep.
@@ -629,13 +671,25 @@ namespace aspect
                   (this->get_parameters().checkpoint_steps > 0) &&
                   (current_timestep % this->get_parameters().checkpoint_steps == 0))
                 {
+            
                   std::ofstream out_h (restart_filename.c_str());
                   std::ofstream out_step (restart_step_filename.c_str());
+                  std::ofstream out_b (restart_filename_basement.c_str());
+                  std::stringstream bufferb;
+                  std::stringstream bufferh;
+                  
+                  fastscape_copy_basement_(b.get());
 
-                  out_step << (istep+restart_step) << std::endl;
+                  out_step << (istep+restart_step) << "\n";
 
                   for (int i=0; i<array_size; i++)
-                    out_h << h[i] << std::endl;
+                  {
+                   bufferh << h[i] << "\n";
+                   bufferb << b[i] << "\n";
+                  }
+                  
+                  out_h << bufferh.str();
+                  out_b << bufferb.str();
                 }
 
               // Find a fastscape timestep that is below our maximum timestep.
@@ -852,9 +906,9 @@ namespace aspect
           prm.declare_entry("Maximum timestep", "10e3",
                             Patterns::Double(0),
                             "Maximum timestep for FastScape.");
-          prm.declare_entry("Vertical exaggeration", "3",
+          prm.declare_entry("Vertical exaggeration", "-1",
                             Patterns::Double(),
-                            "Vertical exaggeration for FastScape's VTK file.");
+                            "Vertical exaggeration for FastScape's VTK file. -1 outputs topography, basement, and sealevel.");
           prm.declare_entry("Additional fastscape refinement", "0",
                             Patterns::Integer(),
                             "How many levels above ASPECT FastScape should be refined.");
@@ -891,6 +945,9 @@ namespace aspect
           prm.declare_entry ("Use ghost nodes", "true",
                              Patterns::Bool (),
                              "Flag to use ghost nodes");
+          prm.declare_entry("Sediment rain", "0",
+                            Patterns::Double(),
+                            "Sediment rain in m/yr. This will be added to as flat height increase to FastScape at every node.");
 
           prm.enter_subsection ("Boundary conditions");
           {
@@ -1016,6 +1073,7 @@ namespace aspect
           nreflectorp = prm.get_integer("Number of horizons");
           y_extent_2d = prm.get_double("Y extent in 2d");
           use_ghost = prm.get_bool("Use ghost nodes");
+          sediment_rain = prm.get_double("Sediment rain");
 
           prm.enter_subsection("Boundary conditions");
           {
