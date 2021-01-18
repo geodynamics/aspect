@@ -12,7 +12,7 @@ set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 30
-set Nonlinear solver tolerance = 5e-13
+set Nonlinear solver tolerance = 5e-12
 
 subsection Solver parameters
   subsection Newton solver parameters
@@ -61,6 +61,10 @@ subsection Material model
   set Model name = simple nonlinear
 
   subsection Simple nonlinear 
+    # Instead of the default of 1.96e-40, set the minimum
+    # strain rate to something closer to, but below,
+    # the actual minimum strain rate.  
+    set Minimum strain rate = 1e-16
     set Minimum viscosity = 1e19
     set Maximum viscosity = 1e24
     set Stress exponent = 3
