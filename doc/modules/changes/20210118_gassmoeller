@@ -1,0 +1,7 @@
+New: There is a new nullspace removal option called 'net surface rotation',
+which removes the net rotation of the surface. This can be useful to compare
+plate velocities on a sphere with plate reconstructions in a no net rotation
+reference frame. Additionally, the 'rotation statistics' postprocessor was
+extended to also compute the net surface rotation.
+<br>
+(Rene Gassmoeller, 2021/01/18)
