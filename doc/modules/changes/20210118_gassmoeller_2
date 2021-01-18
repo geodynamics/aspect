@@ -1,0 +1,10 @@
+Changed: The internal pressure scaling of ASPECT no longer uses the 'reference
+viscosity' provided by the material model as a representative viscosity.
+Instead it computes the representative viscosity as an average of the logarithm
+of the actual viscosities present in the model.  This prevents accidental
+misconfigurations when the reference viscosity is vastly different from the
+actual viscosities or when viscosities change drastically during a model run.
+The 'reference_viscosity' function in the material models is now largely
+ignored and will be removed in a future release.
+<br>
+(Rene Gassmoeller, 2021/01/18)
