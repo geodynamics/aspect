@@ -233,6 +233,11 @@ namespace aspect
       bool use_strat;
       int nstepp;
       int nreflectorp;
+
+      // Whether to use fastscape's advection and uplift. Turn off for free surface.
+      bool use_v;
+      // Precision value for node movement.
+      double precision;
   };
 }
 }
