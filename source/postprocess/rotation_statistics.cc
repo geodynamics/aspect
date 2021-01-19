@@ -22,6 +22,7 @@
 #include <aspect/postprocess/rotation_statistics.h>
 #include <aspect/material_model/simple.h>
 #include <aspect/global.h>
+#include <aspect/simulator.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -47,226 +48,73 @@ namespace aspect
 
     template <int dim>
     std::pair<std::string,std::string>
-    RotationStatistics<dim>::execute (TableHandler &/*statistics*/)
+    RotationStatistics<dim>::execute (TableHandler &statistics)
     {
-      AssertThrow(false,ExcNotImplemented());
-      return std::pair<std::string, std::string>();
-    }
+      RotationProperties<dim> rotation = this->compute_net_angular_momentum(use_constant_density,
+                                                                            this->get_solution());
 
-
-
-    template <>
-    std::pair<std::string,std::string>
-    RotationStatistics<2>::execute (TableHandler &statistics)
-    {
-      const QGauss<2> quadrature_formula (this->get_fe()
-                                          .base_element(this->introspection().base_elements.velocities).degree+1);
-
-      FEValues<2> fe_values (this->get_mapping(),
-                             this->get_fe(),
-                             quadrature_formula,
-                             update_values   |
-                             update_gradients |
-                             update_quadrature_points |
-                             update_JxW_values);
-
-      MaterialModel::MaterialModelInputs<2> in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<2> out(fe_values.n_quadrature_points, this->n_compositional_fields());
-
-      double local_scalar_angular_momentum = 0.0;
-      double local_scalar_moment_of_inertia = 0.0;
-
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-
-            // Set use_strain_rates to false since we don't need viscosity
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
-            if (!use_constant_density)
-              {
-                this->get_material_model().evaluate(in, out);
-              }
-
-            for (unsigned int q = 0; q < fe_values.n_quadrature_points; ++q)
-              {
-                const double rho = (use_constant_density)
-                                   ?
-                                   1.0
-                                   :
-                                   out.densities[q];
-
-                // Get the velocity perpendicular to the position vector
-                const Tensor<1,2> r_perp = cross_product_2d(in.position[q]);
-                // calculate a signed scalar angular momentum
-                local_scalar_angular_momentum += in.velocity[q] * r_perp * rho * fe_values.JxW(q);
-                local_scalar_moment_of_inertia += in.position[q].norm_square() * rho * fe_values.JxW(q);
-              }
-          }
-
-      double global_angular_momentum = 0.0;
-      double global_angular_velocity = 0.0;
-      global_angular_momentum =
-        Utilities::MPI::sum (local_scalar_angular_momentum, this->get_mpi_communicator());
-      const double global_moment_of_inertia =
-        Utilities::MPI::sum (local_scalar_moment_of_inertia, this->get_mpi_communicator());
-      global_angular_velocity = global_angular_momentum / global_moment_of_inertia;
-
-      std::vector<std::string> names;
+      const std::vector<std::string> names = {"Angular momentum", "Moment of inertia", "Angular velocity"};
       std::vector<std::string> units;
-
-      names.emplace_back("Angular momentum");
-      names.emplace_back("Moment of inertia");
-      names.emplace_back("Angular velocity");
 
       if (this->convert_output_to_years() == true)
         {
-          units.emplace_back("kg*m^2/year");
-          units.emplace_back("kg*m^2");
-          units.emplace_back("1/year");
-          global_angular_momentum *= year_in_seconds;
-          global_angular_velocity *= year_in_seconds;
+          units = {"kg*m^2/year", "kg*m^2", "1/year"};
+
+          if (dim == 2)
+            {
+              rotation.scalar_angular_momentum *= year_in_seconds;
+              rotation.scalar_rotation *= year_in_seconds;
+            }
+          else if (dim == 3)
+            {
+              rotation.tensor_angular_momentum *= year_in_seconds;
+              rotation.tensor_rotation *= year_in_seconds;
+            }
         }
       else
         {
-          units.emplace_back("kg*m^2/s");
-          units.emplace_back("kg*m^2");
-          units.emplace_back("1/s");
+          units = {"kg*m^2/s", "kg*m^2", "1/s"};
         }
-
-      add_scientific_column(names[0] + " (" + units[0] +")", global_angular_momentum, statistics);
-      add_scientific_column(names[1] + " (" + units[1] +")", global_moment_of_inertia, statistics);
-      add_scientific_column(names[2] + " (" + units[2] +")", global_angular_velocity, statistics);
 
       std::ostringstream output;
       output.precision(3);
 
-      output << global_angular_momentum << " " << units[0] << ", "
-             << global_moment_of_inertia << " " << units[1] << ", "
-             << global_angular_velocity << " " << units[2];
-
-      return std::pair<std::string, std::string> (names[0]+ ", " + names[1] + ", " + names[2] + ":",
-                                                  output.str());
-    }
-
-
-
-    template <>
-    std::pair<std::string,std::string>
-    RotationStatistics<3>::execute (TableHandler &statistics)
-    {
-      const QGauss<3> quadrature_formula (this->get_fe()
-                                          .base_element(this->introspection().base_elements.velocities).degree+1);
-
-      FEValues<3> fe_values (this->get_mapping(),
-                             this->get_fe(),
-                             quadrature_formula,
-                             update_values   |
-                             update_gradients |
-                             update_quadrature_points |
-                             update_JxW_values);
-
-      MaterialModel::MaterialModelInputs<3> in(fe_values.n_quadrature_points, this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<3> out(fe_values.n_quadrature_points, this->n_compositional_fields());
-
-      Tensor<1,3> local_angular_momentum;
-      SymmetricTensor<2,3> local_moment_of_inertia;
-
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-
-            // Set use_strain_rates to false since we don't need viscosity
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
-            if (!use_constant_density)
-              {
-                this->get_material_model().evaluate(in, out);
-              }
-
-            for (unsigned int q = 0; q < fe_values.n_quadrature_points; ++q)
-              {
-                const double rho = (use_constant_density)
-                                   ?
-                                   1.0
-                                   :
-                                   out.densities[q];
-
-                const Point<3> position = in.position[q];
-                const Tensor<1,3> r_cross_v = cross_product_3d(in.position[q], in.velocity[q]);
-
-                local_angular_momentum += r_cross_v * rho * fe_values.JxW(q);
-
-                // calculate moment of inertia
-                local_moment_of_inertia[0][0] += (position[1] * position[1] + position[2] * position[2]) * rho * fe_values.JxW(q);
-                local_moment_of_inertia[1][1] += (position[0] * position[0] + position[2] * position[2]) * rho * fe_values.JxW(q);
-                local_moment_of_inertia[2][2] += (position[0] * position[0] + position[1] * position[1]) * rho * fe_values.JxW(q);
-                local_moment_of_inertia[0][1] -= (position[0] * position[1]) * rho * fe_values.JxW(q);
-                local_moment_of_inertia[0][2] -= (position[0] * position[2]) * rho * fe_values.JxW(q);
-                local_moment_of_inertia[1][2] -= (position[1] * position[2]) * rho * fe_values.JxW(q);
-              }
-          }
-
-      const Tensor<1,3> global_tensor_angular_momentum =
-        Utilities::MPI::sum (local_angular_momentum, this->get_mpi_communicator());
-      const SymmetricTensor<2,3> global_tensor_moment_of_inertia =
-        Utilities::MPI::sum (local_moment_of_inertia, this->get_mpi_communicator());
-
-      const SymmetricTensor<2,3> inverse_moment(invert(Tensor<2,3>(global_tensor_moment_of_inertia)));
-      const Tensor<1,3> global_vector_angular_velocity = inverse_moment * global_tensor_angular_momentum;
-
-      double global_angular_velocity = 0.0;
-      double global_angular_momentum = 0.0;
-      global_angular_velocity = global_vector_angular_velocity.norm();
-      global_angular_momentum = global_tensor_angular_momentum.norm();
-
-      // Compute the moment of inertia around the current rotation axis
-      const double global_moment_of_inertia = (global_tensor_moment_of_inertia * global_vector_angular_velocity / global_angular_velocity).norm();
-
-      std::vector<std::string> names;
-      std::vector<std::string> units;
-
-      names.emplace_back("Angular momentum");
-      names.emplace_back("Moment of inertia");
-      names.emplace_back("Angular velocity");
-
-      if (this->convert_output_to_years() == true)
+      if (dim == 2)
         {
-          units.emplace_back("kg*m^2/year");
-          units.emplace_back("kg*m^2");
-          units.emplace_back("1/year");
-          global_angular_momentum *= year_in_seconds;
-          global_angular_velocity *= year_in_seconds;
+          add_scientific_column(names[0] + " (" + units[0] +")", rotation.scalar_angular_momentum, statistics);
+          add_scientific_column(names[1] + " (" + units[1] +")", rotation.scalar_moment_of_inertia, statistics);
+          add_scientific_column(names[2] + " (" + units[2] +")", rotation.scalar_rotation, statistics);
+
+          output << rotation.scalar_angular_momentum << " " << units[0] << ", "
+                 << rotation.scalar_moment_of_inertia << " " << units[1] << ", "
+                 << rotation.scalar_rotation << " " << units[2];
         }
-      else
+      else if (dim == 3)
         {
-          units.emplace_back("kg*m^2/s");
-          units.emplace_back("kg*m^2");
-          units.emplace_back("1/s");
+          add_scientific_column(names[0] + " (" + units[0] +")", rotation.tensor_angular_momentum.norm(), statistics);
+
+          const double scalar_moment_of_inertia = (rotation.tensor_moment_of_inertia * rotation.tensor_rotation / rotation.tensor_rotation.norm()).norm();
+
+          if (output_full_tensor == false)
+            {
+              add_scientific_column(names[1] + " (" + units[1] +")", scalar_moment_of_inertia, statistics);
+            }
+          else
+            {
+              add_scientific_column(names[1] + "_xx (" + units[1] +")", rotation.tensor_moment_of_inertia[0][0], statistics);
+              add_scientific_column(names[1] + "_yy (" + units[1] +")", rotation.tensor_moment_of_inertia[1][1], statistics);
+              add_scientific_column(names[1] + "_zz (" + units[1] +")", rotation.tensor_moment_of_inertia[2][2], statistics);
+              add_scientific_column(names[1] + "_xy (" + units[1] +")", rotation.tensor_moment_of_inertia[0][1], statistics);
+              add_scientific_column(names[1] + "_xz (" + units[1] +")", rotation.tensor_moment_of_inertia[0][2], statistics);
+              add_scientific_column(names[1] + "_yz (" + units[1] +")", rotation.tensor_moment_of_inertia[1][2], statistics);
+            }
+
+          add_scientific_column(names[2] + " (" + units[2] +")", rotation.tensor_rotation.norm(), statistics);
+
+          output << rotation.tensor_angular_momentum.norm() << " " << units[0] << ", "
+                 << scalar_moment_of_inertia << " " << units[1] << ", "
+                 << rotation.tensor_rotation.norm() << " " << units[2];
         }
-
-      add_scientific_column(names[0] + " (" + units[0] +")", global_angular_momentum, statistics);
-
-      if (!output_full_tensor)
-        add_scientific_column(names[1] + " (" + units[1] +")", global_moment_of_inertia, statistics);
-      else
-        {
-          add_scientific_column(names[1] + "_xx (" + units[1] +")", global_tensor_moment_of_inertia[0][0], statistics);
-          add_scientific_column(names[1] + "_yy (" + units[1] +")", global_tensor_moment_of_inertia[1][1], statistics);
-          add_scientific_column(names[1] + "_zz (" + units[1] +")", global_tensor_moment_of_inertia[2][2], statistics);
-          add_scientific_column(names[1] + "_xy (" + units[1] +")", global_tensor_moment_of_inertia[0][1], statistics);
-          add_scientific_column(names[1] + "_xz (" + units[1] +")", global_tensor_moment_of_inertia[0][2], statistics);
-          add_scientific_column(names[1] + "_yz (" + units[1] +")", global_tensor_moment_of_inertia[1][2], statistics);
-        }
-
-      add_scientific_column(names[2] + " (" + units[2] +")", global_angular_velocity, statistics);
-
-      std::ostringstream output;
-      output.precision(3);
-
-      output << global_angular_momentum << " " << units[0] << ", "
-             << global_moment_of_inertia << " " << units[1] << ", "
-             << global_angular_velocity << " " << units[2];
 
       return std::pair<std::string, std::string> (names[0]+ ", " + names[1] + ", " + names[2] + ":",
                                                   output.str());
