@@ -101,9 +101,9 @@ namespace aspect
   {
     ASPECT_REGISTER_TIME_STEPPING_MODEL(ConvectionTimeStep,
                                         "convection time step",
-                                        "This model computes the convection time step as the minimum "
-                                        "over all cells of $ CFL h^2 \\cdot \\rho C_p / k$, "
-                                        "where k is the thermal conductivity. This plugin will always "
-                                        "request advancing to the next time step.")
+                                        "This model computes the convection time step as "
+                                        "$ CFL / \\max \\| u \\| / h$ over all cells, "
+                                        "where $u$ is the velocity and $h$ is the product of mesh size "
+                                        "and temperature polynomial degree.")
   }
 }
