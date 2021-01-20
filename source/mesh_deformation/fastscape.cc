@@ -628,6 +628,15 @@ namespace aspect
                 }
 
 
+                // Find the appropriate sediment rain based off the time interval.
+                double time = this->get_time()/year_in_seconds;
+                double sediment_rain = sr_values[0];
+                for (unsigned int j=0; j<sr_times.size(); j++)
+                {
+                  if(time > sr_times[j])
+                       sediment_rain = sr_values[j+1];
+                }
+
               /*
                * Keep initial h values so we can calculate velocity later.
                * In the first timestep, h will be given from other processors.
@@ -645,7 +654,7 @@ namespace aspect
                       const double h_seed = (std::rand()%100)/10 - 5;
                       h[i] = h[i] + h_seed;
                     }
-
+              
                   // Here we add the sediment rain (m/yr) as a flat increase in height.
                   // This is done because adding it as an uplift rate would affect the basement.
                   if (sediment_rain > 0)
@@ -950,15 +959,18 @@ namespace aspect
           prm.declare_entry ("Use ghost nodes", "true",
                              Patterns::Bool (),
                              "Flag to use ghost nodes");
-          prm.declare_entry("Sediment rain", "0",
-                            Patterns::Double(),
-                            "Sediment rain in m/yr. This will be added to as flat height increase to FastScape at every node.");
           prm.declare_entry ("Use velocities", "true",
                              Patterns::Bool (),
                              "Flag to use FastScape advection and uplift.");
           prm.declare_entry("Precision", "0.001",
                             Patterns::Double(),
                             "How close an ASPECT node needs to be to a FastScape node.");
+          prm.declare_entry ("Sediment rain", "0",
+                             Patterns::List (Patterns::Double(0)),
+                             "Sediment rain values given as a list equal to the number of intervals.");
+          prm.declare_entry ("Sediment rain intervals", "0",
+                             Patterns::List (Patterns::Double(0)),
+                             "A list of sediment rain times.");
 
 
           prm.enter_subsection ("Boundary conditions");
@@ -1085,9 +1097,15 @@ namespace aspect
           nreflectorp = prm.get_integer("Number of horizons");
           y_extent_2d = prm.get_double("Y extent in 2d");
           use_ghost = prm.get_bool("Use ghost nodes");
-          sediment_rain = prm.get_double("Sediment rain");
           use_v = prm.get_bool("Use velocities");
           precision = prm.get_double("Precision");
+          sr_values = Utilities::string_to_double
+                             (Utilities::split_string_list(prm.get ("Sediment rain")));
+          sr_times = Utilities::string_to_double
+                             (Utilities::split_string_list(prm.get ("Sediment rain intervals")));
+
+              if (sr_values.size() != sr_times.size()+1)
+                  AssertThrow(false, ExcMessage("Error: There must be one more sediment rain value than interval."));
 
 
           prm.enter_subsection("Boundary conditions");

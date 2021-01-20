@@ -161,7 +161,9 @@ namespace aspect
       // Whether or not to use the ghost nodes.
       bool use_ghost;
       // Sediment rain in m/yr, added to surface every ASPECT timestep.
-      double sediment_rain;
+      std::vector<double> sr_values;
+      std::vector<double> sr_times;
+
 
 
       /**
