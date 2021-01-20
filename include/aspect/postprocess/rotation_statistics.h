@@ -70,11 +70,6 @@ namespace aspect
         bool use_constant_density;
 
         /**
-         * Whether to limit the computation of the properties to the top surface.
-         */
-        bool limit_to_top_surface;
-
-        /**
          * Whether to write the full moment of inertia tensor into the
          * statistics output instead of its norm for the current rotation
          * axis. This is a second-order symmetric tensor with

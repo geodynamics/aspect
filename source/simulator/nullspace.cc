@@ -369,11 +369,11 @@ namespace aspect
 
     FEValues<dim> fe_values (*mapping, finite_element, quadrature, flags);
     FEFaceValues<dim> fe_face_values (*mapping, finite_element, surface_quadrature, flags);
-    FEValuesBase<dim> *fe((limit_to_top_faces == false)
+    FEValuesBase<dim> &fe((limit_to_top_faces == false)
                           ?
-                          dynamic_cast<FEValuesBase<dim> *>(&fe_values)
+                          dynamic_cast<FEValuesBase<dim> &>(fe_values)
                           :
-                          dynamic_cast<FEValuesBase<dim> *>(&fe_face_values));
+                          dynamic_cast<FEValuesBase<dim> &>(fe_face_values));
 
     // moment of inertia and angular momentum for 3D
     SymmetricTensor<2,dim> local_moment_of_inertia;
@@ -404,6 +404,9 @@ namespace aspect
                 if (cell->at_boundary(f) &&
                     (geometry_model->translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
                   {
+                    Assert(cell_at_top_boundary == false,
+                           ExcInternalError("Error, more than one top surface found in a cell."));
+
                     cell_at_top_boundary = true;
                     fe_face_values.reinit(cell,f);
                   }
@@ -412,18 +415,18 @@ namespace aspect
                 continue;
             }
 
-          const std::vector<Point<dim> > &q_points = fe->get_quadrature_points();
+          const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
 
           if (use_constant_density == false)
             {
               // Set use_strain_rates to false since we don't need viscosity
-              in.reinit(*fe, cell, introspection, solution, false);
+              in.reinit(fe, cell, introspection, solution, false);
               material_model->evaluate(in, out);
             }
           else
             {
               // Get the velocity at each quadrature point
-              (*fe)[introspection.extractors.velocities].get_function_values (solution, in.velocity);
+              fe[introspection.extractors.velocities].get_function_values (solution, in.velocity);
             }
 
           // actually compute the moment of inertia and angular momentum
@@ -432,7 +435,7 @@ namespace aspect
               // get the position and density at this quadrature point
               const Point<dim> r_vec = q_points[k];
               const double rho = (use_constant_density ? 1.0 : out.densities[k]);
-              const double JxW = fe->JxW(k);
+              const double JxW = fe.JxW(k);
 
               if (dim == 2)
                 {
