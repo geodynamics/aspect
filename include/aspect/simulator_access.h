@@ -922,10 +922,13 @@ namespace aspect
        * density (which corresponds to computing a net rotation instead of net
        * angular momentum).
        * @param solution Solution vector to compute the properties for.
+       * @param limit_to_top_faces allows to only compute the net angular momentum
+       * (or net rotation) of the top surface.
        */
       RotationProperties<dim>
       compute_net_angular_momentum(const bool use_constant_density,
-                                   const LinearAlgebra::BlockVector &solution) const;
+                                   const LinearAlgebra::BlockVector &solution,
+                                   const bool limit_to_top_faces = false) const;
 
       /** @} */
 

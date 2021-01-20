@@ -758,9 +758,10 @@ namespace aspect
   template <int dim>
   RotationProperties<dim>
   SimulatorAccess<dim>::compute_net_angular_momentum(const bool use_constant_density,
-                                                     const LinearAlgebra::BlockVector &solution) const
+                                                     const LinearAlgebra::BlockVector &solution,
+                                                     const bool limit_to_top_faces) const
   {
-    return simulator->compute_net_angular_momentum(use_constant_density, solution);
+    return simulator->compute_net_angular_momentum(use_constant_density, solution, limit_to_top_faces);
   }
 }
 
