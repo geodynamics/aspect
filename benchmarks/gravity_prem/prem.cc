@@ -17,19 +17,8 @@
   along with ASPECT; see the file LICENSE.  If not see
   <http://www.gnu.org/licenses/>.
 */
-#include <aspect/simulator.h>
-#include <aspect/material_model/simple.h>
-#include <aspect/boundary_velocity/interface.h>
-#include <aspect/simulator_access.h>
-#include <aspect/global.h>
+#include <aspect/material_model/interface.h>
 #include <aspect/utilities.h>
-
-#include <deal.II/dofs/dof_tools.h>
-#include <deal.II/numerics/data_out.h>
-#include <deal.II/base/quadrature_lib.h>
-#include <deal.II/base/function_lib.h>
-#include <deal.II/numerics/error_estimator.h>
-#include <deal.II/numerics/vector_tools.h>
 
 namespace aspect
 {
@@ -58,24 +47,24 @@ namespace aspect
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
               const std::array<double,dim> position_point_sph = Utilities::Coordinates::cartesian_to_spherical_coordinates<dim>(in.position[i]);
-              const double x = position_point_sph[0] / 6371e3;
+              const double normalized_r = position_point_sph[0] / 6371e3;
 
               if (position_point_sph[0] > 6371e3)
                 out.densities[i]=1;
               else if (position_point_sph[0] <= 1221.5e3)
-                out.densities[i]=(13.0885-8.8381*std::pow(x,2))*1e3;
+                out.densities[i]=(13.0885-8.8381*std::pow(normalized_r,2))*1e3;
               else if ((position_point_sph[0] > 1221.5e3) && (position_point_sph[0] < 3480.e3))
-                out.densities[i]=(12.5815-1.2638*x-3.6426*std::pow(x,2)-5.5281*std::pow(x,3))*1e3;
+                out.densities[i]=(12.5815-1.2638*normalized_r-3.6426*std::pow(normalized_r,2)-5.5281*std::pow(normalized_r,3))*1e3;
               else if ((position_point_sph[0] >= 3480.e3) && (position_point_sph[0] <= 5701.e3))
-                out.densities[i]=(7.9565-6.4761*x+5.5283*std::pow(x,2)-3.0807*std::pow(x,3))*1e3;
+                out.densities[i]=(7.9565-6.4761*normalized_r+5.5283*std::pow(normalized_r,2)-3.0807*std::pow(normalized_r,3))*1e3;
               else if ((position_point_sph[0] > 5701.e3) && (position_point_sph[0] <= 5771.e3))
-                out.densities[i]=(5.3197-1.4836*x)*1e3;
+                out.densities[i]=(5.3197-1.4836*normalized_r)*1e3;
               else if ((position_point_sph[0] > 5771.e3) && (position_point_sph[0] <= 5971.e3))
-                out.densities[i]=(11.2494-8.0298*x)*1e3;
+                out.densities[i]=(11.2494-8.0298*normalized_r)*1e3;
               else if ((position_point_sph[0] > 5971.e3) && (position_point_sph[0] <= 6151.e3))
-                out.densities[i]=(7.1089-3.8045*x)*1e3;
+                out.densities[i]=(7.1089-3.8045*normalized_r)*1e3;
               else if ((position_point_sph[0] > 6151.e3) && (position_point_sph[0] <= 6346.e3))
-                out.densities[i]=(2.6910+0.6924*x)*1e3;
+                out.densities[i]=(2.6910+0.6924*normalized_r)*1e3;
               else if ((position_point_sph[0] > 6346.e3) && (position_point_sph[0] <= 6356.e3))
                 out.densities[i]=2.900*1e3;
               else if ((position_point_sph[0] > 6356.e3) && (position_point_sph[0] <= 6368.e3))

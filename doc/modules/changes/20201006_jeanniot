@@ -9,4 +9,4 @@ the postprocessor gravity_point_values, including a list of points,
 a radial profile, an equiangular or equidistant (uniform) field of 
 points, the latter using the Fibonacci spiral sampling scheme.
 <br>
-(L. Jeanniot & C. Thieulot, 2020/10/06)
+(L. Jeanniot, C. Thieulot, 2020/10/06)
