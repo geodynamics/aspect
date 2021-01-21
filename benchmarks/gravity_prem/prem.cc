@@ -97,7 +97,10 @@ namespace aspect
          * (compressible Stokes) or as $\nabla \cdot \mathbf{u}=0$
          * (incompressible Stokes).
          */
-        virtual bool is_compressible () const;
+        virtual bool is_compressible () const
+        {
+          return false;
+        }
         /**
          * @}
          */
@@ -121,30 +124,15 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
+        virtual double reference_viscosity () const
+        {
+          return 1.e21;
+        }
         /**
          * @}
          */
 
     };
-
-
-    template <int dim>
-    double
-    PremDensity<dim>::
-    reference_viscosity () const
-    {
-      return 1.e21;
-    }
-
-
-    template <int dim>
-    bool
-    PremDensity<dim>::
-    is_compressible () const
-    {
-      return false;
-    }
 
   }
 }
