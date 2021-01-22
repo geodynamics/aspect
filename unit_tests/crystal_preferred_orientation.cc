@@ -19,7 +19,7 @@
 */
 
 #include "common.h"
-#include <aspect/particle/property/cpo.h>
+#include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <deal.II/base/parameter_handler.h>
 
 
@@ -123,14 +123,14 @@ TEST_CASE("CPO core: Store and Load")
   // test store and load functions
   // the first and last element should not be changed, because we start at
   // data position = 1.
-  aspect::Particle::Property::CPO<3> cpo;
+  aspect::Particle::Property::CrystalPreferredOrientation<3> cpo;
   aspect::ParameterHandler prm;
   cpo.declare_parameters(prm);
   prm.enter_subsection("Postprocess");
   {
     prm.enter_subsection("Particles");
     {
-      prm.enter_subsection("CPO");
+      prm.enter_subsection("Crystal Preferred Orientation");
       {
         prm.set("Random number seed","1");
         prm.set("Number of grains per particle","3");
@@ -293,8 +293,8 @@ TEST_CASE("CPO core: Store and Load")
   a_cosine_matrices_grains_derivatives_ref[1][2][2][1] = 106;
   a_cosine_matrices_grains_derivatives_ref[1][2][2][2] = 107;
 
-  std::vector<unsigned int> deformation_types_ref = {(unsigned int)aspect::Particle::Property::DeformationType::Passive,
-                                                     (unsigned int)aspect::Particle::Property::DeformationType::Passive
+  std::vector<unsigned int> deformation_types_ref = {(unsigned int)aspect::Particle::Property::DeformationType::passive,
+                                                     (unsigned int)aspect::Particle::Property::DeformationType::passive
                                                     };
 
 
@@ -303,14 +303,14 @@ TEST_CASE("CPO core: Store and Load")
   dealii::ArrayView<double> data(&data_array[0],130);
   data[0] = 20847932.2;
   data[125] = 6541684.3;
-  cpo.store_particle_data_extended(cpo_data_position,
-                                   data,
-                                   deformation_types_ref,
-                                   volume_fraction_mineral_ref,
-                                   volume_fractions_grains_ref,
-                                   a_cosine_matrices_grains_ref,
-                                   volume_fractions_grains_derivatives_ref,
-                                   a_cosine_matrices_grains_derivatives_ref);
+  cpo.pack_particle_data(cpo_data_position,
+                         data,
+                         deformation_types_ref,
+                         volume_fraction_mineral_ref,
+                         volume_fractions_grains_ref,
+                         a_cosine_matrices_grains_ref,
+                         volume_fractions_grains_derivatives_ref,
+                         a_cosine_matrices_grains_derivatives_ref);
 
 
   CHECK(data[0] == Approx(20847932.2)); // before data position
@@ -407,14 +407,14 @@ TEST_CASE("CPO core: Store and Load")
   std::vector<std::vector<double> > volume_fractions_grains_derivatives_load;
   std::vector<std::vector<dealii::Tensor<2,3> > > a_cosine_matrices_grains_derivatives_load;
 
-  cpo.load_particle_data_extended(cpo_data_position,
-                                  data,
-                                  deformation_types_load,
-                                  volume_fraction_mineral_load,
-                                  volume_fractions_grains_load,
-                                  a_cosine_matrices_grains_load,
-                                  volume_fractions_grains_derivatives_load,
-                                  a_cosine_matrices_grains_derivatives_load);
+  cpo.unpack_particle_data(cpo_data_position,
+                           data,
+                           deformation_types_load,
+                           volume_fraction_mineral_load,
+                           volume_fractions_grains_load,
+                           a_cosine_matrices_grains_load,
+                           volume_fractions_grains_derivatives_load,
+                           a_cosine_matrices_grains_derivatives_load);
 
   for (size_t mineral_i = 0; mineral_i < 2; mineral_i++)
     {
@@ -439,14 +439,14 @@ TEST_CASE("CPO core: Spin tensor")
   {
     // test initialization in 3d.
 
-    aspect::Particle::Property::CPO<3> cpo_3d;
+    aspect::Particle::Property::CrystalPreferredOrientation<3> cpo_3d;
     aspect::ParameterHandler prm;
     cpo_3d.declare_parameters(prm);
     prm.enter_subsection("Postprocess");
     {
       prm.enter_subsection("Particles");
       {
-        prm.enter_subsection("CPO");
+        prm.enter_subsection("Crystal Preferred Orientation");
         {
           prm.set("Random number seed","1");
           prm.set("Number of grains per particle","5");

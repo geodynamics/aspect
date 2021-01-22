@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/cpo.h>
+#include <aspect/particle/property/crystal_preferred_orientation.h>
 #include <world_builder/grains.h>
 #include <aspect/geometry_model/interface.h>
 #include <world_builder/world.h>
@@ -33,13 +33,13 @@ namespace aspect
     {
 
       template <int dim>
-      unsigned int CPO<dim>::n_grains = 0;
+      unsigned int CrystalPreferredOrientation<dim>::n_grains = 0;
 
       template <int dim>
-      unsigned int CPO<dim>::n_minerals = 0;
+      unsigned int CrystalPreferredOrientation<dim>::n_minerals = 0;
 
       template <int dim>
-      CPO<dim>::CPO ()
+      CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
       {
         permutation_operator_3d[0][1][2]  = 1;
         permutation_operator_3d[1][2][0]  = 1;
@@ -51,7 +51,7 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::initialize ()
+      CrystalPreferredOrientation<dim>::initialize ()
       {
         const unsigned int my_rank = Utilities::MPI::this_mpi_process(MPI_COMM_WORLD);
         this->random_number_generator.seed(random_number_seed+my_rank);
@@ -59,12 +59,12 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::load_particle_data(unsigned int cpo_data_position,
-                                   const ArrayView<double> &data,
-                                   std::vector<unsigned int> &deformation_type,
-                                   std::vector<double> &volume_fraction_mineral,
-                                   std::vector<std::vector<double>> &volume_fractions_grains,
-                                   std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains)
+      CrystalPreferredOrientation<dim>::unpack_particle_data(const unsigned int cpo_data_position,
+                                                             const ArrayView<double> &data,
+                                                             std::vector<unsigned int> &deformation_type,
+                                                             std::vector<double> &volume_fraction_mineral,
+                                                             std::vector<std::vector<double>> &volume_fractions_grains,
+                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains)
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -76,20 +76,20 @@ namespace aspect
          *    2.2. N grains times:
          *         2.1. volume fraction grain -> 1 double, at location:
          *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
          *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
          * See class header information for more layout information
          */
         deformation_type.resize(n_minerals);
         volume_fraction_mineral.resize(n_minerals);
         volume_fractions_grains.resize(n_minerals);
-        a_cosine_matrices_grains.resize(n_minerals);
+        rotation_matrices_grains.resize(n_minerals);
         for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           {
             deformation_type[mineral_i] = data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
             volume_fraction_mineral[mineral_i] = data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
             volume_fractions_grains[mineral_i].resize(n_grains);
-            a_cosine_matrices_grains[mineral_i].resize(n_grains);
+            rotation_matrices_grains[mineral_i].resize(n_grains);
             // loop over grains to store the data of each grain
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
@@ -100,7 +100,7 @@ namespace aspect
                 for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
                   {
                     const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
-                    a_cosine_matrices_grains[mineral_i][grain_i][index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
+                    rotation_matrices_grains[mineral_i][grain_i][index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
                   }
               }
           }
@@ -109,14 +109,14 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::load_particle_data_extended(unsigned int cpo_data_position,
-                                            const ArrayView<double> &data,
-                                            std::vector<unsigned int> &deformation_type,
-                                            std::vector<double> &volume_fraction_mineral,
-                                            std::vector<std::vector<double>> &volume_fractions_grains,
-                                            std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                            std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
-                                            std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains_derivatives) const
+      CrystalPreferredOrientation<dim>::unpack_particle_data(const unsigned int cpo_data_position,
+                                                             const ArrayView<double> &data,
+                                                             std::vector<unsigned int> &deformation_type,
+                                                             std::vector<double> &volume_fraction_mineral,
+                                                             std::vector<std::vector<double>> &volume_fractions_grains,
+                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains,
+                                                             std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
+                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains_derivatives) const
       {
         /**
         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -128,27 +128,27 @@ namespace aspect
         *    2.2. N grains times:
         *         2.1. volume fraction grain -> 1 double, at location:
         *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-        *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+        *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
         *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
         * See class header information for more layout information
         */
-        load_particle_data(cpo_data_position,
-                           data,
-                           deformation_type,
-                           volume_fraction_mineral,
-                           volume_fractions_grains,
-                           a_cosine_matrices_grains);
+        unpack_particle_data(cpo_data_position,
+                             data,
+                             deformation_type,
+                             volume_fraction_mineral,
+                             volume_fractions_grains,
+                             rotation_matrices_grains);
 
         // now store the derivatives if needed
-        if (this->advection_method == AdvectionMethod::CrankNicolson)
+        if (this->advection_method == AdvectionMethod::crank_nicolson)
           {
             volume_fractions_grains_derivatives.resize(n_minerals);
-            a_cosine_matrices_grains_derivatives.resize(n_minerals);
+            rotation_matrices_grains_derivatives.resize(n_minerals);
 
             for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
               {
                 volume_fractions_grains_derivatives[mineral_i].resize(n_grains);
-                a_cosine_matrices_grains_derivatives[mineral_i].resize(n_grains);
+                rotation_matrices_grains_derivatives[mineral_i].resize(n_grains);
 
                 for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
                   {
@@ -159,7 +159,7 @@ namespace aspect
                     for (unsigned int iii = 0; iii < Tensor<2,3>::n_independent_components ; ++iii)
                       {
                         const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(iii);
-                        a_cosine_matrices_grains_derivatives[mineral_i][grain_i][index] = data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + iii];
+                        rotation_matrices_grains_derivatives[mineral_i][grain_i][index] = data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + iii];
                       }
                   }
               }
@@ -169,12 +169,12 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::store_particle_data(unsigned int cpo_data_position,
-                                    const ArrayView<double> &data,
-                                    std::vector<unsigned int> &deformation_type,
-                                    std::vector<double> &volume_fraction_mineral,
-                                    std::vector<std::vector<double>> &volume_fractions_grains,
-                                    std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains)
+      CrystalPreferredOrientation<dim>::pack_particle_data(const unsigned int cpo_data_position,
+                                                           const ArrayView<double> &data,
+                                                           std::vector<unsigned int> &deformation_type,
+                                                           std::vector<double> &volume_fraction_mineral,
+                                                           std::vector<std::vector<double>> &volume_fractions_grains,
+                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains)
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -186,14 +186,14 @@ namespace aspect
          *    2.2. N grains times:
          *         2.1. volume fraction grain -> 1 double, at location:
          *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
          *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
          * See class header information for more layout information
          */
         for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           {
             Assert(volume_fractions_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: volume_fractions_mineral[mineral_i] is not the same as n_grains."));
-            Assert(a_cosine_matrices_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: a_cosine_matrices_mineral[mineral_i] is not the same as n_grains."));
+            Assert(rotation_matrices_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: rotation_matrices_mineral[mineral_i] is not the same as n_grains."));
             data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)] = deformation_type[mineral_i];
             data[cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)] = volume_fraction_mineral[mineral_i];
 
@@ -207,7 +207,7 @@ namespace aspect
                 for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
                   {
                     const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
-                    data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i] = a_cosine_matrices_grains[mineral_i][grain_i][index];
+                    data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i] = rotation_matrices_grains[mineral_i][grain_i][index];
 
                   }
               }
@@ -218,14 +218,14 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::store_particle_data_extended(unsigned int cpo_data_position,
-                                             const ArrayView<double> &data,
-                                             std::vector<unsigned int> &deformation_type,
-                                             std::vector<double> &volume_fraction_mineral,
-                                             std::vector<std::vector<double>> &volume_fractions_grains,
-                                             std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains,
-                                             std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
-                                             std::vector<std::vector<Tensor<2,3> > > &a_cosine_matrices_grains_derivatives) const
+      CrystalPreferredOrientation<dim>::pack_particle_data(const unsigned int cpo_data_position,
+                                                           const ArrayView<double> &data,
+                                                           std::vector<unsigned int> &deformation_type,
+                                                           std::vector<double> &volume_fraction_mineral,
+                                                           std::vector<std::vector<double>> &volume_fractions_grains,
+                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains,
+                                                           std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
+                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains_derivatives) const
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -237,29 +237,29 @@ namespace aspect
          *    2.2. N grains times:
          *         2.1. volume fraction grain -> 1 double, at location:
          *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-         *         2.2. a_cosine_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
+         *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
          *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
          * See class header information for more layout information
          */
-        store_particle_data(cpo_data_position,
-                            data,
-                            deformation_type,
-                            volume_fraction_mineral,
-                            volume_fractions_grains,
-                            a_cosine_matrices_grains);
+        pack_particle_data(cpo_data_position,
+                           data,
+                           deformation_type,
+                           volume_fraction_mineral,
+                           volume_fractions_grains,
+                           rotation_matrices_grains);
 
         // now store the derivatives if needed. They are added after all the other data.
-        if (this->advection_method == AdvectionMethod::CrankNicolson)
+        if (this->advection_method == AdvectionMethod::crank_nicolson)
           {
             for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
               {
                 Assert(volume_fractions_grains_derivatives.size() == n_minerals, ExcMessage("Internal error: volume_fractions_olivine_derivatives is not the same as n_minerals."));
-                Assert(a_cosine_matrices_grains_derivatives.size() == n_minerals, ExcMessage("Internal error: a_cosine_matrices_olivine_derivatives is not the same as n_minerals."));
+                Assert(rotation_matrices_grains_derivatives.size() == n_minerals, ExcMessage("Internal error: rotation_matrices_olivine_derivatives is not the same as n_minerals."));
 
                 for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
                   {
                     Assert(volume_fractions_grains_derivatives[mineral_i].size() == n_grains, ExcMessage("Internal error: volume_fractions_olivine_derivatives is not the same as n_grains."));
-                    Assert(a_cosine_matrices_grains_derivatives[mineral_i].size() == n_grains, ExcMessage("Internal error: a_cosine_matrices_olivine_derivatives is not the same as n_grains."));
+                    Assert(rotation_matrices_grains_derivatives[mineral_i].size() == n_grains, ExcMessage("Internal error: rotation_matrices_olivine_derivatives is not the same as n_grains."));
 
                     for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
                       {
@@ -270,7 +270,7 @@ namespace aspect
                         for (unsigned int iii = 0; iii < Tensor<2,3>::n_independent_components ; ++iii)
                           {
                             const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(iii);
-                            data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + iii] = a_cosine_matrices_grains_derivatives[mineral_i][grain_i][index];
+                            data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + iii] = rotation_matrices_grains_derivatives[mineral_i][grain_i][index];
                           }
                       }
                   }
@@ -280,8 +280,8 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::initialize_one_particle_property(const Point<dim> &,
-                                                 std::vector<double> &data) const
+      CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
+                                                                         std::vector<double> &data) const
       {
         // the layout of the data vector per perticle is the following:
         // 1. M mineral times
@@ -309,12 +309,12 @@ namespace aspect
         // fabric. This is determined in the computations, so set it to -1 for now.
         std::vector<double> deformation_type(n_minerals, -1.0);
         std::vector<std::vector<double > >volume_fractions_grains(n_minerals);
-        std::vector<std::vector<Tensor<2,3> > > a_cosine_matrices_grains(n_minerals);
+        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains(n_minerals);
 
         for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           {
             volume_fractions_grains[mineral_i].resize(n_grains);
-            a_cosine_matrices_grains[mineral_i].resize(n_grains);
+            rotation_matrices_grains[mineral_i].resize(n_grains);
 
             // This will be set by the initial grain subsection.
             bool use_world_builder = false;
@@ -340,7 +340,7 @@ namespace aspect
                     // set volume fraction
                     volume_fractions_grains[mineral_i][grain_i] = initial_volume_fraction;
 
-                    // set a uniform random a_cosine_matrix per grain
+                    // set a uniform random rotation_matrix per grain
                     // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
                     // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
                     // and is licenced according to this website with the following licence:
@@ -386,17 +386,17 @@ namespace aspect
                     // Construct the rotation matrix  ( V Transpose(V) - I ) R, which
                     // is equivalent to V S - R.
 
-                    a_cosine_matrices_grains[mineral_i][grain_i][0][0] = Vx * Sx - ct;
-                    a_cosine_matrices_grains[mineral_i][grain_i][0][1] = Vx * Sy - st;
-                    a_cosine_matrices_grains[mineral_i][grain_i][0][2] = Vx * Vz;
+                    rotation_matrices_grains[mineral_i][grain_i][0][0] = Vx * Sx - ct;
+                    rotation_matrices_grains[mineral_i][grain_i][0][1] = Vx * Sy - st;
+                    rotation_matrices_grains[mineral_i][grain_i][0][2] = Vx * Vz;
 
-                    a_cosine_matrices_grains[mineral_i][grain_i][1][0] = Vy * Sx + st;
-                    a_cosine_matrices_grains[mineral_i][grain_i][1][1] = Vy * Sy - ct;
-                    a_cosine_matrices_grains[mineral_i][grain_i][1][2] = Vy * Vz;
+                    rotation_matrices_grains[mineral_i][grain_i][1][0] = Vy * Sx + st;
+                    rotation_matrices_grains[mineral_i][grain_i][1][1] = Vy * Sy - ct;
+                    rotation_matrices_grains[mineral_i][grain_i][1][2] = Vy * Vz;
 
-                    a_cosine_matrices_grains[mineral_i][grain_i][2][0] = Vz * Sx;
-                    a_cosine_matrices_grains[mineral_i][grain_i][2][1] = Vz * Sy;
-                    a_cosine_matrices_grains[mineral_i][grain_i][2][2] = 1.0 - z;   // This equals Vz * Vz - 1.0
+                    rotation_matrices_grains[mineral_i][grain_i][2][0] = Vz * Sx;
+                    rotation_matrices_grains[mineral_i][grain_i][2][1] = Vz * Sy;
+                    rotation_matrices_grains[mineral_i][grain_i][2][2] = 1.0 - z;   // This equals Vz * Vz - 1.0
 
                   }
               }
@@ -412,12 +412,12 @@ namespace aspect
                 for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
                   {
                     const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
-                    data.emplace_back(a_cosine_matrices_grains[mineral_i][grain_i][index]);
+                    data.emplace_back(rotation_matrices_grains[mineral_i][grain_i][index]);
                   }
               }
           }
 
-        if (this->advection_method == AdvectionMethod::CrankNicolson)
+        if (this->advection_method == AdvectionMethod::crank_nicolson)
           {
             // start with derivatives set to zero
             for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
@@ -436,11 +436,11 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::update_one_particle_property(const unsigned int data_position,
-                                             const Point<dim> &,
-                                             const Vector<double> &solution,
-                                             const std::vector<Tensor<1,dim> > &gradients,
-                                             const ArrayView<double> &data) const
+      CrystalPreferredOrientation<dim>::update_one_particle_property(const unsigned int data_position,
+                                                                     const Point<dim> &,
+                                                                     const Vector<double> &solution,
+                                                                     const std::vector<Tensor<1,dim> > &gradients,
+                                                                     const ArrayView<double> &data) const
       {
         // STEP 1: Load data and preprocess it.
 
@@ -451,79 +451,66 @@ namespace aspect
           velocity[i] = solution[this->introspection().component_indices.velocities[i]];
 
         // get velocity gradient tensor.
-        Tensor<2,dim> grad_u;
+        Tensor<2,dim> velocity_gradient;
         for (unsigned int d=0; d<dim; ++d)
-          grad_u[d] = gradients[d];
+          velocity_gradient[d] = gradients[d];
 
         // Calculate strain rate from velocity gradients
-        const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
+        const SymmetricTensor<2,dim> strain_rate = symmetrize (velocity_gradient);
 
         const double dt = this->get_timestep();
-        const double strain_rate_second_invariant = std::sqrt(std::abs(second_invariant(strain_rate)));
-
-        Assert(!std::isnan(strain_rate_second_invariant), ExcMessage("The second invariant of the strain rate is not a number."));
-
-        // Make the strain-rate and velocity gradient tensor non-dimensional
-        // by dividing it through the second invariant
-        SymmetricTensor<2,dim> strain_rate_nondimensional = strain_rate;
-        Tensor<2,dim> velocity_gradient_nondimensional = grad_u;
-        if (strain_rate_second_invariant != 0)
-          {
-            strain_rate_nondimensional /= strain_rate_second_invariant;
-            velocity_gradient_nondimensional /=  strain_rate_second_invariant;
-          }
 
         // even in 2d we need 3d strain-rates and velocity gradient tensors. So we make them 3d by
         // adding an extra dimension which is zero.
-        SymmetricTensor<2,3> strain_rate_nondimensional_3d;
-        strain_rate_nondimensional_3d[0][0] = strain_rate_nondimensional[0][0];
-        strain_rate_nondimensional_3d[0][1] = strain_rate_nondimensional[0][1];
-        //sym: strain_rate_nondim_3d[0][0] = strain_rate_nondimensional[1][0];
-        strain_rate_nondimensional_3d[1][1] = strain_rate_nondimensional[1][1];
+        SymmetricTensor<2,3> strain_rate_3d;
+        strain_rate_3d[0][0] = strain_rate[0][0];
+        strain_rate_3d[0][1] = strain_rate[0][1];
+        //sym: strain_rate_3d[0][0] = strain_rate[1][0];
+        strain_rate_3d[1][1] = strain_rate[1][1];
 
         if (dim == 3)
           {
-            strain_rate_nondimensional_3d[0][2] = strain_rate_nondimensional[0][2];
-            strain_rate_nondimensional_3d[1][2] = strain_rate_nondimensional[1][2];
-            //sym: strain_rate_nondim_3d[0][0] = strain_rate_nondimensional[2][0];
-            //sym: strain_rate_nondim_3d[0][1] = strain_rate_nondimensional[2][1];
-            strain_rate_nondimensional_3d[2][2] = strain_rate_nondimensional[2][2];
+            strain_rate_3d[0][2] = strain_rate[0][2];
+            strain_rate_3d[1][2] = strain_rate[1][2];
+            //sym: strain_rate_3d[0][0] = strain_rate[2][0];
+            //sym: strain_rate_3d[0][1] = strain_rate[2][1];
+            strain_rate_3d[2][2] = strain_rate[2][2];
           }
-        Tensor<2,3> velocity_gradient_nondimensional_3d;
-        velocity_gradient_nondimensional_3d[0][0] = velocity_gradient_nondimensional[0][0];
-        velocity_gradient_nondimensional_3d[0][1] = velocity_gradient_nondimensional[0][1];
-        velocity_gradient_nondimensional_3d[1][0] = velocity_gradient_nondimensional[1][0];
-        velocity_gradient_nondimensional_3d[1][1] = velocity_gradient_nondimensional[1][1];
+        Tensor<2,3> velocity_gradient_3d;
+        velocity_gradient_3d[0][0] = velocity_gradient[0][0];
+        velocity_gradient_3d[0][1] = velocity_gradient[0][1];
+        velocity_gradient_3d[1][0] = velocity_gradient[1][0];
+        velocity_gradient_3d[1][1] = velocity_gradient[1][1];
         if (dim == 3)
           {
-            velocity_gradient_nondimensional_3d[0][2] = velocity_gradient_nondimensional[0][2];
-            velocity_gradient_nondimensional_3d[1][2] = velocity_gradient_nondimensional[1][2];
-            velocity_gradient_nondimensional_3d[2][0] = velocity_gradient_nondimensional[2][0];
-            velocity_gradient_nondimensional_3d[2][1] = velocity_gradient_nondimensional[2][1];
-            velocity_gradient_nondimensional_3d[2][2] = velocity_gradient_nondimensional[2][2];
+            velocity_gradient_3d[0][2] = velocity_gradient[0][2];
+            velocity_gradient_3d[1][2] = velocity_gradient[1][2];
+            velocity_gradient_3d[2][0] = velocity_gradient[2][0];
+            velocity_gradient_3d[2][1] = velocity_gradient[2][1];
+            velocity_gradient_3d[2][2] = velocity_gradient[2][2];
           }
 
         std::vector<unsigned int> deformation_types;
         std::vector<double> volume_fraction_mineral;
         std::vector<std::vector<double>> volume_fractions_grains;
-        std::vector<std::vector<Tensor<2,3> > > a_cosine_matrices_grains;
+        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains;
         std::vector<std::vector<double> > volume_fractions_grains_derivatives;
-        std::vector<std::vector<Tensor<2,3> > > a_cosine_matrices_grains_derivatives;
+        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains_derivatives;
 
-        load_particle_data_extended(data_position,
-                                    data,
-                                    deformation_types,
-                                    volume_fraction_mineral,
-                                    volume_fractions_grains,
-                                    a_cosine_matrices_grains,
-                                    volume_fractions_grains_derivatives,
-                                    a_cosine_matrices_grains_derivatives);
+        unpack_particle_data(data_position,
+                             data,
+                             deformation_types,
+                             volume_fraction_mineral,
+                             volume_fractions_grains,
+                             rotation_matrices_grains,
+                             volume_fractions_grains_derivatives,
+                             rotation_matrices_grains_derivatives);
 
 
         for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
           {
 
-            deformation_types[mineral_i] = (unsigned int)DeformationType::Passive;
+            deformation_types[mineral_i] = (unsigned int)DeformationType::passive;
 
             const std::array<double,4> ref_resolved_shear_stress = {1e60,1e60,1e60,1e60};
 
@@ -540,7 +527,7 @@ namespace aspect
                   {
                     for (size_t k = 0; k < 3; k++)
                       {
-                        Assert(!std::isnan(a_cosine_matrices_grains[mineral_i][i][j][k]), ExcMessage(" a_cosine_matrices_grains[mineral_i] is nan directly after loading."));
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage(" rotation_matrices_grains[mineral_i] is nan directly after loading."));
                       }
                   }
               }
@@ -550,18 +537,18 @@ namespace aspect
               {
                 for (size_t i = 0; i < 3; i++)
                   for (size_t j = 0; j < 3; j++)
-                    Assert(abs(a_cosine_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
-                           ExcMessage("1. a_cosine_matrices_grains[[" + std::to_string(i) + "][" + std::to_string(j) +
-                                      "] is larger than one: " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][i][j]) + ". rotation_matrix = \n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][0]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][1]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][0]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][1]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][0]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][1]) + " "
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][2])));
+                    Assert(abs(rotation_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
+                           ExcMessage("1. rotation_matrices_grains[[" + std::to_string(i) + "][" + std::to_string(j) +
+                                      "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]) + ". rotation_matrix = \n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " "
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
               }
 
             /**
@@ -572,42 +559,39 @@ namespace aspect
             */
             double sum_volume_mineral = 0;
             std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives_grains = this->compute_derivatives(volume_fractions_grains[mineral_i],
-                                                                                            a_cosine_matrices_grains[mineral_i],
-                                                                                            strain_rate_nondimensional_3d,
-                                                                                            velocity_gradient_nondimensional_3d,
+                                                                                            rotation_matrices_grains[mineral_i],
+                                                                                            strain_rate_3d,
+                                                                                            velocity_gradient_3d,
                                                                                             volume_fraction_mineral[mineral_i],
                                                                                             ref_resolved_shear_stress);
 
             switch (advection_method)
               {
-                case AdvectionMethod::ForwardEuler:
+                case AdvectionMethod::forward_euler:
 
-                  sum_volume_mineral = this->advect_forward_euler(volume_fractions_grains[mineral_i],
-                                                                  a_cosine_matrices_grains[mineral_i],
+                  sum_volume_mineral = this->advect_forward_euler(dt,
                                                                   derivatives_grains,
-                                                                  strain_rate_second_invariant,
-                                                                  dt);
+                                                                  volume_fractions_grains[mineral_i],
+                                                                  rotation_matrices_grains[mineral_i]);
 
                   break;
 
-                case AdvectionMethod::BackwardEuler:
-                  sum_volume_mineral = this->advect_backward_euler(volume_fractions_grains[mineral_i],
-                                                                   a_cosine_matrices_grains[mineral_i],
+                case AdvectionMethod::backward_euler:
+                  sum_volume_mineral = this->advect_backward_euler(dt,
                                                                    derivatives_grains,
-                                                                   strain_rate_second_invariant,
-                                                                   dt);
+                                                                   volume_fractions_grains[mineral_i],
+                                                                   rotation_matrices_grains[mineral_i]);
 
                   break;
 
-                case AdvectionMethod::CrankNicolson:
+                case AdvectionMethod::crank_nicolson:
 
-                  sum_volume_mineral = this->advect_Crank_Nicolson(volume_fractions_grains[mineral_i],
-                                                                   a_cosine_matrices_grains[mineral_i],
+                  sum_volume_mineral = this->advect_Crank_Nicolson(dt,
                                                                    derivatives_grains,
+                                                                   volume_fractions_grains[mineral_i],
+                                                                   rotation_matrices_grains[mineral_i],
                                                                    volume_fractions_grains_derivatives[mineral_i],
-                                                                   a_cosine_matrices_grains_derivatives[mineral_i],
-                                                                   strain_rate_second_invariant,
-                                                                   dt);
+                                                                   rotation_matrices_grains_derivatives[mineral_i]);
 
                   break;
               }
@@ -634,7 +618,7 @@ namespace aspect
                   {
                     for (size_t k = 0; k < 3; k++)
                       {
-                        Assert(!std::isnan(a_cosine_matrices_grains[mineral_i][i][j][k]), ExcMessage(" a_cosine_matrices_grains is nan before orthoganalization."));
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage(" rotation_matrices_grains is nan before orthoganalization."));
                       }
 
                   }
@@ -648,15 +632,15 @@ namespace aspect
              */
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
-                a_cosine_matrices_grains[mineral_i][grain_i] = dealii::project_onto_orthogonal_tensors(a_cosine_matrices_grains[mineral_i][grain_i]);
+                rotation_matrices_grains[mineral_i][grain_i] = dealii::project_onto_orthogonal_tensors(rotation_matrices_grains[mineral_i][grain_i]);
                 for (size_t i = 0; i < 3; i++)
                   for (size_t j = 0; j < 3; j++)
                     {
                       // I don't think this should happen with the projection, but D-Rex
                       // does not do the orthogonal projection, but just clamps the values
                       // to 1 and -1.
-                      Assert(std::fabs(a_cosine_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
-                             ExcMessage("The a_cosine_matrices_grains[mineral_i] has a entry asolute larger than 1."));
+                      Assert(std::fabs(rotation_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
+                             ExcMessage("The rotation_matrices_grains[mineral_i] has a entry asolute larger than 1."));
                     }
               }
 
@@ -666,9 +650,9 @@ namespace aspect
                   {
                     for (size_t k = 0; k < 3; k++)
                       {
-                        Assert(!std::isnan(a_cosine_matrices_grains[mineral_i][i][j][k]),
-                               ExcMessage(" a_cosine_matrices_grains[mineral_i] is nan after orthoganalization: "
-                                          + std::to_string(a_cosine_matrices_grains[mineral_i][i][j][k])));
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]),
+                               ExcMessage(" rotation_matrices_grains[mineral_i] is nan after orthoganalization: "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][i][j][k])));
                       }
 
                   }
@@ -680,12 +664,12 @@ namespace aspect
               {
                 for (size_t i = 0; i < 3; i++)
                   for (size_t j = 0; j < 3; j++)
-                    Assert(abs(a_cosine_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
-                           ExcMessage("3. a_cosine_matrices_grains[mineral_i][" + std::to_string(i) + "][" + std::to_string(j) +
-                                      "] is larger than one: " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][i][j]) + " (" + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][i][j]-1.0) + "). rotation_matrix = \n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][0]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][1]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][0]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][1]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
-                                      + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][0]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][1]) + " " + std::to_string(a_cosine_matrices_grains[mineral_i][grain_i][2][2])));
+                    Assert(abs(rotation_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
+                           ExcMessage("3. rotation_matrices_grains[mineral_i][" + std::to_string(i) + "][" + std::to_string(j) +
+                                      "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]) + " (" + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]-1.0) + "). rotation_matrix = \n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
+                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
               }
 
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
@@ -698,14 +682,14 @@ namespace aspect
 
           }
 
-        store_particle_data_extended(data_position,
-                                     data,
-                                     deformation_types,
-                                     volume_fraction_mineral,
-                                     volume_fractions_grains,
-                                     a_cosine_matrices_grains,
-                                     volume_fractions_grains_derivatives,
-                                     a_cosine_matrices_grains_derivatives);
+        pack_particle_data(data_position,
+                           data,
+                           deformation_types,
+                           volume_fraction_mineral,
+                           volume_fractions_grains,
+                           rotation_matrices_grains,
+                           volume_fractions_grains_derivatives,
+                           rotation_matrices_grains_derivatives);
 
 
 
@@ -714,28 +698,28 @@ namespace aspect
 
       template <int dim>
       UpdateTimeFlags
-      CPO<dim>::need_update() const
+      CrystalPreferredOrientation<dim>::need_update() const
       {
         return update_time_step;
       }
 
       template <int dim>
       InitializationModeForLateParticles
-      CPO<dim>::late_initialization_mode () const
+      CrystalPreferredOrientation<dim>::late_initialization_mode () const
       {
         return InitializationModeForLateParticles::initialize;
       }
 
       template <int dim>
       UpdateFlags
-      CPO<dim>::get_needed_update_flags () const
+      CrystalPreferredOrientation<dim>::get_needed_update_flags () const
       {
         return update_values | update_gradients;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
-      CPO<dim>::get_property_information() const
+      CrystalPreferredOrientation<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int> > property_information;
 
@@ -750,12 +734,12 @@ namespace aspect
 
                 for (unsigned int index = 0; index < Tensor<2,3>::n_independent_components; index++)
                   {
-                    property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " a_cosine_matrix " + std::to_string(index),1));
+                    property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " rotation_matrix " + std::to_string(index),1));
                   }
               }
           }
 
-        if (this->advection_method == AdvectionMethod::CrankNicolson)
+        if (this->advection_method == AdvectionMethod::crank_nicolson)
           {
             for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
               {
@@ -765,7 +749,7 @@ namespace aspect
 
                     for (unsigned int index = 0; index < Tensor<2,3>::n_independent_components; index++)
                       {
-                        property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " a_cosine_matrix derivative" + std::to_string(index),1));
+                        property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " grain " + std::to_string(grain_i) + " rotation_matrix derivative" + std::to_string(index),1));
                       }
                   }
               }
@@ -776,17 +760,16 @@ namespace aspect
 
       template <int dim>
       double
-      CPO<dim>::advect_forward_euler(std::vector<double> &volume_fractions,
-                                     std::vector<Tensor<2,3> > &a_cosine_matrices,
-                                     const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
-                                     const double strain_rate_second_invariant,
-                                     const double dt) const
+      CrystalPreferredOrientation<dim>::advect_forward_euler(const double dt,
+                                                             const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                             std::vector<double> &volume_fractions,
+                                                             std::vector<Tensor<2,3> > &rotation_matrices) const
       {
         double sum_volume_fractions = 0;
-        for (unsigned int grain_i = 0; grain_i < a_cosine_matrices.size(); ++grain_i)
+        for (unsigned int grain_i = 0; grain_i < rotation_matrices.size(); ++grain_i)
           {
             Assert(std::isfinite(volume_fractions[grain_i]),ExcMessage("volume_fractions[grain_i] is not finite before it is set."));
-            volume_fractions[grain_i] = volume_fractions[grain_i] + dt * volume_fractions[grain_i] * derivatives.first[grain_i] * strain_rate_second_invariant;
+            volume_fractions[grain_i] = volume_fractions[grain_i] + dt * volume_fractions[grain_i] * derivatives.first[grain_i];
             Assert(std::isfinite(volume_fractions[grain_i]),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
                                                                        + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(volume_fractions[grain_i])
                                                                        + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
@@ -797,7 +780,7 @@ namespace aspect
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
-            a_cosine_matrices[grain_i] = a_cosine_matrices[grain_i] + dt * a_cosine_matrices[grain_i] * derivatives.second[grain_i] * strain_rate_second_invariant;
+            rotation_matrices[grain_i] = rotation_matrices[grain_i] + dt * rotation_matrices[grain_i] * derivatives.second[grain_i];
           }
 
         Assert(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supporsed to happen."));
@@ -807,11 +790,10 @@ namespace aspect
 
       template <int dim>
       double
-      CPO<dim>::advect_backward_euler(std::vector<double> &volume_fractions,
-                                      std::vector<Tensor<2,3> > &a_cosine_matrices,
-                                      const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
-                                      const double strain_rate_second_invariant,
-                                      const double dt) const
+      CrystalPreferredOrientation<dim>::advect_backward_euler(const double dt,
+                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                              std::vector<double> &volume_fractions,
+                                                              std::vector<Tensor<2,3> > &rotation_matrices) const
       {
         double sum_volume_fractions = 0;
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
@@ -825,7 +807,7 @@ namespace aspect
                                                         + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(volume_fractions[grain_i])
                                                         + ", derivatives.first[grain_i] = " + std::to_string(derivatives.first[grain_i])));
 
-                vf_new = volume_fractions[grain_i] + dt * vf_new * derivatives.first[grain_i] * strain_rate_second_invariant;
+                vf_new = volume_fractions[grain_i] + dt * vf_new * derivatives.first[grain_i];
 
                 Assert(std::isfinite(volume_fractions[grain_i]),ExcMessage("volume_fractions[grain_i] is not finite. grain_i = "
                                                                            + std::to_string(grain_i) + ", volume_fractions[grain_i] = " + std::to_string(volume_fractions[grain_i])
@@ -843,12 +825,12 @@ namespace aspect
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
-            auto cosine_old = a_cosine_matrices[grain_i];
-            auto cosine_new = a_cosine_matrices[grain_i];
+            auto cosine_old = rotation_matrices[grain_i];
+            auto cosine_new = rotation_matrices[grain_i];
 
             for (size_t iteration = 0; iteration < property_advection_max_iterations; iteration++)
               {
-                cosine_new = a_cosine_matrices[grain_i] + dt * cosine_new * derivatives.second[grain_i] * strain_rate_second_invariant;
+                cosine_new = rotation_matrices[grain_i] + dt * cosine_new * derivatives.second[grain_i];
 
                 if ((cosine_new-cosine_old).norm() < property_advection_tolerance)
                   {
@@ -857,7 +839,7 @@ namespace aspect
                 cosine_old = cosine_new;
               }
 
-            a_cosine_matrices[grain_i] = cosine_new;
+            rotation_matrices[grain_i] = cosine_new;
           }
 
         Assert(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supporsed to happen."));
@@ -869,13 +851,12 @@ namespace aspect
 
       template <int dim>
       double
-      CPO<dim>::advect_Crank_Nicolson(std::vector<double> &volume_fractions,
-                                      std::vector<Tensor<2,3> > &a_cosine_matrices,
-                                      const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
-                                      std::vector<double> &previous_volume_fraction_derivatives,
-                                      std::vector<Tensor<2,3> > &previous_a_cosine_matrices_derivatives,
-                                      const double strain_rate_second_invariant,
-                                      const double dt) const
+      CrystalPreferredOrientation<dim>::advect_Crank_Nicolson(const double dt,
+                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                              std::vector<double> &volume_fractions,
+                                                              std::vector<Tensor<2,3> > &rotation_matrices,
+                                                              std::vector<double> &previous_volume_fraction_derivatives,
+                                                              std::vector<Tensor<2,3> > &previous_rotation_matrices_derivatives) const
       {
         double sum_volume_fractions = 0;
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
@@ -885,8 +866,8 @@ namespace aspect
             for (size_t iteration = 0; iteration < property_advection_max_iterations; iteration++)
               {
                 vf_new = volume_fractions[grain_i]
-                         + dt * 0.5 * ((volume_fractions[grain_i] * previous_volume_fraction_derivatives[grain_i] * strain_rate_second_invariant)
-                                       + (vf_new * derivatives.first[grain_i] * strain_rate_second_invariant));
+                         + dt * 0.5 * ((volume_fractions[grain_i] * previous_volume_fraction_derivatives[grain_i])
+                                       + (vf_new * derivatives.first[grain_i]));
                 if (std::fabs(vf_new-vf_old) < property_advection_tolerance)
                   {
                     break;
@@ -897,19 +878,18 @@ namespace aspect
             previous_volume_fraction_derivatives[grain_i] = derivatives.first[grain_i];
 
             volume_fractions[grain_i] = vf_new;
-            //volume_fractions[grain_i] = volume_fractions[grain_i];// + dt * strain_rate_second_invariant * derivatives.first[grain_i];
             sum_volume_fractions += volume_fractions[grain_i];
           }
 
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
           {
-            auto cosine_old = a_cosine_matrices[grain_i];
-            auto cosine_new = a_cosine_matrices[grain_i];
+            auto cosine_old = rotation_matrices[grain_i];
+            auto cosine_new = rotation_matrices[grain_i];
             for (size_t iteration = 0; iteration < property_advection_max_iterations; iteration++)
               {
-                cosine_new = a_cosine_matrices[grain_i]
-                             + dt * 0.5 * ((a_cosine_matrices[grain_i] * previous_a_cosine_matrices_derivatives[grain_i] * strain_rate_second_invariant)
-                                           + (cosine_new * derivatives.second[grain_i] * strain_rate_second_invariant));
+                cosine_new = rotation_matrices[grain_i]
+                             + dt * 0.5 * ((rotation_matrices[grain_i] * previous_rotation_matrices_derivatives[grain_i])
+                                           + (cosine_new * derivatives.second[grain_i]));
 
                 if ((cosine_new-cosine_old).norm() < property_advection_tolerance)
                   {
@@ -918,8 +898,8 @@ namespace aspect
                 cosine_old = cosine_new;
               }
 
-            previous_a_cosine_matrices_derivatives[grain_i] = derivatives.second[grain_i];
-            a_cosine_matrices[grain_i] = cosine_new;
+            previous_rotation_matrices_derivatives[grain_i] = derivatives.second[grain_i];
+            rotation_matrices[grain_i] = cosine_new;
           }
 
 
@@ -929,27 +909,19 @@ namespace aspect
 
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
-      CPO<dim>::compute_derivatives(const std::vector<double> &volume_fractions,
-                                    const std::vector<Tensor<2,3> > &a_cosine_matrices,
-                                    const SymmetricTensor<2,3> &strain_rate_nondimensional,
-                                    const Tensor<2,3> &velocity_gradient_tensor_nondimensional,
-                                    const double volume_fraction_mineral,
-                                    const std::array<double,4> &ref_resolved_shear_stress) const
+      CrystalPreferredOrientation<dim>::compute_derivatives(const std::vector<double> &,
+                                                            const std::vector<Tensor<2,3> > &,
+                                                            const SymmetricTensor<2,3> &,
+                                                            const Tensor<2,3> &velocity_gradient_tensor,
+                                                            const double,
+                                                            const std::array<double,4> &) const
       {
-        //
-        std::vector<double> k_volume_fractions_zero = volume_fractions;
-        std::vector<Tensor<2,3> > a_cosine_matrices_zero = a_cosine_matrices;
         std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
         switch (cpo_derivative_algorithm)
           {
-            case CPODerivativeAlgorithm::SpinTensor:
+            case CPODerivativeAlgorithm::spin_tensor:
             {
-              return this->compute_derivatives_spin_tensor(k_volume_fractions_zero,
-                                                           a_cosine_matrices_zero,
-                                                           strain_rate_nondimensional,
-                                                           velocity_gradient_tensor_nondimensional,
-                                                           volume_fraction_mineral,
-                                                           ref_resolved_shear_stress);
+              return this->compute_derivatives_spin_tensor(velocity_gradient_tensor);
               break;
             }
             default:
@@ -962,30 +934,25 @@ namespace aspect
 
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
-      CPO<dim>::compute_derivatives_spin_tensor(const std::vector<double> &,
-                                                const std::vector<Tensor<2,3> > &,
-                                                const SymmetricTensor<2,3> &,
-                                                const Tensor<2,3> &velocity_gradient_tensor_nondimensional,
-                                                const double,
-                                                const std::array<double,4> &) const
+      CrystalPreferredOrientation<dim>::compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const
       {
         // dA/dt = W * A, where W is the spin tensor and A is the rotation matrix
         // The spin tensor is defined as W = 0.5 * ( L - L^T ), where L is the velocity gradient tensor.
-        const Tensor<2,3> spin_tensor = -0.5 *(velocity_gradient_tensor_nondimensional - dealii::transpose(velocity_gradient_tensor_nondimensional));
+        const Tensor<2,3> spin_tensor = -0.5 *(velocity_gradient_tensor - dealii::transpose(velocity_gradient_tensor));
 
         return std::pair<std::vector<double>, std::vector<Tensor<2,3> > >(std::vector<double>(n_grains,0.0), std::vector<Tensor<2,3>>(n_grains, spin_tensor));
       }
 
       template<int dim>
       unsigned int
-      CPO<dim>::get_number_of_grains()
+      CrystalPreferredOrientation<dim>::get_number_of_grains()
       {
         return n_grains;
       }
 
       template<int dim>
       unsigned int
-      CPO<dim>::get_number_of_minerals()
+      CrystalPreferredOrientation<dim>::get_number_of_minerals()
       {
         return n_minerals;
       }
@@ -993,13 +960,13 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::declare_parameters (ParameterHandler &prm)
+      CrystalPreferredOrientation<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.enter_subsection("Postprocess");
         {
           prm.enter_subsection("Particles");
           {
-            prm.enter_subsection("CPO");
+            prm.enter_subsection("Crystal Preferred Orientation");
             {
               prm.declare_entry ("Random number seed", "1",
                                  Patterns::Integer (0),
@@ -1070,7 +1037,7 @@ namespace aspect
 
       template <int dim>
       void
-      CPO<dim>::parse_parameters (ParameterHandler &prm)
+      CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
       {
         AssertThrow(dim != 2, ExcMessage("CPO computations are currently only supported for 3D models. "
                                          "2D computations will work when this assert is removed, but you will need to make sure that the "
@@ -1080,7 +1047,7 @@ namespace aspect
         {
           prm.enter_subsection("Particles");
           {
-            prm.enter_subsection("CPO");
+            prm.enter_subsection("Crystal Preferred Orientation");
             {
               random_number_seed = prm.get_integer ("Random number seed");
               n_grains = prm.get_integer("Number of grains per particle");
@@ -1092,7 +1059,7 @@ namespace aspect
 
               if (temp_cpo_derivative_algorithm == "Spin tensor")
                 {
-                  cpo_derivative_algorithm = CPODerivativeAlgorithm::SpinTensor;
+                  cpo_derivative_algorithm = CPODerivativeAlgorithm::spin_tensor;
                 }
               else if (temp_cpo_derivative_algorithm ==  "D-Rex 2004")
                 {
@@ -1109,15 +1076,15 @@ namespace aspect
               const std::string temp_advection_method = prm.get("Property advection method");
               if (temp_advection_method == "Forward Euler")
                 {
-                  advection_method = AdvectionMethod::ForwardEuler;
+                  advection_method = AdvectionMethod::forward_euler;
                 }
               else if (temp_advection_method == "Backward Euler")
                 {
-                  advection_method = AdvectionMethod::BackwardEuler;
+                  advection_method = AdvectionMethod::backward_euler;
                 }
               else if (temp_advection_method == "Crank-Nicolson")
                 {
-                  advection_method = AdvectionMethod::CrankNicolson;
+                  advection_method = AdvectionMethod::crank_nicolson;
                 }
               else
                 {
@@ -1140,7 +1107,7 @@ namespace aspect
                     {
                       if (temp_deformation_type_selector[mineral_i] == "Passive")
                         {
-                          deformation_type_selector[mineral_i] = DeformationTypeSelector::Passive;
+                          deformation_type_selector[mineral_i] = DeformationTypeSelector::passive;
                         }
                       else
                         {
@@ -1182,11 +1149,11 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(CPO,
-                                        "cpo",
+      ASPECT_REGISTER_PARTICLE_PROPERTY(CrystalPreferredOrientation,
+                                        "crystal preferred orientation",
                                         "The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO) "
                                         "on particles. Each ASPECT particle can be assigned many grains. Each grain is assigned a size and a orientation "
-                                        "matrix. This allows for LPO evolution tracking with polycrystalline kinematic CPO evolution models such "
+                                        "matrix. This allows for LPO evolution tracking with polycrystalline kinematic CrystalPreferredOrientation evolution models such "
                                         "as D-Rex (Kaminski and Ribe, 2001; Kaminski et al., 2004).")
     }
   }
