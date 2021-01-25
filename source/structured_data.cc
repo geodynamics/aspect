@@ -27,6 +27,8 @@
 #include <aspect/geometry_model/chunk.h>
 #include <aspect/geometry_model/initial_topography_model/ascii_data.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace Utilities
