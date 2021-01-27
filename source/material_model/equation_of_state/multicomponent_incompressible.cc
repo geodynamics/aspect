@@ -37,19 +37,9 @@ namespace aspect
                const unsigned int input_index,
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
-
-
-        // If adiabatic heating is used, the reference temperature used to calculate density should be the adiabatic
-        // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
-        const double reference_temperature = (this->include_adiabatic_heating()
-                                              ?
-                                              this->get_adiabatic_conditions().temperature(in.position[input_index])
-                                              :
-                                              reference_T);
-
         for (unsigned int c=0; c < out.densities.size(); ++c)
           {
-            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_temperature));
+            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_T));
             out.thermal_expansion_coefficients[c] = thermal_expansivities[c];
             out.specific_heat_capacities[c] = specific_heats[c];
             out.compressibilities[c] = 0.0;

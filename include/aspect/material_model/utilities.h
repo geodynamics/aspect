@@ -224,7 +224,7 @@ namespace aspect
 
       /**
        * For multicomponent material models: Given a vector of compositional
-       * fields of length N, this function returns a vector of fractions
+       * field values of length N, this function returns a vector of fractions
        * of length N+1, corresponding to the fraction of a ``background
        * material'' as the first entry, and fractions for each of the input
        * fields as the following entries. The returned vector will sum to one.
@@ -236,6 +236,9 @@ namespace aspect
        * compositional fields to use during the computation (e.g. because
        * some fields contain unrelated quantities (like strain,
        * porosity, or trace elements). By default, all fields are included.
+       * This function makes no assumptions about the units of the
+       * compositional field values; for example, they could correspond to
+       * mass or volume fractions.
        */
       std::vector<double>
       compute_fractions_from_compositional_fields(const std::vector<double> &compositional_fields,

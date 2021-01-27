@@ -176,14 +176,15 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Multicomponent,
                                    "multicomponent",
-                                   "This model is for use with an arbitrary number of compositional fields, where each field "
-                                   "represents a rock type which can have completely different properties from the others. "
-                                   "However, each rock type itself has constant material properties.  The value of the "
+                                   "This incompressible model is for use with an arbitrary number of compositional fields, "
+                                   "where each field represents a rock type which can have different properties from the others. "
+                                   "Each rock type has internally constant material properties.  The value of the "
                                    "compositional field is interpreted as a mass fraction. If the sum of the fields is "
                                    "greater than one, they are renormalized.  If it is less than one, material properties "
                                    "for ``background mantle'' make up the rest. When more than one field is present, the "
                                    "material properties are averaged arithmetically by mass fraction (for specific heat), "
-                                   "or volume fraction (for density, thermal expansivity and compressibility). "
+                                   "or volume fraction (for density, thermal expansivity and compressibility, "
+                                   "where the compressibility is equal to zero). "
                                    "The thermal conductivity is also arithmetically averaged by volume fraction. "
                                    "Finally, the viscosity is averaged by volume fraction, but the user can choose "
                                    "between arithmetic, harmonic, geometric or maximum composition averaging.")

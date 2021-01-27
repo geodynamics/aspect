@@ -43,18 +43,21 @@ namespace aspect
        * If a single value is given, then all the compositional fields are given
        * that value. Other lengths of lists are not allowed. The material parameters
        * for each compositional field are calculated self-consistently,
-       * assuming a constant pressure derivative of the bulk modulus at the reference temperature
-       * (i.e. a Murnaghan equation of state), a constant ratio of the
-       * thermal expansivity and isothermal compressibility, and a constant isochoric
-       * specific heat. This leads to the following expressions for the material
+       * assuming a constant pressure derivative of the isothermal bulk modulus ($K_T'$)
+       * at the reference temperature (i.e. a Murnaghan equation of state),
+       * a constant ratio of the thermal expansivity ($\alpha$) and
+       * isothermal compressibility ($\beta_T$), and a constant isochoric
+       * specific heat $C_v$. This leads to the following expressions for the material
        * properties of each material:
        *
        * $\rho(p,T) = \rho_0 f^{1/K_T'}$
        * $C_p(p,T) = C_v + (\alpha T \frac{\alpha}{\beta} f^{-1-(1/K_T')} / \rho_0)$
        * $\alpha(p, T) = \alpha_0/f$
-       * $\beta(p, T) = \beta_0/f$
+       * $\beta_T(p, T) = \beta_0/f$
        * $f = (1 + (p - \frac{\alpha}{\beta}(T-T_0)) K_T' \beta)$.
        *
+       * where $\rho$ is the density and $C_p$ is the isobaric heat capacity.
+       * $f$ is a scaling factor for $\alpha$ and $\beta_T$.
        */
       template <int dim>
       class MulticomponentCompressible :  public ::aspect::SimulatorAccess<dim>

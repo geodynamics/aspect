@@ -8,9 +8,11 @@
 # The outputs for the properties at 0 GPa and 273 K are then:
 # Density: 2400 kg/m^3 (volume averaged, 0.6*2000 + 0.4*3000)
 # Thermal_expansivity: 2.4e-5 (volume averaged, 0.6*2e-5 + 0.4*3e-5)
-# Specific_heat: 1500 (mass averaged, 0.5*1000 + 0.5*2000)
+# Isochoric specific_heat: 1500 (mass averaged, 0.5*1000 + 0.5*2000)
 # Viscosity: 2.4e20 (arithmetically volume averaged, 0.6*2.e20 + 0.4*3.e20)
 # Thermal conductivity: 2.4 (volume averaged, 0.6*2 + 0.4*3)
+# Isobaric specific heat: 1527.3 (mass averaged, 0.5*1027.3 + 0.5*2027.3)
+# (because isobaric specific heat Cp = Cv + T*alpha^2/(rho*beta_T))
 #
 # At other pressure-temperature conditions, the volume
 # fractions change despite the mass fractions remaining constant.
