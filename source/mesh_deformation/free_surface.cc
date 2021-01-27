@@ -122,6 +122,8 @@ namespace aspect
                                                        free_surface_theta *
                                                        g_norm;
 
+                  std::cout<<"Pressure perturb: "<<pressure_perturbation<<std::endl;
+
                   // see Kaus et al 2010 for details of the stabilization term
                   for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
                     for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
