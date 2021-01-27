@@ -1,0 +1,5 @@
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+  end
+end
