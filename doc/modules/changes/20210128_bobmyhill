@@ -1,0 +1,8 @@
+Changed: The multicomponent incompressible equation of state now uses the
+user-defined reference temperature even when adiabatic heating is turned on.
+If users have previously used this model with adiabatic heating turned on
+(for example, as part of the visco_plastic material model),
+they can obtain identical results by setting the reference temperature
+in the material model equal to the surface adiabatic temperature.
+<br>
+(Bob Myhill, 2021/01/28)

@@ -48,7 +48,18 @@ namespace aspect
        *
        * $\rho(p,T,\mathfrak c) = \left(1-\alpha_i (T-T_0)\right) \rho_0(\mathfrak c_i).$
        *
-       * There is no pressure-dependence of the density.
+       * If adiabatic heating is not included, there is no isothermal pressure-dependence of the density
+       * (i.e. the isothermal compressibility is equal to zero). If adiabatic heating is included,
+       * the reference temperature $T_0$ in the equation of state is modified to the following:
+       *
+       * $T_0* = T_0 + T(p, S_{\text{ref}}) - T(p_{\text{surface}}, S_{\text{ref}}).$
+       *
+       * Now there is no isentropic pressure-dependence of the density along the reference isentrope
+       * (i.e. the isentropic compressibility is equal to zero).
+       *
+       * This equation of state is pleasingly simple but not fully self-consistent,
+       * because the thermal expansivity divided by the pressure has a temperature dependence
+       * while the isobaric heat capacity is constant.
        */
       template <int dim>
       class MulticomponentIncompressible :  public ::aspect::SimulatorAccess<dim>

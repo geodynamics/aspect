@@ -3,17 +3,19 @@
 # uses the adiabatic temperature to compute density when
 # adiabatic heating is turned on. The formula specified
 # in this test follows the Extended Boussinesq approximation.
-# The initial temperature throughout the model is equal to 
-# the adiabatic temperature profile. As a result, the 
+# The initial temperature throughout the model is equal to
+# the adiabatic temperature profile.
+# In this test, we set the reference temperature and
+# reference isentrope to the same value. As a result, the
 # the absolute density should be constant throughout the
-# model and equal to the background values specified in 
+# model and equal to the reference value specified in
 # material model (3300 kg m^-3):
-#   density = background_density * ( 1 - thermal_expansivity * (temperature - reference_temperature)),
-# where the reference_temperature is the depth-dependent
-# adiabatic temperature. If adiabatic heating was not 
-# used in the model, then the reference temperature 
-# would be the constant value specified in the material
-# model (273 K), which would produce different density values.
+#   density = background_density * ( 1 - thermal_expansivity * (temperature - T_0*)),
+# where T_0* is equal to the user-defined reference temperature (273 K)
+# plus the difference between the local temperature on the
+# reference isentrope and the surface temperature on the same isentrope
+# i.e. T_0* = T_0 + T(p, Sref) - T(psurface, Sref) = 1573 + T(p, Sref) - 1573.
+
 
 # Global parameters
 set Dimension                              = 2
@@ -76,10 +78,7 @@ subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
 
-    # Since adiabatic heating is used, the reference temperature
-    # specified below will be ignored and the density formulation
-    # will use the adiabatic temperature.
-    set Reference temperature = 273
+    set Reference temperature = 1573
     set Thermal expansivities = 1e-5
     set Densities             = 3300
 
@@ -109,4 +108,3 @@ subsection Postprocess
     set Output format            = gnuplot
   end
 end
-

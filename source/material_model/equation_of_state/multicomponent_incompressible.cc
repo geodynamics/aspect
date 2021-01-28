@@ -43,7 +43,7 @@ namespace aspect
         // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
         const double reference_temperature = (this->include_adiabatic_heating()
                                               ?
-                                              this->get_adiabatic_conditions().temperature(in.position[input_index])
+                                              reference_T + this->get_adiabatic_conditions().temperature(in.position[input_index]) - this->get_adiabatic_surface_temperature()
                                               :
                                               reference_T);
 
