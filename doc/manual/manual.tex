@@ -1080,10 +1080,12 @@ Similarly, we can obtain averaging formulae for the other thermodynamic properti
   C_p &=& \sum_i x_i C_{pi}
 \end{eqnarray}
 
+
+
 \subsection{Dimensional or non-dimensionalized equations?}
 \label{sec:non-dimensional}
 
-Equations \eqref{eq:stokes-1}--\eqref{eq:temperature} are stated in the
+Equations \eqref{eq:stokes-1}--\eqref{eq:temperature} are stated in their
 physically correct form. One would usually interpret them in a way that the
 various coefficients such as the viscosity, density and thermal conductivity
 $\eta,\rho,\kappa$ are given in their correct physical units, typically
@@ -2776,12 +2778,15 @@ particle-related input parameters are listed in
 Section~\ref{parameters:Postprocess/Particles}. The implementation of particles is
 discussed in great detail in \cite{gassmoeller_particles}.
 
+
+
 \subsection{Geometric Multigrid}
 \label{sec:gmg}
 
-ASPECT can optionally use a Geometric Multigrid Solver (GMG) for the efficient solution
-of the Stokes system (for velocity and pressure). When used correctly, this potentially
-improves the solver performance by about 3x and decrease the memory requirements by a factor of 10.
+\aspect{} can optionally use a Geometric Multigrid Solver (GMG) for the efficient solution
+of the Stokes system (velocity and pressure). When used correctly, this can
+reduce the compute time spent in the solver by about a factor of 3,
+and decrease the memory requirements by a factor of 10.
 For more details
 about the method see~\cite{clevenger_stokes19,clevenger_par_gmg}.
 
@@ -2792,19 +2797,29 @@ To take advantage of the GMG solver, you need to:
   See~\ref{parameters:Solver_20parameters/Stokes_20solver_20parameters} for other
   parameters that influence the solver behavior.
 
-\item The GMG solver requires that the viscosity is averaged, either as a constant (for example by using harmonic averaging)
-or as a Q1 averaging. Averaging other properties is optional. You can use
+\item
+  \index[prmindex]{Material averaging}
+  \index[prmindexfull]{Material model!Material averaging}
+  The GMG solver requires that the viscosity is averaged, either as a constant (for example by using harmonic averaging)
+  or as a $Q_1$ averaging. (See Section~\ref{sec:sinker-with-averaging}
+  for more about averaging.) Averaging other properties is optional. You can
+  use 
 \lstinputlisting[language=prmfile]{cookbooks/overview/doc/gmg-average.part.prm.out}
-for example. Note that Q1 averaging is a bit slower than averaging to a constant per cell, but it
+for example. Note that $Q_1$ averaging is a bit slower than averaging to a constant per cell, but it
 might provide more accurate solutions.
 
 \item Run in release mode. The GMG solver depends on running optimized code, so using optimized mode
-is more important than for other parts of ASPECT to get good performance.
+is more important than for other parts of ASPECT to get good
+performance. (Of course, the GMG solver also runs in debug mode, and
+you should do so while setting up a model. You will just not get the
+same speedup from the non-GMG to the GMG solver in debug mode as you
+get in release mode.)
 
 \item Enable vectorization optimizations. The GMG solver takes advantage of special instructions (AVX2, AVX512)
-in modern CPUs and requires these do be enabled when compiling deal.II. This can be achieved by passing the
+in modern CPUs and requires these do be enabled when compiling \dealii{}. This can be achieved by passing the
 compiler flag \texttt{CMAKE\_CXX\_FLAGS='-march=native'} to CMake or setting \texttt{NATIVE\_OPTIMIZATIONS=true} in \texttt{candi.cfg} when using candi (see~\ref{sec:installation} for more information).
-When you have vectorization enabled, ASPECT will report something like:
+When you have vectorization enabled, ASPECT will report something like
+this:
 \begin{lstlisting}[frame=single,language=ksh]
 -----------------------------------------------------------------------------
 -- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
@@ -2819,7 +2834,8 @@ When you have vectorization enabled, ASPECT will report something like:
 
 Vectorization over 8 doubles = 512 bits (AVX512), VECTORIZATION_LEVEL=3
 \end{lstlisting}
-Without optimizations enabled, the output will be ``and vectorization level 1 (128 bits)''.
+Without optimizations enabled, the output will be ``and vectorization
+level 1 (128 bits)'' in the fourth line above.
 \end{enumerate}
 
 
