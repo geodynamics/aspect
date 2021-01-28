@@ -37,9 +37,20 @@ namespace aspect
                const unsigned int input_index,
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
+        // If we use an adiabatic heating model in an "incompressible" model,
+        // the isentropic compressibility must be equal to zero
+        // (i.e. the density must be constant along the reference isentrope)
+
+        // The density equation corresponds to the rho(T) at surface pressure
+        const double reference_temperature = (this->include_adiabatic_heating()
+                                      ?
+                                      (reference_T + this->get_adiabatic_conditions().temperature(in.position[input_index]) - this->get_adiabatic_surface_temperature())
+                                      :
+                                      reference_T);
+
         for (unsigned int c=0; c < out.densities.size(); ++c)
           {
-            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_T));
+            out.densities[c] = densities[c] * (1 - thermal_expansivities[c] * (in.temperature[input_index] - reference_temperature));
             out.thermal_expansion_coefficients[c] = thermal_expansivities[c];
             out.specific_heat_capacities[c] = specific_heats[c];
             out.compressibilities[c] = 0.0;
