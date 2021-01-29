@@ -121,6 +121,9 @@ ensure_single_trailing_newline()
   rm -f $f.tmp $f.tmpi
 }
 export -f ensure_single_trailing_newline
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 
+# Do not recursively search the tests directory for prm files, otherwise the output prms will be changed
+find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find tests -maxdepth 1 \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 exit 0
