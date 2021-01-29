@@ -52,8 +52,6 @@ subsection Material model
   subsection Multicomponent
     set Densities                  = 1,1.05
 
-    set Reference temperature      = 0
-
     set Specific heats             = 1.
 
     set Thermal conductivities     = 0.

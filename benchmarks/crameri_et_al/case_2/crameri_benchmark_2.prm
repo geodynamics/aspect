@@ -63,7 +63,6 @@ end
 subsection Material model
   set Model name = multicomponent
   subsection Multicomponent
-    set Reference temperature = 0.0
     set Densities = 3300, 3200, 3300
     set Specific heats = 1250
     set Thermal conductivities = 4.7

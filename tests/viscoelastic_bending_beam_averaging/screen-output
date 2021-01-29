@@ -12,7 +12,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:     0.00862 m/year, 0.0168 m/year
+     RMS, max velocity:     0.00853 m/year, 0.0166 m/year
      Writing depth average: output-viscoelastic_bending_beam_averaging/depth_average
 
 *** Timestep 1:  t=1000 years, dt=1000 years
@@ -25,7 +25,7 @@ Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
    Solving Stokes system... 41+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:     0.0402 m/year, 0.166 m/year
+     RMS, max velocity:     0.0398 m/year, 0.164 m/year
      Writing depth average: output-viscoelastic_bending_beam_averaging/depth_average
 
 Termination requested by criterion: end time

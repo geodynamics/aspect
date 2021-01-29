@@ -64,7 +64,6 @@ subsection Material model
 
   subsection Multicomponent
     set Densities                  = 3300,3250
-    set Reference temperature      = 293
     set Specific heats             = 1250
     set Thermal conductivities     = 4.7
     set Thermal expansivities      = 2e-5

@@ -15,7 +15,7 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
 
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
-     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Mass fluxes through boundary parts: 1.634e+05 kg/yr, 1.634e+05 kg/yr, -1.634e+05 kg/yr, -1.634e+05 kg/yr
      Writing graphical output:           output-visco_plastic_yield_strain_weakening_full_strain_tensor/solution/solution-00000
 
 
@@ -29,12 +29,12 @@ Number of degrees of freedom: 3,208 (882+121+441+441+441+441+441)
    Solving s22 system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.6263e-15
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.76044e-15
 
 
    Postprocessing:
      RMS, max velocity:                  0.000408 m/year, 0.000691 m/year
-     Mass fluxes through boundary parts: 1.651e+05 kg/yr, 1.651e+05 kg/yr, -1.651e+05 kg/yr, -1.651e+05 kg/yr
+     Mass fluxes through boundary parts: 1.634e+05 kg/yr, 1.634e+05 kg/yr, -1.634e+05 kg/yr, -1.634e+05 kg/yr
 
 
 

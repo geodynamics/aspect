@@ -6,15 +6,15 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
    Solving temperature system... 0 iterations.
    Solving right system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+111 iterations.
+   Solving Stokes system... 0+73 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
 
    Postprocessing:
-     RMS, max velocity:                                 6.96 m/year, 49.3 m/year
-     Mass fluxes through boundary parts:                1.688e+05 kg/yr, 1.838e+05 kg/yr, -1.823e+05 kg/yr, -1.723e+05 kg/yr
+     RMS, max velocity:                                 6.97 m/year, 49.2 m/year
+     Mass fluxes through boundary parts:                1.676e+05 kg/yr, 1.824e+05 kg/yr, -1.815e+05 kg/yr, -1.706e+05 kg/yr
      Writing graphical output:                          output-visco_plastic_phases_viscosity/solution/solution-00000
-     Average density / Average viscosity / Total mass:  3521 kg/m^3, 2.463e+21 Pa s, 3.521e+13 kg
+     Average density / Average viscosity / Total mass:  3494 kg/m^3, 2.463e+21 Pa s, 3.494e+13 kg
 
 
 

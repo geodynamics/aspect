@@ -16,7 +16,7 @@ Number of degrees of freedom: 1,607 (578+81+81+289+289+289)
 
    Postprocessing:
      Compositions min/max/mass:                         0/1/4.149e+09 // 0/1/5.417e+09 // 0/1/4.34e+08
-     Average density / Average viscosity / Total mass:  2700 kg/m^3, 1.442e+22 Pa s, 2.7e+13 kg
+     Average density / Average viscosity / Total mass:  2672 kg/m^3, 1.442e+22 Pa s, 2.672e+13 kg
      RMS, max velocity:                                 0.149 m/year, 0.239 m/year
 
 

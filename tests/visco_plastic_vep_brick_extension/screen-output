@@ -34,11 +34,11 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0514541
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0514535
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.57228e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.57341e-08
 
 
    Postprocessing:
@@ -56,11 +56,11 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00674878
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00674882
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.04555e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.04072e-08
 
 
    Postprocessing:
@@ -78,11 +78,11 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00257958
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00257963
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.64182e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 4.64226e-08
 
 
    Postprocessing:
@@ -100,11 +100,11 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 7 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00318365
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00318372
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+10 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00115308
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.00115312
 
 
    Postprocessing:
@@ -122,15 +122,15 @@ Number of mesh deformation degrees of freedom: 252
    Solving inclusion system ... 6 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0436673
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.0434464
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+12 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0107972
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 0.0109163
 
 
    Postprocessing:
-     RMS, max velocity: 0.000857 m/year, 0.00136 m/year
+     RMS, max velocity: 0.000858 m/year, 0.00136 m/year
 
 
 
