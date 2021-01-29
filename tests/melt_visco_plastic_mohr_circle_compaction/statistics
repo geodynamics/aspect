@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Visualization file name
+# 12: Minimal value for composition porosity
+# 13: Maximal value for composition porosity
+# 14: Global mass for composition porosity
+# 15: Minimal value for composition peridotite
+# 16: Maximal value for composition peridotite
+# 17: Global mass for composition peridotite
+# 18: RMS velocity (m/s)
+# 19: Max. velocity (m/s)
+0 0.000000000000e+00 0.000000000000e+00 512 4851 2145 4290 0 0 0 output-melt_visco_plastic_mohr_circle_compaction/solution/solution-00000 1.00000000e-02 1.00000000e-02 4.00000000e+02 1.00000000e-02 1.00000000e-02 4.00000000e+02 5.32009973e-13 1.30002539e-12 
