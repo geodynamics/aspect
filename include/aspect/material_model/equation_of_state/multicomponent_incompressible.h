@@ -59,7 +59,9 @@ namespace aspect
        * This equation of state is pleasingly simple but not thermodynamically self-consistent,
        * because the form of the density equation implies a non-constant thermal expansivity,
        * and the thermal expansivity divided by the pressure has a temperature dependence
-       * which implies a non-constant isobaric heat capacity.
+       * which implies a non-constant isobaric heat capacity. These inconsistencies are
+       * common to most equations of state used in geodynamic codes, and ubiquitous
+       * among incompressible models.
        */
       template <int dim>
       class MulticomponentIncompressible :  public ::aspect::SimulatorAccess<dim>

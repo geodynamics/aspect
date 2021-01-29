@@ -4,13 +4,13 @@ equation of state is now set to either the adiabatic surface temperature
 temperature along the reference adiabat at the local static pressure
 (when adiabatic heating is turned on).
 If users have previously used this model with adiabatic heating turned off
-and a user-defined reference temperature that is not equal to the
-adiabatic surface temperature, they should change the reference densities
-in their model according to the expression
-new_densities[i] = old_densities[i] * (1 - thermal_expansivities[i] *
-(adiabatic_surface_temperature - old_reference_temperature)). The results
-will not be exactly the same, because the thermal expansivity implied
-by the form of the density equation is only identical to the defined
-expansivity at the reference temperature.
+and a user-defined reference temperature that was a) not equal to the
+adiabatic surface temperature and b) intended to be the temperature
+corresponding to the reference density and thermal expansivity
+(for example, experimentally-determined properties at room temperature),
+they should change the properties to be those corresponding to the
+adiabatic surface temperature. The results will not be exactly the same,
+because the thermal expansivity implied by the form of the density equation
+is only identical to the defined expansivity at the reference temperature.
 <br>
 (Bob Myhill, 2021/01/28)
