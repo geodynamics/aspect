@@ -46,20 +46,20 @@ namespace aspect
        * compositional field and phase the material parameters are treated as constant,
        * except density, which varies linearly with temperature according to the equation:
        *
-       * $\rho(p,T,\mathfrak c) = \left(1-\alpha_i (T-T_0)\right) \rho_0(\mathfrak c_i).$
+       * $\rho(p,T,\mathfrak c) = \left(1-\alpha_i (T-T_{\text{Sref}})\right) \rho_0(\mathfrak c_i).$
        *
-       * If adiabatic heating is not included, there is no isothermal pressure-dependence of the density
-       * (i.e. the isothermal compressibility is equal to zero). If adiabatic heating is included,
-       * the reference temperature $T_0$ in the equation of state is modified to the following:
+       * $T_{\text{Sref}}$ is the temperature on the reference adiabat
+       * at the local pressure T(p, S_{\text{ref}}). If adiabatic heating is not included,
+       * this temperature is constant and equal to the Adiabatic surface temperature.
+       * In this case, the isothermal compressibility is equal to zero.
+       * If adiabatic heating is included, $T_{\text{Sref}}$ changes as a function of
+       * pressure such that there is no density change along the reference isentrope
+       * (i.e., the isentropic compressibility is equal to zero).
        *
-       * $T_0* = T_0 + T(p, S_{\text{ref}}) - T(p_{\text{surface}}, S_{\text{ref}}).$
-       *
-       * Now there is no isentropic pressure-dependence of the density along the reference isentrope
-       * (i.e. the isentropic compressibility is equal to zero).
-       *
-       * This equation of state is pleasingly simple but not fully self-consistent,
-       * because the thermal expansivity divided by the pressure has a temperature dependence
-       * while the isobaric heat capacity is constant.
+       * This equation of state is pleasingly simple but not thermodynamically self-consistent,
+       * because the form of the density equation implies a non-constant thermal expansivity,
+       * and the thermal expansivity divided by the pressure has a temperature dependence
+       * which implies a non-constant isobaric heat capacity.
        */
       template <int dim>
       class MulticomponentIncompressible :  public ::aspect::SimulatorAccess<dim>
@@ -113,12 +113,6 @@ namespace aspect
            * for the background field.
            */
           std::vector<double> densities;
-
-          /**
-           * The reference temperature $T_0$ used in the computation of the density.
-           * All components use the same reference temperature.
-           */
-          double reference_T;
 
           /**
            * Vector of thermal expansivities with one entry per composition and phase plus one

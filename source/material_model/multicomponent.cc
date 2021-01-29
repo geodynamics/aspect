@@ -91,9 +91,6 @@ namespace aspect
         {
           EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm, 4.e-5);
 
-          prm.declare_entry ("Reference temperature", "293.",
-                             Patterns::Double (0.),
-                             "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
           prm.declare_entry ("Viscosities", "1.e21",
                              Patterns::Anything(),
                              "List of viscosities for background mantle and compositional fields,"
@@ -127,8 +124,6 @@ namespace aspect
         {
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm);
-
-          reference_T = prm.get_double ("Reference temperature");
 
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);

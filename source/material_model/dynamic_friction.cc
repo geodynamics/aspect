@@ -216,8 +216,6 @@ namespace aspect
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm);
 
-          reference_T = prm.get_double ("Reference temperature");
-
           viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                                 prm);
 

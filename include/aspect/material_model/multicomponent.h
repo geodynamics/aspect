@@ -120,12 +120,6 @@ namespace aspect
 
       private:
         /**
-         * Reference temperature for thermal expansion.  All components use
-         * the same reference_T.
-         */
-        double reference_T;
-
-        /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;

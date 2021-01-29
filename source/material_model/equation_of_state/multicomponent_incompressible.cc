@@ -38,14 +38,15 @@ namespace aspect
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
 
-
+        // If adiabatic heating is not used, the reference temperature used to calculate density is the temperature
+        // on the reference isentrope as evaluated at the surface.
         // If adiabatic heating is used, the reference temperature used to calculate density should be the adiabatic
         // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
         const double reference_temperature = (this->include_adiabatic_heating()
                                               ?
-                                              reference_T + this->get_adiabatic_conditions().temperature(in.position[input_index]) - this->get_adiabatic_surface_temperature()
+                                              this->get_adiabatic_conditions().temperature(in.position[input_index])
                                               :
-                                              reference_T);
+                                              this->get_adiabatic_surface_temperature());
 
         for (unsigned int c=0; c < out.densities.size(); ++c)
           {
@@ -75,9 +76,6 @@ namespace aspect
       MulticomponentIncompressible<dim>::declare_parameters (ParameterHandler &prm,
                                                              const double default_thermal_expansion)
       {
-        prm.declare_entry ("Reference temperature", "293.",
-                           Patterns::Double (0.),
-                           "The reference temperature $T_0$. Units: \\si{\\kelvin}.");
         prm.declare_entry ("Densities", "3300.",
                            Patterns::Anything(),
                            "List of densities for background mantle and compositional fields,"
@@ -105,8 +103,6 @@ namespace aspect
       MulticomponentIncompressible<dim>::parse_parameters (ParameterHandler &prm,
                                                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
-        reference_T = prm.get_double ("Reference temperature");
-
         // Establish that a background field is required here
         const bool has_background_field = true;
 
