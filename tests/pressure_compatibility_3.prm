@@ -1,10 +1,10 @@
 # This is a compressible test case that tests
 # the behaviour of the pressure compatibility
 # mechanism in case of prescribed normal velocities
-# whose integral over the boundaries is non-zero. 
+# whose integral over the boundaries is non-zero.
 # This checks that the linear solver converges, even
-# with low solver tolerance and a significant in- or 
-# outflow.  
+# with low solver tolerance and a significant in- or
+# outflow.
 
 set CFL number                             = 1
 set End time                               = 50

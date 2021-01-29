@@ -4,7 +4,7 @@
 #
 # This was broken because a call to initialize() to the models was missing in
 # the compositing model/
- 
+
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0

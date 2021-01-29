@@ -34,7 +34,7 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators = outer: ascii data
   subsection Ascii data model
     set Data file name       = shell_3d_%s.0.txt
-    
+
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
     set Scale factor = 10
   end
@@ -74,4 +74,3 @@ subsection Postprocess
     set Interpolate output = true
   end
 end
-

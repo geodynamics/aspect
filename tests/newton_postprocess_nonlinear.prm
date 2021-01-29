@@ -1,5 +1,5 @@
 # This test makes sure that postprocessing nonlinear iterations works
-# with the Newton solver scheme. 
+# with the Newton solver scheme.
 
 #  Global parameters
 set Dimension                              = 2
@@ -69,7 +69,7 @@ end
 
 
 # Velocity boundary conditions (5e-9 m/s on each boundary)
-# The imposed velocity produces a background strain-rate 
+# The imposed velocity produces a background strain-rate
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x:function, top y: function, bottom y: function
   subsection Function
@@ -100,7 +100,7 @@ end
 
 # Composition boundary conditions
 subsection Boundary composition model
-  set Fixed composition boundary indicators  = 
+  set Fixed composition boundary indicators  =
   set List of model names = initial composition
 end
 
@@ -185,4 +185,3 @@ end
 subsection Termination criteria
  set Termination criteria = end time
 end
-

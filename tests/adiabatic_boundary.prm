@@ -1,5 +1,5 @@
 # This test was created by Tahiry Rajaonarison, Emmanuel Njinju, and D. Sarah Stamps
-# for the adiabatic boundary initial conditions plugin. 
+# for the adiabatic boundary initial conditions plugin.
 
 set Dimension                              = 3
 

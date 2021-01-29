@@ -20,7 +20,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0

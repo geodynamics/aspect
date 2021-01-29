@@ -80,7 +80,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics
 
-   
+
 subsection Visualization
     set Interpolate output = false
     set Output format                 = gnuplot
@@ -88,4 +88,3 @@ subsection Visualization
 
 end
 end
-

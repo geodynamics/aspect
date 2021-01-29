@@ -12,7 +12,7 @@ set Surface pressure                       = 0
 
 
 # to turn stokes off and prescribe velocity
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = ascii data
 end
 set Nonlinear solver scheme                = single Advection, no Stokes
@@ -91,4 +91,3 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
 end
-

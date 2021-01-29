@@ -1,5 +1,5 @@
 # This is a modification of the van-keken-particle tests.
-# It tests the uniform box particle generator in 3d, 
+# It tests the uniform box particle generator in 3d,
 # and the ascii particle output.
 
 set Dimension                              = 3

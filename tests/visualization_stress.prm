@@ -107,4 +107,3 @@ subsection Postprocess
     set List of output variables = stress
   end
 end
-

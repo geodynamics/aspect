@@ -17,7 +17,7 @@ subsection Geometry model
 
   subsection Spherical shell
     set Inner radius  = 3481000
-    set Outer radius  = 6336000  
+    set Outer radius  = 6336000
   end
 end
 
@@ -62,4 +62,3 @@ subsection Postprocess
   end
 
 end
-

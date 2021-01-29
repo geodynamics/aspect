@@ -92,9 +92,8 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = inner
 end
 
-# The ascii data file prescribes a topography between -2000 m and 
+# The ascii data file prescribes a topography between -2000 m and
 # +9000 m. The topography postprocessor output should match with this.
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics,  temperature statistics, topography
 end
-

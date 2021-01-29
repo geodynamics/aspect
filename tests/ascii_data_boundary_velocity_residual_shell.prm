@@ -4,7 +4,7 @@ set Dimension                              = 3
 
 set Use years in output instead of seconds = true
 set Output directory                       = ascii_data_boundary_velocity_residual_shell
-set End time                               = 0 
+set End time                               = 0
 
 set Adiabatic surface temperature          = 1613.0
 
@@ -52,7 +52,7 @@ end
 subsection Boundary velocity model
   subsection Ascii data model
     set Data file name       = shell_3d_%s.0.txt
-    
+
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
     set Scale factor = 1
   end

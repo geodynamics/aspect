@@ -1,4 +1,4 @@
-# Like the poiseuille_2d.prm test and based on the nonlinear channel 
+# Like the poiseuille_2d.prm test and based on the nonlinear channel
 # flow benchmark. This is used to test the solver scheme
 # 'single Advection, iterated Newton Stokes'
 

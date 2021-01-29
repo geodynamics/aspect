@@ -44,7 +44,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = sin(pi*x)*sin(pi*y); - 4.0 * pi * pi * cos(pi*x)*sin(pi*y) 
+    set Function expression = sin(pi*x)*sin(pi*y); - 4.0 * pi * pi * cos(pi*x)*sin(pi*y)
   end
 end
 
@@ -108,7 +108,7 @@ subsection Postprocess
     set Minimum particles per cell = 9
     set Maximum particles per cell = 16384
     set Particle generator name = reference cell #random uniform
-    set Number of particles = 8192 
+    set Number of particles = 8192
 
     subsection Generator
       subsection Reference cell

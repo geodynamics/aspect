@@ -48,7 +48,7 @@ subsection Material model
   subsection Steinberger model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
     set Material file names              = ../pyr-ringwood88.txt
-    set Lateral viscosity file name      = test-viscosity-prefactor.txt 
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = true

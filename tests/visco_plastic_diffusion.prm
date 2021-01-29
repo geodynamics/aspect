@@ -1,10 +1,10 @@
 # A test for diffusion creep in the visco_plastic material model.
 # The diffusion creep viscosity is defined as:
 #   0.5 * A^(-1/n) * d^(m/n) * exp((E + P*V)/(nRT)), with
-#   A = 2.37e-15, n = 1, d = 1e-3, m = 3, E = 375.e3, 
+#   A = 2.37e-15, n = 1, d = 1e-3, m = 3, E = 375.e3,
 #   V = 10e-6, P = 3e9, T = 1573 and R = 8.3144598.
 # Using these values, the computed viscosity should be
-#   ~ 5.9266e18 Pa s.     
+#   ~ 5.9266e18 Pa s.
 
 # Global parameters
 set Dimension                              = 2
@@ -26,7 +26,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -34,7 +34,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.

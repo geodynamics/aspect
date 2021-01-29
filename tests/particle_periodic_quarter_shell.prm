@@ -1,5 +1,5 @@
-# This test adapts tests/particle_periodic_boundaries.prm to test the particle 
-# handling at periodic boundaries in the polar direction for a quarter 
+# This test adapts tests/particle_periodic_boundaries.prm to test the particle
+# handling at periodic boundaries in the polar direction for a quarter
 # speherical shell geometry.
 
 # MPI: 2

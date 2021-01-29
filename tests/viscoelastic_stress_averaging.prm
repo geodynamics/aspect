@@ -4,10 +4,10 @@
 # fixed elastic time step is double the numerical time step.
 # Stress averaging is used to account for the difference
 # between the numerical and elastic time step. Viscoelastic
-# stresses (sigma_xx, sigma_yy, sigma_xy) are tracked 
-# with compositional fields. The parameter file is derived 
-# from the 2D viscoelastic_stress_build-up benchmark with 
-# modifications to the resolution, end time, material 
+# stresses (sigma_xx, sigma_yy, sigma_xy) are tracked
+# with compositional fields. The parameter file is derived
+# from the 2D viscoelastic_stress_build-up benchmark with
+# modifications to the resolution, end time, material
 # properties and postprocessors.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
@@ -56,4 +56,3 @@ subsection Postprocess
     set Output format = txt
   end
 end
-

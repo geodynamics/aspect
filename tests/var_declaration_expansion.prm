@@ -1,5 +1,5 @@
 # A test that simply verifies that the additional material
-# model outputs can be accessed. 
+# model outputs can be accessed.
 
 
 
@@ -111,4 +111,3 @@ subsection Postprocess
     set Time between graphical output = 0   # default: 1e8
   end
 end
-

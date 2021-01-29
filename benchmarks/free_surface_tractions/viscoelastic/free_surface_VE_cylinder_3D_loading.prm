@@ -1,5 +1,5 @@
 # This model applies a surface load (using the traction
-# boundary condition) on a free surface overlying 
+# boundary condition) on a free surface overlying
 # a viscoelastic box. It approximates the analytical solution
 # of Nakiboglu and Lambeck (1982) for an applied/removed
 # axisymmetric cylindrical load over a viscoelastic half-space.
@@ -31,7 +31,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
   set Initial global refinement          = 1
@@ -93,7 +93,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y,z
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0; 0; 0; 0; 0; 0;
   end
 end
@@ -148,7 +148,7 @@ subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, temperature statistics, topography, velocity statistics, visualization
 
   subsection Visualization
-    set List of output variables = material properties, strain rate 
+    set List of output variables = material properties, strain rate
 
     subsection Material properties
       set List of material properties = density, viscosity

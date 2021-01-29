@@ -34,7 +34,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no mesh refinement, 
+# Mesh refinement specifications (no mesh refinement,
 # but the coarse mesh is already 200x50, see above)
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -56,7 +56,7 @@ end
 # The outward velocity (x-direction) on the left and right walls is 0.25 cm/year
 # The vertical velocity at the base is 0.125 cm/year (balances outflow on sides)
 # Velocity components parallel to the base (x-velocity) and side walls (y-velocity)
-# are unconstrained (i.e. 'free'). 
+# are unconstrained (i.e. 'free').
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
 
@@ -87,7 +87,7 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function expression = if(y>=80.e3, 1, 0); \
                               if(y<80.e3 && y>=70.e3, 1, 0); \
-                              if(y<70.e3 && y>-100.e3,1, 0); \ 
+                              if(y<70.e3 && y>-100.e3,1, 0); \
                               if(y<68.e3 && y>60.e3 && x>=198.e3 && x<=202.e3 , 1, 0);
   end
 end
@@ -118,16 +118,16 @@ end
 #   D.S. Chapman (1986), "Thermal gradients in the continental crust",
 #   Geological Society of London Special Publications, v.24, p.63-70.
 # The initial constraints are:
-#   Layer Surface Temperature - upper crust (ts1) = 273 K; 
-#                               mantle      (ts3) = 823 K;  
+#   Layer Surface Temperature - upper crust (ts1) = 273 K;
+#                               mantle      (ts3) = 823 K;
 #   Model Base Temperature - (tb) = 1573 K;
-#   Heat Production - upper crust (A) = 1.5e-6 W/m^3; 
-#   Thermal Conductivity - upper crust (k1) = 2.5 (W/(m K)); 
-#                          lower crust (k2) = 2.5 (W/(m K)); 
+#   Heat Production - upper crust (A) = 1.5e-6 W/m^3;
+#   Thermal Conductivity - upper crust (k1) = 2.5 (W/(m K));
+#                          lower crust (k2) = 2.5 (W/(m K));
 #                          mantle      (k3) = 3.3 (W/(m K));
 # To satisfy these constraints, the following values are required:
-#   Layer Surface Heat Flow - upper crust (qs1) = 0.065357 W/m^2; 
-#                             lower crust (qs2) = 0.035357 W/m^2; 
+#   Layer Surface Heat Flow - upper crust (qs1) = 0.065357 W/m^2;
+#                             lower crust (qs2) = 0.035357 W/m^2;
 #                             mantle      (qs3) = 0.035357 W/m^2;
 #   Temperature - base of upper crust (ts2) = 681.5714
 subsection Initial temperature model
@@ -159,7 +159,7 @@ end
 # each compositional field.  Values for viscous deformation are based on dislocation
 # creep flow-laws, with distinct values for the upper crust (wet quartzite), lower
 # crust (wet anorthite) and mantle (dry olivine).  Table 1 of Naliboff and Buiter (2015),
-# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.     
+# Earth Planet. Sci. Lett., v.421, p. 58-67 contains values for each of these flow laws.
 subsection Material model
   set Model name = visco plastic
 
@@ -168,11 +168,11 @@ subsection Material model
     # Reference temperature and viscosity
     set Reference temperature = 293
     set Reference viscosity = 1e22
-    
+
     # The minimum strain-rate helps limit large viscosities values that arise
     # as the strain-rate approaches zero.
     # The reference strain-rate is used on the first non-linear iteration
-    # of the first time step when the velocity has not been determined yet. 
+    # of the first time step when the velocity has not been determined yet.
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-16
 
@@ -196,7 +196,7 @@ subsection Material model
     # only used if "diffusion" or "composite" option is selected.
     set Viscous flow law = dislocation
 
-    # Dislocation creep parameters for 
+    # Dislocation creep parameters for
     # 1. Background material/mantle (dry olivine)
     #    Hirth & Kohlstedt (2004),  Geophys. Monogr. Am. Geophys. Soc., v.138, p.83-105.
     #    "Rheology of the upper mantle and the mantle wedge:a view from the experimentalists"
@@ -205,7 +205,7 @@ subsection Material model
     #    "Experimental grain size-sensitive flow of hot-pressed Brazilian quartz aggregates"
     # 3. Lower crust and weak seed (wet anorthite)
     #    Rybacki et al. (2006), J. Geophys. Res., v.111(B3).
-    #    "Influence of water fugacity and activation volume on the flow properties of fine-grained    
+    #    "Influence of water fugacity and activation volume on the flow properties of fine-grained
     #    anorthite aggregates"
     # Note that the viscous pre-factors below are scaled to plane strain from unixial strain experiments.
     set Prefactors for dislocation creep          = 6.52e-16, 8.57e-28, 7.13e-18, 6.52e-16, 7.13e-18

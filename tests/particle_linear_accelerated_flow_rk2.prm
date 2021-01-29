@@ -22,7 +22,7 @@ subsection Geometry model
 end
 
 
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = function
   subsection Velocity function
     set Variable names = x,y,t

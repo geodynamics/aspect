@@ -20,7 +20,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -68,7 +68,7 @@ subsection Initial composition model
      set Coordinate system = cartesian
      set Variable names = x, y
      set Function constants = XMAX=100e3
-     set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0 
+     set Function expression = (x>XMAX/2.0) ? 1.0 : 0.0
   end
 end
 
@@ -82,10 +82,10 @@ subsection Material model
     set Phase transition Clapeyron slopes = background:0|0, right:0|0
 
     set Densities = background:3300|3400|3500, right:3600|3700|3800
-    set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5 
+    set Thermal expansivities = background:3.5e-5|2e-5|1.5e-5, right:3.5e-5|2e-5|1.5e-5
     set Heat capacities = background:1200|1000|900, right:1200|1000|900
 
-    set Minimum viscosity = 1.e10 
+    set Minimum viscosity = 1.e10
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
     set Prefactors for diffusion creep = background:5.e-20|5.e-19|5.e-18, right:5.e-17|5.e-16|5.e-15

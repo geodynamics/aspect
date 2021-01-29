@@ -1,12 +1,12 @@
 # Copy of the mid-ocean ridge cookbook, with temperature dependent
-# compaction viscosity. 
+# compaction viscosity.
 
 include $ASPECT_SOURCE_DIR/cookbooks/mid_ocean_ridge.prm
 
 set End time = 1e4
 
 subsection Material model
-  set Model name = melt simple 
+  set Model name = melt simple
   subsection Melt simple
     set Thermal bulk viscosity exponent = 7
   end

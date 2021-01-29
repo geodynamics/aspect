@@ -1,16 +1,16 @@
 # This test is used to check if the latent heat of
-# melting of pyroxenite is calculated correctly. 
+# melting of pyroxenite is calculated correctly.
 # The material is upwelling with a constant velocity
 # (without separation of melt and solid) and without
-# conduction of heat, so that the steady state of the 
+# conduction of heat, so that the steady state of the
 # model is an adiabatic temperature profile. An approximated
-# analytical solution for this profile to compare the solution 
-# to can be calculated analogue to the description in Katz 
+# analytical solution for this profile to compare the solution
+# to can be calculated analogue to the description in Katz
 # et al., 2003 (A new parameterization of hydrous mantle melting)
-# by numerically integrating equation (23) of that paper and 
+# by numerically integrating equation (23) of that paper and
 # using the corresponding parameters of the pyroxenite melting
 # parameterization from Sobolev et al., 2011 (Linking mantle plumes,
-# large igneous provinces and environmental catastrophes). 
+# large igneous provinces and environmental catastrophes).
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -139,7 +139,7 @@ subsection Material model
     set Mass fraction cpx        = 0.10
     set Reference specific heat  = 1000
     set Relative density of melt = 0.878787879  # melt density of 2900 kg/m^3
-    set Reference temperature    = 1623.15      # 1350°C adiabat 
+    set Reference temperature    = 1623.15      # 1350°C adiabat
     set Pyroxenite melting entropy change = -300
     set Thermal conductivity     = 0.0
     set Compressibility          = 0.0

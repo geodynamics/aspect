@@ -1,7 +1,7 @@
 # This test is used to check if the shear heating
-# of melt, in particular the compression heating heating, is 
+# of melt, in particular the compression heating heating, is
 # calculated correctly.
-# There is no driving force in form of gravity in this model, 
+# There is no driving force in form of gravity in this model,
 # but material is melting homogeneously with a constant rate,
 # and the top boundary of the model is open, allowing material
 # to flow out (material expands upon melting).
@@ -114,7 +114,7 @@ subsection Material model
     set Reference solid density    = 2
     set Reference melt density     = 1
     set Reference specific heat    = 1
-    set Reference temperature      = 1600 
+    set Reference temperature      = 1600
     set Thermal conductivity       = 0.0
     set Surface solidus            = 10000.0
     set Include melting and freezing = false

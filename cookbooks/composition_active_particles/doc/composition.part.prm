@@ -4,4 +4,3 @@ subsection Compositional fields
   set Compositional field methods = particles, particles
   set Mapped particle properties  = lower:initial lower, upper:initial upper
 end
-

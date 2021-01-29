@@ -1,10 +1,10 @@
-include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm 
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm
 set Nonlinear solver tolerance = 1e-11
 
 subsection Solver parameters
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations = 31 #one more than max iterations
-    set Nonlinear Newton solver switch tolerance =  0 
+    set Nonlinear Newton solver switch tolerance =  0
   end
 end
 

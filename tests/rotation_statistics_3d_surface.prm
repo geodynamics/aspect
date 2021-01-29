@@ -17,4 +17,3 @@ subsection Prescribed Stokes solution
     set Function expression = -y*sqrt(x*x+y*y+z*z); x*sqrt(x*x+y*y+z*z); 0
   end
 end
-

@@ -60,7 +60,7 @@ subsection Initial temperature model
     set Supersolidus          = -50
     set Lithosphere thickness = 500e3
     subsection Perturbation
-      set Temperature amplitude           = 100  
+      set Temperature amplitude           = 100
       set Lithosphere thickness amplitude = 250e3
       set Lateral wave number one         = 12
       set Lateral wave number two         = 6

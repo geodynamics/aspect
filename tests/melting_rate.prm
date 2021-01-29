@@ -3,14 +3,14 @@
 # It uses a new material model similar to the melt
 # simple model, but with a different melting rate.
 
-# The melting rate has the form of a Gaussian function 
-# and every timestep a fixed amount of material is melting. 
+# The melting rate has the form of a Gaussian function
+# and every timestep a fixed amount of material is melting.
 
-# The amplitude of the Gaussian is 0.0001, so both the 
+# The amplitude of the Gaussian is 0.0001, so both the
 # porosity and the peridotite field should increase by
 # this amount (visible in the maximum value).
 
-# Note that the maximum porosity can deviate slightly, 
+# Note that the maximum porosity can deviate slightly,
 # as additional melt is created bx compaction.
 ############### Global parameters
 
@@ -18,9 +18,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 200
 set Use years in output instead of seconds = true
-set Adiabatic surface temperature          = 1600 
+set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 3  
+set Max nonlinear iterations               = 3
 set CFL number                             = 0.01
 
 set Pressure normalization                 = surface
@@ -28,7 +28,7 @@ set Surface pressure                       = 0
 
 
 ############### Parameters describing the model
-# Let us here choose again a box domain 
+# Let us here choose again a box domain
 # where we fix the temperature at the bottom and top,
 # allow free slip along the boundaries
 # and include melt migration.
@@ -62,11 +62,11 @@ end
 
 ############### Compositional fields
 # We want to use two compositional fields, the porosity and
-# an additional field, to check if the melting rate functionality 
-# has the same effect as the reaction term for the other 
+# an additional field, to check if the melting rate functionality
+# has the same effect as the reaction term for the other
 # compositional fields. As the porosity field is advected by
 # a different mechanism, slight differences between the fields
-# are expected. 
+# are expected.
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite
@@ -75,7 +75,7 @@ end
 
 subsection Boundary temperature model
   set List of model names = box
-  
+
   subsection Box
     set Bottom temperature = 1600
     set Top temperature    = 293
@@ -84,7 +84,7 @@ end
 
 
 # We then choose a vertical gravity model and describe the
-# initial temperature with a vertical gradient. 
+# initial temperature with a vertical gradient.
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -105,7 +105,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000

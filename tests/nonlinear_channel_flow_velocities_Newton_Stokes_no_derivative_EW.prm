@@ -1,19 +1,19 @@
-# Like the poiseuille_2d.prm test and based on the nonlinear channel 
-# flow benchmark. This is used to test the velocity boundary conditions 
+# Like the poiseuille_2d.prm test and based on the nonlinear channel
+# flow benchmark. This is used to test the velocity boundary conditions
 # of the Newton Stokes solver.
 
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm 
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm
 
 set End time                               = 2
-set Max nonlinear iterations = 100 
+set Max nonlinear iterations = 100
 set Nonlinear solver tolerance = 1e-9
 
 subsection Solver parameters
   subsection Newton solver parameters
     set Max pre-Newton nonlinear iterations = 100
-    set Nonlinear Newton solver switch tolerance = 1e-20 
+    set Nonlinear Newton solver switch tolerance = 1e-20
     set Max Newton line search iterations = 0
     set Maximum linear Stokes solver tolerance = 1e-1
     set Use Eisenstat Walker method for Picard iterations = true

@@ -1,5 +1,5 @@
 # This test is used to check if the shear heating
-# of melt, in particular advective transport of heat due 
+# of melt, in particular advective transport of heat due
 # to melt migration, is calculated correctly.
 # There is no in- or outflux of solid material, but melt
 # is allowed to flow in freely, so that it moves upwards
@@ -11,7 +11,7 @@
 # porosity \rho_f C_p (u_f \cdot \nabla T).
 #
 # With the material properties in this benchmark, both heating
-# rates should be the same (0.1), and the temperature should stay 
+# rates should be the same (0.1), and the temperature should stay
 # in equilibrium.
 #
 set Dimension                              = 2
@@ -123,7 +123,7 @@ subsection Material model
     set Reference solid density    = 2
     set Reference melt density     = 1
     set Reference specific heat    = 1
-    set Reference temperature      = 1600 
+    set Reference temperature      = 1600
     set Thermal conductivity       = 0.0
     set Surface solidus            = 10000.0
     set Include melting and freezing = false

@@ -90,11 +90,11 @@ subsection Postprocess
   end
 
   subsection Particles
-    set Number of particles        = 100 
+    set Number of particles        = 100
     set Time between data output = 0.1
     set Data output format       = gnuplot
     set List of particle properties = initial position, initial composition, velocity # lpo, integrated strain invariant #function, initial composition, initial position, pT path
-    set Exclude output properties = initial C_9,all 
+    set Exclude output properties = initial C_9,all
   end
 end
 

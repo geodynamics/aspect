@@ -38,7 +38,7 @@ subsection Boundary velocity model
 end
 
 subsection Heating model
-  set List of model names = constant heating 
+  set List of model names = constant heating
   subsection Constant heating
     set Radiogenic heating rate = 1e-12
   end
@@ -81,7 +81,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
   subsection Visualization
-    set List of output variables = viscosity, strain rate, density, specific heat, thermal expansivity, gravity, heating 
+    set List of output variables = viscosity, strain rate, density, specific heat, thermal expansivity, gravity, heating
     set Output format                 = vtu
     set Time between graphical output = 1e6
     set Number of grouped files       = 0

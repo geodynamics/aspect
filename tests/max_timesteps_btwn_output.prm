@@ -1,6 +1,6 @@
-# This is a test to check if output files are correctly written if the maximum number of steps 
+# This is a test to check if output files are correctly written if the maximum number of steps
 # between outputs is smaller than the required one (while the dt between output files is large)
-# Based on the cookbook for convection in a 2d box. 
+# Based on the cookbook for convection in a 2d box.
 
 
 # At the top, we define the number of space dimensions we would like to
@@ -107,7 +107,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1.e5  # = Ra 
+    set Magnitude = 1.e5  # = Ra
   end
 end
 

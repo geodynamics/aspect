@@ -1,4 +1,4 @@
-set Additional shared libraries  = ./librayleigh_taylor_instability.so 
+set Additional shared libraries  = ./librayleigh_taylor_instability.so
 set Dimension                    = 2
 set Start time                   = 0
 set End time                     = 0
@@ -28,7 +28,7 @@ subsection Material model
      set rho2 = 3000
      set amplitude = 4000
      set lambda = 256e3
-  end 
+  end
 end
 
 subsection Gravity model

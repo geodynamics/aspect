@@ -1,6 +1,6 @@
 # Here we verify that the adiabatic conditions plugin can use
-# a variable number of points. We only use 5 points, so that the 
-# profile should have distinct kinks. 
+# a variable number of points. We only use 5 points, so that the
+# profile should have distinct kinks.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -120,4 +120,3 @@ subsection Postprocess
     set Number of zones = 10
   end
 end
-

@@ -49,7 +49,7 @@ subsection Initial temperature model
     set Function constants = h=100e3,tsc=273,tsm=843,qsc=0.07,qsm=0.025,k=2.5,A=1.5e-6
     set Function expression = if( (h-y)<=30.e3, \
                                   tsc + (qsc/k)*(h-y) - (A*(h-y)*(h-y))/(2.0*k), \
-                                  tsm + (qsm/k)*(h-y-30.e3))                             
+                                  tsm + (qsm/k)*(h-y-30.e3))
   end
 end
 

@@ -37,7 +37,7 @@ subsection Geometry model
   set Model name = box
   subsection Box
     set X periodic = true
-    set X extent = 1.e6 
+    set X extent = 1.e6
     set Y extent = 5.e5
     set Z extent = 5.e5
   end
@@ -54,7 +54,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-1.e5)^2+(y-4.0e5)^2)<5.0e4) | (sqrt((x-3.e5)^2+(y-2.e5)^2)<1.0e5) , 800.0, 0)
   end
@@ -96,7 +96,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
-    set List of output variables = 
+    set List of output variables =
     set Number of grouped files       = 1
     set Output format                 = vtu
     set Time between graphical output = 1.e3

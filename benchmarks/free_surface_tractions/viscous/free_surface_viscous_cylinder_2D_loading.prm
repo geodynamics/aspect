@@ -1,11 +1,11 @@
 # This model applies a surface load (using the traction
-# boundary condition) on a free surface overlying 
+# boundary condition) on a free surface overlying
 # a viscous box. It approximates the analytical solution
 # of Haskell (1935a) for an instantaneously applied
 # axisymmetric cylindrical load over a viscous half-space.
 
-# This is done by using the viscoelastic model and 
-# setting a high shear modulus, which produces viscous behavior. 
+# This is done by using the viscoelastic model and
+# setting a high shear modulus, which produces viscous behavior.
 
 include ../viscoelastic/free_surface_VE_cylinder_2D_loading.prm
 

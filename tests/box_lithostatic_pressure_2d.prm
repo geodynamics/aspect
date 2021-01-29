@@ -1,6 +1,6 @@
 # This is a version of the stokes' law input file
 # that demonstrates a lithostatic pressure boundary
-# - "open boundary" - for a sinking sphere. 
+# - "open boundary" - for a sinking sphere.
 
 
 
@@ -154,7 +154,7 @@ end
 # temperature and the compositional fields) as well as the density and
 # viscosity. We also select to compute some statistics about the
 # velocity field.
-# The lithostatic pressure at the bottom boundary should be 
+# The lithostatic pressure at the bottom boundary should be
 # 2890000*9.81*3300 = 93557970000 (9.4e10).
 
 subsection Postprocess

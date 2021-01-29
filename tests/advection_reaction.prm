@@ -1,13 +1,13 @@
 #########################################################
-# This is a benchmark case that tests the operator split 
+# This is a benchmark case that tests the operator split
 # solver scheme, which can use a different time step to
-# compute reactions between compositional fields than 
-# the time step used for advection.  
+# compute reactions between compositional fields than
+# the time step used for advection.
 # In comparison to the example 'exponential_decay', the
-# initial composition depends on x, and there is a constant 
-# horizontal velocity. The composition decays over time, 
-# following the equations for exponential decay with a decay 
-# rate that depends on y. 
+# initial composition depends on x, and there is a constant
+# horizontal velocity. The composition decays over time,
+# following the equations for exponential decay with a decay
+# rate that depends on y.
 
 set Additional shared libraries = ./libadvection_reaction.so
 
@@ -19,15 +19,15 @@ set Start time                             = 0
 set End time                               = 1
 set Use years in output instead of seconds = false
 
-# We use a new solver scheme that enables the operator split. 
+# We use a new solver scheme that enables the operator split.
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Use operator splitting                 = true
 
-# As we split the time-stepping of advection and reactions, 
+# As we split the time-stepping of advection and reactions,
 # there are now two different time steps in the model:
 # We control the advection time step using the 'Maximum time step'
-# parameter (for easy comparison with the exponential decay test 
-# case), and the reaction time step using the 'Reaction time step' 
+# parameter (for easy comparison with the exponential decay test
+# case), and the reaction time step using the 'Reaction time step'
 # parameter. We will vary both parameters in different model runs.
 subsection Solver parameters
   subsection Operator splitting parameters
@@ -78,11 +78,11 @@ end
 
 
 # The velocity on all boundaries is prescribed to a constant
-# value, leading to horizontal flow from left to right. 
+# value, leading to horizontal flow from left to right.
 subsection Boundary velocity model
   subsection Function
     set Variable names      = x,z,t
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0.01;0.0
   end
 end
@@ -98,11 +98,11 @@ end
 
 
 # For this model, we choose a sinusoidal initial temperature
-# and composition, so that we can see how the field changes 
-# over time as it is advected and decays over time. 
+# and composition, so that we can see how the field changes
+# over time as it is advected and decays over time.
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
@@ -112,7 +112,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
@@ -132,7 +132,7 @@ end
 
 # We choose material and heating models that let temperature
 # and composition decay over time, and that is implemented in
-# a plugin.  
+# a plugin.
 subsection Heating model
   set List of model names = exponential decay heating
 
@@ -172,5 +172,3 @@ subsection Postprocess
     set Time between graphical output = 0
   end
 end
-
-

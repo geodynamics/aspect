@@ -21,4 +21,3 @@ end
 subsection Mesh refinement
   set Initial global refinement                = 6
 end
-

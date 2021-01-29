@@ -1,5 +1,5 @@
-# A modification of the latent heat viscosity test, but with adiabatic heating. 
-# It tests that the viscosity of the different layers is constant. 
+# A modification of the latent heat viscosity test, but with adiabatic heating.
+# It tests that the viscosity of the different layers is constant.
 # The gnuplot output illustrates the viscosity increase at 410 and 660 km depth.
 
 set Dimension                              = 2
@@ -58,8 +58,8 @@ end
 subsection Boundary temperature model
   set List of model names = spherical constant
   subsection Spherical constant
-    set Inner temperature = 2600 
-    set Outer temperature = 273 
+    set Inner temperature = 2600
+    set Outer temperature = 273
   end
 end
 

@@ -3,7 +3,7 @@
 # material model to use the first data file as a background
 # composition, and all other compositional fields as
 # anomalies modifying this composition.
- 
+
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
@@ -60,7 +60,7 @@ subsection Material model
   subsection Steinberger model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
     set Material file names              = testdata.txt,testdata-modified-alpha.txt
-    set Lateral viscosity file name      = test-viscosity-prefactor.txt 
+    set Lateral viscosity file name      = test-viscosity-prefactor.txt
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false

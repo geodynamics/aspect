@@ -1,23 +1,23 @@
 #Test topography postprocessor with box geometry
 set Output directory                       = topo_box
-set CFL number                             = 0.5                                                     
-set Dimension                              = 2                                                       
+set CFL number                             = 0.5
+set Dimension                              = 2
 set End time                               = 1e+7
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Nonlinear solver tolerance             = 1e-6
-set Pressure normalization                 = no                                                      
-set Resume computation                     = false 
+set Pressure normalization                 = no
+set Resume computation                     = false
 set Start time                             = 0
-set Timing output frequency                = 0                                                       
+set Timing output frequency                = 0
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
-  set List of model names = initial temperature 
+  set List of model names = initial temperature
 end
 
 subsection Boundary velocity model
   subsection Function
-    set Function constants  = cm=0.01, year=3.155e7, pi=3.141593, angle=60, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3                                                                                                                          
+    set Function constants  = cm=0.01, year=3.155e7, pi=3.141593, angle=60, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3
     set Function expression = if (x<50e3, if (z > total_depth-lithospheric_depth, 1*cm, -(lithospheric_depth/(total_depth-lithospheric_depth))*cm), if (z > total_depth-lithospheric_depth, -1*cm, (lithospheric_depth/(total_depth-lithospheric_depth))*cm)); 0
     set Variable names      = x,z
   end
@@ -33,45 +33,45 @@ subsection Mesh deformation
 end
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
   subsection Box
     set Box origin X coordinate = 0
     set Box origin Y coordinate = 0
     set Box origin Z coordinate = 0
-    set X extent                = 1024e3 
+    set X extent                = 1024e3
     set X periodic              = false
-    set X repetitions           = 2      
+    set X repetitions           = 2
     set Y extent                = 512e3
     set Y periodic              = false
-    set Y repetitions           = 1      
+    set Y repetitions           = 1
   end
 end
 subsection Gravity model
-  set Model name = vertical 
+  set Model name = vertical
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
   subsection Function
-    set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3,                                                                                                                             
-    set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth))) 
-    set Variable names      = x,z                                   
+    set Function constants  = reference_t=293, crustal_t = 420, lith_t = 1350, mantle_t = 1470, total_depth=512e3, crustal_depth=30e3, lithospheric_depth=120e3,
+    set Function expression = if (z>total_depth-crustal_depth,reference_t+(total_depth-z)*(crustal_t/crustal_depth), if (z>total_depth-lithospheric_depth,reference_t+crustal_t+(total_depth-crustal_depth-z)*(lith_t-crustal_t)/(lithospheric_depth-crustal_depth), reference_t+lith_t+(total_depth-lithospheric_depth-z)*(mantle_t-lith_t)/(total_depth-lithospheric_depth)))
+    set Variable names      = x,z
   end
 
 end
 
 subsection Material model
   set Material averaging = none
-  set Model name         = simple 
+  set Model name         = simple
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 0         
-  set Initial global refinement                = 4        
-  set Minimum refinement level                 = 4 
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Minimum refinement level                 = 4
 end
 
 # The parameters below this comment were created by the update script

@@ -1,4 +1,4 @@
-# Debugging inflow boundary condition 
+# Debugging inflow boundary condition
 
 set Dimension                              = 2
 set Start time                             = 0

@@ -50,7 +50,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0.5 - 0.4286 * x; 0 
+    set Function expression = 0.5 - 0.4286 * x; 0
     set Variable names      = x,y
   end
 end
@@ -58,7 +58,7 @@ end
 
 subsection Material model
 
-  set Model name = melt global 
+  set Model name = melt global
   subsection Melt global
     set Thermal conductivity              = 0
     set Reference solid density           = 1

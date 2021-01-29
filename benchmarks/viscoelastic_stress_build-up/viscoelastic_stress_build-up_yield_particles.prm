@@ -2,7 +2,7 @@
 # to use the Visco Plastic material model and include a constant
 # yield stress of 100 MPa. Without the imposed yield stress, the viscoelastic
 # stress will build up to ~ 200 MPa. However, the imposed yield stress will
-# truncate the viscoelastic stresses at the yield stress magnitude. 
+# truncate the viscoelastic stresses at the yield stress magnitude.
 # For additional information on the model setup and analytical solution,
 # see viscoelastic_stress_build-up.prm, which is located in this folder.
 #
@@ -11,7 +11,7 @@
 # of the viscoelastic stress tensor or the equivalent values on particles,
 # which are used to store and track the viscoelastic stresses. This parameter
 # file differs from viscoelastic_stress_build-up_yield.prm only in the use
-# of active particles to track the elastic stresses. 
+# of active particles to track the elastic stresses.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
@@ -70,7 +70,7 @@ subsection Postprocess
     set Interpolation scheme        = bilinear least squares
     set Update ghost particles      = true
     set Particle generator name     = random uniform
-    set Time between data output    = 0 
+    set Time between data output    = 0
     set Data output format          = vtu
   end
 

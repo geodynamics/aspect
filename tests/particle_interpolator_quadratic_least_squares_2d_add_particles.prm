@@ -1,8 +1,8 @@
-# A test based on the particle version of the SolKz benchmark that (1) tests to 
+# A test based on the particle version of the SolKz benchmark that (1) tests to
 # ensure that additional particles are added to the model during the computation
-# with multiple properties on the particles and (2) tests to ensure that the 
-# particle methodology when used with the Quadratic Least Squares Particle 
-# Interpolation algorithm correctly computes the particle version of the Solkz 
+# with multiple properties on the particles and (2) tests to ensure that the
+# particle methodology when used with the Quadratic Least Squares Particle
+# Interpolation algorithm correctly computes the particle version of the Solkz
 # benchmark.
 
 set Additional shared libraries            = ./libparticle_interpolator_quadratic_add_particles.so

@@ -23,4 +23,3 @@ subsection Boundary temperature model
     set Top temperature    =  273
   end
 end
-

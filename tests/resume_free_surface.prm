@@ -34,7 +34,7 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 5
     set Y repetitions = 2
@@ -58,7 +58,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-250.e3)^2 + (y-160.e3)^2 ) < 25.e3, 0.0, 200.0)
   end

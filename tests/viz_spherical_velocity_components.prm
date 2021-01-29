@@ -85,7 +85,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, visualization
-  
+
   subsection Visualization
     set List of output variables      = spherical velocity components
     set Interpolate output = false

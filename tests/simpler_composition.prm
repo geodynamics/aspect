@@ -1,15 +1,15 @@
-# This test ensures that the Simpler material model works 
+# This test ensures that the Simpler material model works
 # with compositional fields enabled
 
 set Dimension                              = 2
 set End time                               = 0
 
 subsection Boundary temperature model
-  set List of model names = initial temperature 
+  set List of model names = initial temperature
 end
 
 subsection Compositional fields
-  set Number of fields          = 1 
+  set Number of fields          = 1
 end
 
 subsection Initial composition model
@@ -20,24 +20,24 @@ subsection Initial composition model
 end
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
   subsection Box
-    set X extent                = 1024e3 
-    set X repetitions           = 2      
-    set Y extent                = 1024e3  
+    set X extent                = 1024e3
+    set X repetitions           = 2
+    set Y extent                = 1024e3
     set Y repetitions           = 2
   end
 end
 
 subsection Gravity model
-  set Model name = vertical 
+  set Model name = vertical
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
   subsection Function
     set Function expression = 500
   end
@@ -51,8 +51,8 @@ subsection Material model
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 0         
-  set Initial global refinement                = 2           
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 2
 end
 
 # The parameters below this comment were created by the update script

@@ -1,7 +1,7 @@
 ############### Global parameters
 # We use a 2d setup. Since it takes some time for
-# the model to reach a steady state we set the 
-# end time to approximately 2 million years. 
+# the model to reach a steady state we set the
+# end time to approximately 2 million years.
 
 set Dimension = 2
 
@@ -39,7 +39,7 @@ end
 
 ############### Boundary conditions
 # We only fix the temperature at the upper boundary, the other boundaries
-# are isolating. 
+# are isolating.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top
   set List of model names = box
@@ -50,7 +50,7 @@ subsection Boundary temperature model
 end
 
 # To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
+# at the top and bottom, and set it to free slip on the sides.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = bottom:function, top:function
   set Tangential velocity boundary indicators = left, right
@@ -90,8 +90,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 6 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 6
   set Time steps between mesh refinement = 0
 
 end
@@ -108,7 +108,7 @@ subsection Postprocess
 
     # We are only interested in the last timestep (when the system hast reached
     # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
+    # if the solution already reached steady state, this parameter can be set
     # to a smaller value.
     set Time between graphical output = 1e4
     set List of output variables      = density

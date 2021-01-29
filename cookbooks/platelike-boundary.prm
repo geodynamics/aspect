@@ -30,11 +30,11 @@ end
 
 
 # We then set the temperature to one at the bottom and zero
-# at the top: 
+# at the top:
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
-  
+
   subsection Box
     set Bottom temperature = 1
     set Top temperature    = 0
@@ -67,10 +67,10 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function expression = (1-z)    
+    set Function expression = (1-z)
   end
 end
 
@@ -102,5 +102,3 @@ subsection Postprocess
     set Time between graphical output = 0.1
   end
 end
-
-

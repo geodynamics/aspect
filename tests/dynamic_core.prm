@@ -1,6 +1,6 @@
-# A simple setup for Earth convection model in a 2d shell 
-# with the core mantle boundary (CMB) temperature dynamically evolves through time. 
-# The 'dynamic core' boundary temperature plugin and 'core statistics' postprocessor 
+# A simple setup for Earth convection model in a 2d shell
+# with the core mantle boundary (CMB) temperature dynamically evolves through time.
+# The 'dynamic core' boundary temperature plugin and 'core statistics' postprocessor
 # are used to solving and tracing the core evolution.
 
 
@@ -79,9 +79,9 @@ subsection Boundary temperature model
       set Number of radioactive heating elements = 1
       set Heating rates                          = 2.92e-5
       set Half life times                        = 1.25       #Unit: Gyr
-      set Initial concentrations                 = 0.1442962  
+      set Initial concentrations                 = 0.1442962
     end
-  end  
+  end
 end
 
 

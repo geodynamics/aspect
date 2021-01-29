@@ -1,5 +1,5 @@
 # This test is a copy of adiabatic_heating_with_melt
-# except that a line for each nonlinear iteration is 
+# except that a line for each nonlinear iteration is
 # written into the statistics file, which is the feature
 # that is tested.
 
@@ -122,7 +122,7 @@ subsection Material model
     set Reference solid density  = 3300
     set Reference melt density   = 3000
     set Reference specific heat  = 1000
-    set Reference temperature    = 1600 
+    set Reference temperature    = 1600
     set Thermal conductivity     = 0.0
     set Surface solidus          = 10000.0
     set Include melting and freezing = false

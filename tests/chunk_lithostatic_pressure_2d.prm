@@ -1,6 +1,6 @@
 # In this test we prescribe a lithostatic pressure
 # for the traction on the eastern boundary of the
-# chunk geometry. This boundary condition is known 
+# chunk geometry. This boundary condition is known
 # as "open". However, there are no lateral variations
 # in density, so with increasing resolution,
 # velocity should go to zero.
@@ -53,7 +53,7 @@ subsection Initial temperature model
   set Model name = function
   subsection Function
    set Function expression = 1.600e3
-  end 
+  end
 end
 
 
@@ -86,7 +86,7 @@ end
 
 
 # Because the eastern boundary is open and material might
-# move through it, 
+# move through it,
 # we set fixed temperature and composition boundary conditions.
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
@@ -151,4 +151,3 @@ subsection Postprocess
     set List of output variables = stress, strain rate, nonadiabatic pressure
   end
 end
-

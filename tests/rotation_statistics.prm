@@ -8,7 +8,7 @@
 #
 # with rho=1 and R=1: I = 1/2 * PI = 1.570796
 #
-# and with the angular velocity w=1 the angular momentum we expect 
+# and with the angular velocity w=1 the angular momentum we expect
 # L = I = 1.570796. The test output is slightly off, but converges with
 # increasing resolution towards this value.
 
@@ -23,7 +23,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
 
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = circle
 end
 set Nonlinear solver scheme                = single Advection, no Stokes

@@ -1,15 +1,15 @@
-#### 
+####
 # This test is based on the Continental Extension Cookbook
 # There, the initial temperature is computed through a
-# somewhat cumbersome function specified in the input file. 
-# With the continental geotherm plugin, one only has to 
+# somewhat cumbersome function specified in the input file.
+# With the continental geotherm plugin, one only has to
 # specify the boundary temperature constraints and layer
 # thicknesses of the upper crust, lower crust and mantle
 # lithosphere. Other parameters such as layer densities
 # are read from other sections in the input file, ensuring
 # consistency between the parameters set for the initial
 # temperature and those in the material model and compositional
-# heating plugins. 
+# heating plugins.
 
 include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension.prm
 
@@ -29,7 +29,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications (no mesh refinement, 
+# Mesh refinement specifications (no mesh refinement,
 # but the coarse mesh is already 40x10, see above)
 subsection Mesh refinement
   set Initial adaptive refinement        = 0

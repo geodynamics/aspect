@@ -9,5 +9,3 @@ subsection Gravity model
     set Magnitude = 0.000000001
   end
 end
-
-

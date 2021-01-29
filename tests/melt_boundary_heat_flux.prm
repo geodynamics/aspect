@@ -1,5 +1,5 @@
 #########################################################
-# This is a test to see if the heat flux boundary 
+# This is a test to see if the heat flux boundary
 # conditions work together with melt migration.
 
 ############### Global parameters
@@ -7,9 +7,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 5000
 set Use years in output instead of seconds = true
-set Adiabatic surface temperature          = 1600 
+set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 50  
+set Max nonlinear iterations               = 50
 set CFL number                             = 0.2
 
 set Pressure normalization                 = surface
@@ -17,7 +17,7 @@ set Surface pressure                       = 0
 
 
 ############### Parameters describing the model
-# Let us here choose again a box domain 
+# Let us here choose again a box domain
 # where we fix the temperature at the bottom and top,
 # allow free slip along the boundaries
 # and include melt migration.
@@ -41,7 +41,7 @@ subsection Boundary heat flux model
   set Fixed heat flux boundary indicators   = 2, 3
 
   set Model name = function
-  
+
   subsection Function
     set Variable names = x,z
     set Function expression = if(z<50000, -1,1)
@@ -58,11 +58,11 @@ end
 
 ############### Compositional fields
 # We want to use two compositional fields, the porosity and
-# an additional field, to check if the melting rate functionality 
-# has the same effect as the reaction term for the other 
+# an additional field, to check if the melting rate functionality
+# has the same effect as the reaction term for the other
 # compositional fields. As the porosity field is advected by
 # a different mechanism, slight differences between the fields
-# are expected. 
+# are expected.
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite
@@ -70,7 +70,7 @@ end
 
 
 # We then choose a vertical gravity model and describe the
-# initial temperature with a vertical gradient. 
+# initial temperature with a vertical gradient.
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -91,7 +91,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000

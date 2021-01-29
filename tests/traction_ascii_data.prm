@@ -1,8 +1,8 @@
-# This is a test model for the ascii data traction plugin. 
+# This is a test model for the ascii data traction plugin.
 # It reads traction boundary conditions from a file
 # located in the data/traction-boundary-conditions/ascii-data/test/
 # directory and applies them at the left side of a 2d box
-# model. 
+# model.
 
 
 set Adiabatic surface temperature          = 1600               # default: 0
@@ -66,8 +66,8 @@ end
 
 subsection Material model
 
-  set Model name = diffusion dislocation 
-  subsection Diffusion dislocation 
+  set Model name = diffusion dislocation
+  subsection Diffusion dislocation
     set Densities                                 = 3330
     set Maximum viscosity                         = 1e26
     set Minimum viscosity                         = 1e17

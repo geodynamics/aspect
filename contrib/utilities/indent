@@ -95,4 +95,33 @@ tab_to_space()
 export -f tab_to_space
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
 
+# Remove trailing whitespace from prm files
+# convert tabs to two spaces:
+remove_trailing_whitespace()
+{
+    f=$1
+    # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
+    TAB=$'\t'
+    sed -e "s/[ $TAB]*$//"  $f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f remove_trailing_whitespace
+find tests include source unit_tests cookbooks benchmarks \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+
+# Ensure only a single newline at end of prm files
+ensure_single_trailing_newline()
+{
+  f=$1
+
+  # Remove newlines at end of file
+  # then add a newline if none exists
+  sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' $f >$f.tmpi
+  sed -e '$a\' $f.tmpi >$f.tmp
+  diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+  rm -f $f.tmp $f.tmpi
+}
+export -f ensure_single_trailing_newline
+find tests include source unit_tests cookbooks benchmarks \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+
 exit 0

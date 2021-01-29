@@ -1,5 +1,5 @@
 # This parameter file modifies the benchmark viscoelastic_stress_build_up.prm
-# to use particles, rather than compositional fields, to track viscoleastic 
+# to use particles, rather than compositional fields, to track viscoleastic
 # stresses.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
@@ -26,7 +26,7 @@ subsection Postprocess
     set Interpolation scheme        = bilinear least squares
     set Update ghost particles      = true
     set Particle generator name     = random uniform
-    set Time between data output    = 0 
+    set Time between data output    = 0
     set Data output format          = vtu
   end
 
@@ -34,4 +34,3 @@ subsection Postprocess
     set Time between graphical output = 0e3
   end
 end
-

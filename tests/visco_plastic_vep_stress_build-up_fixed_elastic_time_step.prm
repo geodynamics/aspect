@@ -1,10 +1,10 @@
 # This test checks viscoelastic stress buildup with a
 # constant strain rate and an elastic time step equal
 # to a user-specified constant elastic time step. This
-# fixed elastic time step is double the numerical time step. 
-# Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy) 
+# fixed elastic time step is double the numerical time step.
+# Viscoelastic stresses (sigma_xx, sigma_yy, sigma_xy)
 # are tracked with compositional fields. The parameter
-# file is derived from the 2D viscoelastic_stress_build-up 
+# file is derived from the 2D viscoelastic_stress_build-up
 # benchmark with modifications to the resolution, end time,
 # material properties and postprocessors.
 
@@ -63,4 +63,3 @@ subsection Postprocess
     set Output format = txt
   end
 end
-

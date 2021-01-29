@@ -48,14 +48,14 @@ subsection Compositional fields
 end
 
 subsection Boundary composition model
-  set List of model names = initial composition  
+  set List of model names = initial composition
 end
 
 # We then set the temperature to one at the bottom and zero
-# at the top: 
+# at the top:
 subsection Boundary temperature model
   set List of model names = box
-  
+
   subsection Box
     set Bottom temperature = 1
     set Top temperature    = 0
@@ -85,20 +85,20 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function expression = (1-z)    
+    set Function expression = (1-z)
   end
 end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
-    set Function expression = if(z<0.5+0.4*sin((x-0.5)*pi),1,0);0    
+    set Function expression = if(z<0.5+0.4*sin((x-0.5)*pi),1,0);0
   end
 end
 
@@ -132,5 +132,3 @@ subsection Postprocess
     set Output peak virtual memory (VmPeak) = false
   end
 end
-
-

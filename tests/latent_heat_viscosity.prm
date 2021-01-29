@@ -1,6 +1,6 @@
 # A simple setup for for using the GPlates interface in a 2d shell
 # with the latent heat material model. It tests the feature of the
-# latent heat material model to use a layered viscosity profile. 
+# latent heat material model to use a layered viscosity profile.
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
@@ -71,8 +71,8 @@ end
 subsection Boundary temperature model
   set List of model names = spherical constant
   subsection Spherical constant
-    set Inner temperature = 2600 
-    set Outer temperature = 273 
+    set Inner temperature = 2600
+    set Outer temperature = 273
   end
 end
 
@@ -130,4 +130,3 @@ subsection Termination criteria
   set Checkpoint on termination = true
   set Termination criteria      = end step
 end
-

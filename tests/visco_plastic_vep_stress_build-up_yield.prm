@@ -1,21 +1,21 @@
 # This test checks viscoelastic stress buildup with a
 # constant strain rate, an elastic time step equal
-# to the numerical time step and a yield stress of 10 MPa. 
-# The fixed elastic time step used during the first time 
-# step is equal to the numerical time step. Viscoelastic 
-# stresses (sigma_xx, sigma_yy, sigma_xy) are tracked with 
-# compositional fields. The yield stress of 10 MPa should 
+# to the numerical time step and a yield stress of 10 MPa.
+# The fixed elastic time step used during the first time
+# step is equal to the numerical time step. Viscoelastic
+# stresses (sigma_xx, sigma_yy, sigma_xy) are tracked with
+# compositional fields. The yield stress of 10 MPa should
 # prevent elastic stresses from accumulating above this
-# value. The parameter file is derived from the 2D 
-# viscoelastic_stress_build-up benchmark with modifications 
-# to the resolution, end time, material properties and 
+# value. The parameter file is derived from the 2D
+# viscoelastic_stress_build-up benchmark with modifications
+# to the resolution, end time, material properties and
 # postprocessors. Notably, other tests derived from the same
-# benchmark have a cohesion of 1e6 Pa, run for 1 time step 
+# benchmark have a cohesion of 1e6 Pa, run for 1 time step
 # (End time = 1e3), and only do 1 nonlinear iteration. Here,
 # we have adjusted the parameters slightly to illustrate that
 # in some cases the solution may not change at all between nonlinear
-# iterations and as a result no Stokes linear iterations are 
-# performed. 
+# iterations and as a result no Stokes linear iterations are
+# performed.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 

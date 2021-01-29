@@ -1,8 +1,8 @@
 # WORLD BUILDER
-# This test uses the Geodynamic World Builder to create 
-# initial temperatures and compositions 
+# This test uses the Geodynamic World Builder to create
+# initial temperatures and compositions
 
-set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple.wb 
+set World builder file                     = $ASPECT_SOURCE_DIR/tests/world_builder_simple.wb
 set Use years in output instead of seconds = false
 set Adiabatic surface temperature = 1613
 
@@ -77,6 +77,3 @@ end
 subsection Initial composition model
   set List of model names = world builder
 end
-
-
-

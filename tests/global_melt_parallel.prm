@@ -115,7 +115,7 @@ end
 
 subsection Material model
 
-  set Model name = melt global 
+  set Model name = melt global
   subsection Melt global
     set Thermal conductivity              = 4.7
     set Reference solid density           = 3400

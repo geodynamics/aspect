@@ -1,10 +1,10 @@
 # Spectral Comparison of the Geoid
 
-# Define the number of space dimensions we would like to 
+# Define the number of space dimensions we would like to
 # work in:
-set Dimension                              = 3 
+set Dimension                              = 3
 
-# Specify the time you want to let the model run for in 
+# Specify the time you want to let the model run for in
 # years and the output directory. Here we only calculate
 # the instantaneous solution.
 set End time                               = 0
@@ -13,7 +13,7 @@ set Output directory                       = output
 
 # The following variables describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
-# at the surface of the domain 
+# at the surface of the domain
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
@@ -25,8 +25,8 @@ subsection Solver parameters
   end
 end
 
-# Here we specify the geometry of the domain, which is 
-# a spherical shell with inner radius of 3481km and 
+# Here we specify the geometry of the domain, which is
+# a spherical shell with inner radius of 3481km and
 # outer radius of 6371km
 subsection Geometry model
   set Model name = spherical shell
@@ -50,25 +50,25 @@ end
 # field, which is chosen as a scaled version of the S20RTS shear
 # wave velocity model (Ritsema et al., 2000). S20RTS is defined
 # by spherical harmonics up to degree 20 that are radially interpolated
-# with a cubic spline. 
+# with a cubic spline.
 subsection Initial temperature model
   set Model name = S40RTS perturbation
     subsection S40RTS perturbation
 
 # The two input options here are S20RTS or the higher resolution
-# S40RTS (Ritsema et al., 2011). One can choose to remove the 
+# S40RTS (Ritsema et al., 2011). One can choose to remove the
 # degree 0 from these files so that the depth average value
-# is zero. 
+# is zero.
     set Initial condition file name       = S20RTS.sph
     set Remove degree 0 from perturbation = false
 
-# The following parameters determine the scaling from shear wave 
+# The following parameters determine the scaling from shear wave
 # velocity perturbation to temperature differences. We chose the
 # scaling to density perturbation as 0.15
     set Vs to density scaling             = 0.15
     set Thermal expansion coefficient in initial temperature scaling = 3e-5
 
-# This specifies the background temperature to which we add the 
+# This specifies the background temperature to which we add the
 # temperature difference.
     set Reference temperature             = 1600
 
@@ -85,7 +85,7 @@ subsection Material model
     set Viscosity                         = 1e21
     set Thermal expansion coefficient     = 3e-5
     set Reference temperature             = 1600
-    set Thermal conductivity              = 4.125 
+    set Thermal conductivity              = 4.125
     set Reference specific heat           = 1250
   end
 end
@@ -105,7 +105,7 @@ end
 
 
 # We output the density, velocity, dynamic topography, geoid and heat flux density
-# for plotting. 
+# for plotting.
 subsection Postprocess
   set List of postprocessors = geoid, dynamic topography, visualization, basic statistics
 
@@ -113,7 +113,7 @@ subsection Postprocess
     set Output format                 = vtu
     set List of output variables      = geoid, dynamic topography,  density, viscosity, gravity
     set Time between graphical output = 0
-    set Number of grouped files       = 1 
+    set Number of grouped files       = 1
   end
 
   subsection Geoid

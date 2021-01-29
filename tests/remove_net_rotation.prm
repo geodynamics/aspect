@@ -1,5 +1,5 @@
 # Test for removing the net rotation in 2D spherical
-# shells. 
+# shells.
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true

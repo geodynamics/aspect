@@ -48,7 +48,7 @@ subsection Initial composition model
   end
 end
 
-    
+
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
@@ -80,7 +80,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, depth average, composition statistics
-  
+
   subsection Depth average
     set Time between graphical output = 0
     set Number of zones = 10

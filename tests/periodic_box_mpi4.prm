@@ -40,7 +40,7 @@ subsection Geometry model
   subsection Box
     set X periodic = true
     set Y periodic = true
-    set X extent = 1.e6 
+    set X extent = 1.e6
     set Y extent = 5.e5
     set Z extent = 5.e5
   end
@@ -57,7 +57,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-1.e5)^2+(y-4.0e5)^2)<5.0e4) | (sqrt((x-3.e5)^2+(y-2.e5)^2)<1.0e5) , 800.0, 0)
   end
@@ -77,7 +77,7 @@ subsection Material model
 end
 
 subsection Mesh refinement
-  set Additional refinement times        = 
+  set Additional refinement times        =
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Refinement fraction                = 0.3

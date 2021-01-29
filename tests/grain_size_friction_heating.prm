@@ -1,4 +1,4 @@
-# A test for the grain size material model similar to 
+# A test for the grain size material model similar to
 # damage-rheology-strain. The only difference is the activation of shear
 # heating. In the grain size model, a fraction of the energy dissipated by
 # dislocation creep increases the surface area of grains.
@@ -62,7 +62,7 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic
-  
+
   subsection Adiabatic
     set Age top boundary layer      = 0
     subsection Function
@@ -73,10 +73,10 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function constants  = 
+    set Function constants  =
     set Function expression = if(z<50000,1e-3,1.0000001e-3)
   end
 end
@@ -97,7 +97,7 @@ subsection Material model
     set Viscosity                        = 1e18
     set Minimum viscosity                = 1e16
     set Reference temperature            = 1600
-    set Recrystallized grain size        = 
+    set Recrystallized grain size        =
 
     set Grain growth activation energy       = 4e5
     set Grain growth activation volume       = 0.0

@@ -13,6 +13,6 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0) 
+    set Function expression = if(y<0.2, 1, 0) ; if(y>0.8, 1, 0)
   end
 end

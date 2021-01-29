@@ -57,7 +57,7 @@ subsection Material model
 
   # density is hard-coded into the AV_material.cc plugin
   # everything else is set to 0
-    
+
     subsection AV
         set Normal viscosity    = 1
         set Shear viscosity     = 1

@@ -52,7 +52,7 @@ subsection Initial temperature model
 end
 
 subsection Boundary temperature model
-  set List of model names = function 
+  set List of model names = function
   subsection Function
     set Function expression = 1613.0
   end
@@ -73,7 +73,7 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 1
   set Initial global refinement          = 1
   set Strategy                           = minimum refinement function
-  subsection Minimum refinement function 
+  subsection Minimum refinement function
      set Function expression             = if(x<300000, 2,1)
   end
 end
@@ -101,4 +101,3 @@ subsection Postprocess
     set Output format            = gnuplot
   end
 end
-

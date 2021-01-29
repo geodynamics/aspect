@@ -107,4 +107,3 @@ set List of output variables      = viscosity
     set Time between graphical output = 0   # default: 1e8
   end
 end
-

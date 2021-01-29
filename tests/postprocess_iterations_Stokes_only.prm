@@ -1,6 +1,6 @@
 #########################################################
-# This is a model setup to test the postprocessing of 
-# nonlinear iterations for the no Advection, iterated Stokes solver. 
+# This is a model setup to test the postprocessing of
+# nonlinear iterations for the no Advection, iterated Stokes solver.
 
 set Dimension = 2
 set CFL number                             = 1.0

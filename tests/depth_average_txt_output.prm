@@ -1,4 +1,4 @@
-# Test outputting laterally-averaged quantities from the 
+# Test outputting laterally-averaged quantities from the
 # DepthAverage postprocessor in a plain ascii text table format.
 
 set Dimension                              = 2

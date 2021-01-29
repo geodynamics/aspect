@@ -1,8 +1,8 @@
-# This test checks if the postprocessor 'melt fraction' works as 
+# This test checks if the postprocessor 'melt fraction' works as
 # intended. The visualization output is then a p-T-diagram of
 # the melt fraction (which, in this case, is a simple linear relation)
-# with the temperature ranging from 1000°C to 1900°C on the x axis 
-# and the pressure ranging from 0 GPa to 8 GPa on the y axis. 
+# with the temperature ranging from 1000°C to 1900°C on the x axis
+# and the pressure ranging from 0 GPa to 8 GPa on the y axis.
 
 # The data can be plotted in gnuplot using:
 # set view map
@@ -139,4 +139,3 @@ subsection Postprocess
     end
   end
 end
-

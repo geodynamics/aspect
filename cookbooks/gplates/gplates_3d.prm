@@ -1,5 +1,5 @@
 # A simple setup for for using the GPlates interface in a 3d shell.
-# This model has more than 1 million unknowns, so you will most likely want to 
+# This model has more than 1 million unknowns, so you will most likely want to
 # compile aspect in release mode, and run this model on a powerful machine.
 # See the manual for more information.
 
@@ -49,8 +49,8 @@ subsection Boundary temperature model
   set List of model names = spherical constant
 
   subsection Spherical constant
-    set Inner temperature = 2600 
-    set Outer temperature = 273 
+    set Inner temperature = 2600
+    set Outer temperature = 273
   end
 end
 

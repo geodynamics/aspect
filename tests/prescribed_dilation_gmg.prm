@@ -15,4 +15,3 @@ end
 subsection Material model
   set Material averaging = harmonic average
 end
-

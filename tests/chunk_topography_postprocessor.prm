@@ -56,7 +56,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-3000.e3)^2 + (y-3000.e3)^2 ) < 500.e3, 200.0, 0.0)
   end
@@ -117,6 +117,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1.e-7
-    set Number of cheap Stokes solver steps = 0 
+    set Number of cheap Stokes solver steps = 0
   end
 end

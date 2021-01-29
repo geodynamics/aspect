@@ -43,7 +43,7 @@ end
 subsection Mesh deformation
   set Additional tangential mesh velocity boundary indicators = east,west
   set Mesh deformation boundary indicators = outer:free surface
-  subsection Free surface 
+  subsection Free surface
     set Surface velocity projection      = normal
   end
 end

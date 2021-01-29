@@ -1,9 +1,9 @@
-# This is the common core prm file for the sinking block benchmark. 
+# This is the common core prm file for the sinking block benchmark.
 # It is used by the run_benchmark script which runs the benchmark
-# for various viscosity ratios and density differences. 
+# for various viscosity ratios and density differences.
 # This file cannot be used by aspect - see instead sinking_block.prm
 
-set Additional shared libraries  = ./libsinking_block.so 
+set Additional shared libraries  = ./libsinking_block.so
 set Dimension                    = 2
 set Start time                   = 0
 set End time                     = 0

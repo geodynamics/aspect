@@ -1,18 +1,18 @@
 # This is the most difficult case of the Spiegelman benchmark. The
 # goal of this test is to show that the linear Newton solver fails
-# when the the matrix becomes non Symmetric Positive Definite, and 
-# is safed by forcing the matrix to be SPD. In the next timestep 
-# the stabilization is reset to the user defined values. 
+# when the the matrix becomes non Symmetric Positive Definite, and
+# is safed by forcing the matrix to be SPD. In the next timestep
+# the stabilization is reset to the user defined values.
 
 set Additional shared libraries = ../tests/libspiegelman_fail_test.so
-set Output directory = output/ 
+set Output directory = output/
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 1
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 4
 set Nonlinear solver tolerance = 1e-14
@@ -44,7 +44,7 @@ end
  subsection Initial temperature model
    set Model name = function
    subsection Function
-    set Function expression = 0 
+    set Function expression = 0
    end
  end
 
@@ -88,13 +88,13 @@ subsection Compositional fields
     set List of cohesions                              = 1e8,    0
     set List of angles of internal friction            = 30,     0
     set List of initial viscosities                    = 1e20,   1e21
-    set List of constant viscosities                   = 0,      1e21 
+    set List of constant viscosities                   = 0,      1e21
 end
 
 subsection Material model
     set Model name = spiegelman 2016
 
-  subsection Spiegelman 2016 
+  subsection Spiegelman 2016
     set Maximum viscosity = 1e24
     set Minimum viscosity = 1e21
     set Use deviator of strain-rate = false
@@ -114,8 +114,8 @@ end
 
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 2 
-  set Prescribed velocity boundary indicators = 0 x:function,1 x:function 
+  set Tangential velocity boundary indicators = 2
+  set Prescribed velocity boundary indicators = 0 x:function,1 x:function
   subsection Function
     set Variable names = x,z
     set Function expression = if(x<60e3,3.96109558e-10,-3.96109558e-10);0

@@ -11,7 +11,7 @@ set Start time                             = 0
 set End time                               = 0.0001
 set Output directory                       = output_tala
 
-# The temperature is prescibed, so we only need to 
+# The temperature is prescibed, so we only need to
 # solve the Stokes system
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Use years in output instead of seconds = false
@@ -19,12 +19,12 @@ set Use years in output instead of seconds = false
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 
-# In this section we define the adiabatic profiles of temperature, 
-# pressure and density. The temperature and pressure profiles are 
-# not used for this benchmark (and set to zero). 
+# In this section we define the adiabatic profiles of temperature,
+# pressure and density. The temperature and pressure profiles are
+# not used for this benchmark (and set to zero).
 # gamma is the grueneisen parameter, which defines the compressibility
 # of the material, and we have to choose the same value for gamma as
-# in the material model below. 
+# in the material model below.
 subsection Adiabatic conditions model
   set Model name = function
   subsection Function
@@ -44,7 +44,7 @@ end
 
 # We define our own boundary condition that implements a boundary
 # temperature according to the prescibed temperature of the Tan & Gurnis
-# benchmark. 
+# benchmark.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = left, right, bottom, top
   set List of model names = Tan Gurnis
@@ -92,12 +92,12 @@ subsection Initial temperature model
 end
 
 # The benchmark is defined in terms of the nondimensional numbers
-# Di (dissipation number) and gamma (grueneisen parameter). 
-# As ASPECT uses physical properties instead of these dimensionless 
-# numbers in its equations, we replicate the benchmark formulation 
-# by using a new material model that fixes all of the material 
-# constants to 1, except for the thermal expansivity and the viscosity, 
-# which is set to Di, and the density profile, which depends on Di and 
+# Di (dissipation number) and gamma (grueneisen parameter).
+# As ASPECT uses physical properties instead of these dimensionless
+# numbers in its equations, we replicate the benchmark formulation
+# by using a new material model that fixes all of the material
+# constants to 1, except for the thermal expansivity and the viscosity,
+# which is set to Di, and the density profile, which depends on Di and
 # gamma.
 subsection Material model
   set Model name = Tan Gurnis
@@ -113,8 +113,8 @@ subsection Material model
 
 end
 
-# This subsection describes which heating models we want to use. 
-# This case includes adiabatic heating and shear heating. 
+# This subsection describes which heating models we want to use.
+# This case includes adiabatic heating and shear heating.
 subsection Heating model
   set List of model names = adiabatic heating, shear heating
 
@@ -148,4 +148,3 @@ subsection Postprocess
     set Time between graphical output = 0
   end
 end
-

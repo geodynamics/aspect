@@ -1,5 +1,5 @@
 # This model tests the particle property integrated strain in a pure shear deformation.
-# Particles at the bottom left experience only deformation and no rotation (perfect pure 
+# Particles at the bottom left experience only deformation and no rotation (perfect pure
 # shear), while particles at the upper right corner only experience solid body rotation
 # and no deformation.
 

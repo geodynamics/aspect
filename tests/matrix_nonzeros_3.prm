@@ -118,4 +118,3 @@ subsection Postprocess
     set Update ghost particles = true
   end
 end
-

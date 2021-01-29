@@ -1,13 +1,13 @@
 #########################################################
 # This is a variation of the composition_reaction test,
 # with the exception that we use a reaction term that
-# requires the iterated Advection and Stokes solver scheme to reach the 
-# correct reaction rate, which is one for the second 
-# field and the value of the second field for the first 
+# requires the iterated Advection and Stokes solver scheme to reach the
+# correct reaction rate, which is one for the second
+# field and the value of the second field for the first
 # and the third field. Without iterating, the fields will
 # use the value from the previous time step. In addition,
-# this test checks if the results are the same for the 
-# first and third field, independent of the order of 
+# this test checks if the results are the same for the
+# first and third field, independent of the order of
 # solving, and thus if our solver scheme is consistent.
 
 
@@ -65,10 +65,10 @@ end
 
 
 # We then set the temperature to one at the bottom and zero
-# at the top: 
+# at the top:
 subsection Boundary temperature model
   set List of model names = box
-  
+
   subsection Box
     set Bottom temperature = 1
     set Top temperature    = 0
@@ -98,16 +98,16 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function expression = (1-z)    
+    set Function expression = (1-z)
   end
 end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function constants  = pi=3.1415926
@@ -141,5 +141,3 @@ end
 subsection Postprocess
   set List of postprocessors = composition statistics, visualization
 end
-
-

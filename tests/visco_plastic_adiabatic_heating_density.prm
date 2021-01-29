@@ -3,15 +3,15 @@
 # uses the adiabatic temperature to compute density when
 # adiabatic heating is turned on. The formula specified
 # in this test follows the Extended Boussinesq approximation.
-# The initial temperature throughout the model is equal to 
-# the adiabatic temperature profile. As a result, the 
+# The initial temperature throughout the model is equal to
+# the adiabatic temperature profile. As a result, the
 # the absolute density should be constant throughout the
-# model and equal to the background values specified in 
+# model and equal to the background values specified in
 # material model (3300 kg m^-3):
 #   density = background_density * ( 1 - thermal_expansivity * (temperature - reference_temperature)),
 # where the reference_temperature is the depth-dependent
-# adiabatic temperature. If adiabatic heating was not 
-# used in the model, then the reference temperature 
+# adiabatic temperature. If adiabatic heating was not
+# used in the model, then the reference temperature
 # would be the constant value specified in the material
 # model (273 K), which would produce different density values.
 
@@ -109,4 +109,3 @@ subsection Postprocess
     set Output format            = gnuplot
   end
 end
-

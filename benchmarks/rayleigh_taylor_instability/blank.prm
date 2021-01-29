@@ -1,4 +1,4 @@
-set Additional shared libraries  = ./librayleigh_taylor_instability.so 
+set Additional shared libraries  = ./librayleigh_taylor_instability.so
 set Dimension                    = 2
 set Start time                   = 0
 set End time                     = 0

@@ -1,7 +1,7 @@
-# This is a model setup to test latent heat generation. 
+# This is a model setup to test latent heat generation.
 # It is identical to the latent_heat_enthalpy test, but utilizes
-# the grain size material model to ensure a correct 
-# implementation of the functionality. For details on the 
+# the grain size material model to ensure a correct
+# implementation of the functionality. For details on the
 # test see the latent_heat_enthalpy test case.
 
 set Dimension = 2
@@ -31,10 +31,10 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 8e-5
   end
 end
@@ -58,7 +58,7 @@ end
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = top
 end
 
@@ -72,7 +72,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -114,14 +114,14 @@ subsection Material model
     set Data directory = $ASPECT_SOURCE_DIR/data/material-model/latent-heat-enthalpy-test/
     set Material file names = testdata.txt
     set Material file format = perplex
-    set Use table properties = true 
+    set Use table properties = true
   end
 end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 2 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end
 

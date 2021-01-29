@@ -1,7 +1,7 @@
-# This test is a copy of the heat_advection_by_melt test, 
+# This test is a copy of the heat_advection_by_melt test,
 # even with the same results, the only difference is that
-# operator splitting is enabled. 
-# It tests if melt heating models work also with operator 
+# operator splitting is enabled.
+# It tests if melt heating models work also with operator
 # splitting.
 #
 set Dimension                              = 2
@@ -115,7 +115,7 @@ subsection Material model
     set Reference solid density    = 2
     set Reference melt density     = 1
     set Reference specific heat    = 1
-    set Reference temperature      = 1600 
+    set Reference temperature      = 1600
     set Thermal conductivity       = 0.0
     set Surface solidus            = 10000.0
     set Include melting and freezing = false

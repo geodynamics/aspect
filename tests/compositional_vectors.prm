@@ -43,7 +43,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set List of output variables = compositional vector
-    set Output format = gnuplot    
+    set Output format = gnuplot
     subsection Compositional fields as vectors
       set Names of vectors = vector_field1, vector_field2
       set Names of fields = vec1x, vec1y; vec2x, vec2y

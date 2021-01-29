@@ -1,6 +1,6 @@
 # A test for the geoid, gravity and dynamic topography postprocessor
 
-set Dimension                              = 3 
+set Dimension                              = 3
 
 include $ASPECT_SOURCE_DIR/benchmarks/geoid-spectral-comparison/spectral-comparison.prm
 

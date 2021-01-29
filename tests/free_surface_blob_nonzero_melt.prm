@@ -1,7 +1,7 @@
 # Test for free surface topography due to a rising blob
 # with melt transport = on and nonzero porosity.
 # The test is the same as free_surface_blob_melt, except that melt
-# has a nonzero initial condition. 
+# has a nonzero initial condition.
 # We test if the boundary conditions for melt are set correctly
 # (no melt flowing in/out at the free surface) by checking if the
 # mass of the porosity field is conserved.
@@ -48,7 +48,7 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 5
     set Y repetitions = 2
@@ -66,7 +66,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
@@ -154,6 +154,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1.e-7
-    set Number of cheap Stokes solver steps = 0 
+    set Number of cheap Stokes solver steps = 0
   end
 end

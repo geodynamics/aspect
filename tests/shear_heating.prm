@@ -1,9 +1,9 @@
-# A test case for shear heating. The viscosity is constant and a 
+# A test case for shear heating. The viscosity is constant and a
 # constant shear strain rate is applied by prescribing the velocities
 # at the upper and lower boundaries of the box domain; the sides are
-# periodic. This yields a constant strain rate [[0,1/2],[1/2,0]] 
-# with norm |dot eps|=1/sqrt(2), so that together with the viscosity 
-# of 1, the shear heating 2 * eta * pow(|dot eps|,2) = 1. 
+# periodic. This yields a constant strain rate [[0,1/2],[1/2,0]]
+# with norm |dot eps|=1/sqrt(2), so that together with the viscosity
+# of 1, the shear heating 2 * eta * pow(|dot eps|,2) = 1.
 #
 
 set Dimension = 2
@@ -97,7 +97,7 @@ subsection Boundary velocity model
 end
 
 subsection Postprocess
-  set List of postprocessors = heating statistics 
+  set List of postprocessors = heating statistics
 
   subsection Visualization
     set Interpolate output = false
@@ -106,4 +106,3 @@ subsection Postprocess
   end
 
 end
-

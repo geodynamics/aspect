@@ -1,20 +1,20 @@
 # This is a test for the heating model plugins related to
-# melt migration, in particular shear heating with melt. 
+# melt migration, in particular shear heating with melt.
 # In this 1D model, material is upwelling with a high temperature
-# from the bottom boundary and melting adiabatically. This 
-# leads to dissipation heating due to the relative movement of 
+# from the bottom boundary and melting adiabatically. This
+# leads to dissipation heating due to the relative movement of
 # melt and solid. As these terms scale with 1/porosity, this
-# can lead to instabilities. However, this can be avoided by 
-# choosing a resolution that is high enough and choosing the 
+# can lead to instabilities. However, this can be avoided by
+# choosing a resolution that is high enough and choosing the
 # Darcy coefficient variation threshold that is not too small
-# (here, the default value is sufficient). 
+# (here, the default value is sufficient).
 
 # The test is based on the model of 1D upwelling melting in a
-# plume with melt-related heating in the Supplementary material 
+# plume with melt-related heating in the Supplementary material
 # of Dannberg & Heister, 2016.
-# To better compare the results with Dannberg & Heister, 2016, 
+# To better compare the results with Dannberg & Heister, 2016,
 # the bottom boundary temperature can be changed to 2000 K
-# (this is just not feasible in the test, as it would take too 
+# (this is just not feasible in the test, as it would take too
 # many time time steps until the onset of melting).
 
 set Adiabatic surface temperature          = 1600               # default: 0
@@ -83,7 +83,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 7200
@@ -128,7 +128,7 @@ end
 
 subsection Material model
 
-  set Model name = melt simple 
+  set Model name = melt simple
   subsection Melt simple
     set Reference solid density = 3400
     set Reference melt density = 2776

@@ -1,19 +1,19 @@
 # This parameter file reproduces a 2D benchmark for viscoelastic deformation
 # published in "Numerical modelling of magma dynamics coupled to tectonic
-# deformation of lithosphere and crust" by Keller, May and Kaus, 2013, 
+# deformation of lithosphere and crust" by Keller, May and Kaus, 2013,
 # Geophys. J. Int., v. 195,  p. 1406-1422. The model setup and results are
 # described in detail in section B.2.3 and figure B5.
 #
-# The benchmark examines bending and unbending (e.g., recovery) of a 
-# viscoelastic beam surrounded by a less dense and viscous (inelastic) fluid. 
+# The benchmark examines bending and unbending (e.g., recovery) of a
+# viscoelastic beam surrounded by a less dense and viscous (inelastic) fluid.
 # Gravitational forces drive initial bending (elastic strain) of the beam for
-# 50 Kyr, which then recovers its shape over ~ 500 Kyr if gravity is turned 
+# 50 Kyr, which then recovers its shape over ~ 500 Kyr if gravity is turned
 # off. The recovery is driven by the accumulated elastic stresses and thus
-# provides a basic test for the viscoelasticity implementation. 
+# provides a basic test for the viscoelasticity implementation.
 #
-# Compositional fields are used to track the viscoelastic stresses and material 
+# Compositional fields are used to track the viscoelastic stresses and material
 # representing the beam. To improve the accuracy of tracking the beam interface,
-# a discontinuous discretization and bound preserving limiter is used for the 
+# a discontinuous discretization and bound preserving limiter is used for the
 # compositional fields. Significantly, the time step is limited to 1 Kyr through
 # the "Maximum time step" parameter and a relatively high (0.5) CFL value. Using
 # a constant time step ensures the effective (viscoelastic) viscosity of the
@@ -21,10 +21,10 @@
 #
 # As currently constructed, the model will run for 50 Kyr with a gravitational
 # acceleration of 10 m/s^2. To produce unbending of the beam after the model
-# has finished, change the parameter "End time" to 500 Kyr and set the 
-# gravitational acceleration to 0 m/s^2. A restart file is written every 10 Kyr 
-# and the parameter "Resume computation = auto" specifies that a model should  
-# restart from a checkpoint file if one is present.     
+# has finished, change the parameter "End time" to 500 Kyr and set the
+# gravitational acceleration to 0 m/s^2. A restart file is written every 10 Kyr
+# and the parameter "Resume computation = auto" specifies that a model should
+# restart from a checkpoint file if one is present.
 
 # Global parameters
 set Dimension                              = 2
@@ -57,7 +57,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -101,7 +101,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0; 0; 0; if (x<=4.5e3 && y>=2.5e3 && y<=3.0e3, 1, 0)
   end
 end
@@ -143,7 +143,7 @@ subsection Material model
     set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
     set Fixed elastic time step     = 1e3
     set Use fixed elastic time step = false
-    set Use stress averaging        = false 
+    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
   end
 
@@ -161,7 +161,7 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, basic statistics, temperature statistics, visualization
   subsection Visualization
-    set List of output variables = material properties, strain rate 
+    set List of output variables = material properties, strain rate
 
     subsection Material properties
       set List of material properties = density, viscosity

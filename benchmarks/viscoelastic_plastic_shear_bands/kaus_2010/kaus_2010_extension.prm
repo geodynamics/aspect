@@ -7,14 +7,14 @@
 # which helps localize deformation along the shear bands.
 #
 # The key feature of the model is the inclusion of viscoelasticity,
-# which leads to a gradual (as opposed to instantaneous for visco-plasticity) 
+# which leads to a gradual (as opposed to instantaneous for visco-plasticity)
 # development of the plastic shear bands above the weak viscous inclusion.
 # Kaus (2010) and many other studies (e.g., Glerum et al. 2018, Solid Earth)
 # have shown that the shear band angle is directly dependent on the mesh
 # resolution. Here, the model contains a very coarse resolution of 100x25
 # grid points (0.4 km grid spacing. Increasing the "Initial global refinement"
 # parameter from 0 to 1 or 2 (resolution increases by 2x or 4x) should lead
-# to an increase in the shear band angle from 45 degrees to close to 60 
+# to an increase in the shear band angle from 45 degrees to close to 60
 # degrees.
 
 #  Global parameters
@@ -103,13 +103,13 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function constants  =
     set Function expression = 0; 0; 0; \
-                              if (y<=0.4e3 && x>=19.6e3 && x<=20.4e3, 1, 0);  
+                              if (y<=0.4e3 && x>=19.6e3 && x<=20.4e3, 1, 0);
   end
 end
 
 # Composition boundary conditions
 subsection Boundary composition model
-  set Fixed composition boundary indicators  = 
+  set Fixed composition boundary indicators  =
   set List of model names = initial composition
 end
 

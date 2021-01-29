@@ -1,5 +1,5 @@
 ############### Global parameters
-# This is the manufactured solution of Donea & Huerta, 
+# This is the manufactured solution of Donea & Huerta,
 # Finite element methods for flow problems,
 # Wiley, 2003. page 306
 
@@ -61,7 +61,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -72,7 +72,7 @@ end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
+# run at the end of each time step.
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, DoneaHuertaPostprocessor

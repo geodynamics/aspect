@@ -1,12 +1,12 @@
 #########################################################
-# This is a model setup to test the latent heat generation. 
-# Melt flows in from the bottom and crosses a phase 
-# transition, where it freezes and energy is released and 
-# the temperature increases.  
+# This is a model setup to test the latent heat generation.
+# Melt flows in from the bottom and crosses a phase
+# transition, where it freezes and energy is released and
+# the temperature increases.
 # The crucial property of the test is the equilibrium
 # temperature at the top of the domain. This test is the
 # same as the "latent heat melt" test, except that is uses
-# the operator split solver scheme. 
+# the operator split solver scheme.
 
 set Dimension = 2
 
@@ -46,10 +46,10 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function expression = if(z<500000.0,1,0);if(z>500000.,0,1)    
+    set Function expression = if(z<500000.0,1,0);if(z>500000.,0,1)
   end
 end
 
@@ -71,7 +71,7 @@ end
 subsection Boundary composition model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed composition boundary indicators   = 2
 end
 
@@ -89,7 +89,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -131,8 +131,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 4 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
   set Time steps between mesh refinement = 0
 
 end

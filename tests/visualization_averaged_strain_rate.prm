@@ -103,4 +103,3 @@ subsection Postprocess
     set List of output variables = strain rate
   end
 end
-

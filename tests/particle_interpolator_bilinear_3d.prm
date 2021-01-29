@@ -4,11 +4,11 @@
 # of the bilinear_least_squares interpolator in 3D
 
 
-set Dimension                              = 3 
+set Dimension                              = 3
 set Start time                             = 0
 set End time                               = .1
 set Use years in output instead of seconds = false
-set Output directory = output    
+set Output directory = output
 
 
 subsection Geometry model
@@ -47,7 +47,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Variable names      = x,y,z  
+    set Variable names      = x,y,z
     set Function expression = (1-z)
   end
 end
@@ -115,7 +115,7 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-    set Variable names      = x,y,z 
+    set Variable names      = x,y,z
     set Function expression = if(y<0.2*x, 1, 0) ; if(y>0.8, 1, 0)
   end
 end

@@ -1,10 +1,10 @@
 # A testcase that demonstrates that interpolating material model
 # outputs into compositional fields and diffusing them works.
 #
-# The property copied into the compositional field 'prescribed field', 
-# is a Gaussian with an amplitude of 1, namely exp(-0.5*x*x). 
+# The property copied into the compositional field 'prescribed field',
+# is a Gaussian with an amplitude of 1, namely exp(-0.5*x*x).
 # We choose the diffusion length scale in a way that its amplitude
-# should be reduced to 0.95 when the diffusion equation is solved. 
+# should be reduced to 0.95 when the diffusion equation is solved.
 #
 # The test also contains another compositional field that does
 # not use this method, so it should remain zero everywhere

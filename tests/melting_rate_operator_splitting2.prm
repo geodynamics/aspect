@@ -1,18 +1,18 @@
 #########################################################
-# This is a test for the melting rate functionality, 
+# This is a test for the melting rate functionality,
 # and it is the same as the melting_rate_operator_splitting
-# test case, except that is uses the melt global instead 
-# of the melt simple material model. This also means that 
-# we have to change the absolute temperature values, as 
-# this material model has fixed temperature difference 
+# test case, except that is uses the melt global instead
+# of the melt simple material model. This also means that
+# we have to change the absolute temperature values, as
+# this material model has fixed temperature difference
 # of 500 K between solidus and liquidus.
 
-# We set the temperature in such a way that the initial 
-# equilibrium melt fraction would be 2e-3, but due to 
+# We set the temperature in such a way that the initial
+# equilibrium melt fraction would be 2e-3, but due to
 # latent heat effects, the temperature gets reduced and
-# the final melt fraction should be 1e-3. 
+# the final melt fraction should be 1e-3.
 # Likewise, the temperature should be reduced from 1001
-# to 1000.5. 
+# to 1000.5.
 
 ############### Global parameters
 
@@ -22,7 +22,7 @@ set End time                               = 2e5
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1001
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 100  
+set Max nonlinear iterations               = 100
 set CFL number                             = 1.0
 set Maximum time step                      = 1e5
 
@@ -39,7 +39,7 @@ end
 
 
 ############### Parameters describing the model
-# Let us here choose again a box domain 
+# Let us here choose again a box domain
 # where we fix the temperature at the bottom and top,
 # allow free slip along the boundaries
 # and include melt migration.
@@ -68,18 +68,18 @@ end
 
 ############### Compositional fields
 # We want to use two compositional fields, the porosity and
-# an additional field, to check if the melting rate functionality 
-# has the same effect as the reaction term for the other 
+# an additional field, to check if the melting rate functionality
+# has the same effect as the reaction term for the other
 # compositional fields. As the porosity field is advected by
 # a different mechanism, slight differences between the fields
-# are expected. 
+# are expected.
 subsection Compositional fields
   set Number of fields = 2
   set Names of fields = porosity, peridotite
 end
 
 
-# We don't need gravity. 
+# We don't need gravity.
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -97,7 +97,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000

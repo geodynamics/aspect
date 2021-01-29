@@ -53,7 +53,7 @@ end
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
 end
 
@@ -67,7 +67,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -88,8 +88,8 @@ subsection Initial temperature model
   subsection Function
 # In contrast to the other latent heat test we need a small temperature
 # perturbation to be able to compute derivatives from the material table.
-# This is because we compute derivatives from the differences between cell 
-# vertices, and if they have identical pressure-temperature conditions, we 
+# This is because we compute derivatives from the differences between cell
+# vertices, and if they have identical pressure-temperature conditions, we
 # can not compute a reasonable derivative
     set Function expression = 1000.0 + (y-1000000)/1000000
     set Variable names      = x,y
@@ -104,7 +104,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
 end

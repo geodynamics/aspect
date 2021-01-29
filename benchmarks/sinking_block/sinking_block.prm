@@ -1,6 +1,6 @@
 # This is the standalone prm file for the sinking block benchmark.
 
-set Additional shared libraries  = ./libsinking_block.so 
+set Additional shared libraries  = ./libsinking_block.so
 set Dimension                    = 2
 set Start time                   = 0
 set End time                     = 0
@@ -27,7 +27,7 @@ subsection Material model
      set rho1 = 3200
      set rho2 = 3208
      set method = 0
-  end 
+  end
 end
 
 subsection Gravity model
@@ -53,7 +53,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Mesh refinement
-  set Initial global refinement          = 5 
+  set Initial global refinement          = 5
   set Initial adaptive refinement        = 0
 end
 

@@ -1,5 +1,5 @@
 # This test is used to check if the compressible variation
-# of the upwelling_melting_peridotite test is calculated correctly. 
+# of the upwelling_melting_peridotite test is calculated correctly.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -97,7 +97,7 @@ subsection Material model
     set Mass fraction cpx        = 0.10
     set Reference specific heat  = 1000
     set Relative density of melt = 0.878787879  # melt density of 2900 kg/m^3
-    set Reference temperature    = 1623.15      # 1350°C adiabat 
+    set Reference temperature    = 1623.15      # 1350°C adiabat
     set Peridotite melting entropy change = -300
     set Thermal conductivity     = 0.0
     set Compressibility          = 4e-12

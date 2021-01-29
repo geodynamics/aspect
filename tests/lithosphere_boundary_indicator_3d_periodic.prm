@@ -15,7 +15,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 # We use a boundary temperature model
-# with additional boundary indicators 
+# with additional boundary indicators
 # as prescribed by the geometry model.
 # Inflow occurs along the left top
 # boundary, so we prescribe temperature
@@ -29,10 +29,10 @@ subsection Boundary temperature model
 end
 
 
-# We use the initial composition as boundary 
+# We use the initial composition as boundary
 # condition.
 subsection Boundary composition model
-  set List of model names = initial composition 
+  set List of model names = initial composition
 end
 
 
@@ -48,7 +48,7 @@ end
 # of the vertical boundaries.
 # We use the repetitions to get the same resolution
 # in the lithosphere and mantle.
-# The lithospheric boundaries normal to the 
+# The lithospheric boundaries normal to the
 # Y-direction are periodic.
 subsection Geometry model
   set Model name = box with lithosphere boundary indicators
@@ -70,7 +70,7 @@ subsection Initial temperature model
   set Model name = function
   subsection Function
    set Function expression = 0
-  end 
+  end
 end
 
 
@@ -98,8 +98,8 @@ subsection Mesh refinement
 end
 
 
-# In 3D the additional boundary indicators have value 6 (left lithosphere), 
-# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere). 
+# In 3D the additional boundary indicators have value 6 (left lithosphere),
+# 7 (right lithosphere), 8 (front lithosphere) and 9 (back lithosphere).
 # We prescribe a velocity field oblique to all vertical boundaries
 # (so in the X- and Y-direction) to the left and right lithosphere
 # and the top boundary.
@@ -111,7 +111,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary composition model
-  set Fixed composition boundary indicators   = 6 
+  set Fixed composition boundary indicators   = 6
 end
 
 subsection Boundary velocity model

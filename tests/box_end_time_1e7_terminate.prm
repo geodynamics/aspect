@@ -84,4 +84,3 @@ subsection Termination criteria
     set Time in steady state       = 5e6
   end
 end
-

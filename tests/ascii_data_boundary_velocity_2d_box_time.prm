@@ -49,7 +49,7 @@ end
 subsection Boundary velocity model
   subsection Ascii data model
     set Data file name       = box_2d_%s.%d.txt
-    
+
     set Data directory = $ASPECT_SOURCE_DIR/data/boundary-velocity/ascii-data/test/
     set First data file model time = 1e5
     set Data file time step = 2e5
@@ -90,4 +90,3 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics
 end
-

@@ -1,4 +1,4 @@
-# A description of viscoplastic convection in a 2d box as 
+# A description of viscoplastic convection in a 2d box as
 # described in Tosi et al. (2015).
 
 # We add the necessary plugins through a shared library
@@ -10,7 +10,7 @@ set Dimension                              = 2
 # We run the model from time = 0 to time = 1 and to handle
 # the nonlinearity of the viscosity correctly, we use
 # the iterated Advection and Stokes nonlinear solver and skip the cheap
-# Stokes solves. 
+# Stokes solves.
 set Use years in output instead of seconds = false
 set End time                               = 0.01
 set Output directory                       = Case4_3_T15_NS_analytical_9e-1_release
@@ -100,7 +100,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e8 
+    set Magnitude = 1e8
   end
 end
 
@@ -113,7 +113,7 @@ subsection Material model
     set Reference specific heat       = 1
     set Reference temperature         = 0
     set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1e-06 
+    set Thermal expansion coefficient = 1e-06
     set Reference viscosity           = 2e-2
     set Thermal viscosity parameter   = 1e5
     set Pressure viscosity parameter  = 10
@@ -172,7 +172,7 @@ subsection Postprocess
   end
 
   subsection Visualization
-    set List of output variables = material properties, strain rate, gravity 
+    set List of output variables = material properties, strain rate, gravity
     set Time between graphical output = 0.05
   end
 end

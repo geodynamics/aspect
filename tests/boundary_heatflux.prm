@@ -1,9 +1,9 @@
 # This test is used to check if the heat flux boundary conditions
-# work correctly. It prescribes a zero heat flux at the sides, a 
-# basal heat flow of 4 mW/m^2 and a surface temperature of 90 K. 
-# Presently, we use a conductivity of 
-# 2.38 (the conductivity of ice at 273 K). This test should yield a 
-# temperature of approximately 420 K at the base of the model.   
+# work correctly. It prescribes a zero heat flux at the sides, a
+# basal heat flow of 4 mW/m^2 and a surface temperature of 90 K.
+# Presently, we use a conductivity of
+# 2.38 (the conductivity of ice at 273 K). This test should yield a
+# temperature of approximately 420 K at the base of the model.
 
 #           Ts = 90 K
 #      ------------------
@@ -41,7 +41,7 @@ subsection Geometry model
 
   subsection Box
     set X extent = 100000
-    set Y extent = 20000      
+    set Y extent = 20000
   end
 end
 
@@ -75,7 +75,7 @@ subsection Boundary velocity model
   subsection Function
     set Function expression = 0;0
   end
-  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function 
+  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
 end
 
 
@@ -89,7 +89,7 @@ subsection Boundary heat flux model
   set Model name = function
 
   subsection Function
-    set Function expression = -0.04 
+    set Function expression = -0.04
   end
 end
 
@@ -100,7 +100,7 @@ subsection Material model
   subsection Simple model
     set Reference density        = 950
     set Reference specific heat  = 1000
-    set Reference temperature    = 273 
+    set Reference temperature    = 273
     set Thermal conductivity     = 2.38
   end
 end

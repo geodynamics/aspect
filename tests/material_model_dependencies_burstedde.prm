@@ -37,7 +37,7 @@ subsection Geometry model
 
   subsection Box
     set X extent  = 1
-    set Y extent  = 1 
+    set Y extent  = 1
     set Z extent  = 1
   end
 end
@@ -62,9 +62,9 @@ subsection Gravity model
 end
 
 subsection Burstedde benchmark
-   #Viscosity parameter is beta  
+   #Viscosity parameter is beta
    set Viscosity parameter             = 20
-end 
+end
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -87,7 +87,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0

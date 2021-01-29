@@ -120,4 +120,3 @@ end
 subsection Postprocess
   set List of postprocessors = composition statistics
 end
-

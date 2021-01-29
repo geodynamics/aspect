@@ -3,7 +3,7 @@
 # van-keken-discontinuous.prm. See the manual for more information.
 # This test adds particles to the cookbook parameter file with two particle properties
 # defined by two different functions. One is a discontinuous function and the other
-# is a smooth function. 
+# is a smooth function.
 
 # MPI: 2
 

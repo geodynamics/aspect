@@ -75,7 +75,7 @@ subsection Compositional fields
   set Number of fields = 2
   set Names of fields = density_comp, viscosity_comp
   set Compositional field methods = particles, particles
-  
+
   # In the source code, we assumed that density is being carried
   # on compositional field 1 (at index 0) and viscosity is being
   # carried on compositional field 2 (at index 1).  If this order

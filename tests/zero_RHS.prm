@@ -2,8 +2,8 @@
 # the temperature or composition system is zero (i.e., the field
 # is zero, and there are no boundary conditions/additional RHS
 # terms).
-# In this case, the solver scheme should skip solving this 
-# field. 
+# In this case, the solver scheme should skip solving this
+# field.
 
 set Dimension = 2
 
@@ -31,7 +31,7 @@ subsection Discretization
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
-    set cR    = 0.5  
+    set cR    = 0.5
   end
 end
 
@@ -39,7 +39,7 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 100.e2 
+    set X extent = 100.e2
     set Y extent = 1000.e2
     set X repetitions = 10
     set Y repetitions = 100
@@ -57,9 +57,9 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
-    set Function expression = 0.0 
+    set Function expression = 0.0
   end
 end
 
@@ -85,13 +85,13 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0              
-  set Initial global refinement          = 0    
-  set Time steps between mesh refinement = 0             
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
 end
 
 subsection Boundary velocity model
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = 0.0;-0.01
   end
@@ -99,7 +99,7 @@ end
 
 # Here we specify that the model has fixed temperature
 # boundary conditions, as well as free slip boundary
-# conditions for the sides and bottom. 
+# conditions for the sides and bottom.
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
@@ -113,7 +113,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = left, right 
+  set Tangential velocity boundary indicators = left, right
 end
 
 subsection Postprocess

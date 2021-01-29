@@ -1,5 +1,5 @@
 # This benchmark tests the ASPECT implementation of an initial temperature model
-# that converts absolute shear wave velocity to temperature using the anelasticity model of 
+# that converts absolute shear wave velocity to temperature using the anelasticity model of
 # Yamauchi & Takei 2016 (JGR). This .prm aims to recreate Figure 20 in the paper.
 # Output can be plotted and compared to results in Figure 20 by running plot_output.gmt
 # in the plot_output folder.
@@ -88,4 +88,3 @@ subsection Postprocess
   38000,50000;40000,50000;42000,50000;44000,50000;46000,50000;48000,50000;50000,50000;52000,50000
   end
 end
-

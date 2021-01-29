@@ -6,10 +6,10 @@
 # Methods for Modeling Incompressible Stokes Flow. Geophys. J. Int.
 # submitted.
 #
-# It features a spherical annulus with a circular flow and a 
+# It features a spherical annulus with a circular flow and a
 # time-indepedent analytical, but a time-dependent numerical solution,
 # which allows to quantify how errors in the advection equation
-# influence the accuracy of the Stokes equation. In this example 
+# influence the accuracy of the Stokes equation. In this example
 # the benchmark uses particles to carry density, but it can be
 # used for other advection methods as well.
 
@@ -144,9 +144,9 @@ end
 
 subsection Postprocess
   set List of postprocessors = time dependent annulus, particles, visualization
- 
+
   subsection Particles
-    set Time between data output = 0.0009817477042468104 
+    set Time between data output = 0.0009817477042468104
     set Integration scheme = rk2 # or rk4
     set Interpolation scheme = bilinear least squares # or cell average
     set List of particle properties = function
@@ -166,7 +166,7 @@ subsection Postprocess
       set Function expression = 48*sqrt(x^2 + y^2)^5;if(0<y,if(y<1/4,1,0),0)
     end
   end
- 
+
   subsection Visualization
     set Output format                 = vtu
     set Number of grouped files       = 1

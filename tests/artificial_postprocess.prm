@@ -2,11 +2,11 @@
 # this test crashes on mainline with:
 # An error occurred in line <2922> of file </scratch/deal-git/source/fe/fe_system.cc> in function
 #     const dealii::FiniteElement<dim, spacedim>& dealii::FESystem<dim, spacedim>::base_element(unsigned int) const [with int dim = 2; int spacedim = 2]
-# The violated condition was: 
+# The violated condition was:
 #     index < base_elements.size()
 # The name and call sequence of the exception was:
 #     ExcIndexRange(index, 0, base_elements.size())
-# Additional Information: 
+# Additional Information:
 # Index 4 is not in [0,4[
 #
 #
@@ -54,7 +54,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 500000
@@ -65,7 +65,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -78,7 +78,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -97,7 +97,7 @@ end
 
 subsection Material model
 
-  set Model name = simple # default: 
+  set Model name = simple # default:
 
   subsection Simple model
     set Thermal expansion coefficient                  = 1e-5
@@ -119,7 +119,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default: 
+  set Fixed temperature boundary indicators   = 0,3        # default:
 end
 
 subsection Boundary velocity model
@@ -127,7 +127,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default: 
+  set Zero velocity boundary indicators       =           # default:
 end
 
 
@@ -136,6 +136,3 @@ subsection Postprocess
   set List of postprocessors = composition statistics, EVPostprocessor
 
 end
-
-
-

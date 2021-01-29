@@ -1,7 +1,7 @@
 # A testcase that demonstrates shear thinning. It solves the
 # equations on a box with Dirichlet boundary conditions equal to
 # (z,0), which then is also the velocity everywhere. This yields
-# a constant strain rate [[0,1/2],[1/2,0]] with norm |dot eps|=1/sqrt(2). 
+# a constant strain rate [[0,1/2],[1/2,0]] with norm |dot eps|=1/sqrt(2).
 #
 # We then have a viscosity that depends on
 # the strain rate as eta=1/(1+|dot eps|). Because the strain rate
@@ -107,4 +107,3 @@ end
 subsection Postprocess
   set List of postprocessors = shear thinning
 end
-

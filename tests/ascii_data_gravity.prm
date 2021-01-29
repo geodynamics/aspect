@@ -49,7 +49,7 @@ subsection Boundary temperature model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, left, right, top 
+  set Tangential velocity boundary indicators = bottom, left, right, top
 end
 
 
@@ -87,4 +87,3 @@ subsection Postprocess
     set Output format = gnuplot
   end
 end
-
