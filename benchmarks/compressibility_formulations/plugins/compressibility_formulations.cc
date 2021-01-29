@@ -281,4 +281,3 @@ namespace aspect
                                    " calculation for the compressibility benchmarks.")
   }
 }
-

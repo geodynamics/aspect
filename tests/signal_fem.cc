@@ -49,4 +49,3 @@ void signal_connector (aspect::SimulatorSignals<dim> &signals)
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
-

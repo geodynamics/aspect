@@ -47,4 +47,3 @@ namespace aspect
                                    "'melt simple' model, but has a constant reaction term.")
   }
 }
-

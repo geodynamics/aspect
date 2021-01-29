@@ -1931,7 +1931,7 @@ namespace aspect
     template class MeltPressureRHSCompatibilityModification<dim>; \
     template class MeltBoundaryTraction<dim>; \
   } \
-   
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE

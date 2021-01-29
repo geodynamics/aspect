@@ -95,8 +95,7 @@ tab_to_space()
 export -f tab_to_space
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
 
-# Remove trailing whitespace from prm files
-# convert tabs to two spaces:
+# Remove trailing whitespace from files
 remove_trailing_whitespace()
 {
     f=$1
@@ -107,9 +106,9 @@ remove_trailing_whitespace()
     rm -f $f.tmp
 }
 export -f remove_trailing_whitespace
-find tests include source unit_tests cookbooks benchmarks \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
 
-# Ensure only a single newline at end of prm files
+# Ensure only a single newline at end of files
 ensure_single_trailing_newline()
 {
   f=$1
@@ -122,6 +121,6 @@ ensure_single_trailing_newline()
   rm -f $f.tmp $f.tmpi
 }
 export -f ensure_single_trailing_newline
-find tests include source unit_tests cookbooks benchmarks \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 
 exit 0

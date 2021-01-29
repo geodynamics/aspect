@@ -673,7 +673,7 @@ namespace aspect
   template void Simulator<dim>::get_artificial_viscosity (Vector<float> &viscosity_per_cell,  \
                                                           const AdvectionField &advection_field, \
                                                           const bool skip_interior_cells) const; \
-   
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

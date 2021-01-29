@@ -242,5 +242,3 @@ namespace aspect
                                    "the latent heat.")
   }
 }
-
-

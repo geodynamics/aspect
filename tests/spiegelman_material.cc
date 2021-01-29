@@ -281,5 +281,3 @@ int jj = f(1); // Testing arithmetic mean
 int jk = f(2); // Testing generalized p norm mean with positive p
 int kj = f(1000); // Testing max function
 int kl = exit_function();
-
-
