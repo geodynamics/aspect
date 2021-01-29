@@ -178,7 +178,7 @@ namespace aspect
           const double temperature = in.temperature[i];
           const double pressure= in.pressure[i];
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_fractions_from_compositional_fields(composition);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(composition);
 
           // Averaging composition-field dependent properties
 

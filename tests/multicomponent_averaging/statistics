@@ -15,4 +15,4 @@
 # 15: Average temperature (K)
 # 16: Maximal temperature (K)
 # 17: Average nondimensional temperature (K)
-0 0.000000000000e+00 0.000000000000e+00 12 151 65 65 0 0 19 21 30 output-multicomponent_averaging/solution/solution-00000 2.73000000e+02 1.96635840e+03 4.25000000e+03 4.25787880e-01 
+0 0.000000000000e+00 0.000000000000e+00 12 151 65 65 0 0 19 21 28 output-multicomponent_averaging/solution/solution-00000 2.73000000e+02 1.96584846e+03 4.25000000e+03 4.25659657e-01 

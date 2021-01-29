@@ -9,9 +9,9 @@ and thermodynamics. Viscosity is averaged according to volume fractions,
 with the scheme chosen by the user (this functionality has not changed).
 These changes will probably not be noticeable for model runs using
 compositional fields with values of either 1 or 0 or materials with
-the same densities, but significant differences may be seen for models
-using distinct material properties. If users have used the
+the same or very similar densities, but significant differences may be
+seen for models using distinct material properties. If users have used the
 compute_volume_fractions function in utilities, they should be aware that
-the function has been renamed compute_fractions_from_compositional_fields.
+the function is now called compute_composition_fractions.
 <br>
 (Bob Myhill, 2021/01/27)

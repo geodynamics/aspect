@@ -241,8 +241,17 @@ namespace aspect
        * mass or volume fractions.
        */
       std::vector<double>
-      compute_fractions_from_compositional_fields(const std::vector<double> &compositional_fields,
-                                                  const ComponentMask &field_mask = ComponentMask());
+      compute_composition_fractions(const std::vector<double> &compositional_fields,
+                                    const ComponentMask &field_mask = ComponentMask());
+
+      /**
+       * See compute_composition_fractions() for the documentation of this function.
+       * @deprecated: This function is deprecated. Please use compute_composition_fractions() instead.
+       */
+      DEAL_II_DEPRECATED
+      std::vector<double>
+      compute_volume_fractions(const std::vector<double> &compositional_fields,
+                               const ComponentMask &field_mask = ComponentMask());
 
       /**
        * Given a vector of component masses,

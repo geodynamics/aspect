@@ -42,7 +42,7 @@ namespace aspect
           equation_of_state.evaluate(in, i, eos_outputs);
 
           // Calculate volume fractions from mass fractions
-          const std::vector<double> mass_fractions = MaterialUtilities::compute_fractions_from_compositional_fields(in.composition[i]);
+          const std::vector<double> mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
           const std::vector<double> volume_fractions = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
                                                        eos_outputs.densities,
                                                        true);

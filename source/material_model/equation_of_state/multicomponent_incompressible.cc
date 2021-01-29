@@ -37,16 +37,15 @@ namespace aspect
                const unsigned int input_index,
                MaterialModel::EquationOfStateOutputs<dim> &out) const
       {
-        // If we use an adiabatic heating model in an "incompressible" model,
-        // the isentropic compressibility must be equal to zero
-        // (i.e. the density must be constant along the reference isentrope)
 
-        // The density equation corresponds to the rho(T) at surface pressure
+
+        // If adiabatic heating is used, the reference temperature used to calculate density should be the adiabatic
+        // temperature at the current position. This definition is consistent with the Extended Boussinesq Approximation.
         const double reference_temperature = (this->include_adiabatic_heating()
-                                      ?
-                                      (reference_T + this->get_adiabatic_conditions().temperature(in.position[input_index]) - this->get_adiabatic_surface_temperature())
-                                      :
-                                      reference_T);
+                                              ?
+                                              this->get_adiabatic_conditions().temperature(in.position[input_index])
+                                              :
+                                              reference_T);
 
         for (unsigned int c=0; c < out.densities.size(); ++c)
           {
