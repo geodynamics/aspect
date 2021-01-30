@@ -180,6 +180,25 @@ namespace aspect
 
 
     template <int dim>
+    void
+    World<dim>::backup_particles ()
+    {
+      copy_particle_handler (*particle_handler.get(), particle_handler_backup);
+    }
+
+
+
+    template <int dim>
+    void
+    World<dim>::restore_particles ()
+    {
+      copy_particle_handler (particle_handler_backup, *particle_handler.get());
+    }
+
+
+
+
+    template <int dim>
     const Interpolator::Interface<dim> &
     World<dim>::get_interpolator() const
     {

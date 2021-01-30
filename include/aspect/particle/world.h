@@ -146,6 +146,21 @@ namespace aspect
         void copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
                                     Particles::ParticleHandler<dim> &to_particle_handler) const;
 
+        /**
+         * @brief Stores a copy of the particle handler in particle_handler_backup. This copy can be
+         * used to restore the position and properties of the particles for example after advection
+         * solver iterations of the iterated advection scheme or when a timestep has to be repeated.
+         */
+        void backup_particles ();
+
+        /**
+         * @brief Restores the particle handler particle_handler based on the copy
+         * in particle_handler_backup. This restores the position and properties of the particles
+         * to those in the copy and can be used for example after advection solver iterations
+         * of the iterated advection scheme or when a timestep has to be repeated.
+         */
+        void restore_particles ();
+
 
         /**
          * Do initial logic for handling pre-refinement steps
@@ -292,6 +307,14 @@ namespace aspect
          * managing the internal particle structures.
          */
         std::unique_ptr<Particles::ParticleHandler<dim> > particle_handler;
+
+        /**
+         * Particle handler object that is responsible for storing and
+         * managing the internal particle structures before starting nonlinear iterations
+         * such that the particle position and properties can be restored after
+         * each outer advection iteration.
+         */
+        Particles::ParticleHandler<dim> particle_handler_backup;
 
         /**
          * Strategy for particle load balancing.

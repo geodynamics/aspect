@@ -947,12 +947,8 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // after each nonlinear iteration.
-    dealii::Particles::ParticleHandler<dim> particle_handler_copy;
     if (particle_world.get() != nullptr)
-      {
-        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
-                                              particle_handler_copy);
-      }
+      particle_world->backup_particles();
 
     do
       {
@@ -960,10 +956,7 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          {
-            particle_world->copy_particle_handler(particle_handler_copy,
-                                                  particle_world->get_particle_handler());
-          }
+          particle_world->restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
@@ -1079,12 +1072,8 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // after each nonlinear iteration.
-    dealii::Particles::ParticleHandler<dim> particle_handler_copy;
     if (particle_world.get() != nullptr)
-      {
-        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
-                                              particle_handler_copy);
-      }
+      particle_world->backup_particles();
 
     do
       {
@@ -1092,10 +1081,7 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          {
-            particle_world->copy_particle_handler(particle_handler_copy,
-                                                  particle_world->get_particle_handler());
-          }
+          particle_world->restore_particles();
 
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
@@ -1242,12 +1228,8 @@ namespace aspect
 
     // Copy particle handler to restore particle location and properties
     // after each nonlinear iteration.
-    dealii::Particles::ParticleHandler<dim> particle_handler_copy;
     if (particle_world.get() != nullptr)
-      {
-        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
-                                              particle_handler_copy);
-      }
+      particle_world->backup_particles();
 
     do
       {
@@ -1255,10 +1237,7 @@ namespace aspect
         // but only if they have already been displaced in a nonlinear
         // iteration (in the assemble_and_solve_composition call).
         if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
-          {
-            particle_world->copy_particle_handler(particle_handler_copy,
-                                                  particle_world->get_particle_handler());
-          }
+          particle_world->restore_particles();
 
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
