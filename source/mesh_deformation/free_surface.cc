@@ -32,114 +32,6 @@
 
 namespace aspect
 {
-  namespace Assemblers
-  {
-    template <int dim>
-    ApplyStabilization<dim>::ApplyStabilization(const double stabilization_theta)
-      :
-      free_surface_theta(stabilization_theta)
-    {}
-
-    template <int dim>
-    void
-    ApplyStabilization<dim>::
-    execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
-             internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
-    {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
-
-      AssertThrow(!this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().empty(),
-                  ExcMessage("Applying free surface stabilization, even though no free surface is active. "));
-
-      if (this->get_parameters().include_melt_transport)
-        {
-          this->get_melt_handler().apply_free_surface_stabilization_with_melt (free_surface_theta,
-                                                                               scratch.cell,
-                                                                               scratch,
-                                                                               data);
-          return;
-        }
-
-      const Introspection<dim> &introspection = this->introspection();
-      const FiniteElement<dim> &fe = this->get_fe();
-
-      const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
-                                                                 scratch.finite_element_values.get_cell()->level(),
-                                                                 scratch.finite_element_values.get_cell()->index(),
-                                                                 &this->get_dof_handler());
-
-      const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
-      const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-
-      // Get the boundary indicators of those boundaries with a free surface
-      const std::set<types::boundary_id> tmp_free_surface_boundary_indicators = this->get_mesh_deformation_handler().get_free_surface_boundary_indicators();
-
-      // only apply on free surface faces
-      if (cell->at_boundary() && cell->is_locally_owned())
-        for (const unsigned int face_no : cell->face_indices())
-          if (cell->face(face_no)->at_boundary())
-            {
-              const types::boundary_id boundary_indicator
-                = cell->face(face_no)->boundary_id();
-
-              if (tmp_free_surface_boundary_indicators.find(boundary_indicator)
-                  == tmp_free_surface_boundary_indicators.end())
-                continue;
-
-              scratch.face_finite_element_values.reinit(cell, face_no);
-
-              this->compute_material_model_input_values (this->get_solution(),
-                                                         scratch.face_finite_element_values,
-                                                         cell,
-                                                         false,
-                                                         scratch.face_material_model_inputs);
-
-              this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
-
-              for (unsigned int q_point = 0; q_point < n_face_q_points; ++q_point)
-                {
-                  for (unsigned int i = 0, i_stokes = 0; i_stokes < stokes_dofs_per_cell; /*increment at end of loop*/)
-                    {
-                      if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
-                        {
-                          scratch.phi_u[i_stokes] = scratch.face_finite_element_values[introspection.extractors.velocities].value(i, q_point);
-                          ++i_stokes;
-                        }
-                      ++i;
-                    }
-
-                  const Tensor<1,dim>
-                  gravity = this->get_gravity_model().gravity_vector(scratch.face_finite_element_values.quadrature_point(q_point));
-                  const double g_norm = gravity.norm();
-
-                  // construct the relevant vectors
-                  const Tensor<1,dim> n_hat = scratch.face_finite_element_values.normal_vector(q_point);
-                  const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
-
-                  const double pressure_perturbation = scratch.face_material_model_outputs.densities[q_point] *
-                                                       this->get_timestep() *
-                                                       free_surface_theta *
-                                                       g_norm;
-
-                  std::cout<<"Pressure perturb: "<<pressure_perturbation<<std::endl;
-
-                  // see Kaus et al 2010 for details of the stabilization term
-                  for (unsigned int i=0; i< stokes_dofs_per_cell; ++i)
-                    for (unsigned int j=0; j< stokes_dofs_per_cell; ++j)
-                      {
-                        // The fictive stabilization stress is (phi_u[i].g)*(phi_u[j].n)
-                        const double stress_value = -pressure_perturbation*
-                                                    (scratch.phi_u[i]*g_hat) * (scratch.phi_u[j]*n_hat)
-                                                    *scratch.face_finite_element_values.JxW(q_point);
-
-                        data.local_matrix(i,j) += stress_value;
-                      }
-                }
-            }
-    }
-  }
-
   namespace MeshDeformation
   {
     template <int dim>
@@ -175,38 +67,13 @@ namespace aspect
         AssertThrow(velocity_boundary_indicators.find(p) == velocity_boundary_indicators.end(),
                     ExcMessage("The free surface mesh deformation plugin cannot be used with the current velocity boundary conditions"));
 
-      this->get_signals().set_assemblers.connect(
-        [&](const SimulatorAccess<dim> &sim_access,
-            aspect::Assemblers::Manager<dim> &assemblers)
-      {
-        this->set_assemblers(sim_access, assemblers);
-      });
+
+      /*this->get_signals().set_assemblers.connect(std::bind(&FreeSurface<dim>::set_assemblers,
+                                                           std::cref(*this),
+                                                           std::placeholders::_1,
+                                                           std::placeholders::_2));*/
+
     }
-
-
-
-    template <int dim>
-    void FreeSurface<dim>::set_assemblers(const SimulatorAccess<dim> &,
-                                          aspect::Assemblers::Manager<dim> &assemblers) const
-    {
-      aspect::Assemblers::ApplyStabilization<dim> *surface_stabilization
-        = new aspect::Assemblers::ApplyStabilization<dim>(free_surface_theta);
-
-      assemblers.stokes_system.push_back(
-        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim>> (surface_stabilization));
-
-      // Note that we do not want face_material_model_data, because we do not
-      // connect to a face assembler. We instead connect to a normal assembler,
-      // and compute our own material_model_inputs in apply_stabilization
-      // (because we want to use the solution instead of the current_linearization_point
-      // to compute the material properties).
-      assemblers.stokes_system_assembler_on_boundary_face_properties.needed_update_flags |= (update_values  |
-          update_gradients |
-          update_quadrature_points |
-          update_normal_vectors |
-          update_JxW_values);
-    }
-
 
 
     template <int dim>

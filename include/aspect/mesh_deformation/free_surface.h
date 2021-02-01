@@ -32,35 +32,6 @@ namespace aspect
 {
   using namespace dealii;
 
-  namespace Assemblers
-  {
-    /**
-     * Apply stabilization to a cell of the system matrix. The
-     * stabilization is only added to cells on a free surface. The
-     * scheme is based on that of Kaus et. al., 2010. Called during
-     * assembly of the system matrix.
-     */
-    template <int dim>
-    class ApplyStabilization: public Assemblers::Interface<dim>,
-      public SimulatorAccess<dim>
-    {
-      public:
-        ApplyStabilization(const double stabilization_theta);
-
-        void
-        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
-                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
-
-      private:
-        /**
-         * Stabilization parameter for the free surface. Should be between
-         * zero and one. A value of zero means no stabilization. See Kaus
-         * et. al. 2010 for more details.
-         */
-        const double free_surface_theta;
-    };
-  }
-
   namespace MeshDeformation
   {
     /**
@@ -78,13 +49,6 @@ namespace aspect
          * to the appropriate Simulator signal.
          */
         void initialize() override;
-
-        /**
-         * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
-         * to register its assembler.
-         */
-        void set_assemblers(const SimulatorAccess<dim> &simulator_access,
-                            aspect::Assemblers::Manager<dim> &assemblers) const;
 
         /**
          * A function that creates constraints for the velocity of certain mesh
