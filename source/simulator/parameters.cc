@@ -112,9 +112,15 @@ namespace aspect
                        "On the other hand, for non-dimensional computations, one wants "
                        "results in their natural unit system as used inside the code. "
                        "If this flag is set to `true' conversion to years happens; if "
-                       "it is `false', no such conversion happens. Note that when `true', "
-                       "some input such as prescribed velocities should also use years "
-                       "instead of seconds.");
+                       "it is `false', no such conversion happens."
+                       "\n\n"
+                       "Contrary to the word ``output'' in the name of this parameter, "
+                       "a number of plugins also use this parameter to determine "
+                       "how to interpret their \\textit{inputs}. For example, when `true', "
+                       "several of the boundary velocity models described in Section~"
+                       "\\ref{parameters:Boundary_20velocity_20model} interpret both "
+                       "specific times in years instead of seconds, and velocities in "
+                       "meters per year instead of meters per second.");
 
     prm.declare_entry ("CFL number", "1.0",
                        Patterns::Double (0.),

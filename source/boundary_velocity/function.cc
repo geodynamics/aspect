@@ -101,11 +101,10 @@ namespace aspect
                              "be the depth of the point.");
           prm.declare_entry ("Use spherical unit vectors", "false",
                              Patterns::Bool (),
-                             "Specify velocity as r, phi, and theta components "
-                             "instead of x, y, and z. Positive velocities point up, east, "
+                             "Specify velocity as $r$, $\\phi$, and $\\theta$ components "
+                             "instead of $x$, $y$, and $z$. Positive velocities point up, east, "
                              "and north (in 3D) or out and clockwise (in 2D). "
-                             "This setting only makes sense for spherical geometries."
-                            );
+                             "This setting only makes sense for spherical geometries.");
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
@@ -113,6 +112,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>
