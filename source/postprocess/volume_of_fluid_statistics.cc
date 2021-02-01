@@ -39,7 +39,8 @@ namespace aspect
       const QGauss<dim> quadrature_formula (1);
       const unsigned int n_q_points = quadrature_formula.size();
 
-      unsigned int n_volume_of_fluid_fields = this->get_volume_of_fluid_handler().get_n_fields();
+      const unsigned int n_volume_of_fluid_fields
+        = this->get_volume_of_fluid_handler().get_n_fields();
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -53,8 +54,9 @@ namespace aspect
 
       for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
         {
-          FEValuesExtractors::Scalar volume_of_fluid = this->get_volume_of_fluid_handler().field_struct_for_field_index(f)
-                                                       .volume_fraction.extractor_scalar();
+          const FEValuesExtractors::Scalar
+          volume_of_fluid (this->get_volume_of_fluid_handler().field_struct_for_field_index(f)
+                           .volume_fraction.extractor_scalar());
           double volume_of_fluid_vol_sum=0.0;
 
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -73,15 +75,16 @@ namespace aspect
 
       std::vector<double> global_volume_of_fluid_vol_sums(n_volume_of_fluid_fields);
 
-      Utilities::MPI::sum (local_volume_of_fluid_vol_sums, this->get_mpi_communicator(), global_volume_of_fluid_vol_sums);
+      Utilities::MPI::sum (local_volume_of_fluid_vol_sums, this->get_mpi_communicator(),
+                           global_volume_of_fluid_vol_sums);
 
       std::ostringstream output;
       output.precision(3);
 
       for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
         {
-          std::string col_name = "Global volume of fluid volumes for " +
-                                 this->get_volume_of_fluid_handler().name_for_field_index(f);
+          const std::string col_name = "Global volume of fluid volumes for " +
+                                       this->get_volume_of_fluid_handler().name_for_field_index(f);
           statistics.add_value (col_name, global_volume_of_fluid_vol_sums[f]);
 
           output << global_volume_of_fluid_vol_sums[f];
@@ -89,21 +92,13 @@ namespace aspect
           if (f+1 < n_volume_of_fluid_fields)
             output << "/";
 
-          // also make sure that the other columns filled by the this object
-          // all show up with sufficient accuracy and in scientific notation
-          {
-            const std::string columns[] = { col_name
-                                          };
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-              {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
-              }
-          }
+          // also make sure that the columns filled by the this object
+          // show up with sufficient accuracy and in scientific notation
+          statistics.set_precision (col_name, 8);
+          statistics.set_scientific (col_name, true);
         }
 
-      return std::pair<std::string, std::string> ("Global volume of fluid volumes (m^3):",
-                                                  output.str());
+      return {"Global volume of fluid volumes (m^3):", output.str()};
     }
   }
 }
