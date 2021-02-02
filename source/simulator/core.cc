@@ -436,6 +436,10 @@ namespace aspect
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
 
+    // After creating the coarse mesh, initialize mapping cache if one is used
+    if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+      map->initialize(triangulation,MappingQGeneric<dim>(4));
+
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
         BoundaryTraction::Interface<dim> *bv
