@@ -51,6 +51,7 @@
 
 #include <deal.II/fe/mapping_q.h>
 #include <deal.II/fe/mapping_cartesian.h>
+#include <deal.II/fe/mapping_q_cache.h>
 
 #include <deal.II/numerics/error_estimator.h>
 #include <deal.II/numerics/derivative_approximation.h>
@@ -106,7 +107,7 @@ namespace aspect
                                                  const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return std_cxx14::make_unique<MappingQ<dim>>(4, true);
+        return std_cxx14::make_unique<MappingQCache<dim>>(4);
       if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(initial_topography_model))
         return std_cxx14::make_unique<MappingCartesian<dim>>();
 
@@ -434,6 +435,10 @@ namespace aspect
 
     geometry_model->create_coarse_mesh (triangulation);
     global_Omega_diameter = GridTools::diameter (triangulation);
+
+    // After creating the coarse mesh, initialize mapping cache if one is used
+    if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+      map->initialize(triangulation,MappingQGeneric<dim>(4));
 
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
@@ -1640,6 +1645,8 @@ namespace aspect
         mesh_deformation_trans->prepare_for_coarsening_and_refinement(x_fs_system);
 
       triangulation.execute_coarsening_and_refinement ();
+      if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+        map->initialize(triangulation,MappingQGeneric<dim>(4));
     } // leave the timed section
 
     setup_dofs ();
@@ -1896,6 +1903,8 @@ namespace aspect
 
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
+            if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+              map->initialize(triangulation,MappingQGeneric<dim>(4));
           }
 
         setup_dofs();

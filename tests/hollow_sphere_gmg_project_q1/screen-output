@@ -10,11 +10,11 @@ Number of degrees of freedom: 4,030 (2,910+150+970)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.911907
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.19927e-09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.96872e-09
 
 
    Postprocessing:
-     Pressure at top/bottom of domain:      -1.884e-07 Pa, 500 Pa
+     Pressure at top/bottom of domain:      -1.885e-07 Pa, 500 Pa
      Computing dynamic topography           
      Errors u_L1, p_L1, u_L2, p_L2 topo_L2: 1.675799e+00, 7.892602e+00, 9.120206e-01, 4.859899e+00, 8.407909e-03
 
