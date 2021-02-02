@@ -20,4 +20,3 @@ subsection Postprocess
     set Interpolation scheme = nearest neighbor
   end
 end
-

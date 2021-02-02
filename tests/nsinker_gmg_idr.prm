@@ -3,7 +3,7 @@
 
 set Dimension = 3
 
-include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker_gmg.prm 
+include $ASPECT_SOURCE_DIR/benchmarks/nsinker/nsinker_gmg.prm
 
 subsection Material model
   set Material averaging = harmonic average only viscosity
@@ -18,6 +18,6 @@ subsection Solver parameters
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                    
-  set Initial global refinement          = 2                    
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
 end

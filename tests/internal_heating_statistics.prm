@@ -2,7 +2,7 @@
 # This is a test for the radiogenic heating and the internal
 # heating statistics postprocessor. Since density and radiogenic
 # heating are constant there is an analytical solution, which
-# is reproduced in this testcase. 
+# is reproduced in this testcase.
 
 set Dimension = 2
 
@@ -45,7 +45,7 @@ end
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
 end
 
@@ -59,7 +59,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -103,7 +103,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 

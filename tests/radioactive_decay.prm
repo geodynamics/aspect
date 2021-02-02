@@ -50,7 +50,7 @@ subsection Heating model
     set Initial concentrations crust  = 0.1,   0.0
     set Crust defined by composition  = true
     set Crust composition number      = 0
-  
+
   end
 end
 

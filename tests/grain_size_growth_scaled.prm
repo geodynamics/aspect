@@ -1,17 +1,17 @@
 # This is a very simple test case that checks
 # that the implementation of the grain growth
-# laws are correct, and if they work with the 
+# laws are correct, and if they work with the
 # lower mantle grain size scaling (which is
 # a parameter introduced to reduce numerical problems
 # resulting from large contrasts in grain size between
 # the lower mantle and transition zone. All parameters,
 # including temperature and pressure, are set to constant
-# values and no dynamic recrystallisation is 
+# values and no dynamic recrystallisation is
 # included (the reciprocal required strain is
 # set to zero). Material flows in from the left
 # and flows out at the right boundary with a constant
 # velocity. The grain size
-# should then only depend on the x coordinate 
+# should then only depend on the x coordinate
 # following the relation
 #
 # d(x) = (d_0 + A * x)^(1/p)
@@ -22,7 +22,7 @@
 # A   = 2.0294e-46 1/m
 #
 # leading to a grain size of d=8.8957E-5 m at the
-# right boundary of the model. 
+# right boundary of the model.
 
 ############### Global parameters
 
@@ -58,7 +58,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left:function,right:function 
+  set Prescribed velocity boundary indicators = left:function,right:function
 end
 
 # Warning: Merge the parameter in the following subsection with any
@@ -93,7 +93,7 @@ end
 
 subsection Initial temperature model
   set Model name = adiabatic
-  
+
   subsection Adiabatic
     set Age top boundary layer      = 0
     subsection Function
@@ -104,10 +104,10 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function constants  = 
+    set Function constants  =
     set Function expression = if(z<50000,8e-4,8.00001e-4)
   end
 end
@@ -127,7 +127,7 @@ subsection Material model
     set Reference compressibility        = 0
     set Viscosity                        = 1e18
     set Reference temperature            = 1600
-    set Recrystallized grain size        = 
+    set Recrystallized grain size        =
 
     set Grain growth activation energy       = 3e5
     set Grain growth activation volume       = 0.0

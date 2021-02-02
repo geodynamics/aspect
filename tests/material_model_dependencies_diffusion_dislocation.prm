@@ -63,7 +63,7 @@ subsection Initial temperature model
   set Model name = function
   subsection Function
     set Variable names = x,y
-    set Function expression = 293 + x 
+    set Function expression = 293 + x
   end
 end
 
@@ -92,6 +92,3 @@ end
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
-
-
-

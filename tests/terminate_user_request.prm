@@ -88,5 +88,3 @@ end
 subsection Checkpointing
   set Steps between checkpoint = 5
 end
-
-

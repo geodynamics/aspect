@@ -53,7 +53,7 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-# we apply simple shear here, so that the top and bottom boundaries 
+# we apply simple shear here, so that the top and bottom boundaries
 # move with the same speed u0, but in opposite directions
 subsection Boundary velocity model
   subsection Function
@@ -63,7 +63,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 0.004
@@ -76,7 +76,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
@@ -88,7 +88,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=64000
     set Function expression = 0.0
@@ -138,7 +138,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
 
-    set List of output variables      = density, viscosity, thermal expansivity, strain rate, melt material properties 
+    set List of output variables      = density, viscosity, thermal expansivity, strain rate, melt material properties
 
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity

@@ -1,9 +1,9 @@
-# This test checks if the postprocessor 'melt fraction' works as 
+# This test checks if the postprocessor 'melt fraction' works as
 # intended. The visualization output is then a p-T-diagram of
-# the melt fraction of peridotite using the melting model of 
+# the melt fraction of peridotite using the melting model of
 # Katz et. al, 2003 (Geochem., Geophys., Geosyst. )
-# with the temperature ranging from 1000°C to 1900°C on the x axis 
-# and the pressure ranging from 0 GPa to 8 GPa on the y axis. 
+# with the temperature ranging from 1000°C to 1900°C on the x axis
+# and the pressure ranging from 0 GPa to 8 GPa on the y axis.
 
 # MPI: 2
 
@@ -134,4 +134,3 @@ subsection Postprocess
     end
   end
 end
-

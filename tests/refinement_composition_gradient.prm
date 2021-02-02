@@ -12,7 +12,7 @@ set Surface pressure                       = 0
 
 set Use years in output instead of seconds = false
 
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = circle
 end
 
@@ -45,7 +45,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -58,7 +58,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
@@ -67,7 +67,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = if(x+y<0.4,1.0,0.1);1.0+exp(-(x-0.5)^2/0.05-(y-0.4)^2/0.05)
     set Variable names      = x,y
@@ -77,7 +77,7 @@ end
 
 subsection Material model
 
-  set Model name = simple # default: 
+  set Model name = simple # default:
 end
 
 
@@ -101,7 +101,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1,2,3        # default: 
+  set Fixed temperature boundary indicators   = 0,1,2,3        # default:
 end
 
 
@@ -120,6 +120,3 @@ subsection Postprocess
   end
 
 end
-
-
-

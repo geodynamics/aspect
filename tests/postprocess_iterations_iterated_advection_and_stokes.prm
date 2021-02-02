@@ -1,6 +1,6 @@
 #########################################################
-# This is a model setup to test the postprocessing of 
-# nonlinear iterations for the iterated Advection and Stokes solver. 
+# This is a model setup to test the postprocessing of
+# nonlinear iterations for the iterated Advection and Stokes solver.
 
 
 set Adiabatic surface temperature          = 0               # default: 0
@@ -52,7 +52,7 @@ subsection Boundary composition model
 end
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 150000
@@ -91,7 +91,7 @@ end
 
 
 subsection Material model
-  set Model name = simple 
+  set Model name = simple
   subsection Simple model
     set Thermal conductivity = 0
     set Thermal expansion coefficient = 1

@@ -1,4 +1,4 @@
-# A test that makes sure the 'cell average' particle interpolator 
+# A test that makes sure the 'cell average' particle interpolator
 # does not crash when single cells do not contain particles.
 
 set Dimension                               = 2
@@ -8,7 +8,7 @@ subsection Geometry model
   set Model name = box
   subsection Box
     set X extent    = 1000000.0
-    set Y extent    =  450000.0 
+    set Y extent    =  450000.0
   end
 end
 

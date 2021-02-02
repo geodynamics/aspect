@@ -43,8 +43,8 @@ end
 subsection Boundary temperature model
   set List of model names = spherical constant
   subsection Spherical constant
-    set Inner temperature = 2600 
-    set Outer temperature = 273 
+    set Inner temperature = 2600
+    set Outer temperature = 273
   end
 end
 

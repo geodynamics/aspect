@@ -1,17 +1,17 @@
 # This test is used to check if the adiabatic heating
 # of melt is calculated correctly.
 # The material is upwelling with a constant velocity
-# and without conduction of heat, so that the steady state 
+# and without conduction of heat, so that the steady state
 # of the model is an adiabatic temperature profile, and
-# the temperature should not change over time. 
+# the temperature should not change over time.
 #
 # The testcase is very similar to the adiabatic_heating
 # test, but melt transport and the adiabatic heat of melt
-# heating model are enabled. There is 100% melt in the model, 
-# and melt has a different density than the solid (so that 
+# heating model are enabled. There is 100% melt in the model,
+# and melt has a different density than the solid (so that
 # melt an solid velocities are different). However, the melt
 # should still upwell adiabatically, so temperature should
-# not change. 
+# not change.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -129,7 +129,7 @@ subsection Material model
     set Reference solid density  = 3300
     set Reference melt density   = 3000
     set Reference specific heat  = 1000
-    set Reference temperature    = 1600 
+    set Reference temperature    = 1600
     set Thermal conductivity     = 0.0
     set Surface solidus          = 10000.0
     set Include melting and freezing = false

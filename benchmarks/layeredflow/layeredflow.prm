@@ -45,7 +45,7 @@ end
 subsection LayeredFlow benchmark
    set Viscosity parameter beta = 0.001
    set Viscosity parameter epsilon = 0.05
-end 
+end
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
@@ -68,7 +68,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -79,7 +79,7 @@ end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
+# run at the end of each time step.
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, LayeredFlowPostprocessor

@@ -1,11 +1,11 @@
 # Test the compaction length refinement criterion.
-# The compaction length is 1 at the lower left boundary, 
-# and two magnitudes smaller at the top right boundary, 
-# and we specify two cells per compaction length. 
+# The compaction length is 1 at the lower left boundary,
+# and two magnitudes smaller at the top right boundary,
+# and we specify two cells per compaction length.
 # Hence, the finest cells should be on refinement level 8,
 # and in the top right corner.
 # The permeability changes along the x axis, the viscosity
-# along the y axis. 
+# along the y axis.
 
 set Adiabatic surface temperature          = 1600               # default: 0
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -55,7 +55,7 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-    set Function expression = 0.5 - 0.4286 * x; 0 
+    set Function expression = 0.5 - 0.4286 * x; 0
     set Variable names      = x,y
   end
 end
@@ -63,7 +63,7 @@ end
 
 subsection Material model
 
-  set Model name = melt global 
+  set Model name = melt global
   subsection Melt global
     set Thermal conductivity              = 0
     set Reference solid density           = 1

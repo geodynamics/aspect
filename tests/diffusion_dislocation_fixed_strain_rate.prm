@@ -14,7 +14,7 @@ subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X periodic  = true 
+    set X periodic  = true
     set X extent    = 500e3
     set Y extent    = 500e3
   end

@@ -31,7 +31,7 @@ set Pressure normalization                 = no
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 5
     set Y repetitions = 2
@@ -93,11 +93,11 @@ subsection Boundary temperature model
 end
 
 
-# Our temperature initial conditions are simply a blob of hot 
+# Our temperature initial conditions are simply a blob of hot
 # rock in the center of the domain.
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = sqrt((x-250.e3)^2 + (y-100.e3)^2) < 25.e3 ? 200.0 : 0.0
   end
@@ -128,13 +128,13 @@ subsection Mesh refinement
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = temperature
-  set Time steps between mesh refinement = 0    
+  set Time steps between mesh refinement = 0
 end
 
 
 # We also include the topography postprocessor, which just calculates
 # the maximum and minimun topography on your free surface at
-# every time step.  
+# every time step.
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography
 

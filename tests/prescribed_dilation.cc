@@ -402,4 +402,3 @@ namespace aspect
                                   "and reports the error. See the manual for more information.")
   }
 }
-

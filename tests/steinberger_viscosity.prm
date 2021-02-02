@@ -1,7 +1,7 @@
 # This is a copy of the steinberger_compressible test.
 # However, it uses the actual Steinberger viscosity model,
 # instead of the constant viscosity test data.
- 
+
 
 set CFL number                             = 1.0
 set End time                               = 1e5

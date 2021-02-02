@@ -31,7 +31,7 @@ end
 subsection Geometry model
   set Model name = spherical shell
   subsection Spherical shell
-    set Custom mesh subdivision = number of slices 
+    set Custom mesh subdivision = number of slices
     set Number of slices = 2
     set Inner radius = 5711000
     set Outer radius = 6371000
@@ -88,4 +88,3 @@ subsection Postprocess
     set Output format      = gnuplot
   end
 end
-

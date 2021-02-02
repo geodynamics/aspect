@@ -95,4 +95,46 @@ tab_to_space()
 export -f tab_to_space
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
 
+# Remove trailing whitespace from files
+remove_trailing_whitespace()
+{
+    f=$1
+    # awkward tab replacement because of OSX sed, do not change unless you test it on OSX
+    TAB=$'\t'
+    sed -e "s/[ $TAB]*$//"  $f >$f.tmp
+    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+    rm -f $f.tmp
+}
+export -f remove_trailing_whitespace
+find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+
+# Ensure only a single newline at end of files
+ensure_single_trailing_newline()
+{
+  f=$1
+
+  # Remove newlines at end of file
+  # Check that the current line only contains newlines
+  # If it doesn't match, print it
+  # If it does match and we're not at the end of the file,
+  # append the next line to the current line and repeat the check
+  # If it does match and we're at the end of the file,
+  # remove the line.
+  sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' $f >$f.tmpi
+
+  # Then add a newline to the end of the file
+  # '$' denotes the end of file
+  # 'a\' appends the following text (which in this case is nothing)
+  # on a new line
+  sed -e '$a\' $f.tmpi >$f.tmp
+
+  diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
+  rm -f $f.tmp $f.tmpi
+}
+export -f ensure_single_trailing_newline
+find include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+
+# Do not recursively search the tests directory for prm files, otherwise the output prms will be changed
+find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find tests -maxdepth 1 \( -name '*.prm' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 exit 0

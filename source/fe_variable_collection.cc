@@ -254,7 +254,7 @@ namespace aspect
   template struct VariableDeclaration<dim>; \
   template struct FEVariable<dim>; \
   template class FEVariableCollection<dim>; \
-   
+
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE

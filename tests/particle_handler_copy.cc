@@ -81,4 +81,3 @@ void signal_connector (SimulatorSignals<dim> &signals)
 
 ASPECT_REGISTER_SIGNALS_CONNECTOR(signal_connector<2>,
                                   signal_connector<3>)
-

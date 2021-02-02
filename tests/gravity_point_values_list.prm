@@ -1,4 +1,4 @@
-# A simple setup for testing the gravity postprocessor using the 
+# A simple setup for testing the gravity postprocessor using the
 # sample scheme 'list'.
 # See the corresponding section in the manual for more information.
 
@@ -65,7 +65,7 @@ subsection Postprocess
   set List of postprocessors = gravity calculation
   subsection Gravity calculation
     set Sampling scheme           = list of points
-    set List of radius            = 4 
+    set List of radius            = 4
     set List of longitude         = 100
     set List of latitude          = 35
   end

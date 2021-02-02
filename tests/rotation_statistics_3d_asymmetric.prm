@@ -20,7 +20,7 @@ set Dimension                              = 3
 set Use years in output instead of seconds = false
 set End time                               = 0.0
 
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = circle
 end
 set Nonlinear solver scheme                = single Advection, no Stokes

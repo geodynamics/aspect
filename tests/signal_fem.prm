@@ -26,7 +26,7 @@ subsection Compositional fields
   set Names of fields = A, B
 end
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = 0;0
     set Variable names      = x,y
@@ -119,4 +119,3 @@ set List of output variables      = viscosity
     set Time between graphical output = 0   # default: 1e8
   end
 end
-

@@ -41,7 +41,7 @@ end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = top
-  set List of model names = function 
+  set List of model names = function
   subsection Function
     set Function expression = 1613.0
   end

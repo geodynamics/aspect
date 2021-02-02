@@ -1,7 +1,7 @@
 # A description of the van Keken et al. benchmark using smooth initial
 # conditions instead of the discontinuous ones in
 # van-keken-discontinuous.prm. See the manual for more information.
-# This test adds active particles to the cookbook parameter file, 
+# This test adds active particles to the cookbook parameter file,
 # and interpolates two particle properties defined by two functions
 # onto two compositional fields.
 

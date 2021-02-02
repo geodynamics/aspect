@@ -2,11 +2,11 @@
 # constant strain rate and an elastic time step equal
 # to the numerical time step. The fixed elastic time
 # step used during the first time step is equal to the
-# numerical time step. Viscoelastic stresses (sigma_xx, 
-# sigma_yy, sigma_xy) are tracked with active particles. 
-# The parameter file is derived from the 2D 
-# viscoelastic_stress_build-up benchmark with modifications 
-# to the compositional field method, resolution, end time, material properties and 
+# numerical time step. Viscoelastic stresses (sigma_xx,
+# sigma_yy, sigma_xy) are tracked with active particles.
+# The parameter file is derived from the 2D
+# viscoelastic_stress_build-up benchmark with modifications
+# to the compositional field method, resolution, end time, material properties and
 # postprocessors.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm

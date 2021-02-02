@@ -2,7 +2,7 @@ set Dimension                              = 2
 
 set Use years in output instead of seconds = false
 set End time                               = 0.5
-set Output directory                       = refinement_switch 
+set Output directory                       = refinement_switch
 
 
 set Pressure normalization                 = surface
@@ -92,7 +92,7 @@ end
 subsection Compositional fields
   set List of normalized fields = 0
   set Names of fields           = heat
-  set Number of fields          = 1                                                          
+  set Number of fields          = 1
 end
 subsection Initial composition model
   set Model name = function
@@ -114,7 +114,7 @@ subsection Postprocess
 end
 
 subsection Termination criteria
-  set End step                  = 1  
+  set End step                  = 1
   set Termination criteria      = end step
 end
 

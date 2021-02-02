@@ -36,7 +36,7 @@ subsection Geometry model
   set Model name = box
   subsection Box
     set X periodic = true
-    set X extent = 1.e6 
+    set X extent = 1.e6
     set Y extent = 5.e5
     set Z extent = 5.e5
   end
@@ -53,7 +53,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-1.e5)^2+(y-4.0e5)^2)<5.0e4) | (sqrt((x-3.e5)^2+(y-2.e5)^2)<1.0e5) , 800.0, 0)
   end
@@ -113,7 +113,7 @@ subsection Termination criteria
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, basic statistics,  topography, 
+  set List of postprocessors = velocity statistics, basic statistics,  topography,
 end
 
 subsection Solver parameters

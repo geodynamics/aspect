@@ -1,4 +1,4 @@
-# This is a test for the artificial viscosity. 
+# This is a test for the artificial viscosity.
 # In particular, it checks that the results for
 # temperature and compositional fields are the same.
 
@@ -37,7 +37,7 @@ subsection Boundary composition model
   set List of model names = initial composition
 end
 
-# we apply simple shear here, so that the top and bottom boundaries 
+# we apply simple shear here, so that the top and bottom boundaries
 # move with the same speed u0, but in opposite directions
 subsection Boundary velocity model
   subsection Function
@@ -47,7 +47,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 1.0
@@ -59,7 +59,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
@@ -71,7 +71,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=64000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
@@ -80,7 +80,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=64000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)

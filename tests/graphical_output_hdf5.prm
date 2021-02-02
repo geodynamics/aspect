@@ -1,4 +1,4 @@
-# A copy of the graphical_output test designed to test the 
+# A copy of the graphical_output test designed to test the
 # hdf5 visualization output format.
 
 
@@ -116,4 +116,3 @@ subsection Postprocess
     set List of output variables = viscosity, nonadiabatic pressure
   end
 end
-

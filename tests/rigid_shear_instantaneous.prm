@@ -3,4 +3,3 @@
 set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/benchmarks/rigid_shear/instantaneous/rigid_shear.prm
-

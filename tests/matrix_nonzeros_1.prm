@@ -41,7 +41,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Function expression = 1
   end
@@ -101,4 +101,3 @@ subsection Postprocess
     set Time between graphical output = 0   # default: 1e8
   end
 end
-

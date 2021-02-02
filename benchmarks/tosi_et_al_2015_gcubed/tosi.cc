@@ -749,4 +749,3 @@ namespace aspect
                                   "Note that this postprocessor only makes sense for box geometries.")
   }
 }
-

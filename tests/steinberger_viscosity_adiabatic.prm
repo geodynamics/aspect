@@ -2,10 +2,10 @@
 # However, it uses the actual Steinberger viscosity model,
 # instead of the constant viscosity test data.
 # Additionally, it calculates the temperature deviation
-# for the viscosity model against the adiabatic 
+# for the viscosity model against the adiabatic
 # temperature profile instead of the lateral average.
 
- 
+
 set CFL number                             = 1.0
 set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0

@@ -33,13 +33,13 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 0 
+    set Function expression = 0
   end
 end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
-  set List of model names = initial temperature 
+  set List of model names = initial temperature
 
 end
 
@@ -52,7 +52,7 @@ end
 
 # The mesh will be deformed according to the displacement
 # of the surface nodes due to diffusion of the topography.
-# The mesh is allowed to move verticall along the left and 
+# The mesh is allowed to move verticall along the left and
 # right boundary.
 subsection Mesh deformation
   set Mesh deformation boundary indicators = top: diffusion
@@ -70,7 +70,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1 
+    set Magnitude = 1
   end
 end
 

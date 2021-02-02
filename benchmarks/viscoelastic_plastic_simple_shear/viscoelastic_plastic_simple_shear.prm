@@ -4,7 +4,7 @@
 # The rheology is viscoelastic plastic, with a cohesion value of 3.5. This value is slightly
 # higher than the visco-elastic stress at time=1, meaning that yielding does not occur, and the
 # analytic (visco-elastic) solution should be reasonably well approximated. If the cohesion value is reduced
-# to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain 
+# to below the shear stress value at time t=1 (~3.1411), the shear stress will reach and remain
 # at this value until after time t=1 when stresses begin to relax.
 # This setup demonstrates an important difference between viscoelastic plastic, and visco-plastic rheology.
 # In a comparable setup, the visco-plastic rheology will exhibit yielding in the first velocity iteration,

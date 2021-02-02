@@ -8,4 +8,3 @@ subsection Postprocess
     set Point-wise stress and strain = true
   end
 end
-

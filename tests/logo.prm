@@ -1,4 +1,4 @@
-# A test for the model that produces the ASPECT logo. 
+# A test for the model that produces the ASPECT logo.
 set Dimension = 2
 
 include $ASPECT_SOURCE_DIR/doc/logo/logo.prm

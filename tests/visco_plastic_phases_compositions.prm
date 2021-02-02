@@ -22,7 +22,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
@@ -78,7 +78,7 @@ subsection Material model
     set Phase transition depths = upper_crust: 10e3, background: 70e3|90e3
     set Phase transition widths = upper_crust: 1e3,background: 1e3|1e3
     set Phase transition temperatures = upper_crust: 1000, background: 1000|1000
-    set Phase transition Clapeyron slopes = upper_crust: 0, background: 0|0 
+    set Phase transition Clapeyron slopes = upper_crust: 0, background: 0|0
 
     set Densities = upper_crust: 2700|2750, lower_crust: 2850, background:3300|3400|3500
     set Thermal expansivities = upper_crust: 1e-5|1.5e-5, lower_crust: 7e-5, background:3.5e-5|2e-5|1e-5

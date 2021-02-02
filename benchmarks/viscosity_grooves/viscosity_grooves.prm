@@ -41,7 +41,7 @@ end
 
 subsection ViscosityGrooves benchmark
    set Viscosity parameter = 0.01
-end 
+end
 
 ############### Parameters describing the temperature field
 
@@ -59,7 +59,7 @@ end
 ############### Parameters describing the discretization
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0  
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
 end
 

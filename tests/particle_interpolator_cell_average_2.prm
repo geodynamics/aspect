@@ -1,7 +1,7 @@
 #########################################################
 # This is a variation of the composition-passive.prm
 # parameter file, with the exception that we also
-# advect along a set of particles that 
+# advect along a set of particles that
 #
 # See the manual for more information about this setup.
 

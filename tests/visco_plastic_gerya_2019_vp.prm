@@ -1,4 +1,4 @@
-# This parameter file modifies the benchmark gerya_2019_vp.prm 
+# This parameter file modifies the benchmark gerya_2019_vp.prm
 # to use a coarser resolution
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/gerya_2019/gerya_2019_vp.prm

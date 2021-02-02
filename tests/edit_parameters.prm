@@ -80,11 +80,10 @@ subsection Boundary velocity model
 end
 
 subsection Termination criteria
-  set Termination criteria = end step 
+  set Termination criteria = end step
   set End step                  = 10
 end
 
 subsection Postprocess
   set List of postprocessors = temperature statistics, velocity statistics
 end
-

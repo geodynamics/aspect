@@ -86,4 +86,3 @@ namespace aspect
                                                "all the sides of a box. For test")
   }
 }
-

@@ -22,7 +22,7 @@ subsection Geometry model
 
   subsection Box
     set X extent  = 2
-    set Y extent  = 2 
+    set Y extent  = 2
   end
 end
 
@@ -73,7 +73,7 @@ end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
+# run at the end of each time step.
 
 subsection Postprocess
   set List of postprocessors = velocity statistics, MyPostprocessor, visualization

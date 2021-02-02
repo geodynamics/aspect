@@ -46,7 +46,7 @@ end
 
 subsection Initial composition model
   set List of model names = function
-  
+
   subsection Function
     set Variable names      = x,y
     set Function expression = if(y<0.5, 1, 0) ; if(y<0.5, 0, 1)
@@ -93,6 +93,3 @@ end
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = 0, 2, 3
 end
-
-
-

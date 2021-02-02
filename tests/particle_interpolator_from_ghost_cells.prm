@@ -1,4 +1,4 @@
-# A test that makes sure the 'cell average' particle interpolator 
+# A test that makes sure the 'cell average' particle interpolator
 # also uses data from ghost particles to compute the averaged
 # properties in a cell without particles.
 
@@ -11,7 +11,7 @@ subsection Geometry model
   set Model name = box
   subsection Box
     set X extent    = 1000000.0
-    set Y extent    =  450000.0 
+    set Y extent    =  450000.0
   end
 end
 

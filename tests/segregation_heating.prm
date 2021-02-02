@@ -1,5 +1,5 @@
 # This test is used to check if the shear heating
-# of melt, in particular the segregation heating, is 
+# of melt, in particular the segregation heating, is
 # calculated correctly.
 # There is no in- or outflux of solid material, but melt
 # is allowed to flow in freely, so that it moves upwards
@@ -122,7 +122,7 @@ subsection Material model
     set Reference solid density    = 2
     set Reference melt density     = 1
     set Reference specific heat    = 1
-    set Reference temperature      = 1600 
+    set Reference temperature      = 1600
     set Thermal conductivity       = 0.0
     set Surface solidus            = 10000.0
     set Include melting and freezing = false

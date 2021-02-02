@@ -1,5 +1,5 @@
 # This parameter file reproduces an analytical benchmark for the evolution
-# of finite strain in a model of simple shear as described (for a specific 
+# of finite strain in a model of simple shear as described (for a specific
 # application) in McKenzie & Jackson (1983): "The relationship between
 # strain rates, crustal thickening, paleomagnetism, finite strain and
 # fault movements within a deforming zone." They show that the analytical
@@ -15,7 +15,7 @@
 # Because u_x,y = 2.0 / 1.0 is constant in the whole domain (and over time) we expect
 # a constant F at any given time, and in particular:
 # F_xy (t=1.0) = 2.0
-# 
+#
 # This parameter file tracks the finite strain in two ways, once by using
 # compositional fields as illustrated in the finite strain cookbook, and
 # once by using a particle particle that sits and remains in the center of the domain.

@@ -31,7 +31,7 @@ end
 subsection Geometry model
   set Model name = chunk
 
-  subsection Chunk 
+  subsection Chunk
     set Chunk inner radius = 3481000
     set Chunk outer radius = 6371000
     set Chunk minimum longitude = 0
@@ -70,7 +70,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-3e6)^2+(y-2e6)^2)<1e6) , 800.0, 0)
   end
@@ -108,4 +108,3 @@ subsection Postprocess
   end
 
 end
-

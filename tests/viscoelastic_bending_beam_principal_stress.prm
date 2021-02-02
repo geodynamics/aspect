@@ -2,11 +2,11 @@
 # runs successfully. This test extends viscoelastic_bending_beam by
 # also outputting the principal stresses including the elastic stresses.
 
-include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm 
+include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
 set End time  = 1e3
 
-# Significantly reduce resolution 
+# Significantly reduce resolution
 subsection Geometry model
   set Model name = box
   subsection Box

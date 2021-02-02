@@ -9,7 +9,7 @@ set End time                               = 14400 # Equivalent to 10 cm of hori
 set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 
-# Note that the Linear/Nonlinear solver tolerance should be sufficiently 
+# Note that the Linear/Nonlinear solver tolerance should be sufficiently
 # strict to avoid numerical instabilities.
 
 set Nonlinear solver tolerance             = 1e-7
@@ -53,13 +53,13 @@ subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, h=3600., th=0.002                  # h = hr = 3600 s; th = thickness of bounding box
-    set Function expression = if (y>th, -2.5*cm/h, -(y/th)*2.5*cm/h) ; 0. # velocity BC is defined such that the wedge is pushed at 2.5 cm/h to the left above the bound                            -ing box and tapers to zero from the top to the bottom of the bounding box. 
+    set Function expression = if (y>th, -2.5*cm/h, -(y/th)*2.5*cm/h) ; 0. # velocity BC is defined such that the wedge is pushed at 2.5 cm/h to the left above the bound                            -ing box and tapers to zero from the top to the bottom of the bounding box.
   end
 end
 
 # The zero traction surface allows sticky air to leave the system in response to compression.
 subsection Boundary traction model
-  set Prescribed traction boundary indicators = top: zero traction 
+  set Prescribed traction boundary indicators = top: zero traction
 end
 
 # Temperature boundary conditions
@@ -92,9 +92,9 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  = th=0.002
-    set Function expression = if((x<0.1324 && x>=0.05) && (y<=0.36408*x-0.0182039 && y>=th), 1, 0); \    
-                              if((x>=0.1324 && x<0.1329) || (x>0 && y<=th),1,0); \                       
-                              if(x>=0.1329 && y>th,1,0); \             
+    set Function expression = if((x<0.1324 && x>=0.05) && (y<=0.36408*x-0.0182039 && y>=th), 1, 0); \
+                              if((x>=0.1324 && x<0.1329) || (x>0 && y<=th),1,0); \
+                              if(x>=0.1329 && y>th,1,0); \
             if((x<=0.1324 && y>0.36408*x-0.0182039 && y>th) || (x<0.05 && y>th),1,0); \
             0;
   end
@@ -104,7 +104,7 @@ end
 subsection Discretization
   set Use discontinuous composition discretization  = true
   subsection Stabilization parameters
-      set Use limiter for discontinuous composition solution = true 
+      set Use limiter for discontinuous composition solution = true
 #                                                     [sand,  bound, block, sticky_air, total_strain]
       set Global composition maximum                = 1.,     1.,    1.,    1.,         1e5
       set Global composition minimum                = 0.,     0.,    0.,    0.,         0.
@@ -113,17 +113,17 @@ end
 
 # Material model
 subsection Material model
-  set Material averaging = harmonic average 
+  set Material averaging = harmonic average
   set Model name = visco plastic
   subsection Visco Plastic
 #                  [bkd, sand,  bound, block, sticky_air, total_strain]
     set Densities                                   = 1560, 1560., 3100,  1560 , 0,          1560
-    
+
     set Reference temperature                       = 293
     set Heat capacities                             = 750.
     set Thermal diffusivities                       = 1e-6
     set Thermal expansivities                       = 0.
-    
+
     set Reference viscosity                         = 1e8
     set Minimum viscosity                           = 1e4
     set Maximum viscosity                           = 1e12
@@ -134,7 +134,7 @@ subsection Material model
     set Stress exponents for dislocation creep      = 1.0
     set Activation energies for dislocation creep   = 0.
     set Activation volumes for dislocation creep    = 0.
- 
+
 #                                                     [bkd, sand,  bound, block, sticky_air, total_strain]
     set Reference strain rate                       = 1.e-5
     set Minimum strain rate                         = 1.e-10
@@ -181,7 +181,7 @@ subsection Termination criteria
   set End step             = 10000
 end
 
-# Note that the Linear/Nonlinear solver tolerance should be sufficiently 
+# Note that the Linear/Nonlinear solver tolerance should be sufficiently
 # strict to avoid numerical instabilities.
 
 subsection Solver parameters

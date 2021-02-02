@@ -3,8 +3,8 @@
 #
 # The material model prescribes the temperature to be exactly the
 # pressure of the model
-# and is copied into the temperature field, 
-# so the minimum and maximum temperature should be 0.0 and 1.0, 
+# and is copied into the temperature field,
+# so the minimum and maximum temperature should be 0.0 and 1.0,
 # respectively.
 
 set Dimension = 2

@@ -9,7 +9,7 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function expression = if(y>=80.e3, 1, 0); \
                               if(y<80.e3 && y>=70.e3, 1, 0); \
-                              if(y<70.e3 && y>-100.e3,1, 0); \ 
+                              if(y<70.e3 && y>-100.e3,1, 0); \
                               if(y<68.e3 && y>60.e3 && x>=198.e3 && x<=202.e3 , 1, 0);
   end
 end

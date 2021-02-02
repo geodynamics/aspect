@@ -1,4 +1,4 @@
-# Test for relaxing topography of the free surface after an 
+# Test for relaxing topography of the free surface after an
 # initial sinusoidal perturbation
 
 set Dimension = 2
@@ -40,7 +40,7 @@ subsection Geometry model
     set Amplitude = 1.5e4
   end
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 50
     set Y repetitions = 20
@@ -58,7 +58,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  0.0
   end
@@ -125,6 +125,6 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1.e-7
-    set Number of cheap Stokes solver steps = 0 
+    set Number of cheap Stokes solver steps = 0
   end
 end

@@ -1,7 +1,7 @@
 ############### Global parameters
 # We use a 2d setup. Since it takes some time for
-# the model to reach a steady state we set the 
-# end time to approximately 15 billion years. 
+# the model to reach a steady state we set the
+# end time to approximately 15 billion years.
 
 set Dimension = 2
 
@@ -39,7 +39,7 @@ end
 subsection Boundary temperature model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed temperature boundary indicators   = 3
 end
 
@@ -53,7 +53,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -87,19 +87,19 @@ subsection Material model
     set Phase transition density jumps                 = 115.6
     set Corresponding phase for density jump           = 0
 
-    # If the temperature is equal to the phase transition temperature, the 
-    # phase transition will occur at the phase transition depth. However, 
-    # if the temperature deviates from this value, the Clapeyron slope 
+    # If the temperature is equal to the phase transition temperature, the
+    # phase transition will occur at the phase transition depth. However,
+    # if the temperature deviates from this value, the Clapeyron slope
     # determines how much the pressure (and depth) of the phase boundary
     # changes. Here, the phase transition will be in the middle of the box
-    # for T=T1. 
+    # for T=T1.
     set Phase transition depths                        = 500000
     set Phase transition temperatures                  = 1000
     set Phase transition Clapeyron slopes              = 1e7
 
-    # We set the width of the phase transition to 5 km. You may want to 
+    # We set the width of the phase transition to 5 km. You may want to
     # change this parameter to see how latent heating depends on the width
-    # of the phase transition. 
+    # of the phase transition.
     set Phase transition widths                        = 5000
 
     set Reference density                              = 3400
@@ -107,13 +107,13 @@ subsection Material model
     set Reference temperature                          = 1000
     set Thermal conductivity                           = 2.38
 
-    # We set the thermal expansion and the compressibility to zero, so that 
-    # all temperature (and density) changes are caused by advection, diffusion 
-    # and latent heating. 
+    # We set the thermal expansion and the compressibility to zero, so that
+    # all temperature (and density) changes are caused by advection, diffusion
+    # and latent heating.
     set Thermal expansion coefficient                  = 0.0
     set Compressibility                                = 0.0
 
-    # Viscosity is constant. 
+    # Viscosity is constant.
     set Thermal viscosity exponent                     = 0.0
     set Viscosity                                      = 8.44e21
     set Viscosity prefactors                           = 1.0, 1.0
@@ -123,7 +123,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 
@@ -158,7 +158,7 @@ subsection Postprocess
 
     # We are only interested in the last timestep (when the system hast reached
     # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
+    # if the solution already reached steady state, this parameter can be set
     # to a smaller value.
     set Time between graphical output = 0
     set List of output variables      = density

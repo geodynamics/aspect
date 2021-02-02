@@ -1,4 +1,4 @@
-# A simple setup for convection in a quarter of a 2d shell with 
+# A simple setup for convection in a quarter of a 2d shell with
 # user input allowing for different coordinate systems
 
 
@@ -55,7 +55,7 @@ subsection Boundary temperature model
   set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 4370
-    set Outer temperature = 273 
+    set Outer temperature = 273
   end
 end
 

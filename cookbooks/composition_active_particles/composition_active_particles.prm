@@ -1,7 +1,7 @@
 #########################################################
 # This is a variation of the composition-active.prm file.
 # Here, we track compositional fields and their associated
-# density differences with a particle, rather than field,  
+# density differences with a particle, rather than field,
 # based methods.
 #
 # See the manual for more information about this setup.
@@ -97,21 +97,21 @@ subsection Postprocess
 
   subsection Particles
     set Number of particles = 100000
-    set Time between data output = 0 
-    set Data output format = vtu 
+    set Time between data output = 0
+    set Data output format = vtu
     set List of particle properties = velocity, initial composition
     set Interpolation scheme = cell average
     set Update ghost particles = true
     set Particle generator name = random uniform
-  end 
+  end
 
 end
 
 
 # Here, we track compositional fields via active particle particles.
-# The initial composition assigned to the particles is 'mapped' 
-# to the particles at each time step.  This property is accessed in 
-# the material model through a compositional field (standard method) 
+# The initial composition assigned to the particles is 'mapped'
+# to the particles at each time step.  This property is accessed in
+# the material model through a compositional field (standard method)
 # whose values are interpolated from the particles.
 subsection Compositional fields
   set Number of fields = 2

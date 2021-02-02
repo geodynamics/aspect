@@ -11,4 +11,3 @@ subsection Discretization
     set Stabilization method = entropy viscosity
   end
 end
-

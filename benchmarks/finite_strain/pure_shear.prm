@@ -1,5 +1,5 @@
 # This parameter file reproduces an analytical benchmark for the evolution
-# of finite strain in a model of pure shear as described (for a specific 
+# of finite strain in a model of pure shear as described (for a specific
 # application) in McKenzie & Jackson (1983): "The relationship between
 # strain rates, crustal thickening, paleomagnetism, finite strain and
 # fault movements within a deforming zone." They show that the analytical
@@ -16,16 +16,16 @@
 # For this benchmark it is important to recognize that the deformation in
 # this model is actually only "pure" pure shear at the origin, since the
 # deformation field around is a mixture of pure shear and a rotational
-# component. Also the value of u_x,x at the origin is not prescribed 
+# component. Also the value of u_x,x at the origin is not prescribed
 # directly, but is a model output, because we only know velocity profiles
-# for the top and right boundaries. Using the computed velocity field we 
-# can calculate u_x,x approximately at the origin to be 1.253, and therefore 
+# for the top and right boundaries. Using the computed velocity field we
+# can calculate u_x,x approximately at the origin to be 1.253, and therefore
 # expect:
 # F_xx (t=1.0) = 3.501
 # F_yy (t=1.0) = 0.2856
 # This parameter file tracks the finite strain in two ways, once by using
 # compositional fields as illustrated in the finite strain cookbook, and
-# once by using a particle particle that sits and remains at the origin. 
+# once by using a particle particle that sits and remains at the origin.
 # The results should of course be the same.
 #
 # Numerical results for particle tracking show excellent agreement:

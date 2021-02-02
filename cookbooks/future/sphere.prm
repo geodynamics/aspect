@@ -38,7 +38,7 @@ subsection Boundary temperature model
   set List of model names = constant
 
   subsection Constant
-    set Boundary indicator to temperature mappings = top: 0.0 
+    set Boundary indicator to temperature mappings = top: 0.0
   end
 end
 

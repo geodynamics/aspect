@@ -1,10 +1,10 @@
-# This is a test for the correct behaviour of 
+# This is a test for the correct behaviour of
 # the shear heating in the compressible case.
-# The velocity is prescribed using the prescribed 
-# Stokes solution plugin so that the strain rate is 
+# The velocity is prescribed using the prescribed
+# Stokes solution plugin so that the strain rate is
 # [0 0.5 0.5 2./3.], which means that we can calculate
 # the solution for the shear heating (2 eta eps:eps),
-# which should be 2.111111.   
+# which should be 2.111111.
 
 set CFL number                             = 1
 set End time                               = 0

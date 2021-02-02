@@ -1,5 +1,5 @@
 # This parameter file modifies the benchmark viscoealastic_bending_beam.prm
-# to use particles, rather than compositional fields, to track viscoleastic 
+# to use particles, rather than compositional fields, to track viscoleastic
 # stresses and location of the beam.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
@@ -30,4 +30,3 @@ subsection Postprocess
     set Data output format          = vtu
   end
 end
-

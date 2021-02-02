@@ -1,17 +1,17 @@
-# Like the poiseuille_2d.prm test and based on the nonlinear channel 
-# flow benchmark. This is used to test the velocity boundary conditions 
+# Like the poiseuille_2d.prm test and based on the nonlinear channel
+# flow benchmark. This is used to test the velocity boundary conditions
 # of the Newton Stokes solver.
 
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm 
+include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_velocities_Newton_Stokes.prm
 
 set Nonlinear solver tolerance = 5e-12
 
 subsection Material model
   set Model name = simple nonlinear
 
-  subsection Simple nonlinear 
+  subsection Simple nonlinear
     set Use deviator of strain-rate = false
   end
 end

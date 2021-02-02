@@ -68,7 +68,7 @@ set Adiabatic surface temperature          = 1595
 subsection Adiabatic conditions model
   # The 'ascii data' option does not need the additional
   # plugin, but is limited to the available adiabat data files.
-  # 'compute entropy profile' computes arbitrary adiabats 
+  # 'compute entropy profile' computes arbitrary adiabats
   # internally, based on the data table.
   # Use 'ascii data' to compare against HeFESTo adiabat.
   set Model name = compute entropy profile
@@ -103,9 +103,9 @@ end
 
 
 subsection Boundary temperature model
-  # No temperature boundary conditions, 
+  # No temperature boundary conditions,
   # as the temperature equation is not solved
-  set Fixed temperature boundary indicators = 
+  set Fixed temperature boundary indicators =
 end
 
 
@@ -137,7 +137,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 

@@ -57,7 +57,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 0   # = Ra 
+    set Magnitude = 0   # = Ra
   end
 end
 
@@ -99,7 +99,7 @@ subsection Mesh refinement
       set Variable names      = x,y,z
       set Function expression = if( z>=150.e3 , if( z>=160.e3, if( z>=170.e3, 4 , 3 ) , 2 ) , 1 )
   end
-  
+
       subsection Minimum refinement function
       set Coordinate system   = cartesian
       set Variable names      = x,y,z

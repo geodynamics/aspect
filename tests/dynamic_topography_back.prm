@@ -116,7 +116,7 @@ end
 
 subsection Postprocess
   set List of postprocessors = dynamic topography, visualization
-  
+
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0
@@ -125,6 +125,3 @@ subsection Postprocess
   end
 
 end
-
-
-

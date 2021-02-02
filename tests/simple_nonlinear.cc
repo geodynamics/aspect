@@ -231,5 +231,3 @@ int jk3 = f<3>(2); // Testing generalized p norm mean with positive p
 int kj3 = f<3>(1000); // Testing max function
 // exit
 int kl2 = exit_function();
-
-

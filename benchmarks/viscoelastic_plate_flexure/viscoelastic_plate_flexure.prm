@@ -1,24 +1,24 @@
 # This benchmark examines flexure of a finite-length elastic plate based
 # on the setup described in Choi et al., 2013, JGR, v.118, p.2429-2444,
-# doi:10.1002/jgrb.50148. The model setup has a 50 km long and 5 km thick 
-# elastic plate (shear modulus: 30 GPa, viscosity: 1e35 Pa s) overlaying a 
+# doi:10.1002/jgrb.50148. The model setup has a 50 km long and 5 km thick
+# elastic plate (shear modulus: 30 GPa, viscosity: 1e35 Pa s) overlaying a
 # viscous layer (viscosity: 1e17 Pa s, 12.5 km thick), which both have a density
 # of 2700 kg/m^3. The top of the model is a free surface, while the bottom
-# boundary is zero-slip and the sides are free-slip. The upper right corner 
-# of the viscous layer is replaced with a low density (1890 kg/m^3) elastic 
-# block, which drives flexure of the elastic plate (right side goes up, left 
-# side goes down). The total topography obtained after the model has reached 
-# equilibrium is 330 m, with -146.5 m and 183.5 m of topography, respectively, 
-# on the left and right sides. The summed value and profiles differ slightly 
-# from those reported in Choi et al. (see viscoelastic_plate_flexure.png within 
-# the doc/ subdirectory of this folder), but closely match more recent experiments 
-# performed by Cedric Thieulot. The curves from the experiments performed by 
-# Cedric Thieulot are labeled 'ELEFANT, nelx=150', 'ELEFANT, nelx=250', and 
+# boundary is zero-slip and the sides are free-slip. The upper right corner
+# of the viscous layer is replaced with a low density (1890 kg/m^3) elastic
+# block, which drives flexure of the elastic plate (right side goes up, left
+# side goes down). The total topography obtained after the model has reached
+# equilibrium is 330 m, with -146.5 m and 183.5 m of topography, respectively,
+# on the left and right sides. The summed value and profiles differ slightly
+# from those reported in Choi et al. (see viscoelastic_plate_flexure.png within
+# the doc/ subdirectory of this folder), but closely match more recent experiments
+# performed by Cedric Thieulot. The curves from the experiments performed by
+# Cedric Thieulot are labeled 'ELEFANT, nelx=150', 'ELEFANT, nelx=250', and
 # '100x35'. For further details on these additional experiments, visit:
 # https://github.com/naliboff/fieldstone/blob/master/python_codes/fieldstone_64/results/flexureplate
-# The figure in this folder (viscoelastic_plate_flexure.png) was made and 
+# The figure in this folder (viscoelastic_plate_flexure.png) was made and
 # provided by Cedric Thieulot.
-  
+
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
@@ -51,7 +51,7 @@ end
 
 # Element types. The temperature polynomial degree is reduced
 # from the default value of 2 to 1, as temperature is not
-# relevant in this problem. 
+# relevant in this problem.
 subsection Discretization
   set Composition polynomial degree           = 2
   set Stokes velocity polynomial degree       = 2
@@ -97,7 +97,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0; 0; 0; \
                               if (y>12.5e3, 1, 0); \
                               if (x>=45e3 && y>=7.5e3 && y<=12.5e3, 1, 0);
@@ -156,7 +156,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables = material properties, strain rate, named additional outputs 
+    set List of output variables = material properties, strain rate, named additional outputs
 
     subsection Material properties
       set List of material properties = density, viscosity

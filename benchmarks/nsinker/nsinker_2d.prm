@@ -1,4 +1,4 @@
-# This is a 2D version of the original 3D "NSinker" problem. 
+# This is a 2D version of the original 3D "NSinker" problem.
 
 set Additional shared libraries            = ./libnsinker.so
 

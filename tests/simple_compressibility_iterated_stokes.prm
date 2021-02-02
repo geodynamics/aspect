@@ -1,6 +1,6 @@
-# A variation on the 'compressibility_iterated_stokes' testcase. 
+# A variation on the 'compressibility_iterated_stokes' testcase.
 # The only variation is the used material model. This test adapts the
-# 'simple compressible' material model plugin to do the same job as the 
+# 'simple compressible' material model plugin to do the same job as the
 # shared library material model from compressibility_iterated_stokes.cc
 
 set Dimension = 2

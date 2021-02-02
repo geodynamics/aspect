@@ -6,11 +6,11 @@ set Dimension                              = 2
 set End time                               = 0
 
 subsection Boundary temperature model
-  set List of model names = initial temperature 
+  set List of model names = initial temperature
 end
 
 subsection Compositional fields
-  set Number of fields          = 1 
+  set Number of fields          = 1
 end
 
 subsection Initial composition model
@@ -32,14 +32,14 @@ subsection Geometry model
 end
 
 subsection Gravity model
-  set Model name = radial constant 
+  set Model name = radial constant
   subsection Radial constant
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
   subsection Function
     set Function expression = 500
   end
@@ -53,8 +53,8 @@ subsection Material model
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 0         
-  set Initial global refinement                = 2           
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 2
 end
 
 # The parameters below this comment were created by the update script
@@ -77,4 +77,3 @@ subsection Postprocess
     set Output format = gnuplot
   end
 end
-

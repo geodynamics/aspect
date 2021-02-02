@@ -1,7 +1,7 @@
 # Test to verify the following rounding bug in depth-averaging is fixed:
 #
 # An error occurred in line <107> of file <source/simulator/lateral_averaging.cc> in function
-# The violated condition was: 
+# The violated condition was:
 #     idx<num_slices
 
 set Dimension                              = 3

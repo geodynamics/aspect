@@ -55,4 +55,3 @@ int f()
 }
 // run this function by initializing a global variable by it
 int i = f();
-

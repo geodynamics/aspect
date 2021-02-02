@@ -38,7 +38,7 @@ subsection Boundary temperature model
 end
 
 # To guarantee a steady rightward flow, we fix the velocity
-# at the left and right, and set it to free slip on the top and bottom. 
+# at the left and right, and set it to free slip on the top and bottom.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function, right:function
   set Tangential velocity boundary indicators = bottom,top
@@ -73,7 +73,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end

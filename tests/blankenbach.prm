@@ -1,14 +1,14 @@
 # Listing of Parameters
 # ---------------------
 # This case is identical to case 1a from the Blankenbach Benchmark
-# (Blankenbach 1989). Cases b and c can be run by changing the 
+# (Blankenbach 1989). Cases b and c can be run by changing the
 # Viscosity to 1e-5 and 1e-6, respectively, which leads to the
 # corresponding change of the Rayleigh number from 1e4 to 1e5 and
 # 1e6. This test essentially resembles the convection-box cookbook
 # and reproduces its results very closely (a slight difference results
 # from the different refinement levels).
 # The relevant output is the vrms velocity and the heat flux through
-# the top boundary, which in this setup is identical to the Nu number. 
+# the top boundary, which in this setup is identical to the Nu number.
 
 set End time                               = 0.002 # 1.0 for full benchmark
 set Use years in output instead of seconds = false
@@ -25,7 +25,7 @@ subsection Boundary temperature model
 end
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
 
 
   subsection Box
@@ -38,7 +38,7 @@ end
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
-    set Magnitude = 1e3 
+    set Magnitude = 1e3
   end
 end
 
@@ -54,7 +54,7 @@ end
 
 
 subsection Material model
-  set Model name = simple 
+  set Model name = simple
 
   subsection Simple model
     set Reference density             = 1

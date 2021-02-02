@@ -35,8 +35,8 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
-# Mesh refinement does not seem to affect 
+# Mesh refinement specifications
+# Mesh refinement does not seem to affect
 # deformation of free surface (at least in 2-D).
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
@@ -68,7 +68,7 @@ end
 
 # Velocity boundary conditions
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = bottom, left, right 
+  set Tangential velocity boundary indicators = bottom, left, right
 end
 
 # Prescribe a fixed vertical traction on the top boundary
@@ -99,7 +99,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,y
-    set Function constants  = 
+    set Function constants  =
     set Function expression = 0; 0; 0;
   end
 end
@@ -154,7 +154,7 @@ subsection Postprocess
   set List of postprocessors = basic statistics, composition statistics, temperature statistics, topography, velocity statistics, visualization
 
   subsection Visualization
-    set List of output variables = material properties, strain rate 
+    set List of output variables = material properties, strain rate
 
     subsection Material properties
       set List of material properties = density, viscosity

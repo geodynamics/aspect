@@ -72,7 +72,7 @@ end
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 3
-  set Additional refinement times              = 
+  set Additional refinement times              =
 
   set Strategy = velocity
    set Time steps between mesh refinement       = 2
@@ -106,4 +106,3 @@ subsection Postprocess
      set Output format                 = gnuplot
   end
 end
-

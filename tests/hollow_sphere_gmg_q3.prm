@@ -13,7 +13,7 @@ set Output directory                       = output
 set Pressure normalization                 = surface
 
 ############### Parameters describing the model
-# The setup is a 3D shell 
+# The setup is a 3D shell
 # Because the temperature plays no role in this model we need not
 # bother to describe temperature boundary conditions or
 # the material parameters that pertain to the temperature.
@@ -48,19 +48,19 @@ subsection Gravity model
 end
 
 subsection HollowSphere benchmark
-   #Viscosity parameter is m 
+   #Viscosity parameter is m
    set Viscosity parameter             = -1
-end 
+end
 
 ############### Parameters describing the temperature field
 # As above, there is no need to set anything for the
 # temperature boundary conditions.
 
 subsection Boundary temperature model
-  set List of model names = box 
+  set List of model names = box
 end
 
-subsection Initial temperature model 
+subsection Initial temperature model
   set Model name = function
 
   subsection Function
@@ -73,7 +73,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
@@ -86,7 +86,7 @@ end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
+# run at the end of each time step.
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, HollowSpherePostprocessor

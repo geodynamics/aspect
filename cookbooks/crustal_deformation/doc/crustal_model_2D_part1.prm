@@ -4,10 +4,10 @@ subsection Material model
     set Reference density = 2800
     subsection Viscosity
        set Minimum viscosity = 1e19
-       set Maximum viscosity = 1e25 
+       set Maximum viscosity = 1e25
        set Reference strain rate = 1e-20
        set Angle internal friction = 30
-       set Cohesion = 20e6 
+       set Cohesion = 20e6
     end
   end
 end

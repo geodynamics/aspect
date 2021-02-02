@@ -1,5 +1,5 @@
 ############### Global parameters
-# This model is based on the paper 
+# This model is based on the paper
 # Kaus, B. (2010), Tectonophysics 484, 36-47.
 # We iterate out the Stokes equation.
 # We use only the expensive Stokes solver.
@@ -45,7 +45,7 @@ end
 
 subsection Material model
   set Model name = drucker prager
-  subsection Drucker Prager 
+  subsection Drucker Prager
     set Thermal conductivity          = 0.0
     set Reference density             = 2700.0
     set Reference viscosity           = 1.0e24
@@ -68,7 +68,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 10 
+    set Magnitude = 10
   end
 end
 
@@ -77,7 +77,7 @@ end
 # where W is the width of the domain and the background strain rate 1e-15 1/s.
 subsection Boundary velocity model
   subsection Function
-    set Function expression     =  if(x>=2e4,-2.e-11,2.e-11);0 
+    set Function expression     =  if(x>=2e4,-2.e-11,2.e-11);0
   end
 end
 
@@ -104,7 +104,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
@@ -117,16 +117,16 @@ end
 
 ############### Parameters describing what to do with the solution
 # The final section allows us to choose which postprocessors to
-# run at the end of each time step. 
+# run at the end of each time step.
 # We select to compute some statistics about the
 # velocity field and the mass flux through the boundaries.
 # We prescribe an inflow of 2e-11 m/s on both vertical boundaries
-# which should be the value of the maximum velocity. The VRMS will 
-# be a little lower, because the inflow will be balanced by an outflow 
+# which should be the value of the maximum velocity. The VRMS will
+# be a little lower, because the inflow will be balanced by an outflow
 # through the top boundary over a greater boundary length.
 # For the given density and inflow velocity, a boundary
-# mass flux of v * L * rho = 2e-11 * 10000 * 2700 = 5.4e-4 kg/s 
-# is expected for each vertical boundary, 
+# mass flux of v * L * rho = 2e-11 * 10000 * 2700 = 5.4e-4 kg/s
+# is expected for each vertical boundary,
 # compensated by a influx of 1.08e-3 kg/s through the top.
 
 subsection Postprocess
@@ -135,7 +135,7 @@ end
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-7 
+    set Linear solver tolerance = 1e-7
     set Number of cheap Stokes solver steps = 0
   end
 end

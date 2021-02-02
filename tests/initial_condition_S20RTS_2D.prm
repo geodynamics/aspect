@@ -1,10 +1,10 @@
-# This is a variation of the initial_condition_S20RTS.prm test 
-# that tests the same plugin for 2D models. 
- 
-include $ASPECT_SOURCE_DIR/tests/initial_condition_S20RTS.prm 
- 
-set Dimension = 2 
- 
-subsection Mesh refinement 
-  set Initial global refinement          = 1 
+# This is a variation of the initial_condition_S20RTS.prm test
+# that tests the same plugin for 2D models.
+
+include $ASPECT_SOURCE_DIR/tests/initial_condition_S20RTS.prm
+
+set Dimension = 2
+
+subsection Mesh refinement
+  set Initial global refinement          = 1
 end

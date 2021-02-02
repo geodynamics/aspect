@@ -1,10 +1,10 @@
-# This is a test for the melt particle functionality. 
-# It is the same setup as in the rising_melt_blob test, 
+# This is a test for the melt particle functionality.
+# It is the same setup as in the rising_melt_blob test,
 # with added passive particles that move with the melt
-# velocity. The test checks if the particles are moving 
+# velocity. The test checks if the particles are moving
 # correctly, and if they are correctly labelled with the
-# property 'melt presence' if the porosity is above a 
-# threshold at their location. 
+# property 'melt presence' if the porosity is above a
+# threshold at their location.
 
 set Dimension                              = 2
 set Start time                             = 0

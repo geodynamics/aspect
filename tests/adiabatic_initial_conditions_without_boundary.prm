@@ -1,5 +1,5 @@
 # In ASPECT 1.2, we managed to get the adiabatic initial conditions
-# wrong in the rare case of no prescribed boundary temperature and a 
+# wrong in the rare case of no prescribed boundary temperature and a
 # prescribed bottom thermal boundary layer age. This case makes no sense,
 # but it might occur by accident. The expected result is no boundary layer,
 # however previously we computed a boundary layer against the adiabatic
@@ -76,4 +76,3 @@ end
 subsection Postprocess
   set List of postprocessors = temperature statistics
 end
-

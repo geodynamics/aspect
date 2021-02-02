@@ -1,15 +1,15 @@
 # A testcase that demonstrates melt transport with a compactible matrix,
-# and incompressible matrix and fluid. Boundary conditions for the 
-# velocity and fluid pressure as well as porosity initial conditions 
+# and incompressible matrix and fluid. Boundary conditions for the
+# velocity and fluid pressure as well as porosity initial conditions
 # are applied as described by the derived analytical solution,
-# which can be found in the manuscript on compressible melt transport 
+# which can be found in the manuscript on compressible melt transport
 # in ASPECT.
 # We compute these material properties in a new material model, which
-# is implemented in the .cc file, together with a postprocessor to calculate 
-# the error and a new pressure boundary condition. 
+# is implemented in the .cc file, together with a postprocessor to calculate
+# the error and a new pressure boundary condition.
 # An important feature of this setup is the high porosity vein that
-# runs through the model and we use it to demonstrate the effectiveness 
-# of adaptive mesh refinement.     
+# runs through the model and we use it to demonstrate the effectiveness
+# of adaptive mesh refinement.
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
@@ -58,7 +58,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 20
@@ -86,11 +86,11 @@ subsection Boundary velocity model
     set Function expression = x+sin(z);x
     set Variable names      = x,z
   end
-end  
+end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = 0
     set Variable names      = x,z
@@ -98,7 +98,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants = pi=3.14159265359
     set Function expression = 0.1-0.05*atan((x+2.0*z)*(x+2.0*z))
@@ -110,7 +110,7 @@ end
 subsection Material model
 
   set Model name = test melt material
-  
+
 
 end
 
@@ -131,11 +131,11 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3        # default: 
+  set Fixed temperature boundary indicators   = 2,3        # default:
 end
 
 subsection Boundary composition model
-  set Fixed composition boundary indicators   = 0,1,2,3   
+  set Fixed composition boundary indicators   = 0,1,2,3
 end
 
 subsection Boundary velocity model
@@ -143,7 +143,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default: 
+  set Zero velocity boundary indicators       =           # default:
 end
 
 subsection Melt settings

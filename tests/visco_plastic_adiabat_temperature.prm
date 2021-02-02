@@ -1,11 +1,11 @@
-# A test for adding an adiabatic temperature gradient to the temperature 
+# A test for adding an adiabatic temperature gradient to the temperature
 # in the flow laws for the visco_plastic material model.
 # This is useful for incompressible models that do not include an adiabatic
 # temperature gradient.
 # This test modifies the visco_plastic_diffusion_dislocation_composite test
 # by adding a temperature gradient to the otherwise uniform temperature (1573).
 # The gradient is added in terms of pressure rather than depth.
-# Using a pressure gradient of 32436 Pa/m, then a value of  
+# Using a pressure gradient of 32436 Pa/m, then a value of
 # 0.3 K/km = 0.0003 K/m = 9.24e-09 K/Pa gives an earth-like adiabat.
 # At the surface P = 3e9 Pa (as defined in original test) so Tv = T + Tad ~ 1600
 # strain-rate = 4.48e-16 (from applied pure shear) and eta-comp ~ 3.43e18 Pa s.
@@ -41,7 +41,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
@@ -92,8 +92,8 @@ subsection Material model
     set Stress exponents for dislocation creep = 3.5
     set Activation energies for dislocation creep = 530.e3
     set Activation volumes for dislocation creep = 18.e-6
-    
-    set Adiabat temperature gradient for viscosity = 9.24e-09 
+
+    set Adiabat temperature gradient for viscosity = 9.24e-09
   end
 end
 

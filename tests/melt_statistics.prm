@@ -2,8 +2,8 @@
 # intended. The statistics output is computed using
 # the melt fraction of peridotite in the melting model of
 # Katz et. al, 2003 (Geochem., Geophys., Geosyst. )
-# with the temperature ranging from 1000°C to 1900°C on the x axis 
-# and the pressure ranging from 0 GPa to 8 GPa on the y axis. 
+# with the temperature ranging from 1000°C to 1900°C on the x axis
+# and the pressure ranging from 0 GPa to 8 GPa on the y axis.
 
 set Dimension                              = 2
 
@@ -154,4 +154,3 @@ subsection Postprocess
     end
   end
 end
-

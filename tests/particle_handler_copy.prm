@@ -2,7 +2,7 @@
 # function that copies the particle handler (and all contained
 # particles), modifies one of them, and then resets the
 # the particles every time the composition system is solved.
- 
+
 set Dimension                              = 2
 set End time                               = 70
 set Use years in output instead of seconds = false

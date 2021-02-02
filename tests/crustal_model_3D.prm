@@ -29,14 +29,14 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = front, back 
+  set Tangential velocity boundary indicators = front, back
 end
 
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left: function, right:function, bottom:function
 end
 
-subsection Mesh deformation 
+subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface
   # Advecting the free surface vertically rather than
   # in the surface normal direction can result in a
@@ -52,10 +52,10 @@ subsection Material model
     set Reference density = 2800
     subsection Viscosity
        set Minimum viscosity = 1e19
-       set Maximum viscosity = 1e25 
+       set Maximum viscosity = 1e25
        set Reference strain rate = 1e-20
        set Angle of internal friction = 30
-       set Cohesion = 20e6 
+       set Cohesion = 20e6
     end
   end
 end
@@ -74,7 +74,7 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names      = x,y,z
-    set Function constants  = cm=0.01, year=1 
+    set Function constants  = cm=0.01, year=1
     set Function expression = if (x<56e3 && y<=48e3 | x<72e3 && y>48e3, -1*cm/year, 1*cm/year) ; 0 ; 0
   end
 end
@@ -100,13 +100,13 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 1
   set Refinement fraction                = 0.9
-  set Strategy                           = strain rate 
+  set Strategy                           = strain rate
   set Coarsening fraction                = 0.05
   set Minimum refinement level           = 1
 end

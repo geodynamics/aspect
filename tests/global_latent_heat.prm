@@ -1,11 +1,11 @@
 # This is a test or the latent heat of melt heating model
-# and its interaction with other heating plugins. 
+# and its interaction with other heating plugins.
 # A constant heating rate is described using the function
 # heating model, and this heating should lead to melting
 # of approximately 0.01/s (so that the maximum porosity at
 # the end of the model run (t=1s) should be approximately
-# 1%. In practice, this value is slightly lower because 
-# some heat is also used to increase the temperature of 
+# 1%. In practice, this value is slightly lower because
+# some heat is also used to increase the temperature of
 # the material.
 
 
@@ -104,11 +104,11 @@ subsection Heating model
 
   subsection Latent heat melt
     set Melting entropy change = -1000
-  end 
+  end
 
   subsection Function
     set Function expression = 1e4
-  end 
+  end
 end
 
 
@@ -165,5 +165,3 @@ subsection Postprocess
     end
   end
 end
-
-

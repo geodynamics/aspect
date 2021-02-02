@@ -79,7 +79,7 @@ subsection Mesh refinement
 end
 
 
-# For a temperature between zero and one, 
+# For a temperature between zero and one,
 # density will vary between (1 - 3e-5) and 1.
 # The thermal conductivity is set to 1e-6 everywhere
 # and the thermal diffusivity (k/(rho c_p))
@@ -97,4 +97,3 @@ subsection Postprocess
     end
   end
 end
-

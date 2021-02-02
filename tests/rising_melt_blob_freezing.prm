@@ -3,12 +3,12 @@
 # in particular the freezing of melt.
 # It uses the melt simple model.
 
-# The initial porosity has the form of a Gaussian function 
-# there is a fixed (constant) freezing rate. 
+# The initial porosity has the form of a Gaussian function
+# there is a fixed (constant) freezing rate.
 
-# The amplitude of the Gaussian is 0.2, and the melting time 
-# scale is chosen in such a way that the fraction of melt 
-# should be cut in half every year (visible in the maximum 
+# The amplitude of the Gaussian is 0.2, and the melting time
+# scale is chosen in such a way that the fraction of melt
+# should be cut in half every year (visible in the maximum
 # value of the porosity field).
 
 ############### Global parameters
@@ -19,7 +19,7 @@ set End time                               = 2
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600
 # Do not solve for Stokes to speed up test
-# (see rising_melt_blob for the same test that solves Stokes) 
+# (see rising_melt_blob for the same test that solves Stokes)
 set Nonlinear solver scheme                = single Advection, no Stokes
 # number of nonlinear iterations reduced from 50 to 10 to speed up test.
 set Max nonlinear iterations               = 10
@@ -88,7 +88,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926,x0=50000,y0=50000,c=10000

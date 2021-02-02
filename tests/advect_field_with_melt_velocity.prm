@@ -1,15 +1,15 @@
 #########################################################
 # This is a test for the advection scheme that transports
 # compositional fields with the melt velocity. The material
-# properties are set in such a way that the melt velocity 
-# is 1 m/yr and the solid velocity is 0. 
-# There are two compositional fields, one is transported 
+# properties are set in such a way that the melt velocity
+# is 1 m/yr and the solid velocity is 0.
+# There are two compositional fields, one is transported
 # with the solid velocity (the peridotite field), and one is
 # transported with the melt velocity (the melt composition
-# field). 
-# While the mass of the peridotite field should be conserved, 
-# the mass of the melt_composition field should decrease over 
-# time with a rate of 1/yr. 
+# field).
+# While the mass of the peridotite field should be conserved,
+# the mass of the melt_composition field should decrease over
+# time with a rate of 1/yr.
 
 ############### Global parameters
 
@@ -17,9 +17,9 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0.1
 set Use years in output instead of seconds = true
-set Adiabatic surface temperature          = 1600 
+set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 50  
+set Max nonlinear iterations               = 50
 set CFL number                             = 1
 
 set Pressure normalization                 = surface
@@ -27,7 +27,7 @@ set Surface pressure                       = 0
 
 
 ############### Parameters describing the model
-# Let us here choose again a box domain 
+# Let us here choose again a box domain
 # where we fix the temperature at the bottom and top,
 # allow free slip along the boundaries
 # and include melt migration.
@@ -72,11 +72,11 @@ end
 
 ############### Compositional fields
 # We want to use two compositional fields, the porosity and
-# an additional field, to check if the melting rate functionality 
-# has the same effect as the reaction term for the other 
+# an additional field, to check if the melting rate functionality
+# has the same effect as the reaction term for the other
 # compositional fields. As the porosity field is advected by
 # a different mechanism, slight differences between the fields
-# are expected. 
+# are expected.
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields = porosity, peridotite, melt_composition
@@ -84,7 +84,7 @@ subsection Compositional fields
 end
 
 # We then choose a vertical gravity model and describe the
-# initial temperature with a vertical gradient. 
+# initial temperature with a vertical gradient.
 subsection Gravity model
   set Model name = vertical
   subsection Vertical

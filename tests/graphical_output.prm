@@ -115,4 +115,3 @@ subsection Postprocess
     set List of output variables = viscosity, nonadiabatic pressure
   end
 end
-

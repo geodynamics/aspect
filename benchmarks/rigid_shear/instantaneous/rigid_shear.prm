@@ -6,7 +6,7 @@
 set Additional shared libraries            = ../plugin/librigid_shear.so
 
 set Dimension                              = 2
-set End time                               = 0.0 
+set End time                               = 0.0
 set Output directory                       = output
 
 set Pressure normalization                 = no

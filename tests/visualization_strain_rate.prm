@@ -1,7 +1,7 @@
 # A testcase for the "strain rate" visualization postprocessor. It solves the
 # equations on a box with Dirichlet boundary conditions equal to
 # (z,0), which then is also the velocity everywhere. This yields
-# a constant strain rate [[0,1/2],[1/2,0]] with norm |dot eps|=1/sqrt(2). 
+# a constant strain rate [[0,1/2],[1/2,0]] with norm |dot eps|=1/sqrt(2).
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -103,4 +103,3 @@ subsection Postprocess
     set List of output variables = strain rate
   end
 end
-

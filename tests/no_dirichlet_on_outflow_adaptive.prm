@@ -1,10 +1,10 @@
-# This test is a copy of the no_dirichlet_outflow_boundary test, 
+# This test is a copy of the no_dirichlet_outflow_boundary test,
 # with the only difference that it runs in parallel and adaptive
 # mesh.
-# This test checks if fixed temperature boundary conditions are only 
-# prescribed on outflow boundaries (if this option is activated in 
+# This test checks if fixed temperature boundary conditions are only
+# prescribed on outflow boundaries (if this option is activated in
 # the input file), and in particular if this also works for time-
-# dependent in- and outflow. 
+# dependent in- and outflow.
 
 # MPI: 2
 
@@ -115,7 +115,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e4   # = Ra 
+    set Magnitude = 1e4   # = Ra
   end
 end
 

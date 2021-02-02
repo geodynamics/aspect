@@ -2,7 +2,7 @@
 # with prescribed Stokes flow creating 4 convection cells.
 # Various parameters can be changed to test their effect
 # on the overall cooling of the model.
-# 
+#
 # See run_all_models.sh for running multiple iterations
 # of various parameters in a row.
 #
@@ -43,10 +43,10 @@ subsection Geometry model
   # NOTE: the analytical solutions are hard-coded
   # to these geometry values: do not change them.
   subsection Spherical shell
-    set Inner radius = 1 
+    set Inner radius = 1
     set Outer radius = 2
-    set Opening angle = 360 
-  end 
+    set Opening angle = 360
+  end
 end
 
 subsection Discretization
@@ -119,4 +119,3 @@ subsection Postprocess
     set Time between graphical output = 0.1
   end
 end
-

@@ -2,8 +2,8 @@
 # but reduces the resolution and viscosity seed for the purpose of runtime
 # length. The model runs for five time steps, which reveal that in the first
 # three time steps the second nonlinear iteration requires zero linear Stokes
-# solves. This likely reflects that elastic stresses buildup prior to yielding 
-# and the solution does not change significantly during this time. 
+# solves. This likely reflects that elastic stresses buildup prior to yielding
+# and the solution does not change significantly during this time.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_plastic_shear_bands/kaus_2010/kaus_2010_extension.prm
 
@@ -31,7 +31,7 @@ subsection Initial composition model
     set Variable names      = x,y
     set Function constants  =
     set Function expression = 0; 0; 0; \
-                              if (y<=2.0e3 && x>=18.0e3 && x<=22.0e3, 1, 0);  
+                              if (y<=2.0e3 && x>=18.0e3 && x<=22.0e3, 1, 0);
   end
 end
 
@@ -39,4 +39,3 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics
 end
-

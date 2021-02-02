@@ -4,7 +4,7 @@
 # spherical and ellipsoidal coordinates the conversion is inaccurate
 # very close to the center of the domain. This test documents this
 # inaccuracy and shows that it is negligible for points at the
-# core-mantle boundary (5e-11 relative to center distance) and even for points 
+# core-mantle boundary (5e-11 relative to center distance) and even for points
 # at the inner-core-boundary (1e-7).
 
 set Dimension                              = 3

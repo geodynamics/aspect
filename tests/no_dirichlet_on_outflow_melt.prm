@@ -1,7 +1,7 @@
-# This test checks if fixed composition boundary conditions are only 
-# prescribed on outflow boundaries (if this option is activated in 
+# This test checks if fixed composition boundary conditions are only
+# prescribed on outflow boundaries (if this option is activated in
 # the input file), and in particular if this also works in a model
-# with melt transport. 
+# with melt transport.
 
 
 set Dimension                              = 2
@@ -11,7 +11,7 @@ set Pressure normalization                 = surface
 set Surface pressure                       = 0
 
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Max nonlinear iterations               = 50  
+set Max nonlinear iterations               = 50
 #set CFL number                             = 0.1
 
 subsection Melt settings
@@ -106,7 +106,7 @@ subsection Gravity model
   set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 1e4   # = Ra 
+    set Magnitude = 1e4   # = Ra
   end
 end
 

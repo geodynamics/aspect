@@ -1,8 +1,8 @@
 #########################################################
 # This is a test for the stabilization of the advection
-# equation for compositional fields. The flow is 
-# symmetric around the origin, and two fields that 
-# each feature a circle of compositional distinct 
+# equation for compositional fields. The flow is
+# symmetric around the origin, and two fields that
+# each feature a circle of compositional distinct
 # material are advected with the flow. Rotating field C_2
 # by 180 degrees should yield the same result as C_1.
 # It is a variation of the platelike_boundary.prm file.

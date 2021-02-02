@@ -10,7 +10,7 @@ end
 # named additional outputs includes the weakened cohesions and friction angles
 subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization, particles
-  
+
   subsection Particles
     set Number of particles = 1e5
     set Time between data output = 0

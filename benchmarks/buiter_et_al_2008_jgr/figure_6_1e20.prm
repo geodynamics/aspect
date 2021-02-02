@@ -33,8 +33,8 @@ end
 
 
 # The nonlinear solver typically converges more quickly
-# when no cheap Stokes solver steps are used for 
-# problems with Drucker-Prager plasticity. 
+# when no cheap Stokes solver steps are used for
+# problems with Drucker-Prager plasticity.
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0

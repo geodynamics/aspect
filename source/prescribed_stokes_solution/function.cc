@@ -243,4 +243,3 @@ namespace aspect
                                                "muparser library, see Section~\\ref{sec:muparser-format}.")
   }
 }
-

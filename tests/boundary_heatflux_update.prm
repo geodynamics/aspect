@@ -23,7 +23,7 @@ subsection Geometry model
 
   subsection Box
     set X extent = 100000
-    set Y extent = 100000      
+    set Y extent = 100000
   end
 end
 
@@ -57,7 +57,7 @@ subsection Boundary velocity model
   subsection Function
     set Function expression = 0;0
   end
-  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function 
+  set Prescribed velocity boundary indicators = 0:function,1:function, 2:function,3:function
 end
 
 
@@ -78,7 +78,7 @@ subsection Material model
   subsection Simple model
     set Reference density        = 950
     set Reference specific heat  = 1000
-    set Reference temperature    = 273 
+    set Reference temperature    = 273
     set Thermal conductivity     = 2.38
   end
 end

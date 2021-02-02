@@ -25,14 +25,14 @@ subsection Discretization
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
-    set cR    = 0.5  
+    set cR    = 0.5
   end
 end
 
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 5
     set Y repetitions = 2
@@ -48,9 +48,9 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
-    set Function expression = 0.0 
+    set Function expression = 0.0
   end
 end
 
@@ -64,12 +64,12 @@ end
 
 subsection Mesh refinement
   set Additional refinement times        =
-  set Initial adaptive refinement        = 2              
+  set Initial adaptive refinement        = 2
   set Initial global refinement          = 2
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = composition, boundary
-  set Time steps between mesh refinement = 5 
+  set Time steps between mesh refinement = 5
   set Refinement criteria merge operation         = plus
   set Refinement criteria scaling factors         = 2, 1
   subsection Boundary

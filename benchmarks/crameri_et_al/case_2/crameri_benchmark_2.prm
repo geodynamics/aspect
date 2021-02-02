@@ -36,7 +36,7 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 28.e5 
+    set X extent = 28.e5
     set Y extent = 7.e5
     set X repetitions = 4
   end
@@ -53,7 +53,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  0.0
   end

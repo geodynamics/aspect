@@ -1,8 +1,8 @@
-# This test is a copy of the prescribed_stokes_solution test, 
-# except that is uses melt transport. 
-# The original test is based on depth_average_01, and is similar 
-# to cookbooks/convection_box.prm. 
-# We prescribe a circular Stokes flow. 
+# This test is a copy of the prescribed_stokes_solution test,
+# except that is uses melt transport.
+# The original test is based on depth_average_01, and is similar
+# to cookbooks/convection_box.prm.
+# We prescribe a circular Stokes flow.
 
 
 set Dimension                              = 2
@@ -25,7 +25,7 @@ subsection Compositional fields
   set Names of fields = porosity, peridotite
 end
 
-subsection Prescribed Stokes solution  
+subsection Prescribed Stokes solution
   set Model name = circle
 end
 set Nonlinear solver scheme                = single Advection, no Stokes

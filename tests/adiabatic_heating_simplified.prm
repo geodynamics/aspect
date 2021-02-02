@@ -3,9 +3,9 @@
 # adiabatic_heating, but uses the simplified adiabatic
 # heating model instead.
 # The material is upwelling with a constant velocity
-# and without conduction of heat, so that the steady state 
+# and without conduction of heat, so that the steady state
 # of the model is an adiabatic temperature profile, and
-# the temperature should not change over time. 
+# the temperature should not change over time.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -108,7 +108,7 @@ subsection Material model
   subsection Simple model
     set Reference density        = 3300
     set Reference specific heat  = 1000
-    set Reference temperature    = 1600 
+    set Reference temperature    = 1600
     set Thermal conductivity     = 0.0
   end
 end
@@ -146,4 +146,3 @@ subsection Postprocess
     set List of output variables = viscosity, density, nonadiabatic temperature
   end
 end
-

@@ -1,7 +1,7 @@
 # Listing of Parameters
 # ---------------------
 # Set up the solitary wave benchmark
-# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011; 
+# (Barcilon & Richter, 1986; Simpson & Spiegelman, 2011;
 # Keller et al., 2013; Schmeling, 200
 
 set Additional shared libraries            = ./libsolitary_wave.so
@@ -75,7 +75,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 10
@@ -87,7 +87,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -100,14 +100,14 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = 0
   end
 end
 
 subsection Initial composition model
-  set Model name = Solitary wave initial condition # default: 
+  set Model name = Solitary wave initial condition # default:
   subsection Solitary wave initial condition
     set Offset = 200
     set Read solution from file = true
@@ -147,7 +147,7 @@ subsection Postprocess
 
   subsection Visualization
 
-    set List of output variables      = density, viscosity, thermal expansivity, melt material properties 
+    set List of output variables      = density, viscosity, thermal expansivity, melt material properties
 
     subsection Melt material properties
       set List of properties = fluid density, permeability, fluid viscosity, compaction viscosity

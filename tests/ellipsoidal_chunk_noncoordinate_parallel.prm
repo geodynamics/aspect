@@ -51,7 +51,7 @@ end
 
 
 subsection Boundary temperature model
-  set List of model names = constant 
+  set List of model names = constant
   subsection Constant
     set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
   end

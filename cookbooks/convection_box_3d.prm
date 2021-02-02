@@ -62,7 +62,7 @@ end
 # Then follows a section that describes the boundary conditions for the
 # temperature. The model we choose is called 'box' and allows to set a constant
 # temperature on each of the four sides of the box geometry. In our case, we
-# choose something that is heated from below and cooled from above. 
+# choose something that is heated from below and cooled from above.
 # All other parts of the boundary are insulated (i.e., no heat flux through
 # these boundaries; this is also often used to specify symmetry boundaries).
 subsection Boundary temperature model

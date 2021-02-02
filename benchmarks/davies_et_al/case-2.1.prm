@@ -40,7 +40,7 @@ subsection Boundary velocity model
 end
 
 subsection Gravity model
-  set Model name = radial constant 
+  set Model name = radial constant
   subsection Radial constant
     set Magnitude =  1e10
   end
@@ -96,10 +96,10 @@ subsection Discretization
 end
 
 subsection Mesh refinement
-  set Additional refinement times        = 
+  set Additional refinement times        =
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 5
-  set Additional refinement times        = 
+  set Additional refinement times        =
   set Refinement fraction                = 1
   set Coarsening fraction                = 0
 

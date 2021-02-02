@@ -43,7 +43,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 500000
@@ -54,7 +54,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -67,7 +67,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -76,7 +76,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);if(x<200000,0.3,0.0)
     set Variable names      = x,y
@@ -86,7 +86,7 @@ end
 
 subsection Material model
 
-  set Model name = MeltMaterial # default: 
+  set Model name = MeltMaterial # default:
 
 end
 
@@ -109,7 +109,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default: 
+  set Fixed temperature boundary indicators   = 0,3        # default:
 end
 
 subsection Boundary velocity model
@@ -117,7 +117,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default: 
+  set Zero velocity boundary indicators       =           # default:
 end
 
 subsection Melt settings

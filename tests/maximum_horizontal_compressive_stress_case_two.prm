@@ -3,7 +3,7 @@
 
 set Dimension                              = 3
 set Start time                             = 0
-set End time                               = 0 
+set End time                               = 0
 set Use years in output instead of seconds = true
 set CFL number                             = .5
 set Output directory                       = output-punch_box_3D
@@ -25,7 +25,7 @@ end
 
 
 subsection Material model
-  set Model name = simpler 
+  set Model name = simpler
 end
 
 subsection Gravity model
@@ -45,7 +45,7 @@ subsection Boundary velocity model
 
   subsection Function
     set Variable names      = x,y,z
-    set Function constants  = cm=0.01, year=1 
+    set Function constants  = cm=0.01, year=1
     set Function expression =  if(y > 0.5,-1,1) ; 0 ; if(z<0.5,-1,1)
   end
 end
@@ -78,13 +78,13 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 2
   set Refinement fraction                = 0.9
-  set Strategy                           = strain rate 
+  set Strategy                           = strain rate
   set Coarsening fraction                = 0.05
   set Minimum refinement level           = 2
   set Time steps between mesh refinement = 1
@@ -103,7 +103,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, topography, pressure statistics
   subsection Visualization
-    set List of output variables = density, viscosity, maximum horizontal compressive stress 
+    set List of output variables = density, viscosity, maximum horizontal compressive stress
     set Time between graphical output = 0
     set Interpolate output = true
     set Output format = gnuplot

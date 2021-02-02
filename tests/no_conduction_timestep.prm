@@ -55,7 +55,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Function expression = 0.5
   end
@@ -88,5 +88,3 @@ end
 subsection Postprocess
   set List of postprocessors = velocity statistics, temperature statistics
 end
-
-

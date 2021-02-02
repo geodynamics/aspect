@@ -1,8 +1,8 @@
 # Test for free surface topography due to a rising blob
-# with melt transport = on, but zero porosity. 
+# with melt transport = on, but zero porosity.
 # This test is the same as free_surface_blob (except for
 # the melt transport) and tests that results are approximately
-# the same. 
+# the same.
 
 set Dimension = 2
 set CFL number                             = 0.5
@@ -39,7 +39,7 @@ end
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X extent = 500.e3 
+    set X extent = 500.e3
     set Y extent = 200.e3
     set X repetitions = 5
     set Y repetitions = 2
@@ -57,7 +57,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression =  if( sqrt( (x-250.e3)^2 + (y-100.e3)^2 ) < 25.e3, 200.0, 0.0)
   end
@@ -133,12 +133,12 @@ subsection Termination criteria
 end
 
 subsection Postprocess
-  set List of postprocessors = topography,velocity statistics, basic statistics, 
+  set List of postprocessors = topography,velocity statistics, basic statistics,
 end
 
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1.e-7
-    set Number of cheap Stokes solver steps = 0 
+    set Number of cheap Stokes solver steps = 0
   end
 end

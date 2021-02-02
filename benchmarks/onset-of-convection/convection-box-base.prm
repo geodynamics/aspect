@@ -26,7 +26,7 @@ end
 
 subsection Geometry model
   set Model name = box
-  
+
   subsection Box
     set X extent = WIDTH
     set Y extent = HEIGHT
@@ -96,4 +96,3 @@ subsection Postprocess
     set Evaluation points = EVALUATION_POINTS
   end
 end
-

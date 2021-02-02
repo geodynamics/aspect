@@ -4,7 +4,7 @@
 # whose integral over the boundaries is zero when
 # using the exact values, but non-zero when using the
 # interpolated values (i.e. constant at the top, and
-# sin(x) at the bottom). This checks that the linear 
+# sin(x) at the bottom). This checks that the linear
 # solver converges, even with a very low solver tolerance.
 
 set CFL number                             = 1

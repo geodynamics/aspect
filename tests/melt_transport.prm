@@ -1,14 +1,14 @@
 # Listing of Parameters
 # ---------------------
-# This test checks if including melt transport in a simulation, 
+# This test checks if including melt transport in a simulation,
 # but setting the porosity to 0, gives the same results as running
 # the simulation without melt transport.
-# 
+#
 # Results are the same up to the first three digits of time step size
-# and min/max/mass of compositional fields. 
-# 
+# and min/max/mass of compositional fields.
+#
 # Differences can be checked by setting 'Include melt transport'
-# to false.  
+# to false.
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0
@@ -64,7 +64,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default: 
+  set Model name = box # default:
 
   subsection Box
     set X extent  = 500000
@@ -75,7 +75,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default: 
+  set Model name = vertical # default:
 
 
   subsection Vertical
@@ -88,7 +88,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function constants  = l=250000
     set Function expression = 1600 + 100 * exp(-(x-l)*(x-l)/(0.04*l*l)-(y-l)*(y-l)/(0.04*l*l))
@@ -97,7 +97,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default: 
+  set Model name = function # default:
   subsection Function
     set Function expression = if(y>250000*(1+0.5*sin(x*pi/250000)),0.3,0);0.0
     set Variable names      = x,y
@@ -113,7 +113,7 @@ subsection Material model
     set Reference solid density = 3300
     set Reference melt density = 3200
     set Melting time scale for operator splitting = 1e100
-  end 
+  end
 end
 
 
@@ -132,7 +132,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default: 
+  set Fixed temperature boundary indicators   = 0,3        # default:
 end
 
 subsection Boundary velocity model
@@ -140,7 +140,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default: 
+  set Zero velocity boundary indicators       =           # default:
 end
 
 subsection Melt settings

@@ -78,7 +78,7 @@ end
 ############### Parameters describing the compositional field
 # This, however, is the more important part: We need to describe
 # the compositional field and its influence on the density
-# function. The following blocks say that we want to 
+# function. The following blocks say that we want to
 # advect a single compositional field and that we give it an
 # initial value that is zero outside a sphere of radius
 # r=200000m and centered at the point (p,p,p) with
@@ -89,7 +89,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
-end 
+end
 
 subsection Initial composition model
   set Model name = function
@@ -114,7 +114,7 @@ end
 # The following parameters describe how often we want to refine
 # the mesh globally and adaptively, what fraction of cells should
 # be refined in each adaptive refinement step, and what refinement
-# indicator to use when refining the mesh adaptively. 
+# indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 4

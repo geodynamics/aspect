@@ -28,12 +28,12 @@ subsection Initial composition model
   end
 end
 
-subsection Material model 
+subsection Material model
   set Model name = simple
 
   subsection Simple model
-    set Thermal expansion coefficient = 4e-5  
-    set Viscosity                     = 1e22  
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e22
   end
 end
 

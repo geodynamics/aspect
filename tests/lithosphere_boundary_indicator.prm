@@ -13,7 +13,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 # We use a boundary temperature model
-# with additional boundary indicators 
+# with additional boundary indicators
 # as prescribed by the geometry model
 subsection Boundary temperature model
   set List of model names = box with lithosphere boundary indicators
@@ -24,7 +24,7 @@ end
 
 # We use the initial composition
 subsection Boundary composition model
-  set List of model names = initial composition 
+  set List of model names = initial composition
 end
 
 
@@ -51,7 +51,7 @@ subsection Initial temperature model
   set Model name = function
   subsection Function
    set Function expression = 0
-  end 
+  end
 end
 
 
@@ -78,7 +78,7 @@ subsection Mesh refinement
 end
 
 
-# In 2D the additional boundary indicators have value 4 (left lithosphere) 
+# In 2D the additional boundary indicators have value 4 (left lithosphere)
 # and 5 (right lithosphere). Because we want flow through these boundaries
 # we set fixed temperature and composition boundary conditions.
 # For now we set the lower part of the vertical boundaries to

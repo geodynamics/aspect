@@ -2,18 +2,18 @@
 # to use the Visco Plastic material model and include a constant
 # yield stress of 100 MPa. Without the imposed yield stress, the viscoelastic
 # stress will build up to ~ 200 MPa. However, the imposed yield stress will
-# truncate the viscoelastic stresses at the yield stress magnitude. 
+# truncate the viscoelastic stresses at the yield stress magnitude.
 # For additional information on the model setup and analytical solution,
 # see viscoelastic_stress_build-up.prm, which is located in this folder.
 #
 # The results can be observed by viewing the compositional field values
 # representing the horizontal (stress_xx) or vertical (stress_yy) components
-# of the viscoelastic stress tensor. Significantly, the stress near the 
+# of the viscoelastic stress tensor. Significantly, the stress near the
 # model boundaries is incorrect due to the compositional field boundary
 # conditions, which are based on the initial compositional values (e.g., zero).
 # This leads to oscillations in the stress field near the boundaries, which
 # decay towards a constant value in the model interior as the stresses build up to
-# 100 MPa. 
+# 100 MPa.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 

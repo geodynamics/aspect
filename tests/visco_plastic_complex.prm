@@ -66,7 +66,7 @@ end
 #   thermal conductivity (kc) = 2.5 (W/(m K));
 # To satisfy these constraints, the following values are required:
 #   surface heat flow (qs) = 0.0635 W/m^2; basal heat flow = 0.365 W/m^2;
-#   mantle thermal conductivity (km) = 3.65 (W/(m K)); 
+#   mantle thermal conductivity (km) = 3.65 (W/(m K));
 subsection Initial temperature model
   set Model name = function
   subsection Function

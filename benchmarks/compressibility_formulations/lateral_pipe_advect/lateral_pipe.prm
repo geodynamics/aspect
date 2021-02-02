@@ -84,12 +84,12 @@ subsection Boundary temperature model
   set List of model names = function
 
   subsection Function
-    set Function expression = 1600 + 200 * t / 1e7 
+    set Function expression = 1600 + 200 * t / 1e7
   end
 end
 
 # To guarantuee a steady downward flow, we fix the velocity
-# at the top and bottom, and set it to free slip on the sides. 
+# at the top and bottom, and set it to free slip on the sides.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left:function
   set Tangential velocity boundary indicators = bottom,top
@@ -118,7 +118,7 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
+  set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 end
@@ -133,7 +133,7 @@ subsection Postprocess
 
     # We are only interested in the last timestep (when the system hast reached
     # a steady state). For following the development of the system or checking
-    # if the solution already reached steady state, this parameter can be set 
+    # if the solution already reached steady state, this parameter can be set
     # to a smaller value.
     set Time between graphical output = 6201145.069582775 #1e7
     set List of output variables = nonadiabatic temperature, nonadiabatic pressure, heating, material properties, strain rate

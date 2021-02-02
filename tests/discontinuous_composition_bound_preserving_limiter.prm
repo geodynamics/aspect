@@ -72,7 +72,7 @@ subsection Initial composition model
   set Model name = function
   subsection Function
     set Variable names      = x,z
-    set Function expression = if(((x>187.5e3)&&(x<375e3)&&(z>312.5e3)&&(z<375e3)), 1, 0);if((x>125e3)&&(x<312.5e3)&&((z>312.5e3)&&(z<437.5e3)), 2, 0);  
+    set Function expression = if(((x>187.5e3)&&(x<375e3)&&(z>312.5e3)&&(z<375e3)), 1, 0);if((x>125e3)&&(x<312.5e3)&&((z>312.5e3)&&(z<437.5e3)), 2, 0);
  end
 end
 
@@ -109,4 +109,3 @@ subsection Discretization
       set Global composition minimum = 0.0, 0.0
   end
 end
-

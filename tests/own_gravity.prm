@@ -115,4 +115,3 @@ subsection Postprocess
     set List of output variables = gravity
   end
 end
-

@@ -1,22 +1,22 @@
 # A simple setup for convection the inner core. See the
-# manual, Section Cookbooks/Geophysical setups/Inner core convection 
-# for more information. Changing the Rayleigh number Ra 
+# manual, Section Cookbooks/Geophysical setups/Inner core convection
+# for more information. Changing the Rayleigh number Ra
 # and the resistance to phase change P will change the mode
 # of inner core convection between translation, plume convection
 # or no convection.
-# 
-# Setup and equations are given in: Deguen, Alboussiere, 
-# and Cardin (2013), Thermal convection in Earth’s inner core 
+#
+# Setup and equations are given in: Deguen, Alboussiere,
+# and Cardin (2013), Thermal convection in Earth’s inner core
 # with phase change at its boundary. GJI, 194, 1310-133.
 
-set Additional shared libraries            = ./libinner_core_convection.so 
- 
+set Additional shared libraries            = ./libinner_core_convection.so
+
 set Dimension                              = 3
 set Use years in output instead of seconds = false
 set End time                               = 1.5e9
 set Output directory                       = output-inner_core_traction
 
-# The equations are non-dimensionalized, and all of the 
+# The equations are non-dimensionalized, and all of the
 # material properties are constant and set to one, except
 # for the density, which scales with temperature.
 subsection Material model
@@ -33,13 +33,13 @@ subsection Material model
 
 # The 'inner core material' model also contains a function that
 # represents the resistance to melting/freezing at the inner core
-# boundary. 
-# This phase boundary model combines a prescribed a normal 
-# velocity and normal stress. The relation between the two scales 
+# boundary.
+# This phase boundary model combines a prescribed a normal
+# velocity and normal stress. The relation between the two scales
 # with the phase change number P, which is given in the 'Function
-# expression'. 
-# For P-->inifinity, the boundary is a free slip boundary, and for 
-# P-->0, the boundary is an open boundary (with zero normal stress). 
+# expression'.
+# For P-->inifinity, the boundary is a free slip boundary, and for
+# P-->0, the boundary is an open boundary (with zero normal stress).
 
 # For time dependence, the varibale names have to have dim+1 entries,
 # and the last variable will be the time
@@ -51,7 +51,7 @@ subsection Material model
   end
 end
 
-# The inner core is a sphere, and the non-dimensional radius 
+# The inner core is a sphere, and the non-dimensional radius
 # is 1.
 subsection Geometry model
   set Model name = sphere
@@ -61,15 +61,15 @@ subsection Geometry model
   end
 end
 
-# We use a new boundary condition at the surface, which takes 
-# into account the effect of melting/freezing of material at 
+# We use a new boundary condition at the surface, which takes
+# into account the effect of melting/freezing of material at
 # the boundary of inner and outer core, and which is implemented
-# in the shared library. 
+# in the shared library.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = surface: zero traction
 end
 
-# We use a constant radiogenic heating rate.  
+# We use a constant radiogenic heating rate.
 subsection Heating model
   set List of model names = constant core heating
 
@@ -95,7 +95,7 @@ end
 
 # The gravity has its maximum value at the boundary of inner and
 # outer core, and decreases approximately linearly to zero towards
-# the center of the core. 
+# the center of the core.
 # The Rayleigh number used in the model is given by the magnitude
 # of the gravity at the inner core/outer core boundary.
 subsection Gravity model

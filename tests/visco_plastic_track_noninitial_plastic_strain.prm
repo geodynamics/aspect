@@ -7,7 +7,7 @@ set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
 set Output directory                       = visco_plastic_track_noninitial_plastic_strain
 set Timing output frequency                = 1
-    
+
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
@@ -25,7 +25,7 @@ subsection Geometry model
   end
 end
 
-# Mesh refinement specifications 
+# Mesh refinement specifications
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 0
@@ -33,7 +33,7 @@ subsection Mesh refinement
 end
 
 
-# Boundary classifications (fixed T boundaries, prescribed velocity) 
+# Boundary classifications (fixed T boundaries, prescribed velocity)
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.

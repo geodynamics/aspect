@@ -1,5 +1,5 @@
 # We setup three columns, of which the middle column has a higher density
-# and viscosity. By choosing a free surface in combination with a 
+# and viscosity. By choosing a free surface in combination with a
 # prescribed lithostatic pressure calculated in the left column,
 # we see the middle column sink until isostasy is reached (if end time is increased)
 
@@ -40,7 +40,7 @@ subsection Initial temperature model
   set Model name = function
   subsection Function
    set Function expression = 0
-  end 
+  end
 end
 
 
@@ -80,7 +80,7 @@ subsection Mesh refinement
    set Variable names = x, z
    set Function expression = if(x>0.2&x<0.8&z>0.9, 7,5)
   end
-  
+
 end
 
 
@@ -135,7 +135,7 @@ end
 subsection Boundary velocity model
   subsection Function
     set Variable names = x,z
-    set Function expression = 0;0  
+    set Function expression = 0;0
   end
 end
 
@@ -162,6 +162,5 @@ end
 # In the end, the middle column should have sunk by ~0.048
 subsection Postprocess
   set List of postprocessors = velocity statistics, pressure statistics, topography
-  
-end
 
+end

@@ -1,16 +1,16 @@
 #########################################################
-# This is a model setup to test the term on the right-hand 
-# side of the mass conservation in models with melt 
-# transport that describes the change in volume associated 
-# with melting and freezing reactions. 
-# Melt flows in from the bottom and crosses a phase 
-# transition, where it freezes and changes the velocity.  
+# This is a model setup to test the term on the right-hand
+# side of the mass conservation in models with melt
+# transport that describes the change in volume associated
+# with melting and freezing reactions.
+# Melt flows in from the bottom and crosses a phase
+# transition, where it freezes and changes the velocity.
 # The crucial property of the test is the maximum velocity
-# (at the bottom of the domain), which should be close to 
-# 2.4e-11 m/s. This test is similar to the 
-# "latent heat melt transport" test, except that it has a 
-# zero permeability and latent heat, and slightly different 
-# material properties and geometry. 
+# (at the bottom of the domain), which should be close to
+# 2.4e-11 m/s. This test is similar to the
+# "latent heat melt transport" test, except that it has a
+# zero permeability and latent heat, and slightly different
+# material properties and geometry.
 
 set Dimension = 2
 
@@ -50,10 +50,10 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
-    set Function expression = if(z<500000.0,1,0);if(z>500000.,0,1)    
+    set Function expression = if(z<500000.0,1,0);if(z>500000.,0,1)
   end
 end
 
@@ -75,7 +75,7 @@ end
 subsection Boundary composition model
   # We only fix the temperature at the upper boundary, the other boundaries
   # are isolating. To guarantee a steady downward flow, we fix the velocity
-  # at the top and bottom, and set it to free slip on the sides. 
+  # at the top and bottom, and set it to free slip on the sides.
   set Fixed composition boundary indicators   = 2
 end
 
@@ -94,7 +94,7 @@ end
 
 
 ############### Boundary conditions
-# We set the top temperature to T1=1000K. 
+# We set the top temperature to T1=1000K.
 subsection Boundary temperature model
   set List of model names = box
   subsection Box
@@ -141,8 +141,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0 
-  set Initial global refinement          = 0 
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
   set Time steps between mesh refinement = 0
 
 end

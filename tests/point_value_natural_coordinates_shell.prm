@@ -31,7 +31,7 @@ end
 subsection Geometry model
   set Model name = spherical shell
 
-  subsection Spherical shell 
+  subsection Spherical shell
     set Inner radius  = 3481000
     set Outer radius  = 6371000
     set Opening angle = 90
@@ -60,7 +60,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  subsection Function 
+  subsection Function
     set Variable names      = x,y
     set Function expression = if((sqrt((x-3483208.)^2+(y-3483208.)^2)<5e5) , 1800.0, 1613.0)
   end
@@ -94,9 +94,8 @@ subsection Postprocess
     # The former should give a temperature of 1613 K and the latter
     # of 1800 K.
     set Evaluation points = 6370e3, 0.7854; \
-                            4926e3, 0.7854 
+                            4926e3, 0.7854
     set Use natural coordinates = true
   end
 
 end
-
