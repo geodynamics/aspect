@@ -165,8 +165,6 @@ subsection Material model
 
   subsection Visco Plastic
 
-    # Reference temperature and viscosity
-    set Reference temperature = 293
     set Reference viscosity = 1e22
     
     # The minimum strain-rate helps limit large viscosities values that arise

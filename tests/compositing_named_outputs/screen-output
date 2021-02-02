@@ -11,7 +11,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-compositing_named_outputs/solution/solution-00000
      RMS, max velocity:                  0.585 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 1630 K, 4250 K
-     Heat fluxes through boundary parts: 4.974e+06 W, -2.701e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 5.253e+06 W, -2.845e+06 W, 0 W, 0 W
      Writing depth average:              output-compositing_named_outputs/depth_average
 
 *** Timestep 1:  t=100000 years, dt=100000 years
@@ -23,7 +23,7 @@ Number of degrees of freedom: 2,724 (1,666+225+833)
      Writing graphical output:           output-compositing_named_outputs/solution/solution-00001
      RMS, max velocity:                  0.582 m/year, 1.12 m/year
      Temperature min/avg/max:            273 K, 1631 K, 4250 K
-     Heat fluxes through boundary parts: -1.748e+06 W, -1.501e+06 W, 0 W, 0 W
+     Heat fluxes through boundary parts: -1.802e+06 W, -1.592e+06 W, 0 W, 0 W
      Writing depth average:              output-compositing_named_outputs/depth_average
 
 Termination requested by criterion: end time

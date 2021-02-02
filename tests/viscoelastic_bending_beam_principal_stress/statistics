@@ -16,5 +16,5 @@
 # 16: RMS velocity (m/year)
 # 17: Max. velocity (m/year)
 # 18: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 0 0 0 0 0 47 49 145 7.07704100e-03 1.40338584e-02 output-viscoelastic_bending_beam_principal_stress/solution/solution-00000 
-1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 4 4 4 3 43 45 135 6.98578592e-03 1.29318107e-02 output-viscoelastic_bending_beam_principal_stress/solution/solution-00001 
+0 0.000000000000e+00 0.000000000000e+00 150 1478 176 5400 0 0 0 0 0 47 49 145 7.00446595e-03 1.38899412e-02 output-viscoelastic_bending_beam_principal_stress/solution/solution-00000 
+1 1.000000000000e+03 1.000000000000e+03 150 1478 176 5400 0 4 4 4 3 43 45 135 6.91417743e-03 1.27992344e-02 output-viscoelastic_bending_beam_principal_stress/solution/solution-00001 

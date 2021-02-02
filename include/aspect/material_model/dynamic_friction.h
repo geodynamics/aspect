@@ -130,12 +130,6 @@ namespace aspect
         const std::vector<double> compute_viscosities(const double pressure,
                                                       const SymmetricTensor<2,dim> &strain_rate) const;
 
-        /**
-         * Reference temperature for thermal expansion.  All components use
-         * the same reference_T.
-         */
-        double reference_T;
-
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
 
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;

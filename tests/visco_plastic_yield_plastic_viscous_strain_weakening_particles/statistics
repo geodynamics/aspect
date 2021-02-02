@@ -18,4 +18,4 @@
 # 18: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
 # 19: Visualization file name
 # 20: Number of advected particles
-0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0 5 17 14 4.08248504e-04 6.91148794e-04 1.65115500e+05 1.65115500e+05 -1.65115500e+05 -1.65115500e+05 output-visco_plastic_yield_plastic_viscous_strain_weakening_particles/solution/solution-00000 100000 
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 882 1 0 5 17 14 4.08248504e-04 6.91148794e-04 1.63423425e+05 1.63423425e+05 -1.63423425e+05 -1.63423425e+05 output-visco_plastic_yield_plastic_viscous_strain_weakening_particles/solution/solution-00000 100000 

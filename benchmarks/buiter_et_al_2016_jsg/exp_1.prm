@@ -119,7 +119,6 @@ subsection Material model
 #                  [bkd, sand,  bound, block, sticky_air, total_strain]
     set Densities                                   = 1560, 1560., 3100,  1560 , 0,          1560
     
-    set Reference temperature                       = 293
     set Heat capacities                             = 750.
     set Thermal diffusivities                       = 1e-6
     set Thermal expansivities                       = 0.
