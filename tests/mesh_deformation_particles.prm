@@ -26,11 +26,8 @@ subsection Geometry model
 end
 
 subsection Mesh deformation
-# When only the top boundary function is specified, the entire cell moves up by 0.5
   set Mesh deformation boundary indicators = top: boundary function
-# When both the top and bottom boundary function is specified, the bottom boundary 
-# stays stationary and the top boundary moves up, which is the correct behavior
-#  set Mesh deformation boundary indicators = top: boundary function, bottom: boundary function
+  set Additional tangential mesh velocity boundary indicators = left, right
   subsection Boundary function
     set Function expression = 0;if(y<1,0,1)
   end
@@ -60,7 +57,7 @@ subsection Postprocess
 
     set Number of grouped files       = 0
     set Interpolate output            = false
-    set Output format                 = vtu
+    set Output format                 = gnuplot
     set Time between graphical output = 0
   end
 
@@ -69,7 +66,7 @@ subsection Postprocess
     set Minimum particles per cell = 1
     set Maximum particles per cell = 1
     set Time between data output = 0
-    set Data output format = vtu, ascii
+    set Data output format = ascii
     set List of particle properties = initial position, position, reference position
     set Particle generator name = uniform box
     subsection Generator

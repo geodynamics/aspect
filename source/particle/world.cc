@@ -277,7 +277,8 @@ namespace aspect
         [&] (const SimulatorAccess<dim> &)
       {
         particle_handler->sort_particles_into_subdomains_and_cells();
-      });
+      },
+      boost::signals2::at_front);
     }
 
 
