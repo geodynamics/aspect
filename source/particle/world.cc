@@ -114,15 +114,6 @@ namespace aspect
 
 
     template <int dim>
-    Particles::ParticleHandler<dim> &
-    World<dim>::get_particle_handler()
-    {
-      return *particle_handler.get();
-    }
-
-
-
-    template <int dim>
     void
     World<dim>::copy_particle_handler (const Particles::ParticleHandler<dim> &from_particle_handler,
                                        Particles::ParticleHandler<dim> &to_particle_handler) const
@@ -194,7 +185,6 @@ namespace aspect
     {
       copy_particle_handler (particle_handler_backup, *particle_handler.get());
     }
-
 
 
 
