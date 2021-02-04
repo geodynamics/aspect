@@ -1,4 +1,4 @@
-# Like the poiseuille_2d.prm test and based on the nonlinear channel 
+# Like the poiseuille_2d.prm test and based on the nonlinear channel
 # flow benchmark, but adds passive particles.
 
 include $ASPECT_SOURCE_DIR/tests/nonlinear_channel_flow_tractions_Newton_Stokes.prm
@@ -20,9 +20,9 @@ subsection Postprocess
     set Data output format = gnuplot
     set List of particle properties = initial position, position
     set Interpolation scheme = nearest neighbor
-    set Particle generator name = random uniform 
-    set Minimum particles per cell = 2 
-    set Maximum particles per cell = 2 
+    set Particle generator name = random uniform
+    set Minimum particles per cell = 2
+    set Maximum particles per cell = 2
     set Load balancing strategy = remove and add particles
   end
 end
