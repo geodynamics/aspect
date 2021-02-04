@@ -1,7 +1,4 @@
-# A test that makes sure that the model crashes with the expected
-# error message if particles are combined with a free surface.
-
-# EXPECT FAILURE
+# A test that checks particles combined with a free surface.
 
 set Dimension                              = 2
 set End time                               = 70
