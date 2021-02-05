@@ -10,7 +10,7 @@ Number of degrees of freedom: 35,685 (16,770+2,145+8,385+8,385)
 
    Postprocessing:
      RMS, max velocity:        0.00439 m/year, 0.0101 m/year
-     Pressure min/avg/max:     -7.95e+05 Pa, 9.863e+09 Pa, 1.976e+10 Pa
+     Pressure min/avg/max:     -7.949e+05 Pa, 9.863e+09 Pa, 1.976e+10 Pa
      Writing graphical output: output-lithosphere_boundary_indicator/solution/solution-00000
 
 Termination requested by criterion: end time

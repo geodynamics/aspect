@@ -1,5 +1,5 @@
-Changed: The multicomponent and multicomponent_compressible material
-models now treat the compositional field values as mass fractions, and use
+Changed: The multicomponent_compressible material model
+now treats the compositional field values as mass fractions, and use
 these mass fractions to calculate material properties. The specific heat
 is arithmetically averaged according to mass fraction, while the density,
 compressibility, thermal expansivity, and thermal conductivity are

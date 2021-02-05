@@ -24,7 +24,7 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
    Postprocessing:
      Writing graphical output: output-multicomponent_arithmetic/solution/solution-00000
 
-*** Timestep 1:  t=60062.3 years, dt=60062.3 years
+*** Timestep 1:  t=59830.4 years, dt=59830.4 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 10 iterations.
    Solving C_2 system ... 12 iterations.
@@ -34,13 +34,13 @@ Number of degrees of freedom: 32,097 (10,258+1,323+5,129+5,129+5,129+5,129)
 
    Postprocessing:
 
-*** Timestep 2:  t=126149 years, dt=66086.3 years
+*** Timestep 2:  t=125408 years, dt=65577.5 years
    Solving temperature system... 10 iterations.
    Solving C_1 system ... 11 iterations.
    Solving C_2 system ... 12 iterations.
    Solving C_3 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 30+6 iterations.
+   Solving Stokes system... 30+7 iterations.
 
    Postprocessing:
 
