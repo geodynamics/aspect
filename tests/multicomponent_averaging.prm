@@ -1,10 +1,10 @@
 # This test checks that the correct averaging is done by the multicomponent
 # material model. In this test, two materials are chosen, with constant mass
-# fractions of 0.5. At the reference temperature (273 K), materials 1 and 2
-# have densities of 2000 kg/m^3 and 3000 kg/m^3,
+# fractions of 0.5. At the adiabatic surface temperature (1600 K),
+# materials 1 and 2 have densities of 2000 kg/m^3 and 3000 kg/m^3,
 # which equates to volume fractions of 0.6 and 0.4.
 #
-# The outputs for the properties at 273 K are then:
+# The outputs for the properties at 1600 K are then:
 # Density: 2400 kg/m^3 (volume averaged, 0.6*2000 + 0.4*3000)
 # Thermal_expansivity: 2.4e-5 (volume averaged, 0.6*2e-5 + 0.4*3e-5)
 # Specific_heat: 1500 (mass averaged, 0.5*1000 + 0.5*2000)
@@ -18,14 +18,14 @@
 
 set CFL number                             = 1.0
 set End time                               = 0.
-set Adiabatic surface temperature          = 1600.0
+set Adiabatic surface temperature          = 1600
 set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
   set List of model names = spherical constant
   subsection Spherical constant
     set Inner temperature = 4250
-    set Outer temperature = 273
+    set Outer temperature = 1600
   end
 end
 
@@ -72,7 +72,6 @@ end
 subsection Material model
   set Model name = multicomponent
   subsection Multicomponent
-    set Reference temperature = 273.
     set Densities = 2000., 3000.
     set Specific heats = 1000., 2000.
     set Thermal conductivities = 2., 3.
