@@ -90,10 +90,21 @@ namespace aspect
         // A: prefactor, edot_ii: square root of second invariant of deviatoric strain rate tensor,
         // E: activation energy, P: pressure,
         // V; activation volume, n: stress exponent, R: gas constant, T: temperature.
-        const double viscosity_dislocation = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
-                                             std::exp((p.activation_energy + pressure*p.activation_volume)/
-                                                      (constants::gas_constant*temperature*p.stress_exponent)) *
-                                             std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
+        double viscosity_dislocation = 0.5 * std::pow(p.prefactor,-1/p.stress_exponent) *
+                                       std::exp((p.activation_energy + pressure*p.activation_volume)/
+                                                (constants::gas_constant*temperature*p.stress_exponent)) *
+                                       std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
+
+        Assert (viscosity_dislocation > 0.0,
+                ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
+                            "Check for negative parameters."));
+
+        // For low temperatures viscosities can become extremely large. These viscosities are physically meaningless
+        // (in composite rheologies other deformation mechanisms will take over), but they can provoke
+        // floating-point overflow errors. Since viscosities of diffusion and dislocation creep are often
+        // multiplied, we constrain each to be smaller than std::sqrt(max_double).
+        viscosity_dislocation = std::min(viscosity_dislocation, std::sqrt(std::numeric_limits<double>::max()));
+
         return viscosity_dislocation;
       }
 
