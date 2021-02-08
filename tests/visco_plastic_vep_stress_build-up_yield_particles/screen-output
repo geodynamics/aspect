@@ -24,11 +24,11 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64932e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64933e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -2.367/15.16/6.338e+09
      Number of advected particles: 11958
 
 
@@ -38,11 +38,11 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64933e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64934e-08
 
 
    Postprocessing:
-     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -2.367/15.16/6.338e+09
+     Compositions min/max/mass:    1e+06/1e+06/1e+16 // -1e+06/-1e+06/-1e+16 // -2.843/16.29/6.37e+09
      Number of advected particles: 11953
 
 

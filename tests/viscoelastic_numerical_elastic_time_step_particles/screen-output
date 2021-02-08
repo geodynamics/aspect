@@ -20,7 +20,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/0/0
+     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -9.901/59.5/2.778e+10
      Number of advected particles: 11958
 
 
@@ -32,7 +32,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass:    4.795e+06/4.795e+06/4.795e+16 // -4.795e+06/-4.795e+06/-4.795e+16 // -9.901/59.5/2.778e+10
+     Compositions min/max/mass:    8.44e+06/8.44e+06/8.44e+16 // -8.44e+06/-8.44e+06/-8.44e+16 // -17.95/105.6/4.897e+10
      Number of advected particles: 11953
 
 

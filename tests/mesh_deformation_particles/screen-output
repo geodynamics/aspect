@@ -1,119 +1,27 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
-Loading shared library <./libvisco_plastic_derivatives_2d.so>
+Loading shared library <./libmesh_deformation_particles.so>
 
-* Connecting signals
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
 
-Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter harmonic
-pressure: point = 0, Finite difference = 0, Analytical derivative = 0
-pressure: point = 1, Finite difference = 2.12594e+08, Analytical derivative = 2.12594e+08
-pressure: point = 2, Finite difference = 2.68615e+08, Analytical derivative = 2.68615e+08
-pressure: point = 3, Finite difference = 0, Analytical derivative = 0
-pressure: point = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 0, component = 0, Finite difference = 1.14846e+34, Analytical derivative = 1.14846e+34
-strain-rate: point = 1, component = 0, Finite difference = 6.58655e+26, Analytical derivative = 6.58655e+26
-strain-rate: point = 2, component = 0, Finite difference = 1.23761e+27, Analytical derivative = 1.23761e+27
-strain-rate: point = 3, component = 0, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 0, Finite difference = 8.83884e+32, Analytical derivative = 8.83884e+32
-strain-rate: point = 0, component = 1, Finite difference = -1.14846e+34, Analytical derivative = -1.14846e+34
-strain-rate: point = 1, component = 1, Finite difference = -6.58657e+26, Analytical derivative = -6.58657e+26
-strain-rate: point = 2, component = 1, Finite difference = -1.23761e+27, Analytical derivative = -1.23761e+27
-strain-rate: point = 3, component = 1, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 1, Finite difference = -8.83883e+32, Analytical derivative = -8.83883e+32
-strain-rate: point = 0, component = 2, Finite difference = -1.27606e+33, Analytical derivative = -1.27606e+33
-strain-rate: point = 1, component = 2, Finite difference = 1.79805e+28, Analytical derivative = 1.79805e+28
-strain-rate: point = 2, component = 2, Finite difference = -1.1251e+28, Analytical derivative = -1.1251e+28
-strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 2, Finite difference = -4.41942e+32, Analytical derivative = -4.41942e+32
-OK
-
-Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter geometric
-pressure: point = 0, Finite difference = 0, Analytical derivative = 0
-pressure: point = 1, Finite difference = 2.12594e+08, Analytical derivative = 2.12594e+08
-pressure: point = 2, Finite difference = 2.68615e+08, Analytical derivative = 2.68615e+08
-pressure: point = 3, Finite difference = 0, Analytical derivative = 0
-pressure: point = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 0, component = 0, Finite difference = 1.14845e+34, Analytical derivative = 1.14846e+34
-strain-rate: point = 1, component = 0, Finite difference = 6.58587e+26, Analytical derivative = 6.58655e+26
-strain-rate: point = 2, component = 0, Finite difference = 1.23759e+27, Analytical derivative = 1.23761e+27
-strain-rate: point = 3, component = 0, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 0, Finite difference = 8.83884e+32, Analytical derivative = 8.83884e+32
-strain-rate: point = 0, component = 1, Finite difference = -1.14846e+34, Analytical derivative = -1.14846e+34
-strain-rate: point = 1, component = 1, Finite difference = -6.58596e+26, Analytical derivative = -6.58657e+26
-strain-rate: point = 2, component = 1, Finite difference = -1.23785e+27, Analytical derivative = -1.23761e+27
-strain-rate: point = 3, component = 1, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 1, Finite difference = -8.83883e+32, Analytical derivative = -8.83883e+32
-strain-rate: point = 0, component = 2, Finite difference = -1.27607e+33, Analytical derivative = -1.27606e+33
-strain-rate: point = 1, component = 2, Finite difference = 1.79805e+28, Analytical derivative = 1.79805e+28
-strain-rate: point = 2, component = 2, Finite difference = -1.1251e+28, Analytical derivative = -1.1251e+28
-strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 2, Finite difference = -4.41942e+32, Analytical derivative = -4.41942e+32
-OK
-
-Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter arithmetic
-pressure: point = 0, Finite difference = 0, Analytical derivative = 0
-pressure: point = 1, Finite difference = 2.12594e+08, Analytical derivative = 2.12594e+08
-pressure: point = 2, Finite difference = 2.68615e+08, Analytical derivative = 2.68615e+08
-pressure: point = 3, Finite difference = 0, Analytical derivative = 0
-pressure: point = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 0, component = 0, Finite difference = 1.14846e+34, Analytical derivative = 1.14846e+34
-strain-rate: point = 1, component = 0, Finite difference = 6.58655e+26, Analytical derivative = 6.58655e+26
-strain-rate: point = 2, component = 0, Finite difference = 1.23761e+27, Analytical derivative = 1.23761e+27
-strain-rate: point = 3, component = 0, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 0, Finite difference = 8.83884e+32, Analytical derivative = 8.83884e+32
-strain-rate: point = 0, component = 1, Finite difference = -1.14846e+34, Analytical derivative = -1.14846e+34
-strain-rate: point = 1, component = 1, Finite difference = -6.58657e+26, Analytical derivative = -6.58657e+26
-strain-rate: point = 2, component = 1, Finite difference = -1.23761e+27, Analytical derivative = -1.23761e+27
-strain-rate: point = 3, component = 1, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 1, Finite difference = -8.83883e+32, Analytical derivative = -8.83883e+32
-strain-rate: point = 0, component = 2, Finite difference = -1.27606e+33, Analytical derivative = -1.27606e+33
-strain-rate: point = 1, component = 2, Finite difference = 1.79805e+28, Analytical derivative = 1.79805e+28
-strain-rate: point = 2, component = 2, Finite difference = -1.1251e+28, Analytical derivative = -1.1251e+28
-strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 2, Finite difference = -4.41942e+32, Analytical derivative = -4.41942e+32
-OK
-
-Testing ViscoPlastic derivatives against analytical derivatives for averaging parameter maximum composition
-pressure: point = 0, Finite difference = 0, Analytical derivative = 0
-pressure: point = 1, Finite difference = 2.12594e+08, Analytical derivative = 2.12594e+08
-pressure: point = 2, Finite difference = 2.68615e+08, Analytical derivative = 2.68615e+08
-pressure: point = 3, Finite difference = 0, Analytical derivative = 0
-pressure: point = 4, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 0, component = 0, Finite difference = 1.14846e+34, Analytical derivative = 1.14846e+34
-strain-rate: point = 1, component = 0, Finite difference = 6.58655e+26, Analytical derivative = 6.58655e+26
-strain-rate: point = 2, component = 0, Finite difference = 1.23761e+27, Analytical derivative = 1.23761e+27
-strain-rate: point = 3, component = 0, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 0, Finite difference = 8.83884e+32, Analytical derivative = 8.83884e+32
-strain-rate: point = 0, component = 1, Finite difference = -1.14846e+34, Analytical derivative = -1.14846e+34
-strain-rate: point = 1, component = 1, Finite difference = -6.58657e+26, Analytical derivative = -6.58657e+26
-strain-rate: point = 2, component = 1, Finite difference = -1.23761e+27, Analytical derivative = -1.23761e+27
-strain-rate: point = 3, component = 1, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 1, Finite difference = -8.83883e+32, Analytical derivative = -8.83883e+32
-strain-rate: point = 0, component = 2, Finite difference = -1.27606e+33, Analytical derivative = -1.27606e+33
-strain-rate: point = 1, component = 2, Finite difference = 1.79805e+28, Analytical derivative = 1.79805e+28
-strain-rate: point = 2, component = 2, Finite difference = -1.1251e+28, Analytical derivative = -1.1251e+28
-strain-rate: point = 3, component = 2, Finite difference = 0, Analytical derivative = 0
-strain-rate: point = 4, component = 2, Finite difference = -4.41942e+32, Analytical derivative = -4.41942e+32
-OK
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-Number of active cells: 100 (on 1 levels)
-Number of degrees of freedom: 2,767 (882+121+441+441+441+441)
-
-*** Timestep 0:  t=0 years
+Number of mesh deformation degrees of freedom: 8
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
 
    Postprocessing:
-     RMS, max velocity:                  0 m/year, 0 m/year
-     Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 0 kg/yr, 0 kg/yr
-     Writing graphical output:           output-visco_plastic_derivatives_2d/solution/solution-00000
+     Writing graphical output: output-mesh_deformation_particles/solution/solution-00000
+     Writing particle output:  output-mesh_deformation_particles/particles/particles-00000
+
+*** Timestep 1:  t=0.5 seconds, dt=0.5 seconds
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_particles/solution/solution-00001
+     Writing particle output:  output-mesh_deformation_particles/particles/particles-00001
 
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

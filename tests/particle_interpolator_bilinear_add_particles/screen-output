@@ -11,7 +11,7 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 
    Postprocessing:
      Writing particle output:       output-particle_interpolator_bilinear_add_particles/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.404574e-08, 1.595630e-04, 3.734649e-08, 2.647470e-04
+     Errors u_L1, p_L1, u_L2, p_L2: 1.404574e-08, 1.595632e-04, 3.734649e-08, 2.647470e-04
 
 Termination requested by criterion: end time
 

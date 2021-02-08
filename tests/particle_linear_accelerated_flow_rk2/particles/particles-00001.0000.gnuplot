@@ -5,5 +5,5 @@
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
 # <x> <y> <id> 
-0.6 0.5 0 
+0.1 0.5 0 
 

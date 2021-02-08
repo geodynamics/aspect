@@ -1,18 +1,45 @@
 
-TimerOutput objects finalize timed values printed to the
-screen by communicating over MPI in their destructors.
-Since an exception is currently uncaught, this
-synchronization (and subsequent output) will be skipped
-to avoid a possible deadlock.
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+Number of mesh deformation degrees of freedom: 578
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000245 m/s, 0.000456 m/s
+     Compositions min/max/mass: 0/1/0.1825
+     Writing particle output:   output-particle_free_surface/particles/particles-00000
+
+*** Timestep 1:  t=62.9935 seconds, dt=62.9935 seconds
+   Solving mesh velocity system... 1 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 14 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 45+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:            0.00059 m/s, 0.00238 m/s
+     Compositions min/max/mass:    -0.001339/1/0.1824
+     Number of advected particles: 9
+
+*** Timestep 2:  t=70 seconds, dt=7.00652 seconds
+   Solving mesh velocity system... 1 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving C_1 system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 37+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.00134 m/s, 0.00334 m/s
+     Compositions min/max/mass: -0.001693/1.001/0.1824
+     Writing particle output:   output-particle_free_surface/particles/particles-00001
+
+Termination requested by criterion: end time
 
 
-Exception 'ExcMessage("Combining particles and a deforming mesh is currently untested " "and not officially supported. If you disable this assertion make " "sure you benchmark the particle accuracy, and carefully check for " "problems related to storing the particle reference coordinates for " "a deforming mesh.")' on rank 0 on processing: 
 
-An error occurred in file <world.cc> in function
-(line in output replaced by default.sh script)
-The violated condition was: 
-    !this->get_parameters().mesh_deformation_enabled
-Additional information: 
-    Combining particles and a deforming mesh is currently untested and not officially supported. If you disable this assertion make sure you benchmark the particle accuracy, and carefully check for problems related to storing the particle reference coordinates for a deforming mesh.
-
-Aborting!

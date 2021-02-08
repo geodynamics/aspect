@@ -27,7 +27,7 @@ AQAAAAcAAAAHAAAACwAAAA==eNpjZAQDAAAjAAg=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="velocity" NumberOfComponents="3" format="binary">
-AQAAAFQAAABUAAAATQAAAA==eNpbVm9o+ZhthjkDEEyZ/sui6EjrDhC71arZIjyfcyeIfZuP0TLbVwIs3rbB3rzff/NmENuy/reZ2ttOsPj7G6EWpTN1t4PYAG3rGjg=    </DataArray>
+AQAAAFQAAABUAAAADAAAAA==eNpjYKA+AAAAVAAB    </DataArray>
     <DataArray type="Float32" Name="function" NumberOfComponents="3" format="binary">
 AQAAAFQAAABUAAAADAAAAA==eNpjYKA+AAAAVAAB    </DataArray>
     <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
