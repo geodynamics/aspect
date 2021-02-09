@@ -192,6 +192,21 @@ namespace aspect
   std::vector<double> Simulator<dim>::assemble_and_solve_composition (const bool compute_initial_residual,
                                                                       std::vector<double> *initial_residual)
   {
+    // Advect the particles before they are potentially used to
+    // set up the compositional fields.
+    if (particle_world.get() != nullptr)
+      {
+        // Do not advect the particles in the initial refinement stage
+        const bool in_initial_refinement = (timestep_number == 0)
+                                           && (pre_refinement_step < parameters.initial_adaptive_refinement);
+        if (!in_initial_refinement)
+          // Advance the particles in the world to the current time
+          particle_world->advance_timestep();
+
+        if (particle_world->get_property_manager().need_update() == Particle::Property::update_output_step)
+          particle_world->update_particles();
+      }
+
     std::vector<double> current_residual(introspection.n_compositional_fields,0.0);
 
     if (compute_initial_residual)
@@ -929,8 +944,20 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
+
+    // Copy particle handler to restore particle location and properties
+    // after each nonlinear iteration.
+    if (particle_world.get() != nullptr)
+      particle_world->backup_particles();
+
     do
       {
+        // Restore particles through stored copy of particle handler,
+        // but only if they have already been displaced in a nonlinear
+        // iteration (in the assemble_and_solve_composition call).
+        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+          particle_world->restore_particles();
+
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
 
@@ -1042,8 +1069,20 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
+
+    // Copy particle handler to restore particle location and properties
+    // after each nonlinear iteration.
+    if (particle_world.get() != nullptr)
+      particle_world->backup_particles();
+
     do
       {
+        // Restore particles through stored copy of particle handler,
+        // but only if they have already been displaced in a nonlinear
+        // iteration (in the assemble_and_solve_composition call).
+        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+          particle_world->restore_particles();
+
         const double relative_temperature_residual =
           assemble_and_solve_temperature(nonlinear_iteration == 0, &initial_temperature_residual);
 
@@ -1187,8 +1226,19 @@ namespace aspect
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
 
+    // Copy particle handler to restore particle location and properties
+    // after each nonlinear iteration.
+    if (particle_world.get() != nullptr)
+      particle_world->backup_particles();
+
     do
       {
+        // Restore particles through stored copy of particle handler,
+        // but only if they have already been displaced in a nonlinear
+        // iteration (in the assemble_and_solve_composition call).
+        if ((particle_world.get() != nullptr) && (nonlinear_iteration > 0))
+          particle_world->restore_particles();
+
         assemble_and_solve_temperature();
         assemble_and_solve_composition();
 

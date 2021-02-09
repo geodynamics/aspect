@@ -1,0 +1,28 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: RMS velocity (m/s)
+# 13: Max. velocity (m/s)
+# 14: Minimal pressure (Pa)
+# 15: Average pressure (Pa)
+# 16: Maximal pressure (Pa)
+# 17: Outward mass flux through boundary with indicator 0 ("left") (kg/s)
+# 18: Outward mass flux through boundary with indicator 1 ("right") (kg/s)
+# 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
+# 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
+# 21: Visualization file name
+# 22: Number of advected particles
+# 23: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 33 0 1810 2061 2194 2.57340148e-08 3.05175054e-08 -3.04528777e-02 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/solution/solution-00000 512 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/particles/particles-00000 
+1 1.000000000000e+00 1.000000000000e+00 256 2467 1089  4 0  484 3327  499 2.57340148e-08 3.05175054e-08 -2.41649460e-03 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01                                                                                      "" 512 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/particles/particles-00001 
+2 2.000000000000e+00 1.000000000000e+00 256 2467 1089  3 0  435 2702  448 2.57340148e-08 3.05175054e-08 -5.58184590e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/solution/solution-00001 512 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/particles/particles-00002 
+3 3.000000000000e+00 1.000000000000e+00 256 2467 1089  4 0  465 2719  480 2.57340148e-08 3.05175054e-08 -6.58144764e-04 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01                                                                                      "" 512 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/particles/particles-00003 
+4 4.000000000000e+00 1.000000000000e+00 256 2467 1089  2 0  218 1452  225 2.57340148e-08 3.05175054e-08 -1.23784757e-03 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -8.13894262e-01 8.13894262e-01 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/solution/solution-00002 512 output-nonlinear_channel_flow_tractions_Newton_Stokes_particles/particles/particles-00004 

@@ -52,7 +52,7 @@ Number of degrees of freedom: 17,794 (8,360+1,074+4,180+4,180)
    Solving Stokes system... 60+0 iterations.
 
    Postprocessing:
-     Number of advected particles:        3395
+     Number of advected particles:        3446
      Particle count per cell min/avg/max: 2, 3, 100
 
 Termination requested by criterion: end time

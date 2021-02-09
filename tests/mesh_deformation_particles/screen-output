@@ -1,0 +1,27 @@
+
+Loading shared library <./libmesh_deformation_particles.so>
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 31 (18+4+9)
+
+Number of mesh deformation degrees of freedom: 8
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_particles/solution/solution-00000
+     Writing particle output:  output-mesh_deformation_particles/particles/particles-00000
+
+*** Timestep 1:  t=0.5 seconds, dt=0.5 seconds
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+
+   Postprocessing:
+     Writing graphical output: output-mesh_deformation_particles/solution/solution-00001
+     Writing particle output:  output-mesh_deformation_particles/particles/particles-00001
+
+Termination requested by criterion: end time
+
+
+

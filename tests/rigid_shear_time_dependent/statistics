@@ -12,6 +12,6 @@
 # 12: Visualization file name
 # 13: Number of advected particles
 # 14: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 64 659 289 1152 0          4  6  5 output-rigid_shear_time_dependent/solution/solution-00000 5184 output-rigid_shear_time_dependent/particles/particles-00000 
-1 6.247343483997e-02 6.247343483997e-02 64 659 289 1152 0 4294967295  0  0                                                        "" 5184                                                          "" 
-2 1.000000000000e-01 3.752656516003e-02 64 659 289 1152 0          8 10 10 output-rigid_shear_time_dependent/solution/solution-00001 5184 output-rigid_shear_time_dependent/particles/particles-00001 
+0 0.000000000000e+00 0.000000000000e+00 64 659 289 1152 0 4  6  5 output-rigid_shear_time_dependent/solution/solution-00000 5184 output-rigid_shear_time_dependent/particles/particles-00000 
+1 6.247343483997e-02 6.247343483997e-02 64 659 289 1152 0 8 10 10                                                        "" 5184                                                          "" 
+2 1.000000000000e-01 3.752656516003e-02 64 659 289 1152 0 8 10 10 output-rigid_shear_time_dependent/solution/solution-00001 5184 output-rigid_shear_time_dependent/particles/particles-00001 

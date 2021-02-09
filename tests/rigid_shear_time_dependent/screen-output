@@ -16,11 +16,11 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
 *** Timestep 1:  t=0.0624734 seconds, dt=0.0624734 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system... 9+0 iterations.
 
    Postprocessing:
      Number of advected particles:          5184
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.371782e-04, 1.860197e-02, 3.469862e-04, 2.600713e-02, 4.055665e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.388439e-04, 1.860765e-02, 3.480267e-04, 2.600906e-02, 4.101861e-03
 
 *** Timestep 2:  t=0.1 seconds, dt=0.0375266 seconds
    Skipping temperature solve because RHS is zero.
@@ -29,7 +29,7 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
    Postprocessing:
      Writing graphical output:              output-rigid_shear_time_dependent/solution/solution-00001
      Writing particle output:               output-rigid_shear_time_dependent/particles/particles-00001
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.388439e-04, 1.860765e-02, 3.480267e-04, 2.600906e-02, 4.101861e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.364958e-04, 1.859500e-02, 3.465772e-04, 2.600819e-02, 4.091277e-03
 
 Termination requested by criterion: end time
 

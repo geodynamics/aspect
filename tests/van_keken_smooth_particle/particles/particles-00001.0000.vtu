@@ -11,7 +11,7 @@
 <Piece NumberOfPoints="10" NumberOfCells="10" >
   <Points>
     <DataArray type="Float32" NumberOfComponents="3" format="binary">
-AQAAAHgAAAB4AAAAZQAAAA==eNrLO6xqn7Xpkx0DEMS8CbWfm7sdzJ7wMdJ+ssQuMHvyl1zb8EBOexB7k8cj29l/FMHsrWwv7CKneYPZ5+5vsftgXAZm72xRt+/dLQtmLxdhse+osAWzWR9l2PM7OYDZAAd7Ipo=
+AQAAAHgAAAB4AAAAZgAAAA==eNrb56Fqf/32FzsGILj7NdT+0K+dYHb190j7o8v2gNkPCjJs5fzY7UHs2qy7tu83KYDZlz88tYtb4Q1m83lvsWM0LgOzZ+xVs/9bLgdm8/9nss/ebAtmp97LsN+30wHMBgDH3CV9
     </DataArray>
   </Points>
 

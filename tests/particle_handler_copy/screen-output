@@ -47,7 +47,7 @@ Original position: 0.5 0.3. Copied position: 0.5 0.3
 Original properties: 0. Copied properties: 0
    Solving C_1 system ... duplicating particle handler
 Original position: 0.3 0.1. Copied position: 0.3 0.1
-Original properties: 3.14. Copied properties: 3.14
+Original properties: 0. Copied properties: 0
 Original position: 0.4 0.1. Copied position: 0.4 0.1
 Original properties: 0. Copied properties: 0
 Original position: 0.3 0.2. Copied position: 0.3 0.2
@@ -96,80 +96,80 @@ Original properties: 0. Copied properties: 0
    Skipping temperature solve because RHS is zero.
 duplicating particle handler
 Original position: 0.3 0.1. Copied position: 0.3 0.1
-Original properties: -0.000348228. Copied properties: -0.000348228
+Original properties: 3.14. Copied properties: 3.14
 Original position: 0.4 0.1. Copied position: 0.4 0.1
-Original properties: -0.000380139. Copied properties: -0.000380139
+Original properties: 0. Copied properties: 0
 Original position: 0.3 0.2. Copied position: 0.3 0.2
-Original properties: -0.0002879. Copied properties: -0.0002879
+Original properties: 0. Copied properties: 0
 Original position: 0.4 0.2. Copied position: 0.4 0.2
-Original properties: -0.000309201. Copied properties: -0.000309201
+Original properties: 0. Copied properties: 0
 Original position: 0.3 0.3. Copied position: 0.3 0.3
-Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original properties: 0. Copied properties: 0
 Original position: 0.4 0.3. Copied position: 0.4 0.3
-Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.1. Copied position: 0.5 0.1
-Original properties: -0.00036835. Copied properties: -0.00036835
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.2. Copied position: 0.5 0.2
-Original properties: -0.000291888. Copied properties: -0.000291888
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.3. Copied position: 0.5 0.3
-Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+Original properties: 0. Copied properties: 0
 resetting changed particle handler
 Original position: 0.3 0.1. Copied position: 0.3 0.1
 Original properties: 3.14. Copied properties: 3.14
 Original position: 0.4 0.1. Copied position: 0.4 0.1
-Original properties: -0.000380139. Copied properties: -0.000380139
+Original properties: 0. Copied properties: 0
 Original position: 0.3 0.2. Copied position: 0.3 0.2
-Original properties: -0.0002879. Copied properties: -0.0002879
+Original properties: 0. Copied properties: 0
 Original position: 0.4 0.2. Copied position: 0.4 0.2
-Original properties: -0.000309201. Copied properties: -0.000309201
+Original properties: 0. Copied properties: 0
 Original position: 0.3 0.3. Copied position: 0.3 0.3
-Original properties: -4.9609e-05. Copied properties: -4.9609e-05
+Original properties: 0. Copied properties: 0
 Original position: 0.4 0.3. Copied position: 0.4 0.3
-Original properties: -6.17923e-05. Copied properties: -6.17923e-05
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.1. Copied position: 0.5 0.1
-Original properties: -0.00036835. Copied properties: -0.00036835
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.2. Copied position: 0.5 0.2
-Original properties: -0.000291888. Copied properties: -0.000291888
+Original properties: 0. Copied properties: 0
 Original position: 0.5 0.3. Copied position: 0.5 0.3
-Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+Original properties: 0. Copied properties: 0
    Solving C_1 system ... duplicating particle handler
-Original position: 0.3 0.1. Copied position: 0.3 0.1
-Original properties: 3.14. Copied properties: 3.14
-Original position: 0.4 0.1. Copied position: 0.4 0.1
-Original properties: -0.000380139. Copied properties: -0.000380139
-Original position: 0.3 0.2. Copied position: 0.3 0.2
-Original properties: -0.0002879. Copied properties: -0.0002879
-Original position: 0.4 0.2. Copied position: 0.4 0.2
-Original properties: -0.000309201. Copied properties: -0.000309201
-Original position: 0.3 0.3. Copied position: 0.3 0.3
-Original properties: -4.9609e-05. Copied properties: -4.9609e-05
-Original position: 0.4 0.3. Copied position: 0.4 0.3
-Original properties: -6.17923e-05. Copied properties: -6.17923e-05
-Original position: 0.5 0.1. Copied position: 0.5 0.1
-Original properties: -0.00036835. Copied properties: -0.00036835
-Original position: 0.5 0.2. Copied position: 0.5 0.2
-Original properties: -0.000291888. Copied properties: -0.000291888
-Original position: 0.5 0.3. Copied position: 0.5 0.3
-Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+Original position: 0.276018 0.102682. Copied position: 0.276018 0.102682
+Original properties: -0.000336763. Copied properties: -0.000336763
+Original position: 0.373476 0.100652. Copied position: 0.373476 0.100652
+Original properties: -0.000377239. Copied properties: -0.000377239
+Original position: 0.280777 0.207696. Copied position: 0.280777 0.207696
+Original properties: -0.000260318. Copied properties: -0.000260318
+Original position: 0.378514 0.202112. Copied position: 0.378514 0.202112
+Original properties: -0.000302812. Copied properties: -0.000302812
+Original position: 0.297076 0.308878. Copied position: 0.297076 0.308878
+Original properties: -3.40826e-05. Copied properties: -3.40826e-05
+Original position: 0.39579 0.301697. Copied position: 0.39579 0.301697
+Original properties: -5.82148e-05. Copied properties: -5.82148e-05
+Original position: 0.47402 0.0989426. Copied position: 0.47402 0.0989426
+Original properties: -0.000373622. Copied properties: -0.000373622
+Original position: 0.479073 0.19739. Copied position: 0.479073 0.19739
+Original properties: -0.00030459. Copied properties: -0.00030459
+Original position: 0.495133 0.295543. Copied position: 0.495133 0.295543
+Original properties: -7.35011e-05. Copied properties: -7.35011e-05
 resetting changed particle handler
-Original position: 0.3 0.1. Copied position: 0.3 0.1
+Original position: 0.276018 0.102682. Copied position: 0.276018 0.102682
 Original properties: 3.14. Copied properties: 3.14
-Original position: 0.4 0.1. Copied position: 0.4 0.1
-Original properties: -0.000380139. Copied properties: -0.000380139
-Original position: 0.3 0.2. Copied position: 0.3 0.2
-Original properties: -0.0002879. Copied properties: -0.0002879
-Original position: 0.4 0.2. Copied position: 0.4 0.2
-Original properties: -0.000309201. Copied properties: -0.000309201
-Original position: 0.3 0.3. Copied position: 0.3 0.3
-Original properties: -4.9609e-05. Copied properties: -4.9609e-05
-Original position: 0.4 0.3. Copied position: 0.4 0.3
-Original properties: -6.17923e-05. Copied properties: -6.17923e-05
-Original position: 0.5 0.1. Copied position: 0.5 0.1
-Original properties: -0.00036835. Copied properties: -0.00036835
-Original position: 0.5 0.2. Copied position: 0.5 0.2
-Original properties: -0.000291888. Copied properties: -0.000291888
-Original position: 0.5 0.3. Copied position: 0.5 0.3
-Original properties: -6.5404e-05. Copied properties: -6.5404e-05
+Original position: 0.373476 0.100652. Copied position: 0.373476 0.100652
+Original properties: -0.000377239. Copied properties: -0.000377239
+Original position: 0.280777 0.207696. Copied position: 0.280777 0.207696
+Original properties: -0.000260318. Copied properties: -0.000260318
+Original position: 0.378514 0.202112. Copied position: 0.378514 0.202112
+Original properties: -0.000302812. Copied properties: -0.000302812
+Original position: 0.297076 0.308878. Copied position: 0.297076 0.308878
+Original properties: -3.40826e-05. Copied properties: -3.40826e-05
+Original position: 0.39579 0.301697. Copied position: 0.39579 0.301697
+Original properties: -5.82148e-05. Copied properties: -5.82148e-05
+Original position: 0.47402 0.0989426. Copied position: 0.47402 0.0989426
+Original properties: -0.000373622. Copied properties: -0.000373622
+Original position: 0.479073 0.19739. Copied position: 0.479073 0.19739
+Original properties: -0.00030459. Copied properties: -0.00030459
+Original position: 0.495133 0.295543. Copied position: 0.495133 0.295543
+Original properties: -7.35011e-05. Copied properties: -7.35011e-05
 14 iterations.
    Solving Stokes system... 35+0 iterations.
 

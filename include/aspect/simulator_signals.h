@@ -262,6 +262,12 @@ namespace aspect
     boost::signals2::signal<void (const SolverControl &)> post_nonlinear_solver;
 
     /**
+     * A signal that is fired when mesh deformation has occurred.
+     * Parameters are a reference to the SimulatorAccess.
+     */
+    boost::signals2::signal<void (const SimulatorAccess<dim> &)> post_mesh_deformation;
+
+    /**
      * A signal that is fired at the end of the set_assemblers() function that
      * allows modification of the assembly objects active in this simulation.
      */

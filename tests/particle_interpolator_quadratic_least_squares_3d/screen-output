@@ -15,12 +15,12 @@ Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
 
 *** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
    Solving temperature system... 9 iterations.
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
      Number of advected particles: 13824
      RMS, max velocity:            0.0101 m/s, 0.0252 m/s
-     Compositions min/max/mass:    -0.9722/1.972/0.3989 // -0.875/1/0.4062
+     Compositions min/max/mass:    -1.022/2.001/0.3989 // -0.9231/1.009/0.4062
      Temperature min/avg/max:      0 K, 0.5 K, 1 K
 
 Termination requested by criterion: end time
