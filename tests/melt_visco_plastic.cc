@@ -90,8 +90,8 @@ namespace aspect
      */
     template <int dim>
     class MeltViscoPlastic : public MaterialModel::MeltFractionModel<dim>,
-                             public MaterialModel::MeltInterface<dim>,
-                             public ::aspect::SimulatorAccess<dim>
+      public MaterialModel::MeltInterface<dim>,
+      public ::aspect::SimulatorAccess<dim>
     {
       public:
 
