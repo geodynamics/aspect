@@ -1,15 +1,20 @@
-# 2d model for melting and melt transport at a mid-ocean ridge.
-# As the flow at mid-ocean ridges can be assumed to be roughly symmetric
-# with respect to the ridge axis in the center, we only model one half
-# of the ridge.
+# 2d model demonstrating implementation of the constitutive law
+# described by Keller et. al., 2013, including viscoplastic yielding
+# and melt migration.
+#
+# In this test, a velocity field is prescribed that represents
+# simple shear under uniaxial extension. This setup generates
+# output that describes the material model's response to a range
+# of stress conditioins, both in resulting effective viscosity, and in
+# velocity of pore fluid flow.
 
 set Dimension                              = 2
 set Adiabatic surface temperature          = 293
 set Use years in output instead of seconds = false
 
-# Because our model includes melt transport, it is nonlinear and we have to
-# use an iterative solver scheme, that iterates between solving the temperature
-# composition and Stokes equations.
+# Because this model aims to capture rheological behavior under a range
+# of deformation regimes, we prescribe a flow field in the section called
+# `Prescribed Stokes Solution` below.
 set Nonlinear solver scheme                = single Advection, no Stokes
 
 set End time                               = 0
@@ -51,7 +56,7 @@ end
 
 
 subsection Material model
-  set Model name = melt visco plastic
+  set Model name = EXPERIMENTAL melt visco plastic
   subsection Melt visco plastic
     set Exponential melt weakening factor = 0
     set Cohesions                         = 4e7

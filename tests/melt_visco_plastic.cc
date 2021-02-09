@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2017 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -22,9 +22,14 @@
 #define _aspect_material_model_melt_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
+
+#include <deal.II/numerics/fe_field_function.h>
+#include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/function_lib.h>
 #include <deal.II/base/parsed_function.h>
 
@@ -81,32 +86,21 @@ namespace aspect
      * the porosity; and the solid and melt densities, which depend on
      * temperature and pressure.
      *
-     * The model is compressible (following the definition described in
-     * Interface::is_compressible) only if this is specified in the input file,
-     * and contains compressibility for both solid and melt.
-     *
      * @ingroup MaterialModels
      */
     template <int dim>
-    class MeltViscoPlastic : public MaterialModel::MeltFractionModel<dim>, public MaterialModel::MeltInterface<dim>, public ::aspect::SimulatorAccess<dim>
+    class MeltViscoPlastic : public MaterialModel::MeltFractionModel<dim>,
+                             public MaterialModel::MeltInterface<dim>,
+                             public ::aspect::SimulatorAccess<dim>
     {
       public:
-        /**
-         * Initialization function. This function is called once at the
-         * beginning of the program after parse_parameters is run and after
-         * the SimulatorAccess (if applicable) is initialized.
-         */
-        //virtual
-        //void
-        //initialize ();
 
         /**
-         * Return whether the model is compressible or not.  Incompressibility
-         * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the continuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         * Return whether the model is compressible or not.
+         * In this case, Keller et al, 2003 assume the fluid and
+         * solid phases are each incompressible: "compressibility
+         * in the model is accounted for by changes in melt fraction."
+         * Thus, this function will always return false.
          */
         virtual bool is_compressible () const override;
 
@@ -120,9 +114,6 @@ namespace aspect
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const override;
-
-        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                     std::vector<double> &melt_fractions) const;
 
         /**
          * @}
@@ -219,8 +210,8 @@ namespace aspect
         double beta;
 
         /**
-         * Percentage of material that is molten for a given @p temperature and
-         * @p pressure (assuming equilibrium conditions). Melting model after Katz,
+         * Percentage of material that is molten for a given temperature and
+         * pressure (assuming equilibrium conditions). Melting model after Katz,
          * 2003, for dry peridotite.
          */
         virtual
@@ -255,14 +246,6 @@ namespace aspect
 }
 
 #endif
-
-
-//  #include <aspect/material_model/melt_visco_plastic.h>
-#include <aspect/utilities.h>
-#include <aspect/simulator.h>
-
-#include <deal.II/base/parameter_handler.h>
-#include <deal.II/numerics/fe_field_function.h>
 
 namespace aspect
 {
@@ -378,18 +361,6 @@ namespace aspect
       return peridotite_melt_fraction;
     }
 
-    template <int dim>
-    void
-    MeltViscoPlastic<dim>::
-    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                    std::vector<double> &melt_fractions) const
-    {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
-        melt_fractions[q] = melt_fraction(in.temperature[q],
-                                          std::max(0.0, in.pressure[q]));
-      return;
-    }
-
 
     template <int dim>
     void
@@ -414,7 +385,7 @@ namespace aspect
 
       // Store the intrinsic viscosities for computing the compaction viscosities later on
       // (Keller et al. eq. 51).
-      const std::vector<double> xis = out.viscosities;
+      const std::vector<double> intrinsic_viscosities = out.viscosities;
 
       // 2) Retrieve fluid pressure and volumetric strain rate
       std::vector<double> fluid_pressures(in.position.size());
@@ -517,7 +488,7 @@ namespace aspect
 
       if (in.strain_rate.size() )
         {
-          // 5) Compute plastic weakening of visco(elastic) viscosity
+          // 5) Compute plastic weakening of the viscosity
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
               // Compute volume fractions
@@ -631,7 +602,7 @@ namespace aspect
               const double phi_0 = 0.05;
               porosity = std::max(std::min(porosity,0.995),1.e-8);
               // compaction viscosities (Keller et al. eq (51)
-              melt_out->compaction_viscosities[i] = xis[i] * phi_0 / porosity;
+              melt_out->compaction_viscosities[i] = intrinsic_viscosities[i] * phi_0 / porosity;
 
               // visco(elastic) compaction viscosity
               // Keller et al. eq (36)
@@ -639,6 +610,7 @@ namespace aspect
               melt_out->compaction_viscosities[i] *= (1. - porosity);
 
               // TODO compaction stress evolution parameter
+              // Keller et al. eq. (41) and (44)
 
               // effective compaction viscosity (Keller et al. eq (43) )
               // NB: I've added a minus sign as according to eq 43
@@ -1049,8 +1021,11 @@ namespace aspect
   namespace MaterialModel
   {
     ASPECT_REGISTER_MATERIAL_MODEL(MeltViscoPlastic,
-                                   "melt visco plastic",
-                                   "A material model that implements a simple formulation of the "
+                                   "EXPERIMENTAL melt visco plastic",
+                                   "WARNING: This material model has not been thoroughly tested, "
+                                   "and it is not advised that it be used for any serious models "
+                                   "at this point.\n\n"
+                                   "This material model implements a simple formulation of the "
                                    "material parameters required for the modelling of melt transport, "
                                    "including a source term for the porosity according to the melting "
                                    "model for dry peridotite of \\cite{KSL2003}. All other material "
