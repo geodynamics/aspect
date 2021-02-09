@@ -115,6 +115,9 @@ namespace aspect
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const override;
 
+        virtual void melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     std::vector<double> &melt_fractions) const;
+
         /**
          * @}
          */
@@ -361,6 +364,17 @@ namespace aspect
       return peridotite_melt_fraction;
     }
 
+    template <int dim>
+    void
+    MeltViscoPlastic<dim>::
+    melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                    std::vector<double> &melt_fractions) const
+    {
+      for (unsigned int q=0; q<in.temperature.size(); ++q)
+        melt_fractions[q] = melt_fraction(in.temperature[q],
+                                          std::max(0.0, in.pressure[q]));
+      return;
+    }
 
     template <int dim>
     void
