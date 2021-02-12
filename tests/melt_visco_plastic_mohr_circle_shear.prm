@@ -5,7 +5,7 @@
 # In this test, a velocity field is prescribed that represents
 # simple shear with respect to the model's y-axis. This setup generates
 # output that describes the material model's response to a range
-# of stress conditioins.
+# of stress conditions.
 
 set Dimension                              = 2
 set Adiabatic surface temperature          = 293

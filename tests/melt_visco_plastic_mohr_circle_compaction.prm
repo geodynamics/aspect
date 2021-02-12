@@ -5,7 +5,7 @@
 # In this test, a velocity field is prescribed that represents
 # simple shear under uniaxial extension. This setup generates
 # output that describes the material model's response to a range
-# of stress conditioins, both in resulting effective viscosity, and in
+# of stress conditions, both in resulting effective viscosity, and in
 # velocity of pore fluid flow.
 
 set Dimension                              = 2
