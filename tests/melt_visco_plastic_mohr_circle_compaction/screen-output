@@ -1,0 +1,29 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libmelt_visco_plastic_mohr_circle_compaction.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 16,698 (4,290+1,122+4,290+561+2,145+2,145+2,145)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-melt_visco_plastic_mohr_circle_compaction/solution/solution-00000
+     Compositions min/max/mass: 0.01/0.01/400 // 0.01/0.01/400
+     RMS, max velocity:         5.32e-13 m/s, 1.3e-12 m/s
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

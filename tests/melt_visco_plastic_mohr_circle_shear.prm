@@ -1,0 +1,170 @@
+# 2d model demonstrating implementation of the constitutive law
+# described by Keller et. al., 2013, including viscoplastic yielding
+# and melt migration.
+#
+# In this test, a velocity field is prescribed that represents
+# simple shear with respect to the model's y-axis. This setup generates
+# output that describes the material model's response to a range
+# of stress conditions.
+
+set Dimension                              = 2
+set Adiabatic surface temperature          = 293
+set Use years in output instead of seconds = false
+
+# Because this model aims to capture rheological behavior under a range
+# of deformation regimes, we prescribe a flow field in the section called
+# `Prescribed Stokes Solution` below.
+set Nonlinear solver scheme                = single Advection, no Stokes
+
+set End time                               = 0
+
+subsection Prescribed Stokes solution
+  set Model name = function
+
+  subsection Velocity function
+    set Function expression = 1e6/(2*0.99*1e22)*y^2; 0
+  end
+
+  subsection Fluid velocity function
+    set Function expression = 1e6/(2*0.99*1e22)*y^2; 0
+  end
+
+  subsection Pressure function
+    set Function expression = 0
+  end
+
+  subsection Fluid pressure function
+    set Function expression = (1e6*x-5e7)/(-.99)
+  end
+
+  subsection Compaction pressure function
+    set Function expression = 1e6*x-5e7
+  end
+end
+
+##################### Melting and freezing ########################
+
+set Use operator splitting                     = false
+
+subsection Solver parameters
+  subsection Operator splitting parameters
+    set Reaction time step                     = 2e2
+    set Reaction time steps per advection step = 10
+  end
+end
+
+
+subsection Material model
+  set Model name = EXPERIMENTAL melt visco plastic
+  subsection Melt visco plastic
+    set Exponential melt weakening factor = 0
+    set Cohesions                         = 4e7
+    set Angles of internal friction       = 30
+    set Minimum strain rate               = 1e-30
+    set Reference strain rate             = 1e-30
+    set Minimum viscosity                 = 10
+    set Maximum viscosity                 = 1e30
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent      = 250
+    set Y extent      = 160
+    set X repetitions = 2
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+##################### Temperature ########################
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression       = 293
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators =
+end
+
+subsection Heating model
+  set List of model names =
+end
+
+subsection Melt settings
+  set Include melt transport = true
+  set Heat advection by melt = true
+  set Use discontinuous compaction pressure = false
+end
+
+##################### Composition ########################
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = porosity, peridotite
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 0.01; 0.01
+    set Variable names      = x,y
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   =
+  set List of model names = initial composition
+end
+
+##################### Mesh refinement #########################
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
+  set Time steps between mesh refinement       = 0
+end
+
+##################### Postprocessing ########################
+
+subsection Postprocess
+
+  set List of postprocessors = visualization, composition statistics, velocity statistics
+
+  # We mainly want to look at material properties of the solid and the melt.
+  subsection Visualization
+    set List of output variables      = material properties, melt material properties, melt fraction, named additional outputs, stress, strain rate tensor
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    # To see in which cells melt transport is modelled, it can be useful to look
+    # at the property 'is melt cell', so we include it in the output. In addition,
+    # we always visualize the compaction pressure 'p_c' if this postprocessor is
+    # used.
+    subsection Melt material properties
+      set List of properties = compaction viscosity, permeability, fluid density, is melt cell
+    end
+
+    set Output format                 = gnuplot
+    set Time between graphical output = 0
+    set Interpolate output = true
+  end
+
+end
