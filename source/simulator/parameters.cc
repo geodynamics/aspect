@@ -1288,15 +1288,6 @@ namespace aspect
     }
     prm.leave_subsection ();
 
-    prm.enter_subsection ("Volume of Fluid");
-    {
-      prm.declare_entry ("Enable interface tracking", "false",
-                         Patterns::Bool (),
-                         "When set to true, Volume of Fluid interface tracking will be used");
-    }
-    prm.leave_subsection ();
-
-    // declare the VolumeOfFluid parameters
     VolumeOfFluidHandler<dim>::declare_parameters(prm);
 
     // then, finally, let user additions that do not go through the usual
