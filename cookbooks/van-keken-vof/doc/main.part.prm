@@ -4,7 +4,6 @@ subsection Compositional fields
 end
 
 subsection Volume of Fluid
-    set Enable interface tracking = true
     set Number initialization samples = 16
 end
 
