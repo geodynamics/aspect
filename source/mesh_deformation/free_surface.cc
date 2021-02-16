@@ -260,17 +260,6 @@ namespace aspect
       {
         prm.enter_subsection ("Free surface");
         {
-          prm.declare_entry("Free surface stabilization theta", "0.5",
-                            Patterns::Double(0., 1.),
-                            "Theta parameter described in \\cite{KMM2010}. "
-                            "An unstabilized free surface can overshoot its "
-                            "equilibrium position quite easily and generate "
-                            "unphysical results.  One solution is to use a "
-                            "quasi-implicit correction term to the forces near the "
-                            "free surface.  This parameter describes how much "
-                            "the free surface is stabilized with this term, "
-                            "where zero is no stabilization, and one is fully "
-                            "implicit.");
           prm.declare_entry("Surface velocity projection", "normal",
                             Patterns::Selection("normal|vertical"),
                             "After each time step the free surface must be "
@@ -299,7 +288,6 @@ namespace aspect
       {
         prm.enter_subsection ("Free surface");
         {
-          free_surface_theta = prm.get_double("Free surface stabilization theta");
           std::string advection_dir = prm.get("Surface velocity projection");
 
           if ( advection_dir == "normal")

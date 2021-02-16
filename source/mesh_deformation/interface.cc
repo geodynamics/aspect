@@ -357,7 +357,7 @@ namespace Assemblers
                            "\n\n"
                            "The format is id1: object1 \\& object2, id2: object3 \\& object2, where "
                            "objects are one of " + std::get<dim>(registered_plugins).get_description_string());
-          prm.declare_entry("surface stabilization theta", "0.5",
+          prm.declare_entry("Surface stabilization theta", "0.5",
                             Patterns::Double(0., 1.),
                             "Theta parameter described in \\cite{KMM2010}. "
                             "An unstabilized free surface can overshoot its "
@@ -380,7 +380,7 @@ namespace Assemblers
     {
       prm.enter_subsection ("Mesh deformation");
       {
-        surface_theta = prm.get_double("surface stabilization theta");
+        surface_theta = prm.get_double("Surface stabilization theta");
 
         // Create the map of prescribed mesh movement boundary indicators
         // Each boundary indicator can carry a number of mesh deformation plugin names.

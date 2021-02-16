@@ -83,13 +83,6 @@ namespace aspect
                                              LinearAlgebra::Vector &output) const;
 
         /**
-         * Stabilization parameter for the free surface. Should be between
-         * zero and one. A value of zero means no stabilization.  See Kaus
-         * et. al. 2010 for more details.
-         */
-        double free_surface_theta;
-
-        /**
          * A struct for holding information about how to advect the free surface.
          */
         struct SurfaceAdvection
