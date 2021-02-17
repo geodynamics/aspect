@@ -52,7 +52,7 @@ namespace aspect
       in.composition[i] = composition;
       in.strain_rate[i] = strain_rate;
 
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(composition, rheology->get_volumetric_composition_mask());
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(composition, rheology->get_volumetric_composition_mask());
 
       const IsostrainViscosities isostrain_viscosities =
         rheology->calculate_isostrain_viscosities(in, i, volume_fractions);
@@ -72,7 +72,7 @@ namespace aspect
     {
       Assert(in.n_evaluation_points() == 1, ExcInternalError());
 
-      const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[0], rheology->get_volumetric_composition_mask());
+      const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[0], rheology->get_volumetric_composition_mask());
 
       /* The following handles phases in a similar way as in the 'evaluate' function.
       * Results then enter the calculation of plastic yielding.
@@ -173,7 +173,7 @@ namespace aspect
                                                   phase_function.n_phase_transitions_for_each_composition(),
                                                   eos_outputs);
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i], volumetric_compositions);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], volumetric_compositions);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
           // these compositions as volume fractions, but the error introduced should not be too bad.

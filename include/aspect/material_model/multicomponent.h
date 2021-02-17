@@ -33,10 +33,10 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model which is intended for use with multiple compositional
-     * fields. Each compositional field is meant to be a single rock type,
-     * where the value of the field at a point is interpreted to be a volume
-     * fraction of that rock type.  If the sum of the compositional field
+     * An incompressible material model which is intended for use with multiple
+     * compositional fields. Each compositional field is meant to be a single
+     * rock type, where the value of the field at a point is interpreted to be
+     * a volume fraction of that rock type.  If the sum of the compositional field
      * volume fractions is less than one, then the remainder of the volume is
      * assumed to be ``background mantle''.  If the sum of the compositional
      * field volume fractions is greater than one, then they are renormalized

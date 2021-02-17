@@ -35,12 +35,11 @@ namespace aspect
     /**
      * A material model which is intended for use with multiple compositional
      * fields. Each compositional field is meant to be a single rock type,
-     * where the value of the field at a point is interpreted to be an
-     * uncompressed volume fraction of that rock type.
-     * If the sum of the compositional field
-     * volume fractions is less than one, then the remainder of the volume is
+     * where the value of the field at a point is interpreted to be the
+     * mass fraction of that rock type. If the sum of the compositional field
+     * mass fractions is less than one, then the remainder of the mass is
      * assumed to be ``background mantle''.  If the sum of the compositional
-     * field volume fractions is greater than one, then they are renormalized
+     * field mass fractions is greater than one, then they are renormalized
      * to sum to one and there is no background mantle.
      *
      * For each material parameter the user supplies a comma delimited list of
@@ -49,10 +48,10 @@ namespace aspect
      * should be ordered ``background, composition1, composition2...''
      *
      * If a single value is given, then all the compositional fields are given
-     * that value. Other lengths of lists are not allowed.  For a given
-     * compositional field the material parameters are treated as constant,
-     * except density, which varies linearly with temperature according to the
-     * thermal expansivity.
+     * that value. Other lengths of lists are not allowed.  The material
+     * parameters for each compositional field are derived from the
+     * multicomponent compressible equation of state, and are pressure and
+     * temperature dependent.
      *
      * When more than one field is present at a point, they are either averaged
      * self-consistently (for equation of state properties) or arithmetically

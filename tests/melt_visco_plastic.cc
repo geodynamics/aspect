@@ -384,7 +384,7 @@ namespace aspect
       // 1) Initial viscosities and other material properties
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, linear_viscosities, viscosity_averaging);
 
           out.densities[i] = MaterialUtilities::average_value(volume_fractions, densities, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
@@ -506,7 +506,7 @@ namespace aspect
           for (unsigned int i=0; i<in.position.size(); ++i)
             {
               // Compute volume fractions
-              const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+              const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
 
               // 4) Compute plastic weakening of visco(elastic) viscosity
               double porosity = 0.0;

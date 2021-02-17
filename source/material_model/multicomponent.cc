@@ -39,7 +39,10 @@ namespace aspect
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+          // The (incompressible) Boussinesq approximation treats the
+          // buoyancy term as Delta rho[i] * C[i], which implies that
+          // compositional fields are given as volume fractions.
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
@@ -170,8 +173,9 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Multicomponent,
                                    "multicomponent",
-                                   "This model is for use with an arbitrary number of compositional fields, where each field"
-                                   " represents a rock type which can have completely different properties from the others."
+                                   "This incompressible model is for use with an arbitrary number of"
+                                   " compositional fields, where each field represents a rock type which"
+                                   " can have completely different properties from the others."
                                    " However, each rock type itself has constant material properties.  The value of the "
                                    " compositional field is interpreted as a volume fraction. If the sum of the fields is"
                                    " greater than one, they are renormalized.  If it is less than one, material properties "
