@@ -91,11 +91,23 @@ namespace aspect
         // A: prefactor,
         // d: grain size, m: grain size exponent, E: activation energy, P: pressure,
         // V; activation volume, R: gas constant, T: temperature.
-        const double viscosity_diffusion = 0.5 / p.prefactor *
-                                           std::exp((p.activation_energy +
-                                                     pressure*p.activation_volume)/
-                                                    (constants::gas_constant*temperature)) *
-                                           std::pow(grain_size, p.grain_size_exponent);
+        double viscosity_diffusion = 0.5 / p.prefactor *
+                                     std::exp((p.activation_energy +
+                                               pressure*p.activation_volume)/
+                                              (constants::gas_constant*temperature)) *
+                                     std::pow(grain_size, p.grain_size_exponent);
+
+        Assert (viscosity_diffusion > 0.0,
+                ExcMessage ("Negative diffusion viscosity detected. This is unphysical and should not happen. "
+                            "Check for negative parameters."));
+
+        // Creep viscosities become extremely large at low
+        // temperatures and can therefore provoke floating-point overflow errors. In
+        // real rocks, other deformation mechanisms become dominant at low temperatures,
+        // so these high viscosities are never achieved. It is therefore both reasonable
+        // and desirable to require the single-mechanism viscosity to be smaller than
+        // std::sqrt(max_double).
+        viscosity_diffusion = std::min(viscosity_diffusion, std::sqrt(std::numeric_limits<double>::max()));
 
         return viscosity_diffusion;
       }
