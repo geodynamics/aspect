@@ -760,6 +760,15 @@ namespace aspect
 
 
       std::vector<double>
+      compute_volume_fractions(const std::vector<double> &compositional_fields,
+                               const ComponentMask &field_mask)
+      {
+        return compute_composition_fractions(compositional_fields, field_mask);
+      }
+
+
+
+      std::vector<double>
       compute_volumes_from_masses(const std::vector<double> &masses,
                                   const std::vector<double> &densities,
                                   const bool return_as_fraction)
