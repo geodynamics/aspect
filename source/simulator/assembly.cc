@@ -208,11 +208,17 @@ namespace aspect
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
       {
+        const bool no_field_method = std::find(parameters.compositional_field_methods.begin(),
+                                               parameters.compositional_field_methods.end(),
+                                               Parameters<dim>::AdvectionFieldMethod::fem_field)
+                                     == parameters.compositional_field_methods.end();
+
         // TODO: This currently does not work in parallel, because the sparsity
         // pattern of the matrix does not seem to know about flux terms
         // across periodic faces of different levels. Fix this.
         AssertThrow(geometry_model->get_periodic_boundary_pairs().size() == 0 ||
                     Utilities::MPI::n_mpi_processes(mpi_communicator) == 1 ||
+                    no_field_method ||
                     (parameters.initial_adaptive_refinement == 0 &&
                      parameters.adaptive_refinement_interval == 0),
                     ExcMessage("Combining discontinuous elements with periodic boundaries and "

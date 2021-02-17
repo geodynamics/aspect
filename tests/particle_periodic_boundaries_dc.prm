@@ -1,0 +1,29 @@
+# A test for periodic boundary conditions with particles
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particle_periodic_boundaries.prm
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Compositional fields
+  set Compositional field methods = particles
+  set Mapped particle properties = C_1:initial C_1
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 1
+  set Strategy                           = composition
+  set Initial global refinement          = 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles, composition statistics
+
+  subsection Particles
+    set Interpolation scheme = bilinear least squares
+    set Number of particles = 10000
+  end
+end
