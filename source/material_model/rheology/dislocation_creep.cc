@@ -99,10 +99,12 @@ namespace aspect
                 ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
                             "Check for negative parameters."));
 
-        // For low temperatures viscosities can become extremely large. These viscosities are physically meaningless
-        // (in composite rheologies other deformation mechanisms will take over), but they can provoke
-        // floating-point overflow errors. Since viscosities of diffusion and dislocation creep are often
-        // multiplied, we constrain each to be smaller than std::sqrt(max_double).
+        // Creep viscosities become extremely large at low
+        // temperatures and can therefore provoke floating-point overflow errors. In
+        // real rocks, other deformation mechanisms become dominant at low temperatures,
+        // so these high viscosities are never achieved. It is therefore both reasonable
+        // and desirable to require the single-mechanism viscosity to be smaller than
+        // std::sqrt(max_double).
         viscosity_dislocation = std::min(viscosity_dislocation, std::sqrt(std::numeric_limits<double>::max()));
 
         return viscosity_dislocation;
