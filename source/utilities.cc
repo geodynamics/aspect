@@ -2337,38 +2337,85 @@ namespace aspect
   expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations); \
   \
   template \
-  class VectorFunctionFromVelocityFunctionObject<dim>;
+  class VectorFunctionFromVelocityFunctionObject<dim>; \
+  \
+  template \
+  Point<dim> Coordinates::spherical_to_cartesian_coordinates<dim>(const std::array<double,dim> &scoord); \
+  \
+  template \
+  std::array<double,dim> Coordinates::cartesian_to_spherical_coordinates<dim>(const Point<dim> &position); \
+  \
+  template \
+  Tensor<1,dim> Coordinates::spherical_to_cartesian_vector<dim>(const Tensor<1,dim> &spherical_vector, \
+                                                                const Point<dim> &position); \
+  \
+  template \
+  std::array<double,dim> Coordinates::WGS84_coordinates<dim>(const Point<dim> &position); \
+  \
+  template \
+  bool polygon_contains_point<dim>(const std::vector<Point<2> > &pointList, \
+                                   const dealii::Point<2> &point); \
+  \
+  template \
+  double signed_distance_to_polygon<dim>(const std::vector<Point<2> > &pointList, \
+                                         const dealii::Point<2> &point); \
+  \
+  template \
+  std::array<Tensor<1,dim>,dim-1> orthogonal_vectors (const Tensor<1,dim> &v); \
+  \
+  template \
+  dealii::SymmetricTensor<2, dim, double> \
+  derivative_of_weighted_p_norm_average (const double averaged_parameter, \
+                                         const std::vector<double> &weights, \
+                                         const std::vector<double> &values, \
+                                         const std::vector<dealii::SymmetricTensor<2, dim, double> > &derivatives, \
+                                         const double p); \
+  \
+  template \
+  double compute_spd_factor(const double eta, \
+                            const SymmetricTensor<2,dim> &strain_rate, \
+                            const SymmetricTensor<2,dim> &dviscosities_dstrain_rate, \
+                            const double safety_factor); \
+  \
+  template \
+  Point<dim> convert_array_to_point<dim>(const std::array<double,dim> &array); \
+  \
+  template \
+  std::array<double,dim> convert_point_to_array<dim>(const Point<dim> &point); \
+  \
+  template \
+  SymmetricTensor<2,dim> nth_basis_for_symmetric_tensors (const unsigned int k); \
+  \
+  template \
+  class NaturalCoordinate<dim>; \
+  \
+  template \
+  void \
+  project_cellwise(const Mapping<dim> &mapping, \
+                   const DoFHandler<dim> &dof_handler, \
+                   const unsigned int component_index, \
+                   const Quadrature<dim> &quadrature, \
+                   const std::function<void( \
+                                             const DoFHandler<dim>::active_cell_iterator &, \
+                                             const std::vector<Point<dim> > &, \
+                                             std::vector<double> &)> &function, \
+                   dealii::LinearAlgebra::distributed::Vector<double> &vec_result); \
+  \
+  template \
+  void \
+  project_cellwise(const Mapping<dim> &mapping, \
+                   const DoFHandler<dim> &dof_handler, \
+                   const unsigned int component_index, \
+                   const Quadrature<dim> &quadrature, \
+                   const std::function<void( \
+                                             const DoFHandler<dim>::active_cell_iterator &, \
+                                             const std::vector<Point<dim> > &, \
+                                             std::vector<double> &)> &function, \
+                   LinearAlgebra::BlockVector &vec_result);
 
     ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
-
-
-
-    template Point<2> Coordinates::spherical_to_cartesian_coordinates<2>(const std::array<double,2> &scoord);
-    template Point<3> Coordinates::spherical_to_cartesian_coordinates<3>(const std::array<double,3> &scoord);
-
-    template std::array<double,2> Coordinates::cartesian_to_spherical_coordinates<2>(const Point<2> &position);
-    template std::array<double,3> Coordinates::cartesian_to_spherical_coordinates<3>(const Point<3> &position);
-
-    template Tensor<1,2> Coordinates::spherical_to_cartesian_vector<2>(const Tensor<1,2> &spherical_vector,
-                                                                       const Point<2> &position);
-    template Tensor<1,3> Coordinates::spherical_to_cartesian_vector<3>(const Tensor<1,3> &spherical_vector,
-                                                                       const Point<3> &position);
-
-
-    template std::array<double,2> Coordinates::WGS84_coordinates<2>(const Point<2> &position);
-    template std::array<double,3> Coordinates::WGS84_coordinates<3>(const Point<3> &position);
-
-    template bool polygon_contains_point<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
-    template bool polygon_contains_point<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
-
-    template double signed_distance_to_polygon<2>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
-    template double signed_distance_to_polygon<3>(const std::vector<Point<2> > &pointList, const dealii::Point<2> &point);
-
-
-    template std::array<Tensor<1,2>,1> orthogonal_vectors (const Tensor<1,2> &v);
-    template std::array<Tensor<1,3>,2> orthogonal_vectors (const Tensor<1,3> &v);
 
     template double
     derivative_of_weighted_p_norm_average (const double averaged_parameter,
@@ -2377,91 +2424,9 @@ namespace aspect
                                            const std::vector<double> &derivatives,
                                            const double p);
 
-    template dealii::SymmetricTensor<2, 2, double>
-    derivative_of_weighted_p_norm_average (const double averaged_parameter,
-                                           const std::vector<double> &weights,
-                                           const std::vector<double> &values,
-                                           const std::vector<dealii::SymmetricTensor<2, 2, double> > &derivatives,
-                                           const double p);
-
-    template dealii::SymmetricTensor<2, 3, double>
-    derivative_of_weighted_p_norm_average (const double averaged_parameter,
-                                           const std::vector<double> &weights,
-                                           const std::vector<double> &values,
-                                           const std::vector<dealii::SymmetricTensor<2, 3, double> > &derivatives,
-                                           const double p);
-
-    template double compute_spd_factor(const double eta,
-                                       const SymmetricTensor<2,2> &strain_rate,
-                                       const SymmetricTensor<2,2> &dviscosities_dstrain_rate,
-                                       const double safety_factor);
-
-    template double compute_spd_factor(const double eta,
-                                       const SymmetricTensor<2,3> &strain_rate,
-                                       const SymmetricTensor<2,3> &dviscosities_dstrain_rate,
-                                       const double safety_factor);
-
-    template Point<2> convert_array_to_point<2>(const std::array<double,2> &array);
-    template Point<3> convert_array_to_point<3>(const std::array<double,3> &array);
-
-    template std::array<double,2> convert_point_to_array<2>(const Point<2> &point);
-    template std::array<double,3> convert_point_to_array<3>(const Point<3> &point);
-
-    template SymmetricTensor<2,2> nth_basis_for_symmetric_tensors (const unsigned int k);
-    template SymmetricTensor<2,3> nth_basis_for_symmetric_tensors (const unsigned int k);
-
-    template class NaturalCoordinate<2>;
-    template class NaturalCoordinate<3>;
-
-
     template Table<2,double> parse_input_table(const std::string &input_string,
                                                const unsigned int n_rows,
                                                const unsigned int n_columns,
                                                const std::string &property_name);
-
-    template
-    void
-    project_cellwise(const Mapping<2> &mapping,
-                     const DoFHandler<2> &dof_handler,
-                     const unsigned int component_index,
-                     const Quadrature<2> &quadrature,
-                     const std::function<void(
-                       const DoFHandler<2>::active_cell_iterator &,
-                       const std::vector<Point<2> > &,
-                       std::vector<double> &)> &function,
-                     dealii::LinearAlgebra::distributed::Vector<double> &vec_result);
-    template
-    void
-    project_cellwise(const Mapping<3> &mapping,
-                     const DoFHandler<3> &dof_handler,
-                     const unsigned int component_index,
-                     const Quadrature<3> &quadrature,
-                     const std::function<void(
-                       const DoFHandler<3>::active_cell_iterator &,
-                       const std::vector<Point<3> > &,
-                       std::vector<double> &)> &function,
-                     dealii::LinearAlgebra::distributed::Vector<double> &vec_result);
-    template
-    void
-    project_cellwise(const Mapping<2> &mapping,
-                     const DoFHandler<2> &dof_handler,
-                     const unsigned int component_index,
-                     const Quadrature<2> &quadrature,
-                     const std::function<void(
-                       const DoFHandler<2>::active_cell_iterator &,
-                       const std::vector<Point<2> > &,
-                       std::vector<double> &)> &function,
-                     LinearAlgebra::BlockVector &vec_result);
-    template
-    void
-    project_cellwise(const Mapping<3> &mapping,
-                     const DoFHandler<3> &dof_handler,
-                     const unsigned int component_index,
-                     const Quadrature<3> &quadrature,
-                     const std::function<void(
-                       const DoFHandler<3>::active_cell_iterator &,
-                       const std::vector<Point<3> > &,
-                       std::vector<double> &)> &function,
-                     LinearAlgebra::BlockVector &vec_result);
   }
 }
