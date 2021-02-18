@@ -17,6 +17,7 @@
 #include <aspect/mesh_deformation/fastscape.h>
 #include <aspect/geometry_model/box.h>
 #include <deal.II/numerics/vector_tools.h>
+#include <aspect/postprocess/visualization.h>
 #include <ctime>
 
 namespace aspect
@@ -108,6 +109,8 @@ namespace aspect
       Utilities::create_directory (this->get_output_directory() + "VTK/",
                                    this->get_mpi_communicator(),
                                    false);
+
+      last_output_time = 0;
     }
 
 
@@ -246,7 +249,6 @@ namespace aspect
               std::unique_ptr<double[]> b (new double[array_size]());
               std::vector<double> h_old(array_size);
 
-
               // Create variables for output directory and restart file
               std::string dirname = this->get_output_directory();
               const char *c=dirname.c_str();
@@ -254,6 +256,25 @@ namespace aspect
               const std::string restart_filename = dirname + "fastscape_h_restart.txt";
               const std::string restart_step_filename = dirname + "fastscape_steps_restart.txt";
               const std::string restart_filename_basement = dirname + "fastscape_b_restart.txt";
+
+	      // Determine whether to create a VTK file this timestep.
+              bool make_vtk = 0;
+              if (this->get_time() >= last_output_time + output_interval)
+              {
+		make_vtk = 1;
+
+                if (output_interval > 0)
+               {
+                // We need to find the last time output was supposed to be written.
+                // this is the last_output_time plus the largest positive multiple
+                // of output_intervals that passed since then. We need to handle the
+                // edge case where last_output_time+output_interval==current_time,
+                // we did an output and std::floor sadly rounds to zero. This is done
+                // by forcing std::floor to round 1.0-eps to 1.0.
+                const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+                last_output_time = last_output_time + std::floor((this->get_time()-last_output_time)/output_interval*magic) * output_interval/magic;
+                }
+              } 
 
               // Initialize kf and kd.
               for (int i=0; i<array_size; i++)
@@ -723,10 +744,8 @@ namespace aspect
 
               fastscape_set_h_(h.get());
 
-              // The visualization number depends on the FastScape step, and since this goes back
-              // to zero after a restart, we need to keep it up to date.
-              // TODO: it may be better to instead have visualization track the time.
-              int visualization_step = istep+restart_step;
+              // The visualization is 1 step behind the current timestep.
+              int visualization_step = 0;
               steps = istep+steps;
 
               this->get_pcout() << "   Calling FastScape... " << (steps-istep) << " timesteps of " << f_dt << " years." << std::endl;
@@ -740,7 +759,7 @@ namespace aspect
                  */
                 if (use_strat && current_timestep == 1)
                   fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
-                else if (!use_strat)
+                else if (!use_strat && current_timestep == 1)
                   fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                 do
@@ -762,6 +781,10 @@ namespace aspect
                 this->get_pcout() << "      FastScape runtime... " << round(r_time*1000)/1000 << "s" << std::endl;
               }
 
+              visualization_step = current_timestep;
+              if (make_vtk && current_timestep > 1)
+                 fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+
               // If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
@@ -769,8 +792,7 @@ namespace aspect
 
                   // We generally create the visualization file before running FastScape,
                   // because we won't run it again we want to output the final result.
-                  visualization_step = visualization_step+1;
-                  if (!use_strat)
+                     if (!use_strat)
                     fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
                   fastscape_destroy_();
@@ -905,7 +927,6 @@ namespace aspect
         }
     }
 
-
     // TODO: Give better explanations of variables and cite the fastscape documentation.
     template <int dim>
     void FastScape<dim>::declare_parameters(ParameterHandler &prm)
@@ -965,7 +986,7 @@ namespace aspect
           prm.declare_entry("Precision", "0.001",
                             Patterns::Double(),
                             "How close an ASPECT node needs to be to a FastScape node.");
-          prm.declare_entry ("Sediment rain", "0",
+          prm.declare_entry ("Sediment rain", "0,0",
                              Patterns::List (Patterns::Double(0)),
                              "Sediment rain values given as a list equal to the number of intervals.");
           prm.declare_entry ("Sediment rain intervals", "0",
@@ -1159,6 +1180,18 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection ();
+
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Visualization");
+        {
+          output_interval = prm.get_double ("Time between graphical output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }

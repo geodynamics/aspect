@@ -240,6 +240,20 @@ namespace aspect
       bool use_v;
       // Precision value for node movement.
       double precision;
+
+
+        /**
+         * Interval between the generation of graphical output. This parameter
+         * is read from the input file and consequently is not part of the
+         * state that needs to be saved and restored.
+         */
+        double output_interval;
+
+        /**
+         * A time (in seconds) at which the last graphical output was supposed
+         * to be produced. Used to check for the next necessary output time.
+         */
+        mutable double last_output_time;
   };
 }
 }
