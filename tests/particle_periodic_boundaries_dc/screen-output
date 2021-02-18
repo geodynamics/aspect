@@ -1,0 +1,34 @@
+
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,524 (578+81+289+576)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 17+0 iterations.
+
+Number of active cells: 58 (on 5 levels)
+Number of degrees of freedom: 1,478 (584+80+292+522)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:  output-particle_periodic_boundaries_dc/solution/solution-00000
+     Writing particle output:   output-particle_periodic_boundaries_dc/particles/particles-00000
+     Compositions min/max/mass: -0.2137/1.325/0.1829
+
+*** Timestep 1:  t=70 seconds, dt=70 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     Writing particle output:   output-particle_periodic_boundaries_dc/particles/particles-00001
+     Compositions min/max/mass: -0.2393/1.35/0.1814
+
+Termination requested by criterion: end time
+
+
+
