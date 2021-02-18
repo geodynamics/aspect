@@ -782,7 +782,7 @@ namespace aspect
               }
 
               visualization_step = current_timestep;
-              if (make_vtk && current_timestep > 1)
+              if (make_vtk)
                  fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
 
               // If we've reached the end time, destroy fastscape.
