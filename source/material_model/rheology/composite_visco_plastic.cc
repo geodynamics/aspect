@@ -88,7 +88,7 @@ namespace aspect
             // Only include the contribution to the viscosity
             // from a given composition if the volume fraction exceeds
             // a certain (small) fraction.
-            if (volume_fractions[composition] > 1.e-5)
+            if (volume_fractions[composition] > 2.*std::numeric_limits<double>::epsilon())
               {
                 std::vector<double> partial_strain_rates_composition(5, 0.);
                 viscosity += (volume_fractions[composition]
@@ -311,22 +311,21 @@ namespace aspect
       void
       CompositeViscoPlastic<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.declare_entry ("Include diffusion creep", "true",
+        prm.declare_entry ("Include diffusion creep in composite rheology", "true",
                            Patterns::Bool (),
-                           "Whether to include diffusion creep in the rheological formulation.");
+                           "Whether to include diffusion creep in the composite rheology formulation.");
 
-        prm.declare_entry ("Include dislocation creep", "true",
+        prm.declare_entry ("Include dislocation creep in composite rheology", "true",
                            Patterns::Bool (),
-                           "Whether to include dislocation creep in the rheological formulation.");
+                           "Whether to include dislocation creep in the composite rheology formulation.");
 
-        prm.declare_entry ("Include Peierls creep", "true",
+        prm.declare_entry ("Include Peierls creep in composite rheology", "true",
                            Patterns::Bool (),
-                           "Whether to include Peierls creep in the rheological formulation.");
+                           "Whether to include Peierls creep in the composite rheology formulation.");
 
-        prm.declare_entry ("Include Drucker Prager plasticity", "true",
+        prm.declare_entry ("Include Drucker Prager plasticity in composite rheology", "true",
                            Patterns::Bool (),
-                           "Whether to include Drucker-Prager plasticity in the rheological formulation.");
-
+                           "Whether to include Drucker-Prager plasticity in the composite rheology formulation.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -393,7 +392,7 @@ namespace aspect
         // Rheological parameters
 
         // Diffusion creep parameters
-        use_diffusion_creep = prm.get_bool ("Include diffusion creep");
+        use_diffusion_creep = prm.get_bool ("Include diffusion creep in composite rheology");
         if (use_diffusion_creep)
           {
             diffusion_creep = std_cxx14::make_unique<Rheology::DiffusionCreep<dim>>();
@@ -402,7 +401,7 @@ namespace aspect
           }
 
         // Dislocation creep parameters
-        use_dislocation_creep = prm.get_bool ("Include dislocation creep");
+        use_dislocation_creep = prm.get_bool ("Include dislocation creep in composite rheology");
         if (use_dislocation_creep)
           {
             dislocation_creep = std_cxx14::make_unique<Rheology::DislocationCreep<dim>>();
@@ -411,7 +410,7 @@ namespace aspect
           }
 
         // Peierls creep parameters
-        use_peierls_creep = prm.get_bool ("Include Peierls creep");
+        use_peierls_creep = prm.get_bool ("Include Peierls creep in composite rheology");
         if (use_peierls_creep)
           {
             peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
@@ -420,7 +419,7 @@ namespace aspect
           }
 
         // Drucker Prager parameters
-        use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity");
+        use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity in composite rheology");
         if (use_drucker_prager)
           {
             drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
