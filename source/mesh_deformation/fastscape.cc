@@ -245,7 +245,6 @@ namespace aspect
               std::unique_ptr<double[]> vz (new double[array_size]());
               std::unique_ptr<double[]> kf (new double[array_size]());
               std::unique_ptr<double[]> kd (new double[array_size]());
-              std::unique_ptr<double[]> slopep (new double[array_size]());
               std::unique_ptr<double[]> b (new double[array_size]());
               std::vector<double> h_old(array_size);
 
@@ -421,10 +420,6 @@ namespace aspect
                    fastscape_copy_h_(h.get());
                 }
 
-              /*
-               * Generally, any additional modifications should occur below this point.
-               */
-
                 // Find the appropriate sediment rain based off the time interval.
                 double time = this->get_time()/year_in_seconds;
                 double sediment_rain = sr_values[0];
@@ -476,239 +471,8 @@ namespace aspect
                */
               // I redid the indexing here, at some point I should double check that these still work without issue.
               if (use_ghost)
-                {
-                  /*
-                  * Copy the slopes at each point, this will be used to set an H
-                  * at the ghost nodes if a boundary mass flux is given.
-                  */
-                  fastscape_copy_slope_(slopep.get());
+                 set_ghost_nodes(h.get(), vx.get(), vy.get(), vz.get(), nx, ny);
 
-                  /*
-                   * Here we set the ghost nodes at the left and right boundaries. In most cases,
-                   * this involves setting the node to the same values of v and h as the inward node.
-                   * With the inward node being above or below for the bottom and top rows of ghost nodes,
-                   * or to the left and right for the right and left columns of ghost nodes.
-                   */
-                  for (int j=0; j<ny; j++)
-                    {
-                      /*
-                      * Nx*j will give us the row we're in, and one is subtracted as FastScape starts from 1 not zero.
-                      * If we're on the left, the multiple of the row will always represent the first node.
-                      * Subtracting one to the row above this gives us the last node of the previous row.
-                      */
-                      const int index_left = nx*j;
-                      const int index_right = nx*(j+1)-1;
-                      double slope = 0;
-
-                      /*
-                      * Here we set the ghost nodes to the ones next to them, where for the left we
-                      * add one to go to the node to the right, and for the right side
-                      * we subtract one to go to the inner node to the left.
-                      */
-                      vz[index_right] = vz[index_right-1];
-                      vz[index_left] =  vz[index_left+1];
-
-                      vy[index_right] = vy[index_right-1];
-                      vy[index_left] = vy[index_left+1];
-
-                      vx[index_right] = vx[index_right-1];
-                      vx[index_left] = vx[index_left+1];
-
-                      if (current_timestep == 1 || left_flux == 0)
-                        {
-                          /*
-                           * If its the first timestep add in initial slope. If we have no flux,
-                           * set the ghost node to the node next to it.
-                           * FastScape calculates the slope by looking at all nodes surrounding the point
-                           * so we need to consider the slope over 2 dx.
-                           */
-                          slope = left_flux/kdd;
-                          h[index_left] = h[index_left+1] + slope*2*dx;
-                        }
-                      else
-                        {
-                          /*
-                           * If we have flux through a boundary, we need to update the height to keep the correct slope.
-                           * Because the corner nodes always show a slope of zero, this will update them according to
-                           * the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
-                           */
-                          if (j == 0)
-                            slope = left_flux/kdd - std::tan(slopep[index_left+nx+1]*numbers::PI/180.);
-                          else if (j==(ny-1))
-                            slope = left_flux/kdd - std::tan(slopep[index_left-nx+1]*numbers::PI/180.);
-                          else
-                            slope = left_flux/kdd - std::tan(slopep[index_left+1]*numbers::PI/180.);
-
-                          h[index_left] = h[index_left] + slope*2*dx;
-                        }
-
-                      if (current_timestep == 1 || right_flux == 0)
-                        {
-                          slope = right_flux/kdd;
-                          h[index_right] = h[index_right-1] + slope*2*dx;
-                        }
-                      else
-                        {
-                          if (j == 0)
-                            slope = right_flux/kdd - std::tan(slopep[index_right+nx-1]*numbers::PI/180.);
-                          else if (j==(ny-1))
-                            slope = right_flux/kdd - std::tan(slopep[index_right-nx-1]*numbers::PI/180.);
-                          else
-                            slope = right_flux/kdd - std::tan(slopep[index_right-1]*numbers::PI/180.);
-
-                          h[index_right] = h[index_right] + slope*2*dx;
-                        }
-
-                      /*
-                      * If the boundaries are periodic, then we look at the velocities on both sides of the
-                      * model, and set the ghost node according to the direction of flow. As FastScape will
-                      * receive all velocities it will have a direction, and we only need to look at the (non-ghost)
-                      * nodes directly to the left and right.
-                      */
-                      if (left == 0 && right == 0)
-                        {
-                          // First we assume that flow is going to the left.
-                          int side = index_left;
-	                  int op_side = index_right;
-
-                          // Indexing depending on which side the ghost node is being set to.
-                          int jj = 1;
-
-                          /*
-                          * If nodes on both sides are going the same direction, then set the respective
-                          * ghost nodes to equal these sides. By doing this, the ghost nodes at the opposite
-                          * side of flow will work as a mirror mimicing what is happening on the other side.
-                          */
-                          if (vx[index_right-1] > 0 && vx[index_left+1] >= 0)
-                            {
-                              side = index_right;
-                              op_side = index_left;
-                              jj = -1;
-                            }
-                          else if (vx[index_right-1] <= 0 && vx[index_left+1] < 0)
-                            {
-                              side = index_left;
-                              op_side = index_right;
-                              jj = 1;
-                            }
-                          else
-                            continue;
-
-                          // Set right ghost node
-                          h[index_right] = h[side+jj];
-                          vx[index_right] = vx[side+jj];
-                          vy[index_right] = vy[side+jj];
-                          vz[index_right] = vz[side+jj];
-
-                          // Set left ghost node
-                          h[index_left] = h[side+jj];
-                          vx[index_left] = vx[side+jj];
-                          vy[index_left] = vy[side+jj];
-                          vz[index_left] = vz[side+jj];
-
-                          // Set opposing ASPECT boundary so it's periodic.
-                          h[op_side-jj] = h[side+jj];
-                          vx[op_side-jj] = vx[side+jj];
-                          vz[op_side-jj] = vz[side+jj];
-                          vy[op_side-jj] = vy[side+jj];
-                        }
-                    }
-
-                  // Now do the same for the top and bottom ghost nodes.
-                  for (int j=0; j<nx; j++)
-                    {
-                      // The bottom row indexes are 0 to nx-1.
-                      const int index_bot = j;
-
-                      // Nx multiplied by (total rows - 1) gives us the start of
-                      // the top row, and j gives the position in the row.
-                      const int index_top = nx*(ny-1)+j;
-                      double slope = 0;
-
-                      vz[index_bot] = vz[index_bot+nx];
-                      vz[index_top] = vz[index_top-nx];
-
-                      vy[index_bot] = vy[index_bot+nx];
-                      vy[index_top] =  vy[index_top-nx];
-
-                      vx[index_bot] = vx[index_bot+nx];
-                      vx[index_top] =  vx[index_top-nx];
-
-                      if (current_timestep == 1 || top_flux == 0)
-                        {
-                          slope = top_flux/kdd;
-                          h[index_top] = h[index_top-nx] + slope*2*dx;
-                        }
-                      else
-                        {
-                          if (j == 0)
-                            slope = top_flux/kdd - std::tan(slopep[index_top-nx+1]*numbers::PI/180.);
-                          else if (j==(nx-1))
-                            slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*numbers::PI/180.);
-                          else
-                            slope = top_flux/kdd - std::tan(slopep[index_top-nx]*numbers::PI/180.);
-
-                          h[index_top] = h[index_top] + slope*2*dx;
-                        }
-
-                      if (current_timestep == 1 || bottom_flux == 0)
-                        {
-                          slope = bottom_flux/kdd;
-                          h[index_bot] = h[index_bot+nx] + slope*2*dx;
-                        }
-                      else
-                        {
-                          if (j == 0)
-                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx+1]*numbers::PI/180.);
-                          else if (j==(nx-1))
-                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*numbers::PI/180.);
-                          else
-                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*numbers::PI/180.);
-
-                          h[index_bot] = h[index_bot] + slope*2*dx;
-                        }
-
-                      if (bottom == 0 && top == 0)
-                        {
-                          int side = index_bot;
-                          int op_side = index_top;
-                          int jj = nx;
-
-                          if (vy[index_bot+nx-1] > 0 && vy[index_top-nx-1] >= 0)
-                            {
-                              side = index_top;
-                              op_side = index_bot;
-                              jj = -nx;
-                            }
-                          else if (vy[index_bot+nx-1] <= 0 && vy[index_top-nx-1] < 0)
-                            {
-                              side = index_bot;
-                              op_side = index_top;
-                              jj = nx;
-                            }
-                          else
-                            continue;
-
-                          // Set top ghost node
-                          h[index_top] = h[side+jj];
-                          vx[index_top] = vx[side+jj];
-                          vy[index_top] = vy[side+jj];
-                          vz[index_top] = vz[side+jj];
-
-                          // Set bottom ghost node
-                          h[index_bot] = h[side+jj];
-                          vx[index_bot] = vx[side+jj];
-                          vy[index_bot] = vy[side+jj];
-                          vz[index_bot] = vz[side+jj];
-
-                          // Set opposing ASPECT boundary so it's periodic.
-                          h[op_side-jj] = h[side+jj];
-                          vx[op_side-jj] = vx[side+jj];
-                          vz[op_side-jj] = vz[side+jj];
-                          vy[op_side-jj] = vy[side+jj];
-                        }
-                    }
-                }
 
               // Get current fastscape timestep.
               int istep = 0;
@@ -943,6 +707,245 @@ namespace aspect
                                                     vector_function_object,
                                                     mesh_velocity_constraints);
         }
+    }
+
+    template <int dim>
+    void FastScape<dim>::set_ghost_nodes(double *h, double *vx, double *vy, double *vz, int nx, int ny) const
+    {
+                 const int current_timestep = this->get_timestep_number ();
+                 std::unique_ptr<double[]> slopep (new double[array_size]());
+
+                 /*
+                  * Copy the slopes at each point, this will be used to set an H
+                  * at the ghost nodes if a boundary mass flux is given.
+                  */
+                  fastscape_copy_slope_(slopep.get());
+
+                  /*
+                   * Here we set the ghost nodes at the left and right boundaries. In most cases,
+                   * this involves setting the node to the same values of v and h as the inward node.
+                   * With the inward node being above or below for the bottom and top rows of ghost nodes,
+                   * or to the left and right for the right and left columns of ghost nodes.
+                   */
+                  for (int j=0; j<ny; j++)
+                    {
+                      /*
+                      * Nx*j will give us the row we're in, and one is subtracted as FastScape starts from 1 not zero.
+                      * If we're on the left, the multiple of the row will always represent the first node.
+                      * Subtracting one to the row above this gives us the last node of the previous row.
+                      */
+                      const int index_left = nx*j;
+                      const int index_right = nx*(j+1)-1;
+                      double slope = 0;
+
+                      /*
+                      * Here we set the ghost nodes to the ones next to them, where for the left we
+                      * add one to go to the node to the right, and for the right side
+                      * we subtract one to go to the inner node to the left.
+                      */
+                      vz[index_right] = vz[index_right-1];
+                      vz[index_left] =  vz[index_left+1];
+
+                      vy[index_right] = vy[index_right-1];
+                      vy[index_left] = vy[index_left+1];
+
+                      vx[index_right] = vx[index_right-1];
+                      vx[index_left] = vx[index_left+1];
+
+                      if (current_timestep == 1 || left_flux == 0)
+                        {
+                          /*
+                           * If its the first timestep add in initial slope. If we have no flux,
+                           * set the ghost node to the node next to it.
+                           * FastScape calculates the slope by looking at all nodes surrounding the point
+                           * so we need to consider the slope over 2 dx.
+                           */
+                          slope = left_flux/kdd;
+                          h[index_left] = h[index_left+1] + slope*2*dx;
+                        }
+                      else
+                        {
+                          /*
+                           * If we have flux through a boundary, we need to update the height to keep the correct slope.
+                           * Because the corner nodes always show a slope of zero, this will update them according to
+                           * the closest non-ghost node. E.g. if we're at a corner node, look instead up a row and inward.
+                           */
+                          if (j == 0)
+                            slope = left_flux/kdd - std::tan(slopep[index_left+nx+1]*numbers::PI/180.);
+                          else if (j==(ny-1))
+                            slope = left_flux/kdd - std::tan(slopep[index_left-nx+1]*numbers::PI/180.);
+                          else
+                            slope = left_flux/kdd - std::tan(slopep[index_left+1]*numbers::PI/180.);
+
+                          h[index_left] = h[index_left] + slope*2*dx;
+                        }
+
+                      if (current_timestep == 1 || right_flux == 0)
+                        {
+                          slope = right_flux/kdd;
+                          h[index_right] = h[index_right-1] + slope*2*dx;
+                        }
+                      else
+                        {
+                          if (j == 0)
+                            slope = right_flux/kdd - std::tan(slopep[index_right+nx-1]*numbers::PI/180.);
+                          else if (j==(ny-1))
+                            slope = right_flux/kdd - std::tan(slopep[index_right-nx-1]*numbers::PI/180.);
+                          else
+                            slope = right_flux/kdd - std::tan(slopep[index_right-1]*numbers::PI/180.);
+
+                          h[index_right] = h[index_right] + slope*2*dx;
+                        }
+
+                      /*
+                      * If the boundaries are periodic, then we look at the velocities on both sides of the
+                      * model, and set the ghost node according to the direction of flow. As FastScape will
+                      * receive all velocities it will have a direction, and we only need to look at the (non-ghost)
+                      * nodes directly to the left and right.
+                      */
+                      if (left == 0 && right == 0)
+                        {
+                          // First we assume that flow is going to the left.
+                          int side = index_left;
+	                  int op_side = index_right;
+
+                          // Indexing depending on which side the ghost node is being set to.
+                          int jj = 1;
+
+                          /*
+                          * If nodes on both sides are going the same direction, then set the respective
+                          * ghost nodes to equal these sides. By doing this, the ghost nodes at the opposite
+                          * side of flow will work as a mirror mimicing what is happening on the other side.
+                          */
+                          if (vx[index_right-1] > 0 && vx[index_left+1] >= 0)
+                            {
+                              side = index_right;
+                              op_side = index_left;
+                              jj = -1;
+                            }
+                          else if (vx[index_right-1] <= 0 && vx[index_left+1] < 0)
+                            {
+                              side = index_left;
+                              op_side = index_right;
+                              jj = 1;
+                            }
+                          else
+                            continue;
+
+                          // Set right ghost node
+                          h[index_right] = h[side+jj];
+                          vx[index_right] = vx[side+jj];
+                          vy[index_right] = vy[side+jj];
+                          vz[index_right] = vz[side+jj];
+
+                          // Set left ghost node
+                          h[index_left] = h[side+jj];
+                          vx[index_left] = vx[side+jj];
+                          vy[index_left] = vy[side+jj];
+                          vz[index_left] = vz[side+jj];
+
+                          // Set opposing ASPECT boundary so it's periodic.
+                          h[op_side-jj] = h[side+jj];
+                          vx[op_side-jj] = vx[side+jj];
+                          vz[op_side-jj] = vz[side+jj];
+                          vy[op_side-jj] = vy[side+jj];
+                        }
+                    }
+
+                  // Now do the same for the top and bottom ghost nodes.
+                  for (int j=0; j<nx; j++)
+                    {
+                      // The bottom row indexes are 0 to nx-1.
+                      const int index_bot = j;
+
+                      // Nx multiplied by (total rows - 1) gives us the start of
+                      // the top row, and j gives the position in the row.
+                      const int index_top = nx*(ny-1)+j;
+                      double slope = 0;
+
+                      vz[index_bot] = vz[index_bot+nx];
+                      vz[index_top] = vz[index_top-nx];
+
+                      vy[index_bot] = vy[index_bot+nx];
+                      vy[index_top] =  vy[index_top-nx];
+
+                      vx[index_bot] = vx[index_bot+nx];
+                      vx[index_top] =  vx[index_top-nx];
+
+                      if (current_timestep == 1 || top_flux == 0)
+                        {
+                          slope = top_flux/kdd;
+                          h[index_top] = h[index_top-nx] + slope*2*dx;
+                        }
+                      else
+                        {
+                          if (j == 0)
+                            slope = top_flux/kdd - std::tan(slopep[index_top-nx+1]*numbers::PI/180.);
+                          else if (j==(nx-1))
+                            slope = top_flux/kdd - std::tan(slopep[index_top-nx-1]*numbers::PI/180.);
+                          else
+                            slope = top_flux/kdd - std::tan(slopep[index_top-nx]*numbers::PI/180.);
+
+                          h[index_top] = h[index_top] + slope*2*dx;
+                        }
+
+                      if (current_timestep == 1 || bottom_flux == 0)
+                        {
+                          slope = bottom_flux/kdd;
+                          h[index_bot] = h[index_bot+nx] + slope*2*dx;
+                        }
+                      else
+                        {
+                          if (j == 0)
+                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx+1]*numbers::PI/180.);
+                          else if (j==(nx-1))
+                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx-1]*numbers::PI/180.);
+                          else
+                            slope = bottom_flux/kdd - std::tan(slopep[index_bot+nx]*numbers::PI/180.);
+
+                          h[index_bot] = h[index_bot] + slope*2*dx;
+                        }
+
+                      if (bottom == 0 && top == 0)
+                        {
+                          int side = index_bot;
+                          int op_side = index_top;
+                          int jj = nx;
+
+                          if (vy[index_bot+nx-1] > 0 && vy[index_top-nx-1] >= 0)
+                            {
+                              side = index_top;
+                              op_side = index_bot;
+                              jj = -nx;
+                            }
+                          else if (vy[index_bot+nx-1] <= 0 && vy[index_top-nx-1] < 0)
+                            {
+                              side = index_bot;
+                              op_side = index_top;
+                              jj = nx;
+                            }
+                          else
+                            continue;
+
+                          // Set top ghost node
+                          h[index_top] = h[side+jj];
+                          vx[index_top] = vx[side+jj];
+                          vy[index_top] = vy[side+jj];
+                          vz[index_top] = vz[side+jj];
+
+                          // Set bottom ghost node
+                          h[index_bot] = h[side+jj];
+                          vx[index_bot] = vx[side+jj];
+                          vy[index_bot] = vy[side+jj];
+                          vz[index_bot] = vz[side+jj];
+
+                          // Set opposing ASPECT boundary so it's periodic.
+                          h[op_side-jj] = h[side+jj];
+                          vx[op_side-jj] = vx[side+jj];
+                          vz[op_side-jj] = vz[side+jj];
+                          vy[op_side-jj] = vy[side+jj];
+                        }
+                    }    
     }
 
     // TODO: Give better explanations of variables and cite the fastscape documentation.

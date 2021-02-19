@@ -112,6 +112,13 @@ namespace aspect
        */
       void parse_parameters (ParameterHandler &prm);
 
+        /**
+         * A function that fills the viscosity derivatives in the
+         * MaterialModelOutputs object that is handed over, if they exist.
+         * Does nothing otherwise.
+         */
+        void set_ghost_nodes(double *h, double *vx, double *vy, double *vz, int nx, int ny) const;
+
     private:
       // Number of FastScape steps per ASPECT timestep.
       int nstep;
