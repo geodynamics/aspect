@@ -280,6 +280,13 @@ namespace aspect
          */
         interpolate,
         /**
+         * Use the interpolated properties of the surrounding particles as
+         * calculated by the selected interpolator except for particles in
+         * boundary cells. These will use the boundary condition of the
+         * compositional fields instead.
+         */
+        interpolate_respect_boundary,
+        /**
          * Initialize the particle properties to zero. If the property is
          * updated over time its update function is called as usual, if not
          * the property will remain zero throughout the model run.

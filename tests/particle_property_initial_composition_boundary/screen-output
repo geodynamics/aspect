@@ -1,0 +1,19 @@
+
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving anomaly system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 37+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:         0.000462 m/s, 0.00161 m/s
+     Compositions min/max/mass: 0/1/0.1899
+     Writing particle output:   output-particle_property_initial_composition_boundary/particles/particles-00000
+
+Termination requested by criterion: end time
+
+
+

@@ -21,6 +21,8 @@
 #include <aspect/particle/property/interface.h>
 #include <aspect/utilities.h>
 
+#include <aspect/boundary_composition/interface.h>
+
 #include <deal.II/grid/grid_tools.h>
 
 #include <list>
@@ -399,6 +401,61 @@ namespace aspect
                                                                                     found_cell);
                   for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                     particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
+                  break;
+                }
+
+                case aspect::Particle::Property::interpolate_respect_boundary:
+                {
+                  typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
+
+                  if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
+                    {
+                      found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
+                                                                                this->get_triangulation(),
+                                                                                particle_location)).first;
+                    }
+                  else
+                    found_cell = cell;
+
+                  const auto &manager = this->get_boundary_composition_manager();
+                  const auto &fixed_boundaries = manager.get_fixed_composition_boundary_indicators();
+
+                  // Determine if the current cell is at a Dirichlet boundary
+                  bool cell_at_fixed_boundary = false;
+                  unsigned int boundary_face = numbers::invalid_unsigned_int;
+                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    if (cell->at_boundary(f) && fixed_boundaries.count(cell->face(f)->boundary_id()) == 1)
+                      {
+                        boundary_face = f;
+                        cell_at_fixed_boundary = true;
+                        break;
+                      }
+
+                  // If no Dirichlet boundary, interpolate
+                  if (cell_at_fixed_boundary == false)
+                    {
+                      const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particle_handler,
+                                                                                        std::vector<Point<dim> > (1,particle_location),
+                                                                                        ComponentMask(property_information.n_components(),true),
+                                                                                        found_cell);
+                      for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
+                        particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
+                    }
+                  // Otherwise use the boundary condition
+                  else
+                    {
+                      Assert(property_information.get_components_by_plugin_index(property_index) == this->n_compositional_fields(),
+                             ExcInternalError());
+
+                      const types::boundary_id boundary_id = cell->face(boundary_face)->boundary_id();
+
+                      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+                        {
+                          const double composition = manager.boundary_composition(boundary_id,particle_location,c);
+                          particle_properties.push_back(composition);
+                        }
+                    }
+
                   break;
                 }
 

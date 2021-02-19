@@ -55,6 +55,9 @@ namespace aspect
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const override;
 
+          InitializationModeForLateParticles
+          late_initialization_mode () const override;
+
           /**
            * Set up the information about the names and number of components
            * this property requires.
