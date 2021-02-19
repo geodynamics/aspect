@@ -189,7 +189,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} single Advection, single Stokes
 
 
-{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks).  The `no Advection, single Stokes' scheme only solves the Stokes system once per timestep. This is also mostly useful for Stokes benchmarks. The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `single Advection, iterated Newton Stokes' scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system. The `first timestep only, single Stokes' scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved. 
+{\it Description:} The kind of scheme used to resolve the nonlinearity in the system. `single Advection, single Stokes' means that no nonlinear iterations are done, and the temperature, compositional fields and Stokes equations are solved exactly once per time step, one after the other. The `iterated Advection and Stokes' scheme iterates this decoupled approach by alternating the solution of the temperature, composition and Stokes systems. The `single Advection, iterated Stokes' scheme solves the temperature and composition equation once at the beginning of each time step and then iterates out the solution of the Stokes equation. The `no Advection, iterated Stokes' scheme only solves the Stokes system, iterating out the solution, and ignores compositions and the temperature equation (careful, the material model must not depend on the temperature or composition; this is mostly useful for Stokes benchmarks).  The `no Advection, single Stokes' scheme only solves the Stokes system once per timestep. This is also mostly useful for Stokes benchmarks. The `single Advection, no Stokes' scheme only solves the temperature and other advection systems once, and instead of solving for the Stokes system, a prescribed velocity and pressure is used. The `iterated Advection and Newton Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and Newton iterations for the Stokes system. The `single Advection, iterated Newton Stokes' scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using Newton iterations for the Stokes system. The `iterated Advection and defect correction Stokes' scheme iterates by alternating the solution of the temperature, composition and Stokes equations, using Picard iterations for the temperature and composition, and defect correction Picard iterations for the Stokes system. The `single Advection, iterated defect correction Stokes' scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The `no Advection, iterated defect correction Stokes' scheme solves the temperature and composition equations once at the beginning of each time step and then iterates out the solution of the Stokes equation, using defect correction Picard iterations for the Stokes system. The `first timestep only, single Stokes' scheme solves the Stokes equations exactly once, at the first time step. No nonlinear iterations are done, and the temperature and composition systems are not solved. 
 
 The `IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, single Stokes' .The `iterated IMPES' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Stokes'. The `iterated Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, iterated Stokes'. The `Stokes only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `no Advection, iterated Stokes'. The `Advection only' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `single Advection, no Stokes'. The `Newton Stokes' scheme is deprecated and only allowed for reasons of backwards compatibility. It is the same as `iterated Advection and Newton Stokes'.
 
@@ -365,7 +365,9 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} true
 
 
-{\it Description:} When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to `true' conversion to years happens; if it is `false', no such conversion happens. Note that when `true', some input such as prescribed velocities should also use years instead of seconds.
+{\it Description:} When computing results for mantle convection simulations, it is often difficult to judge the order of magnitude of results when they are stated in MKS units involving seconds. Rather, some kinds of results such as velocities are often stated in terms of meters per year (or, sometimes, centimeters per year). On the other hand, for non-dimensional computations, one wants results in their natural unit system as used inside the code. If this flag is set to `true' conversion to years happens; if it is `false', no such conversion happens.
+
+Contrary to the word ``output'' in the name of this parameter, a number of plugins also use this parameter to determine how to interpret their \textit{inputs}. For example, when `true', several of the boundary velocity models described in Section~\ref{parameters:Boundary_20velocity_20model} interpret both specific times in years instead of seconds, and velocities in meters per year instead of meters per second.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -3275,7 +3277,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} false
 
 
-{\it Description:} Specify velocity as r, phi, and theta components instead of x, y, and z. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
+{\it Description:} Specify velocity as $r$, $\phi$, and $\theta$ components instead of $x$, $y$, and $z$. Positive velocities point up, east, and north (in 3D) or out and clockwise (in 2D). This setting only makes sense for spherical geometries.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -8275,9 +8277,9 @@ The model is compressible only if this is specified in the input file, and conta
 
 `modified tait': A material model that implements the thermal modified Tait equation of state as written in \cite{HP2011}. Constant values are used for the thermal conductivity and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Modified Tait model'' in the input file, see Section~\ref{parameters:Material_20model/Modified_20Tait_20model}.
 
-`multicomponent': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreted as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
+`multicomponent': This incompressible model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. However, each rock type itself has constant material properties.  The value of the  compositional field is interpreted as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically.  An exception is the viscosity, where the averaging should make more of a difference.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
 
-`multicomponent compressible': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. Each rock type is described by a self-consistent equation of state.  The value of the  compositional field is interpreted as a volume fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the bulk material properties are calculated self-consistently.  An exception is the viscosity, where there is no unique solution to the averaging.  For this, the user selects between arithmetic, harmonic, geometric, or maximum composition averaging.
+`multicomponent compressible': This model is for use with an arbitrary number of compositional fields, where each field represents a rock type which can have completely different properties from the others. Each rock type is described by a self-consistent equation of state.  The value of the  compositional field is interpreted as a mass fraction. If the sum of the fields is greater than one, they are renormalized.  If it is less than one, material properties  for ``background mantle'' make up the rest. When more than one field is present, the material properties are averaged arithmetically by mass fraction (for specific heat), or volume fraction (for density, thermal expansivity and compressibility). The thermal conductivity is also arithmetically averaged by volume fraction. Finally, the viscosity is averaged by volume fraction, but the user can choose between arithmetic, harmonic, geometric or maximum composition averaging.
 
 `nondimensional': A material model for nondimensionalized computations for compressible or incompressible computations defined through Rayleigh number 	ext{Ra} and Dissipation number Di. This model is made to be used with the Boussinesq, ALA, or TALA formulation.
 
@@ -16935,17 +16937,17 @@ If the function you are describing represents a vector-valued function with mult
 
 {\it Description:} Choose none, one or several from 
 
-\begin{itemize} \item net rotation \item angular momentum \item net translation \item linear momentum \item net x translation \item net y translation \item net z translation \item linear x momentum \item linear y momentum \item linear z momentum \end{itemize}
+\begin{itemize} \item net rotation \item angular momentum \item net translation \item net surface rotation\item linear momentum \item net x translation \item net y translation \item net z translation \item linear x momentum \item linear y momentum \item linear z momentum \end{itemize}
 
 These are a selection of operations to remove certain parts of the nullspace from the velocity after solving. For some geometries and certain boundary conditions the velocity field is not uniquely determined but contains free translations and/or rotations. Depending on what you specify here, these non-determined modes will be removed from the velocity field at the end of the Stokes solve step.
 
 
-The ``angular momentum'' option removes a rotation such that the net angular momentum is zero. The ``linear * momentum'' options remove translations such that the net momentum in the relevant direction is zero.  The ``net rotation'' option removes the net rotation of the domain, and the ``net * translation'' options remove the net translations in the relevant directions.  For most problems there should not be a significant difference between the momentum and rotation/translation versions of nullspace removal, although the momentum versions are more physically motivated. They are equivalent for constant density simulations, and approximately equivalent when the density variations are small.
+The ``angular momentum'' option removes a rotation such that the net angular momentum is zero. The ``linear * momentum'' options remove translations such that the net momentum in the relevant direction is zero.  The ``net rotation'' option removes the net rotation of the whole domain, the ``net surface rotation'' option removes the net rotation of the top surface, and the ``net * translation'' options remove the net translations in the relevant directions.  For most problems there should not be a significant difference between the momentum and rotation/translation versions of nullspace removal, although the momentum versions are more physically motivated. They are equivalent for constant density simulations, and approximately equivalent when the density variations are small.
 
 Note that while more than one operation can be selected it only makes sense to pick one rotational and one translational operation.
 
 
-{\it Possible values:} A comma-separated list of any of net rotation, angular momentum, net translation, linear momentum, net x translation, net y translation, net z translation, linear x momentum, linear y momentum, linear z momentum
+{\it Possible values:} A comma-separated list of any of net rotation, angular momentum, net surface rotation, net translation, linear momentum, net x translation, net y translation, net z translation, linear x momentum, linear y momentum, linear z momentum
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess}
@@ -18095,7 +18097,7 @@ Select one of the following models:
 
 `bilinear least squares': Interpolates particle properties onto a vector of points using a bilinear least squares method. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
-`cell average': Return the average of all particle properties in the given cell.
+`cell average': Return the arithmetic average of all particle properties in the given cell.
 
 `harmonic average': Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells.
 
@@ -18142,12 +18144,14 @@ The following properties are available:
 
 `position': Implementation of a plugin in which the particle property is defined as the current position.
 
+`reference position': Implementation of a plugin in which the particle property is defined as the current reference position.
+
 `velocity': Implementation of a plugin in which the particle property is defined as the recent velocity at this position.
 
 `viscoplastic strain invariants': A plugin that calculates the finite strain invariant a particle has experienced and assigns it to either the plastic and/or viscous strain field based on whether the material is plastically yielding, or the total strain field used in the visco plastic material model. The implementation of this property is equivalent to the implementation for compositional fields that is located in the plugin in \texttt{benchmarks/buiter\_et\_al\_2008\_jgr/plugin/},and is effectively the same as what the visco plastic material model uses for compositional fields.
 
 
-{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, velocity, viscoplastic strain invariants
+{\it Possible values:} A comma-separated list of any of composition, elastic stress, function, initial composition, initial position, integrated strain, integrated strain invariant, melt particle, pT path, position, reference position, velocity, viscoplastic strain invariants
 \item {\it Parameter name:} {\tt Load balancing strategy}
 \phantomsection\label{parameters:Postprocess/Particles/Load balancing strategy}
 \label{parameters:Postprocess/Particles/Load_20balancing_20strategy}
@@ -21345,7 +21349,7 @@ The following plugins are available:
 
 `conduction time step': This model computes the conduction time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
 
-`convection time step': This model computes the convection time step as the minimum over all cells of $ CFL h^2 \cdot \rho C_p / k$, where k is the thermal conductivity. This plugin will always request advancing to the next time step.
+`convection time step': This model computes the convection time step as $ CFL / \max \| u \| / h$ over all cells, where $u$ is the velocity and $h$ is the product of mesh size and temperature polynomial degree.
 
 `function': This model uses a time step specified in the parameter file specified as a function of time. This plugin will always request advancing to the next time step.
 
@@ -21478,23 +21482,6 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 \label{parameters:Volume_20of_20Fluid}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Enable interface tracking}
-\phantomsection\label{parameters:Volume of Fluid/Enable interface tracking}
-\label{parameters:Volume_20of_20Fluid/Enable_20interface_20tracking}
-
-
-\index[prmindex]{Enable interface tracking}
-\index[prmindexfull]{Volume of Fluid!Enable interface tracking}
-{\it Value:} false
-
-
-{\it Default:} false
-
-
-{\it Description:} When set to true, Volume of Fluid interface tracking will be used
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Number initialization samples}
 \phantomsection\label{parameters:Volume of Fluid/Number initialization samples}
 \label{parameters:Volume_20of_20Fluid/Number_20initialization_20samples}
