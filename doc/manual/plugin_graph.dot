@@ -502,6 +502,8 @@ N6aspect8Particle8Property6PTPathILi2EEE -> N6aspect8Particle8Property9Interface
 SimulatorAccess -> N6aspect8Particle8Property6PTPathILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle8Property8PositionILi2EEE [label="position", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property8PositionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
+N6aspect8Particle8Property17ReferencePositionILi2EEE [label="reference\nposition", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect8Particle8Property17ReferencePositionILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 N6aspect8Particle8Property8VelocityILi2EEE [label="velocity", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle8Property8VelocityILi2EEE -> N6aspect8Particle8Property9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle8Property8VelocityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
