@@ -425,6 +425,50 @@ namespace aspect
                * Generally, any additional modifications should occur below this point.
                */
 
+                // Find the appropriate sediment rain based off the time interval.
+                double time = this->get_time()/year_in_seconds;
+                double sediment_rain = sr_values[0];
+                for (unsigned int j=0; j<sr_times.size(); j++)
+                {
+                  if(time > sr_times[j])
+                       sediment_rain = sr_values[j+1];
+                }
+
+              /*
+               * Keep initial h values so we can calculate velocity later.
+               * In the first timestep, h will be given from other processors.
+               * In later timesteps, we copy h directly from fastscape.
+               */
+              std::srand(fs_seed);
+              for (int i=0; i<array_size; i++)
+                {
+                  h_old[i] = h[i];
+
+                  // Initialize random noise after h_old is set, so aspect sees this initial topography change.
+                  if (current_timestep == 1)
+                    {
+                      // + or - 5 meters of topography.
+                      const double h_seed = (std::rand()%100)/10 - 5;
+                      h[i] = h[i] + h_seed;
+                    }
+              
+                  // Here we add the sediment rain (m/yr) as a flat increase in height.
+                  // This is done because adding it as an uplift rate would affect the basement.
+                  if (sediment_rain > 0)
+                    {
+                      // Only apply sediment rain to areas below sea level.
+                      if (h[i] < sl)
+                        {
+                          // If the rain would put us above sea level, set height to sea level.
+                          if (h[i] + sediment_rain*a_dt > sl)
+                            h[i] = sl;
+                          else
+                            h[i] = h[i] + sediment_rain*a_dt;
+                        }
+                    }
+                }
+
+
               /*
                * The ghost nodes are added as a single layer of nodes surrounding the entire model,
                * so that 3x3 amount of nodes representing ASPECT will become 5x5 in FastScape, with the inner
@@ -525,6 +569,7 @@ namespace aspect
                         {
                           // First we assume that flow is going to the left.
                           int side = index_left;
+	                  int op_side = index_right;
 
                           // Indexing depending on which side the ghost node is being set to.
                           int jj = 1;
@@ -537,27 +582,35 @@ namespace aspect
                           if (vx[index_right-1] > 0 && vx[index_left+1] >= 0)
                             {
                               side = index_right;
+                              op_side = index_left;
                               jj = -1;
                             }
                           else if (vx[index_right-1] <= 0 && vx[index_left+1] < 0)
                             {
                               side = index_left;
+                              op_side = index_right;
                               jj = 1;
                             }
                           else
                             continue;
 
+                          // Set right ghost node
+                          h[index_right] = h[side+jj];
+                          vx[index_right] = vx[side+jj];
+                          vy[index_right] = vy[side+jj];
                           vz[index_right] = vz[side+jj];
+
+                          // Set left ghost node
+                          h[index_left] = h[side+jj];
+                          vx[index_left] = vx[side+jj];
+                          vy[index_left] = vy[side+jj];
                           vz[index_left] = vz[side+jj];
 
-                          vy[index_right] = vy[side+jj];
-                          vy[index_left] = vy[side+jj];
-
-                          vx[index_right] = vx[side+jj];
-                          vx[index_left] = vx[side+jj];
-
-                          h[index_right] = h[side+jj];
-                          h[index_left] = h[side+jj];
+                          // Set opposing ASPECT boundary so it's periodic.
+                          h[op_side-jj] = h[side+jj];
+                          vx[op_side-jj] = vx[side+jj];
+                          vz[op_side-jj] = vz[side+jj];
+                          vy[op_side-jj] = vy[side+jj];
                         }
                     }
 
@@ -618,76 +671,41 @@ namespace aspect
                       if (bottom == 0 && top == 0)
                         {
                           int side = index_bot;
+                          int op_side = index_top;
                           int jj = nx;
 
                           if (vy[index_bot+nx-1] > 0 && vy[index_top-nx-1] >= 0)
                             {
                               side = index_top;
+                              op_side = index_bot;
                               jj = -nx;
                             }
                           else if (vy[index_bot+nx-1] <= 0 && vy[index_top-nx-1] < 0)
                             {
                               side = index_bot;
+                              op_side = index_top;
                               jj = nx;
                             }
                           else
                             continue;
 
-                          vz[index_bot] = vz[side+jj];
+                          // Set top ghost node
+                          h[index_top] = h[side+jj];
+                          vx[index_top] = vx[side+jj];
+                          vy[index_top] = vy[side+jj];
                           vz[index_top] = vz[side+jj];
 
-                          vy[index_bot] = vy[side+jj];
-                          vy[index_top] =  vy[side+jj];
-
-                          vx[index_bot] = vx[side+jj];
-                          vx[index_top] =  vx[side+jj];
-
+                          // Set bottom ghost node
                           h[index_bot] = h[side+jj];
-                          h[index_top] = h[side+jj];
-                        }
-                    }
-                }
+                          vx[index_bot] = vx[side+jj];
+                          vy[index_bot] = vy[side+jj];
+                          vz[index_bot] = vz[side+jj];
 
-
-                // Find the appropriate sediment rain based off the time interval.
-                double time = this->get_time()/year_in_seconds;
-                double sediment_rain = sr_values[0];
-                for (unsigned int j=0; j<sr_times.size(); j++)
-                {
-                  if(time > sr_times[j])
-                       sediment_rain = sr_values[j+1];
-                }
-
-              /*
-               * Keep initial h values so we can calculate velocity later.
-               * In the first timestep, h will be given from other processors.
-               * In later timesteps, we copy h directly from fastscape.
-               */
-              std::srand(fs_seed);
-              for (int i=0; i<array_size; i++)
-                {
-                  h_old[i] = h[i];
-
-                  // Initialize random noise after h_old is set, so aspect sees this initial topography change.
-                  if (current_timestep == 1)
-                    {
-                      // + or - 5 meters of topography.
-                      const double h_seed = (std::rand()%100)/10 - 5;
-                      h[i] = h[i] + h_seed;
-                    }
-              
-                  // Here we add the sediment rain (m/yr) as a flat increase in height.
-                  // This is done because adding it as an uplift rate would affect the basement.
-                  if (sediment_rain > 0)
-                    {
-                      // Only apply sediment rain to areas below sea level.
-                      if (h[i] < sl)
-                        {
-                          // If the rain would put us above sea level, set height to sea level.
-                          if (h[i] + sediment_rain*a_dt > sl)
-                            h[i] = sl;
-                          else
-                            h[i] = h[i] + sediment_rain*a_dt;
+                          // Set opposing ASPECT boundary so it's periodic.
+                          h[op_side-jj] = h[side+jj];
+                          vx[op_side-jj] = vx[side+jj];
+                          vz[op_side-jj] = vz[side+jj];
+                          vy[op_side-jj] = vy[side+jj];
                         }
                     }
                 }
