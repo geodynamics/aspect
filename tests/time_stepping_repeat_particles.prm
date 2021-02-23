@@ -1,10 +1,10 @@
 # Test TimeStepping plugin "repeat on cutback" by having a change in
-# prescribed surface velocity in combination with the advection 
-# of particles. There are two compositional fields, one based on 
+# prescribed surface velocity in combination with the advection
+# of particles. There are two compositional fields, one based on
 # the field method and one on the particle method. The initial condition
-# for the fields is the same (idenical to the temperature field). 
+# for the fields is the same (idenical to the temperature field).
 # For sufficient mesh and particle resolution,
-# the end result for the two fields should be practically the same. 
+# the end result for the two fields should be practically the same.
 
 set Dimension                              = 2
 set End time                               = 0.755

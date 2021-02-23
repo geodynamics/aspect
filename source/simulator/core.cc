@@ -557,10 +557,7 @@ namespace aspect
     // Copy particle handler to restore particle location and properties
     // before repeating a timestep
     if (particle_world.get() != nullptr)
-      {
-        particle_world->copy_particle_handler(particle_world->get_particle_handler(),
-                                              particle_handler_copy);
-      }
+      particle_world->backup_particles();
 
     // Re-compute the pressure scaling factor. In some sense, it would be nice
     // if we did this not just once per time step, but once for each solve --
@@ -2004,10 +2001,7 @@ namespace aspect
             // created in start_timestep(),
             // but only if this timestep is to be repeated.
             if (particle_world.get() != nullptr)
-              {
-                particle_world->copy_particle_handler(particle_handler_copy,
-                                                      particle_world->get_particle_handler());
-              }
+              particle_world->restore_particles();
 
             continue; // repeat time step loop
           }
