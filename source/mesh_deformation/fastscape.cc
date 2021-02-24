@@ -109,7 +109,6 @@ namespace aspect
       Utilities::create_directory (this->get_output_directory() + "VTK/",
                                    this->get_mpi_communicator(),
                                    false);
-
       last_output_time = 0;
     }
 
@@ -260,7 +259,9 @@ namespace aspect
               bool make_vtk = 0;
               if (this->get_time() >= last_output_time + output_interval)
               {
-		make_vtk = 1;
+                // Don't create a visualization file on a restart.
+                if(!restart)
+		  make_vtk = 1;
 
                 if (output_interval > 0)
                {
