@@ -541,7 +541,7 @@ namespace aspect
                            Patterns::Double (0.),
                            "Set a time step size for computing reactions of compositional fields and the "
                            "temperature field in case operator splitting is used. This is only used "
-                           "when the nonlinear solver scheme ``operator splitting'' is selected. "
+                           "when the parameter ``Use operator splitting'' is set to true. "
                            "The reaction time step must be greater than 0. "
                            "If you want to prescribe the reaction time step only as a relative value "
                            "compared to the advection time step as opposed to as an absolute value, you "
@@ -554,8 +554,8 @@ namespace aspect
         prm.declare_entry ("Reaction time steps per advection step", "0",
                            Patterns::Integer (0),
                            "The number of reaction time steps done within one advection time step "
-                           "in case operator splitting is used. This is only used if the nonlinear "
-                           "solver scheme ``operator splitting'' is selected. If set to zero, this "
+                           "in case operator splitting is used. This is only used if the parameter "
+                           "``Use operator splitting'' is set to true. If set to zero, this "
                            "parameter is ignored. Otherwise, the reaction time step size is chosen according to "
                            "this criterion and the ``Reaction time step'', whichever yields the "
                            "smaller time step. "
