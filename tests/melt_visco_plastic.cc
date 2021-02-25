@@ -22,6 +22,9 @@
 #define _aspect_material_model_melt_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
+
 #include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
@@ -38,40 +41,6 @@ namespace aspect
   namespace MaterialModel
   {
     using namespace dealii;
-
-    /**
-     * Additional output fields for the plastic parameters weakened (or hardened)
-     * by strain to be added to the MaterialModel::MaterialModelOutputs structure
-     * and filled in the MaterialModel::Interface::evaluate() function.
-     */
-    template <int dim>
-    class PlasticAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        PlasticAdditionalOutputs(const unsigned int n_points);
-
-        virtual std::vector<double> get_nth_output(const unsigned int idx) const;
-
-        /**
-         * Cohesions at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> cohesions;
-
-        /**
-         * Internal angles of friction at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
-         */
-        std::vector<double> friction_angles;
-
-        /**
-         * The area where the viscous stress exceeds the plastic yield strength,
-         * and viscosity is rescaled back to the yield envelope.
-         */
-        std::vector<double> yielding;
-    };
 
     /**
      * A material model that implements a simple formulation of the
@@ -149,13 +118,6 @@ namespace aspect
 
       private:
 
-        double ref_temperature;
-
-        std::vector<double> densities;
-        std::vector<double> thermal_expansivities;
-        std::vector<double> specific_heats;
-        std::vector<double> thermal_conductivities;
-
         double min_strain_rate;
         double ref_strain_rate;
         double min_viscosity;
@@ -227,11 +189,11 @@ namespace aspect
          * MaterialModelOutputs object that is handed over, if it exists.
          * Does nothing otherwise.
          */
-        void fill_plastic_outputs (const unsigned int point_index,
-                                   const std::vector<double> &volume_fractions,
-                                   const bool plastic_yielding,
-                                   const MaterialModel::MaterialModelInputs<dim> &in,
-                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
+        // void fill_plastic_outputs (const unsigned int point_index,
+        //                            const std::vector<double> &volume_fractions,
+        //                            const bool plastic_yielding,
+        //                            const MaterialModel::MaterialModelInputs<dim> &in,
+        //                            MaterialModel::MaterialModelOutputs<dim> &out) const;
 
         /**
          * Whether to use a function defined as an input parameter for the melting rate
@@ -242,6 +204,39 @@ namespace aspect
          * A function object representing the melting rate.
          */
         Functions::ParsedFunction<dim> function;
+
+
+        /**
+         * Pointer to the object used to compute the rheological properties.
+         * In this case, the rheology in question is visco(elasto)plastic. The
+         * object contains functions for parameter declaration and parsing,
+         * and further functions that calculate viscosity and viscosity
+         * derivatives. It also contains functions that create and fill
+         * additional material model outputs, specifically plastic outputs.
+         * The rheology itself is a composite rheology, and so the object
+         * contains further objects and/or pointers to objects that provide
+         * functions and parameters for all subordinate rheologies.
+         */
+        std::unique_ptr<Rheology::ViscoPlastic<dim>> rheology;
+
+        std::vector<double> thermal_diffusivities;
+
+        /**
+         * Whether to use user-defined thermal conductivities instead of thermal diffusivities.
+         */
+        bool define_conductivities;
+
+        std::vector<double> thermal_conductivities;
+
+        /**
+         * Object for computing the equation of state.
+         */
+        EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
+
+        /**
+         * Object that handles phase transitions.
+         */
+        MaterialUtilities::PhaseFunction<dim> phase_function;
 
     };
 
@@ -257,56 +252,13 @@ namespace aspect
 
     using namespace dealii;
 
-    namespace
-    {
-      std::vector<std::string> make_plastic_additional_outputs_names()
-      {
-        std::vector<std::string> names;
-        names.emplace_back("current_cohesions");
-        names.emplace_back("current_friction_angles");
-        names.emplace_back("plastic_yielding");
-        return names;
-      }
-    }
-
-    template <int dim>
-    PlasticAdditionalOutputs<dim>::PlasticAdditionalOutputs (const unsigned int n_points)
-      :
-      NamedAdditionalMaterialOutputs<dim>(make_plastic_additional_outputs_names()),
-      cohesions(n_points, numbers::signaling_nan<double>()),
-      friction_angles(n_points, numbers::signaling_nan<double>()),
-      yielding(n_points, numbers::signaling_nan<double>())
-    {}
-
-    template <int dim>
-    std::vector<double>
-    PlasticAdditionalOutputs<dim>::get_nth_output(const unsigned int idx) const
-    {
-      AssertIndexRange (idx, 3);
-      switch (idx)
-        {
-          case 0:
-            return cohesions;
-
-          case 1:
-            return friction_angles;
-
-          case 2:
-            return yielding;
-
-          default:
-            AssertThrow(false, ExcInternalError());
-        }
-      // We will never get here, so just return something
-      return cohesions;
-    }
-
     template <int dim>
     double
     MeltViscoPlastic<dim>::
     reference_viscosity () const
     {
-      return ref_viscosity;
+      return rheology->ref_visc;
+      // return ref_viscosity;
     }
 
     template <int dim>
@@ -323,7 +275,8 @@ namespace aspect
     MeltViscoPlastic<dim>::
     is_compressible () const
     {
-      return false;
+      return equation_of_state.is_compressible();
+      // return false;
     }
 
     template <int dim>
@@ -379,18 +332,65 @@ namespace aspect
     template <int dim>
     void
     MeltViscoPlastic<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in,
+             typename Interface<dim>::MaterialModelOutputs &out) const
     {
+      // Store which components do not represent volumetric compositions (e.g. strain components).
+      const ComponentMask volumetric_compositions = rheology->get_volumetric_composition_mask();
+
+      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
+      EquationOfStateOutputs<dim> eos_outputs_all_phases (this->n_compositional_fields()+1+phase_function.n_phase_transitions());
+
+      std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
+
+      // Store value of phase function for each phase and composition
+      // While the number of phases is fixed, the value of the phase function is updated for every point
+      std::vector<double> phase_function_values(phase_function.n_phase_transitions(), 0.0);
+
       // 1) Initial viscosities and other material properties
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
+          // First compute the equation of state variables and thermodynamic properties
+          equation_of_state.evaluate(in, i, eos_outputs_all_phases);
+
+          const double gravity_norm = this->get_gravity_model().gravity_vector(in.position[i]).norm();
+          const double reference_density = (this->get_adiabatic_conditions().is_initialized())
+                                           ?
+                                           this->get_adiabatic_conditions().density(in.position[i])
+                                           :
+                                           eos_outputs_all_phases.densities[0];
+
+          // The phase index is set to invalid_unsigned_int, because it is only used internally
+          // in phase_average_equation_of_state_outputs to loop over all existing phases
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_inputs(in.temperature[i],
+                                                                   in.pressure[i],
+                                                                   this->get_geometry_model().depth(in.position[i]),
+                                                                   gravity_norm*reference_density,
+                                                                   numbers::invalid_unsigned_int);
+
+          // Compute value of phase functions
+          for (unsigned int j=0; j < phase_function.n_phase_transitions(); j++)
+            {
+              phase_inputs.phase_index = j;
+              phase_function_values[j] = phase_function.compute_value(phase_inputs);
+            }
+
+          // Average by value of gamma function to get value of compositions
+          phase_average_equation_of_state_outputs(eos_outputs_all_phases,
+                                                  phase_function_values,
+                                                  phase_function.n_phase_transitions_for_each_composition(),
+                                                  eos_outputs);
+
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, linear_viscosities, viscosity_averaging);
 
-          out.densities[i] = MaterialUtilities::average_value(volume_fractions, densities, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value(volume_fractions, thermal_expansivities, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
+          // not strictly correct if thermal expansivities are different, since we are interpreting
+          // these compositions as volume fractions, but the error introduced should not be too bad.
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+
           out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
-          out.specific_heat[i] = MaterialUtilities::average_value(volume_fractions, specific_heats, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
 
           // TODO: compute the actual number
           out.entropy_derivative_pressure[i]    = 0.0;
@@ -580,6 +580,7 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
+            /////// This is part of rheology->fill_plastic_outputs.
               PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
               if (plastic_out != nullptr)
                 {
@@ -587,6 +588,7 @@ namespace aspect
                   plastic_out->friction_angles[i] = angle_internal_friction;
                   plastic_out->yielding[i] = plastic_yielding ? 1 : 0;
                 }
+            /////////////
 
               // Limit the viscosity with specified minimum and maximum bounds
               out.viscosities[i] = std::min(std::max(out.viscosities[i], min_viscosity), max_viscosity);
@@ -655,24 +657,35 @@ namespace aspect
       {
         prm.enter_subsection("Melt visco plastic");
         {
+          MaterialUtilities::PhaseFunction<dim>::declare_parameters(prm);
+
+          EquationOfState::MulticomponentIncompressible<dim>::declare_parameters (prm);
+
+          Rheology::ViscoPlastic<dim>::declare_parameters(prm);
+
+          // Equation of state parameters
+          prm.declare_entry ("Thermal diffusivities", "0.8e-6",
+                             Patterns::List(Patterns::Double (0.)),
+                             "List of thermal diffusivities, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value.  "
+                             "Units: \\si{\\meter\\squared\\per\\second}.");
+          prm.declare_entry ("Define thermal conductivities","false",
+                             Patterns::Bool (),
+                             "Whether to directly define thermal conductivities for each compositional field "
+                             "instead of calculating the values through the specified thermal diffusivities, "
+                             "densities, and heat capacities. ");
+          prm.declare_entry ("Thermal conductivities", "3.0",
+                             Patterns::List(Patterns::Double(0)),
+                             "List of thermal conductivities, for background material and compositional fields, "
+                             "for a total of N+1 values, where N is the number of compositional fields. "
+                             "If only one value is given, then all use the same value. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+
+          ////////////////////////
 
           prm.declare_entry ("Reference temperature", "293", Patterns::Double(0),
                              "For calculating density by thermal expansivity. Units: $K$");
-          prm.declare_entry ("Densities", "3300.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of densities for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value.  Units: $kg / m^3$");
-          prm.declare_entry ("Thermal expansivities", "4.e-5",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of thermal expansivities for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $1/K$");
-          prm.declare_entry ("Specific heats", "1250.",
-                             Patterns::List(Patterns::Double(0)),
-                             "List of specific heats $C_p$ for background mantle and compositional fields, "
-                             "for a total of N+1 values, where N is the number of compositional fields. "
-                             "If only one value is given, then all use the same value. Units: $J /kg /K$");
           prm.declare_entry ("Thermal conductivities", "4.7",
                              Patterns::List(Patterns::Double(0)),
                              "List of thermal conductivities for background mantle and compositional fields, "
@@ -899,17 +912,40 @@ namespace aspect
       {
         prm.enter_subsection("Melt visco plastic");
         {
+          // Phase transition parameters
+          phase_function.initialize_simulator (this->get_simulator());
+          phase_function.parse_parameters (prm);
 
-          ref_temperature = prm.get_double ("Reference temperature");
-          densities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Densities"))),
-                                                              n_fields,
-                                                              "Densities");
-          thermal_expansivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal expansivities"))),
+          std::vector<unsigned int> n_phase_transitions_for_each_composition
+            (phase_function.n_phase_transitions_for_each_composition());
+
+          // We require one more entry for density, etc as there are phase transitions
+          // (for the low-pressure phase before any transition).
+          for (unsigned int &n : n_phase_transitions_for_each_composition)
+            n += 1;
+
+          // Equation of state parameters
+          equation_of_state.initialize_simulator (this->get_simulator());
+          equation_of_state.parse_parameters (prm,
+                                              std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+
+
+          thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
                                                                           n_fields,
-                                                                          "Thermal expansivities");
-          specific_heats = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Specific heats"))),
-                                                                   n_fields,
-                                                                   "Specific heats");
+                                                                          "Thermal diffusivities");
+
+          define_conductivities = prm.get_bool ("Define thermal conductivities");
+
+          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
+                                                                           n_fields,
+                                                                           "Thermal conductivities");
+
+          rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
+          rheology->initialize_simulator (this->get_simulator());
+          rheology->parse_parameters(prm, std::make_shared<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+
+        ////////////////////
+
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
@@ -1018,12 +1054,17 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
-        }
+      rheology->create_plastic_outputs(out);
+
+      if (rheology->use_elasticity)
+        rheology->elastic_rheology.create_elastic_outputs(out);
+
+      // if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
+      //   {
+      //     const unsigned int n_points = out.n_evaluation_points();
+      //     out.additional_outputs.push_back(
+      //       std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
+      //   }
     }
 
   }
