@@ -380,7 +380,7 @@ namespace aspect
                                                   phase_function.n_phase_transitions_for_each_composition(),
                                                   eos_outputs);
 
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_volume_fractions(in.composition[i]);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[0], rheology->get_volumetric_composition_mask());
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, linear_viscosities, rheology->viscosity_averaging);
 
           // not strictly correct if thermal expansivities are different, since we are interpreting
