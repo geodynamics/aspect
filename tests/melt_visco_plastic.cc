@@ -390,7 +390,31 @@ namespace aspect
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
           out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
 
-          out.thermal_conductivities[i] = MaterialUtilities::average_value(volume_fractions, thermal_conductivities, MaterialUtilities::CompositionalAveragingOperation::arithmetic);
+          if (define_conductivities == false)
+            {
+              double thermal_diffusivity = 0.0;
+
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+
+              // Thermal conductivity at the given positions. If the temperature equation uses
+              // the reference density profile formulation, use the reference density to
+              // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
+              // conditions are not yet initialized, the real density will still be used.
+              if (this->get_parameters().formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
+                  this->get_adiabatic_conditions().is_initialized())
+                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
+                                                this->get_adiabatic_conditions().density(in.position[i]);
+              else
+                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
+            }
+          else
+            {
+              // Use thermal conductivity values specified in the parameter file, if this
+              // option was selected.
+              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+            }
 
           // TODO: compute the actual number
           out.entropy_derivative_pressure[i]    = 0.0;
