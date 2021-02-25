@@ -24,9 +24,12 @@
 #include <aspect/newton.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/gravity_model/interface.h>
+#include <aspect/melt.h>
+
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/fe/fe_values.h>
+
 
 namespace aspect
 {
@@ -98,7 +101,8 @@ namespace aspect
                                        const unsigned int i,
                                        const std::vector<double> &volume_fractions,
                                        const std::vector<double> &phase_function_values,
-                                       const std::vector<unsigned int> &n_phases_per_composition) const
+                                       const std::vector<unsigned int> &n_phases_per_composition,
+                                       const std::vector<unsigned int> &fluid_pressures) const
       {
         IsostrainViscosities output_parameters;
 
@@ -128,6 +132,19 @@ namespace aspect
           edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
                              min_strain_rate);
 
+        // In case porosity lies above the melt transport threshold
+        // P_effective = P_bulk - P_f = (1-porosity) * P_s + porosity * P_f - P_f = (1-porosity) * (P_s - P_f)
+        // otherwise,
+        // P_effective = P_bulk, which equals P_solid (which is given by in.pressure[i])
+        double effective_pressure = in.pressure[i], porosity = 0;
+
+        if (this->include_melt_transport() && this->get_melt_handler().is_melt_cell(in.current_cell))
+          {
+            const unsigned int pf_idx = this->introspection().compositional_index_for_name("porosity");
+            porosity = std::min(1.0, std::max(in.composition[i][pf_idx],0.0));
+            effective_pressure = (1. - porosity) * (in.pressure[i] - fluid_pressures[i]);
+          }
+
         // Calculate viscosities for each of the individual compositional phases
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
@@ -136,7 +153,7 @@ namespace aspect
             // Choice of activation volume depends on whether there is an adiabatic temperature
             // gradient used when calculating the viscosity. This allows the same activation volume
             // to be used in incompressible and compressible models.
-            const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+            const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*effective_pressure;
             AssertThrow(temperature_for_viscosity != 0, ExcMessage(
                           "The temperature used in the calculation of the visco-plastic rheology is zero. "
                           "This is not allowed, because this value is used to divide through. It is probably "
@@ -147,12 +164,12 @@ namespace aspect
                           + Utilities::to_string(in.pressure[i]) + ")."));
 
             // Step 1a: compute viscosity from diffusion creep law
-            const double viscosity_diffusion = diffusion_creep.compute_viscosity(in.pressure[i], temperature_for_viscosity, j,
+            const double viscosity_diffusion = diffusion_creep.compute_viscosity(effective_pressure, temperature_for_viscosity, j,
                                                                                  phase_function_values,
                                                                                  n_phases_per_composition);
 
             // Step 1b: compute viscosity from dislocation creep law
-            const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+            const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, effective_pressure, temperature_for_viscosity, j,
                                                                                      phase_function_values,
                                                                                      n_phases_per_composition);
 
@@ -191,7 +208,7 @@ namespace aspect
             // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
             if (use_peierls_creep)
               {
-                const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, effective_pressure, temperature_for_viscosity, j,
                                                                                   phase_function_values,
                                                                                   n_phases_per_composition);
                 viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
@@ -226,7 +243,7 @@ namespace aspect
               }
 
             // Step 2b: calculate current (viscous or viscous + elastic) stress magnitude
-            double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
+            double current_stress = 2. * viscosity_pre_yield * current_edot_ii * (1.0 - porosity);
 
             // Step 3: strain weakening
 
@@ -246,9 +263,9 @@ namespace aspect
             // This may be necessary in models without gravity and the dynamic stresses are much higher
             // than the lithostatic pressure.
 
-            double pressure_for_plasticity = in.pressure[i];
+            double pressure_for_plasticity = effective_pressure;
             if (allow_negative_pressures_in_plasticity == false)
-              pressure_for_plasticity = std::max(in.pressure[i],0.0);
+              pressure_for_plasticity = std::max(effective_pressure,0.0);
 
             // Step 4a: calculate Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
