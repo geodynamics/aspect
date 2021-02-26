@@ -52,7 +52,7 @@ namespace aspect
         Assert (computed_quantities[0].size() == 1,                   ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
 
-        // in case the material model computes the melt fraction iself, we use that output
+        // in case the material model computes the melt fraction itself, we use that output
         if (Plugins::plugin_type_matches<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()))
           {
             MaterialModel::MaterialModelInputs<dim> in(input_data,
