@@ -448,6 +448,7 @@ namespace aspect
       // It works correctly when archiving the content of the pointer instead.
       ar
       &(*particle_handler)
+      &particle_handler_backup
       ;
     }
   }
