@@ -140,8 +140,6 @@ namespace aspect
                                        this->get_mapping(),
                                        n_properties);
 
-        connect_particle_handler_signals(this->get_signals(),to_particle_handler);
-
         std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
 
         for (const auto &particle : from_particle_handler)
@@ -226,6 +224,7 @@ namespace aspect
       });
 
       connect_particle_handler_signals(signals,*particle_handler);
+      connect_particle_handler_signals(signals, particle_handler_backup);
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
