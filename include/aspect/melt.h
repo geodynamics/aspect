@@ -22,6 +22,7 @@
 #ifndef _aspect_melt_h
 #define _aspect_melt_h
 
+#include <aspect/simulator.h>
 #include <aspect/simulator_access.h>
 #include <aspect/global.h>
 #include <aspect/simulator/assemblers/interface.h>
