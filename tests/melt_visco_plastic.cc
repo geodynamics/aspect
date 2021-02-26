@@ -22,7 +22,7 @@
 #define _aspect_material_model_melt_visco_plastic_h
 
 #include <aspect/material_model/interface.h>
-#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/rheology/visco_plastic.h>
 #include <aspect/material_model/equation_of_state/multicomponent_incompressible.h>
 
 #include <aspect/simulator.h>
@@ -1096,13 +1096,6 @@ namespace aspect
 
       if (rheology->use_elasticity)
         rheology->elastic_rheology.create_elastic_outputs(out);
-
-      // if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
-      //   {
-      //     const unsigned int n_points = out.n_evaluation_points();
-      //     out.additional_outputs.push_back(
-      //       std_cxx14::make_unique<MaterialModel::PlasticAdditionalOutputs<dim>> (n_points));
-      //   }
     }
 
   }
