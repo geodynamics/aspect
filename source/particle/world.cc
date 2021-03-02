@@ -96,9 +96,9 @@ namespace aspect
                                                                  store_callback_function,
                                                                  load_callback_function);
 
-                    particle_handler_backup.register_additional_store_load_functions(size_callback_function,
-                                                                 store_callback_function,
-                                                                 load_callback_function);                                                   
+      particle_handler_backup.register_additional_store_load_functions(size_callback_function,
+                                                                       store_callback_function,
+                                                                       load_callback_function);
 
       connect_to_signals(this->get_signals());
     }
