@@ -116,7 +116,7 @@ namespace aspect
     template <int dim>
     void
     FastScape<dim>::compute_velocity_constraints_on_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
-                                                             ConstraintMatrix &mesh_velocity_constraints,
+                                                             AffineConstraints<double> &mesh_velocity_constraints,
                                                              const std::set<types::boundary_id> &boundary_ids) const
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Fastscape plugin");
@@ -257,7 +257,7 @@ namespace aspect
 
 	      // Determine whether to create a VTK file this timestep.
               bool make_vtk = 0;
-              if (this->get_time() >= last_output_time + output_interval)
+              if (this->get_time() >= last_output_time + output_interval || this->get_time()+a_dt >= end_time)
               {
                 // Don't create a visualization file on a restart.
                 if(!restart)
@@ -543,7 +543,10 @@ namespace aspect
                 if (use_strat && current_timestep == 1)
                   fastscape_strati_(&nstepp, &nreflectorp, &steps, &vexp);
                 else if (!use_strat && current_timestep == 1)
+		  {
+                  this->get_pcout() << "      Writing initial VTK..." << std::endl;
                   fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+                  }
 
                 do
                   {
@@ -566,18 +569,15 @@ namespace aspect
 
               visualization_step = current_timestep;
               if (make_vtk)
+              {
+                 this->get_pcout() << "      Writing VTK..." << std::endl;
                  fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
+              }
 
               // If we've reached the end time, destroy fastscape.
               if (this->get_time()+a_dt >= end_time)
                 {
                   this->get_pcout() << "      Destroying FastScape..." << std::endl;
-
-                  // We generally create the visualization file before running FastScape,
-                  // because we won't run it again we want to output the final result.
-                     if (!use_strat)
-                    fastscape_named_vtk_(h.get(), &vexp, &visualization_step, c, &length);
-
                   fastscape_destroy_();
                 }
 
