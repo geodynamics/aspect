@@ -574,6 +574,8 @@ namespace aspect
         max_visc = prm.get_double ("Maximum viscosity");
         ref_visc = prm.get_double ("Reference viscosity");
 
+        AssertThrow(max_visc >= min_visc, ExcMessage("Maximum viscosity should be larger or equal to the minimum viscosity. "));
+
         viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                               prm);
 
