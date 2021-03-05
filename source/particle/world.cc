@@ -67,6 +67,7 @@ namespace aspect
                                                                       this->get_mapping(),
                                                                       property_manager->get_n_property_components());
 
+      // Particle handler backup will not be stored for checkpointing
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
                                          property_manager->get_n_property_components());
@@ -232,7 +233,7 @@ namespace aspect
       });
 
       connect_particle_handler_signals(signals,*particle_handler);
-      connect_particle_handler_signals(signals, particle_handler_backup);
+      connect_particle_handler_signals(signals, particle_handler_backup, false);
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -252,7 +253,8 @@ namespace aspect
     template <int dim>
     void
     World<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                                 ParticleHandler<dim> &particle_handler_) const
+                                                 ParticleHandler<dim> &particle_handler_,
+                                                 const bool connect_to_checkpoint_signals) const
     {
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -266,17 +268,21 @@ namespace aspect
         particle_handler_.register_load_callback_function(false);
       });
 
-      signals.pre_checkpoint_store_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        particle_handler_.register_store_callback_function();
-      });
+      // do not connect backup particle handler
+      if (connect_to_checkpoint_signals)
+        {
+          signals.pre_checkpoint_store_user_data.connect(
+            [&] (typename parallel::distributed::Triangulation<dim> &)
+          {
+            particle_handler_.register_store_callback_function();
+          });
 
-      signals.post_resume_load_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        particle_handler_.register_load_callback_function(true);
-      });
+          signals.post_resume_load_user_data.connect(
+            [&] (typename parallel::distributed::Triangulation<dim> &)
+          {
+            particle_handler_.register_load_callback_function(true);
+          });
+        }
 
       if (update_ghost_particles &&
           dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)

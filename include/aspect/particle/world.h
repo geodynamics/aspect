@@ -434,7 +434,8 @@ namespace aspect
          */
         void
         connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                         ParticleHandler<dim> &particle_handler) const;
+                                         ParticleHandler<dim> &particle_handler,
+                                         const bool = true) const;
     };
 
     /* -------------------------- inline and template functions ---------------------- */
@@ -448,7 +449,6 @@ namespace aspect
       // It works correctly when archiving the content of the pointer instead.
       ar
       &(*particle_handler)
-      &particle_handler_backup
       ;
     }
   }
