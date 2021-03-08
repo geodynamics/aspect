@@ -1,0 +1,151 @@
+set Dimension   = 2
+set Output directory = output_case6
+
+set Maximum number of expensive Stokes solver steps = 10000
+set Linear solver tolerance = 1.0e-7
+
+set Use years in output instead of seconds = true
+
+subsection Discretization
+  set Stokes velocity polynomial degree = 1
+  set Use locally conservative discretization = true
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+set Use direct solver for Stokes system = true
+
+# Load the prescribed velocity and pressure library
+set Additional shared libraries = ./libprescribed_velocity_pressure.so
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 6.6e5
+    set Y extent = 6.0e5
+    set X repetitions = 66
+    set Y repetitions = 60
+  end
+end
+set Pressure normalization = no
+
+set Surface pressure = 0
+set Use conduction timestep = true
+
+set End time = 3.4e8
+
+set Resume computation = false
+subsection Termination criteria
+  set End step = 1
+  set Termination criteria = end step
+  set Checkpoint on termination = true
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 200
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Variable names = x,y,t
+    set Function constants = H=6.0e5, Hl=5.0e4, TS=273.0, T0=1573.0, kappa=0.7272e-6, t50=1.5778463e15
+    set Function expression = if(x<=(H-y),TS+(T0-TS)*(1.0-erfc( (H-y)/(2.0*sqrt(kappa*t50))) ), \
+    		 	      if(x>(H-y) & y>(H-Hl), TS+(T0-TS)*(H-y)/Hl, \
+			      T0 ) )
+  end
+end
+
+subsection Model settings
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators = left: function, top:function
+  set Prescribed traction boundary indicators = right: zero traction, bottom:zero traction
+  set Tangential velocity boundary indicators = 
+
+  set Fixed temperature boundary indicators = top, left, right
+
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+end
+
+subsection Boundary velocity model
+     subsection Function
+          set Variable names = x,y,t
+	  set Function constants = H=6.0e5, v=0.035355339
+          set Function expression = if( x<=(H-y), v, 0.0 ) ; \
+	      	       		    if( x<=(H-y),-v, 0.0 )
+     end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0.0
+  end
+end
+
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Viscosity = 1e21
+    set Thermal conductivity = 3.0
+    set Reference density = 3300.0
+    set Reference specific heat = 1250.0
+    set Thermal expansion coefficient = 0.0
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 2
+  set Initial adaptive refinement = 0
+  set Time steps between mesh refinement = 50
+  set Run postprocessors on initial refinement = true
+end
+
+# Turn prescribed velocities and pressure on
+set Prescribe internal velocities = false
+set Prescribe internal pressure  =  false
+
+subsection Prescribed fields
+  set Use x velocity indicator for pressure indicator = true
+  set Use x velocity indicator for pressure indicator = false
+  subsection Velocity indicator function
+    set Variable names = x,y,t
+   # Return where to prescribe u_x; u_y; u_z
+   # (last one only used if dimension = 3)
+   # 1 if velocity should be prescribed, 0 otherwise
+
+    set Function constants = pi=3.14159, H=6.0e5, W=6.6e5
+    set Function expression =  if( x<=(H-y) | (  y>=5.5e5  ), 1, 0); \
+                               if( x<=(H-y) | (  y>=5.5e5  ), 1, 0)
+
+  end
+  subsection Velocity function
+    set Variable names = x,y,t
+    # Return u_x; u_y; u_z (u_z only used if in 3d)
+    set Function constants = H=6.0e5, v=0.035355339
+    set Function expression = if( x<=(H-y), v, 0.0 ); \
+	      	              if( x<=(H-y),-v, 0.0 )
+  end
+  subsection Pressure indicator function
+    set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=1.0
+    set Function expression = 0
+  end
+  subsection Pressure function
+    set Function expression = 0.0
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, temperature statistics, velocity statistics
+  subsection Visualization
+    set List of output variables = volumetric strain rate
+    set Output format = hdf5
+    set Interpolate output = true
+    set Time between graphical output = 5.0e6
+  end
+end
