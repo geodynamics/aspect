@@ -1,3 +1,23 @@
+/*
+  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+
+  This file is part of ASPECT.
+
+  ASPECT is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2, or (at your option)
+  any later version.
+
+  ASPECT is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with ASPECT; see the file LICENSE.  If not see
+  <http://www.gnu.org/licenses/>.
+*/
+
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/parsed_function.h>
 #include <deal.II/fe/fe_values.h>
@@ -236,13 +256,13 @@ namespace aspect
    */
   template <int dim>
   void constrain_internal_velocities (const SimulatorAccess<dim> &simulator_access,
-                                      ConstraintMatrix &current_constraints)
+                                      AffineConstraints<double> &current_constraints)
   {
     if (prescribe_internal_velocities || prescribe_internal_pressure)
       {
 	std::vector< Point<dim> > unit_support_points = get_unit_support_points_for_velocity<dim>(simulator_access);
 	 Quadrature<dim> quadrature (unit_support_points);
-        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_q_points);
+        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;
 
         // Loop over all cells

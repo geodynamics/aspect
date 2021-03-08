@@ -108,7 +108,7 @@ namespace aspect
 	    }
 	  else if( coordinate_system == Utilities::Coordinates::spherical)
 	    {
-	      const std_cxx11::array<double,dim> spherical_coordinates =
+	      const std::array<double,dim> spherical_coordinates =
 		aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 	      Point<dim> point;
 	      for (unsigned int d=0; d<dim; ++d)
