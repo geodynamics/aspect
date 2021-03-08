@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{fullpage}
 \usepackage{verbatim}
+\usepackage[section]{placeins}
 \begin{document}
 
 \section{Description of benchmark}
@@ -22,7 +23,7 @@ The mesh is set up such that square elements are used, with 66 repetitions in th
 \section{Case 1}
 With ASPECT, I initially tried to reproduce the benchmark while prescribing only the velocities and using the default element (Q2-P1). The input file for this case is \texttt{vankeken\_subduction\_case1.prm}. The solution appears to be completely wrong. There is not much more to say about it. Note that for an otherwise identical model setup with initial global refinement level of 0, the linear solver will fail to converge, and regardless of resolution, the direct solver will not converge.
 
-\begin{figure}
+\begin{figure}[!htb]
 \includegraphics[width=6.5 in]{figures/output_case1_aspect_solution.eps}
 \caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 1.}
 \end{figure}
@@ -46,9 +47,9 @@ diff vankeken_subduction_case1.prm vankeken_subduction_case2.prm
 
 The solution here exhibits very significant checkerboarding in the pressure solution. However, the streamlines are closer to the correct solution, as are the x- and y- velocities. However, for any calculation that makes use of the pressure field (i.e. for melt production or nonlinear rheology), this solution is essentially useless. Upon close examination of the streamlines, the checkerboarding affects the velocity field as well
 
-\begin{figure}
+\begin{figure}[!htb]
 \includegraphics[width=6.5 in]{figures/output_case2_aspect_solution.eps}\\
-\includegraphics[width=6.5 in]{figures/output_case2_aspect_vankeken_difference.eps}
+\includegraphics[width=4 in]{figures/output_case2_aspect_vankeken_difference.eps}
 \caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 2. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
 \end{figure}
 
@@ -72,7 +73,7 @@ diff vankeken_subduction_case1.prm vankeken_subduction_case3.prm
 
 The pressure field and streamlines in this case appear initially to be more reasonable but when examined closely, the streamlines are not parallel to the interface between the overriding plate and the wedge or the downgoing plate and the wedge. These boundaries between the kinematically prescribed region and the wedge are effectively no-slip, and streamlines should remain parallel to them. If this calculation is run to thermal steady state, the results will not agree with benchmark values because of this ``leakage'' across the boundaries. Note that there are subtle disagreements in the velocity field as  well.
 
-\begin{figure}[h]
+\begin{figure}[!htb]
 \includegraphics[width=6.5 in]{figures/output_case3_aspect_solution.eps}\\
 \includegraphics[width=6.5 in]{figures/output_case3_aspect_vankeken_difference.eps}
 \caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 3. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
@@ -93,9 +94,9 @@ diff vankeken_subduction_case1.prm vankeken_subduction_case4.prm
 > set Prescribe internal pressure  =  true
 \end{verbatim}
 
-\begin{figure}[h]
+\begin{figure}[!htb]
 \includegraphics[width=6.5 in]{figures/output_case4_aspect_solution.eps}\\
-\includegraphics[width=6.5 in]{figures/output_case4_aspect_vankeken_difference.eps}
+\includegraphics[width=4 in]{figures/output_case4_aspect_vankeken_difference.eps}
 \caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 4. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
 \end{figure}
 
@@ -117,10 +118,99 @@ diff vankeken_subduction_case1.prm vankeken_subduction_case5.prm
 ---
 > set Prescribe internal pressure  =  true
 \end{verbatim}
-\begin{figure}[h]
+\begin{figure}[!htb]
 \includegraphics[width=6.5 in]{figures/output_case5_aspect_solution.eps}\\
-\includegraphics[width=6.5 in]{figures/output_case5_aspect_vankeken_difference.eps}
+\includegraphics[width=4 in]{figures/output_case5_aspect_vankeken_difference.eps}
 \caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 5. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.}
+\end{figure}
+
+\section{Case 9}
+This case adopts suggestions from Rene Gassmoeller. We use the $Q_2 P_{-1}$ element and prescribe zero pressure in the kinematic regions. The pressure and velocity fields both look, at first glance reasonable (Figure \ref{fig:case8a}). However, the velocities differ quite considerably from those of VK08, and the differences are largest near the corner of the wedge, where the solution most significantly affects the benchmark temperature values along the slab-wedge interface. The streamlines calculated from the ASPECT solution turn much farther from the corner of the nose, producing a much colder slab surface. There is also 'leakage' of material from the over-riding plate.
+\begin{verbatim}
+max@hood:/opt/aspect/benchmarks/vankeken_subduction$ diff vankeken_subduction_case1.prm vankeken_subduction_case9.prm 
+2c2
+< set Output directory = output_case1
+---
+> set Output directory = output_case9
+11c11
+<   set Use locally conservative discretization = false
+---
+>   set Use locally conservative discretization = true
+37c37
+< set End time = 3.4e8
+---
+> set End time = 2.4e8
+42c42
+<   set Termination criteria = end step
+---
+>   set Termination criteria = end time
+78,80c78,80
+< 	  set Function constants = H=6.0e5, v=0.035355339
+<           set Function expression = if( x<=(H-y), v, 0.0 ) ; \
+< 	      	       		    if( x<=(H-y),-v, 0.0 )
+---
+> 	  set Function constants = H=6.0e5, v=0.035355339, eps=0.01
+>           set Function expression = if( x<=(H-y)+eps, v, 0.0 ) ; \
+> 	      	       		    if( x<=(H-y)+eps,-v, 0.0 )
+105c105
+<   set Time steps between mesh refinement = 50
+---
+>   set Time steps between mesh refinement = 0
+106a107,113
+>   set Refinement fraction = 1.0
+>   set Coarsening fraction = 0.0
+>   set Strategy = minimum refinement function
+>   subsection Minimum refinement function
+>     set Function expression = 7.0
+>   end	     
+>   set Additional refinement times = 2.0e8, 2.2e8
+111c118
+< set Prescribe internal pressure  =  false
+---
+> set Prescribe internal pressure  =  true
+115c122
+<   set Use x velocity indicator for pressure indicator = false
+---
+>   set Use x velocity indicator for pressure indicator = true
+122,124c129,131
+<     set Function constants = pi=3.14159, H=6.0e5, W=6.6e5
+<     set Function expression =  if( x<=(H-y) | (  y>=5.5e5  ), 1, 0); \
+<                                if( x<=(H-y) | (  y>=5.5e5  ), 1, 0)
+---
+>     set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=0.01
+>     set Function expression =  if( x<=(H-y)+eps | (  y>=5.5e5-eps  ), 1, 0); \
+>                                if( x<=(H-y)+eps | (  y>=5.5e5-eps  ), 1, 0)
+130,132c137,139
+<     set Function constants = H=6.0e5, v=0.035355339
+<     set Function expression = if( x<=(H-y), v, 0.0 ); \
+< 	      	              if( x<=(H-y),-v, 0.0 )
+---
+>     set Function constants = H=6.0e5, v=0.035355339, eps=0.01
+>     set Function expression = if( x<=(H-y)+eps, v, 0.0 ); \
+> 	      	              if( x<=(H-y)+eps,-v, 0.0 )
+135,136c142,143
+<     set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=1.0
+<     set Function expression = 0
+---
+>     set Function constants = pi=3.14159, H=6.0e5, W=6.6e5, eps=0.01
+>     set Function expression =  if( x<=(H-y)+eps | (  y>=5.5e5  ), 1, 0)
+148c155
+<     set Interpolate output = true
+---
+>     set Interpolate output = false
+\end{verbatim}
+\begin{figure}[!htb]
+\includegraphics[width=6.5 in]{figures/output_case9_aspect_solution.eps}\\
+\includegraphics[width=4 in]{figures/output_case9_aspect_vankeken_difference.eps}
+\caption{x-velocity, y-velocity, temperature, and pressure (with streamlines) for the zeroth timestep of Case 9. Second row: difference between calculated x-velocity, y-velocity, and temperature for the zeroth timestep (relative to benchmark values provided by PvK). Note that agreement should not be expected for the temperature field since the calculation was not run to steady state.\label{fig:case8a}}
+\end{figure}
+\begin{figure}[!htb]
+\includegraphics[width=4 in]{figures/output_case9_streamlines.eps}
+\caption{Streamlines (red=VK08, black=ASPECT) and pressure field from ASPECT (pseudocolor). Calculation used global refinement 4.}
+\end{figure}
+\begin{figure}[!htb]
+\includegraphics[width=6.5 in]{figures/output_case9_benchmark_quantities.eps}
+\caption{Benchmark values vs. time for `case 9'. In each panel, the warmest and coldest values from VK08 are indicated with the horizontal dashed lines. Left panel shows wedge temperature and number of active cells (additional global refinements were performed after 200 Myr and 220 Myr). Center panel shows the slab-wedge interface temperature. Right panel shows the temperature 10 km right and 10 km down from the corner of the wedge.}
 \end{figure}
 
 \end{document}

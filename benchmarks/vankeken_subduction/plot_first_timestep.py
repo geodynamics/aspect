@@ -38,7 +38,7 @@ vk_vy = np.flipud(np.loadtxt(vk_vy_file))
 vk_T = np.flipud(np.loadtxt(vk_T_file))
 
 #output_dir = sys.argv[1]
-output_dir = 'output_case1'
+output_dir = 'output_case10'
 print('Reading output from ',output_dir);
 
 # In[2]:
@@ -68,23 +68,8 @@ plt.colorbar(cs,ax=ax1)
 # Based on Ian Rose's code in ljhwang/ASPECT-jupyter
 
 viz_files = sorted(glob.glob(output_dir + '/solution/solution*.h5'))
+viz_files = [viz_files[0]] # pick only the last file
 mesh_files = sorted(glob.glob(output_dir + '/solution/mesh*.h5'))
-
-# Load the statistics file
-stats_file = output_dir + '/statistics'
-stats = np.loadtxt(stats_file,usecols=(0,1,2,4,12,15))
-time = stats[:,1]
-tavg = stats[:,4]
-ncell = stats[:,3]
-vrms = stats[:,5]
-# load the output filenames from the statistics file
-output_files=np.loadtxt(stats_file,usecols=(10),dtype=str)
-output_times=[]
-for i in range(len(output_files)):
-    if output_files[i] != '""':
-        output_times.append(time[i])
-output_times = np.array(output_times)
-
 
 T_misfit = []
 mesh_file = mesh_files[0]
@@ -114,10 +99,12 @@ def process_file( viz_file ):
     a_T = getattr(fields.root,'T')
     a_v = getattr(fields.root,'velocity')
     a_P = getattr(fields.root,'p')
+    a_divv = getattr(fields.root,'volumetric_strain_rate')
     
     coords = np.array([x for x in nodes])
     values = np.array([t for t in a_T])[:,0]
     p_values = np.array([p for p in a_P])[:,0] # extract the pressure field
+    divv_values = np.array([p for p in a_divv])[:,0]    
     v = np.array([t for t in a_v])
     vx = v[:,0]
     vy = v[:,1]
@@ -152,21 +139,24 @@ def process_file( viz_file ):
         a_vy = fn(xx,yy)
         fn = method(coords,p_values)
         a_P = fn(xx,yy)
+        fn = method(coords,divv_values)        
+        a_divv = fn(xx,yy)
     else:
         fields.close()
         mesh.close()
         a_vx=[]
         a_vy=[]
-    return [viznum,a_T,a_vx,a_vy,a_P,T1111,Tslab,Twedge]
+    return [viznum,a_T,a_vx,a_vy,a_P,a_divv,T1111,Tslab,Twedge]
 
 results = Parallel(n_jobs=num_cores)(delayed(process_file)(i) for i in viz_files)
 
-Twedge = np.array([x[7] for x in results])
-Tslab = np.array([x[6] for x in results])
-T1111 = np.array([x[5] for x in results])
+Twedge = np.array([x[8] for x in results])
+Tslab = np.array([x[7] for x in results])
+T1111 = np.array([x[6] for x in results])
 
 a_vx = results[0][2]
 a_vy = results[0][3]
+a_divv=results[0][5]
 a_T = results[0][1]
 a_P = results[0][4]
 
@@ -175,28 +165,18 @@ a_P = results[0][4]
 dT = (a_T-273.0) - vk_T
 print(np.linalg.norm(dT,'fro'),'fro')
 
-#print('Plotting the mesh. This might take a while...')
-## plot the final mesh
-#f, ax = plt.subplots(1,1,figsize=(4,4))
-#for cell in ele:
-#    my_coords = coords[cell[[0,1,2,3,0]],:] # nodal coordinates
-#    ax.plot(coords[:,0],coords[:,1],'k')
-#f.tight_layout()
-#f.savefig(output_dir + '/mesh.eps')
-
-
 print('Making the graphical plots')
 f, (ax1, ax2, ax3) = plt.subplots(1,3,figsize=(12,4))
 
-cs1=ax1.pcolormesh(xx/1e3,yy/1e3,a_vx*100.-vk_vx,vmin=-5,vmax=5,cmap='bwr')
+cs1=ax1.pcolormesh(xx/1e3,yy/1e3,(a_vx*100.-vk_vx)/np.abs(vk_vx)*100,vmin=-100,vmax=100,cmap='bwr')
 ax1.set_xlabel('(km)')
 ax1.set_ylabel('(km)') 
-ax1.set_title('x-velocity difference')
+ax1.set_title('x-velocity difference (%)')
 f.colorbar(cs1,ax=ax1)
 
-cs2=ax2.pcolormesh(xx/1e3,yy/1e3,a_vy*100.-vk_vy,vmin=-5,vmax=5,cmap='bwr')
+cs2=ax2.pcolormesh(xx/1e3,yy/1e3,(a_vy*100.-vk_vy)/np.abs(vk_vy)*100,vmin=-100,vmax=100,cmap='bwr')
 ax2.set_xlabel('(km)')
-ax2.set_title('y-velocity difference')
+ax2.set_title('y-velocity difference (%)')
 f.colorbar(cs2,ax=ax2)
 
 vlim = np.abs(a_T-273. - vk_T).max()
@@ -211,7 +191,7 @@ f.savefig('figures/' + output_dir + '_aspect_vankeken_difference.eps')
 # In[6]:
 
 print('Making the graphical plots')
-f, (ax1, ax2, ax3, ax4) = plt.subplots(1,4,figsize=(16,4))
+f, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(1,5,figsize=(20,4))
 
 cs1=ax1.pcolormesh(xx/1e3,yy/1e3,a_vx*100.,vmin=-5,vmax=5,cmap='bwr')
 ax1.set_xlabel('(km)')
@@ -239,59 +219,34 @@ ax4.set_title('Pressure and Streamlines')
 ax4.streamplot(xx/1e3,yy/1e3,a_vx,a_vy)
 
 f.colorbar(cs4,ax=ax4)
+vtmp = np.log10(np.abs(a_divv))
+vlim=np.min(vtmp[np.isfinite(vtmp)])
+cs5 = ax5.pcolormesh(xx/1e3,yy/1e3,np.log10(np.abs(a_divv)),vmin=vlim,vmax=0.0,cmap='jet')
+ax5.set_xlabel('(km)')
+ax5.set_title('Log(Velocity Divergence)')
+f.colorbar(cs5,ax=ax5)
 
 f.savefig('figures/' + output_dir + '_aspect_solution.png')
 f.savefig('figures/' + output_dir + '_aspect_solution.eps')
 #plt.show()
 plt.close()
 
+# In[7]:
+print('Making the streamline comparison plot')
+f, ax1 = plt.subplots(1,1,figsize=(6,6))
+vlim = np.abs(a_P).max()
+vlim = 1e8
+cs1=ax1.pcolormesh(xx/1e3,yy/1e3,a_P,vmin=-vlim,vmax=vlim,cmap='bwr')
+ax1.set_xlabel('(km)')
+ax1.set_title('Pressure and Streamlines')
+ax1.streamplot(xx/1e3,yy/1e3,a_vx*100.,a_vy*100.,color='k',density=10)
+ax1.streamplot(xx/1e3,yy/1e3,vk_vx,vk_vy,color='r',density=10)
+ax1.set_xlim((40,120))
+ax1.set_ylim((600-120,600-40))
+ax1.plot((0,600),(600,0),color='g')
+ax1.plot((50,200),(550,550),color='g')
+f.colorbar(cs1,ax=ax1)
 
-# In[13]:
-print('Making the benchmark value plots')
-#get_ipython().magic('matplotlib inline')
-f, (ax1,ax2, ax3, ax4) = plt.subplots(4,1,figsize=(4,12))
-ax1.plot(time,ncell)
-ax2.plot(time,vrms)
-ax3.plot(time,tavg)
-ax4.plot(T_misfit)
-f.tight_layout()
-
-f.savefig('figures' + '/' + output_dir + '_time-dependence.png')
-f.savefig('figures' + '/' + output_dir + '_time-dependence.eps')
-
-#plt.show()
-
-f, (ax1,ax2,ax3) = plt.subplots(1,3,figsize=(12,4))
-ax1.plot(output_times,Twedge-273.,'k')
-ax1.plot([0, output_times[-1]],[850.50, 850.50],'b--')
-ax1.plot([0, output_times[-1]],[854.99, 854.99],'r--')
-ax1.set_ylabel('$T_{wedge}$ ($^\circ$C)')
-ax1.set_xlabel('Time (yr)')
-
-ax2.plot(output_times,Tslab-273.,'k')
-ax2.plot([0, output_times[-1]],[503.04, 503.04],'b--')
-ax2.plot([0, output_times[-1]],[511.09, 511.09],'r--')
-ax2.set_ylabel('$T_{slab}$ ($^\circ$C)')
-ax2.set_xlabel('Time (yr)')
-
-ax3.plot(output_times,T1111-273.,'k')
-ax3.plot([0, output_times[-1]],[387.78, 387.78],'b--')
-ax3.plot([0, output_times[-1]],[397.55, 397.55],'r--')
-ax3.set_ylabel('$T_{1111}$ ($^\circ$C)')
-ax3.set_xlabel('Time (yr)')
-
-ax4 = ax1.twinx()
-ax4.plot(time,ncell,'g')
-ax4.set_ylabel('# of cells',color='g')
-ax4.tick_params('y',colors='g')
-ax4.set_yscale('log')
-f.tight_layout()
-
-f.savefig('figures' + '/' + output_dir + '_benchmark_quantities.png')
-f.savefig('figures' + '/' + output_dir + '_benchmark_quantities.eps')
-
-# In[ ]:
-
-print('Final values: \n','T_wedge=','{:f}'.format(Twedge[-1]-273.))
-print('T_slab=','{:f}'.format(Tslab[-1]-273.))
-print('T(11,11)=','{:f}'.format(T1111[-1]-273.))
+f.savefig('figures/' + output_dir + '_streamlines.eps')
+plt.show()
+print('Done')

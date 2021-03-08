@@ -1,13 +1,8 @@
 set Dimension   = 2
 set Output directory = output_case5
 
-subsection Solver parameters
-  subsection Stokes solver parameters
-    set Maximum number of expensive Stokes solver steps = 10000
-    set Linear solver tolerance = 1.0e-7
-    set Use direct solver for Stokes system = false
-  end
-end
+set Maximum number of expensive Stokes solver steps = 10000
+set Linear solver tolerance = 1.0e-7
 
 set Use years in output instead of seconds = true
 
@@ -19,6 +14,8 @@ end
 subsection Formulation
   set Formulation = Boussinesq approximation
 end
+
+set Use direct solver for Stokes system = false
 
 # Load the prescribed velocity and pressure library
 set Additional shared libraries = ./libprescribed_velocity_pressure.so
@@ -61,33 +58,27 @@ subsection Initial temperature model
   end
 end
 
+subsection Model settings
+  set Zero velocity boundary indicators       = 
+  set Prescribed velocity boundary indicators = left: function, top:function
+  set Prescribed traction boundary indicators = right: zero traction, bottom:zero traction
+  set Tangential velocity boundary indicators = 
 
+  set Fixed temperature boundary indicators = top, left, right
 
-
-
-
-
-
+end
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators = top, left, right
   set List of model names = initial temperature
 end
 
-subsection Boundary traction model
-  set Prescribed traction boundary indicators = right: zero traction, bottom:zero traction
-end
-
 subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = left: function, top:function
-  set Zero velocity boundary indicators       =
-  set Tangential velocity boundary indicators = 
-  subsection Function
-    set Variable names = x,y,t
-    set Function constants = H=6.0e5, v=0.035355339
-    set Function expression = if( x<=(H-y), v, 0.0 ) ; \
+     subsection Function
+          set Variable names = x,y,t
+	  set Function constants = H=6.0e5, v=0.035355339
+          set Function expression = if( x<=(H-y), v, 0.0 ) ; \
 	      	       		    if( x<=(H-y),-v, 0.0 )
-  end
+     end
 end
 
 subsection Gravity model
@@ -152,6 +143,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization, temperature statistics, velocity statistics
   subsection Visualization
+    set List of output variables = volumetric strain rate
     set Output format = hdf5
     set Interpolate output = true
     set Time between graphical output = 5.0e6
