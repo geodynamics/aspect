@@ -38,7 +38,7 @@ vk_vy = np.flipud(np.loadtxt(vk_vy_file))
 vk_T = np.flipud(np.loadtxt(vk_T_file))
 
 #output_dir = sys.argv[1]
-output_dir = 'output_case10'
+output_dir = 'output_case9'
 print('Reading output from ',output_dir);
 
 # In[2]:
