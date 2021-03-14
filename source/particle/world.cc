@@ -723,6 +723,8 @@ namespace aspect
                                        this->get_timestep());
     }
 
+
+
     template <int dim>
     void
     World<dim>::setup_initial_state ()
@@ -735,6 +737,8 @@ namespace aspect
       // conditions on the current mesh
       initialize_particles();
     }
+
+
 
     template <int dim>
     void
@@ -756,6 +760,8 @@ namespace aspect
       particle_handler->insert_particles(new_particles);
     }
 
+
+
     template <int dim>
     void
     World<dim>::initialize_particles()
@@ -774,18 +780,11 @@ namespace aspect
 
           particle_handler->get_property_pool().reserve(2 * particle_handler->n_locally_owned_particles());
 
-          // Loop over all cells and initialize the particles cell-wise
-          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-            if (cell->is_locally_owned())
-              {
-                typename ParticleHandler<dim>::particle_iterator_range
-                particles_in_cell = particle_handler->particles_in_cell(cell);
 
-                // Only initialize particles, if there are any in this cell
-                if (particles_in_cell.begin() != particles_in_cell.end())
-                  local_initialize_particles(particles_in_cell.begin(),
-                                             particles_in_cell.end());
-              }
+          if (particle_handler->n_locally_owned_particles() > 0)
+            local_initialize_particles(particle_handler->begin(),
+                                       particle_handler->end());
+
           if (update_ghost_particles &&
               dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
             {
@@ -794,6 +793,8 @@ namespace aspect
             }
         }
     }
+
+
 
     template <int dim>
     void
@@ -820,6 +821,8 @@ namespace aspect
               }
         }
     }
+
+
 
     template <int dim>
     void
@@ -857,6 +860,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     void
     World<dim>::advance_timestep()
@@ -884,6 +889,8 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     void
     World<dim>::save (std::ostringstream &os) const
@@ -892,6 +899,8 @@ namespace aspect
       oa << (*this);
     }
 
+
+
     template <int dim>
     void
     World<dim>::load (std::istringstream &is)
@@ -899,6 +908,8 @@ namespace aspect
       aspect::iarchive ia (is);
       ia >> (*this);
     }
+
+
 
     template <int dim>
     void
@@ -967,6 +978,7 @@ namespace aspect
       Interpolator::declare_parameters<dim>(prm);
       Property::Manager<dim>::declare_parameters(prm);
     }
+
 
 
     template <int dim>
