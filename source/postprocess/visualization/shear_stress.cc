@@ -74,7 +74,22 @@ namespace aspect
             const double eta = out.viscosities[q];
 
             // Compressive stress is positive in geoscience applications
-            const SymmetricTensor<2,dim> shear_stress = -2.*eta*deviatoric_strain_rate;
+            SymmetricTensor<2,dim> shear_stress = -2.*eta*deviatoric_strain_rate;
+
+            // Add elastic stresses if existent
+            if (this->get_parameters().enable_elasticity == true)
+              {
+                shear_stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("stress_xx")];
+                shear_stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_yy")];
+                shear_stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_xy")];
+
+                if (dim == 3)
+                  {
+                    shear_stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_zz")];
+                    shear_stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_xz")];
+                    shear_stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_yz")];
+                  }
+              }
 
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
@@ -108,7 +123,8 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]$ "
-                                                  "in the compressible case. The shear "
+                                                  "in the compressible case. If elasticity is used, the "
+                                                  "elastic contribution is being accounted for. The shear "
                                                   "stress differs from the full stress tensor "
                                                   "by the absence of the pressure. Note that the convention "
                                                   "of positive compressive stress is followed. ")
