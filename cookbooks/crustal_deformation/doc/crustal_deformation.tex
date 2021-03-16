@@ -6,7 +6,7 @@ material model written by Anne Glerum and the free surface plugin by Ian Rose.}
 
 This is a simple example of an upper-crust undergoing compression or extension.
 It is characterized by a single layer of visco-plastic material subjected to basal
-kinematical boundary conditions. In compression, this setup is somewhat analogous
+kinematic boundary conditions. In compression, this setup is somewhat analogous
 to \cite{will99}, and in extension to \cite{alht11}.
 
 Brittle failure is approximated by adapting the viscosity to limit the stress
@@ -16,7 +16,7 @@ Drucker Prager yield criterion  and we therefore make use of the Drucker-Prager
 material model (see Section \ref{parameters:Material_20model}) in the
 {\tt cookbooks/crustal\_deformation/crustal\_model\_2D.prm}.
 
-The layer is assumed to have dimensions of 80km $\times$ 16km and to have a density  $\rho=2800$ kg/m$^3$.
+The layer is assumed to have dimensions of $\SI{80}{km} \times \SI{16}{km}$ and to have a density  $\rho=\SI{2800}{kg/m^3}$.
 The plasticity parameters are specified as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/crustal_deformation/doc/crustal_model_2D_part1.prm.out}
@@ -29,7 +29,7 @@ and the effective viscosity is then computed as follows:
 \mu_{\text{min}}} + \frac{1}{\mu_{\text{max}}}  \right)^{-1}
 \]
 where $\dot{\epsilon}$ is the square root of the second invariant of the deviatoric strain rate.
-The viscosity cutoffs insure that the viscosity remains within computationally acceptable values.
+The viscosity cutoffs ensure that the viscosity remains within computationally acceptable values.
 
 During the first iteration of the first timestep, the strain rate is zero, so
 we avoid dividing by zero by setting the strain rate to {\tt Reference strain rate}.
