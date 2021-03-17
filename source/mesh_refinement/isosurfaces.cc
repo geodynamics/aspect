@@ -88,8 +88,10 @@ namespace aspect
       }
 
       /**
-       * converts strings describing the refinement level which potentially contains a min
-       * or max statement included in them to a int. For example if minimum_refinement_level
+       * Convert a string describing the refinement level which potentially contains a min
+       * or max statement included in them to an integer. The format is "min", "max", "min+X", "max-X", or "X", where X is a positive integer.
+       
+       For example if minimum_refinement_level
        * is 1, and the string is 'min+1', it will return 2. The returned value will be capped
        * by the provided @p minimum_refinement_level and @p maximum_refinement_level.
        *
@@ -115,7 +117,7 @@ namespace aspect
               }
             else
               {
-                AssertThrow(string.compare(0,4,"min-") != 0,
+                AssertThrow(string == "min"),
                             ExcMessage("A value of " + string_value + " was provided, but you can't provide a smaller value than the minimum."));
                 return minimum_refinement_level;
               }
@@ -131,7 +133,7 @@ namespace aspect
               }
             else
               {
-                AssertThrow(string.compare(0,4,"max+") != 0,
+                AssertThrow(string=="max",
                             ExcMessage("A value of " + string_value + " was provided, but you can't provide a larger value than the maximum."));
                 return maximum_refinement_level;
               }
@@ -370,7 +372,7 @@ namespace aspect
                                               "isosurfaces",
                                               "A mesh refinement criterion that computes "
                                               "refinement indicators between two iso-surfaces of "
-                                              "specific field entries(e.g. temperature, compsitions)."
+                                              "specific field entries (e.g. temperature, composition)."
                                               "\n\n"
                                               "The way these indicators are derived on each isosurface is by "
                                               "checking whether the solutions of specific "

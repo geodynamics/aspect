@@ -33,7 +33,7 @@ namespace aspect
   }
 }
 
-TEST_CASE("Isosurfaces min_max_string_to_int fuction")
+TEST_CASE("Isosurfaces min_max_string_to_int function")
 {
 
   using namespace aspect::MeshRefinement::Internal;
