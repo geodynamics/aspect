@@ -10,8 +10,8 @@ set Output directory = output_viscoelastic_bending_beam_particles
 subsection Compositional fields
   set Number of fields = 4
   set Compositional field methods =           particles,           particles,           particles,         particles
-  set Names of fields             =           stress_xx,           stress_yy,           stress_xy,              beam
-  set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy, beam:initial beam
+  set Names of fields             =           ve_stress_xx,        ve_stress_yy,        ve_stress_xy,      beam
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, beam:initial beam
 end
 
 # Post processing

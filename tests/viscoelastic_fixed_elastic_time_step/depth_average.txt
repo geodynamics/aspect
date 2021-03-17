@@ -1,4 +1,4 @@
-#       time        depth stress_xx stress_yy stress_xy
+#       time        depth ve_stress_xx ve_stress_yy ve_stress_xy
            0        10000            0            0            0
            0        30000            0            0            0
            0        50000            0            0            0

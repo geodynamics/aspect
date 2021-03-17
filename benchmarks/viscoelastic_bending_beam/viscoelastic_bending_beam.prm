@@ -93,7 +93,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields  = stress_xx, stress_yy, stress_xy, beam
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
 end
 
 # Spatial domain of different compositional fields

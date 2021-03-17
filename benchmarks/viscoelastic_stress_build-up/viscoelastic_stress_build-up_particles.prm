@@ -9,7 +9,7 @@ set Output directory = output_viscoelastic_stress_build-up_particles
 # Number and name of compositional fields
 subsection Compositional fields
   set Compositional field methods = particles, particles, particles
-  set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
 end
 
 

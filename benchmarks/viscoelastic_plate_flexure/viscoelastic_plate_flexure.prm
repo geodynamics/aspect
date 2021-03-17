@@ -89,7 +89,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 5
-  set Names of fields  = stress_xx, stress_yy, stress_xy, plate, inclusion
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plate, inclusion
 end
 
 # Spatial domain of different compositional fields
