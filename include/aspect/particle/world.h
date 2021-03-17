@@ -435,7 +435,7 @@ namespace aspect
         void
         connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
                                          ParticleHandler<dim> &particle_handler,
-                                         const bool = true) const;
+                                         const bool connect_to_checkpoint_signals = true) const;
     };
 
     /* -------------------------- inline and template functions ---------------------- */

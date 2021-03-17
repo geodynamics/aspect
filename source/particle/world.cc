@@ -67,7 +67,6 @@ namespace aspect
                                                                       this->get_mapping(),
                                                                       property_manager->get_n_property_components());
 
-      // Particle handler backup will not be stored for checkpointing
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
                                          property_manager->get_n_property_components());
@@ -233,6 +232,7 @@ namespace aspect
       });
 
       connect_particle_handler_signals(signals,*particle_handler);
+      // Particle handler backup will not be stored for checkpointing
       connect_particle_handler_signals(signals, particle_handler_backup, false);
 
       signals.post_refinement_load_user_data.connect(
@@ -268,7 +268,7 @@ namespace aspect
         particle_handler_.register_load_callback_function(false);
       });
 
-      // do not connect backup particle handler
+      // Only connect to checkpoint signals if requested
       if (connect_to_checkpoint_signals)
         {
           signals.pre_checkpoint_store_user_data.connect(
