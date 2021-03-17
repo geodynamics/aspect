@@ -25,7 +25,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    namespace Internal
+    namespace internal
     {
       // Forward declaration
       unsigned int min_max_string_to_int(const std::string &string_value, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level);
@@ -36,7 +36,7 @@ namespace aspect
 TEST_CASE("Isosurfaces min_max_string_to_int function")
 {
 
-  using namespace aspect::MeshRefinement::Internal;
+  using namespace aspect::MeshRefinement::internal;
   CHECK(min_max_string_to_int("min",1,5) == 1);
   CHECK(min_max_string_to_int("min+1",1,5) == 2);
   CHECK(min_max_string_to_int("min+2",1,5) == 3);

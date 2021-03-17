@@ -60,4 +60,3 @@ subsection Initial composition model
                               (((z > x + Xmax - Xtr - Dsl) && (z < x + Xmax - Xtr))? 1.0 : 0.0)
   end
 end
-

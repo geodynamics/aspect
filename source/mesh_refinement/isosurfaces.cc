@@ -32,7 +32,7 @@ namespace aspect
 {
   namespace MeshRefinement
   {
-    namespace Internal
+    namespace internal
     {
       bool
       Isosurface::are_all_values_in_range(const std::vector<double> &values) const
@@ -40,7 +40,7 @@ namespace aspect
         // This assumes that all the vectors in isosurfaces already have the
         // same length.
         Assert(values.size() == min_values.size(),
-               ExcMessage("Internal error: Vector of values passed to the isosurface class "
+               ExcMessage("internal error: Vector of values passed to the isosurface class "
                           "function are_all_values_in_range, does not have the the correct size."));
         for (unsigned int index = 0; index < values.size(); ++index)
           {
@@ -90,7 +90,7 @@ namespace aspect
       /**
        * Convert a string describing the refinement level which potentially contains a min
        * or max statement included in them to an integer. The format is "min", "max", "min+X", "max-X", or "X", where X is a positive integer.
-       
+
        For example if minimum_refinement_level
        * is 1, and the string is 'min+1', it will return 2. The returned value will be capped
        * by the provided @p minimum_refinement_level and @p maximum_refinement_level.
@@ -117,7 +117,7 @@ namespace aspect
               }
             else
               {
-                AssertThrow(string == "min"),
+                AssertThrow(string == "min",
                             ExcMessage("A value of " + string_value + " was provided, but you can't provide a smaller value than the minimum."));
                 return minimum_refinement_level;
               }
@@ -188,11 +188,11 @@ namespace aspect
                       std::vector<double> values(isosurface.min_values.size());
                       for (unsigned int index = 0; index < isosurface.properties.size(); ++index)
                         {
-                          if (isosurface.properties[index].type == Internal::PropertyType::Temperature)
+                          if (isosurface.properties[index].type == internal::PropertyType::Temperature)
                             {
                               values[index] = in.temperature[i_quad];
                             }
-                          else if (isosurface.properties[index].type == Internal::PropertyType::Composition)
+                          else if (isosurface.properties[index].type == internal::PropertyType::Composition)
                             {
                               values[index] = in.composition[i_quad][isosurface.properties[index].index];
                             }
@@ -237,21 +237,21 @@ namespace aspect
                 coarsen = false;
               if (refine == true)
                 clear_refine = false;
-              if (coarsen == true)
-                clear_coarsen = false;
+              if (clear_coarsen == true)
+                coarsen = false;
 
               // Perform the actual placement of the coarsening and refinement flags.
               if (clear_coarsen == true)
                 {
                   cell->clear_coarsen_flag ();
                 }
-              if (coarsen == true)
-                {
-                  cell->set_coarsen_flag ();
-                }
               if (clear_refine == true)
                 {
                   cell->clear_refine_flag ();
+                }
+              if (coarsen == true)
+                {
+                  cell->set_coarsen_flag ();
                 }
               if (refine == true)
                 {
@@ -270,7 +270,7 @@ namespace aspect
       {
         prm.enter_subsection("Isosurfaces");
         {
-          prm.declare_entry ("Isosurfaces", "depth",
+          prm.declare_entry ("Isosurfaces", "",
                              Patterns::Anything(),
                              "A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of "
                              "multiple entries separated by a comma. The first two entries indicate the minimum and maximum "
@@ -317,8 +317,8 @@ namespace aspect
           for (auto &isosurface_entry : isosurface_entries)
             {
               ++isosurface_entry_number;
-              aspect::MeshRefinement::Internal::Isosurface isosurface;
-              std::vector<aspect::MeshRefinement::Internal::Property> properties;
+              aspect::MeshRefinement::internal::Isosurface isosurface;
+              std::vector<aspect::MeshRefinement::internal::Property> properties;
               std::vector<double> min_value_inputs;
               std::vector<double> max_value_inputs;
               const std::vector<std::string> field_entries = dealii::Utilities::split_string_list(isosurface_entry, ',');
@@ -328,8 +328,8 @@ namespace aspect
                                      + " contains  only " +  std::to_string(field_entries.size()) + " entries: " + isosurface_entry + "."));
 
               // convert a potential min, min+1, min + 1, min+10, max, max-1, etc. to actual integers.
-              isosurface.min_refinement = Internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
-              isosurface.max_refinement = Internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
+              isosurface.min_refinement = internal::min_max_string_to_int(field_entries[0], minimum_refinement_level, maximum_refinement_level);
+              isosurface.max_refinement = internal::min_max_string_to_int(field_entries[1], minimum_refinement_level, maximum_refinement_level);
               AssertThrow(isosurface.min_refinement <= isosurface.max_refinement,
                           ExcMessage("The provided maximum refinement level has to be larger than the minimum refinement level."));
               for (auto field_entry = field_entries.begin()+2; field_entry != field_entries.end(); ++field_entry)
@@ -341,7 +341,7 @@ namespace aspect
                   std::vector<std::string> key_and_value = Utilities::split_string_list (*field_entry, ':');
                   AssertThrow(key_and_value.size() == 2,
                               ExcMessage("The isosurface property must have a key (e.g. Temperature) and two values separated by a | (e.g. (300 | 600)."));
-                  properties.push_back(Internal::Property(key_and_value[0], compositions)); // convert key to property name
+                  properties.push_back(internal::Property(key_and_value[0], compositions)); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
                               ExcMessage("Both a maximum and a minimum values are required for each isosurface."));

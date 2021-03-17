@@ -10,4 +10,3 @@ subsection Mesh refinement
                       min + 1,min+2,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
   end
 end
-

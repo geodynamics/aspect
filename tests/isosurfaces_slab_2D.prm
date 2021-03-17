@@ -8,7 +8,7 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 1673.0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = no Advection, no Stokes 
+set Nonlinear solver scheme                = no Advection, no Stokes
 
 # We take a box geometry and increase the repetitions
 # of the coarse mesh
@@ -93,4 +93,3 @@ subsection Postprocess
     set Output format            = gnuplot
   end
 end
-

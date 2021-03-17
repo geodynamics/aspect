@@ -45,8 +45,8 @@ namespace aspect
         public:
           /**
            * Constructor. Converts a property name into a structure containing a property type
-           * and index. If the property contains multiple items (e.g. the property compositional field has a
-           * field index) they are stored in the index.
+           * and an index. If the property contains multiple items (e.g. the property compositional field has a
+           * field index) the index refering to the particluar item of that proparty is stored in the variable index.
            * @param property_name The name of a property, which can be Temperature for the temperature field or
            * the name of a compositional field listed in the parameter available_compositions.
            * @param available_compositions A list of names of the available compositional fields.
@@ -137,7 +137,7 @@ namespace aspect
         /**
          * A vector of the isosurfaces used by this class.
          */
-        std::vector<Internal::Isosurface> isosurfaces;
+        std::vector<internal::Isosurface> isosurfaces;
 
     };
   }
