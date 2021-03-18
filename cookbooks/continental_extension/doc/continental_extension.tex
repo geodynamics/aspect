@@ -27,7 +27,7 @@ The initial thermal structure, radiogenic heating model and associated thermal p
   \label{eq:continental-geotherm-1}
   T(z) &= T_T + \frac{q_T}{k}z - \frac{Az^2}{2k}
 \end{align}
-where T is temperature, z is depth, $T_T$ is the temperature at the layer surface (top), $q_T$ is surface heat flux, $k$ is thermal conductivity, and $A$ is radiogenic heat production.
+where $T$ is temperature, $z$ is depth, $T_T$ is the temperature at the layer surface (top), $q_T$ is surface heat flux, $k$ is thermal conductivity, and $A$ is radiogenic heat production.
 
 For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($q_B$) are
 \begin{align}
@@ -38,7 +38,7 @@ For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($
   q_B &= q_T - A \Delta z.
 \end{align}
 
-In this example, specifying the top (273 K) and bottom temperature (1573 K), thermal conductivity of each layer and radiogenic heat production in each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
+In this example, specifying the top (\SI{273}{K}) and bottom temperature (\SI{1573}{K}), thermal conductivity of each layer and radiogenic heat production in each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
 
 As noted above, the mechanically weak seed placed within the mantle localizes the majority of deformation onto two conjugate shear bands that propagate from the surface of the seed to the free surface. After 5 million years of extension background `stretching' is clearly visible in the strain-rate field, but deformation is still largely focused within the set of conjugate shear bands originating at the weak seed  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_5e6yr}). As expected, crustal thickness and surface topography patterns reveal a relatively symmetric horst and graben structure, which arises from displacements along the shear bands (Fig.~\ref{fig:continental_extension_cookbook_composition_5e6yr}). While deformation along the two major shear bands dominates at this early stage of extension, additional shear bands often develop within the horst-graben system leading to small inter-graben topographic variations. This pattern is illustrated in a model with double the numerical resolution (initial 1 km grid spacing) after 10 million years of extension  (Fig.~\ref{fig:continental_extension_cookbook_strainrate_highres_10e6yr}).
 
