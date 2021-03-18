@@ -74,8 +74,24 @@ namespace aspect
             const double eta = out.viscosities[q];
 
             // Compressive stress is positive in geoscience applications
-            const SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
-                                                  in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
+                                            in.pressure[q] * unit_symmetric_tensor<dim>();
+
+            // Add elastic stresses if existent
+            if (this->get_parameters().enable_elasticity == true)
+              {
+                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("stress_xx")];
+                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_yy")];
+                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_xy")];
+
+                if (dim == 3)
+                  {
+                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_zz")];
+                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_xz")];
+                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_yz")];
+                  }
+              }
+
             for (unsigned int d=0; d<dim; ++d)
               for (unsigned int e=0; e<dim; ++e)
                 computed_quantities[q][Tensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
@@ -108,7 +124,9 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]+pI$ "
-                                                  "in the compressible case. Note that the convention of positive "
+                                                  "in the compressible case. If elasticity is used, the "
+                                                  "elastic contribution is being accounted for. "
+                                                  "Note that the convention of positive "
                                                   "compressive stress is followed. ")
     }
   }

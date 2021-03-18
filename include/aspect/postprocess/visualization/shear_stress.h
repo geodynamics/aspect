@@ -44,6 +44,7 @@ namespace aspect
        * \frac 13 (\nabla \cdot \mathbf u) \mathbf I)$ and differs from the
        * full stress by the absence of the pressure.  The second term in the
        * difference is zero if the model is incompressible.
+       * If elasticity is used, the elastic contribution is being accounted for.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
