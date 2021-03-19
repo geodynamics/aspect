@@ -127,7 +127,6 @@ namespace aspect
         double sigma;
         double sign;
         unsigned int npoint;
-        std::string initial_geotherm_table;
 
         std::vector<double> radial_position;
         std::vector<double> geotherm;

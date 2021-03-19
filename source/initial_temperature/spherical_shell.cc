@@ -294,7 +294,6 @@ namespace aspect
           amplitude  = prm.get_double ("Amplitude");
           sigma  = prm.get_double ("Sigma");
           sign  = prm.get_double ("Sign");
-          initial_geotherm_table = prm.get ("Filename for initial geotherm table");
         }
         prm.leave_subsection ();
       }
