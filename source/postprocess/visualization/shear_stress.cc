@@ -79,15 +79,15 @@ namespace aspect
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == true)
               {
-                shear_stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("stress_xx")];
-                shear_stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_yy")];
-                shear_stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_xy")];
+                shear_stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                shear_stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                shear_stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
 
                 if (dim == 3)
                   {
-                    shear_stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_zz")];
-                    shear_stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_xz")];
-                    shear_stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_yz")];
+                    shear_stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    shear_stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    shear_stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
               }
 
