@@ -6,9 +6,9 @@ Number of mesh deformation degrees of freedom: 336
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Skipping stress_xx composition solve because RHS is zero.
-   Skipping stress_yy composition solve because RHS is zero.
-   Skipping stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
    Solving plate system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -22,9 +22,9 @@ Number of mesh deformation degrees of freedom: 336
 *** Timestep 1:  t=5 years, dt=5 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 3 iterations.
-   Solving stress_yy system ... 3 iterations.
-   Solving stress_xy system ... 3 iterations.
+   Solving ve_stress_xx system ... 3 iterations.
+   Solving ve_stress_yy system ... 3 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
