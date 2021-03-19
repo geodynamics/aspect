@@ -186,6 +186,11 @@ namespace aspect
     SphericalGaussianPerturbation<dim>::
     initial_temperature (const Point<dim> &position) const
     {
+      // Check that a boundary temperature is prescribed
+      AssertThrow (this->has_boundary_temperature(),
+                   ExcMessage ("This initial condition can only be used if a boundary "
+                               "temperature is prescribed."));
+
       const double dT = this->get_boundary_temperature_manager().maximal_temperature()
                         - this->get_boundary_temperature_manager().minimal_temperature();
       const double T0 = this->get_boundary_temperature_manager().maximal_temperature()/dT;
@@ -269,7 +274,7 @@ namespace aspect
                              Patterns::FileName(),
                              "The file from which the initial geotherm table is to be read. "
                              "The format of the file is defined by what is read in "
-                             "source/initial\\_conditions/spherical\\_shell.cc.");
+                             "source/initial\\_temperature/spherical\\_shell.cc.");
         }
         prm.leave_subsection ();
       }
@@ -294,11 +299,6 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-
-      // Check that a boundary temperature is prescribed
-      AssertThrow (this->has_boundary_temperature(),
-                   ExcMessage ("This initial condition can only be used if a boundary "
-                               "temperature is prescribed."));
 
       // This initial condition only makes sense if the geometry is derived from
       // a spherical model
