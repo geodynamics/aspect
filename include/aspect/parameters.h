@@ -373,6 +373,43 @@ namespace aspect
       }
     };
 
+    struct OutputVerbosity
+    {
+      enum Kind
+      {
+        quiet,
+        normal,
+        /**
+        detailed: also output TimerOutput data
+        */
+        detailed,
+        maximum
+      };
+
+      static const std::string pattern()
+      {
+        return "quiet|normal|detailed|maximum";
+      }
+
+      static Kind
+      parse(const std::string &input)
+      {
+        if (input == "quiet")
+          return quiet;
+        else if (input == "normal")
+          return normal;
+        else if (input == "detailed")
+          return detailed;
+        else if (input == "maximum")
+          return maximum;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return Kind();
+      }
+
+    };
+
     /**
      * Constructor. Fills the values of member functions from the given
      * parameter object.
@@ -456,6 +493,7 @@ namespace aspect
     double                         surface_pressure;
     double                         adiabatic_surface_temperature;
     unsigned int                   timing_output_frequency;
+    typename OutputVerbosity::Kind output_verbosity;
     unsigned int                   max_nonlinear_iterations;
     unsigned int                   max_nonlinear_iterations_in_prerefinement;
     bool                           use_operator_splitting;

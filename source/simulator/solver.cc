@@ -815,6 +815,12 @@ namespace aspect
         solver_control_cheap.enable_history_data();
         solver_control_expensive.enable_history_data();
 
+        if (parameters.output_verbosity >= Parameters<dim>::OutputVerbosity::maximum)
+          {
+            solver_control_cheap.log_history(true);
+            solver_control_expensive.log_history(true);
+          }
+
         // create a cheap preconditioner that consists of only a single V-cycle
         const internal::BlockSchurPreconditioner<LinearAlgebra::PreconditionAMG,
               LinearAlgebra::PreconditionBase>

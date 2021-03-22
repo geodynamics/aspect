@@ -1877,6 +1877,12 @@ namespace aspect
     solver_control_cheap.enable_history_data();
     solver_control_expensive.enable_history_data();
 
+    if (sim.parameters.output_verbosity >= Parameters<dim>::OutputVerbosity::maximum)
+      {
+        solver_control_cheap.log_history(true);
+        solver_control_expensive.log_history(true);
+      }
+
     // create a cheap preconditioner that consists of only a single V-cycle
     const internal::BlockSchurGMGPreconditioner<StokesMatrixType, ABlockMatrixType, SchurComplementMatrixType, GMGPreconditioner, GMGPreconditioner>
     preconditioner_cheap (stokes_matrix, A_block_matrix, Schur_complement_block_matrix,

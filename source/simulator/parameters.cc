@@ -102,6 +102,14 @@ namespace aspect
                        "value is set to zero it will also output timing information at the "
                        "initiation timesteps.");
 
+    prm.declare_entry ("Output verbosity", "normal",
+                       Patterns::Selection(OutputVerbosity::pattern()),
+                       "Specify how much information is printed to the screen and log.txt file. "
+                       "The options are: silent (only minimal information), normal "
+                       "(standard behavior), detailed (additional detailed timing information),"
+                       "maximum (additional solver information)."
+                      );
+
     prm.declare_entry ("Use years in output instead of seconds", "true",
                        Patterns::Bool (),
                        "When computing results for mantle convection simulations, "
@@ -1314,6 +1322,7 @@ namespace aspect
     use_conduction_timestep = prm.get_bool ("Use conduction timestep");
     convert_to_years        = prm.get_bool ("Use years in output instead of seconds");
     timing_output_frequency = prm.get_integer ("Timing output frequency");
+    output_verbosity        = OutputVerbosity::parse(prm.get("Output verbosity"));
     world_builder_file      = prm.get("World builder file");
 
     maximum_time_step       = prm.get_double("Maximum time step");
