@@ -5788,7 +5788,7 @@ This cookbook provides an example to illustrate how to use the lazy-expression s
 \begin{equation}
 T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}
 \end{equation}
-where $erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the surface temperature, $y$ is depth, $x$ is horizontal distance, $\kappa$ is the thermal diffusivity, and $v$ is the plate velocity. The age of the plate is given by $x/v$. Note that the equation for the half-space cooling model is not defined at $x=0$ (because there is a divide by zero inside the error function): at $x=0$, $T=T_m$.  For $(x \le xtr)$ and $(x>0)$ the age of the plate increases from zero at the boundary according to a fixed plate velocity $v_{sub}=7.927\times10^{-10}$~m/s  ($2.5$~cm/yr). This is the subducting plate. For $x > xtr$, there is a fixed plate age of $age_{op}=9.46\times10^{14}$~s ($30$~my); this is the overriding plate. In order to resolve the temperature structure, we also define some initial refinement of the mesh for the top 150 km of the mesh. Both the mesh refinement and the temperature structure are defined using lazy-expression syntax in functions within the parameter file.
+where $\erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the surface temperature, $y$ is depth, $x$ is horizontal distance, $\kappa$ is the thermal diffusivity, and $v$ is the plate velocity. The age of the plate is given by $x/v$. Note that the equation for the half-space cooling model is not defined at $x=0$ (because there is a divide by zero inside the error function): at $x=0$, $T=T_m$.  For $(x \le xtr)$ and $(x>0)$ the age of the plate increases from zero at the boundary according to a fixed plate velocity $v_\text{sub}=7.927\times10^{-10}$~m/s  ($2.5$~cm/yr). This is the subducting plate. For $x > xtr$, there is a fixed plate age of $age_{op}=9.46\times10^{14}$~s ($30$~my); this is the overriding plate. In order to resolve the temperature structure, we also define some initial refinement of the mesh for the top 150 km of the mesh. Both the mesh refinement and the temperature structure are defined using lazy-expression syntax in functions within the parameter file.
 
 Functions can be used in the parameter file to define initial conditions (e.g., temperature, composition), boundary conditions, and even to set regions of refinement. We also often want to use different values of functions in different regions of the model (e.g., for the two plates as described above) and so we need to use if-statements to specify these regions. The function constants and expressions are read in using the muparser. The muparser accepts two different syntax options for if-statements (see also Section \ref{sec:muparser-format}).
 \begin{enumerate}
@@ -7177,7 +7177,7 @@ Ra_c=\frac{\left(\pi^2+\frac{4\pi^2 b^2}{\lambda^2}\right)^3}{\frac{4\pi^2 b^2}{
 \end{align*}
 The linear stability analysis also makes a prediction for the dimensionless growth rate of the instability $\alpha'$ (Turcotte and Schubert \cite{TS14}, equation (6.315)). The maximum vertical velocity is given by
 \begin{align*}
-v_{y,max} = \frac{2\pi}{\lambda}\phi_0' e^{\alpha' t},
+v_{y,\text{max}} = \frac{2\pi}{\lambda}\phi_0' e^{\alpha' t},
 \end{align*}
 where
 \begin{align*}
@@ -7447,7 +7447,7 @@ We can observe that when the two-layer viscosity model is added, there is only o
 
 \textit{This section was contributed by Cedric Thieulot and Bob Myhill.}
 
-Early mantle modelling studies of the 1970s, 1980s and 1990s were often concerned with simple set-ups (Cartesian geometries, incompressible fluid, free slip boundary conditions) and investigated the influence of the Rayleigh number, the heating mode or the temperature dependence of the viscosity on temperature, pressure and/or strain rate \cite{youn74,buss75,buss79,BBC89,BC93,vavy93,burb97}. In this cookbook, we use the `simple' material model to reproduce the set-up in \cite{burb96}, which reported that even modest increases in mantle viscosity with depth could have a marked effect on the style of mantle convection. The prm file corresponding to this cookbook can be found at \url{cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm}.
+Early mantle modeling studies of the 1970s, 1980s and 1990s were often concerned with simple set-ups (Cartesian geometries, incompressible fluid, free slip boundary conditions) and investigated the influence of the Rayleigh number, the heating mode or the temperature dependence of the viscosity on temperature, pressure and/or strain rate \cite{youn74,buss75,buss79,BBC89,BC93,vavy93,burb97}. In this cookbook, we use the `simple' material model to reproduce the set-up in \cite{burb96}, which reported that even modest increases in mantle viscosity with depth could have a marked effect on the style of mantle convection. The prm file corresponding to this cookbook can be found at \url{cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm}.
 
 Although the original article showcases results obtained in a 3D hollow sphere, we here run the models in an annular domain of inner radius $R_i = 3480$ \si{\kilo\meter} and outer radius  $R_o = 6370$ \si{\kilo\meter}.
 The surface temperature is set to $T{\textsubscript{surf}}$ = 1060 \si{\kelvin} and 
@@ -7523,8 +7523,8 @@ j_{22} &=& \frac{\eta_1 2 \phi_1^2 \phi_2}{\eta_2(\cosh 2\phi_1 -1-2\phi_1^2)} -
 \phi_1&=&\frac{2\pi h_1}{\lambda} \\
 \phi_2&=&\frac{2\pi h_2}{\lambda}
 \end{eqnarray}
-We set $L_x=L_y=512\text{km}$, $h_1=h_2=256\text{km}$, $|\boldsymbol{g}|=10\text{m/s}^2$, $\Delta=3\text{km}$,
-$\rho_1=3300\text{kg/m}^3$, $\rho_2=3000\text{kg/m}^3$, $\eta_1=10^{21}\text{Pa s}$. $\eta_2$ is varied between $10^{20}$ and $10^{23}$
+We set $L_x=L_y=\SI{512}{km}$, $h_1=h_2=\SI{256}{km}$, $|\boldsymbol{g}|=\SI{10}{m/s^2}$, $\Delta=\SI{3}{km}$,
+$\rho_1=\SI{3300}{kg/m^3}$, $\rho_2=\SI{3000}{kg/m^3}$, $\eta_1=\SI{1e21}{Pa.s}$. $\eta_2$ is varied between $10^{20}$ and $10^{23}$
 and 3 values of $\lambda$ (64, 128, and 256km) are used.
 Adaptive mesh refinement based on density is used to capture the interface between the two
 fluids, as shown in Figure~\ref{fig:RTi_grids}. This translates as follows in the input file:
@@ -7606,7 +7606,7 @@ This benchmark is based on the benchmark presented in \cite{gery10} and extended
 It consists of a two-dimensional $512\text{km}\times 512\text{km}$ domain filled with a fluid (the "mantle")
 of density $\rho_1=3200$kg/m$^3$ and viscosity $\eta_1=10^{21}\text{Pa s}$.
 A square block of size $128\text{km}\times 128\text{km}$ is placed in the domain and is centered at location $(x_c,y_c)=(256\text{km},384\text{km})$
-so as to insure that its sides align with cell boundaries at all resolutions (GMR level $\geq 3$). It is filled with a fluid of density
+so as to ensure that its sides align with cell boundaries at all resolutions (GMR level $\geq 3$). It is filled with a fluid of density
 $\rho_2=\rho_1+\delta \rho$ and viscosity $\eta_2$. The gravity vector points downwards with
 $|\boldsymbol{g}|=10\text{m}/\text{s}^2$. Boundary conditions are free slip on all sides.
 Only one time step is carried out and we measure the absolute velocity $|v_z|$ in the middle of the block.
@@ -8080,9 +8080,9 @@ of the strainrate $\dot\varepsilon$:
 \[
 \eta_{eff} = \eta_0 \, \dot\varepsilon^{1/n-1}
 \]
-with $n=4$ and $\eta_0=4.75\times 10^{11}\si{Pa . s}$.
-The mantle occupies the rest of the domain and has a constant viscosity $\eta_m=10^{21}\si{Pa . s}$
-and a density $\rho_m=3150\si{kg}/\si{m}^3$. Viscosity is capped between $10^{21}\si{Pa . s}$ and $10^{25}\si{Pa . s}$.
+with $n=4$ and $\eta_0=\SI{4.75e11}{Pa . s}$.
+The mantle occupies the rest of the domain and has a constant viscosity $\eta_m=\SI{1e21}{Pa . s}$
+and a density $\rho_m=\SI{3150}{kg/m^3}$. Viscosity is capped between $\SI{1e21}{Pa . s}$ and $\SI{1e25}{Pa . s}$.
 Figure~\ref{fig:slab_detachment_evolution} shows the various fields and their evolution through time.
 As shown in \cite{schm11,gltf18} the hanging slab necks, helped by the localizing effect of the
 nonlinear rheology. Model results were shown to compare favorably to the results of \cite{schm11} in \cite{gltf18,hitg14}
