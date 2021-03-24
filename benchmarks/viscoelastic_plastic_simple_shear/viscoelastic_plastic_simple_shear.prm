@@ -12,7 +12,7 @@
 # The analytic solution follows the expression in Farrington et al., and describes the
 # non-viscous portion of the total stress. This is equivalent to the magnitude of the stored stress
 # history tensor. The three independent components of this tensor are tracked with compositional fields
-# (stress_xx, stress_yy, stress_xy). The choice of elastic timestip (Fixed elastic time step) and
+# (ve_stress_xx, ve_stress_yy, ve_stress_xy). The choice of elastic timestip (Fixed elastic time step) and
 # numerical timestep (Maximum time step) determine the degree of convergence with the analytic
 # solution. The values set in the parameter file (0.1) produce a close fit to the analytical solution.
 # The stress values are tracked through time in the log file using the composition statistics postprocessor,
@@ -84,7 +84,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 4
-  set Names of fields  = stress_xx, stress_yy, stress_xy, goo
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, goo
 end
 
 # Composition boundary conditions

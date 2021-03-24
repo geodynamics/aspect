@@ -12,15 +12,15 @@
 # 12: Iterations for Stokes solver
 # 13: Velocity iterations in Stokes preconditioner
 # 14: Schur complement iterations in Stokes preconditioner
-# 15: Minimal value for composition stress_xx
-# 16: Maximal value for composition stress_xx
-# 17: Global mass for composition stress_xx
-# 18: Minimal value for composition stress_yy
-# 19: Maximal value for composition stress_yy
-# 20: Global mass for composition stress_yy
-# 21: Minimal value for composition stress_xy
-# 22: Maximal value for composition stress_xy
-# 23: Global mass for composition stress_xy
+# 15: Minimal value for composition ve_stress_xx
+# 16: Maximal value for composition ve_stress_xx
+# 17: Global mass for composition ve_stress_xx
+# 18: Minimal value for composition ve_stress_yy
+# 19: Maximal value for composition ve_stress_yy
+# 20: Global mass for composition ve_stress_yy
+# 21: Minimal value for composition ve_stress_xy
+# 22: Maximal value for composition ve_stress_xy
+# 23: Global mass for composition ve_stress_xy
 # 24: Minimal temperature (K)
 # 25: Average temperature (K)
 # 26: Maximal temperature (K)

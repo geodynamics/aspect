@@ -10,15 +10,15 @@
 # 10: Iterations for Stokes solver
 # 11: Velocity iterations in Stokes preconditioner
 # 12: Schur complement iterations in Stokes preconditioner
-# 13: Minimal value for composition stress_xx
-# 14: Maximal value for composition stress_xx
-# 15: Global mass for composition stress_xx
-# 16: Minimal value for composition stress_yy
-# 17: Maximal value for composition stress_yy
-# 18: Global mass for composition stress_yy
-# 19: Minimal value for composition stress_xy
-# 20: Maximal value for composition stress_xy
-# 21: Global mass for composition stress_xy
+# 13: Minimal value for composition ve_stress_xx
+# 14: Maximal value for composition ve_stress_xx
+# 15: Global mass for composition ve_stress_xx
+# 16: Minimal value for composition ve_stress_yy
+# 17: Maximal value for composition ve_stress_yy
+# 18: Global mass for composition ve_stress_yy
+# 19: Minimal value for composition ve_stress_xy
+# 20: Maximal value for composition ve_stress_xy
+# 21: Global mass for composition ve_stress_xy
 # 22: Number of advected particles
 # 23: Particle file name
 0 0.000000000000e+00 0.000000000000e+00 400 3803 441 5043 2 0         25 28 28 0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 11966 output-visco_plastic_vep_stress_build-up_yield_particles/particles/particles-00000 

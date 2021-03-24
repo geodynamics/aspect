@@ -4,9 +4,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
-   Skipping stress_xx composition solve because RHS is zero.
-   Skipping stress_yy composition solve because RHS is zero.
-   Skipping stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
@@ -22,9 +22,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 11 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 11 iterations.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -36,9 +36,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 11 iterations.
-   Solving stress_yy system ... 11 iterations.
-   Solving stress_xy system ... 9 iterations.
+   Solving ve_stress_xx system ... 11 iterations.
+   Solving ve_stress_yy system ... 11 iterations.
+   Solving ve_stress_xy system ... 9 iterations.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -50,9 +50,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 3:  t=0.03 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 11 iterations.
-   Solving stress_yy system ... 11 iterations.
-   Solving stress_xy system ... 9 iterations.
+   Solving ve_stress_xx system ... 11 iterations.
+   Solving ve_stress_yy system ... 11 iterations.
+   Solving ve_stress_xy system ... 9 iterations.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -64,9 +64,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 4:  t=0.04 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 11 iterations.
-   Solving stress_yy system ... 11 iterations.
-   Solving stress_xy system ... 9 iterations.
+   Solving ve_stress_xx system ... 11 iterations.
+   Solving ve_stress_yy system ... 11 iterations.
+   Solving ve_stress_xy system ... 9 iterations.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
@@ -78,9 +78,9 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 *** Timestep 5:  t=0.05 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 10 iterations.
-   Solving stress_yy system ... 10 iterations.
-   Solving stress_xy system ... 9 iterations.
+   Solving ve_stress_xx system ... 10 iterations.
+   Solving ve_stress_yy system ... 10 iterations.
+   Solving ve_stress_xy system ... 9 iterations.
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.

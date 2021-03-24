@@ -80,15 +80,15 @@ namespace aspect
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == true)
               {
-                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("stress_xx")];
-                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_yy")];
-                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("stress_xy")];
+                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
 
                 if (dim == 3)
                   {
-                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_zz")];
-                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_xz")];
-                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("stress_yz")];
+                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
               }
 

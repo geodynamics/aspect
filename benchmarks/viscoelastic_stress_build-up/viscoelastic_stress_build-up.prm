@@ -27,7 +27,7 @@
 # than the time step size given by the CFL number of 0.5.
 #
 # This result can be observed by viewing the compositional field values
-# representing the horizontal (stress_xx) or vertical (stress_yy) components
+# representing the horizontal (ve_stress_xx) or vertical (ve_stress_yy) components
 # of the viscoselastic stress tensor. Significantly, the composition is not
 # fixed on any boundary in order to prevent the formation of boundary artifacts
 # in the compositional fields tracking viscoelastic stresses.
@@ -101,7 +101,7 @@ end
 # Number and name of compositional fields
 subsection Compositional fields
   set Number of fields = 3
-  set Names of fields  = stress_xx, stress_yy, stress_xy
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
 end
 
 # Spatial domain of different compositional fields

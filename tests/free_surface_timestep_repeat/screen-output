@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
@@ -10,9 +6,9 @@ Number of mesh deformation degrees of freedom: 882
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Skipping stress_xx composition solve because RHS is zero.
-   Skipping stress_yy composition solve because RHS is zero.
-   Skipping stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
 
@@ -23,9 +19,9 @@ Number of mesh deformation degrees of freedom: 1214
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Solving temperature system... 0 iterations.
-   Skipping stress_xx composition solve because RHS is zero.
-   Skipping stress_yy composition solve because RHS is zero.
-   Skipping stress_xy composition solve because RHS is zero.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
@@ -43,9 +39,9 @@ Number of mesh deformation degrees of freedom: 1162
 *** Timestep 1:  t=0.921264 years, dt=0.921264 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 46+0 iterations.
 
@@ -57,9 +53,9 @@ Repeating the current time step based on the time stepping manager ...
 *** Timestep 1:  t=0.460632 years, dt=0.460632 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 48+0 iterations.
 
@@ -76,9 +72,9 @@ Number of mesh deformation degrees of freedom: 1120
 *** Timestep 2:  t=0.960632 years, dt=0.5 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 11 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 11 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 49+0 iterations.
 
@@ -95,9 +91,9 @@ Number of mesh deformation degrees of freedom: 1126
 *** Timestep 3:  t=1.46063 years, dt=0.5 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 49+0 iterations.
 
@@ -114,9 +110,9 @@ Number of mesh deformation degrees of freedom: 1120
 *** Timestep 4:  t=1.97252 years, dt=0.511887 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 12 iterations.
-   Solving stress_yy system ... 12 iterations.
-   Solving stress_xy system ... 12 iterations.
+   Solving ve_stress_xx system ... 12 iterations.
+   Solving ve_stress_yy system ... 12 iterations.
+   Solving ve_stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 49+0 iterations.
 
@@ -133,9 +129,9 @@ Number of mesh deformation degrees of freedom: 1126
 *** Timestep 5:  t=2 years, dt=0.0274815 years
    Solving mesh velocity system... 1 iterations.
    Solving temperature system... 0 iterations.
-   Solving stress_xx system ... 10 iterations.
-   Solving stress_yy system ... 10 iterations.
-   Solving stress_xy system ... 10 iterations.
+   Solving ve_stress_xx system ... 10 iterations.
+   Solving ve_stress_yy system ... 10 iterations.
+   Solving ve_stress_xy system ... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 62+0 iterations.
 
@@ -153,9 +149,4 @@ Number of mesh deformation degrees of freedom: 1120
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

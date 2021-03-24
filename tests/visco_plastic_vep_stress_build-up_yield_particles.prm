@@ -41,7 +41,7 @@ end
 # Track compositional fields with active particles
 subsection Compositional fields
   set Compositional field methods = particles, particles, particles
-  set Mapped particle properties  = stress_xx:stress_xx, stress_yy:stress_yy, stress_xy:stress_xy
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
 end
 
 # Material model

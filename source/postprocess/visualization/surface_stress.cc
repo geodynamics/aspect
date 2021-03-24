@@ -86,18 +86,18 @@ namespace aspect
         switch (dim)
           {
             case 2:
-              names.emplace_back("stress_xx");
-              names.emplace_back("stress_yy");
-              names.emplace_back("stress_xy");
+              names.emplace_back("ve_stress_xx");
+              names.emplace_back("ve_stress_yy");
+              names.emplace_back("ve_stress_xy");
               break;
 
             case 3:
-              names.emplace_back("stress_xx");
-              names.emplace_back("stress_yy");
-              names.emplace_back("stress_zz");
-              names.emplace_back("stress_xy");
-              names.emplace_back("stress_xz");
-              names.emplace_back("stress_yz");
+              names.emplace_back("ve_stress_xx");
+              names.emplace_back("ve_stress_yy");
+              names.emplace_back("ve_stress_zz");
+              names.emplace_back("ve_stress_xy");
+              names.emplace_back("ve_stress_xz");
+              names.emplace_back("ve_stress_yz");
               break;
 
             default:

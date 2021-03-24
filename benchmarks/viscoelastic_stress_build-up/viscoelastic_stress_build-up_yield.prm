@@ -7,7 +7,7 @@
 # see viscoelastic_stress_build-up.prm, which is located in this folder.
 #
 # The results can be observed by viewing the compositional field values
-# representing the horizontal (stress_xx) or vertical (stress_yy) components
+# representing the horizontal (ve_stress_xx) or vertical (ve_stress_yy) components
 # of the viscoelastic stress tensor. Significantly, the stress near the
 # model boundaries is incorrect due to the compositional field boundary
 # conditions, which are based on the initial compositional values (e.g., zero).
