@@ -50,6 +50,11 @@ namespace aspect
         double glide_parameter_p;
         double glide_parameter_q;
         double fitting_parameter;
+        double stress_c;
+        //double P_ref;
+        //double T_ref;
+        //double a_c;
+        //double b_c;
       };
 
       /**
@@ -224,6 +229,12 @@ namespace aspect
            * to dislocation glide (q).
            */
           std::vector<double> glide_parameters_q;
+
+          std::vector<double> stress_c;
+
+          double T_ref;
+
+          double P_ref;
 
           /**
            * Parameters governing the iteration for the exact

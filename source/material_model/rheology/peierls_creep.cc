@@ -59,6 +59,11 @@ namespace aspect
             creep_parameters.glide_parameter_p = glide_parameters_p[composition];
             creep_parameters.glide_parameter_q = glide_parameters_q[composition];
             creep_parameters.fitting_parameter = fitting_parameters[composition];
+
+            creep_parameters.stress_c = stress_c[composition];
+            //creep_parameters.a_c = a_c[composition];
+            //creep_parameters.b_c = b_c[composition];
+
           }
         else
           {
@@ -80,6 +85,12 @@ namespace aspect
                                                  glide_parameters_q, composition);
             creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  fitting_parameters, composition);
+            creep_parameters.stress_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                        stress_c, composition);
+           // creep_parameters.a_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+             //                      a_c, composition);
+           // creep_parameters.b_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+             //                      b_c, composition);
           }
         return creep_parameters;
       }
@@ -175,7 +186,6 @@ namespace aspect
          * compute_exact_strain_rate_and_derivative.
          */
         const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
-
         // The generalized Peierls creep flow law cannot be expressed as viscosity in
         // terms of strain rate, because there are two stress-dependent terms
         // in the strain rate expression.
@@ -186,6 +196,7 @@ namespace aspect
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
         double stress_ii = 2.*viscosity*strain_rate;
         double strain_rate_residual = 2.*strain_rate_residual_threshold;
+
 
         double strain_rate_deriv = 0;
         unsigned int stress_iteration = 0;
@@ -203,12 +214,6 @@ namespace aspect
 
             stress_iteration += 1;
 
-            // If anything that would be used in the next iteration is not finite, the
-            // Newton iteration would trigger an exception and we want to abort the
-            // iteration instead.
-            // Currently, we still throw an exception, but if this exception is thrown,
-            // another more robust iterative scheme should be implemented
-            // (similar to that seen in the diffusion-dislocation material model).
             const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
                                                 || !numbers::is_finite(strain_rate_residual)
                                                 || !numbers::is_finite(strain_rate_deriv)
@@ -228,7 +233,6 @@ namespace aspect
 
         return viscosity;
       }
-
 
 
       template <int dim>
@@ -317,7 +321,28 @@ namespace aspect
         * deriv = edot_ii / stress * (s + n)
         */
         const PeierlsCreepParameters p = creep_parameters;
+    if (stress < p.stress_c)
+      {
+        const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+        const double b_ref = (p.activation_energy + P_ref*p.activation_volume)/(constants::gas_constant*T_ref);
+        const double c_ref = std::pow(p.stress_c/p.peierls_stress, p.glide_parameter_p);
+        const double d_ref = std::pow(1. - c_ref, p.glide_parameter_q);
+        const double s_ref = b_ref*p.glide_parameter_p*p.glide_parameter_q*c_ref*d_ref/(1. - c_ref);
+        const double arrhenius = std::exp(-b*d_ref);
+        const double arrhenius_c = std::exp(-b_ref * d_ref);
+        const double edot_ii_c = p.prefactor * std::pow(p.stress_c, p.stress_exponent) * arrhenius_c;
+        const double deriv_c = edot_ii_c / p.stress_c * (s_ref + p.stress_exponent);
+        const double a_c = (deriv_c - edot_ii_c / p.stress_c) / p.stress_c / arrhenius_c;
+        const double b_c = (2*(edot_ii_c / p.stress_c) - deriv_c) / arrhenius_c;
 
+        const double edot_ii = (a_c*std::pow(stress, 2.) + b_c*stress) * arrhenius;
+        const double deriv = (2*a_c*stress + b_c) * arrhenius;
+
+        return std::make_pair(edot_ii, deriv);
+      }
+
+    else
+      {
         const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
         const double c = std::pow(stress/p.peierls_stress, p.glide_parameter_p);
         const double d = std::pow(1. - c, p.glide_parameter_q);
@@ -328,6 +353,7 @@ namespace aspect
         const double deriv = edot_ii / stress * (s + p.stress_exponent);
 
         return std::make_pair(edot_ii, deriv);
+      }
       }
 
 
@@ -428,6 +454,18 @@ namespace aspect
                            "List of the second Peierls creep glide parameters, $q$, for background and compositional "
                            "fields for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: none");
+        prm.declare_entry ("Cutoff stress", "1000.0",
+                           Patterns::Anything(),
+                           "Stress threshold below which the strain rate is solved for as a quadratic function of "
+                           "stress to aid with convergence when stress exponent n=0. Units: \\si{\\pascal}");
+        prm.declare_entry ("Cutoff temperature", "293",
+                           Patterns::Anything(),
+                           "Reference temperature used in the solution for the strain rate below the cut off stress "
+                           "Units: Kelvin");
+        prm.declare_entry ("Cutoff pressure", "1e9",
+                           Patterns::Anything(),
+                           "Reference pressure used in the solution for the strain rate below the cut off stress."
+                           "Units: \\si{\\pascal}");
 
       }
 
@@ -511,6 +549,14 @@ namespace aspect
                                                                   "Peierls glide parameters q",
                                                                   true,
                                                                   expected_n_phases_per_composition);
+        stress_c = Utilities::parse_map_to_double_array(prm.get("Cutoff stress"),
+                                                         list_of_composition_names,
+                                                         has_background_field,
+                                                         "Cutoff stress",
+                                                         true,
+                                                         expected_n_phases_per_composition);
+        T_ref = prm.get_double ("Cutoff temperature");
+        P_ref = prm.get_double ("Cutoff pressure");
       }
     }
   }
