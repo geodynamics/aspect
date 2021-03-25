@@ -67,6 +67,10 @@ namespace aspect
                                                                       this->get_mapping(),
                                                                       property_manager->get_n_property_components());
 
+      particle_handler_backup.initialize(this->get_triangulation(),
+                                         this->get_mapping(),
+                                         property_manager->get_n_property_components());
+
       auto size_callback_function
       = [&] () -> std::size_t
       {
@@ -92,6 +96,10 @@ namespace aspect
                                                                  store_callback_function,
                                                                  load_callback_function);
 
+      particle_handler_backup.register_additional_store_load_functions(size_callback_function,
+                                                                       store_callback_function,
+                                                                       load_callback_function);
+
       connect_to_signals(this->get_signals());
     }
 
@@ -107,6 +115,15 @@ namespace aspect
     template <int dim>
     const Particles::ParticleHandler<dim> &
     World<dim>::get_particle_handler() const
+    {
+      return *particle_handler.get();
+    }
+
+
+
+    template <int dim>
+    Particles::ParticleHandler<dim> &
+    World<dim>::get_particle_handler()
     {
       return *particle_handler.get();
     }
@@ -130,8 +147,6 @@ namespace aspect
         to_particle_handler.initialize(this->get_triangulation(),
                                        this->get_mapping(),
                                        n_properties);
-
-        connect_particle_handler_signals(this->get_signals(),to_particle_handler);
 
         std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
 
@@ -217,6 +232,8 @@ namespace aspect
       });
 
       connect_particle_handler_signals(signals,*particle_handler);
+      // Particle handler backup will not be stored for checkpointing
+      connect_particle_handler_signals(signals, particle_handler_backup, false);
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -236,7 +253,8 @@ namespace aspect
     template <int dim>
     void
     World<dim>::connect_particle_handler_signals(aspect::SimulatorSignals<dim> &signals,
-                                                 ParticleHandler<dim> &particle_handler_) const
+                                                 ParticleHandler<dim> &particle_handler_,
+                                                 const bool connect_to_checkpoint_signals) const
     {
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
@@ -250,17 +268,21 @@ namespace aspect
         particle_handler_.register_load_callback_function(false);
       });
 
-      signals.pre_checkpoint_store_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        particle_handler_.register_store_callback_function();
-      });
+      // Only connect to checkpoint signals if requested
+      if (connect_to_checkpoint_signals)
+        {
+          signals.pre_checkpoint_store_user_data.connect(
+            [&] (typename parallel::distributed::Triangulation<dim> &)
+          {
+            particle_handler_.register_store_callback_function();
+          });
 
-      signals.post_resume_load_user_data.connect(
-        [&] (typename parallel::distributed::Triangulation<dim> &)
-      {
-        particle_handler_.register_load_callback_function(true);
-      });
+          signals.post_resume_load_user_data.connect(
+            [&] (typename parallel::distributed::Triangulation<dim> &)
+          {
+            particle_handler_.register_load_callback_function(true);
+          });
+        }
 
       if (update_ghost_particles &&
           dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)

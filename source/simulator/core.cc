@@ -554,6 +554,11 @@ namespace aspect
 
     nonlinear_iteration = 0;
 
+    // Copy particle handler to restore particle location and properties
+    // before repeating a timestep
+    if (particle_world.get() != nullptr)
+      particle_world->backup_particles();
+
     // Re-compute the pressure scaling factor. In some sense, it would be nice
     // if we did this not just once per time step, but once for each solve --
     // i.e., multiple times per time step if we iterate out the nonlinearity
@@ -1985,16 +1990,19 @@ namespace aspect
           {
             pcout << "Repeating the current time step based on the time stepping manager ..." << std::endl;
 
-            // TODO: We need to make a copy of the particle world and then restore it here.
-            AssertThrow(!this->particle_world,
-                        ExcNotImplemented("Repeating time steps with particles is currently not supported!"));
-
             if (mesh_deformation)
               mesh_deformation->mesh_displacements = mesh_deformation->old_mesh_displacements;
 
             // adjust time and time_step size:
             time = time - time_step + new_time_step_size;
             time_step = new_time_step_size;
+
+            // Restore particles through stored copy of particle handler,
+            // created in start_timestep(),
+            // but only if this timestep is to be repeated.
+            if (particle_world.get() != nullptr)
+              particle_world->restore_particles();
+
             continue; // repeat time step loop
           }
 
