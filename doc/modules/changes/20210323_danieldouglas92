@@ -1,0 +1,18 @@
+New: Added a cutoff stress to Rheology::PeierlsCreep.
+
+In parameterisations of the Peierls creep flow law where the 
+power law stress exponent is equal to zero, the strain rate 
+does not approach zero as the stress drops to zero. This is 
+a problem, because the iterative solve for the equilibrium 
+stress may yield a negative stress at low strain rates 
+(which results in a negative viscosity).
+
+The Peierls creep rheology module now includes a parameter 
+"Cutoff stress for Peierls creep". At stresses below the 
+cutoff, the strain rate is modelled as a quadratic function 
+of the stress (edot_ii = astress^2 + bstress). This effectively 
+means that Peierls creep transitions into power law creep and 
+then a linear rheology as stress decreases below the cutoff.
+
+<br>
+(Daniel Douglas, 2021/03/23)

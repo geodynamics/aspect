@@ -50,10 +50,7 @@ namespace aspect
         double glide_parameter_p;
         double glide_parameter_q;
         double fitting_parameter;
-        double stress_c;
-        double a_c;
-        double b_c;
-        double d_ref;
+        double stress_cutoff;
       };
 
       /**
@@ -229,11 +226,7 @@ namespace aspect
            */
           std::vector<double> glide_parameters_q;
 
-          std::vector<double> stress_c;
-
-          double T_ref;
-
-          double P_ref;
+          std::vector<double> stress_cutoff;
 
           /**
            * Parameters governing the iteration for the exact
