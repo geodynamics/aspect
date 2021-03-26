@@ -51,10 +51,9 @@ namespace aspect
         double glide_parameter_q;
         double fitting_parameter;
         double stress_c;
-        //double P_ref;
-        //double T_ref;
-        //double a_c;
-        //double b_c;
+        double a_c;
+        double b_c;
+        double d_ref;
       };
 
       /**

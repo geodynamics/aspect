@@ -61,8 +61,15 @@ namespace aspect
             creep_parameters.fitting_parameter = fitting_parameters[composition];
 
             creep_parameters.stress_c = stress_c[composition];
-            //creep_parameters.a_c = a_c[composition];
-            //creep_parameters.b_c = b_c[composition];
+            const double b_ref = (creep_parameters.activation_energy + P_ref*creep_parameters.activation_volume)/(constants::gas_constant*T_ref);
+            const double c_ref = std::pow(creep_parameters.stress_c/creep_parameters.peierls_stress, creep_parameters.glide_parameter_p);
+            creep_parameters.d_ref = std::pow(1. - c_ref, creep_parameters.glide_parameter_q);
+            const double s_ref = b_ref*creep_parameters.glide_parameter_p*creep_parameters.glide_parameter_q*c_ref*creep_parameters.d_ref/(1. - c_ref);
+            const double arrhenius_c = std::exp(-b_ref * creep_parameters.d_ref);
+            const double edot_ii_c = creep_parameters.prefactor * std::pow(creep_parameters.stress_c, creep_parameters.stress_exponent) * arrhenius_c;
+            const double deriv_c = edot_ii_c / creep_parameters.stress_c * (s_ref + creep_parameters.stress_exponent);
+            creep_parameters.a_c = (deriv_c - edot_ii_c / creep_parameters.stress_c) / creep_parameters.stress_c / arrhenius_c;
+            creep_parameters.b_c = (2*(edot_ii_c / creep_parameters.stress_c) - deriv_c) / arrhenius_c;
 
           }
         else
@@ -87,10 +94,15 @@ namespace aspect
                                                  fitting_parameters, composition);
             creep_parameters.stress_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                         stress_c, composition);
-           // creep_parameters.a_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-             //                      a_c, composition);
-           // creep_parameters.b_c = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-             //                      b_c, composition);
+            const double b_ref = (creep_parameters.activation_energy + P_ref*creep_parameters.activation_volume)/(constants::gas_constant*T_ref);
+            const double c_ref = std::pow(creep_parameters.stress_c/creep_parameters.peierls_stress, creep_parameters.glide_parameter_p);
+            creep_parameters.d_ref = std::pow(1. - c_ref, creep_parameters.glide_parameter_q);
+            const double s_ref = b_ref*creep_parameters.glide_parameter_p*creep_parameters.glide_parameter_q*c_ref*creep_parameters.d_ref/(1. - c_ref);
+            const double arrhenius_c = std::exp(-b_ref * creep_parameters.d_ref);
+            const double edot_ii_c = creep_parameters.prefactor * std::pow(creep_parameters.stress_c, creep_parameters.stress_exponent) * arrhenius_c;
+            const double deriv_c = edot_ii_c / creep_parameters.stress_c * (s_ref + creep_parameters.stress_exponent);
+            creep_parameters.a_c = (deriv_c - edot_ii_c / creep_parameters.stress_c) / creep_parameters.stress_c / arrhenius_c;
+            creep_parameters.b_c = (2*(edot_ii_c / creep_parameters.stress_c) - deriv_c) / arrhenius_c;
           }
         return creep_parameters;
       }
@@ -324,19 +336,19 @@ namespace aspect
     if (stress < p.stress_c)
       {
         const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
-        const double b_ref = (p.activation_energy + P_ref*p.activation_volume)/(constants::gas_constant*T_ref);
-        const double c_ref = std::pow(p.stress_c/p.peierls_stress, p.glide_parameter_p);
-        const double d_ref = std::pow(1. - c_ref, p.glide_parameter_q);
-        const double s_ref = b_ref*p.glide_parameter_p*p.glide_parameter_q*c_ref*d_ref/(1. - c_ref);
-        const double arrhenius = std::exp(-b*d_ref);
-        const double arrhenius_c = std::exp(-b_ref * d_ref);
-        const double edot_ii_c = p.prefactor * std::pow(p.stress_c, p.stress_exponent) * arrhenius_c;
-        const double deriv_c = edot_ii_c / p.stress_c * (s_ref + p.stress_exponent);
-        const double a_c = (deriv_c - edot_ii_c / p.stress_c) / p.stress_c / arrhenius_c;
-        const double b_c = (2*(edot_ii_c / p.stress_c) - deriv_c) / arrhenius_c;
+        //const double b_ref = (p.activation_energy + P_ref*p.activation_volume)/(constants::gas_constant*T_ref);
+        //const double c_ref = std::pow(p.stress_c/p.peierls_stress, p.glide_parameter_p);
+        //const double d_ref = std::pow(1. - c_ref, p.glide_parameter_q);
+        //const double s_ref = b_ref*p.glide_parameter_p*p.glide_parameter_q*c_ref*d_ref/(1. - c_ref);
+        const double arrhenius = std::exp(-b*p.d_ref);
+        //const double arrhenius_c = std::exp(-b_ref * d_ref);
+        //const double edot_ii_c = p.prefactor * std::pow(p.stress_c, p.stress_exponent) * arrhenius_c;
+        //const double deriv_c = edot_ii_c / p.stress_c * (s_ref + p.stress_exponent);
+        //const double a_c = (deriv_c - edot_ii_c / p.stress_c) / p.stress_c / arrhenius_c;
+        //const double b_c = (2*(edot_ii_c / p.stress_c) - deriv_c) / arrhenius_c;
 
-        const double edot_ii = (a_c*std::pow(stress, 2.) + b_c*stress) * arrhenius;
-        const double deriv = (2*a_c*stress + b_c) * arrhenius;
+        const double edot_ii = (p.a_c*std::pow(stress, 2.) + p.b_c*stress) * arrhenius;
+        const double deriv = (2*p.a_c*stress + p.b_c) * arrhenius;
 
         return std::make_pair(edot_ii, deriv);
       }
