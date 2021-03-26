@@ -198,6 +198,7 @@ namespace aspect
          * compute_exact_strain_rate_and_derivative.
          */
         const PeierlsCreepParameters p = compute_creep_parameters(composition, phase_function_values, n_phases_per_composition);
+
         // The generalized Peierls creep flow law cannot be expressed as viscosity in
         // terms of strain rate, because there are two stress-dependent terms
         // in the strain rate expression.
@@ -208,7 +209,6 @@ namespace aspect
         double viscosity = compute_approximate_viscosity(strain_rate, pressure, temperature, composition);
         double stress_ii = 2.*viscosity*strain_rate;
         double strain_rate_residual = 2.*strain_rate_residual_threshold;
-
 
         double strain_rate_deriv = 0;
         unsigned int stress_iteration = 0;
@@ -226,6 +226,12 @@ namespace aspect
 
             stress_iteration += 1;
 
+            // If anything that would be used in the next iteration is not finite, the
+            // Newton iteration would trigger an exception and we want to abort the
+            // iteration instead.
+            // Currently, we still throw an exception, but if this exception is thrown,
+            // another more robust iterative scheme should be implemented
+            // (similar to that seen in the diffusion-dislocation material model).
             const bool abort_newton_iteration = !numbers::is_finite(stress_ii)
                                                 || !numbers::is_finite(strain_rate_residual)
                                                 || !numbers::is_finite(strain_rate_deriv)
@@ -245,6 +251,7 @@ namespace aspect
 
         return viscosity;
       }
+
 
 
       template <int dim>
@@ -336,16 +343,7 @@ namespace aspect
     if (stress < p.stress_c)
       {
         const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
-        //const double b_ref = (p.activation_energy + P_ref*p.activation_volume)/(constants::gas_constant*T_ref);
-        //const double c_ref = std::pow(p.stress_c/p.peierls_stress, p.glide_parameter_p);
-        //const double d_ref = std::pow(1. - c_ref, p.glide_parameter_q);
-        //const double s_ref = b_ref*p.glide_parameter_p*p.glide_parameter_q*c_ref*d_ref/(1. - c_ref);
         const double arrhenius = std::exp(-b*p.d_ref);
-        //const double arrhenius_c = std::exp(-b_ref * d_ref);
-        //const double edot_ii_c = p.prefactor * std::pow(p.stress_c, p.stress_exponent) * arrhenius_c;
-        //const double deriv_c = edot_ii_c / p.stress_c * (s_ref + p.stress_exponent);
-        //const double a_c = (deriv_c - edot_ii_c / p.stress_c) / p.stress_c / arrhenius_c;
-        //const double b_c = (2*(edot_ii_c / p.stress_c) - deriv_c) / arrhenius_c;
 
         const double edot_ii = (p.a_c*std::pow(stress, 2.) + p.b_c*stress) * arrhenius;
         const double deriv = (2*p.a_c*stress + p.b_c) * arrhenius;
