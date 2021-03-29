@@ -1,11 +1,11 @@
 # A test for the exact Peierls creep flow law
 # with the visco_plastic material model.
 # Following the general Peierls creep flow law of Idrissi
-# et al. 2016 and assuming a stress of 100 Pa. Idrissi 
+# et al. 2016 and assuming a stress of 100 Pa. Idrissi
 # has stress exponent = 0 so that strain rate does not
 # go to 0 as stress goes to 0. To allow for convergence
 # approximate strain rate below a cutoff stress of 1000 Pa
-# as a quadratic function of stress. 
+# as a quadratic function of stress.
 
 # Global parameters
 set Dimension                              = 2
