@@ -125,9 +125,6 @@ namespace aspect
           AssertThrow(false, ExcMessage("'Use fixed elastic time step' must be set to 'true' or 'false'"));
 
         use_stress_averaging = prm.get_bool ("Use stress averaging");
-        if (use_stress_averaging)
-          AssertThrow(use_fixed_elastic_time_step == true,
-                      ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
 
         stabilization_time_scale_factor = prm.get_double ("Stabilization time scale factor");
 
@@ -305,7 +302,7 @@ namespace aspect
 
                 // Stress averaging scheme to account for difference betweed fixed elastic time step
                 // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
-                if (use_fixed_elastic_time_step == true && use_stress_averaging == true)
+                if (use_stress_averaging == true)
                   {
                     stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
                   }
