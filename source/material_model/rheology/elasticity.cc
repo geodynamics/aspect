@@ -99,9 +99,13 @@ namespace aspect
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
                            "A stabilization factor for the elastic stresses that influence how fast "
-                           "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization, "
-                           "and infinity is equivalent to not applying elastic stresses at all. The "
-                           "factor is multiplied with the computational time step to create a time scale.");
+                           "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization "
+                           "and may lead to oscillatory motion. Setting the factor to 2 "
+                           "avoids oscillations, but still enables an immediate elastic response. "
+                           "However, in complex models this can lead to problems of convergence, in which "
+                           "case the factor needs to be increased slightly. Setting the factor to "
+                           "infinity is equivalent to not applying elastic stresses at all. The "
+                           "factor is multiplied with the computational time step to create a time scale. ");
       }
 
 
