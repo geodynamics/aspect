@@ -1,18 +1,4 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.3.0-pre (elasticity_stabilization_parameter, 1627ffabe)
---     . using deal.II 9.2.0
---     .       with 32 bit indices and vectorization level 1 (128 bits)
---     . using Trilinos 12.18.1
---     . using p4est 2.2.0
---     . running in DEBUG mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&dg=1&sha=1627ffabe&src=code
------------------------------------------------------------------------------
 Number of active cells: 140 (on 1 levels)
 Number of degrees of freedom: 8,118 (1,230+420+168+1,260+1,260+1,260+1,260+1,260)
 
@@ -50,31 +36,3 @@ Number of mesh deformation degrees of freedom: 336
      Topography min/max:                                -9.004 m, 17.42 m
 
 Termination requested by criterion: end time
-
-
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |      11.9s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system           |         2 |     0.396s |       3.3% |
-| Assemble composition system      |        10 |      9.05s |        76% |
-| Assemble temperature system      |         2 |     0.481s |       4.1% |
-| Build Stokes preconditioner      |         2 |     0.357s |         3% |
-| Build composition preconditioner |         7 |    0.0248s |      0.21% |
-| Build temperature preconditioner |         2 |   0.00516s |         0% |
-| Initialization                   |         1 |     0.493s |       4.2% |
-| Mesh deformation                 |         2 |    0.0635s |      0.54% |
-| Postprocessing                   |         2 |     0.239s |         2% |
-| Setup dof systems                |         1 |    0.0584s |      0.49% |
-| Setup initial conditions         |         1 |     0.251s |       2.1% |
-| Setup matrices                   |         1 |     0.175s |       1.5% |
-| Solve Stokes system              |         2 |    0.0516s |      0.43% |
-| Solve composition system         |         7 |     0.122s |         1% |
-| Solve temperature system         |         2 |   0.00311s |         0% |
-+----------------------------------+-----------+------------+------------+
-
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.3.0-pre&dg=1&sha=1627ffabe&src=code
------------------------------------------------------------------------------
