@@ -226,7 +226,7 @@ namespace aspect
            */
           std::vector<double> glide_parameters_q;
 
-          std::vector<double> stress_cutoff;
+          std::vector<double> stress_cutoffs;
 
           /**
            * Parameters governing the iteration for the exact

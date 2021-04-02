@@ -59,7 +59,7 @@ namespace aspect
             creep_parameters.glide_parameter_p = glide_parameters_p[composition];
             creep_parameters.glide_parameter_q = glide_parameters_q[composition];
             creep_parameters.fitting_parameter = fitting_parameters[composition];
-            creep_parameters.stress_cutoff = stress_cutoff[composition];
+            creep_parameters.stress_cutoff = stress_cutoffs[composition];
           }
         else
           {
@@ -82,7 +82,7 @@ namespace aspect
             creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  fitting_parameters, composition);
             creep_parameters.stress_cutoff = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                             stress_cutoff, composition);
+                                             stress_cutoffs, composition);
           }
         return creep_parameters;
       }
@@ -463,10 +463,10 @@ namespace aspect
                            "List of the second Peierls creep glide parameters, $q$, for background and compositional "
                            "fields for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: none");
-        prm.declare_entry ("Cutoff stress for Peierls creep", "0.0",
+        prm.declare_entry ("Cutoff stresses for Peierls creep", "0.0",
                            Patterns::Anything(),
-                           "Stress threshold below which the strain rate is solved for as a quadratic function of "
-                           "stress to aid with convergence when stress exponent n=0. Units: \\si{\\pascal}");
+                           "List of the Stress thresholds below which the strain rate is solved for as a quadratic "
+                           "function of stress to aid with convergence when stress exponent n=0. Units: \\si{\\pascal}");
 
       }
 
@@ -550,12 +550,12 @@ namespace aspect
                                                                   "Peierls glide parameters q",
                                                                   true,
                                                                   expected_n_phases_per_composition);
-        stress_cutoff = Utilities::parse_map_to_double_array(prm.get("Cutoff stress for Peierls creep"),
-                                                             list_of_composition_names,
-                                                             has_background_field,
-                                                             "Cutoff stress for Peierls creep",
-                                                             true,
-                                                             expected_n_phases_per_composition);
+        stress_cutoffs = Utilities::parse_map_to_double_array(prm.get("Cutoff stresses for Peierls creep"),
+                                                              list_of_composition_names,
+                                                              has_background_field,
+                                                              "Cutoff stresses for Peierls creep",
+                                                              true,
+                                                              expected_n_phases_per_composition);
       }
     }
   }

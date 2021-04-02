@@ -8,7 +8,7 @@ stress may yield a negative stress at low strain rates
 (which results in a negative viscosity).
 
 The Peierls creep rheology module now includes a parameter 
-"Cutoff stress for Peierls creep". At stresses below the 
+"Cutoff stresses for Peierls creep". At stresses below the 
 cutoff, the strain rate is modelled as a quadratic function 
 of the stress (edot_ii = astress^2 + bstress). This effectively 
 means that Peierls creep transitions into power law creep and 

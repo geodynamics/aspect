@@ -80,7 +80,7 @@ subsection Material model
     set Peierls glide parameters q                = 2.0
     set Peierls strain rate residual tolerance    = 1e-22
     set Maximum Peierls strain rate iterations    = 40
-    set Cutoff stress for Peierls creep           = 1000
+    set Cutoff stresses for Peierls creep         = 1000
   end
 end
 
