@@ -906,6 +906,8 @@ namespace aspect
   {
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 0);
 
+    AlignedVector<VectorizedArray<number> > diagonal(pressure.dofs_per_cell);
+
     const bool use_viscosity_at_quadrature_points
       = (viscosity->size(1) == pressure.n_q_points);
 
@@ -926,7 +928,6 @@ namespace aspect
           one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
 
         pressure.reinit (cell);
-        AlignedVector<VectorizedArray<number> > diagonal(pressure.dofs_per_cell);
         for (unsigned int i=0; i<pressure.dofs_per_cell; ++i)
           {
             for (unsigned int j=0; j<pressure.dofs_per_cell; ++j)
@@ -1084,12 +1085,13 @@ namespace aspect
     const bool use_viscosity_at_quadrature_points
       = (viscosity->size(1) == velocity.n_q_points);
 
+    AlignedVector<VectorizedArray<number> > diagonal(velocity.dofs_per_cell);
+
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
         VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
 
         velocity.reinit (cell);
-        AlignedVector<VectorizedArray<number> > diagonal(velocity.dofs_per_cell);
         for (unsigned int i=0; i<velocity.dofs_per_cell; ++i)
           {
             for (unsigned int j=0; j<velocity.dofs_per_cell; ++j)
