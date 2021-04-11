@@ -1839,6 +1839,7 @@ namespace aspect
     // updating the ghost elements of the 'solution' vector.
     const unsigned int advection_block = adv_field.block_index(introspection);
     distributed_vector.block(advection_block).compress(VectorOperation::insert);
+    current_constraints.distribute (solution);
     solution.block(advection_block) = distributed_vector.block(advection_block);
   }
 
