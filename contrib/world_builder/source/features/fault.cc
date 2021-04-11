@@ -35,6 +35,7 @@
 #include "rapidjson/stringbuffer.h"
 
 #include "glm/glm.h"
+#include <algorithm>
 
 
 namespace WorldBuilder
@@ -473,6 +474,53 @@ namespace WorldBuilder
       return temperature;
     }
 
+    std::vector<Point<2> >
+    Fault::get_bounding_polygon (const std::vector<Point<2> > &point_list) const
+    {
+      std::vector<double> x_list(original_number_of_coordinates,0.0);
+      std::vector<double> y_list(original_number_of_coordinates,0.0);
+
+      for (size_t j=0; j<original_number_of_coordinates; ++j)
+      {
+        x_list[j] = point_list[j][0];
+        y_list[j] = point_list[j][1];
+      }
+      
+      std::vector<Point<2> > bounding_box (4, reference_point);
+      const double bounding_buffer_zone = 2.* (maximum_total_slab_length + maximum_slab_thickness); /// (const_pi * 2. * 6371000.) ;
+      const double sign = bounding_buffer_zone >= 0 ? 1.0 : -1.0;
+
+      bounding_box[0][0] = *std::min_element(x_list.begin(), x_list.end()) + (sign * bounding_buffer_zone);
+      bounding_box[0][1]  = *std::min_element(y_list.begin(), y_list.end()) + (sign * bounding_buffer_zone);
+
+      bounding_box[1][0] = *std::min_element(x_list.begin(), x_list.end()) + (sign * bounding_buffer_zone);
+      bounding_box[1][1]  = *std::max_element(y_list.begin(), y_list.end()) + (sign * bounding_buffer_zone);
+
+      bounding_box[2][0] = *std::max_element(x_list.begin(), x_list.end()) + (sign * bounding_buffer_zone);
+      bounding_box[2][1]  = *std::min_element(y_list.begin(), y_list.end()) + (sign * bounding_buffer_zone);
+
+      bounding_box[3][0] = *std::max_element(x_list.begin(), x_list.end()) + (sign * bounding_buffer_zone);
+      bounding_box[3][1]  = *std::max_element(y_list.begin(), y_list.end()) + (sign * bounding_buffer_zone);
+
+      return bounding_box;
+    }
+
+
+    bool
+    Fault::bounding_polygon_contains_point (const std::vector<Point<2> > &point_list,
+                                            const Point<2> &point) const
+    {
+      for (size_t i=0; i<point_list.size(); i++)
+      {
+        if (point[0] < point_list[2][0] && point[0] > point_list[0][0] && point[1] < point_list[1][1] && point[1] > point_list[0][1])
+          return true;
+        else
+          return false;
+      }
+      return true;
+    }
+
+
     double
     Fault::composition(const Point<3> &position,
                        const double depth,
@@ -484,8 +532,12 @@ namespace WorldBuilder
       // todo: explain
       const double starting_radius = natural_coordinate.get_depth_coordinate() + depth - starting_depth;
 
+      std::vector<Point<2> > bounding_polygon_coordinates = get_bounding_polygon (coordinates);
+      
       // todo: explain and check -starting_depth
-      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_slab_length + maximum_slab_thickness)
+      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_slab_length + maximum_slab_thickness
+          && bounding_polygon_contains_point (bounding_polygon_coordinates, Point<2>(natural_coordinate.get_surface_coordinates(),
+                                               world->parameters.coordinate_system->natural_coordinate_system())))
         {
           // todo: explain
           // This function only returns positive values, because we want

@@ -85,6 +85,12 @@ namespace WorldBuilder
                            const unsigned int composition_number,
                            double composition_value) const override final;
 
+        std::vector<Point<2> >
+        get_bounding_polygon (const std::vector<Point<2> > &point_list) const;
+
+        bool bounding_polygon_contains_point (const std::vector<Point<2> > &point_list,
+                                            const Point<2> &point) const;
+
         /**
          * Returns a grains (rotation matrix and grain size)
          * based on the given position, depth in the model,
