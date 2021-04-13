@@ -861,6 +861,11 @@ int main (int argc, char *argv[])
       // root when we already know that processor 0 will generate
       // an exception. We do this to avoid creating too much
       // (duplicate) screen output.
+
+      // Sleep a few seconds before aborting. This allows text output from
+      // other ranks to be printed before the MPI implementation might kill
+      // the computation.
+      std::this_thread::sleep_for(std::chrono::seconds(5));
       return 1;
     }
   catch (...)
