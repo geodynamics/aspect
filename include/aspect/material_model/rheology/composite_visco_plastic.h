@@ -115,7 +115,8 @@ namespace aspect
                                               const DiffusionCreepParameters diffusion_creep_parameters,
                                               const DislocationCreepParameters dislocation_creep_parameters,
                                               const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters) const;
+                                              const std::vector<double> &phase_function_values = std::vector<double>(),
+                                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
         private:
 

@@ -24,6 +24,8 @@
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
 
+#include <aspect/material_model/utilities.h>
+#include <aspect/simulator_access.h>
 namespace aspect
 {
   namespace MaterialModel
@@ -41,12 +43,12 @@ namespace aspect
         /**
          * List of internal friction angles (phi).
          */
-        std::vector<double> angles_internal_friction;
+        double angles_internal_friction;
 
         /**
          * List of the cohesions.
          */
-        std::vector<double> cohesions;
+        double cohesions;
 
         /**
          * Limit maximum yield stress from drucker prager yield criterion.
@@ -55,10 +57,12 @@ namespace aspect
       };
 
       template <int dim>
-      class DruckerPrager
+      class DruckerPrager : public ::aspect::SimulatorAccess<dim>
       {
         public:
-          /**
+           DruckerPrager();
+
+           /**
            * Declare the parameters this function takes through input files.
            */
           static
@@ -76,10 +80,15 @@ namespace aspect
            *
            * @param [in] prm The ParameterHandler to read from.
            */
-          DruckerPragerParameters
-          parse_parameters (const unsigned int n_fields,
-                            ParameterHandler &prm);
-
+          void
+          parse_parameters (ParameterHandler &prm,
+                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition =
+                            std::shared_ptr<std::vector<unsigned int>>());
+          const DruckerPragerParameters
+          compute_drucker_prager_parameters (const unsigned int composition,
+                                             const std::vector<double> &phase_function_values = std::vector<double>(),
+                                             const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+          
           /**
            * Compute the plastic yield stress based on the Drucker Prager yield criterion.
            */
@@ -99,7 +108,6 @@ namespace aspect
                              const double effective_strain_rate,
                              const double max_yield_stress,
                              const double pre_yield_viscosity = std::numeric_limits<double>::infinity()) const;
-
           /**
            * Compute the strain rate and first stress derivative
            * as a function of stress based on the damped Drucker-Prager flow law.
@@ -108,8 +116,8 @@ namespace aspect
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
                                               const unsigned int composition,
-                                              const DruckerPragerParameters p) const;
-
+                                              const std::vector<double> &phase_function_values = std::vector<double>(),
+                                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
            */
@@ -118,7 +126,12 @@ namespace aspect
                               const double effective_strain_rate) const;
 
         private:
-          /**
+          
+          std::vector<double> angles_internal_friction;
+          std::vector<double> cohesions;
+          double max_yield_stress;
+
+           /**
            * Whether to add a plastic damper in the computation
            * of the drucker prager plastic viscosity.
            */
