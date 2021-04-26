@@ -28,6 +28,8 @@
 #include <deal.II/base/revision.h>
 #include <csignal>
 #include <string>
+#include <thread>
+#include <chrono>
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
