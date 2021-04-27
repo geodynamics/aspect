@@ -1,0 +1,66 @@
+
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 10,656 (6,528+864+3,264)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 67+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00000
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.0243 m/year
+
+*** Timestep 1:  t=6.89302e+06 years, dt=6.89302e+06 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 60+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00001
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.0242 m/year
+
+*** Timestep 2:  t=1.38221e+07 years, dt=6.92907e+06 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 49+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00002
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.0241 m/year
+
+*** Timestep 3:  t=2.07744e+07 years, dt=6.95235e+06 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00003
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.024 m/year
+
+*** Snapshot created!
+
+*** Timestep 4:  t=2.77517e+07 years, dt=6.97724e+06 years
+   Solving temperature system... 8 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 48+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00004
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+
+*** Timestep 5:  t=3e+07 years, dt=2.24831e+06 years
+   Solving temperature system... 5 iterations.
+   Solving Stokes system... 43+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output1.tmp/solution/solution-00005
+     Temperature min/avg/max:  1599 K, 1600 K, 1601 K
+     RMS, max velocity:        0.0103 m/year, 0.0239 m/year
+
+Termination requested by criterion: end time
+
+
+
