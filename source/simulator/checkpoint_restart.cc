@@ -27,6 +27,7 @@
 #include <deal.II/base/mpi.h>
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/distributed/solution_transfer.h>
+#include <deal.II/fe/mapping_q_cache.h>
 
 #ifdef DEAL_II_WITH_ZLIB
 #  include <zlib.h>
@@ -456,6 +457,11 @@ namespace aspect
       {
         AssertThrow(false, ExcMessage("Cannot open snapshot mesh file or read the triangulation stored there."));
       }
+
+    // if using a cached mapping, update the cache with the new triangulation
+    if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
+      map->initialize(triangulation,MappingQGeneric<dim>(4));
+
     setup_dofs();
     global_volume = GridTools::volume (triangulation, *mapping);
 

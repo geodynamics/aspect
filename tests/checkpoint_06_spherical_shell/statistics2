@@ -1,0 +1,22 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Minimal temperature (K)
+# 13: Average temperature (K)
+# 14: Maximal temperature (K)
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 768 7392 3264 0 66 69 204 output1.tmp/solution/solution-00000 1.59900000e+03 1.60013510e+03 1.60100000e+03 1.03312858e-02 2.43392882e-02 
+1 6.893019948101e+06 6.893019948101e+06 768 7392 3264 9 59 62 186 output1.tmp/solution/solution-00001 1.59900289e+03 1.60013510e+03 1.60099719e+03 1.03178444e-02 2.42043841e-02 
+2 1.382209430636e+07 6.929074358260e+06 768 7392 3264 9 48 50 150 output1.tmp/solution/solution-00002 1.59900639e+03 1.60013510e+03 1.60099359e+03 1.03101154e-02 2.41223576e-02 
+3 2.077444378321e+07 6.952349476850e+06 768 7392 3264 8 46 48 144 output1.tmp/solution/solution-00003 1.59900677e+03 1.60013510e+03 1.60099357e+03 1.02968730e-02 2.40407578e-02 
+4 2.775168515964e+07 6.977241376433e+06 768 7392 3264 8 47 49 147 output2.tmp/solution/solution-00004 1.59900521e+03 1.60013510e+03 1.60099490e+03 1.02742204e-02 2.39418171e-02 
+5 3.000000000000e+07 2.248314840355e+06 768 7392 3264 5 42 44 132 output2.tmp/solution/solution-00005 1.59900503e+03 1.60013510e+03 1.60099493e+03 1.02647655e-02 2.39047784e-02 
