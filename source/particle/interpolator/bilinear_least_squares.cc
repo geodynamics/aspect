@@ -1,22 +1,23 @@
 /*
   Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
 
- This file is part of ASPECT.
+   This file is part of ASPECT.
 
- ASPECT is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+   ASPECT is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
 
- ASPECT is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+   ASPECT is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with ASPECT; see the file LICENSE.  If not see
- <http://www.gnu.org/licenses/>.
- */
+   You should have received a copy of the GNU General Public License
+   along with ASPECT; see the file LICENSE.  If not see
+   <http://www.gnu.org/licenses/>.
+   */
+
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
 #include <aspect/postprocess/particles.h>
@@ -27,6 +28,7 @@
 #include <deal.II/lac/qr.h>
 
 #include <boost/lexical_cast.hpp>
+
 
 namespace aspect
 {
@@ -41,6 +43,7 @@ namespace aspect
                                                                                     const ComponentMask &selected_properties,
                                                                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
+
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
         const unsigned int property_index = selected_properties.first_selected_component(selected_properties.size());
@@ -71,7 +74,12 @@ namespace aspect
           }
         else
           found_cell = cell;
-
+        // Because of the limiter it becomes neccessary to have the most exact center of the cell as possible
+        Point<dim> midpoint = found_cell->vertex(0);
+        midpoint[0] += found_cell->extent_in_direction(0)/2;
+        midpoint[1] += found_cell->extent_in_direction(1)/2;
+        if (dim == 3)
+          midpoint[2] += found_cell->extent_in_direction(2)/2;
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
           particle_handler.particles_in_cell(found_cell);
 
@@ -81,7 +89,7 @@ namespace aspect
                                                                              numbers::signaling_nan<double>()));
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
-        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
+        const unsigned int n_matrix_columns = (dim == 2) ? 3 : 4;
 
         // If there are too few particles, we can not perform a least squares interpolation
         // fall back to a simpler method instead.
@@ -91,59 +99,61 @@ namespace aspect
                                                             selected_properties,
                                                             found_cell);
 
-        // Noticed that the size of matrix A is n_particles x n_matrix_columns
+        // Notice that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
         // least squares solution of Ac=r by solving the reduced QR factorization
         // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
-        dealii::ImplicitQR<dealii::Vector<double>> qr;
-
         // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
         // class needs.
-        std::vector<dealii::Vector<double>> A(n_matrix_columns, dealii::Vector<double>(n_particles));
-        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
-        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
-        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
-        for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
-          if (selected_properties[property_index])
-            b[property_index] = 0;
 
-        unsigned int particle_index = 0;
-        const double cell_diameter = found_cell->diameter();
+        std::vector<Vector<double>> A(n_matrix_columns, Vector<double>(n_particles));
+        std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
+
+        AssertThrow(n_particles >= n_matrix_columns,
+                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
+                               "interpolation scheme does not support this case. "));
+        unsigned int positions_index = 0;
+
+        std::vector<std::pair<double, double>> property_bounds(n_particle_properties, std::pair<double, double>(std::numeric_limits<double>::max(), std::numeric_limits<double>::min())); // {min, max}
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
-             particle != particle_range.end(); ++particle, ++particle_index)
+             particle != particle_range.end(); ++particle, ++positions_index)
           {
             const auto &particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
-              if (selected_properties[property_index])
-                b[property_index][particle_index] = particle_property_value[property_index];
-            const Tensor<1, dim, double> relative_particle_position = (particle->get_location() - approximated_cell_midpoint) / cell_diameter;
-            // A is accessed by A[column][row] here since we need to append
-            // columns into the qr matrix.
-            A[0][particle_index] = 1;
-            A[1][particle_index] = relative_particle_position[0];
-            A[2][particle_index] = relative_particle_position[1];
-            if (dim == 2)
               {
-                A[3][particle_index] = relative_particle_position[0] * relative_particle_position[1];
+                if (selected_properties[property_index])
+                  {
+                    b[property_index][positions_index] = particle_property_value[property_index];
+                    if (use_cell_based_limiter)
+                      {
+                        property_bounds[property_index].first = std::min(b[property_index][positions_index], property_bounds[property_index].first);
+                        property_bounds[property_index].second = std::max(b[property_index][positions_index], property_bounds[property_index].second);
+                      }
+                  }
               }
-            else
-              {
-                A[3][particle_index] = relative_particle_position[2];
-                A[4][particle_index] = relative_particle_position[0] * relative_particle_position[1];
-                A[5][particle_index] = relative_particle_position[0] * relative_particle_position[2];
-                A[6][particle_index] = relative_particle_position[1] * relative_particle_position[2];
-                A[7][particle_index] = relative_particle_position[0] * relative_particle_position[1] * relative_particle_position[2];
-              }
+            Tensor<1, dim, double> relative_particle_position = particle->get_location() - midpoint;
+            relative_particle_position[0] /= found_cell->extent_in_direction(0);
+            relative_particle_position[1] /= found_cell->extent_in_direction(1);
+            if (dim == 3)
+              relative_particle_position[2] /= found_cell->extent_in_direction(2);
+            A[0][positions_index] = 1;
+            A[1][positions_index] = relative_particle_position[0];
+            A[2][positions_index] = relative_particle_position[1];
+            if (dim == 3)
+              A[3][positions_index] = relative_particle_position[2];
           }
 
-        for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
-          qr.append_column(A[column_index]);
-
-        // If A is rank deficent, qr.append_column will not append the column.
-        // We check that all columns were added through this assertion
+        dealii::ImplicitQR<Vector<double>>qr;
+        for (const auto &column : A)
+          qr.append_column(column);
+        // If A is rank deficent then qr.append_column will not append
+        // the first column that can be written as a linear combination of
+        // other columns. We check that all columns were added through
+        // this one assertion
         AssertThrow(qr.size() == n_matrix_columns,
-                    ExcMessage("The matrix A was rank deficent during bilinear least squares interpolation."));
-
+                    ExcMessage("The matrix A was rank deficent during linear least squares interpolation."));
+        std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
+        std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
             if (selected_properties[property_index])
@@ -152,36 +162,124 @@ namespace aspect
                 qr.solve(c[property_index], QTb[property_index]);
               }
           }
-        unsigned int index_positions = 0;
-        for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++index_positions)
+
+        const double half_h = .5;
+        const double threshold = 1e-12;
+        for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
-            const Tensor<1, dim, double> relative_support_point_location = (*itr - approximated_cell_midpoint) / cell_diameter;
-            for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
+            if (selected_properties[property_index])
               {
-                double interpolated_value = c[property_index][0] +
-                                            c[property_index][1] * relative_support_point_location[0] +
-                                            c[property_index][2] * relative_support_point_location[1];
-                if (dim == 2)
+                if (use_cell_based_limiter)
                   {
-                    interpolated_value += c[property_index][3] * relative_support_point_location[0] * relative_support_point_location[1];
+                    c[property_index][0] = std::max(c[property_index][0], property_bounds[property_index].first);
+                    c[property_index][0] = std::min(c[property_index][0], property_bounds[property_index].second);
+                    if (c[property_index][0] > property_bounds[property_index].second - threshold ||
+                        c[property_index][0] < property_bounds[property_index].first + threshold)
+                      {
+                        c[property_index][1] = 0;
+                        c[property_index][2] = 0;
+                        if (dim == 3) {
+                          c[property_index][3] = 0;
+                        }
+                      }
+                    else
+                      {
+                        double upper_bound = std::min(c[property_index][0] - property_bounds[property_index].first,
+                                                      property_bounds[property_index].second - c[property_index][0]);
+                        double lower_bound = std::abs(c[property_index][1]) + std::abs(c[property_index][2]);
+                        if (dim == 3)
+                          {
+                            lower_bound += std::abs(c[property_index][3]);
+                          }
+                        lower_bound *= half_h;
+                        if (lower_bound > upper_bound)
+                          {
+                            c[property_index][1] = std::copysign(1, c[property_index][1]) * std::min(std::abs(c[property_index][1]), upper_bound / half_h);
+                            c[property_index][2] = std::copysign(1, c[property_index][2]) * std::min(std::abs(c[property_index][2]), upper_bound / half_h);
+                            if (dim == 3)
+                              {
+                                c[property_index][3] = std::copysign(1, c[property_index][3]) * std::min(std::abs(c[property_index][3]), upper_bound / half_h);
+                              }
+
+                            lower_bound = std::abs(c[property_index][1]) + std::abs(c[property_index][2]);
+                            if (dim == 3)
+                              {
+                                lower_bound += std::abs(c[property_index][3]);
+                              }
+                            lower_bound *= half_h;
+                            if (lower_bound > upper_bound)
+                              {
+                                if (dim == 2)
+                                  {
+                                    double change_in_slope = (lower_bound-upper_bound)/(half_h * 2);
+                                    c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c[property_index][1]) - change_in_slope);
+                                    c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c[property_index][2]) - change_in_slope);
+                                  }
+                                else
+                                  {
+                                    // dim == 3
+                                    double change_in_slope = (lower_bound-upper_bound)/(3*half_h);
+                                    double c_1 = std::copysign(1, c[property_index][1]) * (std::abs(c[property_index][1]) - change_in_slope);
+                                    double c_2 = std::copysign(1, c[property_index][2]) * (std::abs(c[property_index][2]) - change_in_slope);
+                                    double c_3 = std::copysign(1, c[property_index][3]) * (std::abs(c[property_index][3]) - change_in_slope);
+                                    // Stage 3 Checks and corrections
+                                    if (c[property_index][1] * c_1 <= 0)
+                                      {
+                                        c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c_2) - std::abs(c_1/2));
+                                        c[property_index][3] = std::copysign(1, c[property_index][3]) * (std::abs(c_3) - std::abs(c_1/2));
+                                        c[property_index][1] = 0;
+                                      }
+                                    else if (c[property_index][2] * c_2 <= 0)
+                                      {
+                                        c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c_1) - std::abs(c_2/2));
+                                        c[property_index][3] = std::copysign(1, c[property_index][3]) * (std::abs(c_3) - std::abs(c_2/2));
+                                        c[property_index][2] = 0;
+
+                                      }
+                                    else if (c[property_index][3] * c_3 <= 0)
+                                      {
+                                        c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c_1) - std::abs(c_3/2));
+                                        c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c_2) - std::abs(c_3/2));
+                                        c[property_index][3] = 0;
+                                      }
+                                    else
+                                      {
+                                        c[property_index][1] = c_1;
+                                        c[property_index][2] = c_2;
+                                        c[property_index][3] = c_3;
+                                      }
+                                  }
+                              }
+                          }
+                      }
                   }
-                else
+                std::size_t positions_index = 0;
+                for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
-                    interpolated_value += c[property_index][3] * relative_support_point_location[2] +
-                                          c[property_index][4] * relative_support_point_location[0] * relative_support_point_location[1] +
-                                          c[property_index][5] * relative_support_point_location[0] * relative_support_point_location[2] +
-                                          c[property_index][6] * relative_support_point_location[1] * relative_support_point_location[2] +
-                                          c[property_index][7] * relative_support_point_location[0] * relative_support_point_location[1] * relative_support_point_location[2];
+                    Tensor<1, dim, double> relative_support_point_location = *itr - midpoint;
+                    relative_support_point_location[0] /= found_cell->extent_in_direction(0);
+                    relative_support_point_location[1] /= found_cell->extent_in_direction(1);
+                    if (dim == 3)
+                      {
+                        relative_support_point_location[2] /= found_cell->extent_in_direction(2);
+                      }
+                    double interpolated_value = c[property_index][0] +
+                                                c[property_index][1] * relative_support_point_location[0] +
+                                                c[property_index][2] * relative_support_point_location[1];
+                    if (dim == 3)
+                      {
+                        interpolated_value += c[property_index][3] * relative_support_point_location[2];
+                      }
+                    
+                    if (use_cell_based_limiter) {
+                      AssertThrow(!(interpolated_value > property_bounds[property_index].second + threshold ||
+                          interpolated_value < property_bounds[property_index].first - threshold), ExcMessage("A particle property has overshot or undershot by more than a given threshold"))// {
+                      interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
+                      interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
+                    }
+                    cell_properties[positions_index][property_index] = interpolated_value;
                   }
 
-                // Overshoot and undershoot correction of interpolated particle property.
-                if (use_global_min_max_limiter)
-                  {
-                    interpolated_value = std::min(interpolated_value, global_maximum_particle_properties[property_index]);
-                    interpolated_value = std::max(interpolated_value, global_minimum_particle_properties[property_index]);
-                  }
-
-                cell_properties[index_positions][property_index] = interpolated_value;
               }
           }
         return cell_properties;
@@ -201,24 +299,13 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                prm.declare_entry ("Global particle property maximum",
-                                   boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
-                                   Patterns::List(Patterns::Double ()),
-                                   "The maximum global particle property values that will be used as a "
-                                   "limiter for the bilinear least squares interpolation. The number of the input "
-                                   "'Global particle property maximum' values separated by ',' has to be "
-                                   "the same as the number of particle properties.");
-                prm.declare_entry ("Global particle property minimum",
-                                   boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
-                                   Patterns::List(Patterns::Double ()),
-                                   "The minimum global particle property that will be used as a "
-                                   "limiter for the bilinear least squares interpolation. The number of the input "
-                                   "'Global particle property minimum' values separated by ',' has to be "
-                                   "the same as the number of particle properties.");
                 prm.declare_entry("Use limiter", "false",
-                                  Patterns::Bool (),
-                                  "Whether to apply a global particle property limiting scheme to the interpolated "
-                                  "particle properties.");
+                                  Patterns::Bool(),
+                                  "Limit the interpolation of all particle properties "
+                                  "onto the cell so the value of each property is no "
+                                  "smaller than its minimum and no larger than its "
+                                  "maximum on the particles in each cell. Currently "
+                                  "doesn't work on spherical grids.");
               }
               prm.leave_subsection();
             }
@@ -243,30 +330,7 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                use_global_min_max_limiter = prm.get_bool("Use limiter");
-                if (use_global_min_max_limiter)
-                  {
-                    global_maximum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property maximum")));
-                    global_minimum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property minimum")));
-
-                    const Postprocess::Particles<dim> &particle_postprocessor =
-                      this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
-                    const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
-                    const unsigned int n_property_components = particle_property_information.n_components();
-                    const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
-
-                    // Check that if a global limiter is used, we were given the minimum and maximum value for each
-                    // particle property that is not an internal property.
-                    AssertThrow(global_minimum_particle_properties.size() == n_property_components - n_internal_components,
-                                ExcMessage("Make sure that the size of list 'Global minimum particle property' "
-                                           "is equivalent to the number of particle properties."));
-
-                    // Check that if a global limiter is used, we were given the minimum and maximum value for each
-                    // particle property that is not an internal property.
-                    AssertThrow(global_maximum_particle_properties.size() == n_property_components - n_internal_components,
-                                ExcMessage("Make sure that the size of list 'Global maximum particle property' "
-                                           "is equivalent to the number of particle properties."));
-                  }
+                use_cell_based_limiter = prm.get_bool("Use limiter");
               }
               prm.leave_subsection();
             }
@@ -275,6 +339,7 @@ namespace aspect
           prm.leave_subsection();
         }
         prm.leave_subsection();
+
       }
     }
   }
@@ -290,10 +355,13 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
-                                            "Interpolates particle properties onto a vector of points using a "
-                                            "bilinear least squares method. "
-                                            "Note that deal.II must be configured with BLAS and LAPACK to "
-                                            "support this operation.")
+                                            "Uses linear least squares to obtain the slopes and center of a 2 or "
+                                            "3D plane from the particle positions and a particular property value "
+                                            "on those particles. "
+                                            "Interpolate this property onto the support points or to initiate the "
+                                            "property value on a new particle. If the limiter is enabled then it "
+                                            "will ensure the interpolated properties do not exceed the "
+                                            "range of the minimum and maximum of the values of the property on the particles.")
     }
   }
 }
