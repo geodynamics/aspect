@@ -7362,7 +7362,9 @@ square velocity plot is in a different location and with different height!
   compositional field:
   Evolution of the compositional field over time on a $32\times 32$ (first and
   third column; left to right and top to bottom) and $64\times 64$ finite
-  element mesh (second and fourth column).}
+  element mesh (second and fourth column). Pictures next to each other
+  illustrate how critically the rise of the second plume depends on
+  the mesh resolution, starting at around time $t=350$.}
   \label{fig:vk-4}
 \end{figure}
 
@@ -7399,16 +7401,17 @@ this half width parameter proportional to the mesh size and thereby get more
 accurate results. The point of the section was to demonstrate the reason
 for the lack of convergence.
 
+\paragraph*{Extension to an adaptive smoothing lengthscale.}
 In this section we extend the van Keken cookbook following up the work previously completed by Cedric Thieulot, Juliane Dannberg,
 Timo Heister and Wolfgang Bangerth.  \textit{This section contributed by Grant Euen, Tahiry Rajaonarison, and Shangxin Liu as part of the Geodynamics and ASPECT class at Virginia Tech.}
 
 As already mentioned above, using a half width parameter proportional to the mesh size allows for more accurate results.  We test the effect of the half width size of the smoothed discontinuity by changing the smoothing parameter to values proportional to the mesh size.  In the formula for the smoothed initial conditions, this parameter is the division by 0.02.  We use 7 global refinements because the root mean square velocity converges at greater resolution while keeping average runtime around 5 to 25 minutes.  These runtimes were produced by the BlueRidge cluster of the Advanced Research Computing (ARC) program at Virginia Tech.  BlueRidge is a 408-node Cray CS-300 cluster; each node outfitted with two octa-core Intel Sandy Bridge CPUs and 64 GB of memory.  Average runtimes for global refinements 5 through 10 using one node can be seen in Table~\ref{tab:runtime-table}.  For 7 global refinements (128$\times$128 mesh size), the size of the mesh is 0.0078 corresponding to a half width parameter of 0.0039.  The smooth model allows for much better convergence of the secondary plumes, although they are still more scattered than the primary plumes.
 
-\begin{table}[htb]
+\begin{table}[tb]
         \center
         \begin{tabular}{|c|cccc|}
                 \hline
-                Global & \multicolumn{4}{|c|}{Number of Processors} \\
+                Global & \multicolumn{4}{c}{Number of Processors} \\
                 Refinements & 4 & 8 & 12 & 16
                 \\ \hline
                 5 & 28.1 seconds & 19.8 seconds & 19.6 seconds & 17.1 seconds \\
@@ -7440,7 +7443,7 @@ The evolution in time of the resulting compositional fields (Fig.~\ref{fig:vk-6}
         \label{fig:vk-6}
 \end{figure}
 
-Now let us further add a two-layer viscosity model to the domain. This is done to recreate the two nonisoviscous Rayleigh-Taylor instability cases (``cases 1b and 1c'') published in van Keken \textit{et al.} in \cite{KKSCND97}.  Let's assume the viscosity value of the upper, heavier layer is $\eta_{t}$ and the viscosity value of the lower, lighter layer is $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$ Pa~s, we set the viscosity proportion $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper, heavier layer is still 1$\times10^{2}$ Pa~s, but the viscosity of the lower, lighter layer is now either 10 or 1 Pa~s, respectively. The viscosity profiles of the discontinuous and smooth models are shown in Fig.~\ref{fig:vk-7}.
+Now let us further add a two-layer viscosity model to the domain. This is done to recreate the two nonisoviscous Rayleigh-Taylor instability cases (``cases 1b and 1c'') published in van Keken \textit{et al.} in \cite{KKSCND97}.  Let's assume the viscosity value of the upper, heavier layer is $\eta_{t}$ and the viscosity value of the lower, lighter layer is $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$ \si{Pa.s}, we set the viscosity proportion $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper, heavier layer is still 1$\times10^{2}$ \si{Pa.s}, but the viscosity of the lower, lighter layer is now either 10 or 1 \si{Pa.s}, respectively. The viscosity profiles of the discontinuous and smooth models are shown in Fig.~\ref{fig:vk-7}.
 
 \begin{figure}
         \centering
