@@ -96,6 +96,16 @@ namespace aspect
                            Patterns::Bool (),
                            "Whether to apply a stress averaging scheme to account for differences "
                            "between the fixed elastic time step and numerical time step. ");
+        prm.declare_entry ("Stabilization time scale factor", "1.",
+                           Patterns::Double (1.),
+                           "A stabilization factor for the elastic stresses that influence how fast "
+                           "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization "
+                           "and may lead to oscillatory motion. Setting the factor to 2 "
+                           "avoids oscillations, but still enables an immediate elastic response. "
+                           "However, in complex models this can lead to problems of convergence, in which "
+                           "case the factor needs to be increased slightly. Setting the factor to "
+                           "infinity is equivalent to not applying elastic stresses at all. The "
+                           "factor is multiplied with the computational time step to create a time scale. ");
       }
 
 
@@ -119,9 +129,8 @@ namespace aspect
           AssertThrow(false, ExcMessage("'Use fixed elastic time step' must be set to 'true' or 'false'"));
 
         use_stress_averaging = prm.get_bool ("Use stress averaging");
-        if (use_stress_averaging)
-          AssertThrow(use_fixed_elastic_time_step == true,
-                      ExcMessage("Stress averaging can only be used if 'Use fixed elastic time step' is set to true'"));
+
+        stabilization_time_scale_factor = prm.get_double ("Stabilization time scale factor");
 
         fixed_elastic_time_step = prm.get_double ("Fixed elastic time step");
         AssertThrow(fixed_elastic_time_step > 0,
@@ -308,7 +317,7 @@ namespace aspect
 
                 // Stress averaging scheme to account for difference between fixed elastic time step
                 // and numerical time step (see equation 32 in Moresi et al., 2003, J. Comp. Phys.)
-                if (use_fixed_elastic_time_step == true && use_stress_averaging == true)
+                if (use_stress_averaging == true)
                   {
                     stress_new = ( ( 1. - ( dt / dte ) ) * stress_old ) + ( ( dt / dte ) * stress_new ) ;
                   }
@@ -340,7 +349,7 @@ namespace aspect
                                this->simulator_is_past_initialization() &&
                                use_fixed_elastic_time_step == false )
                              ?
-                             this->get_timestep()
+                             this->get_timestep() * stabilization_time_scale_factor
                              :
                              fixed_elastic_time_step);
         return dte;
