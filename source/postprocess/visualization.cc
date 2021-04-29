@@ -545,18 +545,18 @@ namespace aspect
       // for uniqueness with output_data_names_set, because vector data fields are represented as multiple
       // copies of the same name.
       void add_data_names_to_set(const std::vector<std::string> &output_data_names,
-      std::set<std::string> &output_data_names_set)
+                                 std::set<std::string> &output_data_names_set)
       {
-      const std::set<std::string> set_of_names(output_data_names.begin(),output_data_names.end());
+        const std::set<std::string> set_of_names(output_data_names.begin(),output_data_names.end());
 
-      for (const auto &name: set_of_names)
-        {
-          const auto iterator_and_success = output_data_names_set.insert(name);
-          AssertThrow(iterator_and_success.second == true,
-                      ExcMessage("The output variable <" + name + "> already exists in the list of output "
-                                 "variables. Make sure there is no duplication in the names of visualization output "
-                                 "variables, otherwise output files may be corrupted."));
-        }
+        for (const auto &name: set_of_names)
+          {
+            const auto iterator_and_success = output_data_names_set.insert(name);
+            AssertThrow(iterator_and_success.second == true,
+                        ExcMessage("The output variable <" + name + "> already exists in the list of output "
+                                   "variables. Make sure there is no duplication in the names of visualization output "
+                                   "variables, otherwise output files may be corrupted."));
+          }
       }
     }
 
