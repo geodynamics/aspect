@@ -1,0 +1,28 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 49 (18+4+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Skipping density composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+
+   Postprocessing:
+
+
+An exception happened on MPI process <0> while running the visualization postprocessor <N6aspect11Postprocess27VisualizationPostprocessors18MaterialPropertiesILi2EEE>: 
+
+An error occurred in file <visualization.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    iterator_and_success.second == true
+Additional information: 
+    The output variable <density> already exists in the list of output variables. Make sure there is no duplication in the names of visualization output variables, otherwise output files may be corrupted.
+
+Aborting!
+application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0
+[unset]: write_line error; fd=-1 buf=:cmd=abort exitcode=1
+:
+system msg for write_line failure : Bad file descriptor

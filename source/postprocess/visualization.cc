@@ -538,6 +538,30 @@ namespace aspect
 
 
 
+    namespace
+    {
+      // Add new output_data_names to a set output_data_names_set, and check for uniqueness of names.
+      // Multiple copies in output_data_names are collapsed into one copy before checking
+      // for uniqueness with output_data_names_set, because vector data fields are represented as multiple
+      // copies of the same name.
+      void add_data_names_to_set(const std::vector<std::string> &output_data_names,
+                                 std::set<std::string> &output_data_names_set)
+      {
+        const std::set<std::string> set_of_names(output_data_names.begin(),output_data_names.end());
+
+        for (const auto &name: set_of_names)
+          {
+            const auto iterator_and_success = output_data_names_set.insert(name);
+            AssertThrow(iterator_and_success.second == true,
+                        ExcMessage("The output variable <" + name + "> already exists in the list of output "
+                                   "variables. Make sure there is no duplication in the names of visualization output "
+                                   "variables, otherwise output files may be corrupted."));
+          }
+      }
+    }
+
+
+
     template <int dim>
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
@@ -577,6 +601,12 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
+      // Keep a list of the names of all output variables, to ensure unique names
+      std::set<std::string> visualization_field_names;
+
+      // Insert base variable names into set of all output field names
+      add_data_names_to_set(base_variables.get_names(), visualization_field_names);
+
       std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
 
       DataOut<dim> data_out;
@@ -605,6 +635,10 @@ namespace aspect
         {
           mesh_deformation_variables = std_cxx14::make_unique<internal::MeshDeformationPostprocessor<dim>>();
           mesh_deformation_variables->initialize_simulator(this->get_simulator());
+
+          // Insert mesh deformation variable names into set of all output field names
+          add_data_names_to_set(mesh_deformation_variables->get_names(), visualization_field_names);
+
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *mesh_deformation_variables);
         }
@@ -630,6 +664,8 @@ namespace aspect
               if (const DataPostprocessor<dim> *viz_postprocessor
                   = dynamic_cast<const DataPostprocessor<dim>*>(& *p))
                 {
+                  add_data_names_to_set(viz_postprocessor->get_names(), visualization_field_names);
+
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
                       (& *p) == nullptr)
                     data_out.add_data_vector (this->get_solution(),
@@ -651,6 +687,8 @@ namespace aspect
                           ExcMessage ("Cell data visualization postprocessors must generate "
                                       "vectors that have as many entries as there are active cells "
                                       "on the current processor."));
+
+                  add_data_names_to_set(std::vector<std::string>(1,cell_data.first), visualization_field_names);
 
                   // store the pointer, then attach the vector to the DataOut object
                   cell_data_vectors.push_back (std::unique_ptr<Vector<float> >
