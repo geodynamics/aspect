@@ -123,8 +123,7 @@ SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect 
 MESSAGE(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
   # Check whether we can find the WorldBuilder.
-  SET(WORLD_BUILDER_SOURCE_DIR "" CACHE PATH "Provide an external World Builder directory to be compiled with ASPECT. \
-    If the path is not not provided or the World Builder is not found in the provided location, the version in the contrib folder is is used.")
+  SET(WORLD_BUILDER_SOURCE_DIR "" CACHE PATH "Provide an external World Builder directory to be compiled with ASPECT. If the path is not not provided or the World Builder is not found in the provided location, the version in the contrib folder is is used.")
   IF (NOT EXISTS ${WORLD_BUILDER_SOURCE_DIR}/VERSION)
     MESSAGE(STATUS "World Builder not found. Using internal version.")
     SET(WORLD_BUILDER_SOURCE_DIR "${CMAKE_SOURCE_DIR}/contrib/world_builder/" CACHE PATH "" FORCE)
