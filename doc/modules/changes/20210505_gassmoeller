@@ -1,0 +1,6 @@
+Fixed: The 'random uniform' and 'probability density function' particle
+generator plugins crashed when one MPI rank had no cells at all (e.g. when
+running a very coarse model on a large number of processors). This has been
+fixed.
+<br>
+(Rene Gassmoeller, 2021/02/01)
