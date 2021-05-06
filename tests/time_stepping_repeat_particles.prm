@@ -94,7 +94,7 @@ subsection Postprocess
     set Load balancing strategy     = remove and add particles
     set List of particle properties = initial composition, composition
     set Update ghost particles      = true
-    set Data output format          = vtu
+    set Data output format          = gnuplot
     set Allow cells without particles = true
     set Particle generator name = uniform box
 
