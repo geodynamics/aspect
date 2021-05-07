@@ -945,11 +945,6 @@ namespace aspect
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
 
-    // Copy particle handler to restore particle location and properties
-    // after each nonlinear iteration.
-    if (particle_world.get() != nullptr)
-      particle_world->backup_particles();
-
     do
       {
         // Restore particles through stored copy of particle handler,
@@ -1069,11 +1064,6 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
-
-    // Copy particle handler to restore particle location and properties
-    // after each nonlinear iteration.
-    if (particle_world.get() != nullptr)
-      particle_world->backup_particles();
 
     do
       {
@@ -1225,11 +1215,6 @@ namespace aspect
 
     double relative_residual = std::numeric_limits<double>::max();
     nonlinear_iteration = 0;
-
-    // Copy particle handler to restore particle location and properties
-    // after each nonlinear iteration.
-    if (particle_world.get() != nullptr)
-      particle_world->backup_particles();
 
     do
       {
