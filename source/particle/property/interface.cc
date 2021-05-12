@@ -395,10 +395,39 @@ namespace aspect
                   else
                     found_cell = cell;
 
-                  const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particle_handler,
-                                                                                    std::vector<Point<dim> > (1,particle_location),
-                                                                                    ComponentMask(property_information.n_components(),true),
-                                                                                    found_cell);
+                  std::vector<std::vector<double> > interpolated_properties;
+
+                  try
+                    {
+                      interpolated_properties = interpolator.properties_at_points(particle_handler,
+                                                                                  std::vector<Point<dim> > (1,particle_location),
+                                                                                  ComponentMask(property_information.n_components(),true),
+                                                                                  found_cell);
+                    }
+                  // interpolators that throw exceptions usually do not result in
+                  // anything good, because they result in an unwinding of the stack
+                  // and, if only one processor triggers an exception, the
+                  // destruction of objects often causes a deadlock or completely
+                  // unrelated MPI error messages. Thus, if an exception is
+                  // generated, catch it, print an error message, and abort the program.
+                  catch (std::exception &exc)
+                    {
+                      std::cerr << std::endl << std::endl
+                                << "----------------------------------------------------"
+                                << std::endl;
+                      std::cerr << "Exception on MPI process <"
+                                << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                                << "> while generating new particle properties: "
+                                << std::endl
+                                << exc.what() << std::endl
+                                << "Aborting!" << std::endl
+                                << "----------------------------------------------------"
+                                << std::endl;
+
+                      // terminate the program!
+                      MPI_Abort (MPI_COMM_WORLD, 1);
+                    }
+
                   for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                     particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
                   break;
