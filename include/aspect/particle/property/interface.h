@@ -283,7 +283,9 @@ namespace aspect
          * Use the interpolated properties of the surrounding particles as
          * calculated by the selected interpolator except for particles in
          * boundary cells. These will use the boundary condition of the
-         * compositional fields instead.
+         * compositional fields instead. This mode only makes sense for
+         * properties that are associated with compositional fields through
+         * the parameter 'Compositional fields/Mapped particle properties'.
          */
         interpolate_respect_boundary,
         /**
@@ -439,15 +441,14 @@ namespace aspect
            * initialized for particles that are created later than the initial
            * particle generation, e.g. to balance the particle load or prevent
            * empty cells. The default implementation returns
-           * initialize_to_zero, which signals that particle properties should
-           * be set to zero.
+           * interpolate, which will use the particle interpolator to
+           * set the new particle properties to a value that is interpolated
+           * from the other particles in the cell.
            * See the documentation of InitializationModeForLateParticles for a
            * list of possible values and examples for their use. Every
            * plugin that implements this function should return the value
-           * appropriate for its purpose, unless it does not need any
-           * initialization, which is the default. This function is never
-           * called if no particles are generated later than the initial
-           * particle generation call.
+           * appropriate for its purpose, unless it wants to use the default
+           * value.
            */
           virtual
           InitializationModeForLateParticles
