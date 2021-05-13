@@ -17,4 +17,4 @@
 # 17: Global mass for composition anomaly
 # 18: Number of advected particles
 # 19: Particle file name
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 0 36 38 37 4.62041250e-04 1.60596305e-03 0.00000000e+00 1.00000000e+00 1.89879482e-01 2560 output-particle_property_initial_composition_boundary/particles/particles-00000 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 1089 0 0 34 36 35 1.85395632e-04 3.94375548e-04 -1.00000000e+00 3.00000000e+00 1.89681088e-01 10240 output-particle_property_initial_composition_boundary/particles/particles-00000 

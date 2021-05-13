@@ -6,11 +6,11 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving anomaly system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 37+0 iterations.
+   Solving Stokes system... 35+0 iterations.
 
    Postprocessing:
-     RMS, max velocity:         0.000462 m/s, 0.00161 m/s
-     Compositions min/max/mass: 0/1/0.1899
+     RMS, max velocity:         0.000185 m/s, 0.000394 m/s
+     Compositions min/max/mass: -1/3/0.1897
      Writing particle output:   output-particle_property_initial_composition_boundary/particles/particles-00000
 
 Termination requested by criterion: end time
