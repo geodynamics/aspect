@@ -429,11 +429,11 @@ namespace aspect
                       {
                         const double face_center_distance = particle_location.distance_square(cell->face(f)->center(true));
                         if (face_center_distance < minimum_face_distance)
-                        {
-                          minimum_face_distance = face_center_distance;
-                          boundary_face = f;
-                          cell_at_fixed_boundary = true;
-                        }
+                          {
+                            minimum_face_distance = face_center_distance;
+                            boundary_face = f;
+                            cell_at_fixed_boundary = true;
+                          }
                       }
 
                   // If no Dirichlet boundary, interpolate
