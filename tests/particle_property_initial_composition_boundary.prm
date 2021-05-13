@@ -68,11 +68,12 @@ subsection Initial composition model
 end
 
 subsection Boundary composition model
-  set Fixed composition boundary indicators = left
-  set Model name = function
+  set Fixed composition boundary indicators = left, bottom
+  set Model name = box
 
-  subsection Function
-    set Function expression = 1.0
+  subsection Box
+    set Left composition = -1.0
+    set Bottom composition = 3.0
   end
 end
 
@@ -99,10 +100,10 @@ subsection Postprocess
   subsection Particles
     set Number of particles = 1000
     set Particle generator name = reference cell
-    set Time between data output = 70
+    set Time between data output = 0
     set Data output format = gnuplot
     set List of particle properties = initial composition
     set Load balancing strategy = add particles
-    set Minimum particles per cell = 10
+    set Minimum particles per cell = 40
   end
 end

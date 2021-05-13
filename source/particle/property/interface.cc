@@ -423,12 +423,17 @@ namespace aspect
                   // Determine if the current cell is at a Dirichlet boundary
                   bool cell_at_fixed_boundary = false;
                   unsigned int boundary_face = numbers::invalid_unsigned_int;
+                  double minimum_face_distance = std::numeric_limits<double>::max();
                   for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
                     if (cell->at_boundary(f) && fixed_boundaries.count(cell->face(f)->boundary_id()) == 1)
                       {
-                        boundary_face = f;
-                        cell_at_fixed_boundary = true;
-                        break;
+                        const double face_center_distance = particle_location.distance_square(cell->face(f)->center(true));
+                        if (face_center_distance < minimum_face_distance)
+                        {
+                          minimum_face_distance = face_center_distance;
+                          boundary_face = f;
+                          cell_at_fixed_boundary = true;
+                        }
                       }
 
                   // If no Dirichlet boundary, interpolate
