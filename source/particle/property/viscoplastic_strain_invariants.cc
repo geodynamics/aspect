@@ -37,12 +37,16 @@ namespace aspect
         material_inputs(1,0)
       {}
 
+
+
       template <int dim>
       void
       ViscoPlasticStrainInvariant<dim>::initialize ()
       {
-        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model()),
-                    ExcMessage("This initial condition only makes sense in combination with the visco_plastic material model."));
+        AssertThrow(Plugins::plugin_type_matches<const MaterialModel::ViscoPlastic<dim>>
+                    (this->get_material_model()),
+                    ExcMessage("This initial condition only makes sense in combination "
+                               "with the visco_plastic material model."));
 
         n_components = 0;
         material_inputs = MaterialModel::MaterialModelInputs<dim>(1,this->n_compositional_fields());
@@ -58,8 +62,12 @@ namespace aspect
           n_components += 1;
 
         if (n_components == 0)
-          AssertThrow(false, ExcMessage("This particle property requires a compositional strain field (plastic_strain, viscous_strain, or total_strain)."));
+          AssertThrow(false,
+                      ExcMessage("This particle property requires a compositional "
+                                 "strain field (plastic_strain, viscous_strain, "
+                                 "or total_strain)."));
       }
+
 
 
       template <int dim>
@@ -78,6 +86,8 @@ namespace aspect
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("total_strain")));
 
       }
+
+
 
       template <int dim>
       void
@@ -146,8 +156,8 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("total_strain"))
           data[data_position] = new_strain;
-
       }
+
 
 
       template <int dim>
@@ -156,6 +166,8 @@ namespace aspect
       {
         return update_time_step;
       }
+
+
 
       template <int dim>
       UpdateFlags
@@ -169,22 +181,19 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int> >
       ViscoPlasticStrainInvariant<dim>::get_property_information() const
       {
-
         std::vector<std::pair<std::string,unsigned int> > property_information;
 
         //Check which fields are used in model and make an output for each.
         if (this->introspection().compositional_name_exists("plastic_strain"))
-          property_information.emplace_back("plastic_strain",1);
+          property_information.emplace_back("plastic_strain", 1);
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
-          property_information.emplace_back("viscous_strain",1);
+          property_information.emplace_back("viscous_strain", 1);
 
         if (this->introspection().compositional_name_exists("total_strain"))
-          property_information.emplace_back("total_strain",1);
+          property_information.emplace_back("total_strain", 1);
 
         return property_information;
-
-
       }
     }
   }
