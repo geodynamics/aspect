@@ -36,6 +36,17 @@ namespace aspect
           data.push_back(this->get_initial_composition_manager().initial_composition(position,i));
       }
 
+
+
+      template <int dim>
+      InitializationModeForLateParticles
+      InitialComposition<dim>::late_initialization_mode () const
+      {
+        return interpolate_respect_boundary;
+      }
+
+
+
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
       InitialComposition<dim>::get_property_information() const
