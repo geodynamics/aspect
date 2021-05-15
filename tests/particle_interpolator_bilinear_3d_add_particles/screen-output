@@ -1,0 +1,29 @@
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 6,497 (2,187+125+729+1,728+1,728)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 29+0 iterations.
+
+   Postprocessing:
+     Writing particle output:   output-particle_interpolator_bilinear_3d_add_particles/particles/particles-00000
+     RMS, max velocity:         0.00965 m/s, 0.0242 m/s
+     Compositions min/max/mass: 0/1/0.375 // 0/1/0.5
+     Temperature min/avg/max:   0 K, 0.5 K, 1 K
+
+*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     Number of advected particles: 257
+     RMS, max velocity:            0.00965 m/s, 0.0242 m/s
+     Compositions min/max/mass:    0/1/0.375 // 0/1/0.503
+     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+
+Termination requested by criterion: end time
+
+
+
