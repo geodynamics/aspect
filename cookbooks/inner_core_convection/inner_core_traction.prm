@@ -14,7 +14,7 @@ set Additional shared libraries            = ./libinner_core_convection.so
 set Dimension                              = 2
 set Use years in output instead of seconds = false
 set End time                               = 39.275
-set Output directory                       = output_inner_core_traction_Ra_1e2_P_1e-2
+set Output directory                       = output_inner_core_traction
 
 subsection Nullspace removal
   set Remove nullspace = net rotation
