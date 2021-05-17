@@ -1,0 +1,6 @@
+
+module load tacc-singularity
+
+singularity pull docker://gassmoeller/aspect-tacc
+
+ibrun singularity run aspect-tacc_latest.sif aspect cookbook/gplates_2d.prm
