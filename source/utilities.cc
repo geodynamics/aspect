@@ -920,6 +920,14 @@ namespace aspect
                                                       const double theta,
                                                       const double phi)
     {
+      Assert (l<65, ExcMessage("ASPECT uses the implementation of spherical harmonics provided by the "
+                               "BOOST library, which is only accurate up a limited degree (see "
+                               "https://www.boost.org/doc/libs/1_62_0/libs/math/doc/html/math_toolkit/sf_poly/sph_harm.html#math_toolkit.sf_poly.sph_harm.accuracy). "
+                               "The function Utilities::real_spherical_harmonic was asked for a higher degree of "
+                               + std::to_string(l) + ", which is not guaranteed to produce a correct value. "
+                               "If you absolutely need to use higher degrees, uncomment this assertion on "
+                               "your own risk and benchmark your results before using them."));
+
       const double sqrt_2 = numbers::SQRT2;
       const std::complex<double> sph_harm_val = boost::math::spherical_harmonic( l, m, theta, phi );
       if ( m == 0 )
