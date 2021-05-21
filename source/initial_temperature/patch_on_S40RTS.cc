@@ -162,10 +162,10 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-      s40rts.initialize_simulator (this->get_simulator());
 
-      // Note: parse_parameters will call initialize for us
+      s40rts.initialize_simulator (this->get_simulator());
       s40rts.parse_parameters(prm);
+      s40rts.initialize();
 
     }
   }
