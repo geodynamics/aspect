@@ -75,7 +75,7 @@ Number of mesh deformation degrees of freedom: 300
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
      Topography min/max: -1176 m, 485.7 m
@@ -112,7 +112,7 @@ Number of mesh deformation degrees of freedom: 352
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Topography min/max: -2019 m, 740.2 m
@@ -182,7 +182,7 @@ Number of mesh deformation degrees of freedom: 486
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
+   Solving Stokes system... 14+0 iterations.
 
    Postprocessing:
      Topography min/max: -3562 m, 999.3 m
@@ -204,7 +204,7 @@ Number of mesh deformation degrees of freedom: 486
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
+   Solving Stokes system... 15+0 iterations.
 
    Postprocessing:
      Topography min/max: -4026 m, 1028 m
@@ -214,7 +214,7 @@ Number of active cells: 232 (on 5 levels)
 Number of degrees of freedom: 4,685 (2,198+289+1,099+1,099)
 
 Number of mesh deformation degrees of freedom: 578
-*** Timestep 16:  t=7834.14 years, dt=694.661 years
+*** Timestep 16:  t=7834.14 years, dt=694.66 years
    Solving mesh velocity system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 8 iterations.

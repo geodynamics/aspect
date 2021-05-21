@@ -40,7 +40,7 @@ Number of degrees of freedom: 268 (162+25+81)
 
 *** Timestep 5:  t=0.3125 seconds, dt=0.0625 seconds
    Solving temperature system... 14 iterations.
-   Solving Stokes system... 15+0 iterations.
+   Solving Stokes system... 16+0 iterations.
 
    Postprocessing:
      Writing graphical output: output-no_flow/solution/solution-00005

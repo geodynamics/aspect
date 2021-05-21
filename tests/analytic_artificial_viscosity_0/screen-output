@@ -35,6 +35,17 @@ Number of degrees of freedom: 31 (18+4+9)
      Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
      Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00002
 
+*** Timestep 3:  t=1 seconds, dt=4.44089e-16 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:               1 m/s, 1 m/s
+     Temperature min/avg/max:         0 K, 0.02209 K, 0.04182 K
+     Max / average entropy viscosity: 0 W/(m*K), 0 W/(m*K)
+     Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00003
+
 Termination requested by criterion: end time
 
 

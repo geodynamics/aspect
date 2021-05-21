@@ -6,10 +6,10 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 50+0 iterations.
+   Solving Stokes system... 52+0 iterations.
 
    Postprocessing:
-     Pressure min/avg/max: -1.561 Pa, 8.691e-14 Pa, 1.561 Pa
+     Pressure min/avg/max: -1.561 Pa, 7.915e-14 Pa, 1.561 Pa
 
 Termination requested by criterion: end time
 

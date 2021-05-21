@@ -18,15 +18,15 @@ Number of degrees of freedom: 30,600 (8,450+4,161+8,450+1,089+4,225+4,225)
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
    Solving fluid velocity system... 7 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.38534e-16, 7.86809e-11
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.86809e-11
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.38534e-16, 7.79883e-11
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.79883e-11
 
 
    Postprocessing:
      RMS, max velocity:                                                  1.41 m/s, 1.41 m/s
      Pressure min/avg/max:                                               0.3686 Pa, 1.176 Pa, 2.718 Pa
      Max, min, and rms velocity along boundary parts:                    1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s, 1.414 m/s
-     Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2: 1.026761e-04, 1.699048e-02, 1.709911e-02, 3.657377e-06, 8.694257e-05, 2.402420e-03, 4.347472e-03
+     Errors u_L2, p_L2, p_f_L2, p_c_bar_L2, p_c_L2, porosity_L2, u_f_L2: 1.026761e-04, 1.699047e-02, 1.709911e-02, 3.657377e-06, 8.694257e-05, 2.402420e-03, 4.347472e-03
 
 Termination requested by criterion: end time
 

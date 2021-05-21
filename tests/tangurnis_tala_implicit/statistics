@@ -13,5 +13,5 @@
 # 13: Total adiabatic heating rate (W)
 # 14: Average shear heating rate (W/kg)
 # 15: Total shear heating rate (W)
-0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2         30 33 32 output-tangurnis_tala_implicit/solution/solution-00000 -4.04794019e-03 -5.25196981e-03 4.09027882e-03 5.30690175e-03 
+0 0.000000000000e+00 0.000000000000e+00 256 2467 1089 2         29 32 31 output-tangurnis_tala_implicit/solution/solution-00000 -4.04794019e-03 -5.25196981e-03 4.09027882e-03 5.30690175e-03 
 1 1.000000000000e-04 1.000000000000e-04 256 2467 1089 1 4294967295  0  0 output-tangurnis_tala_implicit/solution/solution-00001 -4.04794019e-03 -5.25196981e-03 4.09027882e-03 5.30690175e-03 

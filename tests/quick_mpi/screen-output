@@ -10,7 +10,7 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... XYZ iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.87792e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.18763e-08
 
 
    Postprocessing:
