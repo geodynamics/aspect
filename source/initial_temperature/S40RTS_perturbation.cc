@@ -461,8 +461,6 @@ namespace aspect
         prm.leave_subsection ();
       }
       prm.leave_subsection ();
-
-      initialize ();
     }
   }
 }
