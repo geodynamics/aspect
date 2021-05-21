@@ -1,0 +1,6 @@
+Fixed: The Steinberger material model now uses the correct profile for
+lateral viscosity variations (in dependence of temperature). Before 
+this change, it had artificial jumps at the transition from upper to
+lower mantle and used n=3 instead of n=3.5. 
+<br>
+(Juliane Dannberg, 2021/05/20)
