@@ -6802,6 +6802,8 @@ where $Ra$ is the Rayleigh number and $H$ is the 'source term', constructed when
 In spherical geometry, $H=6$.
 
 
+
+
 \vspace{0.3cm}
 \textbf{Mechanical boundary.}
 The mechanical boundary conditions for the inner core are
@@ -6909,6 +6911,12 @@ Both trends are shown in Figure~\ref{fig:inner-core-trends} and can be compared 
     be the result of limited resolution (only 12 elements in radial direction).}
     \label{fig:inner-core-trends}
 \end{figure}
+
+\vspace{0.3cm}
+\textbf{Model in 2D.}
+The default parameters file (\url{cookbooks/inner_core_convection/inner_core_traction.prm}), described in the previous part, is written for a 3D modelisation of the inner core convection. However, running this model requires lots of time and computer resources. The \url{cookbooks/inner_core_convection/inner_core_traction_2D.prm} parameters file offers the possibility to model the inner core convection in 2D, which requires less resources and can be run quickly on a personal computer. The 2D model is no longer a sphere, but equivalent to an infinite cylinder. It is important to note that it is based on the 3D parameter file (with an import of the original file), with only slight modifications (listed below), and that it requires the presence of the original file.
+\lstinputlisting[language=prmfile]{cookbooks/inner_core_convection/doc/inner_core_traction_2D.part.prm.out}
+
 
 \subsubsection{Melt migration in a 2D mantle convection model}
 \label{sec:cookbooks-melt-global}
