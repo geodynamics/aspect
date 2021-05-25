@@ -11,14 +11,15 @@
 
 set Additional shared libraries            = ./libinner_core_convection.so
 
-set Dimension                              = 2
+set Dimension                              = 3
 set Use years in output instead of seconds = false
-set End time                               = 39.275
-set Output directory                       = output_inner_core_traction_Ra_1e2_P_1e-2
+set End time                               = 5000
+set Output directory                       = output-inner_core_traction
 
 subsection Nullspace removal
   set Remove nullspace = net rotation
 end
+
 # The equations are non-dimensionalized, and all of the
 # material properties are constant and set to one, except
 # for the density, which scales with temperature.
@@ -48,7 +49,7 @@ subsection Material model
 # and the last variable will be the time
   subsection Inner core
     subsection Phase change resistance function
-      set Variable names      = x,y
+      set Variable names      = x,y,z
       set Function expression = 1e-2     # <-- P
     end
   end
@@ -106,17 +107,16 @@ subsection Gravity model
 
   subsection Radial linear
     set Magnitude at bottom = 0.0
-    set Magnitude at surface = 1e2     # <-- Ra
+    set Magnitude at surface = 2     # <-- Ra
   end
 end
 
 
 subsection Mesh refinement
   set Initial global refinement          = 3
-  set Initial adaptive refinement        = 2
-  set Strategy                           = minimum refinement function, thermal energy density
-
-  set Time steps between mesh refinement = 15
+  set Initial adaptive refinement        = 0
+  set Strategy                           = minimum refinement function
+  set Time steps between mesh refinement = 0
 
   subsection Minimum refinement function
     set Variable names = depth, phi, theta
@@ -130,10 +130,9 @@ subsection Postprocess
 
   subsection Visualization
     set Output format                 = vtu
-    set Time between graphical output = 5e-6
-    set Number of grouped files       = 1
+    set Time between graphical output = 0
+    set Number of grouped files       = 0
     set List of output variables      = strain rate, gravity, density, specific heat, heating
   end
 
 end
-

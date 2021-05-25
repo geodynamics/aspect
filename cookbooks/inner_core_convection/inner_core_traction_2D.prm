@@ -1,0 +1,74 @@
+#WARNING! This setup need the original file "inner_core_traction.prm" in the same directory to operate. 
+#The following lines define the parameters that change from the original file. The other parameters
+#defined in "inner_core_convection" will remain the same. The interest of this file is to transform 
+#the initial 3D model to 2D.
+#Here, the parameters are set by default to obtain a translation. For a plume convection, you can use 
+#the parameters proposed in the comments.
+#Estimated run duration for translation: less than 5 minutes (with 4 hearts)
+#Estimated run duration for plume convection: 10 minutes (with 4 hearts) 
+
+include $ASPECT_SOURCE_DIR/cookbooks/inner_core_convection/inner_core_traction.prm
+
+set Additional shared libraries            = ./libinner_core_convection.so
+
+set Dimension                              = 2
+set End time                               = 39.28 # End time = 1.3 for plume convection
+set Output directory                       = output-inner_core_traction_2D
+
+#The variation of phase number (P), which is given in the 'Function expression', allows to change
+#the convection type from translation to plume convection. For a Ra=1e4, if P<1e2, the movement
+#will be translation. If P>1e2, the convection type will be plume convection.   
+
+subsection Material model
+  set Model name = inner core material
+
+  subsection Inner core
+    subsection Phase change resistance function
+      set Variable names      = x,y
+      set Function expression = 1e-2     # <-- P    For plume convection, take P=1e2
+    end
+  end
+end
+
+subsection Gravity model
+  set Model name = radial linear
+
+  subsection Radial linear
+    set Magnitude at bottom = 0.0
+    set Magnitude at surface = 1e2       # <-- Ra     For plume convection, take Ra=1e4
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 2
+  set Strategy                           = minimum refinement function, thermal energy density
+
+  set Time steps between mesh refinement = 15
+
+  subsection Minimum refinement function
+    set Variable names = depth, phi, theta
+    set Function expression = if(depth>0.1,if(depth>0.2,2,5),6)
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics, heat flux statistics, depth average
+ 
+  subsection Depth average
+    set Number of zones = 20
+    set Output format = txt
+    set Time between graphical output = 4e-4 # For plume convection, take 1e-2
+  end
+
+  subsection Visualization
+    set Output format                 = vtu
+    set Time between graphical output = 4e-4 # For plume convection, take 1e-2
+
+    set Number of grouped files       = 1
+    set List of output variables      = strain rate, gravity, density, specific heat, heating
+  end
+
+end
+
