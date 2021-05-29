@@ -29,8 +29,11 @@ on the mailing list.
 In short, ASPECT is configured using CMake and has the following requirements:
 - CMake 2.8.12
 - GCC, Clang, or Intel compiler with C++11 support
-- [deal.II](https://github.com/dealii/dealii) 9.2 or newer configured with MPI, Trilinos, p4est (optionally HDF5)
-- optional:  PerpleX, LIBDAP, NETCDF
+- [deal.II](https://github.com/dealii/dealii) 9.2 or newer configured with:
+  - MPI, Trilinos, p4est (required)
+  - BLAS/LAPACK, zlib (strongly recommended)
+  - HDF5 (optional)
+- optional: PerpleX, LIBDAP, NETCDF
 
 Running and extending ASPECT
 ----------------------------
