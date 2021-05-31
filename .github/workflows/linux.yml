@@ -99,11 +99,13 @@ jobs:
     - name: prebuild tests
       run: |
         # prebuilding tests...
+        export OMPI_MCA_rmaps_base_oversubscribe=1
         cd build/tests
         ninja -k 0 tests || true
     - name: report test results
       run: |
         cd build
+        export OMPI_MCA_rmaps_base_oversubscribe=1
         ctest \
         --no-compress-output \
         --test-action Test \
