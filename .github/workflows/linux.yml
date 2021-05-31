@@ -68,3 +68,39 @@ jobs:
       with:
         name: manual.log
         path: doc/manual/manual.log
+  job:
+    #linux build including indent and documentation
+    name: tests
+    runs-on: [ubuntu-18.04]
+    container: geodynamics/aspect-tester
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_USE_PETSC=OFF \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        ..
+        ninja
+        ./aspect --test
+    - name: prebuild tests
+      run: |
+        # prebuilding tests...
+        cd build/tests
+        ninja -k 0 tests || true
+    - name: report test results
+      run: |
+      cd build
+      ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
