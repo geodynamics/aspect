@@ -76,7 +76,7 @@ jobs:
     #linux build including indent and documentation
     name: tests
     runs-on: [ubuntu-18.04]
-    container: geodynamics/aspect-tester
+    container: gassmoeller/aspect-tester
 
     steps:
     - uses: actions/checkout@v2
@@ -84,7 +84,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake \\
+        cmake \
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
@@ -104,7 +104,7 @@ jobs:
     - name: report test results
       run: |
         cd build
-        ctest \\
+        ctest \
         --no-compress-output \
         --test-action Test \
         --output-on-failure
