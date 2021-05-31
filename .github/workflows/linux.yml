@@ -17,7 +17,7 @@ jobs:
     - name: setup
       run: |
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.2.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
     - name: compile
@@ -38,7 +38,7 @@ jobs:
     - name: setup
       run: |
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.2.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends texlive-generic-extra texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python-pip python-setuptools libdeal.ii-dev doxygen
         doxygen --version
@@ -80,7 +80,6 @@ jobs:
     container:
       image: dealii/dealii:master-focal
       options: --user 0
-
     steps:
     - uses: actions/checkout@v2
     - name: compile
@@ -96,3 +95,49 @@ jobs:
         ..
         ninja
         ./aspect --test
+
+  job:
+    #linux build including indent and documentation
+    name: tests
+    runs-on: [ubuntu-18.04]
+    container: gassmoeller/aspect-tester:focal-9.3
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        ..
+        ninja
+        ./aspect --test
+    - name: prebuild tests
+      run: |
+        # prebuilding tests...
+        cd build/tests
+        ninja -k 0 tests || true
+    - name: report test results
+      run: |
+        cd build
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
+    - name: write test results
+      run: |
+        cd build
+        ninja generate_reference_output
+        git diff ../tests > changes-test-results.diff
+    - name: archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-test-results.diff
+        path: build/changes-test-results.diff
