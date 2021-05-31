@@ -2,6 +2,10 @@ name: linux
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linux-nounity:
     #linux build with unity/precomiled headers disabled
@@ -80,7 +84,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake \
+        cmake \\
         -G 'Ninja' \
         -D CMAKE_CXX_FLAGS='-Werror' \
         -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
@@ -99,8 +103,8 @@ jobs:
         ninja -k 0 tests || true
     - name: report test results
       run: |
-      cd build
-      ctest \
+        cd build
+        ctest \\
         --no-compress-output \
         --test-action Test \
         --output-on-failure
