@@ -8,16 +8,16 @@ concurrency:
 
 jobs:
   linux-nounity:
-    #linux build with unity/precomiled headers disabled
-    name: no-unity
-    runs-on: [ubuntu-18.04]
+    #linux build with unity/precompiled headers disabled
+    name: no-unity-build
+    runs-on: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
     - name: setup
       run: |
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.2.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.0-backports
         sudo apt-get update
         sudo apt-get install -yq --no-install-recommends libdeal.ii-dev
     - name: compile
@@ -31,16 +31,16 @@ jobs:
   linux:
     #linux build including indent and documentation
     name: indent+documentation
-    runs-on: [ubuntu-18.04]
+    runs-on: [ubuntu-20.04]
 
     steps:
     - uses: actions/checkout@v2
     - name: setup
       run: |
         sudo apt-get install -y software-properties-common
-        sudo add-apt-repository ppa:ginggs/deal.ii-9.2.0-backports
+        sudo add-apt-repository ppa:ginggs/deal.ii-9.3.0-backports
         sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends texlive-generic-extra texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python-pip python-setuptools libdeal.ii-dev doxygen
+        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen
         doxygen --version
 
         wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
@@ -80,7 +80,6 @@ jobs:
     container:
       image: dealii/dealii:master-focal
       options: --user 0
-
     steps:
     - uses: actions/checkout@v2
     - name: compile
@@ -96,3 +95,58 @@ jobs:
         ..
         ninja
         ./aspect --test
+
+  tests:
+    #linux build including tests
+    name: tests
+    runs-on: [ubuntu-latest]
+    container: geodynamics/aspect-tester:focal-dealii-9.3-v1
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_ADDITIONAL_CXX_FLAGS='-O3' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        -D ASPECT_RUN_ALL_TESTS='ON' \
+        ..
+        ninja
+        ./aspect --test
+    - name: prebuild tests
+      run: |
+        # prebuilding tests...
+        cd build/tests
+        ninja -k 0 tests || true
+    - name: report test results
+      continue-on-error: true
+      run: |
+        cd build
+        ctest \
+        --no-compress-output \
+        --test-action Test \
+        --output-on-failure
+    - name: write test results
+      continue-on-error: true
+      run: |
+        cd build
+        ninja generate_reference_output
+        git diff ../tests > changes-test-results.diff
+    - name: archive test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-test-results.diff
+        path: build/changes-test-results.diff
+    - name: check test results
+      run: |
+        if [ -s build/changes-test-results.diff ]; then
+          exit 1
+        else
+          exit 0
+        fi

@@ -64,7 +64,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 172+0 iterations.
+   Solving Stokes system... 171+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 12: 2.83471e-08, norm of the rhs: 1.89349e+09, newton_derivative_scaling_factor: 0
 
    Skipping temperature solve because RHS is zero.
@@ -89,12 +89,12 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 159+0 iterations.
+   Solving Stokes system... 176+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 2.22946e-09, norm of the rhs: 1.48921e+08, newton_derivative_scaling_factor: 0
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 171+0 iterations.
+   Solving Stokes system... 172+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 18: 1.36357e-09, norm of the rhs: 9.10818e+07, newton_derivative_scaling_factor: 0
 
 

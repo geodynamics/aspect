@@ -18,6 +18,11 @@ An error occurred in file <interface.h> in function
 The violated condition was: 
     has_matching_boundary_composition_model<BoundaryCompositionType> ()
 Additional information: 
-    You asked BoundaryComposition::Manager::get_boundary_composition_model() for a boundary composition model of type <aspect::BoundaryComposition::Box<2>> that could not be found in the current model. Activate this boundary composition model in the input file.
+    You asked
+    BoundaryComposition::Manager::get_boundary_composition_model() for a
+    boundary composition model of type
+    <aspect::BoundaryComposition::Box<2>> that could not be found in the
+    current model. Activate this boundary composition model in the input
+    file.
 
 Aborting!

@@ -18,21 +18,41 @@ An error occurred in file <solver.cc> in function
 The violated condition was: 
     false
 Additional information: 
-    The iterative advection solver did not converge. It reported the following error:
-
-
-An error occurred in file <solver_gmres.h> in function
-(line in output replaced by default.sh script)
-The violated condition was: 
+    The iterative advection solver did not converge. It reported the
+    following error:
+    
+    
+    --------------------------------------------------------
+    An error occurred in line <1074> of file
+    </opt/deal.II-v9.3.1/include/deal.II/lac/solver_gmres.h> in function
+    void dealii::SolverGMRES<VectorType>::solve(const MatrixType&,
+    VectorType&, const VectorType&, const PreconditionerType&) [with
+    MatrixType = dealii::TrilinosWrappers::SparseMatrix;
+    PreconditionerType = dealii::TrilinosWrappers::PreconditionILU;
+    VectorType = dealii::TrilinosWrappers::MPI::Vector]
+    The violated condition was:
     iteration_state == SolverControl::success
-Additional information: 
-Iterative method reported convergence failure in step 1000. The residual in the last step was 1.48706e-10.
-
-This error message can indicate that you have simply not allowed a sufficiently large number of iterations for your iterative solver to converge. This often happens when you increase the size of your problem. In such cases, the last residual will likely still be very small, and you can make the error go away by increasing the allowed number of iterations when setting up the SolverControl object that determines the maximal number of iterations you allow.
-
-The other situation where this error may occur is when your matrix is not invertible (e.g., your matrix has a null-space), or if you try to apply the wrong solver to a matrix (e.g., using CG for a matrix that is not symmetric or not positive definite). In these cases, the residual in the last iteration is likely going to be large.
-
- The required residual for convergence is: 0.000000.
- See output-advection_solver_fail/solver_history.txt for convergence history.
+    Additional information:
+    Iterative method reported convergence failure in step 1000. The
+    residual in the last step was 8.6402e-11.
+    
+    This error message can indicate that you have simply not allowed a
+    sufficiently large number of iterations for your iterative solver to
+    converge. This often happens when you increase the size of your
+    problem. In such cases, the last residual will likely still be very
+    small, and you can make the error go away by increasing the allowed
+    number of iterations when setting up the SolverControl object that
+    determines the maximal number of iterations you allow.
+    
+    The other situation where this error may occur is when your matrix is
+    not invertible (e.g., your matrix has a null-space), or if you try to
+    apply the wrong solver to a matrix (e.g., using CG for a matrix that
+    is not symmetric or not positive definite). In these cases, the
+    residual in the last iteration is likely going to be large.
+    --------------------------------------------------------
+    
+    The required residual for convergence is: 0.000000.
+    See output-advection_solver_fail/solver_history.txt for convergence
+    history.
 
 Aborting!
