@@ -31,6 +31,8 @@
 #include <deal.II/base/data_out_base.h>
 #include <deal.II/numerics/data_out.h>
 
+#include <thread>
+
 namespace aspect
 {
   namespace Postprocess
@@ -637,7 +639,7 @@ namespace aspect
            * The writer() function runs on this background thread when outputting
            * data for the `data_out` object.
            */
-          Threads::Thread<void> background_thread;
+          std::thread background_thread;
         };
 
         /**
