@@ -81,18 +81,22 @@ namespace aspect
                                                                               numbers::signaling_nan<double>()));
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
+        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
 
-        AssertThrow(n_particles != 0,
-                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
-                               "interpolation scheme does not support this case. "));
-
+        // If there are too few particles, we can not perform a least squares interpolation
+        // fall back to a simpler method instead.
+        if (n_particles < n_matrix_columns)
+          return fallback_interpolator.properties_at_points(particle_handler,
+                                                            positions,
+                                                            selected_properties,
+                                                            found_cell);
 
         // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
         // least squares solution of Ac=r by solving the reduced QR factorization
         // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
         dealii::ImplicitQR<dealii::Vector<double>> qr;
-        const unsigned int n_matrix_columns = (dim == 2) ? 4 : 8;
+
         // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
         // class needs.
         std::vector<dealii::Vector<double>> A(n_matrix_columns, dealii::Vector<double>(n_particles));
@@ -134,6 +138,7 @@ namespace aspect
 
         for (unsigned int column_index = 0; column_index < n_matrix_columns; ++column_index)
           qr.append_column(A[column_index]);
+
         // If A is rank deficent, qr.append_column will not append the column.
         // We check that all columns were added through this assertion
         AssertThrow(qr.size() == n_matrix_columns,

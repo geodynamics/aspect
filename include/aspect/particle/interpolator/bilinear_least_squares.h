@@ -24,6 +24,8 @@
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <aspect/particle/interpolator/nearest_neighbor.h>
+
 namespace aspect
 {
   namespace Particle
@@ -80,6 +82,12 @@ namespace aspect
            */
           std::vector<double> global_maximum_particle_properties;
           std::vector<double> global_minimum_particle_properties;
+
+          /**
+           * Fallback method if there are too few particles in a cell to
+           * perform a bilinear least squares interpolation.
+           */
+          Interpolator::NearestNeighbor<dim> fallback_interpolator;
       };
     }
   }
