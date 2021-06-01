@@ -138,28 +138,6 @@ namespace aspect
         get_column_names() const;
 
         /**
-         * Returns whether the stored coordinates are equidistant. If
-         * coordinates are equidistant the lookup is more efficient. Returns
-         * false if no coordinates are loaded at the moment.
-         */
-        bool
-        has_equidistant_coordinates() const;
-
-        /**
-         * Returns the coordinates at which data is stored. This function
-         * can be used to determine the number of data points, or to query
-         * data only at exactly the positions at which it is available (avoiding
-         * interpolation).
-         *
-         * @param dimension The spatial direction for which to return the data
-         * coordinates, e.g. 0 for x-direction, 1 for y-direction, or equivalent
-         * values if your data coordinates are other dimensions such as
-         * temperature, pressure.
-         */
-        const std::vector<double> &
-        get_coordinates(const unsigned int dimension) const;
-
-        /**
          * Returns the column index of a column with the given name
          * @p column_name. Throws an exception if no such
          * column exists or no names were provided in the file.
@@ -201,19 +179,9 @@ namespace aspect
         std::vector<std::unique_ptr<Function<dim>>> data;
 
         /**
-         * The coordinate values in each direction as specified in the data file.
-         */
-        std::array<std::vector<double>,dim> coordinate_values;
-
-        /**
          * The maximum value of each component
          */
         std::vector<double> maximum_component_value;
-
-        /**
-         * The min and max of the coordinates in the data file.
-         */
-        std::array<std::pair<double,double>,dim> grid_extent;
 
         /**
          * Number of points in the data grid as specified in the data file.
@@ -227,19 +195,14 @@ namespace aspect
         const double scale_factor;
 
         /**
-         * Stores whether the coordinate values are equidistant or not,
-         * this determines the type of data function stored.
-         */
-        bool coordinate_values_are_equidistant;
-
-        /**
          * Computes the table indices given the size @p sizes of the
          * i-th entry.
          */
         TableIndices<dim>
         compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const;
-
     };
+
+
 
     /**
      * AsciDataBase is a generic plugin used for declaring and reading the
@@ -620,15 +583,6 @@ namespace aspect
          */
         std::vector<std::string>
         get_column_names() const;
-
-        /**
-        * Returns the coordinates at which profile data is stored. This function
-        * can be used to determine the number of data points, or to query
-        * data only at exactly the positions at which it is available (avoiding
-        * interpolation).
-        */
-        const std::vector<double> &
-        get_coordinates() const;
 
         /**
          * Returns the column index of a column with the given name

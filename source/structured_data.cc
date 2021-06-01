@@ -41,8 +41,7 @@ namespace aspect
       components(components),
       data(components),
       maximum_component_value(components),
-      scale_factor(scale_factor),
-      coordinate_values_are_equidistant(false)
+      scale_factor(scale_factor)
     {}
 
 
@@ -53,8 +52,7 @@ namespace aspect
       components(numbers::invalid_unsigned_int),
       data(),
       maximum_component_value(),
-      scale_factor(scale_factor),
-      coordinate_values_are_equidistant(false)
+      scale_factor(scale_factor)
     {}
 
 
@@ -64,28 +62,6 @@ namespace aspect
     StructuredDataLookup<dim>::get_column_names() const
     {
       return data_component_names;
-    }
-
-
-
-    template <int dim>
-    bool
-    StructuredDataLookup<dim>::has_equidistant_coordinates() const
-    {
-      return coordinate_values_are_equidistant;
-    }
-
-
-
-    template <int dim>
-    const std::vector<double> &
-    StructuredDataLookup<dim>::get_coordinates(const unsigned int dimension) const
-    {
-      AssertThrow(dimension < dim,
-                  ExcMessage("There is no spatial dimension number " + std::to_string(dimension)
-                             + " in the current data file."));
-
-      return coordinate_values[dimension];
     }
 
 
@@ -105,6 +81,8 @@ namespace aspect
       return std::distance(data_component_names.begin(),column_position);
     }
 
+
+
     template <int dim>
     std::string
     StructuredDataLookup<dim>::get_column_name_from_index(const unsigned int column_index) const
@@ -116,6 +94,8 @@ namespace aspect
 
       return data_component_names[column_index];
     }
+
+
 
     template <int dim>
     double
@@ -133,6 +113,8 @@ namespace aspect
                                       const std::vector<Table<dim,double> > &raw_data)
     {
       Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
+
+      std::array<std::vector<double>,dim> coordinate_values;
       for (unsigned int d=0; d<dim; ++d)
         {
           coordinate_values[d] = coordinate_values_[d];
@@ -167,7 +149,11 @@ namespace aspect
       // all the coordinates in each direction, which is more costly.
       std::array<unsigned int,dim> table_intervals;
 
-      coordinate_values_are_equidistant = true;
+      // min and max of the coordinates in the data file.
+      std::array<std::pair<double,double>,dim> grid_extent;
+
+
+      bool coordinate_values_are_equidistant = true;
       for (unsigned int d=0; d<dim; ++d)
         {
           table_intervals[d] = table_points[d]-1;
@@ -396,6 +382,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     StructuredDataLookup<dim>::get_data(const Point<dim> &position,
@@ -405,6 +392,8 @@ namespace aspect
       return data[component]->value(position);
     }
 
+
+
     template <int dim>
     Tensor<1,dim>
     StructuredDataLookup<dim>::get_gradients(const Point<dim> &position,
@@ -412,6 +401,7 @@ namespace aspect
     {
       return data[component]->gradient(position,0);
     }
+
 
 
     template <int dim>
@@ -1307,16 +1297,6 @@ namespace aspect
     {
       return lookup->get_data(position,component);
     }
-
-
-
-    template <int dim>
-    const std::vector<double> &
-    AsciiDataProfile<dim>::get_coordinates() const
-    {
-      return lookup->get_coordinates(0);
-    }
-
 
 
 // Explicit instantiations
