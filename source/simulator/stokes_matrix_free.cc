@@ -885,16 +885,21 @@ namespace aspect
 
     this->set_constrained_entries_to_one(diagonal);
     inverse_diagonal = diagonal;
-    const unsigned int local_size = inverse_diagonal.local_size();
-    for (unsigned int i=0; i<local_size; ++i)
+
+    // Finally loop over all of the computed diagonal elements and invert them.
+    // The following loop relies on the fact that inverse_diagonal.begin()/end()
+    // iterates only over the *locally owned* elements of the vector in which
+    // we store inverse_diagonal.
+    for (auto &local_element : inverse_diagonal)
       {
-        Assert(inverse_diagonal.local_element(i) > 0.,
+        Assert(local_element > 0.,
                ExcMessage("No diagonal entry in a positive definite operator "
-                          "should be zero"));
-        inverse_diagonal.local_element(i)
-          =1./inverse_diagonal.local_element(i);
+                          "should be zero or negative."));
+        local_element = 1./local_element;
       }
   }
+
+
 
   template <int dim, int degree_p, typename number>
   void
@@ -966,6 +971,8 @@ namespace aspect
       }
   }
 
+
+
   /**
    * Velocity block operator
    */
@@ -975,6 +982,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number> >()
   {}
 
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::clear ()
@@ -982,6 +991,8 @@ namespace aspect
     viscosity = nullptr;
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::clear();
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -992,6 +1003,8 @@ namespace aspect
     viscosity = &viscosity_table;
     this->is_compressible = is_compressible;
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -1036,6 +1049,8 @@ namespace aspect
       }
   }
 
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>
@@ -1045,6 +1060,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::
     data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -1062,15 +1079,20 @@ namespace aspect
 
     this->set_constrained_entries_to_one(inverse_diagonal);
 
-    for (unsigned int i=0; i<inverse_diagonal.local_size(); ++i)
+    // Finally loop over all of the computed diagonal elements and invert them.
+    // The following loop relies on the fact that inverse_diagonal.begin()/end()
+    // iterates only over the *locally owned* elements of the vector in which
+    // we store inverse_diagonal.
+    for (auto &local_element : inverse_diagonal)
       {
-        Assert(inverse_diagonal.local_element(i) > 0.,
+        Assert(local_element > 0.,
                ExcMessage("No diagonal entry in a positive definite operator "
-                          "should be zero"));
-        inverse_diagonal.local_element(i) =
-          1./inverse_diagonal.local_element(i);
+                          "should be zero or negative."));
+        local_element = 1./local_element;
       }
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -1147,13 +1169,16 @@ namespace aspect
 
     this->set_constrained_entries_to_one(inverse_diagonal);
 
-    for (unsigned int i=0; i<inverse_diagonal.local_size(); ++i)
+    // Finally loop over all of the computed diagonal elements and invert them.
+    // The following loop relies on the fact that inverse_diagonal.begin()/end()
+    // iterates only over the *locally owned* elements of the vector in which
+    // we store inverse_diagonal.
+    for (auto &local_element : inverse_diagonal)
       {
-        Assert(inverse_diagonal.local_element(i) > 0.,
+        Assert(local_element > 0.,
                ExcMessage("No diagonal entry in a positive definite operator "
-                          "should be zero"));
-        inverse_diagonal.local_element(i) =
-          1./inverse_diagonal.local_element(i);
+                          "should be zero or negative."));
+        local_element = 1./local_element;
       }
   }
 
