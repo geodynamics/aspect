@@ -460,7 +460,11 @@ namespace aspect
 
     // if using a cached mapping, update the cache with the new triangulation
     if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
-      map->initialize(triangulation,MappingQGeneric<dim>(4));
+#if DEAL_II_VERSION_GTE(9,3,0)
+      map->initialize(MappingQGeneric<dim>(4), triangulation);
+#else
+      map->initialize(triangulation, MappingQGeneric<dim>(4));
+#endif
 
     setup_dofs();
     global_volume = GridTools::volume (triangulation, *mapping);

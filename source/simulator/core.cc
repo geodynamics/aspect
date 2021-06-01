@@ -438,7 +438,11 @@ namespace aspect
 
     // After creating the coarse mesh, initialize mapping cache if one is used
     if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
-      map->initialize(triangulation,MappingQGeneric<dim>(4));
+#if DEAL_II_VERSION_GTE(9,3,0)
+      map->initialize(MappingQGeneric<dim>(4), triangulation);
+#else
+      map->initialize(triangulation, MappingQGeneric<dim>(4));
+#endif
 
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
@@ -1651,7 +1655,11 @@ namespace aspect
 
       triangulation.execute_coarsening_and_refinement ();
       if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
-        map->initialize(triangulation,MappingQGeneric<dim>(4));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        map->initialize(MappingQGeneric<dim>(4), triangulation);
+#else
+        map->initialize(triangulation, MappingQGeneric<dim>(4));
+#endif
     } // leave the timed section
 
     setup_dofs ();
@@ -1900,7 +1908,11 @@ namespace aspect
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
             if (MappingQCache<dim> *map = dynamic_cast<MappingQCache<dim>*>(&(*mapping)))
-              map->initialize(triangulation,MappingQGeneric<dim>(4));
+#if DEAL_II_VERSION_GTE(9,3,0)
+              map->initialize(MappingQGeneric<dim>(4), triangulation);
+#else
+              map->initialize(triangulation, MappingQGeneric<dim>(4));
+#endif
           }
 
         setup_dofs();
