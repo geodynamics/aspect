@@ -522,7 +522,7 @@ namespace aspect
         }
       else // face->has_children() so always assemble from here
         {
-          for (unsigned int subface_no=0; subface_no< face->number_of_children(); ++subface_no)
+          for (unsigned int subface_no=0; subface_no< face->n_children(); ++subface_no)
             {
               const typename DoFHandler<dim>::active_cell_iterator neighbor_child
                 = ( cell_has_periodic_neighbor
