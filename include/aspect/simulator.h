@@ -68,7 +68,10 @@ DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
 #include <boost/iostreams/tee.hpp>
 #include <boost/iostreams/stream.hpp>
+
 #include <memory>
+#include <thread>
+
 
 namespace aspect
 {
@@ -1882,7 +1885,7 @@ namespace aspect
        * either if we want to write the statistics object for the next thread,
        * or if we want to terminate altogether.
        */
-      Threads::Thread<>                   output_statistics_thread;
+      std::thread                         output_statistics_thread;
       /**
        * @}
        */

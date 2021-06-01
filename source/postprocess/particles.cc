@@ -171,13 +171,18 @@ namespace aspect
       write_in_background_thread(false)
     {}
 
+
+
     template <int dim>
     Particles<dim>::~Particles ()
     {
       // make sure a thread that may still be running in the background,
       // writing data, finishes
-      background_thread.join ();
+      if (background_thread.joinable())
+        background_thread.join ();
     }
+
+
 
     template <int dim>
     // We need to pass the arguments by value, as this function can be called on a separate thread:
@@ -432,14 +437,16 @@ namespace aspect
                   if (write_in_background_thread)
                     {
                       // Wait for all previous write operations to finish, should
-                      // any be still active,
-                      background_thread.join ();
+                      // any be still active, ...
+                      if (background_thread.joinable())
+                        background_thread.join ();
 
-                      // then continue with writing our own data.
-                      background_thread = Threads::new_thread (&writer,
-                                                               filename,
-                                                               temporary_output_location,
-                                                               file_contents);
+                      // ...then continue with writing our own data.
+                      background_thread
+                        = std::thread([&]()
+                      {
+                        writer (filename, temporary_output_location, file_contents);
+                      });
                     }
                   else
                     writer(filename,temporary_output_location,file_contents);

@@ -229,7 +229,8 @@ namespace aspect
     {
       // Make sure that any thread that may still be running in the background,
       // writing data, finishes
-      background_thread.join ();
+      if (background_thread.joinable())
+        background_thread.join ();
     }
 
 
@@ -488,11 +489,15 @@ namespace aspect
               if (write_in_background_thread)
                 {
                   // Wait for all previous write operations to finish, should
-                  // any be still active,
-                  output_history.background_thread.join();
-                  // then continue with writing our own data.
-                  output_history.background_thread = Threads::new_thread(&writer,
-                                                                         filename, temporary_output_location, file_contents);
+                  // any be still active, ...
+                  if (output_history.background_thread.joinable())
+                    output_history.background_thread.join();
+                  // ...then continue with writing our own data.
+                  output_history.background_thread
+                    = std::thread([&]()
+                  {
+                    writer (filename, temporary_output_location, file_contents);
+                  });
                 }
               else
                 writer(filename, temporary_output_location, file_contents);

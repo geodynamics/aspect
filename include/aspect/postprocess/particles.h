@@ -28,7 +28,10 @@
 
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/base/data_out_base.h>
+
+#include <thread>
 #include <tuple>
+
 
 namespace aspect
 {
@@ -280,7 +283,7 @@ namespace aspect
          * Handle to a thread that is used to write data in the background.
          * The writer() function runs on this background thread.
          */
-        Threads::Thread<void> background_thread;
+        std::thread background_thread;
 
         /**
          * Stores the particle property fields which are excluded from output

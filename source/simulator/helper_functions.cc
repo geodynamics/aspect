@@ -264,7 +264,8 @@ namespace aspect
     // Before we can start working on a new thread, we need to
     // make sure that the previous thread is done or they'll
     // step on each other's feet.
-    output_statistics_thread.join();
+    if (output_statistics_thread.joinable())
+      output_statistics_thread.join();
 
     // TODO[C++14]: The following code could be made significantly simpler
     // if we could just copy the statistics table as part of the capture
@@ -369,7 +370,7 @@ namespace aspect
       statistics_last_write_size = statistics_contents.size();
       statistics_last_hash       = std::hash<std::string>()(statistics_contents);
     };
-    output_statistics_thread = Threads::new_thread (write_statistics);
+    output_statistics_thread = std::thread (write_statistics);
   }
 
 

@@ -523,7 +523,8 @@ namespace aspect
     particle_world.reset(nullptr);
     // wait if there is a thread that's still writing the statistics
     // object (set from the output_statistics() function)
-    output_statistics_thread.join();
+    if (output_statistics_thread.joinable())
+      output_statistics_thread.join();
 
     // If an exception is being thrown (for example due to AssertThrow()), we
     // might end up here with currently active timing sections. The destructor
