@@ -104,7 +104,12 @@ namespace aspect
       public:
         void initialize() override
         {
-          reference_viscosity_coordinates = reference_viscosity_profile->get_coordinates();
+          this->reference_viscosity_coordinates =
+            std::vector<double> {0.0000000e+00,
+                                 1.0000000e+06,
+                                 2.0000000e+06,
+                                 3.0000000e+06
+                                };
         }
 
         void update() override
