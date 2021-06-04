@@ -29,9 +29,9 @@ end
 
 
 subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = grain_size, gypsum_density, gypsum_vp, gypsum_vs
-  set Compositional field methods = prescribed field, static, static, static
+  set Number of fields = 2
+  set Names of fields = grain_size, vs_anomaly
+  set Compositional field methods = prescribed field, static
 end
 
 
@@ -39,7 +39,7 @@ subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    set Function expression = 0.001;0;0;0
+    set Function expression = 0.001;0
   end
 end
 
@@ -53,8 +53,6 @@ subsection Material model
   set Model name = equilibrium grain size
 
   subsection Equilibrium grain size model
-    set Use GyPSuM density               = false
-
     set Reference density                = 3400
     set Thermal conductivity             = 0
     set Thermal expansion coefficient    = 0
@@ -63,7 +61,7 @@ subsection Material model
     set Minimum viscosity                = 1e10
     set Maximum viscosity                = 1e30
     set Reference temperature            = 1600
-    set Minimum grain size        = 1e-6
+    set Minimum grain size               = 1e-6
 
     set Grain growth activation energy       = 4e5
     set Grain growth activation volume       = 0.0
@@ -91,6 +89,11 @@ subsection Material model
     set Dislocation creep exponent           =3.5
     set Dislocation activation energy        =530000 # J/mol
     set Dislocation activation volume        =1.40E-005 # m^3/mol
+    
+    subsection Crustal depths
+      set Data directory                            = ../../input_data/
+      set Data file name                            = crust_2D_zero_thickness.txt
+    end
 
   end
 end
@@ -128,10 +131,18 @@ end
 
 
 subsection Initial temperature model
-  set List of model names = function
+  set List of model names = function, adiabatic boundary
 
   subsection Function
     set Function expression = 1600
+  end
+  
+  subsection Adiabatic boundary 
+    set Data directory = ../../input_data/
+    set Data file name = crust_2D_zero_thickness.txt
+    set Adiabatic temperature gradient = 0
+    set Isotherm temperature = 0
+    set Surface temperature = 0
   end
 end
 

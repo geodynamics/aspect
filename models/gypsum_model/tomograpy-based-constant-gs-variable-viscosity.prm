@@ -1,0 +1,47 @@
+include tomograpy-based-constant-gs.prm
+
+set World builder file                     = ../../input_data/world_builder_nuvel_ridges_trenches_boundaries.json
+set Output directory                       = tomography_nuvel_faults_trenches_ridges
+set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so
+set Dimension                              = 3
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields = grain_size, Vp, Vs, vs_anomaly, ridges, trenches
+  set Compositional field methods = prescribed field, static, static, static, static, static
+end
+
+
+subsection Initial composition model
+  set List of model names = ascii data , world builder
+
+# We just need to add another composition with value of 0 into our tomography model. It would
+# be same for cratons in world builder since we don't care which additional composition is 
+# added. 
+  subsection Ascii data model
+    set Data directory = ../../input_data/
+    set Data file name = LLNL_velocity_model_wb_craton.txt
+  end
+
+  subsection World builder
+    set List of relevant compositions = ridges, trenches
+  end
+end
+
+
+subsection Material model
+  set Model name         = equilibrium grain size
+  set Material averaging = harmonic average only viscosity
+
+  subsection Equilibrium grain size model
+    set Use faults                  = true
+    set Use varying fault viscosity = true
+    
+    subsection Varying fault viscosity
+      set Ridge viscosity           = 1e22
+      set Trench viscosity          = 1e20
+    end
+  end
+end
