@@ -80,18 +80,18 @@ namespace aspect
         switch (dim)
           {
             case 2:
-              names.emplace_back("strain_rate_xx");
-              names.emplace_back("strain_rate_yy");
-              names.emplace_back("strain_rate_xy");
+              names.emplace_back("surface_strain_rate_tensor_xx");
+              names.emplace_back("surface_strain_rate_tensor_yy");
+              names.emplace_back("surface_strain_rate_tensor_xy");
               break;
 
             case 3:
-              names.emplace_back("strain_rate_xx");
-              names.emplace_back("strain_rate_yy");
-              names.emplace_back("strain_rate_zz");
-              names.emplace_back("strain_rate_xy");
-              names.emplace_back("strain_rate_xz");
-              names.emplace_back("strain_rate_yz");
+              names.emplace_back("surface_strain_rate_tensor_xx");
+              names.emplace_back("surface_strain_rate_tensor_yy");
+              names.emplace_back("surface_strain_rate_tensor_zz");
+              names.emplace_back("surface_strain_rate_tensor_xy");
+              names.emplace_back("surface_strain_rate_tensor_xz");
+              names.emplace_back("surface_strain_rate_tensor_yz");
               break;
 
             default:
