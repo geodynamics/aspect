@@ -64,8 +64,8 @@ namespace aspect
             const double eta = out.viscosities[q];
 
             // Compressive stress is positive in geoscience applications
-            const SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
-                                                  in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
+                                            in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == true)
@@ -99,25 +99,31 @@ namespace aspect
       SurfaceStress<dim>::get_names () const
       {
         std::vector<std::string> names;
-        switch (dim)
+        if (this->get_parameters().enable_elasticity == true)
           {
-            case 2:
-              names.emplace_back("ve_stress_xx");
-              names.emplace_back("ve_stress_yy");
-              names.emplace_back("ve_stress_xy");
-              break;
+            names.emplace_back("surface_ve_stress_xx");
+            names.emplace_back("surface_ve_stress_yy");
+            names.emplace_back("surface_ve_stress_xy");
 
-            case 3:
-              names.emplace_back("ve_stress_xx");
-              names.emplace_back("ve_stress_yy");
-              names.emplace_back("ve_stress_zz");
-              names.emplace_back("ve_stress_xy");
-              names.emplace_back("ve_stress_xz");
-              names.emplace_back("ve_stress_yz");
-              break;
+            if (dim == 3)
+              {
+                names.emplace_back("surface_ve_stress_zz");
+                names.emplace_back("surface_ve_stress_xz");
+                names.emplace_back("surface_ve_stress_yz");
+              }
+          }
+        else
+          {
+            names.emplace_back("surface_stress_xx");
+            names.emplace_back("surface_stress_yy");
+            names.emplace_back("surface_stress_xy");
 
-            default:
-              Assert (false, ExcNotImplemented());
+            if (dim == 3)
+              {
+                names.emplace_back("surface_stress_zz");
+                names.emplace_back("surface_stress_xz");
+                names.emplace_back("surface_stress_yz");
+              }
           }
 
         return names;
