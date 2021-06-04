@@ -76,22 +76,39 @@ namespace aspect
         void update();
 
         /**
+         * Compute the reference viscosity against which the viscosities in the model
+         * are scaled. The reference viscosity is from a depth-dependent ascii profile and
+         * the function returns as the second parameter in the pair the support point in
+         * that profile that has the next smaller depth value than the input parameter
+         * @p depth.
+         */
+        std::pair<double, unsigned int>
+        get_reference_viscosity (const double depth) const;
+
+        /**
+         * Return the depth of the base of the uppermost mantle. Below that depth,
+         * material properties are based on seismic tomography. Above that depth, material
+         * properties are computed based on the model of Tutu et al., 2018.
+         */
+        double
+        get_uppermost_mantle_thickness () const;
+
+        /**
          * Compute the scaling factors for each depth layer such that the laterally
-         * averaged viscosiy in that layer is same as the reference vicosity.
+         * averaged viscosiy in that layer is the same as the reference vicosity.
          */
         double
         compute_viscosity_scaling (const double depth) const;
 
         /**
-         * Return whether the model is compressible or not.  Incompressibility
-         * does not necessarily imply that the density is constant; rather, it
-         * may still depend on temperature or pressure. In the current
-         * context, compressibility means whether we should solve the contuity
-         * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-         * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
+         * Return whether the model is compressible or not.
          */
         virtual bool is_compressible () const;
 
+        /**
+         * This function is not defined because we use get_reference_viscosity() function
+         * instead but kept here according to material model interface.
+         */
         virtual double reference_viscosity () const;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
@@ -123,32 +140,8 @@ namespace aspect
          * @}
          */
 
-        /**
-         * Returns the enthalpy as calculated by HeFESTo.
-         */
-        double enthalpy (const double      temperature,
-                         const double      pressure,
-                         const std::vector<double> &compositional_fields,
-                         const Point<dim> &position) const;
-
-        /**
-         * Returns the cell-wise averaged enthalpy derivatives for the evaluate
-         * function and postprocessors. The function returns two pairs, the
-         * first one represents the temperature derivative, the second one the
-         * pressure derivative. The first member of each pair is the derivative,
-         * the second one the number of vertex combinations the function could
-         * use to compute the derivative. The second member is useful to handle
-         * the case no suitable combination of vertices could be found (e.g.
-         * if the temperature and pressure on all vertices of the current
-         * cell is identical.
-         */
-        std::array<std::pair<double, unsigned int>,2>
-        enthalpy_derivative (const typename Interface<dim>::MaterialModelInputs &in) const;
-
       protected:
         double reference_rho;
-        double reference_T;
-        double eta;
         double thermal_alpha;
         double reference_specific_heat;
 
@@ -202,20 +195,39 @@ namespace aspect
         std::vector<double> diffusion_activation_volume;
         std::vector<double> diffusion_creep_prefactor;
         std::vector<double> diffusion_creep_grain_size_exponent;
+
         /**
          * Reference viscosity profile coordinates, and the corresponding viscosity.
          */
         std::vector<double> reference_viscosity_coordinates;
-        std::unique_ptr<Rheology::AsciiDepthProfile<dim> > reference_viscosity_profile;
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim>> reference_viscosity_profile;
 
         /**
          * A reference profile for density scaling.
          */
         Utilities::AsciiDataProfile<dim> rho_vs_depth_profile;
+
         /**
          * The column indices of the density scaling column in the ascii profile file.
          */
         unsigned int density_scaling_index;
+
+
+        /**
+         * A reference profile for the thermal expansivity.
+         */
+        Utilities::AsciiDataProfile<dim> thermal_expansivity_profile;
+        unsigned int thermal_expansivity_column_index;
+
+        /**
+         * A reference profile for temperatura scaling. Values are from Steinberger and
+         * Calderwood, 2006.
+         */
+        Utilities::AsciiDataProfile<dim> dT_vs_depth_profile;
+        /**
+         * The column indices of the density scaling column in the ascii profile file.
+         */
+        unsigned int temperature_scaling_index;
 
         /**
          * An object of ascii data boundary to input crustal depths.
@@ -227,7 +239,7 @@ namespace aspect
          * in the current model. Can be used to compare (and potentially scale)
          * the computed viscosity to the reference profile.
          */
-        std::vector<double> laterally_averaged_viscosity_profile;
+        std::vector<double> average_viscosity_profile;
 
         /**
          * Variable returned  to determine if the evaluate () funciton is called and
@@ -250,7 +262,6 @@ namespace aspect
         double max_thermal_expansivity;
         unsigned int max_latent_heat_substeps;
         double min_grain_size;
-        double pv_grain_size_scaling;
 
         double diffusion_viscosity (const double      temperature,
                                     const double      pressure,
@@ -315,15 +326,10 @@ namespace aspect
                                 const std::vector<double> &compositional_fields,
                                 const Point<dim> &position) const;
 
-        double specific_heat (const double temperature,
-                              const double pressure,
-                              const std::vector<double> &compositional_fields,
-                              const Point<dim> &position) const;
-
-        double thermal_expansion_coefficient (const double      temperature,
-                                              const double      pressure,
-                                              const std::vector<double> &compositional_fields,
-                                              const Point<dim> &position) const;
+        double thermal_expansivity (const double temperature,
+                                    const double pressure,
+                                    const std::vector<double> &compositional_fields,
+                                    const Point<dim> &position) const;
 
         /**
          * Returns the p-wave velocity as calculated by HeFESTo.
@@ -382,15 +388,6 @@ namespace aspect
         std::vector<std::string> derivatives_file_names;
         unsigned int n_material_data;
         bool use_table_properties;
-        bool use_enthalpy;
-        bool use_bilinear_interpolation;
-
-        /**
-         * A flag indicating whether ASPECT computes the density, or whether
-         * we require a compositional field called 'gypsum_density' and use it
-         * as density field.
-         */
-        bool use_gypsum_density;
 
         /**
          * Parameter value that determines whether to read the viscosity with depth
@@ -405,10 +402,64 @@ namespace aspect
         bool use_depth_dependent_rho_vs;
 
         /**
+         * Parameter value that determines whether to read the thermal expansivity
+         * from an ascii data file.
+        */
+        bool use_depth_dependent_thermal_expansivity;
+
+        /**
+         * Parameter value that determines whether to read the temperature scaling with depth
+         * from an ascii data file.
+        */
+        bool use_depth_dependent_dT_vs;
+
+        /**
          * Parameter that determines if faults or plate boundaries are used as another
          * compositional field.
          */
         bool use_faults;
+
+        /**
+         * Parameter that determines the viscosity of faults or plate boundaries.
+         */
+        double fault_viscosity;
+
+        /**
+         * Parameter that determines if ridges or trenches have different viscosities
+         */
+        bool use_varying_fault_viscosity;
+
+        /**
+         * Parameter that determines if lithospheric depths vary or not
+         */
+        bool use_constant_lithosphere_thickness;
+
+        /**
+         * Parameter that determines the viscosity of faults at ridges.
+         */
+        double ridge_viscosity;
+
+        /**
+         * Parameter that determines the viscosity of faults at trenches.
+         */
+        double trench_viscosity;
+
+        /**
+         * Parameter that determines the asthenosphere viscosity. By default, use
+         * the value from the Steinberger & Calderwood reference viscosity profile.
+         */
+        double asthenosphere_viscosity;
+
+        /**
+         * Parameter that determines if we want to use viscous and neutrally buoyant cratons as
+         * another compositional field.
+         */
+        bool use_cratons;
+
+        /**
+         * Parameter that determines the viscosity for cratons.
+         */
+        double craton_viscosity;
 
         /**
          * Approximate lithosphere thickness used to separate the regions of
@@ -437,7 +488,7 @@ namespace aspect
          * material data files. There is one pointer/object per compositional
          * field provided.
          */
-        std::vector<std::shared_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+        std::vector<std::shared_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
     };
 
   }

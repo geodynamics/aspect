@@ -46,23 +46,5 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "equilibrium_grain_size")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED equilibrium_grain_size.cc equilibrium_grain_size.h)
-ASPECT_SETUP_PLUGIN(${TARGET})
-
-SET(TARGET "reference_profile")
-PROJECT(${TARGET})
-
-ADD_LIBRARY(${TARGET} SHARED reference_profile.h reference_profile.cc)
-ASPECT_SETUP_PLUGIN(${TARGET})
-
-SET(TARGET "velocity_residual")
-PROJECT(${TARGET})
-
-ADD_LIBRARY(${TARGET} SHARED velocity_residual.h velocity_residual.cc)
-ASPECT_SETUP_PLUGIN(${TARGET})
-
-SET(TARGET "strain_residual")
-PROJECT(${TARGET})
-
-ADD_LIBRARY(${TARGET} SHARED strain_residual.h strain_residual.cc)
+ADD_LIBRARY(${TARGET} SHARED equilibrium_grain_size.cc equilibrium_grain_size.h reference_profile.h reference_profile.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
