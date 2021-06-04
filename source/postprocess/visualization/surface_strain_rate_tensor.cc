@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -41,7 +41,6 @@ namespace aspect
                 ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
 
-        // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             Tensor<2,dim> grad_u;
@@ -56,10 +55,6 @@ namespace aspect
                  :
                  strain_rate);
 
-            //for (unsigned int d=0; d<dim; ++d)
-            //  for (unsigned int e=0; e<dim; ++e)
-            //    computed_quantities[q][SymmetricTensor<2,dim>::component_to_unrolled_index(TableIndices<2>(d,e))]
-            //      = deviatoric_strain_rate[d][e];
             for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
               computed_quantities[q](i) = deviatoric_strain_rate[deviatoric_strain_rate.unrolled_to_component_indices(i)];
           }
@@ -70,6 +65,7 @@ namespace aspect
           average_quantities(computed_quantities);
 
       }
+
 
 
       template <int dim>
@@ -100,6 +96,7 @@ namespace aspect
 
         return names;
       }
+
 
 
       template <int dim>
