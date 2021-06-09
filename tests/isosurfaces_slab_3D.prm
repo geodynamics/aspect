@@ -1,5 +1,5 @@
 # This input file tests the box geometry in
-# combination with the isosurfaces plugin to refine a 2D slab
+# combination with the isosurfaces plugin to refine a 3D slab
 include $ASPECT_SOURCE_DIR/tests/isosurfaces_slab_2D.prm
 
 set Dimension = 3

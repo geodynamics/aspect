@@ -1,4 +1,4 @@
-# This input file tests the isosurface mesh refinment plugin
+# This input file tests the isosurface mesh refinement plugin
 
 set Dimension = 2
 set CFL number                             = 1.0

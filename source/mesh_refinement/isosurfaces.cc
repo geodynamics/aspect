@@ -54,7 +54,8 @@ namespace aspect
         return true;
       }
 
-      Property::Property(const std::string &property_name,const std::vector<std::string> &available_compositions)
+      Property::Property(const std::string &property_name,
+                         const std::vector<std::string> &available_compositions)
       {
         bool found = false;
         if (property_name == "Temperature")
@@ -75,7 +76,7 @@ namespace aspect
           }
         if (found == false)
           {
-            // The property name has not been found. This could come from that the compositional field is not present.
+            // The property name has not been found. This could be because the compositional field is not present.
             // Abort and warn the user.
             std::string key_list = "Temperature";
             for (auto &composition : available_compositions)
@@ -90,15 +91,17 @@ namespace aspect
       /**
        * Convert a string describing the refinement level which potentially contains a min
        * or max statement included in them to an integer. The format is "min", "max", "min+X", "max-X", or "X", where X is a positive integer.
-
-       For example if minimum_refinement_level
+      *
+       * For example if minimum_refinement_level
        * is 1, and the string is 'min+1', it will return 2. The returned value will be capped
        * by the provided @p minimum_refinement_level and @p maximum_refinement_level.
        *
        * This function will throw an assertion when the string contains `max+` or `min-` since
        * that is always incorrect.
        */
-      unsigned int min_max_string_to_int(const std::string &string_value, const unsigned int minimum_refinement_level, const unsigned int  maximum_refinement_level)
+      unsigned int min_max_string_to_int(const std::string &string_value,
+                                         const unsigned int minimum_refinement_level,
+                                         const unsigned int maximum_refinement_level)
       {
         // start with removing the spaces so that a ' min + 1 ' would become 'min+1'.
         std::string string = string_value;
@@ -164,7 +167,6 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values | update_gradients);
 
-
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(),
                                                  this->n_compositional_fields());
 
@@ -222,7 +224,7 @@ namespace aspect
                               clear_refine = true;
                             }
 
-                          // If the current refinement level is larger than the maximum refinemment level,
+                          // If the current refinement level is larger than the maximum refinement level,
                           // a coarsening flag should be placed.
                           if (cell->level() >  isosurface.max_refinement)
                             {
@@ -241,7 +243,7 @@ namespace aspect
                 coarsen = false;
 
               // Perform the actual placement of the coarsening and refinement flags.
-              if (clear_coarsen == true)
+              if (clear_coarsen)
                 {
                   cell->clear_coarsen_flag ();
                 }
@@ -275,11 +277,11 @@ namespace aspect
                              "A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of "
                              "multiple entries separated by a comma. The first two entries indicate the minimum and maximum "
                              "refinement levels respectively. The entries after the first two describe the fields the isosurface "
-                             "applies to, followed by a colon (:), which again followed by the minimum and maximum grid levels separated by "
+                             "applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by "
                              "bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
                              "In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between "
                              "300 and 600 and at level 2 when the compositional field C\\_1 is between 0.5 and 1. If both happen at "
-                             "the same location, the last one is set, which in this case would be a fixed level 2."
+                             "the same location, the conditions for the last isosurface are used, which in this case would be a fixed level 2."
                              "\n\n"
                              "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
                              "two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with "
@@ -290,7 +292,7 @@ namespace aspect
                              "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
                              "mesh refinement level below the global minimum or above the global maximum."
                              "\n\n"
-                             "If isosurfaces overlap, the last one sets the values.");
+                             "If isosurfaces overlap, the last isosurface listed in the input determines the refinement levels.");
 
         }
         prm.leave_subsection();
@@ -306,7 +308,8 @@ namespace aspect
       {
         // lookup the minimum and maximum refinement
         const unsigned int minimum_refinement_level = this->get_parameters().min_grid_level;
-        const unsigned int maximum_refinement_level = this->get_parameters().initial_global_refinement + this->get_parameters().initial_adaptive_refinement;
+        const unsigned int maximum_refinement_level = this->get_parameters().initial_global_refinement +
+                                                      this->get_parameters().initial_adaptive_refinement;
 
         const std::vector<std::string> &compositions = this->introspection().get_composition_names();
         prm.enter_subsection("Isosurfaces");
@@ -344,11 +347,11 @@ namespace aspect
                   properties.push_back(internal::Property(key_and_value[0], compositions)); // convert key to property name
                   const std::vector<std::string> values = dealii::Utilities::split_string_list(key_and_value[1], '|');
                   AssertThrow(values.size() == 2,
-                              ExcMessage("Both a maximum and a minimum values are required for each isosurface."));
+                              ExcMessage("Both a maximum and a minimum value are required for each isosurface."));
                   min_value_inputs.push_back(Utilities::string_to_double(values[0]));  // get min and max values of the range
                   max_value_inputs.push_back(Utilities::string_to_double(values[1]));
                   AssertThrow(min_value_inputs.back() < max_value_inputs.back(),
-                              ExcMessage("The provided maximum refinement level has to be larger than the provided minimum refinement level."));
+                              ExcMessage("The provided maximum property value has to be larger than the provided minimum property value."));
                 }
               isosurface.min_values = min_value_inputs;
               isosurface.max_values = max_value_inputs;
@@ -371,14 +374,14 @@ namespace aspect
     ASPECT_REGISTER_MESH_REFINEMENT_CRITERION(Isosurfaces,
                                               "isosurfaces",
                                               "A mesh refinement criterion that computes "
-                                              "refinement indicators between two iso-surfaces of "
+                                              "coarsening and refinement indicators between two isosurfaces of "
                                               "specific field entries (e.g. temperature, composition)."
                                               "\n\n"
-                                              "The way these indicators are derived on each isosurface is by "
+                                              "The way these indicators are derived between pairs of isosurfaces is by "
                                               "checking whether the solutions of specific "
-                                              "fields are within the ranges of values given. If these conditions "
-                                              "hold, then an indicator is either put on or taken off "
-                                              "in order to secure mesh refinement within the range of levels "
+                                              "fields are within the ranges of the isosurface values given. If these conditions "
+                                              "hold, then coarsening and refinement indicator are set such that "
+                                              "the mesh refinement levels lies within the range of levels "
                                               "given. Usage of this plugin allows the user to put a conditional "
                                               "minimum and maximum refinement function onto fields that they "
                                               "are interested in."
@@ -388,14 +391,14 @@ namespace aspect
                                               "of the compositional fields which are either specified by user or set up "
                                               "as C\\_0, C\\_1, etc."
                                               "\n\n"
-                                              "Usage: A list of isosurface separated by semi-colons (;). Each "
+                                              "Usage: A list of isosurfaces separated by semi-colons (;). Each "
                                               "isosurface entry consists of multiple entries separated by a comma. "
                                               "The first two entries indicate the minimum and maximum refinement "
                                               "levels respectively. The entries after the first two describe the "
                                               "fields the isosurface applies to, followed by a colon (:), which again "
-                                              "followed by the minimum and maximum grid levels separated by bar (|). An "
-                                              "example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
-                                              "If isosurfaces overlap, the last one sets the values. "
+                                              "is followed by the minimum and maximum field values separated by bar (|). An "
+                                              "example for two isosurface entires is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
+                                              "If isosurfaces overlap, the last isosurface entry specified in the input file dictates refinement. "
                                              )
   }
 }

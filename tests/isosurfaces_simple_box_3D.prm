@@ -1,4 +1,4 @@
-# This input file tests the isosurface mesh refinment plugin
+# This input file tests the isosurface mesh refinement plugin
 include $ASPECT_SOURCE_DIR/tests/isosurfaces_simple_box_2D.prm
 
 set Dimension = 3

@@ -46,7 +46,7 @@ namespace aspect
           /**
            * Constructor. Converts a property name into a structure containing a property type
            * and an index. If the property contains multiple items (e.g. the property compositional field has a
-           * field index) the index refering to the particluar item of that proparty is stored in the variable index.
+           * field index) the index referring to the particular item of that property is stored in the variable index.
            * @param property_name The name of a property, which can be Temperature for the temperature field or
            * the name of a compositional field listed in the parameter available_compositions.
            * @param available_compositions A list of names of the available compositional fields.
@@ -58,7 +58,6 @@ namespace aspect
            * The Property type of the property
            */
           PropertyType type;
-
 
           /**
            * An index, in case the property type contains multiple values. This is
@@ -76,7 +75,7 @@ namespace aspect
            * set properties of the isosurface. This function assumes that the order of the
            * provided @p values matches the order in which the properties are stored.
            *
-           * This function assumes than @p values and all the vectors in isosurfaces already
+           * This function assumes that @p values and all the vectors in isosurfaces already
            * have the same length.
            */
           bool are_all_values_in_range(const std::vector<double> &values) const;
@@ -92,7 +91,7 @@ namespace aspect
 
     /**
      * A class that implements an Isosurfaces mesh refinement plugin. This
-     * plugin allows for setting a minimum and a maximum refinement levels in
+     * plugin allows for setting a minimum and a maximum refinement level in
      * a part of the model domain where a value (e.g. Temperature) is between
      * two other values (e.g. two isotherms). This is currently implemented
      * for temperature and compositions.

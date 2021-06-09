@@ -1,5 +1,5 @@
-<li> New: A mesh refinement plugin which allows to set regions of minimum and 
-maximum refinment based on specific values (e.g. temperature) between two 
+<li> New: A mesh refinement plugin that allows to set regions of minimum and 
+maximum refinement based on specific values (of e.g. temperature) between two 
 isosurfaces of that value.
 <br>
 (Menno Fraters and Haoyuan Li, 2020/08/10)
