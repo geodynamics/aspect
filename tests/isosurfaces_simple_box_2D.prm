@@ -20,8 +20,6 @@ subsection Gravity model
 end
 
 
-# We take a box geometry and increase the repetitions
-# of the coarse mesh to capture the initial topography.
 subsection Geometry model
   set Model name = box
 
@@ -54,6 +52,7 @@ end
 
 
 subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 3
   set List of model names = function
   subsection Function
     set Function expression = 1613.0
@@ -79,18 +78,11 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 2
   set Strategy = isosurfaces
   subsection Isosurfaces
+    # Although the isosurface entry specifies min/max level 4, refinement level will
+    # not be more than 2 because initial global + initial adaptive = 2
     set Isosurfaces = 4,    4,    Temperature: 0 | 600,   C_2 : 0.0 | 0.5 ;\
                       0,    0,    Temperature: 1600 | 3000,   C_2 : 0.0 | 0.5
   end
-end
-
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 3
 end
 
 subsection Boundary velocity model

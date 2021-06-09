@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -89,12 +89,13 @@ namespace aspect
       }
 
       /**
-       * Convert a string describing the refinement level which potentially contains a min
-       * or max statement included in them to an integer. The format is "min", "max", "min+X", "max-X", or "X", where X is a positive integer.
-      *
-       * For example if minimum_refinement_level
-       * is 1, and the string is 'min+1', it will return 2. The returned value will be capped
-       * by the provided @p minimum_refinement_level and @p maximum_refinement_level.
+       * Convert a string describing the refinement level which potentially contains the words "min"
+       * or "max" to an integer. The format is "min", "max", "min+X", "max-X", or "X", where X is a positive integer.
+       *
+       * For example if minimum_refinement_level  is 1, and the string is 'min+1', it will return 2.
+       * The returned value will be capped  by the provided @p minimum_refinement_level and @p maximum_refinement_level.
+       * The @p minimum_refinement_level and @p maximum_refinement_level are set in this input file subsection for this
+       * plugin, but in the Mesh refinement subsection.
        *
        * This function will throw an assertion when the string contains `max+` or `min-` since
        * that is always incorrect.
@@ -186,7 +187,7 @@ namespace aspect
                 {
                   for (auto &isosurface : isosurfaces)
                     {
-                      // setup the vector to check
+                      // setup the vector containing the isosurfaces
                       std::vector<double> values(isosurface.min_values.size());
                       for (unsigned int index = 0; index < isosurface.properties.size(); ++index)
                         {
@@ -235,30 +236,22 @@ namespace aspect
                 }
 
               // if both coarsen and refine are true, give preference to refinement
-              if (coarsen == true && refine == true)
+              if (coarsen && refine)
                 coarsen = false;
-              if (refine == true)
+              if (refine)
                 clear_refine = false;
-              if (clear_coarsen == true)
+              if (clear_coarsen)
                 coarsen = false;
 
               // Perform the actual placement of the coarsening and refinement flags.
               if (clear_coarsen)
-                {
-                  cell->clear_coarsen_flag ();
-                }
-              if (clear_refine == true)
-                {
-                  cell->clear_refine_flag ();
-                }
-              if (coarsen == true)
-                {
-                  cell->set_coarsen_flag ();
-                }
-              if (refine == true)
-                {
-                  cell->set_refine_flag ();
-                }
+                cell->clear_coarsen_flag ();
+              if (clear_refine)
+                cell->clear_refine_flag ();
+              if (coarsen)
+                cell->set_coarsen_flag ();
+              if (refine)
+                cell->set_refine_flag ();
             }
         }
     }
@@ -281,7 +274,9 @@ namespace aspect
                              "bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
                              "In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between "
                              "300 and 600 and at level 2 when the compositional field C\\_1 is between 0.5 and 1. If both happen at "
-                             "the same location, the conditions for the last isosurface are used, which in this case would be a fixed level 2."
+                             "the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the "
+                             "second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags "
+                             "are set, preference is given to refinement. "
                              "\n\n"
                              "The first two entries for each isosurface, describing the minimum and maximum grid levels, can be "
                              "two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with "
@@ -290,9 +285,7 @@ namespace aspect
                              "number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or "
                              "add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the "
                              "maximum, it will simply use the global minimum and maximum values respectively. The same holds for any "
-                             "mesh refinement level below the global minimum or above the global maximum."
-                             "\n\n"
-                             "If isosurfaces overlap, the last isosurface listed in the input determines the refinement levels.");
+                             "mesh refinement level below the global minimum or above the global maximum.");
 
         }
         prm.leave_subsection();
@@ -380,7 +373,7 @@ namespace aspect
                                               "The way these indicators are derived between pairs of isosurfaces is by "
                                               "checking whether the solutions of specific "
                                               "fields are within the ranges of the isosurface values given. If these conditions "
-                                              "hold, then coarsening and refinement indicator are set such that "
+                                              "hold, then coarsening and refinement indicators are set such that "
                                               "the mesh refinement levels lies within the range of levels "
                                               "given. Usage of this plugin allows the user to put a conditional "
                                               "minimum and maximum refinement function onto fields that they "
@@ -396,9 +389,16 @@ namespace aspect
                                               "The first two entries indicate the minimum and maximum refinement "
                                               "levels respectively. The entries after the first two describe the "
                                               "fields the isosurface applies to, followed by a colon (:), which again "
-                                              "is followed by the minimum and maximum field values separated by bar (|). An "
-                                              "example for two isosurface entires is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
-                                              "If isosurfaces overlap, the last isosurface entry specified in the input file dictates refinement. "
+                                              "is followed by the minimum and maximum field values separated by a bar (|). An "
+                                              "example for two isosurface entries is '0, 2, Temperature: 300 | 600; 2, 2, C\\_1: 0.5 | 1'. "
+                                              "If both isoterm entries are triggered at the same location and the current refinement level is 1, "
+                                              "it means that the first isoline will not set any flag and the second isoline will set a refinement flag. "
+                                              "This means the the cell will refine. If both the coarsening and refinement flags "
+                                              "are set, preference is given to refinement. "
+                                              "\n\n"
+                                              "The minimum and maximum refinement levels per isosurface can be provided in absolute values relative to "
+                                              "the global minimum and maximum refinement. This is done with the 'min' and 'max' key words. For example: "
+                                              "'set Isosurfaces = max-2,  max,    Temperature: 0 | 600 ; min + 1,min+2, Temperature: 1600 | 3000,   C\\_2 : 0.0 | 0.5'."
                                              )
   }
 }

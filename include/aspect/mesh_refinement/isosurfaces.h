@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2014 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -92,9 +92,9 @@ namespace aspect
     /**
      * A class that implements an Isosurfaces mesh refinement plugin. This
      * plugin allows for setting a minimum and a maximum refinement level in
-     * a part of the model domain where a value (e.g. Temperature) is between
-     * two other values (e.g. two isotherms). This is currently implemented
-     * for temperature and compositions.
+     * a part of the model domain where a variable/property (e.g. Temperature)
+     * is between two values (e.g. two isotherms of 274K and 1600K). This is
+     * currently implemented for temperature and compositions.
      *
      * @ingroup MeshRefinement
      */

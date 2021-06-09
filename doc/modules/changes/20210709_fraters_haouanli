@@ -1,0 +1,6 @@
+<li> New: A mesh refinement plugin that allows to set regions of minimum and 
+maximum refinement based on specific values of variables (of e.g. temperature) between two 
+isosurfaces of that value. For example the minimum refinement is 2 and maximum refinement 
+is 4 if the temperature is between 273 K and 1600 K.
+<br>
+(Menno Fraters and Haoyuan Li, 2021/07/09)
