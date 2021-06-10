@@ -1,0 +1,23 @@
+# 1: Time step number
+# 2: Time (seconds)
+# 3: Time step size (seconds)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+# 12: Surface visualization file name
+# 13: RMS velocity (m/s)
+# 14: Max. velocity (m/s)
+# 15: Minimal temperature (K)
+# 16: Average temperature (K)
+# 17: Maximal temperature (K)
+# 18: Average nondimensional temperature (K)
+# 19: Radial RMS velocity (m/s)
+# 20: Tangential RMS velocity (m/s)
+# 21: Total RMS velocity (m/s)
+0 0.000000000000e+00 0.000000000000e+00  768  7235 3201  0 46 48  47 output-shell_surface_base_variables/solution/solution-00000 output-shell_surface_base_variables/solution_surface/solution_surface-00000 1.20140029e-09 3.64457068e-09 1.61300000e+03 1.68185871e+03 2.41300000e+03 1.82503876e-02 8.05847133e-10 8.91051654e-10 1.20140029e-09 
+1 1.568939798451e+13 1.568939798451e+13 1482 14530 6441 47 46 48 192 output-shell_surface_base_variables/solution/solution-00001 output-shell_surface_base_variables/solution_surface/solution_surface-00001 1.25933456e-09 3.75462700e-09 1.54418069e+03 1.68210263e+03 2.55264135e+03 3.65549790e-02 8.50886954e-10 9.28393731e-10 1.25933456e-09 

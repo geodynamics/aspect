@@ -593,6 +593,14 @@ namespace aspect
         bool output_undeformed_mesh;
 
         /**
+         * Whether or not ASPECT should also generate output for the base variables
+         * velocity, pressure, temperature and the compositional fields on the
+         * surface of the mesh. The mesh surface includes all boundaries of the
+         * domain.
+         */
+        bool output_base_variables_on_mesh_surface;
+
+        /**
          * File operations can potentially take a long time, blocking the
          * progress of the rest of the model run. Setting this variable to
          * 'true' moves this process into a background thread, while the
