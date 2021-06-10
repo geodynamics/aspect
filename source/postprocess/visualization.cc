@@ -128,6 +128,88 @@ namespace aspect
       };
 
       /**
+       * This Postprocessor will generate the output variables of velocity,
+       * pressure, temperature, and compositional fields on the surface of the
+       * domain. They can not be added
+       * directly if the velocity needs to be converted from m/s to m/year, so
+       * this is what this class does.
+       * TODO: this is basically a copy of the BaseVariablePostprocessor, so reduce
+       * duplicated code.
+       */
+      template <int dim>
+      class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public DataPostprocessor< dim >, public SimulatorAccess<dim>
+      {
+        public:
+
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const override
+          {
+            const double velocity_scaling_factor =
+              this->convert_output_to_years() ? year_in_seconds : 1.0;
+            const unsigned int n_q_points = input_data.solution_values.size();
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
+                {
+                  // scale velocities and fluid velocities by year_in_seconds if needed
+                  if (this->introspection().component_masks.velocities[i] ||
+                      (this->include_melt_transport()
+                       && this->introspection().variable("fluid velocity").component_mask[i]))
+                    computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
+                  else
+                    computed_quantities[q][i] = input_data.solution_values[q][i];
+                }
+          }
+
+          std::vector<std::string> get_names () const override
+          {
+            std::vector<std::string> solution_names (dim, "surface_velocity");
+
+            if (this->include_melt_transport())
+              {
+                solution_names.emplace_back("surface_p_f");
+                solution_names.emplace_back("surface_p_c_bar");
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_names.emplace_back("surface_u_f");
+              }
+            solution_names.emplace_back("surface_p");
+
+            solution_names.emplace_back("surface_T");
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              solution_names.push_back ("surface_" + this->introspection().name_for_compositional_index(c));
+
+            return solution_names;
+          }
+
+
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+          get_data_component_interpretation () const override
+          {
+            std::vector<DataComponentInterpretation::DataComponentInterpretation>
+            interpretation (dim,
+                            DataComponentInterpretation::component_is_part_of_vector);
+            if (this->include_melt_transport())
+              {
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                for (unsigned int i=0; i<dim; ++i)
+                  interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+              }
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+
+            return interpretation;
+          }
+
+          UpdateFlags get_needed_update_flags () const override
+          {
+            return update_values;
+          }
+      };
+
+      /**
        * This Postprocessor will generate the output variables of mesh velocity
        * for when a deforming mesh is used.
        */
@@ -606,11 +688,15 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
+      internal::SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
+      surface_base_variables.initialize_simulator (this->get_simulator());
+
       // Keep a list of the names of all output variables, to ensure unique names
       std::set<std::string> visualization_field_names;
 
       // Insert base variable names into set of all output field names
       add_data_names_to_set(base_variables.get_names(), visualization_field_names);
+      add_data_names_to_set(surface_base_variables.get_names(), visualization_field_names);
 
       std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
 
@@ -625,15 +711,17 @@ namespace aspect
       // we will use this object for viz purposes.
       DataOutFaces<dim> data_out_faces;
       data_out_faces.attach_dof_handler (this->get_dof_handler());
-      const bool have_face_viz_postprocessors
-        = (std::find_if (postprocessors.begin(),
-                         postprocessors.end(),
-                         [](const std::unique_ptr<VisualizationPostprocessors::Interface<dim> > &p)
-      {
-        return (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
-                (p.get()) != nullptr);
-      })
-      != postprocessors.end());
+      data_out_faces.add_data_vector (this->get_solution(),
+                                surface_base_variables);
+//      const bool have_face_viz_postprocessors
+//        = (std::find_if (postprocessors.begin(),
+//                         postprocessors.end(),
+//                         [](const std::unique_ptr<VisualizationPostprocessors::Interface<dim> > &p)
+//      {
+//        return (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
+//                (p.get()) != nullptr);
+//      })
+//      != postprocessors.end());
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
@@ -796,8 +884,8 @@ namespace aspect
       // Then do the same again for the face data case. We won't print the
       // output file name to screen (too much clutter on the screen already)
       // but still put it into the statistics file
-      if (have_face_viz_postprocessors)
-        {
+//      if (have_face_viz_postprocessors)
+//        {
           data_out_faces.build_patches (this->get_mapping(),
                                         subdivisions);
 
@@ -807,7 +895,7 @@ namespace aspect
                                 this->get_output_directory()
                                 + "solution_surface/"
                                 + face_solution_file_prefix);
-        }
+//        }
 
       // Increment the next time we need output:
       set_last_output_time (this->get_time());
