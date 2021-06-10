@@ -8055,7 +8055,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} initial-geotherm-table
 
 
-{\it Description:} The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_conditions/spherical\_shell.cc.
+{\it Description:} The file from which the initial geotherm table is to be read. The format of the file is defined by what is read in source/initial\_temperature/spherical\_shell.cc.
 
 
 {\it Possible values:} an input filename
@@ -8209,7 +8209,7 @@ The user must specify a ``Base model'' from which material properties are derive
 
 NWD stands for Normalized Weighed Distance. The models with this in front of their name work with a weighed average, which means each quadrature point requires an individual weight. The weight is determined by the distance, where the exact relation is determined by a bell shaped curve. A bell shaped curve is a continuous function which is one at its maximum and exactly zero at and beyond its limit. This bell shaped curve is spanned around each quadrature point to determine the weighting map for each quadrature point. The used bell shape comes from Lucy (1977). The distance is normalized so the largest distance becomes one. This means that if variable ''Bell shape limit'' is exactly one, the farthest quadrature point is just on the limit and its weight will be exactly zero. In this plugin it is not implemented as larger and equal than the limit, but larger than, to ensure the quadrature point at distance zero is always included.
 
-`compositing': The ``compositing'' Material model selects material model properties from a given set of other material models, and is intended to make mixing different material models easier.
+`compositing': The ``compositing'' Material model selects material model properties from a given set of other material models, and is intended to make mixing different material models easier. This is useful, for example, when wanting to use the melting parameterization of the ``melt simple'' model (which has a relatively simple viscosity model that only allows for a temperature- but not strain rate-dependent viscosity) with a more realistic viscosity model such as that provided by the ``diffusion dislocation'' model.
 
 Specifically, this material model works by allowing to specify the name of another material model for each coefficient that material models are asked for (such as the viscosity, density, etc.). Whenever the material model is asked for the values of coefficients, it then evaluates all of the ``base models'' that were listed for the various coefficients, and copies the values returned by these base models into the output structure.
 
@@ -8315,17 +8315,18 @@ This model uses the following equations for the density: \begin{align}  \rho(p,T
 
 \note{This material model fills the role the ``simple'' material model was originally intended to fill, before the latter acquired all sorts of complicated temperature and compositional dependencies.}
 
-`visco plastic': An implementation of an incompressible visco(elastic)-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws. Prior to yielding, one may select to modify the viscosity to account for viscoelastic effects. Plasticity limits viscous stresses through a Drucker Prager yield criterion. Note that this material model is based heavily on the DiffusionDislocation (Bob Myhill), DruckerPrager (Anne Glerum), and Viscoelastic (John Naliboff) material models. 
+`visco plastic': An implementation of an incompressible visco(elastic)-plastic rheology with options for selecting dislocation creep, diffusion creep or composite viscous flow laws. Prior to yielding, one may select to modify the viscosity to account for viscoelastic effects. Plasticity limits viscous stresses through a Drucker Prager yield criterion. The implementation of this material model is based heavily on the `DiffusionDislocation' (Bob Myhill), `DruckerPrager' (Anne Glerum), and `Viscoelastic' (John Naliboff) material models. 
 
  The viscosity for dislocation or diffusion creep is defined as \[v = \frac 12 A^{-\frac{1}{n}} d^{\frac{m}{n}} \dot{\varepsilon}_{ii}^{\frac{1-n}{n}} \exp\left(\frac{E + PV}{nRT}\right)\] where $A$ is the prefactor, $n$ is the stress exponent, $\dot{\varepsilon}_{ii}$ is the square root of the deviatoric strain rate tensor second invariant, $d$ is grain size, $m$ is the grain size exponent, $E$ is activation energy, $V$ is activation volume, $P$ is pressure, $R$ is the gas exponent and $T$ is temperature. This form of the viscosity equation is commonly used in geodynamic simulations. See, for example, Billen and Hirth (2007), G3, 8, Q08012. Significantly, other studies may use slightly different forms of the viscosity equation leading to variations in how specific terms are defined or combined. For example, the grain size exponent should always be positive in the diffusion viscosity equation used here, while other studies place the grain size term in the denominator and invert the sign of the grain size exponent. When examining previous work, one should carefully check how the viscous prefactor and grain size terms are defined. 
 
- One may select to use the diffusion ($v_{\text{diff}}$; $n=1$, $m!=0$), dislocation ($v_{\text{disl}}$, $n>1$, $m=0$) or composite $\frac{v_{\text{diff}} v_{\text{disl}}}{v_{\text{diff}}+v_{\text{disl}}}$ equation form. 
+ One may select to use the diffusion ($v_{\text{diff}}$; $n=1$, $m
+eq 0$), dislocation ($v_{\text{disl}}$, $n>1$, $m=0$) or composite $\frac{v_{\text{diff}} v_{\text{disl}}}{v_{\text{diff}}+v_{\text{disl}}}$ equation form. 
 
  The diffusion and dislocation prefactors can be weakened with a factor between 0 and 1 according to the total or the viscous strain only. 
 
  Viscosity is limited through one of two different `yielding' mechanisms. 
 
-The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt(3)(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
+The first plasticity mechanism limits viscous stress through a Drucker Prager yield criterion, where the yield stress in 3D is  $\sigma_y = \frac{6C\cos(\phi) + 2P\sin(\phi)} {\sqrt{3}(3+\sin(\phi))}$ and $\sigma_y = C\cos(\phi) + P\sin(\phi)$ in 2D. Above, $C$ is cohesion and $\phi$  is the angle of internal friction.  Note that the 2D form is equivalent to the Mohr Coulomb yield surface.  If $\phi$ is 0, the yield stress is fixed and equal to the cohesion (Von Mises yield criterion). When the viscous stress ($2v{\varepsilon}_{ii}$) exceeds the yield stress, the viscosity is rescaled back to the yield surface: $v_{y}=\sigma_{y}/(2{\varepsilon}_{ii})$. This form of plasticity is commonly used in geodynamic models. See, for example, Thieulot, C. (2011), PEPI 188, pp. 47-68. 
 
 The user has the option to linearly reduce the cohesion and internal friction angle as a function of the finite strain magnitude. The finite strain invariant or full strain tensor is calculated through compositional fields within the material model. This implementation is identical to the compositional field finite strain plugin and cookbook described in the manual (author: Gassmoeller, Dannberg). If the user selects to track the finite strain invariant ($e_{ii}$), a single compositional field tracks the value derived from $e_{ii}^t = (e_{ii})^{(t-1)} + \dot{e}_{ii}\; dt$, where $t$ and $t-1$ are the current and prior time steps, $\dot{e}_{ii}$ is the second invariant of the strain rate tensor and $dt$ is the time step size. In the case of the full strain tensor $F$, the finite strain magnitude is derived from the second invariant of the symmetric stretching tensor $L$, where $L = F [F]^T$. The user must specify a single compositional field for the finite strain invariant or multiple fields (4 in 2D, 9 in 3D) for the finite strain tensor. These field(s) must be the first listed compositional fields in the parameter file. Note that one or more of the finite strain tensor components must be assigned a non-zero value initially. This value can be be quite small (e.g., 1.e-8), but still non-zero. While the option to track and use the full finite strain tensor exists, tracking the associated compositional fields is computationally expensive in 3D. Similarly, the finite strain magnitudes may in fact decrease if the orientation of the deformation field switches through time. Consequently, the ideal solution is track the finite strain invariant (single compositional) field within the material and track the full finite strain tensor through particles.When only the second invariant of the strain is tracked, one has the option to track the full strain or only the plastic strain. In the latter case, strain is only tracked in case the material is plastically yielding, i.e. the viscous stress > yield stress. 
 
@@ -8369,11 +8370,11 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
  The Jaumann stress-rate can also be approximated using terms from the previous time step ($t$) and current time step ($t + \Delta t^{e}$): $\smash[t]{\overset{\nabla}{\tau}}^{t + \Delta t^{e}} \approx \frac{\tau^{t + \Delta t^{e} - \tau^{t}}}{\Delta t^{e}} - W^{t}\tau^{t} + \tau^{t}W^{t}$. In this material model, the size of the time step above ($\Delta t^{e}$) can be specified as the numerical time step size or an independent fixed time step. If the latter case is selected, the user has an option to apply a stress averaging scheme to account for the differences between the numerical and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time step throughout the model run, this can still be achieved by using CFL and maximum time step values that restrict the numerical time step to a specific time.
 
  The formulation above allows rewriting the total deviatoric stress (eqn. 29) as
- $\tau^{t + \Delta t^{e}} = \eta_{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
+ $\tau^{t + \Delta t^{e}} = \eta_\text{eff} \left ( 2\hat{D}^{t + \triangle t^{e}} + \frac{\tau^{t}}{\mu \Delta t^{e}} + \frac{W^{t}\tau^{t} - \tau^{t}W^{t}}{\mu}  \right )$. 
 
- The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
+ The effective viscosity (eqn. 28) is a function of the viscosity ($\eta$), elastic time step size ($\Delta t^{e}$) and shear relaxation time ($ \alpha = \frac{\eta}{\mu} $): $\eta_\text{eff} = \eta \frac{\Delta t^{e}}{\Delta t^{e} + \alpha}$ The magnitude of the shear modulus thus controls how much the effective viscosity is reduced relative to the initial viscosity. 
 
- Elastic effects are introduced into the governing Stokes equations through an elastic force term (eqn. 30) using stresses from the previous time step: $F^{e,t} = -\frac{\eta_{eff}}{\mu \Delta t^{e}} \tau^{t}$. This force term is added onto the right-hand side force vector in the system of equations. 
+ Elastic effects are introduced into the governing Stokes equations through an elastic force term (eqn. 30) using stresses from the previous time step: $F^{e,t} = -\frac{\eta_\text{eff}}{\mu \Delta t^{e}} \tau^{t}$. This force term is added onto the right-hand side force vector in the system of equations. 
 
  The value of each compositional field representing distinct rock types at a point is interpreted to be a volume fraction of that rock type. If the sum of the compositional field volume fractions is less than one, then the remainder of the volume is assumed to be 'background material'.
 
@@ -14884,7 +14885,7 @@ Units: \si{\pascal\second}.
 {\it Default:} 1e12
 
 
-{\it Description:} Limits the maximum value of the yield stress determined by the drucker-prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
+{\it Description:} Limits the maximum value of the yield stress determined by the Drucker-Prager plasticity parameters. Default value is chosen so this is not automatically used. Values of 100e6--1000e6 $Pa$ have been used in previous models. Units: \si{\pascal}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -15139,7 +15140,7 @@ Units: \si{\pascal\second}.
 {\it Default:} 0.0
 
 
-{\it Description:} Viscous damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
+{\it Description:} Viscosity of the damper that acts in parallel with the plastic viscosity to produce mesh-independent behavior at sufficient resolutions. Units: \si{\pascal\second}
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -15293,6 +15294,23 @@ Units: \si{\pascal\second}.
 This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
+\item {\it Parameter name:} {\tt Stabilization time scale factor}
+\phantomsection\label{parameters:Material model/Visco Plastic/Stabilization time scale factor}
+\label{parameters:Material_20model/Visco_20Plastic/Stabilization_20time_20scale_20factor}
+
+
+\index[prmindex]{Stabilization time scale factor}
+\index[prmindexfull]{Material model!Visco Plastic!Stabilization time scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} A stabilization factor for the elastic stresses that influence how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
+
+
+{\it Possible values:} A floating point number $v$ such that $1 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Start plasticity strain weakening intervals}
 \phantomsection\label{parameters:Material model/Visco Plastic/Start plasticity strain weakening intervals}
 \label{parameters:Material_20model/Visco_20Plastic/Start_20plasticity_20strain_20weakening_20intervals}
@@ -15566,7 +15584,7 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 {\it Default:} false
 
 
-{\it Description:} Whether to use a plastic damper when computing the drucker-prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
+{\it Description:} Whether to use a plastic damper when computing the Drucker-Prager plastic viscosity. The damper acts to stabilize the plastic shear band width and remove associated mesh-dependent behavior at sufficient resolutions.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -15756,6 +15774,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
+\item {\it Parameter name:} {\tt Stabilization time scale factor}
+\phantomsection\label{parameters:Material model/Viscoelastic/Stabilization time scale factor}
+\label{parameters:Material_20model/Viscoelastic/Stabilization_20time_20scale_20factor}
+
+
+\index[prmindex]{Stabilization time scale factor}
+\index[prmindexfull]{Material model!Viscoelastic!Stabilization time scale factor}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} A stabilization factor for the elastic stresses that influence how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
+
+
+{\it Possible values:} A floating point number $v$ such that $1 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Thermal conductivities}
 \phantomsection\label{parameters:Material model/Viscoelastic/Thermal conductivities}
 \label{parameters:Material_20model/Viscoelastic/Thermal_20conductivities}
@@ -19300,7 +19335,7 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 `principal stress': A visualization output object that outputs the principal stress values and directions, i.e., the eigenvalues and eigenvectors of the stress tensor. The postprocessor can either operate on the full stress tensor or only on the deviatoric stress tensor.
 
-`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed. 
+`shear stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the shear stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. The shear stress differs from the full stress tensor by the absence of the pressure. Note that the convention of positive compressive stress is followed. 
 
 `spd factor': A visualization output object that generates output for the spd factor. The spd factor is a factor which scales a part of the Jacobian used for the Newton solver to make sure that the Jacobian remains positive definite.
 
@@ -19310,7 +19345,7 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 `strain rate tensor': A visualization output object that generates output for the 4 (in 2d) or 9 (in 3d) components of the strain rate tensor, i.e., for the components of the tensor $\varepsilon(\mathbf u)$ in the incompressible case and $\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I$ in the compressible case.
 
-`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. Note that the convention of positive compressive stress is followed. 
+`stress': A visualization output object that generates output for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is used, the elastic contribution is being accounted for. Note that the convention of positive compressive stress is followed. 
 
 `surface dynamic topography': A visualization output object that generates output for the dynamic topography at the top and bottom of the model space. The approach to determine the dynamic topography requires us to compute the stress tensor and evaluate the component of it in the direction in which gravity acts. In other words, we compute $\sigma_{rr}={\hat g}^T(2 \eta \varepsilon(\mathbf u)-\frac 13 (\textrm{div}\;\mathbf u)I)\hat g - p_d$ where $\hat g = \mathbf g/\|\mathbf g\|$ is the direction of the gravity vector $\mathbf g$ and $p_d=p-p_a$ is the dynamic pressure computed by subtracting the adiabatic pressure $p_a$ from the total pressure $p$ computed as part of the Stokes solve. From this, the dynamic topography is computed using the formula $h=\frac{\sigma_{rr}}{(\mathbf g \cdot \mathbf n)  \rho}$ where $\rho$ is the density at the cell center. For the bottom surface we chose the convection that positive values are up (out) and negative values are in (down), analogous to the deformation of the upper surface. Note that this implementation takes the direction of gravity into account, which means that reversing the flow in backward advection calculations will not reverse the instantaneous topography because the reverse flow will be divided by the reverse surface gravity.
 
@@ -20886,7 +20921,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 {\it Default:} 1000.0
 
 
-{\it Description:} Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the nonlinear solver scheme ``operator splitting'' is selected. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter ``Reaction time steps per advection step'' and set this parameter to the same (or larger) value as the ``Maximum time step'' (which is 5.69e+300 by default). Units: Years or seconds, depending on the ``Use years in output instead of seconds'' parameter.
+{\it Description:} Set a time step size for computing reactions of compositional fields and the temperature field in case operator splitting is used. This is only used when the parameter ``Use operator splitting'' is set to true. The reaction time step must be greater than 0. If you want to prescribe the reaction time step only as a relative value compared to the advection time step as opposed to as an absolute value, you should use the parameter ``Reaction time steps per advection step'' and set this parameter to the same (or larger) value as the ``Maximum time step'' (which is 5.69e+300 by default). Units: Years or seconds, depending on the ``Use years in output instead of seconds'' parameter.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -20903,7 +20938,7 @@ Once derivatives are used in a Newton method, \aspect{} always uses the Eisensta
 {\it Default:} 0
 
 
-{\it Description:} The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the nonlinear solver scheme ``operator splitting'' is selected. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the ``Reaction time step'', whichever yields the smaller time step. Units: none.
+{\it Description:} The number of reaction time steps done within one advection time step in case operator splitting is used. This is only used if the parameter ``Use operator splitting'' is set to true. If set to zero, this parameter is ignored. Otherwise, the reaction time step size is chosen according to this criterion and the ``Reaction time step'', whichever yields the smaller time step. Units: none.
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
