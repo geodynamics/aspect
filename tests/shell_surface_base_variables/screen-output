@@ -1,0 +1,45 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 768 (on 5 levels)
+Number of degrees of freedom: 10,436 (6,402+833+3,201)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                       output-shell_surface_base_variables/solution/solution-00000
+     RMS, max velocity:                              1.2e-09 m/s, 3.64e-09 m/s
+     Temperature min/avg/max:                        1613 K, 1682 K, 2413 K
+     Radial RMS, tangential RMS, total RMS velocity: 8.06e-10 m/s, 8.91e-10 m/s, 1.2e-09 m/s
+
+Number of active cells: 945 (on 6 levels)
+Number of degrees of freedom: 13,148 (8,070+1,043+4,035)
+
+Number of active cells: 1,482 (on 7 levels)
+Number of degrees of freedom: 20,971 (12,882+1,648+6,441)
+
+*** Timestep 1:  t=1.56894e+13 seconds, dt=1.56894e+13 seconds
+   Solving temperature system... 47 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 47+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:                       output-shell_surface_base_variables/solution/solution-00001
+     RMS, max velocity:                              1.26e-09 m/s, 3.75e-09 m/s
+     Temperature min/avg/max:                        1544 K, 1682 K, 2553 K
+     Radial RMS, tangential RMS, total RMS velocity: 8.51e-10 m/s, 9.28e-10 m/s, 1.26e-09 m/s
+
+Termination requested by criterion: end step
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
