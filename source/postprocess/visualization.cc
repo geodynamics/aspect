@@ -130,7 +130,7 @@ namespace aspect
       /**
        * This Postprocessor will generate the output variables of velocity,
        * pressure, temperature, and compositional fields on the surface of the
-       * domain. 
+       * domain.
        */
       template <int dim>
       class SurfaceBaseVariablePostprocessor: public VisualizationPostprocessors::SurfaceOnlyVisualization<dim>, public BaseVariablePostprocessor< dim >
@@ -660,7 +660,7 @@ namespace aspect
       DataOutFaces<dim> data_out_faces;
       data_out_faces.attach_dof_handler (this->get_dof_handler());
       data_out_faces.add_data_vector (this->get_solution(),
-                                surface_base_variables);
+                                      surface_base_variables);
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
@@ -825,15 +825,15 @@ namespace aspect
       // but still put it into the statistics file
 //      if (have_face_viz_postprocessors)
 //        {
-          data_out_faces.build_patches (this->get_mapping(),
-                                        subdivisions);
+      data_out_faces.build_patches (this->get_mapping(),
+                                    subdivisions);
 
-          const std::string face_solution_file_prefix
-            = write_data_out_data(data_out_faces, face_output_history);
-          statistics.add_value ("Surface visualization file name",
-                                this->get_output_directory()
-                                + "solution_surface/"
-                                + face_solution_file_prefix);
+      const std::string face_solution_file_prefix
+        = write_data_out_data(data_out_faces, face_output_history);
+      statistics.add_value ("Surface visualization file name",
+                            this->get_output_directory()
+                            + "solution_surface/"
+                            + face_solution_file_prefix);
 //        }
 
       // Increment the next time we need output:
