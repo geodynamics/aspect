@@ -85,11 +85,22 @@ namespace WorldBuilder
                            const unsigned int composition_number,
                            double composition_value) const override final;
 
+        /**
+         * Takes the list of the fault coordinates and computes a bounding box 
+         * based on the minimum and maximum x,y values in the list, and an
+         * additional buffer zone computed using the maximum fault length.
+         * Currenly, only implemented for the spherical coordinates.
+         */
+
         std::vector<Point<2> >
         get_bounding_polygon (const std::vector<Point<2> > &point_list) const;
 
+        /**
+         * Takes the list of coordinates defining the bounding box, and returns 
+         * true if the point lies inside the box and false otherwise.
+         */
         bool bounding_polygon_contains_point (const std::vector<Point<2> > &point_list,
-                                            const Point<2> &point) const;
+                                              const Point<2> &point) const;
 
         /**
          * Returns a grains (rotation matrix and grain size)
