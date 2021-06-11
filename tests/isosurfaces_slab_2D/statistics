@@ -1,0 +1,13 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Visualization file name
+# 10: Minimal value for composition C_1
+# 11: Maximal value for composition C_1
+# 12: Global mass for composition C_1
+0 0.000000000000e+00 0.000000000000e+00 349 3619 1600 1600 0 output-isosurfaces_slab_2D/solution/solution-00000 0.00000000e+00 1.00000000e+00 7.86979167e+00 

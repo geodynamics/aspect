@@ -1,0 +1,23 @@
+
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 902 (375+27+125+125+125+125)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 64 (on 3 levels)
+Number of degrees of freedom: 5,228 (2,187+125+729+729+729+729)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 260 (on 4 levels)
+Number of degrees of freedom: 20,293 (8,508+441+2,836+2,836+2,836+2,836)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-isosurfaces_simple_box_3D/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

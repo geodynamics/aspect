@@ -1,0 +1,23 @@
+
+Number of active cells: 1 (on 1 levels)
+Number of degrees of freedom: 58 (18+4+9+9+9+9)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 4 (on 2 levels)
+Number of degrees of freedom: 159 (50+9+25+25+25+25)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 16 (on 3 levels)
+Number of degrees of freedom: 511 (162+25+81+81+81+81)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output: output-isosurfaces_simple_box_2D_custom_fieldnames/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

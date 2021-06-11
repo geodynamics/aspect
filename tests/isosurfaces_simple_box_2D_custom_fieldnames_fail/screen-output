@@ -1,0 +1,18 @@
+
+TimerOutput objects finalize timed values printed to the
+screen by communicating over MPI in their destructors.
+Since an exception is currently uncaught, this
+synchronization (and subsequent output) will be skipped
+to avoid a possible deadlock.
+
+
+Exception 'ExcMessage("The key given for the isosurface could not be converted. The provided key was: " + property_name + ". " "The following keys are allowed for this model: " + key_list + ".")' on rank 0 on processing: 
+
+An error occurred in file <isosurfaces.cc> in function
+(line in output replaced by default.sh script)
+The violated condition was: 
+    false
+Additional information: 
+    The key given for the isosurface could not be converted. The provided key was: C_2. The following keys are allowed for this model: Temperature, field1, FieldB, fIEld_C.
+
+Aborting!

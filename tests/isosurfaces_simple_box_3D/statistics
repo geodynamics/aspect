@@ -1,0 +1,10 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 260 8949 2836 8508 0 output-isosurfaces_simple_box_3D/solution/solution-00000 

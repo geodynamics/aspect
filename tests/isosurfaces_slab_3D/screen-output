@@ -1,0 +1,24 @@
+
+Number of active cells: 25 (on 1 levels)
+Number of degrees of freedom: 1,887 (1,089+72+363+363)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 102 (on 2 levels)
+Number of degrees of freedom: 6,579 (3,816+219+1,272+1,272)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+Number of active cells: 508 (on 3 levels)
+Number of degrees of freedom: 28,693 (16,704+853+5,568+5,568)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing graphical output:  output-isosurfaces_slab_3D/solution/solution-00000
+     Compositions min/max/mass: 0/1/4.023
+
+Termination requested by criterion: end time
+
+
+
