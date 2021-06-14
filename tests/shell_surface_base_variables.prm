@@ -103,6 +103,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Time between graphical output = 0
+    set Output base variables on mesh surface = true
     set Output format = gnuplot
   end
 

@@ -639,14 +639,16 @@ namespace aspect
       base_variables.initialize_simulator (this->get_simulator());
 
       internal::SurfaceBaseVariablePostprocessor<dim> surface_base_variables;
-      surface_base_variables.initialize_simulator (this->get_simulator());
+      if (output_base_variables_on_mesh_surface)
+        surface_base_variables.initialize_simulator (this->get_simulator());
 
       // Keep a list of the names of all output variables, to ensure unique names
       std::set<std::string> visualization_field_names;
 
       // Insert base variable names into set of all output field names
       add_data_names_to_set(base_variables.get_names(), visualization_field_names);
-      add_data_names_to_set(surface_base_variables.get_names(), visualization_field_names);
+      if (output_base_variables_on_mesh_surface)
+        add_data_names_to_set(surface_base_variables.get_names(), visualization_field_names);
 
       std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
 
@@ -659,8 +661,9 @@ namespace aspect
       // the faces of the mesh.
       DataOutFaces<dim> data_out_faces;
       data_out_faces.attach_dof_handler (this->get_dof_handler());
-      data_out_faces.add_data_vector (this->get_solution(),
-                                      surface_base_variables);
+      if (output_base_variables_on_mesh_surface)
+        data_out_faces.add_data_vector (this->get_solution(),
+                                        surface_base_variables);
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
@@ -674,6 +677,8 @@ namespace aspect
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *mesh_deformation_variables);
         }
+
+      bool have_face_viz_postprocessors = false;
 
       // then for each additional selected output variable
       // add the computed quantity as well. keep a list of
@@ -703,8 +708,11 @@ namespace aspect
                     data_out.add_data_vector (this->get_solution(),
                                               *viz_postprocessor);
                   else
-                    data_out_faces.add_data_vector (this->get_solution(),
-                                                    *viz_postprocessor);
+                    {
+                      data_out_faces.add_data_vector (this->get_solution(),
+                                                      *viz_postprocessor);
+                      have_face_viz_postprocessors = true;
+                    }
                 }
               else if (const VisualizationPostprocessors::CellDataVectorCreator<dim> *
                        cell_data_creator
@@ -732,9 +740,12 @@ namespace aspect
                                               cell_data.first,
                                               DataOut<dim>::type_cell_data);
                   else
-                    data_out_faces.add_data_vector (*cell_data.second,
-                                                    cell_data.first,
-                                                    DataOutFaces<dim>::type_cell_data);
+                    {
+                      data_out_faces.add_data_vector (*cell_data.second,
+                                                      cell_data.first,
+                                                      DataOutFaces<dim>::type_cell_data);
+                      have_face_viz_postprocessors = true;
+                    }
                 }
               else
                 // A viz postprocessor not derived from either DataPostprocessor
@@ -823,18 +834,18 @@ namespace aspect
       // Then do the same again for the face data case. We won't print the
       // output file name to screen (too much clutter on the screen already)
       // but still put it into the statistics file
-//      if (have_face_viz_postprocessors)
-//        {
-      data_out_faces.build_patches (this->get_mapping(),
-                                    subdivisions);
+      if (output_base_variables_on_mesh_surface || have_face_viz_postprocessors)
+        {
+          data_out_faces.build_patches (this->get_mapping(),
+                                        subdivisions);
 
-      const std::string face_solution_file_prefix
-        = write_data_out_data(data_out_faces, face_output_history);
-      statistics.add_value ("Surface visualization file name",
-                            this->get_output_directory()
-                            + "solution_surface/"
-                            + face_solution_file_prefix);
-//        }
+          const std::string face_solution_file_prefix
+            = write_data_out_data(data_out_faces, face_output_history);
+          statistics.add_value ("Surface visualization file name",
+                                this->get_output_directory()
+                                + "solution_surface/"
+                                + face_solution_file_prefix);
+        }
 
       // Increment the next time we need output:
       set_last_output_time (this->get_time());
@@ -1079,6 +1090,13 @@ namespace aspect
                              "has its own velocity field.  This may be written as an output field "
                              "by setting this parameter to true.");
 
+          prm.declare_entry ("Output base variables on mesh surface", "false",
+                             Patterns::Bool(),
+                             "Whether or not to also output the base variables velocity, pressure, "
+                             "temperature and compositional fields (when present) on the surface "
+                             "of the mesh. The mesh surface includes not only the top boundary, "
+                             "but all boundaries of the domain. ");
+
           // Finally also construct a string for Patterns::MultipleSelection that
           // contains the names of all registered visualization postprocessors.
           // Also add a number of removed plugins that are now combined in 'material properties'
@@ -1182,6 +1200,8 @@ namespace aspect
             }
 
           output_mesh_velocity = prm.get_bool("Output mesh velocity");
+
+          output_base_variables_on_mesh_surface = prm.get_bool("Output base variables on mesh surface");
 
           // now also see which derived quantities we are to compute
           viz_names = Utilities::split_string_list(prm.get("List of output variables"));

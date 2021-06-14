@@ -1,7 +1,7 @@
 # This input file tests the box geometry in
 # combination with the ascii data initial
 # topography model and visualization output
-# on the mesh surface. 
+# on the mesh surface.
 
 set Dimension = 3
 set CFL number                             = 1.0
@@ -99,6 +99,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set List of output variables = boundary indicators, depth
+    set Output base variables on mesh surface = true
     set Output format = gnuplot
   end
 end
