@@ -788,12 +788,13 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
+#if !DEAL_II_VERSION_GTE(10,0,0)
       // Initialize the particle's access to the property_pool. This is necessary
       // even if the Particle do not carry properties, because they need a
       // way to determine the number of properties they carry.
       for (ParticleIterator<dim> particle = particle_handler->begin(); particle!=particle_handler->end(); ++particle)
         particle->set_property_pool(particle_handler->get_property_pool());
-
+#endif
 
       // TODO: Change this loop over all cells to use the WorkStream interface
       if (property_manager->get_n_property_components() > 0)
