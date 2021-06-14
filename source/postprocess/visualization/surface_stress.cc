@@ -99,31 +99,15 @@ namespace aspect
       SurfaceStress<dim>::get_names () const
       {
         std::vector<std::string> names;
-        if (this->get_parameters().enable_elasticity == true)
-          {
-            names.emplace_back("surface_ve_stress_xx");
-            names.emplace_back("surface_ve_stress_yy");
-            names.emplace_back("surface_ve_stress_xy");
+        names.emplace_back("surface_stress_xx");
+        names.emplace_back("surface_stress_yy");
+        names.emplace_back("surface_stress_xy");
 
-            if (dim == 3)
-              {
-                names.emplace_back("surface_ve_stress_zz");
-                names.emplace_back("surface_ve_stress_xz");
-                names.emplace_back("surface_ve_stress_yz");
-              }
-          }
-        else
+        if (dim == 3)
           {
-            names.emplace_back("surface_stress_xx");
-            names.emplace_back("surface_stress_yy");
-            names.emplace_back("surface_stress_xy");
-
-            if (dim == 3)
-              {
-                names.emplace_back("surface_stress_zz");
-                names.emplace_back("surface_stress_xz");
-                names.emplace_back("surface_stress_yz");
-              }
+            names.emplace_back("surface_stress_zz");
+            names.emplace_back("surface_stress_xz");
+            names.emplace_back("surface_stress_yz");
           }
 
         return names;
