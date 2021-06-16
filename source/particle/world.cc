@@ -1099,18 +1099,19 @@ namespace aspect
       generator->parse_parameters(prm);
       generator->initialize();
 
-      // Create an integrator object depending on the specified parameter
-      integrator.reset(Integrator::create_particle_integrator<dim> (prm));
-      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
-        sim->initialize_simulator (this->get_simulator());
-      integrator->parse_parameters(prm);
-
       // Create a property_manager object and initialize its properties
       property_manager = std_cxx14::make_unique<Property::Manager<dim>> ();
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);
       property_manager->initialize();
+
+      // Create an integrator object depending on the specified parameter
+      integrator.reset(Integrator::create_particle_integrator<dim> (prm));
+      if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(integrator.get()))
+        sim->initialize_simulator (this->get_simulator());
+      integrator->parse_parameters(prm);
+      integrator->initialize();
 
       // Create an interpolator object depending on the specified parameter
       interpolator.reset(Interpolator::create_particle_interpolator<dim> (prm));

@@ -287,6 +287,56 @@ namespace aspect
 
 
       template <int dim>
+      void
+      IntegratorProperties<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
+                                                                  std::vector<double> &data) const
+      {
+        data.resize(data.size() + n_integrator_properties);
+      }
+
+
+
+      template <int dim>
+      std::vector<std::pair<std::string, unsigned int> >
+      IntegratorProperties<dim>::get_property_information() const
+      {
+        const std::vector<std::pair<std::string,unsigned int> > property_information (1,
+                                                                                      std::make_pair("integrator properties",n_integrator_properties));
+        return property_information;
+      }
+
+
+
+      template <int dim>
+      void
+      IntegratorProperties<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        std::string name;
+        prm.enter_subsection ("Postprocess");
+        {
+          prm.enter_subsection ("Particles");
+          {
+            name = prm.get ("Integration scheme");
+
+            if (name == "rk2")
+              n_integrator_properties = dim;
+            else if (name == "rk4")
+              n_integrator_properties = 4*dim;
+            else if (name == "euler")
+              n_integrator_properties = 0;
+            else
+              AssertThrow(false,
+                          ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "
+                                     "does not know how many particle properties to store for this integration scheme."));
+          }
+          prm.leave_subsection ();
+        }
+        prm.leave_subsection ();
+      }
+
+
+
+      template <int dim>
       inline
       Manager<dim>::Manager ()
       {}
@@ -729,6 +779,10 @@ namespace aspect
 
             property_list.back()->parse_parameters (prm);
           }
+
+        // laslty store internal integrator properties
+        property_list.emplace_back (std::make_unique<IntegratorProperties<dim>>());
+        property_list.back()->parse_parameters (prm);
       }
 
 

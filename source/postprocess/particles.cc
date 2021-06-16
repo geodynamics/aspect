@@ -712,6 +712,9 @@ namespace aspect
             }
 
           exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
+
+          // Never output the integrator properties that are for internal use only
+          exclude_output_properties.push_back("integrator properties");
         }
         prm.leave_subsection ();
       }

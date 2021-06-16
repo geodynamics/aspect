@@ -34,7 +34,7 @@ namespace aspect
     {
       /**
        * Runge Kutta second order integrator.
-       * This scheme requires storing the original location, and the read/write_data functions reflect this.
+       * This scheme requires storing the original location in the particle properties.
        *
        * @ingroup ParticleIntegrators
        */
@@ -43,6 +43,14 @@ namespace aspect
       {
         public:
           RK2();
+
+          /**
+           * Look up where the RK2 data is stored. Done once and cached to
+           * avoid repeated lookups.
+           */
+          virtual
+          void
+          initialize ();
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -80,34 +88,6 @@ namespace aspect
            */
           bool new_integration_step() override;
 
-          /**
-           * Return data length of the integration related data required for
-           * communication in terms of number of bytes. When data about
-           * particles is transported from one processor to another, or stored
-           * on disk for snapshots, integrators get the chance to store
-           * whatever information they need with each particle. This function
-           * returns how many pieces of additional information a concrete
-           * integrator class needs to store for each particle.
-           *
-           * @return The number of bytes required to store the relevant
-           * integrator data for one particle.
-           */
-          std::size_t get_data_size() const override;
-
-          /**
-           * @copydoc Interface::read_data()
-           */
-          const void *
-          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                    const void *data) override;
-
-          /**
-           * @copydoc Interface::write_data()
-           */
-          void *
-          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                     void *data) const override;
-
         private:
           /**
            * The current integration step, i.e for RK2 a number that is either
@@ -116,12 +96,9 @@ namespace aspect
           unsigned int integrator_substep;
 
           /**
-           * The particle location before the first integration step. This is
-           * used in the second step and transferred to another process if
-           * the particle leaves the domain during the first step.
+           * The location of the RK2 data that is stored in the particle properties.
            */
-          std::map<types::particle_index, Point<dim> >   loc0;
-
+          unsigned int property_location;
       };
 
     }

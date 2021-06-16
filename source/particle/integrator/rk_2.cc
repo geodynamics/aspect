@@ -32,6 +32,18 @@ namespace aspect
         integrator_substep(0)
       {}
 
+
+
+      template <int dim>
+      void
+      RK2<dim>::initialize ()
+      {
+        const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
+        property_location = property_information.get_position_by_field_name("integrator properties");
+      }
+
+
+
       template <int dim>
       void
       RK2<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
@@ -56,16 +68,27 @@ namespace aspect
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
-            const types::particle_index particle_id = it->get_id();
-            const Point<dim> loc = it->get_location();
+            ArrayView<double> properties = it->get_properties();
+
             if (integrator_substep == 0)
               {
-                loc0[particle_id] = loc;
-                it->set_location(loc + 0.5 * dt * (*old_velocity));
+                const Tensor<1,dim> k1 = dt * (*old_velocity);
+                const Point<dim> loc0 = it->get_location();
+
+                for (unsigned int i=0; i<dim; ++i)
+                  properties[property_location + i] = loc0[i];
+
+                it->set_location(loc0 + 0.5 * k1);
               }
             else if (integrator_substep == 1)
               {
-                it->set_location(loc0[particle_id] + dt * (*old_velocity + *velocity) / 2.0);
+                const Tensor<1,dim> k2 = dt * (*old_velocity + *velocity) / 2.0;
+                Point<dim> loc0;
+
+                for (unsigned int i=0; i<dim; ++i)
+                  loc0[i] = properties[property_location + i];
+
+                it->set_location(loc0 + k2);
               }
             else
               {
@@ -75,69 +98,16 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       bool
       RK2<dim>::new_integration_step()
       {
-        if (integrator_substep == 1) loc0.clear();
         integrator_substep = (integrator_substep + 1) % 2;
 
         // Continue until we're at the last step
         return (integrator_substep != 0);
-      }
-
-      template <int dim>
-      std::size_t
-      RK2<dim>::get_data_size() const
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 1)
-          return 0;
-
-        return dim * sizeof(double);
-      }
-
-      template <int dim>
-      const void *
-      RK2<dim>::read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                          const void *data)
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 1)
-          return data;
-
-        const double *integrator_data = static_cast<const double *> (data);
-
-        // Read location data
-        for (unsigned int i=0; i<dim; ++i)
-          loc0[particle->get_id()](i) = *integrator_data++;
-
-        return static_cast<const void *> (integrator_data);
-      }
-
-      template <int dim>
-      void *
-      RK2<dim>::write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                           void *data) const
-      {
-        // If integration is finished, we do not need to transfer integrator
-        // data to other processors, because it will be deleted soon anyway.
-        // Skip the MPI transfer in this case.
-        if (integrator_substep == 1)
-          return data;
-
-        double *integrator_data = static_cast<double *> (data);
-
-        // Write location data
-        const typename std::map<types::particle_index, Point<dim> >::const_iterator it = loc0.find(particle->get_id());
-        for (unsigned int i=0; i<dim; ++i,++integrator_data)
-          *integrator_data = it->second(i);
-
-        return static_cast<void *> (integrator_data);
       }
     }
   }

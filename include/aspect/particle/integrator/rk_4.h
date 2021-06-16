@@ -31,16 +31,24 @@ namespace aspect
     {
       /**
        * Runge Kutta fourth order integrator. This scheme requires
-       * storing the original location and intermediate k1, k2, k3, k4
-       * values, so the read/write_data functions reflect this.
+       * storing the original location and intermediate k1, k2, k3
+       * values in the particle properties.
        *
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class RK4 : public Interface<dim>
+      class RK4 : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           RK4();
+
+          /**
+          * Look up where the RK4 data is stored. Done once and cached to
+          * avoid repeated lookups.
+          */
+          virtual
+          void
+          initialize ();
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -79,34 +87,6 @@ namespace aspect
            */
           bool new_integration_step() override;
 
-          /**
-           * Return data length of the integration related data required for
-           * communication in terms of number of bytes. When data about
-           * particles is transported from one processor to another, or stored
-           * on disk for snapshots, integrators get the chance to store
-           * whatever information they need with each particle. This function
-           * returns how many pieces of additional information a concrete
-           * integrator class needs to store for each particle.
-           *
-           * @return The number of bytes required to store the relevant
-           * integrator data for one particle.
-           */
-          std::size_t get_data_size() const override;
-
-          /**
-           * @copydoc Interface::read_data()
-           */
-          const void *
-          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                    const void *data) override;
-
-          /**
-           * @copydoc Interface::write_data()
-           */
-          void *
-          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                     void *data) const override;
-
         private:
           /**
            * The current integration step, i.e. for RK4 a number between 0
@@ -115,19 +95,9 @@ namespace aspect
           unsigned int integrator_substep;
 
           /**
-           * The particle location before the first integration step. This is
-           * used in the following steps and transferred to another process if
-           * the particle leaves the domain during one of the steps.
+           * The location of the 4 RK4 data fields stored in the particle properties.
            */
-          std::map<types::particle_index, Point<dim> > loc0;
-
-          /**
-           * The intermediate values of the RK4 scheme. These are
-           * used in the following steps and transferred to another process if
-           * the particle leaves the domain during one of the steps.
-           */
-          std::map<types::particle_index, Tensor<1,dim> > k1, k2, k3;
-
+          std::array<unsigned int,4> property_k;
       };
     }
   }

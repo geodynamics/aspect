@@ -54,6 +54,14 @@ namespace aspect
           virtual ~Interface ();
 
           /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run.
+           */
+          virtual
+          void
+          initialize ();
+
+          /**
            * Perform an integration step of moving the particles of one cell
            * by the specified timestep dt. Implementations of this function
            * must update the particle location. Between calls to this function
