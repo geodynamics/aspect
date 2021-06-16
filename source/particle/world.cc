@@ -389,7 +389,14 @@ namespace aspect
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
-                      particle_handler->remove_particles(particles_to_remove);
+#if DEAL_II_VERSION_GTE(10,0,0)
+                    particle_handler->remove_particles(particles_to_remove);
+#else
+                    for (const auto &particle : particles_to_remove)
+                      {
+                        particle_handler->remove_particle(particle);
+                      }
+#endif
                   }
               }
 
