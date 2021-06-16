@@ -65,6 +65,12 @@ namespace aspect
       class Manager;
     }
 
+    namespace internal
+    {
+      template <int dim>
+      class SolutionEvaluators;
+    }
+
     /**
      * This class manages the storage and handling of particles. It provides
      * interfaces to generate and store particles, functions to initialize,
@@ -408,12 +414,20 @@ namespace aspect
                                    const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
         /**
-         * Update the particle properties of one cell.
-         */
+        * Update the particle properties of one cell.
+        */
+#if DEAL_II_VERSION_GTE(9,3,0)
+        void
+        local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                               internal::SolutionEvaluators<dim> &evaluators);
+#else
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
+#endif
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -422,11 +436,19 @@ namespace aspect
          * during this advection step are removed from the local multimap and
          * stored in @p particles_out_of_cell for further treatment (sorting
          * them into the new cell).
-         */
+        */
+#if DEAL_II_VERSION_GTE(9,3,0)
+        void
+        local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                               const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                               internal::SolutionEvaluators<dim> &evaluators);
+#else
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
+#endif
 
         /**
          * This function registers the necessary functions to the

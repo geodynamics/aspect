@@ -30,6 +30,11 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+#endif
+
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -423,6 +428,9 @@ namespace aspect
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
+#if DEAL_II_VERSION_GTE(10,0,0)
+                    particle_handler->remove_particles(particles_to_remove);
+#else
                     for (const auto &particle : particles_to_remove)
                       {
                         particle_handler->remove_particle(particle);
@@ -620,6 +628,55 @@ namespace aspect
         property_manager->initialize_one_particle(it);
     }
 
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    template <int dim>
+    void
+    World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                       internal::SolutionEvaluators<dim> &evaluators)
+    {
+      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+
+      std::vector<Point<dim> > positions;
+      positions.reserve(n_particles_in_cell);
+
+      for (auto particle = begin_particle; particle!=end_particle; ++particle)
+        positions.push_back(particle->get_reference_location());
+
+      const UpdateFlags update_flags = property_manager->get_needed_update_flags();
+
+      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+
+      cell->get_dof_values(this->get_current_linearization_point(),
+                           solution_values.begin(),
+                           solution_values.end());
+
+      evaluators.reinit (cell, positions, {solution_values.data(),solution_values.size()}, update_flags);
+
+      auto particle = begin_particle;
+      for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
+        {
+          const Vector<double> solution = (update_flags & update_values)
+                                          ?
+                                          evaluators.get_solution(i)
+                                          :
+                                          Vector<double>();
+
+          const std::vector<Tensor<1,dim>> gradients = (update_flags & update_gradients)
+                                                       ?
+                                                       evaluators.get_gradients(i)
+                                                       :
+                                                       std::vector<Tensor<1,dim>>();
+
+          property_manager->update_one_particle(particle,
+                                                solution,
+                                                gradients);
+        }
+    }
+#else
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -665,7 +722,65 @@ namespace aspect
                                                 gradients[i]);
         }
     }
+#endif
 
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    template <int dim>
+    void
+    World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                       internal::SolutionEvaluators<dim> &evaluators)
+    {
+      const unsigned int n_particles_in_cell = std::distance(begin_particle, end_particle);
+
+      boost::container::small_vector<Point<dim>, 100>   positions;
+      positions.reserve(n_particles_in_cell);
+      for (auto particle = begin_particle; particle!=end_particle; ++particle)
+        positions.push_back(particle->get_reference_location());
+
+      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+      boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+
+      cell->get_dof_values(this->get_current_linearization_point(),
+                           solution_values.begin(),
+                           solution_values.end());
+
+      cell->get_dof_values(this->get_old_solution(),
+                           old_solution_values.begin(),
+                           old_solution_values.end());
+
+      const bool use_fluid_velocity = this->include_melt_transport() &&
+                                      property_manager->get_data_info().fieldname_exists("melt_presence");
+      auto &evaluator = (use_fluid_velocity) ? *evaluators.fluid_velocity : evaluators.velocity;
+
+      evaluator.reinit (cell, {positions.data(),positions.size()});
+
+      evaluator.evaluate({solution_values.data(),solution_values.size()},
+                         EvaluationFlags::values);
+
+      std::vector<Tensor<1,dim>> velocities;
+      velocities.reserve(n_particles_in_cell);
+      for (unsigned int i=0; i<n_particles_in_cell; ++i)
+        velocities.push_back(evaluator.get_value(i));
+
+      evaluator.evaluate({old_solution_values.data(),old_solution_values.size()},
+                         EvaluationFlags::values);
+
+      std::vector<Tensor<1,dim>> old_velocities;
+      old_velocities.reserve(n_particles_in_cell);
+      for (unsigned int i=0; i<n_particles_in_cell; ++i)
+        old_velocities.push_back(evaluator.get_value(i));
+
+      integrator->local_integrate_step(begin_particle,
+                                       end_particle,
+                                       old_velocities,
+                                       velocities,
+                                       this->get_timestep());
+    }
+#else
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -758,6 +873,7 @@ namespace aspect
                                        velocity,
                                        this->get_timestep());
     }
+#endif
 
 
 
@@ -843,6 +959,11 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+          const UpdateFlags update_flags = property_manager->get_needed_update_flags();
+          internal::SolutionEvaluators<dim> evaluators(*this, update_flags);
+#endif
+
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
@@ -852,12 +973,200 @@ namespace aspect
 
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
-                  local_update_particles(cell,
-                                         particles_in_cell.begin(),
-                                         particles_in_cell.end());
+                  {
+#if !DEAL_II_VERSION_GTE(9,3,0)
+
+                    local_update_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end());
+#else
+                    local_update_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end(),
+                                           evaluators);
+#endif
+                  }
+
               }
         }
     }
+
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    namespace internal
+    {
+      template <int dim>
+      class SolutionEvaluators
+      {
+        public:
+          SolutionEvaluators(const SimulatorAccess<dim> &simulator,
+                             const UpdateFlags update_flags)
+            :
+            velocity(simulator.get_mapping(),simulator.get_fe(), update_flags,simulator.introspection().component_indices.velocities[0]),
+            pressure(simulator.get_mapping(),simulator.get_fe(), update_flags,simulator.introspection().component_indices.pressure),
+            temperature(simulator.get_mapping(),simulator.get_fe(), update_flags,simulator.introspection().component_indices.temperature),
+            melt_component_indices(),
+            simulator_access(simulator)
+          {
+            const unsigned int n_compositional_fields = simulator_access.n_compositional_fields();
+            const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
+            for (unsigned int composition = 0; composition < n_compositional_fields; ++composition)
+              compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
+                                                                  simulator_access.get_fe(),
+                                                                  update_flags,
+                                                                  component_indices[composition]));
+
+            if (simulator_access.include_melt_transport())
+              {
+                melt_component_indices[0] = simulator_access.introspection().variable("fluid velocity").first_component_index;
+                melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
+                melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
+
+                fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+                                                                               simulator_access.get_fe(),
+                                                                               update_flags,
+                                                                               melt_component_indices[0]);
+                fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                             simulator_access.get_fe(),
+                                                                             update_flags,
+                                                                             melt_component_indices[1]);
+                compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                                  simulator_access.get_fe(),
+                                                                                  update_flags,
+                                                                                  melt_component_indices[2]);
+
+              }
+          }
+
+          void
+          reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                 const ArrayView<Point<dim>> &positions,
+                 const ArrayView<double> &solution_values,
+                 const UpdateFlags update_flags)
+          {
+            EvaluationFlags::EvaluationFlags evaluation_flags = EvaluationFlags::nothing;
+
+            if (update_flags & update_values)
+              evaluation_flags = evaluation_flags | EvaluationFlags::values;
+
+            if (update_flags & update_gradients)
+              evaluation_flags = evaluation_flags | EvaluationFlags::gradients;
+
+            Assert ((update_flags & ~(update_gradients | update_values)) == false,
+                    ExcNotImplemented());
+
+            velocity.reinit (cell, positions);
+            pressure.reinit (cell, positions);
+            temperature.reinit (cell, positions);
+
+            for (auto &evaluator_composition: compositions)
+              evaluator_composition.reinit (cell, positions);
+
+            if (simulator_access.include_melt_transport())
+              {
+                fluid_velocity->reinit (cell, positions);
+                fluid_pressure->reinit (cell, positions);
+                compaction_pressure->reinit (cell, positions);
+              }
+
+            velocity.evaluate (solution_values, evaluation_flags);
+            pressure.evaluate (solution_values, evaluation_flags);
+            temperature.evaluate (solution_values, evaluation_flags);
+
+            for (auto &evaluator_composition: compositions)
+              evaluator_composition.evaluate (solution_values, evaluation_flags);
+
+            if (simulator_access.include_melt_transport())
+              {
+                fluid_velocity->evaluate (solution_values, evaluation_flags);
+                fluid_pressure->evaluate (solution_values, evaluation_flags);
+                compaction_pressure->evaluate (solution_values, evaluation_flags);
+              }
+          }
+
+          Vector<double>
+          get_solution(const unsigned int i)
+          {
+            const unsigned int n_components = simulator_access.introspection().n_components;
+            const auto &component_indices = simulator_access.introspection().component_indices;
+            const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+            Vector<double> values_at_point(n_components);
+
+            const Tensor<1,dim> velocity_value = velocity.get_value(i);
+            for (unsigned int j=0; j<dim; ++j)
+              values_at_point[component_indices.velocities[j]] = velocity_value[j];
+
+            values_at_point[component_indices.pressure] = pressure.get_value(i);
+            values_at_point[component_indices.temperature] = temperature.get_value(i);
+
+            for (unsigned int j=0; j<n_compositions; ++j)
+              values_at_point[component_indices.compositional_fields[j]] = compositions[j].get_value(i);
+
+            if (simulator_access.include_melt_transport())
+              {
+                const Tensor<1,dim> fluid_velocity_value = velocity.get_value(i);
+                for (unsigned int j=0; j<dim; ++j)
+                  values_at_point[melt_component_indices[0]+j] = fluid_velocity_value[j];
+
+                values_at_point[melt_component_indices[1]] = fluid_pressure->get_value(i);
+                values_at_point[melt_component_indices[2]] = compaction_pressure->get_value(i);
+              }
+
+            return values_at_point;
+          }
+
+
+
+          std::vector<Tensor<1,dim>>
+                                  get_gradients(const unsigned int i)
+          {
+            const unsigned int n_components = simulator_access.introspection().n_components;
+            const auto &component_indices = simulator_access.introspection().component_indices;
+            const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+            std::vector<Tensor<1,dim>> gradients_at_point(n_components);
+
+            const Tensor<2,dim> velocity_gradient = velocity.get_gradient(i);
+            for (unsigned int j=0; j<dim; ++j)
+              gradients_at_point[component_indices.velocities[j]] = velocity_gradient[j];
+
+            gradients_at_point[component_indices.pressure] = pressure.get_gradient(i);
+            gradients_at_point[component_indices.temperature] = temperature.get_gradient(i);
+
+            for (unsigned int j=0; j<n_compositions; ++j)
+              gradients_at_point[component_indices.compositional_fields[j]] = compositions[j].get_gradient(i);
+
+            if (simulator_access.include_melt_transport())
+              {
+                const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(i);
+                for (unsigned int j=0; j<dim; ++j)
+                  gradients_at_point[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
+
+                gradients_at_point[melt_component_indices[1]] = fluid_pressure->get_gradient(i);
+                gradients_at_point[melt_component_indices[2]] = compaction_pressure->get_gradient(i);
+              }
+
+            return gradients_at_point;
+          }
+
+          FEPointEvaluation<dim, dim> velocity;
+          FEPointEvaluation<1, dim> pressure;
+          FEPointEvaluation<1, dim> temperature;
+          std::vector<FEPointEvaluation<1, dim>> compositions;
+
+          std::unique_ptr<FEPointEvaluation<dim, dim>> fluid_velocity;
+          std::unique_ptr<FEPointEvaluation<1, dim>> compaction_pressure;
+          std::unique_ptr<FEPointEvaluation<1, dim>> fluid_pressure;
+
+        private:
+          std::array<unsigned int, 3> melt_component_indices;
+
+          const SimulatorAccess<dim> &simulator_access;
+      };
+    }
+#endif
 
 
 
@@ -869,6 +1178,10 @@ namespace aspect
         // TODO: Change this loop over all cells to use the WorkStream interface
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        internal::SolutionEvaluators<dim> evaluators(*this, update_values);
+#endif
+
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
@@ -878,9 +1191,18 @@ namespace aspect
 
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
-                local_advect_particles(cell,
-                                       particles_in_cell.begin(),
-                                       particles_in_cell.end());
+                {
+#if !DEAL_II_VERSION_GTE(9,3,0)
+                  local_advect_particles(cell,
+                                         particles_in_cell.begin(),
+                                         particles_in_cell.end());
+#else
+                  local_advect_particles(cell,
+                                         particles_in_cell.begin(),
+                                         particles_in_cell.end(),
+                                         evaluators);
+#endif
+                }
             }
 
         // If particles fell out of the mesh, put them back in if they have crossed
