@@ -64,8 +64,24 @@ namespace aspect
             const double eta = out.viscosities[q];
 
             // Compressive stress is positive in geoscience applications
-            const SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
-                                                  in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
+                                            in.pressure[q] * unit_symmetric_tensor<dim>();
+
+            // Add elastic stresses if existent
+            if (this->get_parameters().enable_elasticity == true)
+              {
+                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+
+                if (dim == 3)
+                  {
+                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+                  }
+              }
+
             for (unsigned int i=0; i<SymmetricTensor<2,dim>::n_independent_components; ++i)
               computed_quantities[q](i) = stress[stress.unrolled_to_component_indices(i)];
           }
@@ -83,25 +99,15 @@ namespace aspect
       SurfaceStress<dim>::get_names () const
       {
         std::vector<std::string> names;
-        switch (dim)
+        names.emplace_back("surface_stress_xx");
+        names.emplace_back("surface_stress_yy");
+        names.emplace_back("surface_stress_xy");
+
+        if (dim == 3)
           {
-            case 2:
-              names.emplace_back("ve_stress_xx");
-              names.emplace_back("ve_stress_yy");
-              names.emplace_back("ve_stress_xy");
-              break;
-
-            case 3:
-              names.emplace_back("ve_stress_xx");
-              names.emplace_back("ve_stress_yy");
-              names.emplace_back("ve_stress_zz");
-              names.emplace_back("ve_stress_xy");
-              names.emplace_back("ve_stress_xz");
-              names.emplace_back("ve_stress_yz");
-              break;
-
-            default:
-              Assert (false, ExcNotImplemented());
+            names.emplace_back("surface_stress_zz");
+            names.emplace_back("surface_stress_xz");
+            names.emplace_back("surface_stress_yz");
           }
 
         return names;
@@ -149,7 +155,8 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$-2\\eta\\left[\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I\\right]+pI$ "
-                                                  "in the compressible case. Note that the convention of positive "
+                                                  "in the compressible case. If elasticity is included, "
+                                                  "its contribution is accounted for. Note that the convention of positive "
                                                   "compressive stress is followed. ")
     }
   }

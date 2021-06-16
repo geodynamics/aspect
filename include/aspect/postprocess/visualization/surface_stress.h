@@ -43,7 +43,8 @@ namespace aspect
        * - \tfrac 13 \textrm{trace}\ \varepsilon(\mathbf u) \mathbf 1) +pI =
        * 2\eta (\varepsilon(\mathbf u) - \frac 13 (\nabla \cdot \mathbf u)
        * \mathbf I) + pI$.  The second term in the parentheses is zero if the
-       * model is incompressible.
+       * model is incompressible. If elasticity is used, its contribution
+       * is accounted for.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.
