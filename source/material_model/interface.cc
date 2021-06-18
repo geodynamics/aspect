@@ -721,7 +721,7 @@ namespace aspect
                                       FullMatrix<double>      &projection_matrix,
                                       FullMatrix<double>      &expansion_matrix)
       {
-        static FE_Q<dim> fe(1);
+        static const FE_Q<dim> fe(1);
         FEValues<dim> fe_values (mapping, fe, quadrature_formula,
                                  update_values | update_JxW_values);
 
@@ -779,6 +779,10 @@ namespace aspect
             ||
             operation == project_to_Q1_only_viscosity)
           {
+            Assert (quadrature_formula.size() == values_out.n_evaluation_points(),
+                    ExcMessage("When asking for a Q1-type averaging operation, "
+                               "this function requires to know the locations of "
+                               "the evaluation points."));
             projection_matrix.reinit (quadrature_formula.size(),
                                       quadrature_formula.size());
             compute_projection_matrix (cell,
