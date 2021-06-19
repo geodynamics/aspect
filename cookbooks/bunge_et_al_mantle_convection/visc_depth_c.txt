@@ -1,3 +1,5 @@
-Depth (m)        Viscosity (Pa s)
+# POINTS: 2
+# Depth (m)        Viscosity (Pa s)
+depth viscosity
 0.0000000e+00    5.8000000e+22
 4.0000000e+06    5.8000000e+22
