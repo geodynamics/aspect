@@ -721,10 +721,18 @@ namespace aspect
 
         velocity.reinit (cell);
         velocity.read_dof_values (src.block(0));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.evaluate (EvaluationFlags::gradients);
+#else
         velocity.evaluate (false,true,false);
+#endif
         pressure.reinit (cell);
         pressure.read_dof_values (src.block(1));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.evaluate (EvaluationFlags::values);
+#else
         pressure.evaluate (true,false,false);
+#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
@@ -750,9 +758,17 @@ namespace aspect
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.integrate (EvaluationFlags::gradients);
+#else
         velocity.integrate (false,true);
+#endif
         velocity.distribute_local_to_global (dst.block(0));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.integrate (EvaluationFlags::values);
+#else
         pressure.integrate (true,false);
+#endif
         pressure.distribute_local_to_global (dst.block(1));
       }
   }
@@ -825,7 +841,11 @@ namespace aspect
 
         pressure.reinit (cell);
         pressure.read_dof_values(src);
-        pressure.evaluate (true, false);
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.evaluate (EvaluationFlags::values);
+#else
+        pressure.evaluate (true,false);
+#endif
         for (unsigned int q=0; q<pressure.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
@@ -846,7 +866,11 @@ namespace aspect
             pressure.submit_value(one_over_viscosity*
                                   pressure.get_value(q),q);
           }
-        pressure.integrate (true, false);
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.integrate (EvaluationFlags::values);
+#else
+        pressure.integrate (true,false);
+#endif
         pressure.distribute_local_to_global (dst);
       }
   }
@@ -939,7 +963,11 @@ namespace aspect
               pressure.begin_dof_values()[j] = VectorizedArray<number>();
             pressure.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+            pressure.evaluate (EvaluationFlags::values);
+#else
             pressure.evaluate (true,false,false);
+#endif
             for (unsigned int q=0; q<pressure.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
@@ -960,7 +988,11 @@ namespace aspect
                 pressure.submit_value(one_over_viscosity*
                                       pressure.get_value(q),q);
               }
+#if DEAL_II_VERSION_GTE(9,3,0)
+            pressure.integrate (EvaluationFlags::values);
+#else
             pressure.integrate (true,false);
+#endif
 
             diagonal[i] = pressure.begin_dof_values()[i];
           }
@@ -1025,7 +1057,11 @@ namespace aspect
 
         velocity.reinit (cell);
         velocity.read_dof_values(src);
-        velocity.evaluate (false, true, false);
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.evaluate (EvaluationFlags::gradients);
+#else
+        velocity.evaluate (false,true,false);
+#endif
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
@@ -1044,7 +1080,11 @@ namespace aspect
               }
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
-        velocity.integrate (false, true);
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.integrate (EvaluationFlags::gradients);
+#else
+        velocity.integrate (false,true);
+#endif
         velocity.distribute_local_to_global (dst);
       }
   }
@@ -1120,7 +1160,11 @@ namespace aspect
               velocity.begin_dof_values()[j] = VectorizedArray<number>();
             velocity.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+            velocity.evaluate (EvaluationFlags::gradients);
+#else
             velocity.evaluate (false,true,false);
+#endif
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
@@ -1141,7 +1185,11 @@ namespace aspect
 
                 velocity.submit_symmetric_gradient(sym_grad_u, q);
               }
+#if DEAL_II_VERSION_GTE(9,3,0)
+            velocity.integrate (EvaluationFlags::gradients);
+#else
             velocity.integrate (false,true);
+#endif
 
             diagonal[i] = velocity.begin_dof_values()[i];
           }
@@ -1576,10 +1624,19 @@ namespace aspect
         // with the zero boundary used by the stokes_matrix operator.
         velocity.reinit (cell);
         velocity.read_dof_values_plain (u0.block(0));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.evaluate (EvaluationFlags::gradients);
+#else
         velocity.evaluate (false,true,false);
+#endif
+
         pressure.reinit (cell);
         pressure.read_dof_values_plain (u0.block(1));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.evaluate (EvaluationFlags::values);
+#else
         pressure.evaluate (true,false,false);
+#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
@@ -1605,9 +1662,17 @@ namespace aspect
             velocity.submit_symmetric_gradient(-1.0*sym_grad_u, q);
           }
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        velocity.integrate (EvaluationFlags::gradients);
+#else
         velocity.integrate (false,true);
+#endif
         velocity.distribute_local_to_global (rhs_correction.block(0));
+#if DEAL_II_VERSION_GTE(9,3,0)
+        pressure.integrate (EvaluationFlags::values);
+#else
         pressure.integrate (true,false);
+#endif
         pressure.distribute_local_to_global (rhs_correction.block(1));
       }
     rhs_correction.compress(VectorOperation::add);
