@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -40,17 +40,17 @@ namespace WorldBuilder
         /**
          * constructor
          */
-        String(const std::string default_value);
+        String(std::string default_value);
 
         /**
          * constructor
          */
-        String(const std::string default_value, const std::string restricted_value);
+        String(std::string default_value, const std::string &restricted_value);
 
         /**
          * constructor
          */
-        String(const std::string default_value, const std::vector<std::string> &restricted_values);
+        String(std::string default_value, std::vector<std::string> restricted_values);
 
         /**
          * constructor

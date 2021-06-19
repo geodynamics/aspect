@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -51,10 +51,10 @@ namespace WorldBuilder
         }
 
         Linear::~Linear()
-        { }
+          = default;
 
         void
-        Linear::declare_entries(Parameters &prm, const std::string &)
+        Linear::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           // Add max depth to the required parameters.
           prm.declare_entry("", Types::Object({"max distance slab top"}), "Temperature model object");
@@ -87,12 +87,12 @@ namespace WorldBuilder
 
 
         double
-        Linear::get_temperature(const Point<3> &,
-                                const double,
+        Linear::get_temperature(const Point<3> & /*position*/,
+                                const double /*depth*/,
                                 const double gravity_norm,
                                 double temperature_,
-                                const double,
-                                const double,
+                                const double /*feature_min_depth*/,
+                                const double /*feature_max_depth*/,
                                 const std::map<std::string,double> &distance_from_plane) const
         {
           if (distance_from_plane.at("distanceFromPlane") <= max_depth && distance_from_plane.at("distanceFromPlane") >= min_depth)
@@ -117,7 +117,7 @@ namespace WorldBuilder
                                                         this->world->specific_heat) * max_depth_local);
                 }
 
-              const double new_temperature = top_temperature +
+              const double new_temperature = top_temperature_local +
                                              (distance_from_plane.at("distanceFromPlane") - min_depth_local) *
                                              ((bottom_temperature_local - top_temperature_local) / (max_depth_local - min_depth_local));
               return Utilities::apply_operation(operation,temperature_,new_temperature);

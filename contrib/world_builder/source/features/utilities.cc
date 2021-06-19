@@ -26,12 +26,12 @@ namespace WorldBuilder
     namespace Utilities
     {
       Operations
-      string_operations_to_enum(const std::string &string)
+      string_operations_to_enum(const std::string &operation)
       {
-        if (string == "add") return Operations::ADD;
-        if (string == "subtract") return Operations::SUBTRACT;
+        if (operation == "add") return Operations::ADD;
+        if (operation == "subtract") return Operations::SUBTRACT;
 
-        WBAssert(string == "replace", "Could not find operation: " << string << ".");
+        WBAssert(operation == "replace", "Could not find operation: " << operation << ".");
         return Operations::REPLACE;
       }
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -39,16 +39,16 @@ namespace WorldBuilder
         /**
          * constructor
          */
-        PluginSystem(const std::string &default_vaule,
+        PluginSystem(std::string default_value_,
                      void ( *declare_entries)(Parameters &, const std::string &, const std::vector<std::string> &),
-                     const std::vector<std::string> required_entries,
+                     std::vector<std::string> required_entries,
                      const bool allow_multiple = true);
 
 
         /**
          * Copy constructor
          */
-        PluginSystem(PluginSystem const &feature);
+        PluginSystem(PluginSystem const &plugin_system);
 
         /**
          * Destructor

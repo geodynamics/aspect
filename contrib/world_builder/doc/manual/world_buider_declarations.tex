@@ -51,7 +51,7 @@
 \end{itemize}\section{/interpolation}
 \begin{itemize}\item {\bf default value}: none
 \item {\bf type}: string
-\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are none, linear and monotone spline.
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are none, linear, monotone spline and continuous monotone spline interpolation.
 \end{itemize}\section{/coordinate system}
 \begin{itemize}\item {\bf documentation}: A coordinate system. Cartesian or spherical.
 \item {\bf default value}: cartesian
@@ -111,6 +111,10 @@
 \item {\bf documentation}: 
 \end{itemize}\subsubsection{/features/items/oneOf/1/coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/1/interpolation}
+\begin{itemize}\item {\bf default value}: global
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are global, none, linear, monotone spline and continuous monotone spline interpolation. If this value is set to global, the global value for interpolation is used.
 \end{itemize}\subsection{/features/items/oneOf/1/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
@@ -421,6 +425,10 @@
 \item {\bf documentation}: 
 \end{itemize}\subsubsection{/features/items/oneOf/2/coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/2/interpolation}
+\begin{itemize}\item {\bf default value}: global
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are global, none, linear, monotone spline and continuous monotone spline interpolation. If this value is set to global, the global value for interpolation is used.
 \end{itemize}\subsection{/features/items/oneOf/2/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
@@ -1658,6 +1666,10 @@
 \item {\bf documentation}: 
 \end{itemize}\subsubsection{/features/items/oneOf/3/coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/3/interpolation}
+\begin{itemize}\item {\bf default value}: global
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are global, none, linear, monotone spline and continuous monotone spline interpolation. If this value is set to global, the global value for interpolation is used.
 \end{itemize}\subsection{/features/items/oneOf/3/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
@@ -1968,6 +1980,10 @@
 \item {\bf documentation}: 
 \end{itemize}\subsubsection{/features/items/oneOf/4/coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/4/interpolation}
+\begin{itemize}\item {\bf default value}: global
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are global, none, linear, monotone spline and continuous monotone spline interpolation. If this value is set to global, the global value for interpolation is used.
 \end{itemize}\subsection{/features/items/oneOf/4/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number
@@ -2324,6 +2340,10 @@
 \item {\bf documentation}: 
 \end{itemize}\subsubsection{/features/items/oneOf/5/coordinates/items/items}
 \begin{itemize}\item {\bf type}: number
+\end{itemize}\subsection{/features/items/oneOf/5/interpolation}
+\begin{itemize}\item {\bf default value}: global
+\item {\bf type}: string
+\item {\bf documentation}: What type of interpolation should be used to enforce the minimum points per distance parameter. Options are global, none, linear, monotone spline and continuous monotone spline interpolation. If this value is set to global, the global value for interpolation is used.
 \end{itemize}\subsection{/features/items/oneOf/5/min depth}
 \begin{itemize}\item {\bf default value}: 0.0
 \item {\bf type}: number

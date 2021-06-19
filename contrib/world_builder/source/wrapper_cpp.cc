@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -17,6 +17,8 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <utility>
+
 #include "world_builder/wrapper_cpp.h"
 #include "world_builder/world.h"
 #include "iostream"
@@ -24,10 +26,10 @@
 using namespace WorldBuilder;
 namespace wrapper_cpp
 {
-  WorldBuilderWrapper::WorldBuilderWrapper(std::string filename, bool has_output_dir, std::string output_dir, const unsigned long random_number_seed)
-    : ptr_ptr_world(NULL)
+  WorldBuilderWrapper::WorldBuilderWrapper(std::string filename, bool has_output_dir, const std::string &output_dir, const unsigned long random_number_seed)
+    : ptr_ptr_world(nullptr)
   {
-    WorldBuilder::World *a = new WorldBuilder::World(filename, has_output_dir, output_dir, random_number_seed);
+    WorldBuilder::World *a = new WorldBuilder::World(std::move(filename), has_output_dir, output_dir, random_number_seed);
     ptr_ptr_world = reinterpret_cast<void *>(a);
   }
 

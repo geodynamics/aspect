@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -43,7 +43,7 @@ namespace WorldBuilder
         /**
          * Constructor for the declaration
          */
-        Object(const std::vector<std::string> required = std::vector<std::string>(),
+        Object(std::vector<std::string> required = std::vector<std::string>(),
                const bool additional_properties = false);
 
         /**

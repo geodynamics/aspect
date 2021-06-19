@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -84,13 +84,13 @@ namespace WorldBuilder
         double composition(const Point<3> &position,
                            const double depth,
                            const unsigned int composition_number,
-                           double value) const override final;
+                           double composition) const override final;
 
 
         /**
-         * Returns a grains (rotation matrix and grain size)
-         * based on the given position, depth in the model,
-         * the composition which is being requested and the current value
+         * Returns a grains (rotation matrix and grain size) based on the
+         * given position, depth in the model, the composition (e.g. representing
+         * olvine and/or enstatite) which is being requested and the current value
          * of that composition at this location and depth.
          */
         virtual
@@ -98,7 +98,7 @@ namespace WorldBuilder
         grains(const Point<3> &position,
                const double depth,
                const unsigned int composition_number,
-               WorldBuilder::grains value) const override final;
+               WorldBuilder::grains grains) const override final;
 
 
 

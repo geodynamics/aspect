@@ -1,4 +1,4 @@
-version: '0.3.0.{build}'
+version: '0.4.0.{build}'
 
 image: Visual Studio 2015
 
@@ -53,5 +53,8 @@ build_script:
   - ls /c/Python38-x64/DLLs/
 
 test_script: 
-  - cmake --build . --config %configuration% --target run_tests
+  - ctest -VV -C %configuration%
 after_test:
+on_finish:
+  - cat Testing/Temporary/LastTest.log
+

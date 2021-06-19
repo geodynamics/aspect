@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -50,10 +50,10 @@ namespace WorldBuilder
         }
 
         Uniform::~Uniform()
-        { }
+          = default;
 
         void
-        Uniform::declare_entries(Parameters &prm, const std::string &)
+        Uniform::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
 
           // Add temperature to the required parameters.
@@ -83,12 +83,12 @@ namespace WorldBuilder
 
 
         double
-        Uniform::get_temperature(const Point<3> &,
-                                 const double ,
-                                 const double ,
+        Uniform::get_temperature(const Point<3> & /*position*/,
+                                 const double  /*depth*/,
+                                 const double  /*gravity*/,
                                  double temperature_,
-                                 const double ,
-                                 const double ,
+                                 const double  /*feature_min_depth*/,
+                                 const double  /*feature_max_depth*/,
                                  const std::map<std::string,double> &distance_from_plane) const
         {
 

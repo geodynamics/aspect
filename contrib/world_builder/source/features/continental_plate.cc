@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -50,12 +50,12 @@ namespace WorldBuilder
     }
 
     ContinentalPlate::~ContinentalPlate()
-    { }
+      = default;
 
 
     void
     ContinentalPlate::declare_entries(Parameters &prm,
-                                      const std::string &,
+                                      const std::string & /*unused*/,
                                       const std::vector<std::string> &required_entries)
     {
       prm.declare_entry("", Types::Object(required_entries), "continental plate object");

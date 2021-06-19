@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -34,9 +34,9 @@ namespace WorldBuilder
   namespace Types
   {
     Segment::Segment(const double default_length_,
-                     const WorldBuilder::Point<2> default_thickness_,
-                     const WorldBuilder::Point<2> default_top_truncation_,
-                     const WorldBuilder::Point<2> default_angle_,
+                     const WorldBuilder::Point<2> &default_thickness_,
+                     const WorldBuilder::Point<2> &default_top_truncation_,
+                     const WorldBuilder::Point<2> &default_angle_,
                      const Types::Interface &temperature_plugin_system_,
                      const Types::Interface &composition_plugin_system_,
                      const Types::Interface &grains_plugin_system_)
@@ -74,7 +74,7 @@ namespace WorldBuilder
 
 
     Segment::~Segment ()
-    {}
+      = default;
 
 
 
@@ -95,9 +95,9 @@ namespace WorldBuilder
         std::vector<std::string> restricted_values = {"length", "thickness", "angle"};
         for (unsigned int i = 0; i < restricted_values.size(); ++i)
           {
-            if (restricted_values[i] != "")
+            if (!restricted_values[i].empty())
               {
-                if (i == 0 && Pointer((base + "/required").c_str()).Get(declarations) == NULL)
+                if (i == 0 && Pointer((base + "/required").c_str()).Get(declarations) == nullptr)
                   {
                     // The enum array doesn't exist yet, so we create it and fill it.
                     Pointer((base + "/required/0").c_str()).Create(declarations);
@@ -147,9 +147,9 @@ namespace WorldBuilder
     // todo update function
     template<class A, class B, class C>
     Segment<A,B,C>::Segment(const double default_length_,
-                            const WorldBuilder::Point<2> default_thickness_,
-                            const WorldBuilder::Point<2> default_top_truncation_,
-                            const WorldBuilder::Point<2> default_angle_,
+                            const WorldBuilder::Point<2> &default_thickness_,
+                            const WorldBuilder::Point<2> &default_top_truncation_,
+                            const WorldBuilder::Point<2> &default_angle_,
                             const std::vector<std::shared_ptr<A> > &temperature_systems_,
                             const std::vector<std::shared_ptr<B> > &composition_systems_,
                             const std::vector<std::shared_ptr<C> > &grains_systems_)
@@ -184,7 +184,7 @@ namespace WorldBuilder
 
     template<class A, class B, class C>
     Segment<A,B,C>::~Segment ()
-    {}
+      = default;
 
     template<class A, class B, class C>
     void

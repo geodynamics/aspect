@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -30,6 +30,8 @@
 #include <world_builder/types/plugin_system.h>
 #include <world_builder/features/continental_plate_models/grains/uniform.h>
 
+#include <algorithm>
+
 
 namespace WorldBuilder
 {
@@ -52,10 +54,10 @@ namespace WorldBuilder
         }
 
         Uniform::~Uniform()
-        { }
+          = default;
 
         void
-        Uniform::declare_entries(Parameters &prm, const std::string &)
+        Uniform::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           // Add compositions, rotation matrices and grain size models to the required parameters.
           prm.declare_entry("", Types::Object({"compositions"}), "Uniform grains model object");
@@ -132,12 +134,12 @@ namespace WorldBuilder
 
 
         WorldBuilder::grains
-        Uniform::get_grains(const Point<3> &,
+        Uniform::get_grains(const Point<3> & /*position*/,
                             const double depth,
                             const unsigned int composition_number,
                             WorldBuilder::grains grains_,
-                            const double ,
-                            const double) const
+                            const double  /*feature_min_depth*/,
+                            const double /*feature_max_depth*/) const
         {
           WorldBuilder::grains  grains_local = grains_;
           if (depth <= max_depth && depth >= min_depth)
@@ -146,18 +148,10 @@ namespace WorldBuilder
                 {
                   if (compositions[i] == composition_number)
                     {
-                      for (auto &&it_rotation_matrices : grains_local.rotation_matrices)
-                        {
-                          it_rotation_matrices = rotation_matrices[i];
-                        }
+                      std::fill(grains_local.rotation_matrices.begin(),grains_local.rotation_matrices.end(),rotation_matrices[i]);
 
                       const double size = grain_sizes[i] < 0 ? 1.0/static_cast<double>(grains_local.sizes.size()) :  grain_sizes[i];
-
-                      for (auto &&it_sizes : grains_local.sizes)
-                        {
-                          it_sizes = size;
-                        }
-
+                      std::fill(grains_local.sizes.begin(),grains_local.sizes.end(),size);
 
                       return grains_local;
                     }

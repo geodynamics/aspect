@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -81,8 +81,8 @@ namespace WorldBuilder
             // linear temperature submodule parameters
             double min_depth;
             double max_depth;
-            double top_temperature;
-            double bottom_temperature;
+            double center_temperature;
+            double side_temperature;
             Utilities::Operations operation;
 
         };

@@ -1,5 +1,5 @@
 {
-"version":"0.3",
+"version":"0.4",
 "cross section": [[0,0],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "features":
@@ -19,7 +19,8 @@
      "composition models":[{"model":"uniform", "compositions":[4]}]},
 
   {"model":"oceanic plate", "name":"Fifth oceanic plate", "max depth":250e3, "coordinates":[[500e3,-1e3],[500e3,500e3],[1000e3,500e3],[1000e3,-1e3]],
-     "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
+     "temperature models":[{"model":"linear", "max depth":200e3, "top temperature":10, "bottom temperature":50},
+                           {"model":"linear", "min depth":200e3, "max depth":248e3, "top temperature":-1, "bottom temperature":1700}],
      "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}]},
      
   {"model":"oceanic plate", "name":"Sixth oceanic plate", "max depth":250e3, "coordinates":[[1100e3,-1e3],[1100e3,750e3],[2500e3,750e3],[2500e3,-1e3]],

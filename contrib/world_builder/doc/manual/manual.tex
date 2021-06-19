@@ -1,4 +1,4 @@
-%  Copyright (C) 2018 by the authors of the World Builder code.
+%  Copyright (C) 2018-2021 by the authors of the World Builder code.
 %
 %  This file is part of the World Builder.
 %
@@ -165,9 +165,9 @@ The developers of the Geodynamic World Builder request that you cite the followi
 
 \noindent Fraters, M., Thieulot, C., van den Berg, A., and Spakman, W.: The Geodynamic World Builder: a solution for complex initial conditions in numerical modelling, Solid Earth., 10, 1785–1807, \url{https://doi.org/10.5194/se-10-1785-2019}, 2019.\\
 
-\noindent And cite the specific version of the software used. Version 0.3.0 can be cited as:\\
+\noindent And cite the specific version of the software used. Version 0.4.0 can be cited as:\\
 
-\noindent Menno Fraters and others. 2019, October 23. The Geodynamic World Builder v0.3.0. Zenodo. \url{https://doi.org/10.5281/zenodo.3900603}.
+\noindent Menno Fraters and others. 2021, Jule 22. The Geodynamic World Builder v0.4.0. Zenodo. \url{https://doi.org/10.5281/zenodo.5014808}.
 
 
 \section{Acknowledgments}
@@ -414,12 +414,12 @@ To understand how the \WB{} file is structured, let's begin with a minimal examp
 
 \begin{javascriptcode}{A minimal \WB{} example}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":[]
 }
 \end{javascriptcode}
 
-Let's first get through the basics of reading a JSON file. The curly brackets (\{ and \}) indicate an object in JSON. An object can contain several keys and associated values. The keys in this case are version, which has a string value of "0.2", and features, which has two square brackets as value. The square brackets in the JSON language indicate that the value is an array. More on that later. As you can see there are different type of values in the JSON language. The important ones for the world builder are numbers (e.g. a double: 5.0e3 or and integer: 6), strings ("hello world"), arrays (e.g. [0,1]),  and objects (e.g. { "key 1":1 }). Note that, keys are always strings and that all items in an object are separated with a comma.
+Let's first get through the basics of reading a JSON file. The curly brackets (\{ and \}) indicate an object in JSON. An object can contain several keys and associated values. The keys in this case are version, which has a string value of "0.4", and features, which has two square brackets as value. The square brackets in the JSON language indicate that the value is an array. More on that later. As you can see there are different type of values in the JSON language. The important ones for the world builder are numbers (e.g. a double: 5.0e3 or and integer: 6), strings ("hello world"), arrays (e.g. [0,1]),  and objects (e.g. { "key 1":1 }). Note that, keys are always strings and that all items in an object are separated with a comma.
 
 Although this example obviously doesn't do much, a lot is already happening in the background. To make life easy, parameters can be set to default values, which also the case here. The version number indicates the major and minor version number of the \GWB{}. Note that after the release of version 1.0.0, only the major version number need to be provided (see section \ref{section:idea_behind_WB}).
 
@@ -427,7 +427,7 @@ If you where to visualize the temperature and the compositions of this model, yo
 
 \begin{javascriptcode}[label={lst:code_minimal_example_default_coordinate_system}]{A minimal example explicitly showing the default coordinate system}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "coordinate system":{"model":"cartesian"},
   "features":[]
 }
@@ -461,7 +461,7 @@ The first option (line) is simpler, more intuitive and makes no assumptions abou
 
 \begin{javascriptcode}{}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "coordinate system":{"model":"spherical", "depth method":"starting point"},
   "features":[]
 }
@@ -476,7 +476,7 @@ The world we live in is an inherently 3d world, and so is the \WB{}. So no matte
 
 \begin{javascriptcode}{An example showing how to use the cross section}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":[]
@@ -494,7 +494,7 @@ Before we can make our first real model, there is one more topic to discuss: fea
 
 \begin{javascriptcode}{A example of a generic feature}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -512,7 +512,7 @@ A feature has a name and for every available property an array of models attache
 
 \begin{javascriptcode}{A example of two generic features use}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -548,7 +548,7 @@ The second required parameter is the parameter is \hl{coordinates}. This is alwa
 
 \begin{javascriptcode}{An example with a generic feature and the required parameters}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -584,7 +584,7 @@ We can now finally start building a useful geodynamic model. We begin with a con
 
 \begin{javascriptcode}[label=lst:simple_continental_plate]{An example of the most basic continental plate}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -599,7 +599,7 @@ The example in listing \ref{lst:simple_continental_plate} is not yet functional 
 
 \begin{javascriptcode}{A first functioning continental plate example}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -622,7 +622,7 @@ It is also possible to set a "min depth" for both the continental plate and the 
 
 \begin{javascriptcode}{A continental plate with two compositions with different fractions}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -645,7 +645,7 @@ We have stated before that temperature and composition models get the previous t
 
 \begin{javascriptcode}{A continental plate with an add operation for the temperature model}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -677,7 +677,7 @@ Continents with a constant temperature and composition are obviously not very re
 
 \begin{javascriptcode}{Using the linear temperature model}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -697,7 +697,7 @@ We can also improve the compositional representation through having multiple com
 
 \begin{javascriptcode}{Using the linear temperature model}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -730,7 +730,7 @@ This temperature model takes exactly the same parameters as the linear temperatu
 
 \begin{javascriptcode}{Using the oceanic plate's "plate model" temperature model}{}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -757,7 +757,7 @@ The \WB{} supports layering of the mantle. Teh mantle layer feature follows the 
 
 \begin{javascriptcode}{Using the oceanic plate's "plate model" temperature model}{listing_mantle_layer_different_composition}
 {
-  "version":"0.2",
+  "version":"0.4",
   "features":
   [
     {
@@ -778,7 +778,7 @@ While the continental plate, the oceanic plate and the mantle layer are all area
 
 \begin{javascriptcode}{Using the subducting plate constant segment}{}
 {
-"version":"0.2",
+"version":"0.4",
 "features":
 [
      {
@@ -793,7 +793,7 @@ Segments have three required values and two optional. Let's first discuss the re
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -823,7 +823,7 @@ Now rises the question, what if you want to give the second segment a different 
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -861,7 +861,7 @@ Although this is already an interesting model things might not only change down 
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment_sections}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[0,99e3],[99e3,0]],
   "features":
   [
@@ -914,7 +914,7 @@ The subducting plate has, like the oceanic plate, a special temperature model. T
 
 \begin{javascriptcode}{Using the subducting plate changing segment}{lst_json:simple_2d_subduction_layered_second_segment}
 {
-  "version":"0.2",
+  "version":"0.4",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -945,7 +945,7 @@ The subducting plate has, like the oceanic plate, a special temperature model. T
 Fault in the \WB{} work in a very similar way as subducting plates. The mayor difference is that where subducting plates measure distance based on the top of the plate, faults measure from the center of the fault. This means that faults modules are usually symmetric. For example, the \hl{uniform} composition model askes for min and max distance from fault center instead of slab top as with the subducting plate feature. This make faults symmetric around the center. Note that the thickness of the central layer is twice the max distance fault center, because it goes in both directions.
 
 \begin{javascriptcode}{Using the fault feature}{}
-"version":"0.2",
+"version":"0.4",
 "features":
 {
   {

@@ -1,5 +1,5 @@
 {
-"version":"0.3",
+"version":"0.4",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "features":
@@ -29,7 +29,8 @@
     "composition models":[{"model":"uniform", "compositions":[4]}]},
 
    {"model":"mantle layer", "name":"Fifth mantle layer", "min depth":300e3, "max depth":550e3, "coordinates":[[500e3,-1e3],[500e3,500e3],[1000e3,500e3],[1000e3,-1e3]],
-    "temperature models":[{"model":"linear", "max depth":550e3,  "top temperature":10, "bottom temperature":50}],
+    "temperature models":[{"model":"linear", "max depth":400e3, "top temperature":10, "bottom temperature":50},
+                          {"model":"linear", "min depth":400e3, "max depth":500e3,  "top temperature":-1, "bottom temperature":1800}],
     "composition models":[{"model":"uniform", "compositions":[5,6], "fractions":[0.25,0.75]}],
     "grains models":[
                      {"model":"random uniform distribution","max depth":400e3, "compositions":[0,1], // olivine and enstatie

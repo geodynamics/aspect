@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -36,6 +36,7 @@
 
 #include "glm/glm.h"
 
+using namespace std;
 
 namespace WorldBuilder
 {
@@ -52,7 +53,7 @@ namespace WorldBuilder
     }
 
     Fault::~Fault()
-    { }
+      = default;
 
 
     void
@@ -162,19 +163,19 @@ namespace WorldBuilder
                 std::vector<std::shared_ptr<Features::FaultModels::Composition::Interface>  > local_default_composition_models;
                 std::vector<std::shared_ptr<Features::FaultModels::Grains::Interface>  > local_default_grains_models;
 
-                if (prm.get_shared_pointers<Features::FaultModels::Temperature::Interface>("temperature models", local_default_temperature_models) == false)
+                if (!prm.get_shared_pointers<Features::FaultModels::Temperature::Interface>("temperature models", local_default_temperature_models))
                   {
                     // no local temperature model, use global default
                     local_default_temperature_models = default_temperature_models;
                   }
 
-                if (prm.get_shared_pointers<Features::FaultModels::Composition::Interface>("composition models", local_default_composition_models) == false)
+                if (!prm.get_shared_pointers<Features::FaultModels::Composition::Interface>("composition models", local_default_composition_models))
                   {
                     // no local composition model, use global default
                     local_default_composition_models = default_composition_models;
                   }
 
-                if (prm.get_shared_pointers<Features::FaultModels::Grains::Interface>("grains models", local_default_grains_models) == false)
+                if (!prm.get_shared_pointers<Features::FaultModels::Grains::Interface>("grains models", local_default_grains_models))
                   {
                     // no local grains model, use global default
                     local_default_grains_models = default_grains_models;
@@ -302,35 +303,35 @@ namespace WorldBuilder
       prm.leave_subsection();
 
 
-      maximum_slab_thickness = 0;
-      maximum_total_slab_length = 0;
-      total_slab_length.resize(original_number_of_coordinates);
-      slab_segment_lengths.resize(original_number_of_coordinates);
-      slab_segment_thickness.resize(original_number_of_coordinates);
-      slab_segment_top_truncation.resize(original_number_of_coordinates);
-      slab_segment_angles.resize(original_number_of_coordinates);
+      maximum_fault_thickness = 0;
+      maximum_total_fault_length = 0;
+      total_fault_length.resize(original_number_of_coordinates);
+      fault_segment_lengths.resize(original_number_of_coordinates);
+      fault_segment_thickness.resize(original_number_of_coordinates);
+      fault_segment_top_truncation.resize(original_number_of_coordinates);
+      fault_segment_angles.resize(original_number_of_coordinates);
 
       for (unsigned int i = 0; i < segment_vector.size(); ++i)
         {
-          double local_total_slab_length = 0;
-          slab_segment_lengths[i].resize(segment_vector[i].size());
-          slab_segment_thickness[i].resize(segment_vector[i].size(), Point<2>(invalid));
-          slab_segment_top_truncation[i].resize(segment_vector[i].size(), Point<2>(invalid));
-          slab_segment_angles[i].resize(segment_vector[i].size(), Point<2>(invalid));
+          double local_total_fault_length = 0;
+          fault_segment_lengths[i].resize(segment_vector[i].size());
+          fault_segment_thickness[i].resize(segment_vector[i].size(), Point<2>(invalid));
+          fault_segment_top_truncation[i].resize(segment_vector[i].size(), Point<2>(invalid));
+          fault_segment_angles[i].resize(segment_vector[i].size(), Point<2>(invalid));
 
           for (unsigned int j = 0; j < segment_vector[i].size(); ++j)
             {
-              slab_segment_lengths[i][j] = segment_vector[i][j].value_length;
-              local_total_slab_length += segment_vector[i][j].value_length;
+              fault_segment_lengths[i][j] = segment_vector[i][j].value_length;
+              local_total_fault_length += segment_vector[i][j].value_length;
 
-              slab_segment_thickness[i][j] = segment_vector[i][j].value_thickness;
-              slab_segment_top_truncation[i][j] = segment_vector[i][j].value_top_truncation;
+              fault_segment_thickness[i][j] = segment_vector[i][j].value_thickness;
+              fault_segment_top_truncation[i][j] = segment_vector[i][j].value_top_truncation;
 
-              slab_segment_angles[i][j] = segment_vector[i][j].value_angle * (const_pi/180);
+              fault_segment_angles[i][j] = segment_vector[i][j].value_angle * (const_pi/180);
             }
-          maximum_slab_thickness = std::max(maximum_slab_thickness, local_total_slab_length);
-          total_slab_length[i] = local_total_slab_length;
-          maximum_total_slab_length = std::max(maximum_total_slab_length, local_total_slab_length);
+          maximum_fault_thickness = std::max(maximum_fault_thickness, local_total_fault_length);
+          total_fault_length[i] = local_total_fault_length;
+          maximum_total_fault_length = std::max(maximum_total_fault_length, local_total_fault_length);
         }
     }
 
@@ -357,7 +358,7 @@ namespace WorldBuilder
               );
 
       // todo: explain and check -starting_depth
-      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_slab_length + maximum_slab_thickness)
+      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_fault_length + maximum_fault_thickness)
         {
           // todo: explain
           // This function only returns positive values, because we want
@@ -366,11 +367,14 @@ namespace WorldBuilder
             WorldBuilder::Utilities::distance_point_from_curved_planes(position,
                                                                        reference_point,
                                                                        coordinates,
-                                                                       slab_segment_lengths,
-                                                                       slab_segment_angles,
+                                                                       fault_segment_lengths,
+                                                                       fault_segment_angles,
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        true,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -386,29 +390,29 @@ namespace WorldBuilder
             {
               // We want to do both section (horizontal) and segment (vertical) interpolation.
 
-              const double thickness_up = slab_segment_thickness[current_section][current_segment][0]
+              const double thickness_up = fault_segment_thickness[current_section][current_segment][0]
                                           + section_fraction
-                                          * (slab_segment_thickness[next_section][current_segment][0]
-                                             - slab_segment_thickness[current_section][current_segment][0]);
-              const double thickness_down = slab_segment_thickness[current_section][current_segment][1]
+                                          * (fault_segment_thickness[next_section][current_segment][0]
+                                             - fault_segment_thickness[current_section][current_segment][0]);
+              const double thickness_down = fault_segment_thickness[current_section][current_segment][1]
                                             + section_fraction
-                                            * (slab_segment_thickness[next_section][current_segment][1]
-                                               - slab_segment_thickness[current_section][current_segment][1]);
+                                            * (fault_segment_thickness[next_section][current_segment][1]
+                                               - fault_segment_thickness[current_section][current_segment][1]);
               const double thickness_local = thickness_up + segment_fraction * (thickness_down - thickness_up);
 
-              const double max_slab_length = total_slab_length[current_section] +
-                                             section_fraction *
-                                             (total_slab_length[next_section] - total_slab_length[current_section]);
+              const double max_fault_length = total_fault_length[current_section] +
+                                              section_fraction *
+                                              (total_fault_length[next_section] - total_fault_length[current_section]);
 
               // secondly for top truncation
-              const double top_truncation_up = slab_segment_top_truncation[current_section][current_segment][0]
+              const double top_truncation_up = fault_segment_top_truncation[current_section][current_segment][0]
                                                + section_fraction
-                                               * (slab_segment_top_truncation[next_section][current_segment][0]
-                                                  - slab_segment_top_truncation[current_section][current_segment][0]);
-              const double top_truncation_down = slab_segment_top_truncation[current_section][current_segment][1]
+                                               * (fault_segment_top_truncation[next_section][current_segment][0]
+                                                  - fault_segment_top_truncation[current_section][current_segment][0]);
+              const double top_truncation_down = fault_segment_top_truncation[current_section][current_segment][1]
                                                  + section_fraction
-                                                 * (slab_segment_top_truncation[next_section][current_segment][1]
-                                                    - slab_segment_top_truncation[current_section][current_segment][1]);
+                                                 * (fault_segment_top_truncation[next_section][current_segment][1]
+                                                    - fault_segment_top_truncation[current_section][current_segment][1]);
               const double top_truncation_local = top_truncation_up + segment_fraction * (top_truncation_down - top_truncation_up);
 
               // if the thickness is zero, we don't need to compute anything, so return.
@@ -424,7 +428,7 @@ namespace WorldBuilder
               if (std::fabs(distance_from_plane) > 0 &&
                   std::fabs(distance_from_plane) <= thickness_local * 0.5 &&
                   distance_along_plane > 0 &&
-                  distance_along_plane <= max_slab_length)
+                  distance_along_plane <= max_fault_length)
                 {
                   // Inside the fault!
                   double temperature_current_section = temperature;
@@ -485,7 +489,7 @@ namespace WorldBuilder
       const double starting_radius = natural_coordinate.get_depth_coordinate() + depth - starting_depth;
 
       // todo: explain and check -starting_depth
-      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_slab_length + maximum_slab_thickness)
+      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_fault_length + maximum_fault_thickness)
         {
           // todo: explain
           // This function only returns positive values, because we want
@@ -494,11 +498,14 @@ namespace WorldBuilder
             WorldBuilder::Utilities::distance_point_from_curved_planes(position,
                                                                        reference_point,
                                                                        coordinates,
-                                                                       slab_segment_lengths,
-                                                                       slab_segment_angles,
+                                                                       fault_segment_lengths,
+                                                                       fault_segment_angles,
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        true,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -514,25 +521,25 @@ namespace WorldBuilder
             {
               // We want to do both section (horizontal) and segment (vertical) interpolation.
 
-              const double thickness_up = slab_segment_thickness[current_section][current_segment][0]
+              const double thickness_up = fault_segment_thickness[current_section][current_segment][0]
                                           + section_fraction
-                                          * (slab_segment_thickness[next_section][current_segment][0]
-                                             - slab_segment_thickness[current_section][current_segment][0]);
-              const double thickness_down = slab_segment_thickness[current_section][current_segment][1]
+                                          * (fault_segment_thickness[next_section][current_segment][0]
+                                             - fault_segment_thickness[current_section][current_segment][0]);
+              const double thickness_down = fault_segment_thickness[current_section][current_segment][1]
                                             + section_fraction
-                                            * (slab_segment_thickness[next_section][current_segment][1]
-                                               - slab_segment_thickness[current_section][current_segment][1]);
+                                            * (fault_segment_thickness[next_section][current_segment][1]
+                                               - fault_segment_thickness[current_section][current_segment][1]);
               const double thickness_local = thickness_up + segment_fraction * (thickness_down - thickness_up);
 
               // secondly for top truncation
-              const double top_truncation_up = slab_segment_top_truncation[current_section][current_segment][0]
+              const double top_truncation_up = fault_segment_top_truncation[current_section][current_segment][0]
                                                + section_fraction
-                                               * (slab_segment_top_truncation[next_section][current_segment][0]
-                                                  - slab_segment_top_truncation[current_section][current_segment][0]);
-              const double top_truncation_down = slab_segment_top_truncation[current_section][current_segment][1]
+                                               * (fault_segment_top_truncation[next_section][current_segment][0]
+                                                  - fault_segment_top_truncation[current_section][current_segment][0]);
+              const double top_truncation_down = fault_segment_top_truncation[current_section][current_segment][1]
                                                  + section_fraction
-                                                 * (slab_segment_top_truncation[next_section][current_segment][1]
-                                                    - slab_segment_top_truncation[current_section][current_segment][1]);
+                                                 * (fault_segment_top_truncation[next_section][current_segment][1]
+                                                    - fault_segment_top_truncation[current_section][current_segment][1]);
               const double top_truncation_local = top_truncation_up + segment_fraction * (top_truncation_down - top_truncation_up);
 
               // if the thickness is zero, we don't need to compute anything, so return.
@@ -543,9 +550,9 @@ namespace WorldBuilder
               if (thickness_local < top_truncation_local)
                 return composition;
 
-              const double max_slab_length = total_slab_length[current_section] +
-                                             section_fraction *
-                                             (total_slab_length[next_section] - total_slab_length[current_section]);
+              const double max_fault_length = total_fault_length[current_section] +
+                                              section_fraction *
+                                              (total_fault_length[next_section] - total_fault_length[current_section]);
 
 
               // Because both sides return positve values, we have to
@@ -553,7 +560,7 @@ namespace WorldBuilder
               if (std::fabs(distance_from_plane) > 0 &&
                   std::fabs(distance_from_plane) <= thickness_local * 0.5 &&
                   distance_along_plane > 0 &&
-                  distance_along_plane <= max_slab_length)
+                  distance_along_plane <= max_fault_length)
                 {
                   // Inside the fault!
                   double composition_current_section = composition;
@@ -616,7 +623,7 @@ namespace WorldBuilder
       const double starting_radius = natural_coordinate.get_depth_coordinate() + depth - starting_depth;
 
       // todo: explain and check -starting_depth
-      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_slab_length + maximum_slab_thickness)
+      if (depth <= maximum_depth && depth >= starting_depth && depth <= maximum_total_fault_length + maximum_fault_thickness)
         {
           // todo: explain
           // This function only returns positive values, because we want
@@ -625,11 +632,14 @@ namespace WorldBuilder
             WorldBuilder::Utilities::distance_point_from_curved_planes(position,
                                                                        reference_point,
                                                                        coordinates,
-                                                                       slab_segment_lengths,
-                                                                       slab_segment_angles,
+                                                                       fault_segment_lengths,
+                                                                       fault_segment_angles,
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        true,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -645,25 +655,25 @@ namespace WorldBuilder
             {
               // We want to do both section (horizontal) and segment (vertical) interpolation.
 
-              const double thickness_up = slab_segment_thickness[current_section][current_segment][0]
+              const double thickness_up = fault_segment_thickness[current_section][current_segment][0]
                                           + section_fraction
-                                          * (slab_segment_thickness[next_section][current_segment][0]
-                                             - slab_segment_thickness[current_section][current_segment][0]);
-              const double thickness_down = slab_segment_thickness[current_section][current_segment][1]
+                                          * (fault_segment_thickness[next_section][current_segment][0]
+                                             - fault_segment_thickness[current_section][current_segment][0]);
+              const double thickness_down = fault_segment_thickness[current_section][current_segment][1]
                                             + section_fraction
-                                            * (slab_segment_thickness[next_section][current_segment][1]
-                                               - slab_segment_thickness[current_section][current_segment][1]);
+                                            * (fault_segment_thickness[next_section][current_segment][1]
+                                               - fault_segment_thickness[current_section][current_segment][1]);
               const double thickness_local = thickness_up + segment_fraction * (thickness_down - thickness_up);
 
               // secondly for top truncation
-              const double top_truncation_up = slab_segment_top_truncation[current_section][current_segment][0]
+              const double top_truncation_up = fault_segment_top_truncation[current_section][current_segment][0]
                                                + section_fraction
-                                               * (slab_segment_top_truncation[next_section][current_segment][0]
-                                                  - slab_segment_top_truncation[current_section][current_segment][0]);
-              const double top_truncation_down = slab_segment_top_truncation[current_section][current_segment][1]
+                                               * (fault_segment_top_truncation[next_section][current_segment][0]
+                                                  - fault_segment_top_truncation[current_section][current_segment][0]);
+              const double top_truncation_down = fault_segment_top_truncation[current_section][current_segment][1]
                                                  + section_fraction
-                                                 * (slab_segment_top_truncation[next_section][current_segment][1]
-                                                    - slab_segment_top_truncation[current_section][current_segment][1]);
+                                                 * (fault_segment_top_truncation[next_section][current_segment][1]
+                                                    - fault_segment_top_truncation[current_section][current_segment][1]);
               const double top_truncation_local = top_truncation_up + segment_fraction * (top_truncation_down - top_truncation_up);
 
               // if the thickness is zero, we don't need to compute anything, so return.
@@ -674,9 +684,9 @@ namespace WorldBuilder
               if (thickness_local < top_truncation_local)
                 return grains;
 
-              const double max_slab_length = total_slab_length[current_section] +
-                                             section_fraction *
-                                             (total_slab_length[next_section] - total_slab_length[current_section]);
+              const double max_fault_length = total_fault_length[current_section] +
+                                              section_fraction *
+                                              (total_fault_length[next_section] - total_fault_length[current_section]);
 
 
               // Because both sides return positve values, we have to
@@ -684,7 +694,7 @@ namespace WorldBuilder
               if (std::fabs(distance_from_plane) > 0 &&
                   std::fabs(distance_from_plane) <= thickness_local * 0.5 &&
                   distance_along_plane > 0 &&
-                  distance_along_plane <= max_slab_length)
+                  distance_along_plane <= max_fault_length)
                 {
                   // Inside the fault!
                   WorldBuilder::grains  grains_current_section = grains;

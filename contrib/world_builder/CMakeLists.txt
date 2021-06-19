@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.8.4)
+
 project(WorldBuilder C CXX)
 
 # SWIG: use standard target name.
@@ -8,6 +9,10 @@ endif()
 ## SWIG: use SWIG_MODULE_NAME property.
 if(POLICY CMP0086)
   cmake_policy(SET CMP0086 NEW)
+endif()
+
+if(POLICY CMP0058)
+  cmake_policy(SET CMP0058 NEW)
 endif()
 
 # load in version info and export it
@@ -47,33 +52,58 @@ if(SWIG_FOUND)
   INCLUDE(${SWIG_USE_FILE})
 SET(CMAKE_SWIG_FLAGS "")
 else()
-  message(STATUS "SWIG was not found, disableling python wrapper compilation.")
+  message(STATUS "SWIG was not found, disabling python wrapper compilation.")
 endif()
 
-#find python libs
-if(${CMAKE_VERSION} VERSION_LESS "3.12.0") 
-  FIND_PACKAGE(PythonLibs 3.0)
-  FIND_PACKAGE(PythonInterp 3.0)
 
-    if(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
-      SET(Python_FOUND TRUE)
-      SET(Python_EXECUTABLE ${PYTHON_EXECUTABLE})
-      SET(Python_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
-      SET(Python_LIBRARIES ${PYTHON_LIBRARIES})
-      SET(Python_LIBRARIES_RELEASE ${PYTHON_LIBRARIES_RELEASE})
-      include_directories(${PYTHON_INCLUDE_DIRS})
-    else()
-      SET(Python_FOUND FALSE)
-      message(STATUS "Python was not found. Disableling python wrapper compilation.")
-    endif()
+# Find MPI if available.
+find_package(MPI)
 
+if(MPI_FOUND AND ${CMAKE_VERSION} VERSION_GREATER "3.9.0" )
+  message(STATUS "MPI found.")
+  set(USE_MPI TRUE CACHE STRING "Whether or not to enable MPI when compiling the world builder.")
 else()
-  FIND_PACKAGE(Python COMPONENTS Interpreter Development)
-  if(Python_FOUND)
-    include_directories(${Python_INCLUDE_DIRS})
+  message(STATUS "MPI not found or cmake version lower than 3.9.0.")
+  set(USE_MPI FALSE CACHE STRING "Whether or not to enable MPI when compiling the world builder." FORCE)
+endif()
+
+if(USE_MPI)
+  message(STATUS "Using MPI.")
+  include_directories(${MPI_INCLUDE_PATH})
+else()
+  message(STATUS "Not using MPI.")
+endif()
+
+
+#find python libs
+SET(WB_ENABLE_PYTHON TRUE CACHE STRING "Whether or not to enable Python when compiling the world builder.") 
+if(${WB_ENABLE_PYTHON})
+  if(${CMAKE_VERSION} VERSION_LESS "3.12.0") 
+    FIND_PACKAGE(PythonLibs 3.0)
+    FIND_PACKAGE(PythonInterp 3.0)
+
+      if(PYTHONLIBS_FOUND AND PYTHONINTERP_FOUND)
+        SET(Python_FOUND TRUE)
+        SET(Python_EXECUTABLE ${PYTHON_EXECUTABLE})
+        SET(Python_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
+        SET(Python_LIBRARIES ${PYTHON_LIBRARIES})
+        SET(Python_LIBRARIES_RELEASE ${PYTHON_LIBRARIES_RELEASE})
+        include_directories(${PYTHON_INCLUDE_DIRS})
+      else()
+        SET(Python_FOUND FALSE)
+        message(STATUS "Python was not found. Disabling python wrapper compilation.")
+      endif()
+
   else()
-    message(STATUS "Python was not found, disableling python wrapper compilation.")
+    FIND_PACKAGE(Python COMPONENTS Interpreter Development)
+    if(Python_FOUND)
+      include_directories(${Python_INCLUDE_DIRS})
+    else()
+      message(STATUS "Python was not found, disabling python wrapper compilation.")
+    endif()
   endif()
+else()
+  message(STATUS "Python was disabled by cmake options.")
 endif()
 
 
@@ -152,7 +182,45 @@ endif()
 
 set(SOURCES ${SOURCES_CXX} ${SOURCES_FORTAN})
 
+set(CMAKE_UNITY_BUILD_BATCH_SIZE  5000)
+
+# Special treatment of some files for unity builds. We disable the unity
+# build for them.
+SET(UNITY_DISABLE_FILES
+  "source/parameters.cc;source/point.cc;")
+
+FOREACH(_source_file ${UNITY_DISABLE_FILES})
+  SET(_full_name "${CMAKE_SOURCE_DIR}/${_source_file}")
+  LIST(FIND SOURCES ${_full_name} _index)
+  IF(_index EQUAL -1)
+    MESSAGE(FATAL_ERROR "could not find ${_full_name}.")
+  ENDIF()
+
+  SET_PROPERTY(SOURCE ${_source_file} PROPERTY SKIP_UNITY_BUILD_INCLUSION TRUE)
+ENDFOREACH()
+
 add_library(WorldBuilder ${SOURCES})
+
+IF(NOT CMAKE_VERSION VERSION_LESS 3.16)
+  SET(WB_UNITY_BUILD ON CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions.")
+ELSE()
+  SET(WB_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
+ENDIF()
+
+IF (WB_UNITY_BUILD)
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+    SET_PROPERTY(TARGET WorldBuilder PROPERTY UNITY_BUILD TRUE)
+    MESSAGE(STATUS "Combining source files into unity build.")
+  ELSEIF(CMAKE_VERSION VERSION_LESS 3.16)
+    MESSAGE(FATAL_ERROR "ASPECT_UNITY_BUILD is currently only supported for CMake 3.16 and newer versions.")
+  ENDIF()
+ELSE()
+  IF (NOT CMAKE_VERSION VERSION_LESS 3.16)
+    SET_PROPERTY(TARGET WorldBuilder PROPERTY UNITY_BUILD FALSE)
+  ENDIF()
+
+  MESSAGE(STATUS "Disabling unity build.")
+ENDIF()
 
 add_executable(WorldBuilderApp "${CMAKE_CURRENT_SOURCE_DIR}/app/main.cc")
 add_executable(WorldBuilderVisualization "${CMAKE_CURRENT_SOURCE_DIR}/visualization/main.cc")
@@ -187,8 +255,8 @@ ADD_CUSTOM_TARGET(indent
 
 IF ( CMAKE_BUILD_TYPE STREQUAL Coverage )
   SET(CMAKE_VERBOSE_MAKEFILE on )
-  SET(WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW --coverage -fprofile-arcs -ftest-coverage)
-  SET(WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD "--coverage -fprofile-arcs -ftest-coverage")
+  SET(WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW --coverage -fprofile-arcs -ftest-coverage -g)
+  SET(WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD "--coverage -fprofile-arcs -ftest-coverage -g")
 
   ## for old versions of cmake
   SET(WB_FORTRAN_COMPILER_FLAGS_COVERAGE "--coverage")
@@ -203,11 +271,11 @@ endif()
 if (NOT MSVC AND NOT APPLE)
    #TODO: if other compiles need to be threaded, see https://computing.llnl.gov/tutorials/pthreads/#Compiling to add the correct cases.
    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER MATCHES "[Cc]lang")
-      # Preventing issues with older cmake compilers (<2.8.11) which do not support VERSION_GREATER_EQUAL
-      # cmake vesrion 3.12.0 introduces COMPILE_LANGUAGE:FORTAN, otherwise this would be >=2.8.11
-      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.12.0") 
-        SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:FORTAN>:-pedantic -fPIC -Wall -Wextra>  
-        $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -pedantic -fPIC -Wall -Wextra -Wmost -Wconversion -Wunreachable-code -Wuninitialized -Wold-style-cast -Wshadow -Wfloat-equal -Wpointer-arith -Wwrite-strings 
+      # Preventing issues with older cmake compilers (<2.8.12) which do not support VERSION_GREATER_EQUAL
+      # cmake vesrion 3.12.0 introduces COMPILE_LANGUAGE:FORTAN, otherwise this would be >=2.8.12
+      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0")
+        SET(WB_COMPILER_OPTIONS_PRIVATE -pedantic -fPIC -Wall -Wextra  
+        $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -Wmost -Wconversion -Wunreachable-code -Wuninitialized -Wold-style-cast -Wshadow -Wfloat-equal -Wpointer-arith -Wwrite-strings 
         -Wsynth -Wsign-compare -Woverloaded-virtual -Wliteral-range -Wparentheses -Wunused-local-typedefs -Wcast-qual -fstrict-aliasing -Werror=uninitialized -Wundef 
         -Wcast-align -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wunused>)
       else()
@@ -218,16 +286,16 @@ if (NOT MSVC AND NOT APPLE)
    else()
       # gcc linux
 
-      # Preventing issues with older cmake compilers (<2.8.11) which do not support VERSION_GREATER_EQUAL
-      # cmake vesrion 3.12.0 introduces COMPILE_LANGUAGE:FORTAN, otherwise this would be >=2.8.11
-      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.12.0") 
-        SET(WB_COMPILER_OPTIONS_PRIVATE $<$<COMPILE_LANGUAGE:FORTAN>:-pedantic -fPIC -Wall -Wextra>  $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -pedantic -fPIC -Wall -Wextra -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-placement-new -Wno-literal-suffix -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized -Wparentheses -Wfloat-equal -Wundef -Wcast-align -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wno-unused>)
+      # Preventing issues with older cmake compilers (<2.8.12) which do not support VERSION_GREATER_EQUAL
+      # cmake vesrion 3.12.0 introduces COMPILE_LANGUAGE:FORTAN, otherwise this would be >=2.8.12
+      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0")
+        SET(WB_COMPILER_OPTIONS_PRIVATE -pedantic -fPIC -Wall -Wextra  $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-placement-new -Wno-literal-suffix -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized -Wparentheses -Wfloat-equal -Wundef -Wcast-align -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wno-unused>)
       else()
         SET(WB_COMPILER_OPTIONS_PRIVATE "-std=c++11 -pedantic -fPIC -Wall -Wextra -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wno-placement-new -Wno-literal-suffix -Wno-parentheses -Wno-unused-local-typedefs -Wcast-qual -fstrict-aliasing -Wmaybe-uninitialized -Werror=maybe-uninitialized -Wparentheses -Wfloat-equal -Wundef -Wcast-align -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wno-unused>")
       endif()
 
       # adding flags is a hassle before cmake 3.12.0, and these flags are mostly useful for development, so just ignore those flags.
-      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.12.0") # Preventing issues with older cmake compilers which do not support VERSION_GREATER_EQUAL
+      if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0") # Preventing issues with older cmake compilers which do not support VERSION_GREATER_EQUAL
         include(CheckCXXCompilerFlag)
 
         check_cxx_compiler_flag(-Wsuggest-override SUGGEST_OVERWRITE_CXX_COMPILE_FLAG)
@@ -269,7 +337,7 @@ endif()
 
 
 
-if(${CMAKE_VERSION} VERSION_LESS "3.12.0") 
+if(${CMAKE_VERSION} VERSION_LESS "3.9.0")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WB_COMPILER_OPTIONS_INTERFACE} ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD}")
 else()
   target_compile_options(WorldBuilder INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
@@ -280,13 +348,15 @@ endif()
 if(${CMAKE_VERSION} VERSION_LESS "3.13.0") 
     SET(CMAKE_EXE_LINKER_FLAGS "${WB_LINKER_OPTIONS} ${WB_VISU_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD}")
 else()
-    target_link_options(WorldBuilder INTERFACE ${WB_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
-    target_link_options(WorldBuilderApp INTERFACE ${WB_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
-    target_link_options(WorldBuilderVisualization INTERFACE ${WB_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
-    target_link_options(WorldBuilderVisualization PRIVATE  ${WB_VISU_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
+    target_link_options(WorldBuilder INTERFACE ${WB_LINKER_OPTIONS})
+    target_link_options(WorldBuilderApp INTERFACE ${WB_LINKER_OPTIONS} )
+    target_link_options(WorldBuilderVisualization INTERFACE ${WB_LINKER_OPTIONS})
+    target_link_options(WorldBuilderVisualization PRIVATE  ${WB_VISU_LINKER_OPTIONS})
 endif()
 
-
+if(${USE_MPI})
+  add_definitions(-DWB_WITH_MPI)
+endif()
 
 
 # Make sure that the whole library is loaded, so the registration is done correctly.
@@ -297,8 +367,15 @@ elseif(MSVC)
 else()
   SET(GWB_LIBRARY_WHOLE -Wl,-force_load WorldBuilder)
 endif()
-target_link_libraries (WorldBuilderApp ${GWB_LIBRARY_WHOLE})
-target_link_libraries (WorldBuilderVisualization ${GWB_LIBRARY_WHOLE}) 
+if(${USE_MPI})
+  target_link_libraries (WorldBuilder PUBLIC MPI::MPI_CXX)
+  target_link_libraries (WorldBuilderApp PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} )
+  target_link_libraries (WorldBuilderVisualization PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} ) 
+else()
+  target_link_libraries (WorldBuilderApp ${GWB_LIBRARY_WHOLE} )
+  target_link_libraries (WorldBuilderVisualization ${GWB_LIBRARY_WHOLE} ) 
+endif()
+
 
 
 if(MAKE_PYTHON_WRAPPER)
@@ -306,6 +383,11 @@ if(MAKE_PYTHON_WRAPPER)
   # see https://github.com/swig/swig/issues/1259 for more info.
   if(SWIG_VERSION VERSION_LESS "4.0.1" AND NOT MSVC)
     set_target_properties(${TARGET} PROPERTIES COMPILE_FLAGS "-Wno-cast-qual")
+  elseif(SWIG_VERSION VERSION_GREATER_EQUAL "4.0.1" AND APPLE)
+    # see https://github.com/swig/swig/issues/1790 for mor info.
+    # this could be made more specific, but decrecation for the rest will be
+    # testers will still be tested. TODO: only do this for the file which needs it
+    set_target_properties(${TARGET} PROPERTIES COMPILE_FLAGS "-Wno-error=deprecated-declarations")
   endif()
 
   IF ( CMAKE_BUILD_TYPE STREQUAL Coverage )

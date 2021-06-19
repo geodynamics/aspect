@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -21,18 +21,20 @@
 #include <world_builder/assert.h>
 #include <world_builder/parameters.h>
 
+#include <utility>
+
 namespace WorldBuilder
 {
   namespace Types
   {
-    PluginSystem::PluginSystem(const std::string &default_value_,
+    PluginSystem::PluginSystem(std::string default_value_,
                                void ( *declare_entries_)(Parameters &, const std::string &, const std::vector<std::string> &),
-                               const std::vector<std::string> required_entries_,
+                               std::vector<std::string> required_entries_,
                                const bool allow_multiple_)
       :
-      default_value(default_value_),
+      default_value(std::move(default_value_)),
       declare_entries(declare_entries_),
-      required_entries(required_entries_),
+      required_entries(std::move(required_entries_)),
       allow_multiple(allow_multiple_)
     {
       this->type_name = Types::type::PluginSystem;
@@ -52,7 +54,7 @@ namespace WorldBuilder
     }
 
     PluginSystem::~PluginSystem ()
-    {}
+      = default;
 
     void
     PluginSystem::write_schema(Parameters &prm,

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -43,14 +43,14 @@ namespace WorldBuilder
     }
 
     MantleLayer::~MantleLayer()
-    { }
+      = default;
 
 
 
     void
     MantleLayer::declare_entries(Parameters &prm,
-                                 const std::string &,
-                                 const std::vector<std::string> &)
+                                 const std::string & /*unused*/,
+                                 const std::vector<std::string> & /*unused*/)
     {
       prm.declare_entry("min depth", Types::Double(0),
                         "The depth to which this feature is present");

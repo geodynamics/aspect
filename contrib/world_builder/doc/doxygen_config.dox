@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "World Builder"
-PROJECT_NUMBER         = 0.3.0
+PROJECT_NUMBER         = 0.4.0-pre
 PROJECT_BRIEF          = "A geodynamic initial conditions generator"
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = doc/doxygen/

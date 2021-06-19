@@ -17,5 +17,9 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef WORLD_BUILDER_APP_MAIN_H_
+#define WORLD_BUILDER_APP_MAIN_H_
+
 bool find_command_line_option(char **begin, char **end, const std::string &option);
 
+#endif

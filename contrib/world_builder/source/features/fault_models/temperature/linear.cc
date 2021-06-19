@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -42,8 +42,8 @@ namespace WorldBuilder
           :
           min_depth(NaN::DSNAN),
           max_depth(NaN::DSNAN),
-          top_temperature(NaN::DSNAN),
-          bottom_temperature(NaN::DSNAN),
+          center_temperature(NaN::DSNAN),
+          side_temperature(NaN::DSNAN),
           operation(Utilities::Operations::REPLACE)
         {
           this->world = world_;
@@ -51,10 +51,10 @@ namespace WorldBuilder
         }
 
         Linear::~Linear()
-        { }
+          = default;
 
         void
-        Linear::declare_entries(Parameters &prm, const std::string &)
+        Linear::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           // Add max depth to the required parameters.
           prm.declare_entry("", Types::Object({"max distance fault center"}), "Temperature model object");
@@ -65,12 +65,12 @@ namespace WorldBuilder
           prm.declare_entry("max distance fault center", Types::Double(std::numeric_limits<double>::max()),
                             "The minimum distance to the center of the fault. This determines where the linear temperature end.");
 
-          prm.declare_entry("top temperature", Types::Double(293.15),
-                            "The temperature at the top in degree Kelvin of this feature."
+          prm.declare_entry("center temperature", Types::Double(293.15),
+                            "The temperature at the center of this feature in degree Kelvin."
                             "If the value is below zero, the an adiabatic temperature is used.");
 
-          prm.declare_entry("bottom temperature", Types::Double(-1),
-                            "The temperature at the top in degree Kelvin of this feature. "
+          prm.declare_entry("side temperature", Types::Double(-1),
+                            "The temperature at the sides of this feature in degree Kelvin. "
                             "If the value is below zero, an adiabatic temperature is used.");
 
         }
@@ -82,13 +82,13 @@ namespace WorldBuilder
           max_depth = prm.get<double>("max distance fault center");
           WBAssert(max_depth >= min_depth, "max depth needs to be larger or equal to min depth.");
           operation = Utilities::string_operations_to_enum(prm.get<std::string>("operation"));
-          top_temperature = prm.get<double>("top temperature");
-          bottom_temperature = prm.get<double>("bottom temperature");
+          center_temperature = prm.get<double>("center temperature");
+          side_temperature = prm.get<double>("side temperature");
         }
 
 
         double
-        Linear::get_temperature(const Point<3> &,
+        Linear::get_temperature(const Point<3> & /*position*/,
                                 const double /*depth*/,
                                 const double gravity_norm,
                                 double temperature_,
@@ -102,25 +102,25 @@ namespace WorldBuilder
               const double min_depth_local = min_depth;
               const double max_depth_local = max_depth;
 
-              double top_temperature_local = top_temperature;
-              if (top_temperature_local < 0)
+              double center_temperature_local = center_temperature;
+              if (center_temperature_local < 0)
                 {
-                  top_temperature_local =  this->world->potential_mantle_temperature *
-                                           std::exp(((this->world->thermal_expansion_coefficient * gravity_norm) /
-                                                     this->world->specific_heat) * min_depth_local);
-                }
-
-              double bottom_temperature_local = bottom_temperature;
-              if (bottom_temperature_local < 0)
-                {
-                  bottom_temperature_local =  this->world->potential_mantle_temperature *
+                  center_temperature_local =  this->world->potential_mantle_temperature *
                                               std::exp(((this->world->thermal_expansion_coefficient * gravity_norm) /
-                                                        this->world->specific_heat) * max_depth_local);
+                                                        this->world->specific_heat) * min_depth_local);
                 }
 
-              const double new_temperature =   top_temperature +
+              double side_temperature_local = side_temperature;
+              if (side_temperature_local < 0)
+                {
+                  side_temperature_local =  this->world->potential_mantle_temperature *
+                                            std::exp(((this->world->thermal_expansion_coefficient * gravity_norm) /
+                                                      this->world->specific_heat) * max_depth_local);
+                }
+
+              const double new_temperature =   center_temperature_local +
                                                (std::fabs(distance_from_planes.at("distanceFromPlane")) - min_depth_local) *
-                                               ((bottom_temperature_local - top_temperature_local) / (max_depth_local - min_depth_local));
+                                               ((side_temperature_local - center_temperature_local) / (max_depth_local - min_depth_local));
 
               return Utilities::apply_operation(operation,temperature_,new_temperature);
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -60,10 +60,10 @@ namespace WorldBuilder
         }
 
         PlateModel::~PlateModel()
-        { }
+          = default;
 
         void
-        PlateModel::declare_entries(Parameters &prm, const std::string &)
+        PlateModel::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
 
           // Add temperature to the required parameters.
@@ -140,18 +140,17 @@ namespace WorldBuilder
 
 
         double
-        PlateModel::get_temperature(const Point<3> &,
-                                    const double,
+        PlateModel::get_temperature(const Point<3> & /*position*/,
+                                    const double depth,
                                     const double gravity_norm,
                                     double temperature_,
-                                    const double,
-                                    const double,
+                                    const double /*feature_min_depth*/,
+                                    const double /*feature_max_depth*/,
                                     const std::map<std::string,double> &distance_from_planes) const
         {
           const double thickness_local = std::min(distance_from_planes.at("thicknessLocal"), max_depth);
           const double distance_from_plane = distance_from_planes.at("distanceFromPlane");
           const double distance_along_plane = distance_from_planes.at("distanceAlongPlane");
-          const double average_angle = distance_from_planes.at("averageAngle");
 
           if (distance_from_plane <= max_depth && distance_from_plane >= min_depth)
             {
@@ -159,10 +158,8 @@ namespace WorldBuilder
                * We now use the McKenzie (1970) equation to determine the
                * temperature inside the slab. The McKenzie equation was
                * designed for a straight slab, but we have a potentially
-               * curved slab. Because the angle is a required parameter, we
-               * first tried a local angle. This gave weird effects of
-               * apparent cooling when the slabs angle decreases. Now we
-               * use an average angle, which works better.
+               * curved slab. Since the angle is used to compute the depth
+               * of the point, we directly use the depth.
                */
               const double R = (density * specific_heat
                                 * (plate_velocity /(365.25 * 24.0 * 60.0 * 60.0))
@@ -170,26 +167,19 @@ namespace WorldBuilder
 
               WBAssert(!std::isnan(R), "Internal error: R is not a number: " << R << ".");
 
-              const double H = specific_heat
-                               / (thermal_expansion_coefficient * gravity_norm * thickness_local);
-
-              WBAssert(!std::isnan(H), "Internal error: H is not a number: " << H << ".");
-              WBAssert(std::isfinite(1/H), "Internal error: 1/H is not finite: " << 1/H << ".");
-
               const int n_sum = 500;
               // distance_from_plane can be zero, so protect division.
               double z_scaled = 1 - (std::fabs(distance_from_plane) < 2.0 * std::numeric_limits<double>::epsilon() ?
                                      2.0 * std::numeric_limits<double>::epsilon()
                                      :
-                                     distance_from_plane
-                                     / thickness_local);
+                                     distance_from_plane/thickness_local);
 
               // distance_along_plane can be zero, so protect division.
               double x_scaled = (std::fabs(distance_along_plane) < 2.0 * std::numeric_limits<double>::epsilon() ?
                                  2.0 *std::numeric_limits<double>::epsilon()
                                  :
-                                 distance_along_plane)
-                                / thickness_local;
+                                 distance_along_plane/thickness_local);
+
               // the paper uses `(x_scaled * sin(average_angle) - z_scaled * cos(average_angle))` to compute the
               // depth (execpt that you do not use average angles since they only have on angle). On recomputing
               // their result it seems to me (Menno) that it should have been `(1-z_scaled)` instead of `z_scaled`.
@@ -198,24 +188,13 @@ namespace WorldBuilder
               // If we want to specifiy the bottom temperature, because we have defined a linear temperture increase in the
               // mantle and/or oceanic plate, we have to switch off adiabatic heating for now.
               // Todo: there may be a better way to deal with this.
-              double temp = adiabatic_heating ? exp((distance_from_plane / thickness_local)/ H) : 1;
+              ;
+              double temp = adiabatic_heating ? std::exp(((thermal_expansion_coefficient * gravity_norm * depth) / specific_heat)) : 1;
 
-              WBAssert(!std::isnan(z_scaled), "Internal error: z_scaled is not a number: " << z_scaled << ".");
-              WBAssert(!std::isnan(x_scaled), "Internal error: x_scaled is not a number: " << x_scaled << ".");
               WBAssert(!std::isnan(temp), "Internal error: temp is not a number: " << temp << ". In exponent: "
-                       << (x_scaled * sin(average_angle) - z_scaled * cos(average_angle)) / H
-                       << ", top: " << (x_scaled * sin(average_angle) - z_scaled * cos(average_angle))
-                       << ", x_scaled = " << x_scaled << ", z_scaled = " << z_scaled << ", average_angle = " << average_angle);
-
-
-              WBAssert(std::isfinite(z_scaled), "Internal error: z_scaled is not finite: " << z_scaled << ".");
-              WBAssert(std::isfinite(x_scaled), "Internal error: x_scaled is not finite: " << x_scaled << ".");
-              WBAssert(std::isfinite(temp), "Internal error: temp is not finite: " << temp << ". In exponent: "
-                       << (x_scaled * sin(average_angle) - z_scaled * cos(average_angle)) / H
-                       << ", top: " << (x_scaled * sin(average_angle) - z_scaled * cos(average_angle))
-                       << ", x_scaled = " << x_scaled << ", z_scaled = " << z_scaled << ", average_angle = " << average_angle
-                       << ", average_angle = " << average_angle << ", sin(average_angle) = " << sin(average_angle)
-                       << ", cos(average_angle) = " << cos(average_angle) << ", H = " << H << ", max_depth = " << max_depth);
+                       << std::exp(((thermal_expansion_coefficient * gravity_norm) / specific_heat) * depth)
+                       << ", thermal_expansion_coefficient = " << thermal_expansion_coefficient << ", gravity_norm = " << gravity_norm
+                       << ", specific_heat = "<< specific_heat << ", depth = " << depth );
 
               double sum=0;
               for (int i=1; i<=n_sum; i++)

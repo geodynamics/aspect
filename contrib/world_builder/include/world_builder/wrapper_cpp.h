@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -36,7 +36,7 @@ namespace wrapper_cpp
       /**
        * constructor
        */
-      WorldBuilderWrapper(std::string filename, bool has_output_dir = false, std::string output_dir = "", const unsigned long random_number_seed = 1.0);
+      WorldBuilderWrapper(std::string filename, bool has_output_dir = false, const std::string &output_dir = "", const unsigned long random_number_seed = 1.0);
 
       /**
        * destructor

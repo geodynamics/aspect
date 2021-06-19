@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -52,10 +52,10 @@ namespace WorldBuilder
         }
 
         Adiabatic::~Adiabatic()
-        { }
+          = default;
 
         void
-        Adiabatic::declare_entries(Parameters &prm, const std::string &)
+        Adiabatic::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           prm.declare_entry("min depth", Types::Double(0),
                             "The depth in meters from which the temperature of this feature is present.");
@@ -118,12 +118,12 @@ namespace WorldBuilder
 
 
         double
-        Adiabatic::get_temperature(const Point<3> &,
+        Adiabatic::get_temperature(const Point<3> & /*position*/,
                                    const double depth,
                                    const double gravity_norm,
                                    double temperature_,
-                                   const double ,
-                                   const double ) const
+                                   const double  /*feature_min_depth*/,
+                                   const double  /*feature_max_depth*/) const
         {
 
           if (depth <= max_depth && depth >= min_depth)

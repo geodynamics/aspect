@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -102,7 +102,7 @@ namespace WorldBuilder
          * special case of the Vincenty formula for an ellipsoid with equal
          * major and minor axes (https://doi.org/10.1179/sre.1975.23.176.88).
          */
-        double distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_3) const override final;
+        double distance_between_points_at_same_depth(const Point<3> &point_1, const Point<3> &point_2) const override final;
 
         /**
          * What depth method the spherical coordinates use.

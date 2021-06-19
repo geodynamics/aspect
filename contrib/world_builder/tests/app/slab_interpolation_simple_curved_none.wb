@@ -1,0 +1,17 @@
+{
+  "version":"0.4",
+  "cross section":[[0,50e3],[50e3,0]],
+  "features":
+  [
+     {
+       "model":"subducting plate", "name":"Antilles slab", "dip point":[1e7,1e7],
+       "coordinates":[[0,0],[50e3,50e3],[125e3,75e3]], 
+       "segments":
+       [
+         {"length":350e3, "thickness":[100e3], "angle":[0,45]}
+       ],
+       "temperature models":[{"model":"uniform", "temperature":600}],
+       "composition models":[{"model":"uniform", "compositions":[0,1], "fractions":[0.25,0.75]}]
+    }
+  ]
+}

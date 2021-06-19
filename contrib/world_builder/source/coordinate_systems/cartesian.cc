@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018-2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -30,14 +30,14 @@ namespace WorldBuilder
     }
 
     Cartesian::~Cartesian()
+      = default;
+
+    void
+    Cartesian::declare_entries(Parameters & /*unused*/, const std::string & /*unused*/)
     {}
 
     void
-    Cartesian::declare_entries(Parameters &, const std::string &)
-    {}
-
-    void
-    Cartesian::parse_entries(Parameters &)
+    Cartesian::parse_entries(Parameters & /*prm*/)
     {}
 
 

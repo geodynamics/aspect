@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2019 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -51,18 +51,18 @@ namespace WorldBuilder
         }
 
         Uniform::~Uniform()
-        { }
+          = default;
 
         void
-        Uniform::declare_entries(Parameters &prm, const std::string &)
+        Uniform::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
           // Add compositions to the required parameters.
           prm.declare_entry("", Types::Object({"compositions"}), "Uniform compositional model object");
 
           prm.declare_entry("min distance fault center", Types::Double(0),
-                            "todo The depth in meters from which the composition of this feature is present.");
+                            "The distance in meters from which the composition of this feature is present.");
           prm.declare_entry("max distance fault center", Types::Double(std::numeric_limits<double>::max()),
-                            "todo The depth in meters to which the composition of this feature is present.");
+                            "The distance in meters to which the composition of this feature is present.");
           prm.declare_entry("compositions", Types::Array(Types::UnsignedInt(),0),
                             "A list with the labels of the composition which are present there.");
           prm.declare_entry("fractions", Types::Array(Types::Double(1.0),1),
@@ -89,12 +89,12 @@ namespace WorldBuilder
 
 
         double
-        Uniform::get_composition(const Point<3> &,
-                                 const double ,
+        Uniform::get_composition(const Point<3> & /*position*/,
+                                 const double  /*depth*/,
                                  const unsigned int composition_number,
                                  double composition_,
-                                 const double ,
-                                 const double ,
+                                 const double  /*feature_min_depth*/,
+                                 const double  /*feature_max_depth*/,
                                  const std::map<std::string,double> &distance_from_plane) const
         {
           double composition = composition_;
