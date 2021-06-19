@@ -33,8 +33,9 @@ namespace aspect
     namespace Rheology
     {
       /**
-         * A data structure with all input file parameters relevant to Drucker-Prager plasticity.
-         */
+       * A data structure with all input file parameters relevant to
+       * Drucker-Prager plasticity.
+       */
       struct DruckerPragerParameters
       {
         /**

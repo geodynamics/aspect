@@ -105,25 +105,27 @@ namespace aspect
                           double activation_volume, double solidus_gradient, bool density_model_flag) const;
 
         /**
-        * Whether to remove temperature heterogeneity upper parts of model
-        */
+         * Whether to remove temperature heterogeneity upper parts of model
+         */
         double no_perturbation_depth;
 
         /**
-        * Constant temperature to set where variations have been removed
-        */
+         * Constant temperature to set where variations have been removed
+         */
         double reference_temperature;
 
         /**
-        * Whether to use Yamauchi & Takei (2016) anelasticity parameterization
-        */
+         * Whether to use Yamauchi & Takei (2016) anelasticity
+         * parameterization
+         */
         bool use_yamauchi_takei;
 
         /**
-        * Whether to use original parameters published in Yamauchi & Takei (2016)
-        * or an updated version that accounts for non-linear pressure
-        * dependence of thermal expansivity and depth dependence of shear wave period
-        */
+         * Whether to use original parameters published in Yamauchi & Takei
+         * (2016) or an updated version that accounts for non-linear pressure
+         * dependence of thermal expansivity and depth dependence of shear
+         * wave period
+         */
         bool use_original_model;
 
     };

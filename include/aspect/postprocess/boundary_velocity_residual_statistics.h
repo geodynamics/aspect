@@ -85,14 +85,14 @@ namespace aspect
         bool use_spherical_unit_vectors;
 
         /**
-        * Determines if the model velocities are compared against ascii data
-        * files, or a gplates model.
-        */
+         * Determines if the model velocities are compared against ascii data
+         * files, or a gplates model.
+         */
         bool use_ascii_data;
 
         /**
-        * Pointer to the gplates boundary velocity model
-        */
+         * Pointer to the gplates boundary velocity model
+         */
         std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup<dim>> gplates_lookup;
 
         /**

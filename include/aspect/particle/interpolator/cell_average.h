@@ -53,15 +53,15 @@ namespace aspect
           using Interface<dim>::properties_at_points;
 
           /**
-          * @copydoc Interface<dim>::declare_parameters()
-          **/
+           * @copydoc Interface<dim>::declare_parameters()
+           */
           static
           void
           declare_parameters (ParameterHandler &prm);
 
           /**
            * @copydoc Interface<dim>::parse_parameters()
-           **/
+           */
           void
           parse_parameters (ParameterHandler &prm) override;
 

@@ -298,16 +298,17 @@ namespace aspect
         std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::PerplexReader> > material_lookup;
 
         /**
-        * Vector of strings containing the names of the unique phases in all the material lookups.
-        */
+         * Vector of strings containing the names of the unique phases in all
+         * the material lookups.
+         */
         std::vector<std::string> unique_phase_names;
 
         /**
-        * Vector of vector of unsigned ints which constitutes mappings
-        * between lookup phase name vectors and unique_phase_names.
-        * The element unique_phase_indices[i][j] contains the
-        * index of phase name j from lookup i as it is found in unique_phase_names.
-        */
+         * Vector of vector of unsigned ints which constitutes mappings
+         * between lookup phase name vectors and unique_phase_names. The
+         * element unique_phase_indices[i][j] contains the index of phase name
+         * j from lookup i as it is found in unique_phase_names.
+         */
         std::vector<std::vector<unsigned int>> unique_phase_indices;
 
         /**

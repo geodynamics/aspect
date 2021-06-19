@@ -62,8 +62,8 @@ namespace aspect
           using Utilities::AsciiDataProfile<dim>::initialize;
 
           /**
-          * Return the viscosity at a given point of the domain.
-          */
+           * Return the viscosity at a given point of the domain.
+           */
           double compute_viscosity (const double depth) const;
 
           /**

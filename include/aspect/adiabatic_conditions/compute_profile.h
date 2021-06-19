@@ -34,17 +34,13 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A model in which the adiabatic profile is
-     * calculated by solving the hydrostatic equations for
-     * pressure and temperature in depth.
-     * The gravity is assumed to be in depth direction
-     * and the composition is either given by the initial
-     * composition at reference points or computed
-     * as a reference depth-function.
-     * All material parameters are computed by the
-     * material model plugin. The surface conditions are
-     * either constant or changing over time as prescribed
-     * by an user-provided function.
+     * A model in which the adiabatic profile is calculated by solving the
+     * hydrostatic equations for pressure and temperature in depth. The
+     * gravity is assumed to be in depth direction and the composition is
+     * either given by the initial composition at reference points or computed
+     * as a reference depth-function. All material parameters are computed by
+     * the material model plugin. The surface conditions are either constant
+     * or changing over time as prescribed by an user-provided function.
      */
     template <int dim>
     class ComputeProfile : public Interface<dim>

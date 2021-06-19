@@ -44,22 +44,22 @@ namespace aspect
       {
         public:
           /**
-          * Constructor.
-          */
+           * Constructor.
+           */
           ElasticStress ();
 
           void initialize () override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
-          **/
+           * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
+           */
           void
           initialize_one_particle_property (const Point<dim> &position,
                                             std::vector<double> &particle_properties) const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::update_particle_property()
-          **/
+           * @copydoc aspect::Particle::Property::Interface::update_particle_property()
+           */
           void
           update_particle_property (const unsigned int data_position,
                                     const Vector<double> &solution,
@@ -67,20 +67,20 @@ namespace aspect
                                     typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::need_update()
-          **/
+           * @copydoc aspect::Particle::Property::Interface::need_update()
+           */
           UpdateTimeFlags
           need_update () const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
-          **/
+           * @copydoc aspect::Particle::Property::Interface::get_needed_update_flags()
+           */
           UpdateFlags
           get_needed_update_flags () const override;
 
           /**
-          * @copydoc aspect::Particle::Property::Interface::get_property_information()
-          **/
+           * @copydoc aspect::Particle::Property::Interface::get_property_information()
+           */
           std::vector<std::pair<std::string, unsigned int> >
           get_property_information() const override;
 
