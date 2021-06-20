@@ -4,4 +4,4 @@ plate velocities on a sphere with plate reconstructions in a no net rotation
 reference frame. Additionally, the 'rotation statistics' postprocessor was
 extended to also compute the net surface rotation.
 <br>
-(Rene Gassmoeller, 2021/01/18)
+(Rene Gassmoeller, 2021/06/20)
