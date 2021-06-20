@@ -23,6 +23,10 @@ set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 50
 
+# This model is very sensitive to nonlinear solver tolerance and sometimes does
+# not quite reach 1e-5, increase to 2e-5 to avoid non-convergence
+set Nonlinear solver tolerance             = 2e-5
+
 # The number of space dimensions you want to run this program in.
 set Dimension                              = 2
 
