@@ -435,8 +435,8 @@ namespace aspect
           // material model, because we average globally below
           material_model->evaluate(in, out);
 
-          // Evaluate viscosity at each quadrature point and
-          // calculate the harmonic average
+          // Evaluate viscosity at the mid-point of each cell and
+          // calculate the volume weighted harmonic average of all cells
           for (unsigned int q=0; q<n_q_points; ++q)
             {
               Assert(out.viscosities[q] > 0,
