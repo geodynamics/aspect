@@ -400,7 +400,8 @@ namespace aspect
                     while (particle_ids_to_remove.size() < n_particles_to_remove)
                       particle_ids_to_remove.insert(random_number_generator() % n_particles_in_cell);
 
-                    std::list<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
+                    std::vector<typename ParticleHandler<dim>::particle_iterator> particles_to_remove;
+                    particles_to_remove.reserve(n_particles_to_remove);
 
                     for (const auto id : particle_ids_to_remove)
                       {
@@ -410,10 +411,14 @@ namespace aspect
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
+#if DEAL_II_VERSION_GTE(10,0,0)
+                    particle_handler->remove_particles(particles_to_remove);
+#else
                     for (const auto &particle : particles_to_remove)
                       {
                         particle_handler->remove_particle(particle);
                       }
+#endif
                   }
               }
 
