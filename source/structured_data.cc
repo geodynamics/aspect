@@ -326,6 +326,11 @@ namespace aspect
       // argument.
       Table<dim,double> data_table;
       data_table.TableBase<dim,double>::reinit(new_table_points);
+      AssertThrow (components != numbers::invalid_unsigned_int,
+                   ExcMessage("ERROR: number of components in " + filename + " could not be "
+                              "determined automatically. Either add a header with column "
+                              "names or pass the number of columns in the StructuredData "
+                              "constructor."));
       std::vector<Table<dim,double> > data_tables(components, data_table);
 
       std::vector<std::vector<double>> coordinate_values(dim);
