@@ -863,7 +863,7 @@ namespace aspect
         /**
          * The function object which we call when this class's value() or
          * value_list() functions are called.
-         **/
+         */
         const std::function<Tensor<1,dim> (const Point<dim> &)> function_object;
     };
   }

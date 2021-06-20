@@ -320,13 +320,12 @@ namespace aspect
 
       private:
         /**
-        * Set the boundary conditions for the solution of the elliptic
-        * problem, which computes the initial displacements of the internal
-        * vertices so that the mesh does not become too distorted due to
-        * motion of the surface. Displacements of vertices on the
-        * deforming surface are fixed according to the selected deformation
-        * plugins.
-        */
+         * Set the boundary conditions for the solution of the elliptic
+         * problem, which computes the initial displacements of the internal
+         * vertices so that the mesh does not become too distorted due to
+         * motion of the surface. Displacements of vertices on the deforming
+         * surface are fixed according to the selected deformation plugins.
+         */
         AffineConstraints<double> make_initial_constraints ();
 
         /**
@@ -386,9 +385,9 @@ namespace aspect
         Simulator<dim> &sim;
 
         /**
-        * Finite element for the mesh deformation implementation, which is
-        * used for tracking mesh deformation.
-        */
+         * Finite element for the mesh deformation implementation, which is
+         * used for tracking mesh deformation.
+         */
         const FESystem<dim> mesh_deformation_fe;
 
         /**

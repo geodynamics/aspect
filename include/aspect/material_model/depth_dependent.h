@@ -149,8 +149,9 @@ namespace aspect
         std::unique_ptr<MaterialModel::Interface<dim> > base_model;
 
         /**
-         * Pointer to the rheology model used for depth-dependence from an ascii file
-        */
+         * Pointer to the rheology model used for depth-dependence from an
+         * ascii file
+         */
         std::unique_ptr<Rheology::AsciiDepthProfile<dim> > depth_dependent_rheology;
     };
   }

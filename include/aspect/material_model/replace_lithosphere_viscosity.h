@@ -86,8 +86,8 @@ namespace aspect
       private:
 
         /**
-        * This parameter gives the viscosity set within the lithosphere.
-        */
+         * This parameter gives the viscosity set within the lithosphere.
+         */
         double lithosphere_viscosity;
 
 

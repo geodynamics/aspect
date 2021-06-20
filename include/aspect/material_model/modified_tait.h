@@ -105,8 +105,8 @@ namespace aspect
 
       private:
         /**
-          * The Tait parameters
-          */
+         * The Tait parameters
+         */
         double tait_a, tait_b, tait_c;
 
         /**
