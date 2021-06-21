@@ -3029,9 +3029,9 @@ of the container. An example workflow could look as following (assuming you
 navigated in a terminal into the modified \aspect{} source folder):
 
 \begin{lstlisting}[frame=single,language=ksh,showstringspaces=false]
-docker pull dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease
+docker pull tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5
 docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
-  dealii/dealii:v8.5.pre.4-gcc-mpi-fulldepsmanual-debugrelease bash
+  tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 bash
 \end{lstlisting}
 
 Inside of the container you now find a read-only \aspect{} directory that
@@ -11836,7 +11836,7 @@ the path to your \aspect{} directory):
 \begin{lstlisting}[frame=single,language=ksh]
     docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect \
     --name=aspect-tester --rm -it \
-    dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease \
+    tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 \
     bash /home/dealii/aspect/cmake/compile_and_update_tests.sh
 \end{lstlisting}
 

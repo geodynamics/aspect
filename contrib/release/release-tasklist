@@ -4,7 +4,7 @@
     . go through the list of TODOs in the source code and see what can be done
     . make sure the description of the interfaces that need to be updated
       are up to date in the manual
-    . update the used deal.II version for the Docker container in docker/Dockerfile
+    . update the used deal.II version for the Docker container in contrib/docker/docker/Dockerfile
       and in the manual
     . check that README.md and http://aspect.dealii.org/ReadMe.html are okay
       and the links to the mailinglists are working (also in manual.pdf)
@@ -77,7 +77,7 @@
       tar xf $PREFIX.tar.gz
       cd $PREFIX
       docker run --rm -it -v `pwd`:/home/dealii/aspect \
-      	     dealii/dealii:v8.5.0-gcc-mpi-fulldepscandi-debugrelease /bin/bash
+            tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 /bin/bash
 
       mkdir build; cd build
       cmake -G "Ninja" -D ASPECT_RUN_ALL_TESTS=ON -D \
@@ -120,8 +120,8 @@
        update the list of contributors
        ...
   . update docker image geodynamics/aspect:
-    - modify docker/Dockerfile and docker/build.sh to checkout the release
-      cd docker && ./build.sh
+    - modify contrib/docker/docker/Dockerfile and contrib/docker/docker/build.sh to checkout the release
+      cd contrib/docker/docker && ./build.sh
       docker push geodynamics/aspect:v$TAG
   . update the spack installation package with the latest tarball, 
     see https://github.com/spack/spack/pull/13830 for an example
