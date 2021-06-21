@@ -7,1823 +7,1823 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 52+0 iterations.
+   Solving Stokes system... 54+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 67+0 iterations.
+   Solving Stokes system... 75+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.180853
       Relative nonlinear residual (total system) after nonlinear iteration 2: 0.180853
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 123+0 iterations.
+   Solving Stokes system... 141+0 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.168536
       Relative nonlinear residual (total system) after nonlinear iteration 3: 0.168536
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+15 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.147371
       Relative nonlinear residual (total system) after nonlinear iteration 4: 0.147371
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+7 iterations.
+   Solving Stokes system... 200+20 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.120895
       Relative nonlinear residual (total system) after nonlinear iteration 5: 0.120895
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+9 iterations.
+   Solving Stokes system... 200+22 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0937377
       Relative nonlinear residual (total system) after nonlinear iteration 6: 0.0937377
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+11 iterations.
+   Solving Stokes system... 200+27 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0695116
       Relative nonlinear residual (total system) after nonlinear iteration 7: 0.0695116
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+11 iterations.
+   Solving Stokes system... 200+27 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0498794
       Relative nonlinear residual (total system) after nonlinear iteration 8: 0.0498794
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+11 iterations.
+   Solving Stokes system... 200+28 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0349657
       Relative nonlinear residual (total system) after nonlinear iteration 9: 0.0349657
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+17 iterations.
+   Solving Stokes system... 200+29 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0241168
       Relative nonlinear residual (total system) after nonlinear iteration 10: 0.0241168
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+12 iterations.
+   Solving Stokes system... 200+30 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0164504
       Relative nonlinear residual (total system) after nonlinear iteration 11: 0.0164504
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+11 iterations.
+   Solving Stokes system... 200+30 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0111368
       Relative nonlinear residual (total system) after nonlinear iteration 12: 0.0111368
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+10 iterations.
+   Solving Stokes system... 200+33 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00750136
       Relative nonlinear residual (total system) after nonlinear iteration 13: 0.00750136
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+12 iterations.
+   Solving Stokes system... 200+32 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00503545
       Relative nonlinear residual (total system) after nonlinear iteration 14: 0.00503545
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+9 iterations.
+   Solving Stokes system... 200+31 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00337244
       Relative nonlinear residual (total system) after nonlinear iteration 15: 0.00337244
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+8 iterations.
+   Solving Stokes system... 200+30 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.0022552
       Relative nonlinear residual (total system) after nonlinear iteration 16: 0.0022552
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+8 iterations.
+   Solving Stokes system... 200+29 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00150655
       Relative nonlinear residual (total system) after nonlinear iteration 17: 0.00150655
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+6 iterations.
+   Solving Stokes system... 200+29 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.00100574
       Relative nonlinear residual (total system) after nonlinear iteration 18: 0.00100574
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+7 iterations.
+   Solving Stokes system... 200+27 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000671105
       Relative nonlinear residual (total system) after nonlinear iteration 19: 0.000671105
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+5 iterations.
+   Solving Stokes system... 200+27 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000447675
       Relative nonlinear residual (total system) after nonlinear iteration 20: 0.000447675
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+5 iterations.
+   Solving Stokes system... 200+26 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000298571
       Relative nonlinear residual (total system) after nonlinear iteration 21: 0.000298571
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+4 iterations.
+   Solving Stokes system... 200+25 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000199101
       Relative nonlinear residual (total system) after nonlinear iteration 22: 0.000199101
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+3 iterations.
+   Solving Stokes system... 200+25 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0.000132758
       Relative nonlinear residual (total system) after nonlinear iteration 23: 0.000132758
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+3 iterations.
+   Solving Stokes system... 200+25 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.85159e-05
       Relative nonlinear residual (total system) after nonlinear iteration 24: 8.85159e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+2 iterations.
+   Solving Stokes system... 200+24 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.90153e-05
       Relative nonlinear residual (total system) after nonlinear iteration 25: 5.90153e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+2 iterations.
+   Solving Stokes system... 200+24 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.93457e-05
       Relative nonlinear residual (total system) after nonlinear iteration 26: 3.93457e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+2 iterations.
+   Solving Stokes system... 200+23 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.62314e-05
       Relative nonlinear residual (total system) after nonlinear iteration 27: 2.62314e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+21 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.7488e-05
       Relative nonlinear residual (total system) after nonlinear iteration 28: 1.7488e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+22 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.16588e-05
       Relative nonlinear residual (total system) after nonlinear iteration 29: 1.16588e-05
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+21 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.77265e-06
       Relative nonlinear residual (total system) after nonlinear iteration 30: 7.77265e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+21 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.1818e-06
       Relative nonlinear residual (total system) after nonlinear iteration 31: 5.1818e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+19 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.45455e-06
       Relative nonlinear residual (total system) after nonlinear iteration 32: 3.45455e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+21 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.30304e-06
       Relative nonlinear residual (total system) after nonlinear iteration 33: 2.30304e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+19 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.53536e-06
       Relative nonlinear residual (total system) after nonlinear iteration 34: 1.53536e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+17 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.02358e-06
       Relative nonlinear residual (total system) after nonlinear iteration 35: 1.02358e-06
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.82385e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 6.82385e-07
+   Solving Stokes system... 200+17 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.82389e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 6.82389e-07
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
+   Solving Stokes system... 200+16 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.54926e-07
       Relative nonlinear residual (total system) after nonlinear iteration 37: 4.54926e-07
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.03284e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 3.03284e-07
+   Solving Stokes system... 200+16 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.03285e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 3.03285e-07
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+1 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.02187e-07
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 2.02187e-07
+   Solving Stokes system... 200+15 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.02186e-07
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 2.02186e-07
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 196+0 iterations.
+   Solving Stokes system... 200+18 iterations.
       Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.34792e-07
       Relative nonlinear residual (total system) after nonlinear iteration 40: 1.34792e-07
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 185+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.98601e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 8.98601e-08
+   Solving Stokes system... 200+14 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.98619e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 8.98619e-08
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 181+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.99076e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 5.99076e-08
+   Solving Stokes system... 200+15 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.99087e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 5.99087e-08
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 170+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.9938e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 3.9938e-08
+   Solving Stokes system... 200+13 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.99406e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 3.99406e-08
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 145+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.66296e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 2.66296e-08
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.66286e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 2.66286e-08
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 140+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.77521e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 1.77521e-08
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.77495e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 1.77495e-08
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 119+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.18377e-08
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 1.18377e-08
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.18347e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 1.18347e-08
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.89485e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 7.89485e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.26758e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 5.26758e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.51337e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 3.51337e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.35752e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 2.35752e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.58177e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 1.58177e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 180+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.08291e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 1.08291e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.87756e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 7.87756e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.32269e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 5.32269e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.25877e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 4.25877e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+9 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.69277e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 3.69277e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 191+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.24222e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 3.24222e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 83+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.10168e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 4.10168e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 90+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.89323e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 7.89323e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.69429e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 3.69429e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 85+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.25907e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 5.25907e-09
+   Solving Stokes system... 200+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.00211e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 4.00211e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 87+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.94828e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 2.94828e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 191+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.6425e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 3.6425e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 147+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.00405e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 4.00405e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 86+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.38343e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 4.38343e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 144+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.95874e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 3.95874e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+12 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.3397e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 4.3397e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 84+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.51659e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 3.51659e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.92381e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 2.92381e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 76+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.34819e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 2.34819e-09
+   Solving Stokes system... 200+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.61887e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 3.61887e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 73+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.57749e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 1.57749e-09
+   Solving Stokes system... 92+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.9956e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 2.9956e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 67+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.04732e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 1.04732e-09
+   Solving Stokes system... 46+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.01225e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 4.01225e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 48+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.13115e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 7.13115e-10
+   Solving Stokes system... 130+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.23875e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 4.23875e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 45+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.12995e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 5.12995e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.6501e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 3.6501e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.21085e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 4.21085e-10
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.77693e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 3.77693e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 36+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.11918e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 3.11918e-10
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.11986e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 4.11986e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.81976e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 2.81976e-10
+   Solving Stokes system... 193+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.08115e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 4.08115e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 26+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.45399e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 2.45399e-10
+   Solving Stokes system... 96+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.98834e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 3.98834e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.09549e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 2.09549e-10
+   Solving Stokes system... 92+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.38836e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 4.38836e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 19+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.69702e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 1.69702e-10
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.97566e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 3.97566e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 17+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.95874e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 1.95874e-10
+   Solving Stokes system... 87+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.72121e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 3.72121e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.81106e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 1.81106e-10
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.83132e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 3.83132e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.54473e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 1.54473e-10
+   Solving Stokes system... 190+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.74548e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 2.74548e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.4161e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 1.4161e-10
+   Solving Stokes system... 93+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.57695e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 3.57695e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.68373e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 1.68373e-10
+   Solving Stokes system... 45+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.97185e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 3.97185e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.47559e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 1.47559e-10
+   Solving Stokes system... 48+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.45239e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 4.45239e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.60167e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 1.60167e-10
+   Solving Stokes system... 43+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.32358e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 4.32358e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.47132e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 1.47132e-10
+   Solving Stokes system... 94+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.05658e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 4.05658e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.45293e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 1.45293e-10
+   Solving Stokes system... 88+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.10742e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 4.10742e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.87666e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 1.87666e-10
+   Solving Stokes system... 92+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.87629e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 3.87629e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.30408e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 1.30408e-10
+   Solving Stokes system... 83+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.01364e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 4.01364e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.42318e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 1.42318e-10
+   Solving Stokes system... 188+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.684e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 3.684e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.4951e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 1.4951e-10
+   Solving Stokes system... 200+11 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.56867e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 3.56867e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.37471e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 1.37471e-10
+   Solving Stokes system... 189+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.95806e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 2.95806e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.05918e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 1.05918e-10
+   Solving Stokes system... 191+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.0248e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 4.0248e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.54655e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 1.54655e-10
+   Solving Stokes system... 97+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.07286e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 4.07286e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.42344e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 1.42344e-10
+   Solving Stokes system... 94+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.46313e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 4.46313e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.47356e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 1.47356e-10
+   Solving Stokes system... 200+10 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.83649e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 3.83649e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.4714e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 1.4714e-10
+   Solving Stokes system... 37+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 2.95244e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 2.95244e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.42493e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 1.42493e-10
+   Solving Stokes system... 97+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.73379e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 3.73379e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.24269e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 1.24269e-10
+   Solving Stokes system... 98+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 3.54124e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 3.54124e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.12507e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 1.12507e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.59729e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 1.59729e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.47498e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 1.47498e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.2995e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 1.2995e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.14479e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 1.14479e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.11747e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 1.11747e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.36188e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 1.36188e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.16823e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 1.16823e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.46982e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 1.46982e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.53468e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 1.53468e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.4078e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 1.4078e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.68313e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 1.68313e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.32445e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 1.32445e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.25862e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 1.25862e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.33637e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 1.33637e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.54209e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 1.54209e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.21486e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 1.21486e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48315e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 1.48315e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.27376e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 1.27376e-10
+   Solving Stokes system... 47+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 4.50538e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 4.50538e-10
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.001454 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001065 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_iterated_IMPES/solution/solution-00000
 
 *** Timestep 1:  t=1 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.91562e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 5.91562e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.35717e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.35717e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.45061e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.45061e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.07355e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 6.07355e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.76341e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 7.76341e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.71018e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 7.71018e-10
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.29362e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.29362e-09
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.6977e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 8.6977e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.92271e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 6.92271e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.42385e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.42385e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.43882e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 8.43882e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.75988e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 8.75988e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.03586e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 1.03586e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.77516e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 6.77516e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.32123e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 7.32123e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.33998e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 9.33998e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.63614e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 9.63614e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.72998e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 7.72998e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.89097e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 7.89097e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.73127e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 8.73127e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.95366e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 7.95366e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.99012e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 6.99012e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.93355e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 7.93355e-10
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.05993e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 8.05993e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.67781e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 8.67781e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.72522e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 7.72522e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.23995e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 6.23995e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.22142e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 6.22142e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.49917e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 6.49917e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.2183e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 7.2183e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.84744e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 21: 7.84744e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.95864e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 22: 5.95864e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.60238e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 23: 6.60238e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.86276e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 24: 5.86276e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.72899e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 25: 6.72899e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.68119e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 26: 7.68119e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.3594e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 27: 6.3594e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.03427e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 28: 1.03427e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.65014e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 29: 7.65014e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.18684e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 30: 8.18684e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.57437e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 31: 6.57437e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.01785e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 32: 1.01785e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.94525e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 33: 9.94525e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.08841e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 34: 8.08841e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.30637e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 9.30637e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.98154e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 7.98154e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.06984e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 8.06984e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.93218e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 7.93218e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.12867e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 7.12867e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.19982e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 7.19982e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.87871e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 7.87871e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.62959e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 7.62959e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.14422e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 8.14422e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.00851e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 6.00851e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.76649e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 21: 8.76649e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.86375e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 22: 8.86375e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.60636e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 23: 7.60636e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.20679e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 24: 7.20679e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.53433e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 25: 8.53433e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.1147e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 26: 8.1147e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.25529e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 27: 8.25529e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.98812e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 28: 7.98812e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.60051e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 29: 8.60051e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.51812e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 30: 6.51812e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.25608e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 31: 8.25608e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.18842e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 32: 7.18842e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.87905e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 33: 7.87905e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.26651e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 34: 6.26651e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.91894e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 35: 7.91894e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.11826e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 8.11826e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.03245e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 7.03245e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.96525e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 8.96525e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.78145e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 5.78145e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.37e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 40: 7.37e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.72939e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 6.72939e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.54997e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 7.54997e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.28347e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 7.28347e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.43727e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 8.43727e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.2665e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 7.2665e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.4027e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 8.4027e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.76923e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 7.76923e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.34765e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 9.34765e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.87079e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 6.87079e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.42074e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 7.42074e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.46773e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 9.46773e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.07618e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 8.07618e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.52446e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 7.52446e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.04689e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 7.04689e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.11607e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 7.11607e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.81986e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 9.81986e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.11544e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 6.11544e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.39097e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 7.39097e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.15486e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 8.15486e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.36094e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 6.36094e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.45904e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 8.45904e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.07471e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 9.07471e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.11977e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 8.11977e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.08511e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 9.08511e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.88738e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 8.88738e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.7455e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 35: 7.7455e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 16+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.61612e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 7.61612e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.00048e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 9.00048e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.07329e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 6.07329e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.75679e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 7.75679e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.06051e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 1.06051e-09
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.78737e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 6.78737e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.93301e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 5.93301e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.33162e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 8.33162e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.51142e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 7.51142e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.37122e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 7.37122e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.21581e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 7.21581e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.09126e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 7.09126e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.49441e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 7.49441e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.17945e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 9.17945e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.1792e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 9.1792e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.86941e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 8.86941e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.78965e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 9.78965e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.69266e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 8.69266e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.43867e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 7.43867e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.50171e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 6.50171e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.23409e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 7.23409e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.47462e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 7.47462e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.66923e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 8.66923e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.63211e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 7.63211e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.57799e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 8.57799e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.35161e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 6.35161e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.97417e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 8.97417e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.31976e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 7.31976e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.88303e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 6.88303e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.74789e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 7.74789e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.50354e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 7.50354e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.20916e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 6.20916e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.05374e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 1.05374e-09
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.20655e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 7.20655e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.03387e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 40: 1.03387e-09
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.22661e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 7.22661e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.55647e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 8.55647e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.3005e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 8.3005e-10
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.4196e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 7.4196e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.31635e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 9.31635e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.59124e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 7.59124e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.38638e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 7.38638e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.13128e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 7.13128e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.65867e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 6.65867e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.73899e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 8.73899e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.08322e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 8.08322e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.06523e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 6.06523e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.68295e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 6.68295e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.37234e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 6.37234e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.89542e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 7.89542e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.66261e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 6.66261e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.70287e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 7.70287e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.05226e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 7.05226e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.53039e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 6.53039e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.76424e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 7.76424e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.82507e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 7.82507e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.9694e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 7.9694e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.87945e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 8.87945e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.08287e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 6.08287e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.5076e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 5.5076e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.8513e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 7.8513e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.95695e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 8.95695e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.33654e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 8.33654e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.75116e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 9.75116e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.42389e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 8.42389e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.16278e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 7.16278e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.53649e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 9.53649e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.83788e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 8.83788e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.50287e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 8.50287e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.23913e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 9.23913e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.49695e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 7.49695e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.55938e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 6.55938e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.62502e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 8.62502e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.79987e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 7.79987e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.17753e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 7.17753e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.41296e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 5.41296e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.6609e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 7.6609e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.64398e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 6.64398e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.46771e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 7.46771e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.68556e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 7.68556e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.71741e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 7.71741e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.09767e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 6.09767e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.42199e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 7.42199e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.73549e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 5.73549e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.30379e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 6.30379e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.75595e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 6.75595e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.32509e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 7.32509e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.81896e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 6.81896e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.62456e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 6.62456e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.88978e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 8.88978e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 15+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.308e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 8.308e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.29082e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 7.29082e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.16219e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 7.16219e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.97076e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 5.97076e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.01373e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 9.01373e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.6708e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 7.6708e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.50891e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 8.50891e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.99045e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 6.99045e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.56647e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 7.56647e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.79121e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 9.79121e-10
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.001961 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001691 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
 
 *** Timestep 2:  t=2 seconds, dt=1 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.15692e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.15692e-09
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.63274e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.63274e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.25023e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.25023e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.01996e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 4: 8.01996e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.07165e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 5: 8.07165e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.18285e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 6: 9.18285e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.52382e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 7: 7.52382e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.14656e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 8: 6.14656e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.54337e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 9: 7.54337e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.13491e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 10: 6.13491e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.40299e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 11: 6.40299e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.85081e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 12: 6.85081e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.46474e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 13: 6.46474e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.40137e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 14: 8.40137e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.07251e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 15: 1.07251e-09
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.35671e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 16: 9.35671e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.94641e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1.94641e-09
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.01262e-09
-      Relative nonlinear residual (total system) after nonlinear iteration 17: 1.01262e-09
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.95364e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 8.95364e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.80568e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 18: 5.80568e-10
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.41933e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 8.41933e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.29374e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 19: 5.29374e-10
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.13673e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 4: 7.13673e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.34351e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 5: 8.34351e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.10391e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 20: 5.10391e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.53348e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 6: 6.53348e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.90811e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 21: 6.90811e-10
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.36514e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 7: 6.36514e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.29916e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 8: 8.29916e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.87159e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 22: 6.87159e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.63744e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 9: 8.63744e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.06391e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 10: 8.06391e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.97288e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 11: 6.97288e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.26062e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 12: 6.26062e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.5499e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 13: 7.5499e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.39408e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 14: 8.39408e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.42798e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 15: 6.42798e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.56371e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 16: 6.56371e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.32384e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 17: 8.32384e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.48583e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 18: 7.48583e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.82028e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 19: 5.82028e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.26131e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 20: 7.26131e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.41777e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 21: 5.41777e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.4445e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 22: 7.4445e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.60169e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 23: 7.60169e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.56676e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 24: 6.56676e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.27106e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 25: 8.27106e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.79845e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 26: 7.79845e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.90923e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 27: 6.90923e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.52844e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 23: 8.52844e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.80682e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 28: 6.80682e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.83442e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 24: 7.83442e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.81104e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 29: 5.81104e-10
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.24393e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 25: 6.24393e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.4586e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 30: 7.4586e-10
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.05479e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 26: 7.05479e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.09366e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 31: 7.09366e-10
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.18766e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 27: 7.18766e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.52428e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 28: 7.52428e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.67311e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 29: 7.67311e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.57805e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 30: 7.57805e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.47846e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 32: 7.47846e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.90255e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 33: 7.90255e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.43049e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 34: 9.43049e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.45758e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 35: 8.45758e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.51267e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 31: 8.51267e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.62982e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 36: 7.62982e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.01269e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 37: 8.01269e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.2937e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 38: 6.2937e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.4401e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 39: 7.4401e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.95463e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 32: 8.95463e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.47492e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 40: 8.47492e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.9232e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 41: 7.9232e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.35022e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 42: 6.35022e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.73068e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 33: 7.73068e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.00945e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 43: 7.00945e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.94512e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 44: 8.94512e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.12581e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 45: 8.12581e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.7853e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 46: 6.7853e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.58998e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 34: 8.58998e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.79312e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 47: 9.79312e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.54982e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 48: 6.54982e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.28613e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 49: 6.28613e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.00887e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 50: 7.00887e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.89177e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 51: 6.89177e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.65879e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 35: 8.65879e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.30279e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 52: 6.30279e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.3158e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 36: 7.3158e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.06341e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 53: 7.06341e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.42566e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 37: 6.42566e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.63713e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 38: 5.63713e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.53995e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 54: 6.53995e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.43915e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 55: 6.43915e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.50009e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 56: 6.50009e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.73682e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 57: 6.73682e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.22323e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 39: 6.22323e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.73431e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 58: 5.73431e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.05964e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 40: 6.05964e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.00649e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 59: 8.00649e-10
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.08085e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 41: 8.08085e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.43844e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 60: 7.43844e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.27493e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 61: 7.27493e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.73015e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 62: 8.73015e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.10316e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 63: 5.10316e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.9006e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 64: 6.9006e-10
+   Solving Stokes system... 20+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.16041e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 42: 6.16041e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.46394e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 65: 7.46394e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.88435e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 43: 8.88435e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.18319e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 66: 9.18319e-10
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.1174e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 44: 8.1174e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.67244e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 67: 7.67244e-10
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.53094e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 45: 8.53094e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.19267e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 68: 7.19267e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.11687e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 46: 7.11687e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.8636e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 69: 6.8636e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.48759e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 70: 8.48759e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.02795e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 71: 6.02795e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.78168e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 72: 7.78168e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.98175e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 73: 5.98175e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.71298e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 74: 7.71298e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.17133e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 75: 9.17133e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.88865e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 47: 8.88865e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.6707e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 76: 7.6707e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.91116e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 48: 8.91116e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.50959e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 49: 6.50959e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.07878e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 50: 7.07878e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.0038e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 51: 1.0038e-09
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.83564e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 77: 7.83564e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.86061e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 52: 6.86061e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.9864e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 78: 6.9864e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 11+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.31348e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 79: 8.31348e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.05363e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 80: 7.05363e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.04325e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 81: 7.04325e-10
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.77379e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 53: 6.77379e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.30971e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 82: 7.30971e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.07227e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 54: 7.07227e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.03179e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 55: 8.03179e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.83111e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 56: 6.83111e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.18342e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 57: 7.18342e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.61593e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 58: 8.61593e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.34257e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 59: 7.34257e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.67471e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 60: 6.67471e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.20158e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 61: 7.20158e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.58632e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 62: 6.58632e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.40313e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 63: 6.40313e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.30223e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 83: 7.30223e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 15+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.65231e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 84: 8.65231e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.14299e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 85: 8.14299e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.72997e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 86: 6.72997e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.54335e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 87: 6.54335e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.52135e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 88: 7.52135e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 14+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.68577e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 89: 9.68577e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.53969e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 90: 8.53969e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 9+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.02381e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 91: 7.02381e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.67127e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 92: 7.67127e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.10041e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 93: 7.10041e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.78924e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 94: 5.78924e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.99591e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 64: 7.99591e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 13+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.22561e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 95: 6.22561e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.51106e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 65: 7.51106e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.36473e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 96: 8.36473e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.41584e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 66: 8.41584e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 6+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.91143e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 67: 6.91143e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.26954e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 68: 6.26954e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.62881e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 97: 6.62881e-10
-
-   Skipping temperature solve because RHS is zero.
-   Rebuilding Stokes preconditioner...
-   Solving Stokes system... 4+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.2046e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 98: 7.2046e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.49301e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 69: 6.49301e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 12+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.13051e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 99: 6.13051e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.5178e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 70: 7.5178e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.02549e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 71: 7.02549e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.35864e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 72: 7.35864e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.64442e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 73: 7.64442e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.05864e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 74: 1.05864e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.05327e-09
+      Relative nonlinear residual (total system) after nonlinear iteration 75: 1.05327e-09
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 14+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.94863e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 76: 7.94863e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.39482e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 77: 8.39482e-10
 
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 10+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.52454e-10
-      Relative nonlinear residual (total system) after nonlinear iteration 100: 6.52454e-10
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.83176e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 78: 6.83176e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 7+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.19386e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 79: 7.19386e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.49492e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 80: 7.49492e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.97575e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 81: 8.97575e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.66026e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 82: 6.66026e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 5.09896e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 83: 5.09896e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 13+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.42282e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 84: 6.42282e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 16+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.61351e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 85: 8.61351e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.81481e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 86: 7.81481e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.98952e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 87: 6.98952e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.84528e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 88: 6.84528e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.48193e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 89: 6.48193e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.58572e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 90: 7.58572e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.79675e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 91: 7.79675e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.16063e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 92: 6.16063e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 6.40142e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 93: 6.40142e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.29986e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 94: 8.29986e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 5+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.05698e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 95: 7.05698e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.26682e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 96: 7.26682e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.561e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 97: 7.561e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 11+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 9.09652e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 98: 9.09652e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 10+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 8.40123e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 99: 8.40123e-10
+
+   Skipping temperature solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 7.59894e-10
+      Relative nonlinear residual (total system) after nonlinear iteration 100: 7.59894e-10
 
 
    Postprocessing:
      RMS, max velocity:                  2.57e-08 m/s, 3.05e-08 m/s
-     Pressure min/avg/max:               -0.002069 Pa, 5e+08 Pa, 1e+09 Pa
+     Pressure min/avg/max:               -0.001544 Pa, 5e+08 Pa, 1e+09 Pa
      Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -0.8139 kg/s, 0.8139 kg/s
      Writing graphical output:           output-nonlinear_channel_flow_tractions_iterated_IMPES/solution/solution-00001
 

@@ -10,31 +10,31 @@ Number of degrees of freedom: 268 (162+25+81)
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 20.4416
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 10.2208
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 5.15498
 
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 10.31
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 2.67052
 
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 5.34104
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 1.42138
 
    Solving Stokes system... 7+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 2.84276
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 0.775145
 
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 1.55029
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.431241
 
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 7: 0.862476
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.243622
 
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 8: 0.487235
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.139191
 
    Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 9: 0.278377
-
-   Solving Stokes system... 6+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.160346
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 10: 0.0801748
 
 
    Postprocessing:

@@ -42,7 +42,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving temperature system... 6 iterations.
    Solving grain_size system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 1+0 iterations.
+   Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:     0.0009966/0.0009966/9.966e+06
@@ -54,7 +54,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving temperature system... 3 iterations.
    Solving grain_size system ... 6 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 2+0 iterations.
+   Solving Stokes system... 1+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass:     0.0009964/0.0009964/9.964e+06

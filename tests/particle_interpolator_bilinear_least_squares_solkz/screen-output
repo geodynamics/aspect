@@ -7,11 +7,11 @@ Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
 *** Timestep 0:  t=0 years, dt=0 years
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 49+0 iterations.
 
    Postprocessing:
      Writing particle output:       output-particle_interpolator_bilinear_least_squares_solkz/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.768547e-08, 1.580101e-04, 3.863263e-08, 2.648933e-04
+     Errors u_L1, p_L1, u_L2, p_L2: 1.768547e-08, 1.580101e-04, 3.863316e-08, 2.648933e-04
 
 Termination requested by criterion: end time
 

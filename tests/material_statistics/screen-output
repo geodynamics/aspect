@@ -170,6 +170,14 @@ Number of degrees of freedom: 31 (18+4+9)
    Postprocessing:
      Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
 
+*** Timestep 21:  t=1e+08 years, dt=3.16887e-08 years
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+
+   Postprocessing:
+     Average density / Average viscosity / Total mass:  2970 kg/m^3, 1e+20 Pa s, 2.97e+13 kg
+
 Termination requested by criterion: end time
 
 

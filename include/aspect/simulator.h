@@ -503,16 +503,16 @@ namespace aspect
       /**
        * Compute the factor by which we scale the second of
        * the Stokes equations (the "pressure scaling factor").
-       * We do this for the current time step by taking some kind
-       * of average of the viscosities we find on the cells in this domain.
+       * We do this for the current time step by taking the logarithmic
+       * average of the viscosities we find on the cells in this domain.
        *
-       * This function then updates the pressure_scaling variable using
+       * This function then returns the pressure_scaling variable using
        * this computed reference viscosity.
        *
        * This function is implemented in
        * <code>source/simulator/helper_functions.cc</code>.
        */
-      void compute_pressure_scaling_factor ();
+      double compute_pressure_scaling_factor () const;
 
       /**
        * Do some housekeeping at the beginning of each time step. This

@@ -35,7 +35,7 @@ Number of degrees of freedom: 31 (18+4+9)
      Max / average entropy viscosity: 1.41 W/(m*K), 1.41 W/(m*K)
      Writing graphical output:        output-analytic_artificial_viscosity_0/solution/solution-00002
 
-Termination requested by criterion: end time
+Termination requested by criterion: end step
 
 
 

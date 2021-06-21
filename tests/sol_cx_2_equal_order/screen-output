@@ -6,15 +6,15 @@ Number of degrees of freedom: 100 (50+25+25)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 10+0 iterations.
+   Solving Stokes system... 11+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
 
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.06182e-09
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.96231e-08
 
 
    Postprocessing:
-     Errors u_L1, p_L1, u_L2, p_L2: 1.191777e-03, 1.043043e-01, 1.813599e-03, 1.066981e-01
+     Errors u_L1, p_L1, u_L2, p_L2: 1.191777e-03, 1.043031e-01, 1.813599e-03, 1.066969e-01
 
 Termination requested by criterion: end time
 

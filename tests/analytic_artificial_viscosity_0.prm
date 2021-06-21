@@ -7,6 +7,10 @@ set Dimension                              = 2
 set End time                               = 1
 set Use years in output instead of seconds = false
 
+subsection Termination criteria
+  set Termination criteria = end step
+  set End step = 2
+end
 
 # The settings below will cause the residual based entropy viscosity to always
 # be higher than the maximum viscosity. Since the minimum of both is chosen as

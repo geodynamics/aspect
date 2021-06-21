@@ -15,6 +15,7 @@ end
 subsection Solver parameters
   subsection Stokes solver parameters
     set Stokes solver type = block GMG
+    set Linear solver tolerance = 1e-6
   end
 end
 

@@ -14,7 +14,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 2.5689e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 1.48285e-12
 
 
    Postprocessing:
@@ -28,11 +28,11 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 3.6328e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.96604e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.939e-14/1.9e-14/-3.288e-18 // -1.9e-14/1.939e-14/3.288e-18 // 0.0495/0.0495/0.0495 // 1/1/1
+     Compositions min/max/mass: -1.922e-14/1.905e-14/5.757e-19 // -1.905e-14/1.922e-14/-5.757e-19 // 0.0495/0.0495/0.0495 // 1/1/1
 
 *** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
@@ -42,7 +42,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.96503e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.50027e-12
 
 
    Postprocessing:
@@ -56,7 +56,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.4057e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.0527e-12
 
 
    Postprocessing:
@@ -70,7 +70,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.88623e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.60236e-12
 
 
    Postprocessing:
@@ -84,7 +84,7 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
    Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.37831e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.14097e-12
 
 
    Postprocessing:

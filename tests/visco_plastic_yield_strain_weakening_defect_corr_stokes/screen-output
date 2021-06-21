@@ -1,19 +1,15 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 100 (on 1 levels)
 Number of degrees of freedom: 1,885 (882+121+441+441)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 0 iterations.
-   Initial Newton Stokes residual = 8.1291e+12, v = 2.00464e+12, p = 7.87805e+12
+   Initial Newton Stokes residual = 4.4124e+12, v = 2.00464e+12, p = 3.93073e+12
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 8.1291e+12
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 4.4124e+12
 
 
    Postprocessing:
@@ -24,17 +20,14 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 *** Timestep 1:  t=1 years, dt=1 years
    Solving temperature system... 0 iterations.
    Solving total_strain system ... 10 iterations.
-   Initial Newton Stokes residual = 2.01139e+13, v = 1.85069e+13, p = 7.87805e+12
+   Initial Newton Stokes residual = 1.85485e+13, v = 1.85069e+13, p = 1.24045e+12
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 9.98735e-05, norm of the rhs: 2.00885e+09
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.000108303, norm of the rhs: 2.00885e+09
 
 
    Postprocessing:
@@ -44,15 +37,7 @@ Number of degrees of freedom: 1,885 (882+121+441+441)
 
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

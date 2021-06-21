@@ -11,7 +11,6 @@ set End time                               = 1e5
 set Adiabatic surface temperature          = 1600.0
 set Use years in output instead of seconds = true
 
-
 subsection Boundary temperature model
   set List of model names = spherical constant
   set Fixed temperature boundary indicators = 0,1
@@ -88,6 +87,13 @@ subsection Boundary velocity model
   set Zero velocity boundary indicators       = 1
 end
 
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set GMRES solver restart length = 200
+    set Use full A block as preconditioner = true
+  end
+end
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, basic statistics, temperature statistics, heat flux statistics, depth average

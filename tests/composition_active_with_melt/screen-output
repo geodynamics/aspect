@@ -9,7 +9,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -21,7 +21,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 6+0 iterations.
+   Solving Stokes system... 7+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -33,7 +33,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -69,7 +69,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 5 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -81,7 +81,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -105,7 +105,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -117,7 +117,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -129,7 +129,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 7+0 iterations.
+   Solving Stokes system... 8+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -141,7 +141,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -153,7 +153,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 8+0 iterations.
+   Solving Stokes system... 9+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -177,7 +177,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 6+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -189,7 +189,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
    Solving C_1 system ... 4 iterations.
    Skipping porosity composition solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 5+0 iterations.
+   Solving Stokes system... 6+0 iterations.
    Solving fluid velocity system... 1 iterations.
 
    Postprocessing:
@@ -208,7 +208,7 @@ Number of degrees of freedom: 1,850 (578+162+578+81+289+81+81)
      Temperature min/avg/max:   0 K, 0.5143 K, 1 K
      Compositions min/max/mass: -0.07476/1.061/0.375 // 0/0/0
 
-*** Timestep 17:  t=1 seconds, dt=4.81282e-13 seconds
+*** Timestep 17:  t=1 seconds, dt=4.80949e-13 seconds
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Skipping porosity composition solve because RHS is zero.

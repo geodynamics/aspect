@@ -7,11 +7,11 @@ Number of degrees of freedom: 1,607 (578+81+81+289+289+289)
    Solving block system ... 0 iterations.
    Solving air system ... 0 iterations.
    Solving inclusion system ... 0 iterations.
-   Initial Newton Stokes residual = 2.72501e+14, v = 1.5982e+13, p = 2.72032e+14
+   Initial Newton Stokes residual = 1.60155e+13, v = 1.5982e+13, p = 1.03485e+12
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 20+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 2.72501e+14
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 1.60155e+13
 
 
    Postprocessing:

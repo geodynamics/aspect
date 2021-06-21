@@ -577,7 +577,7 @@ namespace aspect
     // of constraints because some kinds of constraints require scaling
     // pressure degrees of freedom to a size adjusted by the pressure_scaling
     // factor.
-    compute_pressure_scaling_factor();
+    pressure_scaling = compute_pressure_scaling_factor();
 
     // then interpolate the current boundary velocities. copy constraints
     // into current_constraints and then add to current_constraints

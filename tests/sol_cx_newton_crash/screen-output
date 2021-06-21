@@ -9,10 +9,10 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Initial Newton Stokes residual = 0.0172385, v = 0.0172385, p = 0
 
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 50+0 iterations.
+   Solving Stokes system... 66+0 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 0.0172385
 
-   Nonlinear residual reduction has been very large (8.52861e-10); skipping Stokes solve
+   Nonlinear residual reduction has been very large (6.14015e-10); skipping Stokes solve
 
 
    Postprocessing:

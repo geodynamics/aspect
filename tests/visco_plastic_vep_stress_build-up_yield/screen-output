@@ -13,7 +13,7 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 5.64787e-08
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 6.04103e-08
 
 
    Postprocessing:
@@ -29,8 +29,8 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 12 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64934e-08
+   Solving Stokes system... 4+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.84667e-07
 
 
    Postprocessing:
@@ -44,10 +44,10 @@ Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
-   Solving ve_stress_xy system ... 12 iterations.
+   Solving ve_stress_xy system ... 13 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.64933e-08
+   Solving Stokes system... 3+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.97707e-07
 
 
    Postprocessing:
