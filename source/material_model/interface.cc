@@ -687,32 +687,60 @@ namespace aspect
        * Given a quadrature formula, compute a matrices $E, M^{-1}F$
        * representing a linear operator in the following way: Let
        * there be a vector $F$ with $N$ elements where the elements
-       * are data stored at each of the $N$ quadrature points. Then
-       * project this data into a Q1 space and evaluate this
-       * projection at the quadrature points. This operator can be
-       * expressed in the following way where $P=2^{dim}$ is the
-       * number of degrees of freedom of the $Q_1$ element:
+       * are data stored at each of the $N$ quadrature points of the
+       * given quadrature formula. (For this quadrature formula, we only
+       * care about the locations of the quadrature points on the
+       * reference cell, but not about quadrature weights.)
+       * Then project this data into a $Q_1$ space and evaluate this
+       * projection at the same quadrature points.
        *
-       * Let $y$ be the input vector with $N$ elements. Then let
-       * $F$ be the $P \times N$ matrix so that
-       * @f{align}
-       *   F_{iq} = \varphi_i(x_q) |J(x_q)| w_q
+       * This operator can be expressed in the following way where $P=2^{dim}$
+       * is the number of degrees of freedom of the $Q_1$ element:
+       *
+       * Let $y$ be the input vector with $N$ elements. We would like to find
+       * a function $u_h(x)$ that is a $Q_1$ function that is closest to
+       * the data points, i.e., we seek
+       * @f{align*}{
+       *   min_{u_h \in Q_1(K)} \frac 12 \sum_q |u_h(x_q) - y_q|^2 |J(x_q)| w_q.
        * @f}
-       * where $\varphi_i$ are the $Q_1$ shape functions, $x_q$ are
-       * the quadrature points, $J$ is the Jacobian matrix of the
+       * where $x_q$ are the evaluation points, $J$ is the Jacobian matrix of the
        * mapping from reference to real cell, and $w_q$ are the
        * quadrature weights.
-       *
+       * Expanding $u_h = \sum_j U_j \varphi_j$, this leads to the following
+       * minimization problem for the vector of coefficients $U$:
+       * @f{align*}{
+       *   min_{U} \frac 12 \sum_q |\sum_j U_j \varphi_j(x_q) - y_q|^2 w_q,
+       * @f}
+       * which can be rewritten as
+       * @f{align*}{
+       *   min_{U} \frac 12 \sum_q
+       *       [ \sum_i \sum_j U_i U_j \varphi_i(x_q)\varphi_j(x_q)
+       *        - 2 \sum_j U_j \varphi_j(x_q) y_q
+       *        + y_q^2                                             ].
+       * @f}
+       * This optimization problem has the following solution that one can arrive at
+       * simply by setting the derivative of the objective function with regard to
+       * $U$ to zero:
+       * @f{align*}{
+       *       \sum q \sum_i \sum_j \varphi_i(x_q)\varphi_j(x_q) |J(x_q)| w_q U_j
+       *       =
+       *       \sum_q \varphi_i(x_q) |J(x_q)| w_q y_q
+       * @f}
+       * If we let $F$ be the $P \times N$ matrix so that
+       * @f{align*}{
+       *   F_{iq} = \varphi_i(x_q) |J(x_q)| w_q
+       * @f}
        * Next, let $M_{ij}$ be the $P\times P$ mass matrix on the
-       * $Q_1$ space. Then $M^{-1}Fy$ corresponds to the projection
+       * $Q_1$ space with regard to the given evaluation points and corresponding
+       * weights. Then $U = M^{-1}Fy$ corresponds to the projection
        * of $y$ into the $Q_1$ space (or, more correctly, it
-       * corresponds to the nodal values of this projection).
+       * corresponds to vector of the nodal values of this projection).
        *
        * Finally, let $E_{qi} = \varphi_i(x_q)$ be the evaluation
        * operation of shape functions at quadrature points.
        *
        * Then, the operation $X=EM^{-1}F$ is the operation we seek.
-       * This function computes the matrices E and M^{-1}F.
+       * This function computes the matrices $E$ and $M^{-1}F$.
        */
       template <int dim>
       void compute_projection_matrix (const typename DoFHandler<dim>::active_cell_iterator &cell,
