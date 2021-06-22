@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -98,7 +98,7 @@ namespace WorldBuilder
 
   template<int dim>
   Point<dim>::~Point()
-  {}
+    = default;
 
   template<int dim>
   Point<dim> &Point<dim>::operator=(const Point<dim> &point_)
@@ -205,30 +205,6 @@ namespace WorldBuilder
   }
 
 
-  /**
-   * access index
-   */
-  template<int dim>
-  const double &
-  Point<dim>::operator[](const unsigned int index) const
-  {
-    WBAssertThrow(index <= dim, "Can't ask for element " << index << " in an point with dimension " << dim << ".");
-    return point[index];
-  }
-
-
-  /**
-   * access index
-   */
-  template<int dim>
-  double &
-  Point<dim>::operator[](const unsigned int index)
-  {
-    WBAssertThrow(index <= dim, "Can't ask for element " << index << " in an point with dimension " << dim << ".");
-    return point[index];
-  }
-
-
   template<int dim>
   const std::array<double,dim> &
   Point<dim>::get_array() const
@@ -267,6 +243,50 @@ namespace WorldBuilder
     return (point[0] * point[0]) + (point[1] * point[1]) + (point[2] * point[2]);
   }
 
+
+  template<int dim>
+  double
+  Point<dim>::distance(const Point<dim> &two) const
+  {
+    if (this->coordinate_system == spherical)
+      {
+        // spherical
+        const double d_longitude = two[0] - this->point[0];
+        const double d_lattitude = two[1] - this->point[1];
+        const double sin_d_lat = std::sin(d_lattitude * 0.5);
+        const double sin_d_long = std::sin(d_longitude * 0.5);
+        return 2.0 * asin(sqrt((sin_d_lat * sin_d_lat) + (sin_d_long*sin_d_long) * std::cos(this->point[1]) * std::cos(two[1])));
+      }
+
+    // cartesian
+    const double x_distance_to_reference_point = point[0]-two[0];
+    const double y_distance_to_reference_point = point[1]-two[1];
+    return sqrt((x_distance_to_reference_point*x_distance_to_reference_point) + (y_distance_to_reference_point*y_distance_to_reference_point));
+
+  }
+
+
+
+  template<int dim>
+  double
+  Point<dim>::cheap_relative_distance(const Point<dim> &two) const
+  {
+    if (this->coordinate_system == spherical)
+      {
+        // spherical
+        const double d_longitude = two[0] - this->point[0];
+        const double d_lattitude = two[1] - this->point[1];
+        const double sin_d_lat = FT::sin(d_lattitude * 0.5);
+        const double sin_d_long = FT::sin(d_longitude * 0.5);
+        return (sin_d_lat * sin_d_lat) + (sin_d_long*sin_d_long) * FT::cos(this->point[1]) * FT::cos(two[1]);
+      }
+
+    // cartesian
+    const double x_distance_to_reference_point = point[0]-two[0];
+    const double y_distance_to_reference_point = point[1]-two[1];
+    return (x_distance_to_reference_point*x_distance_to_reference_point) + (y_distance_to_reference_point*y_distance_to_reference_point);
+
+  }
 
   /**
    * Multiplies a point with a scalar.

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -75,12 +75,12 @@ namespace WorldBuilder
   }
 
   Parameters::~Parameters()
-  {}
+    = default;
 
-  void Parameters::initialize(std::string &filename, bool has_output_dir, std::string output_dir)
+  void Parameters::initialize(std::string &filename, bool has_output_dir, const std::string &output_dir)
   {
 
-    if (has_output_dir == true)
+    if (has_output_dir)
       {
         StringBuffer buffer;
         std::ofstream file;
@@ -137,7 +137,7 @@ namespace WorldBuilder
                                                                              ? 0
                                                                              :
                                                                              static_cast<unsigned>(parameters.GetErrorOffset())-5,
-                                                                             (static_cast<unsigned>(parameters.GetErrorOffset()) + 10 > json_input_stream_error.seekg(0,ios::end).tellg()
+                                                                             (static_cast<unsigned>(parameters.GetErrorOffset()) + 10 > json_input_stream_error.seekg(0,std::ios::end).tellg()
                                                                               ?
                                                                               static_cast<unsigned>(json_input_stream.tellg())-static_cast<unsigned>(parameters.GetErrorOffset())
                                                                               :
@@ -170,9 +170,9 @@ namespace WorldBuilder
   }
 
   void
-  Parameters::declare_entry(const std::string name,
+  Parameters::declare_entry(const std::string &name,
                             const Types::Interface &type,
-                            const std::string documentation)
+                            const std::string &documentation)
   {
     type.write_schema(*this,name,documentation);
   }
@@ -180,7 +180,7 @@ namespace WorldBuilder
   bool
   Parameters::check_entry(const std::string &name) const
   {
-    return Pointer((this->get_full_json_path() + "/" + name).c_str()).Get(parameters) == NULL ? false : true;
+    return Pointer((this->get_full_json_path() + "/" + name).c_str()).Get(parameters) != nullptr;
   }
 
 
@@ -207,10 +207,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << base + "/" + name + "/default value");
       }
@@ -240,10 +240,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << get_full_json_schema_path() + "/" + name + "/default value, for value: " << base + "/" + name);
       }
@@ -283,10 +283,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << base + "/" + name + "/default value");
       }
@@ -317,10 +317,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << base + "/" + name + "/default value");
       }
@@ -351,10 +351,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << base + "/" + name + "/default value");
       }
@@ -387,12 +387,13 @@ namespace WorldBuilder
     WBAssert(array != NULL || required == false,
              "Internal error: Value \"" << strict_base << "/" << name << "/type\" not found in the input file, while it was set as required.");
 #endif
-    if (array != NULL)
+    if (array != nullptr)
       {
         const std::string base = strict_base + "/" + name;
         //let's assume that the file is correct, because it has been checked with the json schema.
         // So there are exactly two values.
-        double value1, value2;
+        double value1;
+        double value2;
 
         try
           {
@@ -416,13 +417,13 @@ namespace WorldBuilder
   {
     std::vector<bool> vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             vector.push_back(Pointer(base.c_str()).Get(parameters)->GetBool());
           }
@@ -430,7 +431,7 @@ namespace WorldBuilder
     else
       {
         const Value *value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/minItems").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the minItems value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/minItems value");
 
@@ -453,16 +454,17 @@ namespace WorldBuilder
   {
     std::vector<Point<2> > vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
             //let's assume that the file is correct, because it has been checked with the json schema.
             // So there are exactly two values.
-            double value1, value2;
+            double value1;
+            double value2;
 
             try
               {
@@ -471,9 +473,9 @@ namespace WorldBuilder
               }
             catch (...)
               {
-                WBAssertThrow(false, "Could not convert values of " << base << " into doubles.");
+                WBAssertThrow(false, "Could not convert values of " << base << " into a Point<2> array, because it could not convert the sub-elements into doubles.");
               }
-            vector.push_back(Point<2>(value1,value2,this->coordinate_system->natural_coordinate_system()));
+            vector.emplace_back(value1,value2,this->coordinate_system->natural_coordinate_system());
           }
       }
     return vector;
@@ -485,13 +487,13 @@ namespace WorldBuilder
   {
     std::vector<std::array<double,3> > vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
             //let's assume that the file is correct, because it has been checked with the json schema.
             // So there are exactly three values.
             try
@@ -517,13 +519,13 @@ namespace WorldBuilder
   {
     std::vector<std::array<std::array<double,3>,3>  > vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array1 = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array1->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
             Value *array2 = Pointer((base).c_str()).Get(parameters);
 
             // Not sure why cppcheck it is generating the warning
@@ -539,7 +541,9 @@ namespace WorldBuilder
                 WBAssertThrow(Pointer((base_extended).c_str()).Get(parameters)->Size() == 3,
                               "Array " << i << " is supposed to be a 3x3 array, but the inner array dimensions of "
                               << j << " is " << Pointer((base_extended).c_str()).Get(parameters)->Size() << ".");
-                double value1, value2, value3;
+                double value1;
+                double value2;
+                double value3;
 
                 try
                   {
@@ -575,7 +579,7 @@ namespace WorldBuilder
     std::vector<Objects::Segment<Temperature::Interface,Composition::Interface,Grains::Interface> > vector;
     this->enter_subsection(name);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base).c_str()).Get(parameters) != nullptr)
       {
         // get the array of segments
         Value *array = Pointer((strict_base).c_str()).Get(parameters);
@@ -591,7 +595,7 @@ namespace WorldBuilder
             // get thickness
             Value *point_array = Pointer((base  + "/thickness").c_str()).Get(parameters);
             Point<2> thickness(invalid);
-            if (point_array != NULL) // is required, turn into assertthrow
+            if (point_array != nullptr) // is required, turn into assertthrow
               {
                 if (point_array->Size() == 1)
                   {
@@ -610,7 +614,7 @@ namespace WorldBuilder
             // get top trunctation (default is 0,0)
             point_array = Pointer((base  + "/top truncation").c_str()).Get(parameters);
             Point<2> top_trunctation(invalid);
-            if (point_array != NULL)
+            if (point_array != nullptr)
               {
                 if (point_array->Size() == 1)
                   {
@@ -628,7 +632,7 @@ namespace WorldBuilder
             // get thickness
             point_array = Pointer((base  + "/angle").c_str()).Get(parameters);
             Point<2> angle(invalid);
-            if (point_array != NULL) // is required, turn into assertthrow
+            if (point_array != nullptr) // is required, turn into assertthrow
               {
                 if (point_array->Size() == 1)
                   {
@@ -649,15 +653,15 @@ namespace WorldBuilder
 
             //This is a value to look back in the path elements.
             size_t searchback = 0;
-            if (this->get_shared_pointers<Temperature::Interface>("temperature models", temperature_models) == false ||
-                Pointer((base + "/temperature model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Temperature::Interface>("temperature models", temperature_models) ||
+                Pointer((base + "/temperature model default entry").c_str()).Get(parameters) != nullptr)
               {
                 temperature_models = default_temperature_models;
 
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/temperature models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/temperature models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -684,8 +688,8 @@ namespace WorldBuilder
 
             // now do the same for compositions
             std::vector<std::shared_ptr<Composition::Interface> > composition_models;
-            if (this->get_shared_pointers<Composition::Interface>("composition models", composition_models) == false ||
-                Pointer((base + "/composition model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Composition::Interface>("composition models", composition_models) ||
+                Pointer((base + "/composition model default entry").c_str()).Get(parameters) != nullptr)
               {
                 composition_models = default_composition_models;
 
@@ -693,7 +697,7 @@ namespace WorldBuilder
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/composition models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/composition models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -720,8 +724,8 @@ namespace WorldBuilder
 
             // now do the same for grains
             std::vector<std::shared_ptr<Grains::Interface> > grains_models;
-            if (this->get_shared_pointers<Grains::Interface>("grains models", grains_models) == false ||
-                Pointer((base + "/grains model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Grains::Interface>("grains models", grains_models) ||
+                Pointer((base + "/grains model default entry").c_str()).Get(parameters) != nullptr)
               {
                 grains_models = default_grains_models;
 
@@ -729,7 +733,7 @@ namespace WorldBuilder
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/grains models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/grains models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -753,7 +757,7 @@ namespace WorldBuilder
                     Pointer((base + "/grains model default entry").c_str()).Set(parameters,true);
                   }
               }
-            vector.push_back(Objects::Segment<Temperature::Interface,Composition::Interface,Grains::Interface>(length, thickness, top_trunctation, angle, temperature_models, composition_models, grains_models));
+            vector.emplace_back(length, thickness, top_trunctation, angle, temperature_models, composition_models, grains_models);
 
             this->leave_subsection();
           }
@@ -774,7 +778,7 @@ namespace WorldBuilder
     std::vector<Objects::Segment<Temperature::Interface,Composition::Interface,Grains::Interface> > vector;
     this->enter_subsection(name);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base).c_str()).Get(parameters) != nullptr)
       {
         // get the array of segments
         Value *array = Pointer((strict_base).c_str()).Get(parameters);
@@ -790,7 +794,7 @@ namespace WorldBuilder
             // get thickness
             Value *point_array = Pointer((base  + "/thickness").c_str()).Get(parameters);
             Point<2> thickness(invalid);
-            if (point_array != NULL) // is required, turn into assertthrow
+            if (point_array != nullptr) // is required, turn into assertthrow
               {
                 if (point_array->Size() == 1)
                   {
@@ -809,7 +813,7 @@ namespace WorldBuilder
             // get top trunctation (default is 0,0)
             point_array = Pointer((base  + "/top truncation").c_str()).Get(parameters);
             Point<2> top_trunctation(invalid);
-            if (point_array != NULL)
+            if (point_array != nullptr)
               {
                 if (point_array->Size() == 1)
                   {
@@ -827,7 +831,7 @@ namespace WorldBuilder
             // get thickness
             point_array = Pointer((base  + "/angle").c_str()).Get(parameters);
             Point<2> angle(invalid);
-            if (point_array != NULL) // is required, turn into assertthrow
+            if (point_array != nullptr) // is required, turn into assertthrow
               {
                 if (point_array->Size() == 1)
                   {
@@ -848,15 +852,15 @@ namespace WorldBuilder
 
             //This is a value to look back in the path elements.
             size_t searchback = 0;
-            if (this->get_shared_pointers<Temperature::Interface>("temperature models", temperature_models) == false ||
-                Pointer((base + "/temperature model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Temperature::Interface>("temperature models", temperature_models) ||
+                Pointer((base + "/temperature model default entry").c_str()).Get(parameters) != nullptr)
               {
                 temperature_models = default_temperature_models;
 
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/temperature models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/temperature models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -883,8 +887,8 @@ namespace WorldBuilder
 
             // now do the same for compositions
             std::vector<std::shared_ptr<Composition::Interface> > composition_models;
-            if (this->get_shared_pointers<Composition::Interface>("composition models", composition_models) == false ||
-                Pointer((base + "/composition model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Composition::Interface>("composition models", composition_models) ||
+                Pointer((base + "/composition model default entry").c_str()).Get(parameters) != nullptr)
               {
                 composition_models = default_composition_models;
 
@@ -892,7 +896,7 @@ namespace WorldBuilder
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/composition models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/composition models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -919,8 +923,8 @@ namespace WorldBuilder
 
             // now do the same for grains
             std::vector<std::shared_ptr<Grains::Interface> > grains_models;
-            if (this->get_shared_pointers<Grains::Interface>("grains models", grains_models) == false ||
-                Pointer((base + "/grains model default entry").c_str()).Get(parameters) != NULL)
+            if (!this->get_shared_pointers<Grains::Interface>("grains models", grains_models) ||
+                Pointer((base + "/grains model default entry").c_str()).Get(parameters) != nullptr)
               {
                 grains_models = default_grains_models;
 
@@ -928,7 +932,7 @@ namespace WorldBuilder
                 // find the default value, which is the closest to the current path
                 for (searchback = 0; searchback < path.size(); ++searchback)
                   {
-                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/grains models").c_str()).Get(parameters) != NULL)
+                    if (Pointer((this->get_full_json_path(path.size()-searchback) + "/grains models").c_str()).Get(parameters) != nullptr)
                       {
                         break;
                       }
@@ -952,7 +956,7 @@ namespace WorldBuilder
                     Pointer((base + "/grains model default entry").c_str()).Set(parameters,true);
                   }
               }
-            vector.push_back(Objects::Segment<Temperature::Interface,Composition::Interface,Grains::Interface>(length, thickness, top_trunctation, angle, temperature_models, composition_models, grains_models));
+            vector.emplace_back(length, thickness, top_trunctation, angle, temperature_models, composition_models, grains_models);
 
             this->leave_subsection();
           }
@@ -967,13 +971,13 @@ namespace WorldBuilder
   {
     std::vector<double> vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             vector.push_back(Pointer(base.c_str()).Get(parameters)->GetDouble());
           }
@@ -981,14 +985,14 @@ namespace WorldBuilder
     else
       {
         const Value *value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/minItems").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the minItems value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/minItems");
 
         size_t min_size = value->GetUint();
 
         value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/items/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/default value");
 
@@ -1009,13 +1013,13 @@ namespace WorldBuilder
   {
     std::vector<size_t> vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             vector.push_back(Pointer(base.c_str()).Get(parameters)->GetUint());
           }
@@ -1023,14 +1027,14 @@ namespace WorldBuilder
     else
       {
         const Value *value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/minItems").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the minItems value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/minItems");
 
         size_t min_size = value->GetUint();
 
         value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/items/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/default value");
 
@@ -1051,13 +1055,13 @@ namespace WorldBuilder
   {
     std::vector<unsigned int> vector;
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             vector.push_back(Pointer(base.c_str()).Get(parameters)->GetUint());
           }
@@ -1065,7 +1069,7 @@ namespace WorldBuilder
     else
       {
         const Value *value = Pointer((this->get_full_json_schema_path()  + "/" + name + "/minItems").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the minItems value at: "
                       << this->get_full_json_schema_path() + "/" + name + "/minItems value");
 
@@ -1103,10 +1107,10 @@ namespace WorldBuilder
     WBAssert(value != NULL || required == false,
              "Internal error: Value \"" << base << "/" << name << "/model\" not found in the input file, while it was set as required.");
 #endif
-    if (value == NULL)
+    if (value == nullptr)
       {
         value = Pointer((get_full_json_schema_path() + "/" + name + "/default value").c_str()).Get(declarations);
-        WBAssertThrow(value != NULL,
+        WBAssertThrow(value != nullptr,
                       "internal error: could not retrieve the default value at: "
                       << base + "/" + name + "/default value. Make sure the value has been declared.");
       }
@@ -1120,13 +1124,13 @@ namespace WorldBuilder
   {
     vector.resize(0);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             std::string value = Pointer((base + "/model").c_str()).Get(parameters)->GetString();
 
@@ -1147,7 +1151,7 @@ namespace WorldBuilder
   {
     vector.resize(0);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
@@ -1170,7 +1174,7 @@ namespace WorldBuilder
   {
     vector.resize(0);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
@@ -1195,13 +1199,13 @@ namespace WorldBuilder
   {
     vector.resize(0);
     const std::string strict_base = this->get_full_json_path();
-    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != NULL)
+    if (Pointer((strict_base + "/" + name).c_str()).Get(parameters) != nullptr)
       {
         Value *array = Pointer((strict_base  + "/" + name).c_str()).Get(parameters);
 
         for (size_t i = 0; i < array->Size(); ++i )
           {
-            const std::string base = strict_base + "/" + name + "/" + std::to_string(i);
+            const std::string base = (strict_base + "/").append(name).append("/").append(std::to_string(i));
 
             std::string value = Pointer((base + "/model").c_str()).Get(parameters)->GetString();
 
@@ -1217,7 +1221,7 @@ namespace WorldBuilder
   }
 
   void
-  Parameters::enter_subsection(const std::string name)
+  Parameters::enter_subsection(const std::string &name)
   {
     path.push_back(name);
     //TODO: WBAssert(is path valid?)
@@ -1232,18 +1236,18 @@ namespace WorldBuilder
 
 
   void
-  Parameters::declare_model_entries(const std::string model_group_name,
+  Parameters::declare_model_entries(const std::string &model_group_name,
                                     const std::string &parent_name,
                                     std::map<std::string, void ( *)(Parameters &,const std::string &)> declare_map,
                                     const std::vector<std::string> &required_entries,
                                     const std::vector<std::tuple<std::string,const WorldBuilder::Types::Interface &, std::string> > &extra_declarations)
   {
     unsigned int counter = 0;
-    for ( auto it = declare_map.begin(); it != declare_map.end(); ++it )
+    for (auto &it : declare_map)
       {
         typedef std::tuple<std::string,const WorldBuilder::Types::Interface &, std::string> DeclareEntry;
         // prevent infinite recursion
-        if (it->first != parent_name)
+        if (it.first != parent_name)
           {
             enter_subsection("oneOf");
             {
@@ -1253,7 +1257,7 @@ namespace WorldBuilder
                 {
                   declare_entry("", Types::Object(required_entries), model_group_name + " object");
 
-                  declare_entry("model", Types::String("",it->first),
+                  declare_entry("model", Types::String("",it.first),
                                 "The name of the " + model_group_name + " model.");
 
                   for (DeclareEntry extra_declaration : extra_declarations)
@@ -1262,7 +1266,7 @@ namespace WorldBuilder
                     }
 
 
-                  it->second(*this, parent_name);
+                  it.second(*this, parent_name);
                 }
                 leave_subsection();
               }
@@ -1281,7 +1285,7 @@ namespace WorldBuilder
   std::string
   Parameters::get_full_json_path(size_t max_size) const
   {
-    std::string collapse = "";
+    std::string collapse;
     for (size_t i = 0; i < path.size() && i < max_size; i++)
       {
         collapse +=  "/" + path[i];
@@ -1298,7 +1302,7 @@ namespace WorldBuilder
         // first get the type
         //WBAssert(Pointer((collapse + "/" + path[i] + "/type").c_str()).Get(declarations) != NULL, "Internal error: could not find " << collapse + "/" + path[i] + "/type");
 
-        std::string base_path = Pointer((collapse + "/" + path[i] + "/type").c_str()).Get(declarations) != NULL
+        std::string base_path = Pointer((collapse + "/" + path[i] + "/type").c_str()).Get(declarations) != nullptr
                                 ?
                                 collapse + "/" + path[i]
                                 :
@@ -1310,7 +1314,7 @@ namespace WorldBuilder
             // the type is an array. Arrays always have an items, but can also
             // have a oneOf (todo: or anyOf ...). Find out whether this is the case
             //collapse += path[i] + "/items";
-            if (Pointer((base_path + "/items/oneOf").c_str()).Get(declarations) != NULL)
+            if (Pointer((base_path + "/items/oneOf").c_str()).Get(declarations) != nullptr)
               {
                 // it has a structure with oneOf. Find out which of the entries is needed.
                 // This means we have to take a sneak peak to figure out how to get to the

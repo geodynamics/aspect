@@ -1,0 +1,11 @@
+create world 
+create world 
+MPI size 2 and 2 according to the world builder, and this is written from mpi rank 1 and 1 according to the world builder
+2d temperature: 
+temperature in C = 1600.000000 
+3d temperature: 
+temperature in C = 150.000000 
+2d composition: 
+composition in C = 0.000000 
+3d composition: 
+composition in C = 1.000000 

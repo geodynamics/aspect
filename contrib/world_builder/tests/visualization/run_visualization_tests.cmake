@@ -70,7 +70,7 @@ ENDIF()
 
 # now compare the output with the reference
 execute_process(
-	COMMAND ${CMAKE_COMMAND} -E compare_files ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
+	COMMAND ${TEST_DIFF} -q  ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
   RESULT_VARIABLE TEST_RESULT
   )
 

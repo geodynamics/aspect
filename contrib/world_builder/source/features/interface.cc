@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -41,18 +41,52 @@ namespace WorldBuilder
 
   namespace Features
   {
+    namespace Internal
+    {
+
+
+
+      /**
+       * A function to turn strings into interpolation type enums.
+       */
+      static InterpolationType string_to_interpolation_type (const std::string &string)
+      {
+        if (string == "none")
+          {
+            return InterpolationType::None;
+          }
+        if (string == "linear")
+          {
+            return InterpolationType::Linear;
+          }
+        if  (string == "monotone spline")
+          {
+            return InterpolationType::MonotoneSpline;
+          }
+        if (string == "continuous monotone spline")
+          {
+            return InterpolationType::ContinuousMonotoneSpline;
+          }
+
+        WBAssertThrow(false,
+                      "You provided an interpolation type which is not supported: " << string <<
+                      ". The options are none, linear, monotone spline and continuous monotone spline.");
+
+        return InterpolationType::Invalid;
+      }
+    }
     Interface::Interface()
-    {}
+      = default;
 
     Interface::~Interface ()
-    {}
+      = default;
 
     void
     Interface::declare_entries(Parameters &prm, const std::string &parent_name, const std::vector<std::string> &required_entries)
     {
 
       unsigned int counter = 0;
-      for (auto  it : get_declare_map())
+      for (auto  &it : get_declare_map())
         {
           prm.enter_subsection("oneOf");
           {
@@ -67,10 +101,14 @@ namespace WorldBuilder
                                   "The name which the user has given to the feature.");
                 prm.declare_entry("name", Types::String(""),
                                   "The name which the user has given to the feature.");
-                prm.declare_entry("coordinates", Types::Array(Types::Point<2>(), true),
+                prm.declare_entry("coordinates", Types::Array(Types::Point<2>(), 1),
                                   "An array of 2d Points representing an array of coordinates where the feature is located.");
 
-
+                prm.declare_entry("interpolation",Types::String("global"),
+                                  "What type of interpolation should be used to enforce the minimum points per "
+                                  "distance parameter. Options are global, none, linear, monotone spline and "
+                                  "continuous monotone spline interpolation. If this "
+                                  "value is set to global, the global value for interpolation is used.");
                 WBAssert(it.second != NULL, "No declare entries given.");
                 it.second(prm, parent_name, {});
               }
@@ -86,24 +124,25 @@ namespace WorldBuilder
     }
     void
     Interface::declare_interface_entries(Parameters &prm,
-                                         const CoordinateSystem )
+                                         const CoordinateSystem  /*unused*/)
     {
       this->coordinates = prm.get_vector<Point<2> >("coordinates");
     }
 
     void
-    Interface::get_coordinates(const std::string,
+    Interface::get_coordinates(const std::string & /*unused*/,
                                Parameters &prm,
                                const CoordinateSystem coordinate_system)
     {
-
       coordinates = prm.get_vector<Point<2> >("coordinates");
       if (coordinate_system == CoordinateSystem::spherical)
         std::transform(coordinates.begin(),coordinates.end(), coordinates.begin(),
-                       [](WorldBuilder::Point<2> p) -> WorldBuilder::Point<2> { return p *const_pi / 180.0;});
+                       [](const WorldBuilder::Point<2> &p) -> WorldBuilder::Point<2> { return p *const_pi / 180.0;});
 
 
-      std::string interpolation = this->world->interpolation;
+      // If global is given, we use the global interpolation setting, otherwise use the provided value.
+      const std::string interpolation_type_string = prm.get<std::string>("interpolation") == "global" ? this->world->interpolation : prm.get<std::string>("interpolation");
+      interpolation_type = WorldBuilder::Features::Internal::string_to_interpolation_type(interpolation_type_string);
 
       // the one_dimensional_coordinates is always needed, so fill it.
       original_number_of_coordinates = coordinates.size();
@@ -114,29 +153,38 @@ namespace WorldBuilder
           one_dimensional_coordinates_local[j] = static_cast<double>(j);
         }
 
-      if (interpolation != "none")
+      if (interpolation_type != WorldBuilder::Utilities::InterpolationType::None)
         {
-          WBAssertThrow(interpolation == "linear" || interpolation == "monotone spline",
-                        "For interpolation, linear and monotone spline are the onlyl allowed values.");
+          WBAssert(interpolation_type == WorldBuilder::Utilities::InterpolationType::Linear ||
+                   interpolation_type == WorldBuilder::Utilities::InterpolationType::MonotoneSpline ||
+                   interpolation_type == WorldBuilder::Utilities::InterpolationType::ContinuousMonotoneSpline,
+                   "For interpolation, linear and monotone spline are the only allowed values. "
+                   << "You provided " << interpolation_type_string << ".");
 
           double maximum_distance_between_coordinates = this->world->maximum_distance_between_coordinates *
                                                         (coordinate_system == CoordinateSystem::spherical ? const_pi / 180.0 : 1.0);
 
+
+          // I don't think this is usefull for continuous monotone spline, although it might
+          // help in a spherical case like for the linear case.
+          std::vector<double> x_list(original_number_of_coordinates,0.0);
+          std::vector<double> y_list(original_number_of_coordinates,0.0);
+          std::vector<Point<2> > coordinate_list_local = coordinates;
+          for (size_t j=0; j<original_number_of_coordinates; ++j)
+            {
+              x_list[j] = coordinates[j][0];
+              y_list[j] = coordinates[j][1];
+            }
+
+          x_spline.set_points(one_dimensional_coordinates_local,
+                              x_list,
+                              interpolation_type != WorldBuilder::Utilities::InterpolationType::Linear);
+          y_spline.set_points(one_dimensional_coordinates_local,
+                              y_list,
+                              interpolation_type != WorldBuilder::Utilities::InterpolationType::Linear);
+
           if (maximum_distance_between_coordinates > 0)
             {
-              std::vector<double> x_list(original_number_of_coordinates,0.0);
-              std::vector<double> y_list(original_number_of_coordinates,0.0);
-              std::vector<Point<2> > coordinate_list_local = coordinates;
-              for (size_t j=0; j<original_number_of_coordinates; ++j)
-                {
-                  x_list[j] = coordinates[j][0];
-                  y_list[j] = coordinates[j][1];
-                }
-
-              WorldBuilder::Utilities::interpolation x_spline, y_spline;
-              x_spline.set_points(one_dimensional_coordinates_local, x_list, interpolation == "linear" ? false : true);
-              y_spline.set_points(one_dimensional_coordinates_local, y_list, interpolation == "linear" ? false : true);
-
               size_t additional_parts = 0;
               for (size_t i_plane=0; i_plane<original_number_of_coordinates-1; ++i_plane)
                 {

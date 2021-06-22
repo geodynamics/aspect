@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -80,12 +80,12 @@ namespace WorldBuilder
             void parse_entries(Parameters &prm) override final;
 
             /**
-             * Returns a grains based on the given position, depth in the model,
-             * gravity and current grains.
+             * Returns a grains based on the given position, composition (e.g.
+             * olivine and/or enstatite)depth in the model, gravity and current grains.
              */
             virtual WorldBuilder::grains
             get_grains(const Point<3> &position, const double depth,
-                       const unsigned int grains_number,
+                       const unsigned int composition_number,
                        WorldBuilder::grains grains,
                        const double feature_min_depth,
                        const double feature_max_depth) const override final;

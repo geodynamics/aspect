@@ -29,7 +29,7 @@ execute_process(
 
 # if the return value is !=0 bail out
 if( TEST_RESULT_VAR )
-	message( FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != 0.\n Test ars where: ${TEST_ARGS}\n${TEST_ERROR_VAR}" )
+	message( FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != 0.\n Test args where: ${TEST_ARGS}\n${TEST_ERROR_VAR} \n The test outpup was: \n ${TEST_OUTPUT_VAR}" )
 endif( TEST_RESULT_VAR )
 file(TO_NATIVE_PATH "${TEST_OUTPUT}" TEST_NATIVE_OUTPUT)
 file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)

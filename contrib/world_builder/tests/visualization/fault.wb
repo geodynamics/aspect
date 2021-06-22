@@ -1,5 +1,5 @@
 {
-  "version":"0.3",
+  "version":"0.4",
   "cross section":[[0,50e3],[50e3,0]],
   "features":
   [
@@ -27,7 +27,7 @@
               {"length":200e3, "thickness":[100e3, 50e3], "angle":[0,45]},
               {"length":200e3, "thickness":[50e3], "angle":[45], "temperature models":[{"model":"uniform", "temperature":650}]}
             ],
-            "temperature models":[{"model":"linear", "max distance fault center":100e3, "top temperature":650, "bottom temperature":550}]
+            "temperature models":[{"model":"linear", "max distance fault center":100e3, "center temperature":650, "side temperature":550}]
          }
        ],
        "temperature models":[{"model":"uniform", "temperature":600}],

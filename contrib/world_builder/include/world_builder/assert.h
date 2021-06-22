@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 by the authors of the World Builder code.
+  Copyright (C) 2018-2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -16,6 +16,8 @@
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#ifndef WORLD_BUILDER_ASSERT_H_
+#define WORLD_BUILDER_ASSERT_H_
 
 #include <iostream>
 #include <string>
@@ -60,3 +62,5 @@ namespace WorldBuilder
         } \
     } while (false)
 }
+
+#endif

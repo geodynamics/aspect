@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -93,7 +93,7 @@ namespace WorldBuilder
        * \param has_output_dir A bool indicating whether the world builder may write out information.
        * \param output_dir A string with the path to the directory where it can output information if allowed by has_output_dir
        */
-      void initialize(std::string &filename, bool has_output_dir = false, std::string output_dir = "");
+      void initialize(std::string &filename, bool has_output_dir = false, const std::string &output_dir = "");
 
       /**
        * A generic get function to retrieve setting from the parameter file.
@@ -169,9 +169,9 @@ namespace WorldBuilder
        * \param type The type of entry (e.g. Double, Array, etc.)
        * \param documentation A string containing information about this parameter.
        */
-      void declare_entry(const std::string name,
+      void declare_entry(const std::string &name,
                          const Types::Interface &type,
-                         const std::string documentation);
+                         const std::string &documentation);
 
 
       /**
@@ -181,7 +181,7 @@ namespace WorldBuilder
        * @see path
        * @see leave_subsection()
        */
-      void enter_subsection(const std::string name);
+      void enter_subsection(const std::string &name);
 
       /**
        * This function is used to leave a subsection by removing the last
@@ -201,7 +201,7 @@ namespace WorldBuilder
        * @param extra_declarations A vector containing extra declarations common to all plugins in this group. Default value is empty.
        */
       void
-      declare_model_entries(const std::string model_group_name,
+      declare_model_entries(const std::string &model_group_name,
                             const std::string &parent_name,
                             std::map<std::string, void ( *)(Parameters &,const std::string &)> declare_map,
                             const std::vector<std::string> &required_entries = {},

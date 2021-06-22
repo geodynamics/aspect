@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -50,10 +50,10 @@ namespace WorldBuilder
         }
 
         Uniform::~Uniform()
-        { }
+          = default;
 
         void
-        Uniform::declare_entries(Parameters &prm, const std::string &)
+        Uniform::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
 
           // Add temperature to the required parameters.
@@ -61,10 +61,10 @@ namespace WorldBuilder
 
 
           prm.declare_entry("min distance fault center", Types::Double(0),
-                            "todo The depth in meters from which the composition of this feature is present.");
+                            "The distance in meters from which the composition of this feature is present.");
 
           prm.declare_entry("max distance fault center", Types::Double(std::numeric_limits<double>::max()),
-                            "todo The depth in meters to which the composition of this feature is present.");
+                            "The distance in meters to which the composition of this feature is present.");
 
           prm.declare_entry("temperature", Types::Double(293.15),
                             "The temperature in degree Kelvin which this feature should have");
@@ -82,12 +82,12 @@ namespace WorldBuilder
 
 
         double
-        Uniform::get_temperature(const Point<3> &,
-                                 const double ,
-                                 const double ,
+        Uniform::get_temperature(const Point<3> & /*position*/,
+                                 const double  /*depth*/,
+                                 const double  /*gravity*/,
                                  double temperature_,
-                                 const double ,
-                                 const double ,
+                                 const double  /*feature_min_depth*/,
+                                 const double  /*feature_max_depth*/,
                                  const std::map<std::string,double> &distance_from_plane) const
         {
 

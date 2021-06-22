@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -26,8 +26,7 @@
 #include <world_builder/world.h>
 #include <world_builder/parameters.h>
 #include <world_builder/point.h>
-
-using namespace std;
+#include <world_builder/utilities.h>
 
 namespace WorldBuilder
 {
@@ -67,7 +66,7 @@ namespace WorldBuilder
          * helper function to parse coordinates.
          */
         void
-        get_coordinates(const std::string name,
+        get_coordinates(const std::string &name,
                         Parameters &prm,
                         const CoordinateSystem coordinate_system);
 
@@ -147,10 +146,15 @@ namespace WorldBuilder
         std::string name;
 
         /**
+         * The type of interpolation used to get the line position between the points.
+         */
+        WorldBuilder::Utilities::InterpolationType interpolation_type;
+
+        /**
          * number of original coordinates, before adding
          * more automatically.
          */
-        size_t original_number_of_coordinates;
+        std::size_t original_number_of_coordinates;
 
         /**
          * The coordinates at the surface of the feature
@@ -167,6 +171,11 @@ namespace WorldBuilder
          * is allowed, but {0,2,3,4} is not.
          */
         std::vector<double> one_dimensional_coordinates;
+
+        /**
+         * The x and y spline
+         */
+        WorldBuilder::Utilities::interpolation x_spline, y_spline;
 
 
         /**

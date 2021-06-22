@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -99,7 +99,7 @@ namespace WorldBuilder
          * The coordinate that represents the 'surface' directions in the
          * chosen coordinate system.
          */
-        const std::array<double,2> get_surface_coordinates() const;
+        std::array<double,2> get_surface_coordinates() const;
 
         /**
          * The coordinate that represents the 'depth' direction in the chosen
@@ -174,7 +174,7 @@ namespace WorldBuilder
      * Convert point to array
      */
     template<int dim>
-    const std::array<double,dim> convert_point_to_array(const Point<dim> &point);
+    std::array<double,dim> convert_point_to_array(const Point<dim> &point);
 
     /**
      * Converts a string to a double
@@ -202,49 +202,16 @@ namespace WorldBuilder
     Point<3> cross_product(const Point<3> &a, const Point<3> &b);
 
     /**
-     * Computes the distance of a point to a curved plane.
-     * TODO: add more info on how this works/is implemented.
-     * \param point This is the cartesian point of which we want to know the
-     * distance to the curved planes
-     * \param reference_point This is a 2d point in natural coordinates at the
-     * surface which the curved planes dip towards. Natural coordinates are in
-     * cartesian (x,y,z) in meters and in spherical radius in meters and longitude
-     * and latitude in radians.
-     * \param point_list This is a vector of 2d Points in natural coordinates at the
-     * surface which define the line along the surface at which the curved planes
-     * start. Natural coordinates are in cartesian (x,y,z) in meters and in spherical
-     * radius in meters and longitude and latitude in radians.
-     * \param plane_segment_lengths This is a vector of vectors of doubles. It contains
-     * the length of every segment at point in the point_list (in the same order as
-     * the point_list.
-     * \param plane_segment_angles This is a vector of vectors of 2d points. It contains
-     * the begin and end angle of every segment at point in the point_list (in the same
-     * order as the point_list.
-     * \param start_depth This value contains the depth at which the plane starts. This
-     * means that the start_depth effectively becomes the surface for this slab.
-     * \param coordinate_system This is a reference to the coordinate system of the
-     * World Builder. This is used to convert cartesian to natural coordinates and back.
-     * \param only_positive This value deterines whether only the the part below the
-     * plane should count as distance or both sides of the plane. It is called only_positive
-     * because the area below the plane, the distance is positve, and above the plane the
-     * distance is negative.
-     * \param global_x_list This is a list of one dimensional coorindates, with zero or the
-     * amount of coordinates entries, used for interpolation. An empty list is interpretated
-     * as a list filled with {0,1,2,...,number of coordinates}. Filling this list with other
-     * values changes the returned section fraction. It allows for, for example, adding
-     * extra coordinates automatically, and still reference the user provided coordinates by
-     * the original number. Note that no whole numbers may be skiped. So for a list of 4 points,
-     * {0,0.5,1,2} is allowed, but {0,2,3,4} is not.
+     * Enum class for interolation type
      */
-    std::map<std::string,double> distance_point_from_curved_planes(const Point<3> &point,
-                                                                   const Point<2> &reference_point,
-                                                                   const std::vector<Point<2> > &point_list,
-                                                                   const std::vector<std::vector<double> > &plane_segment_lengths,
-                                                                   const std::vector<std::vector<Point<2> > > &plane_segment_angles,
-                                                                   const double start_depth,
-                                                                   const std::unique_ptr<CoordinateSystems::Interface> &coordinate_system,
-                                                                   const bool only_positive,
-                                                                   std::vector<double> global_x_list = {});
+    enum class InterpolationType
+    {
+      None,
+      Linear,
+      MonotoneSpline,
+      ContinuousMonotoneSpline,
+      Invalid,
+    };
 
     /**
      * Class for linear and monotone spline interpolation
@@ -265,7 +232,7 @@ namespace WorldBuilder
         /**
          * Evaluate at point @p x.
          */
-        double operator() (double x) const;
+        double operator() (const double x) const;
 
       private:
         /**
@@ -281,6 +248,60 @@ namespace WorldBuilder
          */
         std::vector<double> m_a, m_b, m_c, m_y;
     };
+
+    /**
+     * Computes the distance of a point to a curved plane.
+     * TODO: add more info on how this works/is implemented.
+     * \param point This is the cartesian point of which we want to know the
+     * distance to the curved planes
+     * \param reference_point This is a 2d point in natural coordinates at the
+     * surface which the curved planes dip towards. Natural coordinates are in
+     * cartesian (x,y,z) in meters and in spherical radius in meters and longitude
+     * and latitude in radians.
+     * \param point_list This is a vector of 2d Points in natural coordinates at the
+     * surface which define the line along the surface at which the curved planes
+     * start. Natural coordinates are in cartesian (x,y,z) in meters and in spherical
+     * radius in meters and longitude and latitude in radians.
+     * \param plane_segment_lengths This is a vector of vectors of doubles. It contains
+     * the length of every segment at point in the point_list (in the same order as
+     * the point_list.
+     * \param plane_segment_angles This is a vector of vectors of 2d points. It contains
+     * the begin and end angle of every segment at point in the point_list (in the same
+     * order as the point_list.
+     * \param start_radius This value contains the radius or height from bottom of the box
+     * at which the plane starts. This means that the start_radius effectively becomes the
+     * surface for this slab.
+     * \param coordinate_system This is a reference to the coordinate system of the
+     * World Builder. This is used to convert cartesian to natural coordinates and back.
+     * \param only_positive This value deterines whether only the the part below the
+     * plane should count as distance or both sides of the plane. It is called only_positive
+     * because the area below the plane, the distance is positve, and above the plane the
+     * distance is negative.
+     * \param interpolation_type This value determines what interpolation type should be used
+     * when determining the location with respect to the curved plane.
+     * \param spline_x the spline representing the x coordinate.
+     * \param spline_y the spline representing the y coordinate.
+     * \param global_x_list This is a list of one dimensional coorindates, with zero or the
+     * amount of coordinates entries, used for interpolation. An empty list is interpretated
+     * as a list filled with {0,1,2,...,number of coordinates}. Filling this list with other
+     * values changes the returned section fraction. It allows for, for example, adding
+     * extra coordinates automatically, and still reference the user provided coordinates by
+     * the original number. Note that no whole numbers may be skiped. So for a list of 4 points,
+     * {0,0.5,1,2} is allowed, but {0,2,3,4} is not.
+     */
+    std::map<std::string,double> distance_point_from_curved_planes(const Point<3> &point,
+                                                                   const Point<2> &reference_point,
+                                                                   const std::vector<Point<2> > &point_list,
+                                                                   const std::vector<std::vector<double> > &plane_segment_lengths,
+                                                                   const std::vector<std::vector<Point<2> > > &plane_segment_angles,
+                                                                   const double start_radius,
+                                                                   const std::unique_ptr<CoordinateSystems::Interface> &coordinate_system,
+                                                                   const bool only_positive,
+                                                                   const InterpolationType interpolation_type,
+                                                                   const interpolation &x_spline,
+                                                                   const interpolation &y_spline,
+                                                                   std::vector<double> global_x_list = {});
+
 
 
     /**

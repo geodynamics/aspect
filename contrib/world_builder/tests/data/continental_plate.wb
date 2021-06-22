@@ -1,5 +1,5 @@
 {
-  "version":"0.3",
+  "version":"0.4",
   "cross section": [[100e3,100e3],[400e3,500e3]],
   "coordinate system":{"model":"cartesian"},
   "features":
@@ -41,7 +41,7 @@
      ]},
 
     {"model":"continental plate", "name":"Sixth continental plate", "max depth":250e3, "coordinates":[[1250e3,-1e3],[1250e3,500e3],[1750e3,500e3],[1750e3,-1e3]],
-     "temperature models":[{"model":"linear", "max depth":250e3, "top temperature":10, "bottom temperature":50}],
+     "temperature models":[{"model":"linear", "max depth":249e3, "top temperature":-1, "bottom temperature":1700}],
      "composition models":[{"model":"uniform", "max depth":75e3, "compositions":[6,7], "fractions":[0.25,0.75]},
                            {"model":"uniform", "min depth":75e3, "max depth":150e3, "compositions":[7]},
                            {"model":"uniform", "min depth":150e3, "max depth":225e3, "compositions":[8]}]}

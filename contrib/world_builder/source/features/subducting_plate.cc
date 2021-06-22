@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -39,7 +39,7 @@
 
 #include "glm/glm.h"
 
-
+using namespace std;
 
 namespace WorldBuilder
 {
@@ -56,7 +56,7 @@ namespace WorldBuilder
     }
 
     SubductingPlate::~SubductingPlate()
-    { }
+      = default;
 
 
 
@@ -172,19 +172,19 @@ namespace WorldBuilder
                 std::vector<std::shared_ptr<Features::SubductingPlateModels::Composition::Interface>  > local_default_composition_models;
                 std::vector<std::shared_ptr<Features::SubductingPlateModels::Grains::Interface>  > local_default_grains_models;
 
-                if (prm.get_shared_pointers<Features::SubductingPlateModels::Temperature::Interface>("temperature models", local_default_temperature_models) == false)
+                if (!prm.get_shared_pointers<Features::SubductingPlateModels::Temperature::Interface>("temperature models", local_default_temperature_models))
                   {
                     // no local temperature model, use global default
                     local_default_temperature_models = default_temperature_models;
                   }
 
-                if (prm.get_shared_pointers<Features::SubductingPlateModels::Composition::Interface>("composition models", local_default_composition_models) == false)
+                if (!prm.get_shared_pointers<Features::SubductingPlateModels::Composition::Interface>("composition models", local_default_composition_models))
                   {
                     // no local composition model, use global default
                     local_default_composition_models = default_composition_models;
                   }
 
-                if (prm.get_shared_pointers<Features::SubductingPlateModels::Grains::Interface>("grains models", local_default_grains_models) == false)
+                if (!prm.get_shared_pointers<Features::SubductingPlateModels::Grains::Interface>("grains models", local_default_grains_models))
                   {
                     // no local composition model, use global default
                     local_default_grains_models = default_grains_models;
@@ -349,6 +349,9 @@ namespace WorldBuilder
                                  const double gravity_norm,
                                  double temperature) const
     {
+
+
+
       WorldBuilder::Utilities::NaturalCoordinate natural_coordinate = WorldBuilder::Utilities::NaturalCoordinate(position,
                                                                       *(world->parameters.coordinate_system));
 
@@ -386,6 +389,9 @@ namespace WorldBuilder
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        false,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -483,6 +489,7 @@ namespace WorldBuilder
                 }
             }
         }
+
       return temperature;
     }
 
@@ -511,6 +518,9 @@ namespace WorldBuilder
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        false,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -524,8 +534,6 @@ namespace WorldBuilder
 
           if (abs(distance_from_plane) < INFINITY || (distance_along_plane) < INFINITY)
             {
-              // We want to do both section (horizontal) and segment (vertical) interpolation.
-
               // We want to do both section (horizontal) and segment (vertical) interpolation.
               // first for thickness
               const double thickness_up = slab_segment_thickness[current_section][current_segment][0]
@@ -568,7 +576,6 @@ namespace WorldBuilder
                   distance_along_plane <= max_slab_length)
                 {
                   // Inside the slab!
-
                   double composition_current_section = composition;
                   double composition_next_section = composition;
 
@@ -643,6 +650,9 @@ namespace WorldBuilder
                                                                        starting_radius,
                                                                        this->world->parameters.coordinate_system,
                                                                        false,
+                                                                       interpolation_type,
+                                                                       this->x_spline,
+                                                                       this->y_spline,
                                                                        one_dimensional_coordinates);
 
           const double distance_from_plane = distance_from_planes["distanceFromPlane"];
@@ -656,8 +666,6 @@ namespace WorldBuilder
 
           if (abs(distance_from_plane) < INFINITY || (distance_along_plane) < INFINITY)
             {
-              // We want to do both section (horizontal) and segment (vertical) interpolation.
-
               // We want to do both section (horizontal) and segment (vertical) interpolation.
               // first for thickness
               const double thickness_up = slab_segment_thickness[current_section][current_segment][0]

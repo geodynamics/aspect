@@ -10,6 +10,7 @@
 "double array" :[25.2,26.3,27.4],
 "string array" :["abc","def"],
 "point<2> array": [[10,11], [12,13], [14,15]],
+"point<2> array nan": [[10,"not a number"], [12,13], [14,15]],
 "point<3> array": [[20,21,22], [23,24,25], [26,27,28]],
 "vector of 3d arrays nan": [[20,21,"not a number"], [23,24,25], [26,27,28]],
 "vector of 3x3 arrays":[[[0,1,2],[3,4,5],[6,7,8]],[[9,10,11],[12,13,14],[15,16,17]]],

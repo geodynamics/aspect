@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -20,14 +20,16 @@
 #include <world_builder/assert.h>
 #include <world_builder/parameters.h>
 
+#include <utility>
+
 namespace WorldBuilder
 {
   namespace Types
   {
-    Object::Object(const std::vector<std::string> required_,
+    Object::Object(std::vector<std::string> required_,
                    const bool additional_properties_)
       :
-      required(required_),
+      required(std::move(required_)),
       additional_properties(additional_properties_)
     {
       this->type_name = Types::type::Object;
@@ -42,17 +44,17 @@ namespace WorldBuilder
     }
 
     Object::~Object ()
-    {}
+      = default;
 
     void
     Object::write_schema(Parameters &prm,
-                         const std::string &,
+                         const std::string & /*name*/,
                          const std::string &documentation) const
     {
       // The object has to be defined just above the properties section.
       // because it is very inconvenient to make this object there, we
       // take care here to do that.
-      WBAssertThrow(prm.path.size() != 0 && prm.path.back() == "properties",
+      WBAssertThrow(!prm.path.empty() && prm.path.back() == "properties",
                     "The Object must be defined in a subsection called properties.");
       prm.leave_subsection();
       {
@@ -64,11 +66,11 @@ namespace WorldBuilder
         Pointer((path + "/documentation").c_str()).Set(declarations,documentation.c_str());
         Pointer((path + "/additionalProperties").c_str()).Set(declarations,additional_properties);
 
-        if (required.size() > 0)
+        if (!required.empty())
           {
             for (unsigned int i = 0; i < required.size(); ++i)
               {
-                if (i == 0 && Pointer((path + "/required").c_str()).Get(declarations) == NULL)
+                if (i == 0 && Pointer((path + "/required").c_str()).Get(declarations) == nullptr)
                   {
                     // The required array doesn't exist yet, so we create it and fill it.
                     Pointer((path + "/required/0").c_str()).Create(declarations);

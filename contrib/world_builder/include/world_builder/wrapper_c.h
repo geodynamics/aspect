@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -20,43 +20,51 @@
 #ifndef _world_builder_wrapper_c_h
 #define _world_builder_wrapper_c_h
 
+#include <stdbool.h>
+
+#ifdef __cplusplus
 extern "C" {
-  /**
-   * This function creates an object of the world builder and returns a pointer
-   * to it. This pointer can then be used to call the temperature and composition
-   * functions. When done call the release world function to destroy the object.
-   */
-  void create_world(void **ptr_ptr_world, const char *world_builder_file, bool *has_output_dir = NULL, const char *output_dir = NULL, const unsigned long random_number_seed = 1.0);
+#endif
 
-  /**
-   * This function return the temperature at a specific location given x, z, depth and
-   * gravity.
-   */
-  void temperature_2d(void *ptr_ptr_world, double x, double z, double depth, double gravity, double *temperature);
+/**
+ * This function creates an object of the world builder and returns a pointer
+ * to it. This pointer can then be used to call the temperature and composition
+ * functions. When done call the release world function to destroy the object.
+ */
+void create_world(void **ptr_ptr_world, const char *world_builder_file, const bool *has_output_dir, const char *output_dir, const unsigned long random_number_seed);
 
-  /**
-   * This function return the temperature at a specific location given x, y, z, depth and
-   * gravity.
-   */
-  void temperature_3d(void *ptr_ptr_world, double x, double y, double z, double depth, double gravity, double *temperature);
+/**
+ * This function return the temperature at a specific location given x, z, depth and
+ * gravity.
+ */
+void temperature_2d(void *ptr_ptr_world, double x, double z, double depth, double gravity, double *temperature);
 
-  /**
-   * This function return the composition at a specific location given x, z, depth and
-   * composition number.
-   */
-  void composition_2d(void *ptr_ptr_world, double x, double z, double depth, unsigned int composition_number, double *composition);
+/**
+ * This function return the temperature at a specific location given x, y, z, depth and
+ * gravity.
+ */
+void temperature_3d(void *ptr_ptr_world, double x, double y, double z, double depth, double gravity, double *temperature);
 
-  /**
-   * This function return the composition at a specific location given x, y, z, depth and
-   * composition number.
-   */
-  void composition_3d(void *ptr_ptr_world, double x, double y, double z, double depth, unsigned int composition_number, double *composition);
+/**
+ * This function return the composition at a specific location given x, z, depth and
+ * composition number.
+ */
+void composition_2d(void *ptr_ptr_world, double x, double z, double depth, unsigned int composition_number, double *composition);
 
-  /**
-   * The destructor for the world builder class. Call this function when done with the
-   * world builder.
-   */
-  void release_world(void *ptr_ptr_world);
+/**
+ * This function return the composition at a specific location given x, y, z, depth and
+ * composition number.
+ */
+void composition_3d(void *ptr_ptr_world, double x, double y, double z, double depth, unsigned int composition_number, double *composition);
+
+/**
+ * The destructor for the world builder class. Call this function when done with the
+ * world builder.
+ */
+void release_world(void *ptr_ptr_world);
+
+#ifdef __cplusplus
 }
+#endif
 
 #endif

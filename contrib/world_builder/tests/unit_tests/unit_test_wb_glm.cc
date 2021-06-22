@@ -28,7 +28,6 @@
 
 using namespace WorldBuilder;
 
-using Catch::Matchers::Contains;
 
 /**
  * Compare the given two std::array<double,3> entries with an epsilon (using Catch::Approx)

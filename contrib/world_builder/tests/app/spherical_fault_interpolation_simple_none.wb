@@ -1,0 +1,37 @@
+{
+  "version":"0.4",
+  "coordinate system":{"model":"spherical","depth method":"starting point"},
+  "features":
+  [
+    {
+       "model":"fault", "name":"Big in model slab", "dip point":[-10,10],
+       "coordinates":[[0,0],[10,10],[25,15],[35,35]], 
+       "segments":
+       [
+         {"length":450e3, "thickness":[100e3], "angle":[20]},
+         {"length":450e3, "thickness":[100e3], "angle":[40]}
+       ],
+       "temperature models":[{"model":"uniform", "temperature":600}]
+    },
+    {
+       "model":"fault", "name":"Big out model slab", "dip point":[-10,10],
+       "coordinates":[[120,120],[130,130],[145,135],[165,165]], 
+       "segments":
+       [
+         {"length":450e3, "thickness":[100e3], "angle":[20]},
+         {"length":450e3, "thickness":[100e3], "angle":[40]}
+       ],
+       "temperature models":[{"model":"uniform", "temperature":600}]
+    },
+    {
+       "model":"fault", "name":"Big out model slab", "dip point":[10,-10],
+       "coordinates":[[120,120],[130,130],[145,135],[165,165]], 
+       "segments":
+       [
+         {"length":450e3, "thickness":[100e3], "angle":[20]},
+         {"length":450e3, "thickness":[100e3], "angle":[40]}
+       ],
+       "temperature models":[{"model":"uniform", "temperature":600}]
+    }
+  ]
+}

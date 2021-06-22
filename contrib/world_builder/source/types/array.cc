@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -53,7 +53,7 @@ namespace WorldBuilder
     }
 
     Array::~Array ()
-    {}
+      = default;
 
 
     void
@@ -73,7 +73,7 @@ namespace WorldBuilder
 
       prm.enter_subsection(name);
       {
-        WBAssertThrow(this->inner_type_ptr != NULL, "Internal error, inner pointer is NULL.");
+        WBAssertThrow(this->inner_type_ptr != nullptr, "Internal error, inner pointer is NULL.");
         this->inner_type_ptr->write_schema(prm, "items", "");
       }
       prm.leave_subsection();

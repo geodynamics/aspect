@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -54,10 +54,10 @@ namespace WorldBuilder
         }
 
         PlateModel::~PlateModel()
-        { }
+          = default;
 
         void
-        PlateModel::declare_entries(Parameters &prm, const std::string &)
+        PlateModel::declare_entries(Parameters &prm, const std::string & /*unused*/)
         {
 
           // Add temperature to the required parameters.
@@ -97,9 +97,9 @@ namespace WorldBuilder
           ridge_coordinates = prm.get_vector<Point<2> >("ridge coordinates");
 
           const double dtr = prm.coordinate_system->natural_coordinate_system() == spherical ? const_pi / 180.0 : 1.0;
-          for (unsigned int i = 0; i < ridge_coordinates.size(); ++i)
+          for (auto &ridge_coordinate : ridge_coordinates)
             {
-              ridge_coordinates[i] *= dtr;
+              ridge_coordinate *= dtr;
             }
         }
 
@@ -109,8 +109,8 @@ namespace WorldBuilder
                                     const double depth,
                                     const double gravity_norm,
                                     double temperature_,
-                                    const double,
-                                    const double) const
+                                    const double /*feature_min_depth*/,
+                                    const double /*feature_max_depth*/) const
         {
           if (depth <= max_depth && depth >= min_depth)
             {

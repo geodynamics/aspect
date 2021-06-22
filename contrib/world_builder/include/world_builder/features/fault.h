@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -86,9 +86,9 @@ namespace WorldBuilder
                            double composition_value) const override final;
 
         /**
-         * Returns a grains (rotation matrix and grain size)
-         * based on the given position, depth in the model,
-         * the composition which is being requested and the current value
+         * Returns a grains (rotation matrix and grain size) based on the
+         * given position, depth in the model, the composition (e.g. representing
+         * olvine and/or enstatite) which is being requested and the current value
          * of that composition at this location and depth.
          */
         virtual
@@ -96,7 +96,7 @@ namespace WorldBuilder
         grains(const Point<3> &position,
                const double depth,
                const unsigned int composition_number,
-               WorldBuilder::grains value) const override final;
+               WorldBuilder::grains grains) const override final;
 
 
 
@@ -151,13 +151,13 @@ namespace WorldBuilder
          */
         WorldBuilder::Point<2> reference_point;
 
-        std::vector<std::vector<double> > slab_segment_lengths;
-        std::vector<std::vector<Point<2> > > slab_segment_thickness;
-        std::vector<std::vector<Point<2> > > slab_segment_top_truncation;
-        std::vector<std::vector<Point<2> > > slab_segment_angles;
-        std::vector<double> total_slab_length;
-        double maximum_total_slab_length;
-        double maximum_slab_thickness;
+        std::vector<std::vector<double> > fault_segment_lengths;
+        std::vector<std::vector<Point<2> > > fault_segment_thickness;
+        std::vector<std::vector<Point<2> > > fault_segment_top_truncation;
+        std::vector<std::vector<Point<2> > > fault_segment_angles;
+        std::vector<double> total_fault_length;
+        double maximum_total_fault_length;
+        double maximum_fault_thickness;
 
 
     };

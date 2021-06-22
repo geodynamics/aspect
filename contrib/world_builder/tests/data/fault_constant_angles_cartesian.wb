@@ -1,5 +1,5 @@
 {
-"version":"0.3",
+"version":"0.4",
 "cross section": [[100e3,100e3],[400e3,500e3]],
 "coordinate system":{"model":"cartesian"},
 "features":
@@ -26,7 +26,7 @@
            {"coordinate":1, "segments":[{"length":200e3, "thickness":[100e3,100e3], "angle":[45]}, {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3], "angle":[30]}]},
            {"coordinate":2, "segments":[{"length":200e3, "thickness":[200e3,100e3], "angle":[30]}, {"length":100e3, "thickness":[100e3], "angle":[30]}, {"length":150e3, "thickness":[100e3,0], "angle":[70]}]}
          ],
-         "temperature models":[{"model":"linear", "max distance fault center":100e3}],
+         "temperature models":[{"model":"linear", "max distance fault center":25e3},{"model":"linear", "min distance fault center":25e3, "max distance fault center":50e3, "center temperature":-1, "side temperature":1800}],
          "composition models":[{"model":"uniform", "compositions":[0],"max distance fault center":16.5e3},
                                {"model":"uniform", "compositions":[1], "min distance fault center":16.5e3, "max distance fault center":33e3},
                                {"model":"uniform", "compositions":[2,3], "fractions":[0.25,0.75], "min distance fault center":33e3, "max distance fault center":49.5e3}],

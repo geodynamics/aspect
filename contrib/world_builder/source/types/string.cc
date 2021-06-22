@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2018 - 2020 by the authors of the World Builder code.
+  Copyright (C) 2018 - 2021 by the authors of the World Builder code.
 
   This file is part of the World Builder.
 
@@ -20,24 +20,26 @@
 #include <world_builder/assert.h>
 #include <world_builder/parameters.h>
 
+#include <utility>
+
 namespace WorldBuilder
 {
   namespace Types
   {
 
-    String::String(const std::string default_value_)
+    String::String(std::string default_value_)
       :
-      default_value(default_value_),
+      default_value(std::move(default_value_)),
       description(""),
       restricted_values({})
     {
       this->type_name = Types::type::String;
     }
 
-    String::String(const std::string default_value_,
-                   const std::string restricted_value_)
+    String::String(std::string default_value_,
+                   const std::string &restricted_value_)
       :
-      default_value(default_value_),
+      default_value(std::move(default_value_)),
       restricted_values({restricted_value_})
     {
       this->type_name = Types::type::String;
@@ -52,11 +54,11 @@ namespace WorldBuilder
     }
 
 
-    String::String(const std::string default_value_,
-                   const std::vector<std::string> &restricted_values_)
+    String::String(std::string default_value_,
+                   std::vector<std::string> restricted_values_)
       :
-      default_value(default_value_),
-      restricted_values(restricted_values_)
+      default_value(std::move(default_value_)),
+      restricted_values(std::move(restricted_values_))
     {
       this->type_name = Types::type::String;
     }
@@ -74,15 +76,15 @@ namespace WorldBuilder
                    std::string default_value_,
                    std::string description_)
       :
-      value(value_),
-      default_value(default_value_),
-      description(description_)
+      value(std::move(value_)),
+      default_value(std::move(default_value_)),
+      description(std::move(description_))
     {
       this->type_name = Types::type::String;
     }
 
     String::~String ()
-    {}
+      = default;
 
     void
     String::write_schema(Parameters &prm,
@@ -97,9 +99,9 @@ namespace WorldBuilder
       Pointer((base + "/documentation").c_str()).Set(declarations,documentation.c_str());
       for (unsigned int i = 0; i < restricted_values.size(); ++i)
         {
-          if (restricted_values[i] != "")
+          if (!restricted_values[i].empty())
             {
-              if (i == 0 && Pointer((base + "/enum").c_str()).Get(declarations) == NULL)
+              if (i == 0 && Pointer((base + "/enum").c_str()).Get(declarations) == nullptr)
                 {
                   // The enum array doesn't exist yet, so we create it and fill it.
                   Pointer((base + "/enum/0").c_str()).Create(declarations);

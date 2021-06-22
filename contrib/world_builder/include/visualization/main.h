@@ -17,6 +17,9 @@
    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef WORLD_BUILDER_VISUALIZATION_MAIN_H_
+#define WORLD_BUILDER_VISUALIZATION_MAIN_H_
+
 void project_on_sphere(double, double &, double &, double &);
 
 void lay_points(double x1, double y1, double z1,
@@ -30,3 +33,4 @@ std::vector<std::string> get_command_line_options_vector(int argc, char **argv);
 
 bool find_command_line_option(char **begin, char **end, const std::string &option);
 
+#endif

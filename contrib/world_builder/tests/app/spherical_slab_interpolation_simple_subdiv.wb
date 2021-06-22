@@ -1,0 +1,19 @@
+{
+  "version":"0.4",
+  "coordinate system":{"model":"spherical","depth method":"starting point"},
+  "interpolation":"monotone spline",
+  "maximum distance between coordinates":0.1,
+  "features":
+  [
+    {
+       "model":"subducting plate", "name":"Antilles slab", "dip point":[-10,10],
+       "coordinates":[[0,0],[10,10],[25,15],[35,35]], 
+       "segments":
+       [
+         {"length":450e3, "thickness":[100e3], "angle":[20]},
+         {"length":450e3, "thickness":[100e3], "angle":[40]}
+       ],
+       "temperature models":[{"model":"uniform", "temperature":600}]
+    }
+  ]
+}
