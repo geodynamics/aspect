@@ -391,10 +391,18 @@ namespace aspect
                 else if ((particle_load_balancing & ParticleLoadBalancing::remove_particles) &&
                          (n_particles_in_cell > max_particles_per_cell))
                   {
+                    const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
+
+#if DEAL_II_VERSION_GTE(10,0,0)
+                    for (unsigned int i=0; i < n_particles_to_remove; ++i)
+                      {
+                        auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
+                        std::advance(particle_to_remove, random_number_generator() % particle_handler->n_particles_in_cell(cell));
+                        particle_handler->remove_particle(particle_to_remove);
+                      }
+#else
                     const boost::iterator_range<typename ParticleHandler<dim>::particle_iterator> particles_in_cell
                       = particle_handler->particles_in_cell(cell);
-
-                    const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
                     std::set<unsigned int> particle_ids_to_remove;
                     while (particle_ids_to_remove.size() < n_particles_to_remove)
@@ -411,9 +419,6 @@ namespace aspect
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
-#if DEAL_II_VERSION_GTE(10,0,0)
-                    particle_handler->remove_particles(particles_to_remove);
-#else
                     for (const auto &particle : particles_to_remove)
                       {
                         particle_handler->remove_particle(particle);
