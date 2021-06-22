@@ -280,7 +280,16 @@ namespace aspect
                                                   "The current postprocessor allows to output a (potentially "
                                                   "large) subset of all of the information provided by "
                                                   "material models at once, with just a single material model "
-                                                  "evaluation per output point.")
+                                                  "evaluation per output point."
+                                                  "\n\n"
+                                                  "In almost all places inside \\aspect{}, the program "
+                                                  "can use ``averaged'' material properties, for example for "
+                                                  "the assembly of matrices and right hand side vectors. To "
+                                                  "accurately reflect the material parameters used internally, "
+                                                  "this visualization postprocessor averages in the same way "
+                                                  "as is used to do the assembly, and consequently the "
+                                                  "graphical output will reflect not pointwise properties, "
+                                                  "but averaged properties.")
     }
   }
 }
