@@ -104,7 +104,7 @@ namespace aspect
       public:
         void initialize() override
         {
-          reference_viscosity_coordinates = reference_viscosity_profile->get_coordinates();
+          reference_viscosity_coordinates = reference_viscosity_profile->get_interpolation_point_coordinates();
         }
 
         void update() override
