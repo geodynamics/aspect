@@ -169,42 +169,103 @@ namespace aspect
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
-                                      std::vector<Table<dim,double>> &&data_table)
+                                      std::vector<Table<dim,double>> &&data_table,
+                                      const MPI_Comm &mpi_communicator,
+                                      const unsigned int root_process)
     {
-      Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
-      for (unsigned int d=0; d<dim; ++d)
+#if DEAL_II_VERSION_GTE(9,3,0)
+      const bool supports_shared_data = true;
+#else
+      const bool supports_shared_data = false;
+#endif
+
+      // If this is the root process, or if we don't support data sharing,
+      // then set up the various member variables we need to compute
+      // from the input data
+      if ((supports_shared_data == false)
+          ||
+          ((supports_shared_data == true)
+           &&
+           (root_process != numbers::invalid_unsigned_int)
+           &&
+           (Utilities::MPI::this_mpi_process(mpi_communicator) == root_process)))
         {
-          this->coordinate_values[d] = std::move(coordinate_values_[d]);
-          AssertThrow(this->coordinate_values[d].size()>1,
-                      ExcMessage("Error: At least 2 entries per coordinate direction are required."));
-          table_points[d] = this->coordinate_values[d].size();
+          Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              this->coordinate_values[d] = std::move(coordinate_values_[d]);
+              AssertThrow(this->coordinate_values[d].size()>1,
+                          ExcMessage("Error: At least 2 entries per coordinate direction are required."));
+              table_points[d] = this->coordinate_values[d].size();
+            }
+
+          components = column_names.size();
+          data_component_names = column_names;
+          Assert(data_table.size() == components,
+                 ExcMessage("Error: Incorrect number of columns specified."));
+          for (unsigned int c=0; c<components; ++c)
+            Assert(data_table[c].size() == table_points,
+                   ExcMessage("Error: One of the data tables has an incorrect size."));
+
+          // compute maximum_component_value for each component:
+          maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
+          for (unsigned int c=0; c<components; ++c)
+            {
+              const unsigned int n_elements = data_table[c].n_elements();
+              for (unsigned int idx=0; idx<n_elements; ++idx)
+                maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
+                                                        compute_table_indices(table_points, idx)));
+            }
+
+          // In case the data is specified on a grid that is equidistant
+          // in each coordinate direction, we only need to store
+          // (besides the data) the number of intervals in each direction and
+          // the begin- and end-points of the coordinates.
+          // In case the grid is not equidistant, we need to keep
+          // all the coordinates in each direction, which is more costly.
+          coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
         }
 
-      components = column_names.size();
-      data_component_names = column_names;
+      // If deal.II is new enough to support sharing data, and if the
+      // caller of this function has actually requested this, then we have
+      // set up member variables on the root process, but not on any of
+      // the other processes. Broadcast the data to the remaining
+      // processes
+      if ((supports_shared_data == true)
+          &&
+          (root_process != numbers::invalid_unsigned_int))
+        {
+#if DEAL_II_VERSION_GTE(9,3,0)
+          coordinate_values                 = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         coordinate_values,
+                                                                         root_process);
+          components                        = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         components,
+                                                                         root_process);
+          data_component_names              = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         data_component_names,
+                                                                         root_process);
+          maximum_component_value           = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         maximum_component_value,
+                                                                         root_process);
+          coordinate_values_are_equidistant = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         coordinate_values_are_equidistant,
+                                                                         root_process);
+
+          // We can then also prepare the data tables for sharing between
+          // processes
+          for (unsigned int c = 0; c < components; ++c)
+            data_table[c].replicate_across_communicator (mpi_communicator,
+                                                         root_process);
+#endif
+        }
+
       Assert(data_table.size() == components,
              ExcMessage("Error: Incorrect number of columns specified."));
       for (unsigned int c=0; c<components; ++c)
         Assert(data_table[c].size() == table_points,
                ExcMessage("Error: One of the data tables has an incorrect size."));
 
-      // compute maximum_component_value for each component:
-      maximum_component_value = std::vector<double>(components,std::numeric_limits<double>::lowest());
-      for (unsigned int c=0; c<components; ++c)
-        {
-          const unsigned int n_elements = data_table[c].n_elements();
-          for (unsigned int idx=0; idx<n_elements; ++idx)
-            maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
-                                                    compute_table_indices(table_points, idx)));
-        }
-
-      // In case the data is specified on a grid that is equidistant
-      // in each coordinate direction, we only need to store
-      // (besides the data) the number of intervals in each direction and
-      // the begin- and end-points of the coordinates.
-      // In case the grid is not equidistant, we need to keep
-      // all the coordinates in each direction, which is more costly.
-      coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
 
       // For each data component, set up a GridData,
       // its type depending on the read-in grid.
@@ -437,7 +498,9 @@ namespace aspect
       // objects.
       this->reinit(column_names,
                    std::move(coordinate_values),
-                   std::move(data_tables));
+                   std::move(data_tables),
+                   comm,
+                   numbers::invalid_unsigned_int);
     }
 
 
