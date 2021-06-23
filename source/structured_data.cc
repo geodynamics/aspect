@@ -126,6 +126,45 @@ namespace aspect
 
 
 
+    namespace
+    {
+      /**
+       * Return whether a set of coordinate points in dim space dimensions
+       * are all equidistantly spaced within some small tolerance.
+       */
+      template <int dim>
+      bool data_is_equidistant (const std::array<std::vector<double>,dim> &coordinate_values)
+      {
+        bool coordinate_values_are_equidistant = true;
+
+        for (unsigned int d=0; d<dim; ++d)
+          {
+            const double grid_spacing = coordinate_values[d][1] - coordinate_values[d][0];
+
+            for (unsigned int n = 1; n < coordinate_values[d].size(); ++n)
+              {
+                const double current_grid_spacing = coordinate_values[d][n] - coordinate_values[d][n-1];
+
+                AssertThrow(current_grid_spacing > 0.0,
+                            ExcMessage ("Coordinates in dimension "
+                                        + Utilities::int_to_string(d)
+                                        + " are not strictly ascending."));
+
+                // If spacing between coordinates changed (with a relative
+                // tolerance), keep track of that information.  Note that we do
+                // not break out of this loop in this case but run through the
+                // whole array, so that the AssertThrow above is executed for
+                // each entry to ensure increasing coordinate values.
+                if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
+                  coordinate_values_are_equidistant = false;
+              }
+          }
+
+        return coordinate_values_are_equidistant;
+      }
+    }
+
+
     template <int dim>
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
@@ -145,14 +184,14 @@ namespace aspect
       data_component_names = column_names;
       Assert(data_table.size() == components,
              ExcMessage("Error: Incorrect number of columns specified."));
+      for (unsigned int c=0; c<components; ++c)
+        Assert(data_table[c].size() == table_points,
+               ExcMessage("Error: One of the data tables has an incorrect size."));
 
       // compute maximum_component_value for each component:
       maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
       for (unsigned int c=0; c<components; ++c)
         {
-          Assert(data_table[c].size() == table_points,
-                 ExcMessage("Error: One of the data tables has an incorrect size."));
-
           const unsigned int n_elements = data_table[c].n_elements();
           for (unsigned int idx=0; idx<n_elements; ++idx)
             maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
@@ -162,40 +201,10 @@ namespace aspect
       // In case the data is specified on a grid that is equidistant
       // in each coordinate direction, we only need to store
       // (besides the data) the number of intervals in each direction and
-      // the begin- and endpoints of the coordinates.
+      // the begin- and end-points of the coordinates.
       // In case the grid is not equidistant, we need to keep
       // all the coordinates in each direction, which is more costly.
-      std::array<unsigned int,dim> table_intervals;
-
-      coordinate_values_are_equidistant = true;
-      for (unsigned int d=0; d<dim; ++d)
-        {
-          table_intervals[d] = table_points[d]-1;
-
-          // The minimum and maximum coordinate values:
-          grid_extent[d].first = coordinate_values[d][0];
-          grid_extent[d].second = coordinate_values[d][table_points[d]-1];
-
-          const double grid_spacing = coordinate_values[d][1] - coordinate_values[d][0];
-
-          for (unsigned int n = 1; n < table_points[d]; ++n)
-            {
-              const double current_grid_spacing = coordinate_values[d][n] - coordinate_values[d][n-1];
-
-              AssertThrow(current_grid_spacing > 0.0,
-                          ExcMessage ("Coordinates in dimension "
-                                      + Utilities::int_to_string(d)
-                                      + " are not strictly ascending."));
-
-              // If spacing between coordinates changed (with a relative
-              // tolerance), keep track of that information.  Note that we do
-              // not break out of this loop in this case but run through the
-              // whole array, so that the AssertThrow above is executed for
-              // each entry to ensure increasing coordinate values.
-              if (std::abs(current_grid_spacing - grid_spacing) > 0.005*(current_grid_spacing+grid_spacing))
-                coordinate_values_are_equidistant = false;
-            }
-        }
+      coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
 
       // For each data component, set up a GridData,
       // its type depending on the read-in grid.
@@ -203,10 +212,24 @@ namespace aspect
       for (unsigned int c = 0; c < components; ++c)
         {
           if (coordinate_values_are_equidistant)
-            data[c]
-              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                     table_intervals,
-                                                                                     std::move(data_table[c]));
+            {
+              std::array<unsigned int,dim> table_intervals;
+              for (unsigned int d=0; d<dim; ++d)
+                table_intervals[d] = table_points[d]-1;
+
+              // The min and max of the coordinates in the data file.
+              std::array<std::pair<double,double>,dim> grid_extent;
+              for (unsigned int d=0; d<dim; ++d)
+                {
+                  grid_extent[d].first = coordinate_values[d][0];
+                  grid_extent[d].second = coordinate_values[d][table_points[d]-1];
+                }
+
+              data[c]
+                = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
+                                                                                       table_intervals,
+                                                                                       std::move(data_table[c]));
+            }
           else
             // Create the object and move the big objects. Due to an old design flaw,
             // the current class stores a copy of the 'coordinate_values' and some

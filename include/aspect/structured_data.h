@@ -215,11 +215,6 @@ namespace aspect
         std::vector<double> maximum_component_value;
 
         /**
-         * The min and max of the coordinates in the data file.
-         */
-        std::array<std::pair<double,double>,dim> grid_extent;
-
-        /**
          * Number of points in the data grid as specified in the data file.
          */
         TableIndices<dim> table_points;
