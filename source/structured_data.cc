@@ -204,13 +204,8 @@ namespace aspect
       // the begin- and end-points of the coordinates.
       // In case the grid is not equidistant, we need to keep
       // all the coordinates in each direction, which is more costly.
-      std::array<unsigned int,dim> table_intervals;
-
       for (unsigned int d=0; d<dim; ++d)
         {
-          table_intervals[d] = table_points[d]-1;
-
-          // The minimum and maximum coordinate values:
           grid_extent[d].first = coordinate_values[d][0];
           grid_extent[d].second = coordinate_values[d][table_points[d]-1];
         }
@@ -223,10 +218,16 @@ namespace aspect
       for (unsigned int c = 0; c < components; ++c)
         {
           if (coordinate_values_are_equidistant)
-            data[c]
-              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                     table_intervals,
-                                                                                     std::move(data_table[c]));
+            {
+              std::array<unsigned int,dim> table_intervals;
+              for (unsigned int d=0; d<dim; ++d)
+                table_intervals[d] = table_points[d]-1;
+
+              data[c]
+                = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
+                                                                                       table_intervals,
+                                                                                       std::move(data_table[c]));
+            }
           else
             // Create the object and move the big objects. Due to an old design flaw,
             // the current class stores a copy of the 'coordinate_values' and some
