@@ -129,33 +129,33 @@ namespace aspect
     template <int dim>
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
-                                      const std::vector<std::vector<double>> &coordinate_values_,
-                                      const std::vector<Table<dim,double> > &raw_data)
+                                      std::vector<std::vector<double>> &&coordinate_values_,
+                                      std::vector<Table<dim,double> > &&data_table)
     {
       Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
       for (unsigned int d=0; d<dim; ++d)
         {
-          coordinate_values[d] = coordinate_values_[d];
-          AssertThrow(coordinate_values[d].size()>1,
+          this->coordinate_values[d] = std::move(coordinate_values_[d]);
+          AssertThrow(this->coordinate_values[d].size()>1,
                       ExcMessage("Error: At least 2 entries per coordinate direction are required."));
-          table_points[d] = coordinate_values_[d].size();
+          table_points[d] = this->coordinate_values[d].size();
         }
 
       components = column_names.size();
       data_component_names = column_names;
-      Assert(raw_data.size() == components,
+      Assert(data_table.size() == components,
              ExcMessage("Error: Incorrect number of columns specified."));
 
       // compute maximum_component_value for each component:
       maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
       for (unsigned int c=0; c<components; ++c)
         {
-          Assert(raw_data[c].size() == table_points,
+          Assert(data_table[c].size() == table_points,
                  ExcMessage("Error: One of the data tables has an incorrect size."));
 
-          const unsigned int n_elements = raw_data[c].n_elements();
+          const unsigned int n_elements = data_table[c].n_elements();
           for (unsigned int idx=0; idx<n_elements; ++idx)
-            maximum_component_value[c] = std::max(maximum_component_value[c], raw_data[c](
+            maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
                                                     compute_table_indices(table_points, idx)));
         }
 
@@ -180,7 +180,7 @@ namespace aspect
 
           for (unsigned int n = 1; n < table_points[d]; ++n)
             {
-              const double current_grid_spacing = coordinate_values[d][n] - coordinate_values_[d][n-1];
+              const double current_grid_spacing = coordinate_values[d][n] - coordinate_values[d][n-1];
 
               AssertThrow(current_grid_spacing > 0.0,
                           ExcMessage ("Coordinates in dimension "
@@ -206,11 +206,24 @@ namespace aspect
             data[c]
               = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
                                                                                      table_intervals,
-                                                                                     raw_data[c]);
+                                                                                     std::move(data_table[c]));
           else
+            // Create the object and move the big objects. Due to an old design flaw,
+            // the current class stores a copy of the 'coordinate_values' and some
+            // plugins actually use it too, i.e., we can't move the data out of
+            // this object. In another design flaw, the deal.II classes
+            // do not make the coordinate values accessible, so we have to continue
+            // storing a copy. In other words, we can't just move stuff --
+            // we have to make a copy of 'coordinate_values' and then move
+            // that copy.
+            //
+            // (The call to std::move on the first argument is unnecessary: We
+            // create a temporary object, and that's an rvalue that the constructor
+            // we call would bind to. But never a bad idea to be explicit.)
             data[c]
-              = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>> (coordinate_values,
-                                                                                           raw_data[c]);
+              = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>>
+                (std::move(std::array<std::vector<double>,dim>(this->coordinate_values)),
+                 std::move(data_table[c]));
         }
     }
 
@@ -396,8 +409,12 @@ namespace aspect
                               "of the file. Please check the number of data "
                               "lines against the POINTS header in the file."));
 
-      // finally create the data:
-      this->reinit(column_names, coordinate_values, data_tables);
+      // Finally create the data. We want to call the move-version of reinit() so
+      // that the data doesn't have to be copied, so use std::move on all big
+      // objects.
+      this->reinit(column_names,
+                   std::move(coordinate_values),
+                   std::move(data_tables));
     }
 
 
