@@ -79,7 +79,7 @@ namespace aspect
 
     template <int dim>
     const std::vector<double> &
-    StructuredDataLookup<dim>::get_coordinates(const unsigned int dimension) const
+    StructuredDataLookup<dim>::get_interpolation_point_coordinates(const unsigned int dimension) const
     {
       AssertThrow(dimension < dim,
                   ExcMessage("There is no spatial dimension number " + std::to_string(dimension)
@@ -1317,9 +1317,9 @@ namespace aspect
 
     template <int dim>
     const std::vector<double> &
-    AsciiDataProfile<dim>::get_coordinates() const
+    AsciiDataProfile<dim>::get_interpolation_point_coordinates() const
     {
-      return lookup->get_coordinates(0);
+      return lookup->get_interpolation_point_coordinates(0);
     }
 
 
