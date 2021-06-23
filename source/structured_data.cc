@@ -204,12 +204,6 @@ namespace aspect
       // the begin- and end-points of the coordinates.
       // In case the grid is not equidistant, we need to keep
       // all the coordinates in each direction, which is more costly.
-      for (unsigned int d=0; d<dim; ++d)
-        {
-          grid_extent[d].first = coordinate_values[d][0];
-          grid_extent[d].second = coordinate_values[d][table_points[d]-1];
-        }
-
       coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
 
       // For each data component, set up a GridData,
@@ -222,6 +216,14 @@ namespace aspect
               std::array<unsigned int,dim> table_intervals;
               for (unsigned int d=0; d<dim; ++d)
                 table_intervals[d] = table_points[d]-1;
+
+              // The min and max of the coordinates in the data file.
+              std::array<std::pair<double,double>,dim> grid_extent;
+              for (unsigned int d=0; d<dim; ++d)
+                {
+                  grid_extent[d].first = coordinate_values[d][0];
+                  grid_extent[d].second = coordinate_values[d][table_points[d]-1];
+                }
 
               data[c]
                 = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
