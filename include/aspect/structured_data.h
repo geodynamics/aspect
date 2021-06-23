@@ -150,18 +150,19 @@ namespace aspect
         has_equidistant_coordinates() const;
 
         /**
-         * Returns the coordinates at which data is stored. This function
-         * can be used to determine the number of data points, or to query
-         * data only at exactly the positions at which it is available (avoiding
+         * Returns the coordinates of the interpolation points at which data is
+         * stored. This function can be used to determine the number of data
+         * points in each of the coordinate directions, or to query
+         * data only at exactly the positions at which they are available (avoiding
          * interpolation).
          *
          * @param dimension The spatial direction for which to return the data
-         * coordinates, e.g. 0 for x-direction, 1 for y-direction, or equivalent
+         * coordinates, e.g. 0 for $x$-direction, 1 for $y$-direction, or equivalent
          * values if your data coordinates are other dimensions such as
          * temperature, pressure.
          */
         const std::vector<double> &
-        get_coordinates(const unsigned int dimension) const;
+        get_interpolation_point_coordinates(const unsigned int dimension) const;
 
         /**
          * Returns the column index of a column with the given name
@@ -621,13 +622,21 @@ namespace aspect
         get_column_names() const;
 
         /**
-        * Returns the coordinates at which profile data is stored. This function
-        * can be used to determine the number of data points, or to query
-        * data only at exactly the positions at which it is available (avoiding
-        * interpolation).
-        */
+         * Returns the coordinates of the interpolation points at which data is
+         * stored. This function can be used to determine the number of data
+         * points in each of the coordinate directions, or to query
+         * data only at exactly the positions at which they are available (avoiding
+         * interpolation).
+         *
+         * Because this class represents a one-dimensional profile, the returned
+         * values correspond to the values of the sole coordinate of the
+         * interpolation points, in contrast to the
+         * StructuredDataLookup::get_interpolation_point_coordinates()
+         * function that takes an integer argument indicating which coordinate
+         * is to be selected.
+         */
         const std::vector<double> &
-        get_coordinates() const;
+        get_interpolation_point_coordinates() const;
 
         /**
          * Returns the column index of a column with the given name
