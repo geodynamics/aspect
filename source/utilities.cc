@@ -1106,30 +1106,41 @@ namespace aspect
               filesize = data_string.size();
             }
 
-          // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          AssertThrowMPI(ierr);
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+          // If there are other processes, distribute data_size and
+          // data across the MPI universe
+          if (Utilities::MPI::n_mpi_processes(comm) > 1)
+            {
+              int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrowMPI(ierr);
+              ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+              AssertThrowMPI(ierr);
+            }
         }
       else
         {
-          // Prepare for receiving data
-          unsigned int filesize;
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
-          AssertThrowMPI(ierr);
-          if (filesize == numbers::invalid_unsigned_int)
-            throw QuietException();
+          // If we are not on the root of a communicator with more than one
+          // process, then receive the data the root has gathered.
+          if (Utilities::MPI::n_mpi_processes(comm) > 1)
+            {
+              // Prepare for receiving data
+              unsigned int filesize;
+              int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+              AssertThrowMPI(ierr);
+              if (filesize == numbers::invalid_unsigned_int)
+                throw QuietException();
 
-          data_string.resize(filesize);
+              data_string.resize(filesize);
 
-          // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+              // Receive and store data
+              ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+              AssertThrowMPI(ierr);
+            }
         }
 
       return data_string;
     }
+
+
 
     int
     mkdirp(std::string pathname,const mode_t mode)
