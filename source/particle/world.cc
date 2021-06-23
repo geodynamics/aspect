@@ -396,8 +396,12 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(10,0,0)
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
+                        const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+                        const unsigned int index_to_remove = std::uniform_int_distribution<unsigned int>
+                                                             (0,current_n_particles_in_cell-1)(random_number_generator);
+
                         auto particle_to_remove = particle_handler->particles_in_cell(cell).begin();
-                        std::advance(particle_to_remove, random_number_generator() % particle_handler->n_particles_in_cell(cell));
+                        std::advance(particle_to_remove, index_to_remove);
                         particle_handler->remove_particle(particle_to_remove);
                       }
 #else
