@@ -104,7 +104,7 @@ subsection Postprocess
     set Number of grouped files       = 0
 
     set Output format                 = gnuplot
-set List of output variables      = viscosity
+    set List of output variables      = viscosity
     set Time between graphical output = 0   # default: 1e8
   end
 end
