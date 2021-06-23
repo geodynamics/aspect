@@ -90,7 +90,7 @@ namespace aspect
          * The `coordinate_values` and `data_table` arguments are rvalue references,
          * and the function will move the data so provided into another storage
          * location. In other words, after the call, the variables passed as the
-         * last two arguments may be empty or otherwise altered.
+         * second and third arguments may be empty or otherwise altered.
          *
         #if DEAL_II_VERSION_GTE(9,3,0)
          * If ASPECT is built on deal.II version 9.3 or higher, this class
