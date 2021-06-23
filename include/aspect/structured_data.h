@@ -85,12 +85,16 @@ namespace aspect
          * The data consists of @p n_components (implicitly given by the size of @p column_names)
          * specified at @p coordinate_values[d] points in each of the dim coordinate directions @p d.
          *
-         * The data in @p raw_data consists of a Table for each of the @p n_components components.
+         * The data in @p data_table consists of a Table for each of the @p n_components components.
+         *
+         * The last two arguments are rvalue references, and the function will
+         * move the data so provided into another storage location. In other
+         * words, after the call, the variables passed as the last two
+         * arguments may be empty or otherwise altered.
          */
         void reinit(const std::vector<std::string> &column_names,
-                    const std::vector<std::vector<double>> &coordinate_values,
-                    const std::vector<Table<dim,double> > &raw_data
-                   );
+                    std::vector<std::vector<double>> &&coordinate_values,
+                    std::vector<Table<dim,double> > &&data_table);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
