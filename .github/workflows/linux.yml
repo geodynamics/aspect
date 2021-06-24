@@ -99,6 +99,7 @@ jobs:
     - name: prebuild tests
       run: |
         # prebuilding tests...
+        export OMPI_MCA_mpi_yield_when_idle=1
         export OMPI_MCA_rmaps_base_oversubscribe=1
         export OMPI_ALLOW_RUN_AS_ROOT=1
         export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
@@ -107,6 +108,7 @@ jobs:
     - name: report test results
       run: |
         cd build
+        export OMPI_MCA_mpi_yield_when_idle=1
         export OMPI_MCA_rmaps_base_oversubscribe=1
         export OMPI_ALLOW_RUN_AS_ROOT=1
         export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
