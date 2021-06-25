@@ -1,0 +1,19 @@
+
+Number of active cells: 1,024 (on 6 levels)
+Number of degrees of freedom: 26,439 (8,450+1,089+4,225+4,225+4,225+4,225)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Solving Crust system ... 0 iterations.
+   Skipping Lithosphere composition solve because RHS is zero.
+   Skipping Continent composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 200+2 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/1/1.677e+10 // 0/0/0 // 0/0/0
+
+Termination requested by criterion: end time
+
+
+
