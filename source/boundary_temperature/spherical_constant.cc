@@ -41,28 +41,31 @@ namespace aspect
     boundary_temperature (const types::boundary_id boundary_indicator,
                           const Point<dim> &) const
     {
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
+      Assert (this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "top" ||
+              this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "bottom",
+              ExcMessage ("Unknown boundary indicator for geometry model. "
+                          "The given boundary should be ``top'' or ``bottom''."));
 
-      if (boundary_name == "bottom")
-        return inner_temperature;
-      else if (boundary_name =="top")
-        return outer_temperature;
+      return boundary_temperatures[boundary_indicator];
+    }
+
+
+    template <int dim>
+    double
+    SphericalConstant<dim>::
+    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    {
+      if (fixed_boundary_ids.empty())
+        return *std::min_element(boundary_temperatures.begin(), boundary_temperatures.end());
       else
         {
-          Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                     "The given boundary should be ``top'' or ``bottom''."));
-          return numbers::signaling_nan<double>();
+          double min = std::numeric_limits<double>::max();
+          for (const auto id : fixed_boundary_ids)
+            min = std::min(min,boundary_temperatures[id]);
+          return min;
         }
-    }
 
-
-    template <int dim>
-    double
-    SphericalConstant<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &) const
-    {
-      return std::min (inner_temperature, outer_temperature);
+      return std::numeric_limits<double>::max();
     }
 
 
@@ -70,9 +73,19 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &) const
+    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      return std::max (inner_temperature, outer_temperature);
+      if (fixed_boundary_ids.empty())
+        return *std::max_element(boundary_temperatures.begin(), boundary_temperatures.end());
+      else
+        {
+          double max = -std::numeric_limits<double>::max();
+          for (const auto id : fixed_boundary_ids)
+            max = std::max(max,boundary_temperatures[id]);
+          return max;
+        }
+
+      return -std::numeric_limits<double>::max();
     }
 
 
@@ -106,8 +119,10 @@ namespace aspect
       {
         prm.enter_subsection("Spherical constant");
         {
-          inner_temperature = prm.get_double ("Inner temperature");
-          outer_temperature = prm.get_double ("Outer temperature");
+          const auto boundary_names_map = this->get_geometry_model().get_symbolic_boundary_names_map();
+          boundary_temperatures.resize(boundary_names_map.size(),0.0);
+          boundary_temperatures[boundary_names_map.at("bottom")] =  prm.get_double ("Inner temperature");
+          boundary_temperatures[boundary_names_map.at("top")] =  prm.get_double ("Outer temperature");
         }
         prm.leave_subsection ();
       }

@@ -85,10 +85,9 @@ namespace aspect
 
       private:
         /**
-         * Temperatures at the inner and outer boundaries.
+         * Temperatures at the boundaries.
          */
-        double inner_temperature;
-        double outer_temperature;
+        std::vector<double> boundary_temperatures;
     };
   }
 }
