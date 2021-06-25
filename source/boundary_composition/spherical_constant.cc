@@ -40,47 +40,19 @@ namespace aspect
     SphericalConstant<dim>::
     boundary_composition (const types::boundary_id boundary_indicator,
                           const Point<dim> &/*position*/,
-                          const unsigned int /*compositional_field*/) const
+                          const unsigned int compositional_field) const
     {
-      const GeometryModel::Interface<dim> *geometry_model = &this->get_geometry_model();
-      const std::string boundary_name = geometry_model->translate_id_to_symbol_name(boundary_indicator);
+      Assert(compositional_field == 0,
+             ExcMessage("The 'spherical constant' boundary composition plugin "
+                        "only supports a single compositional field."));
+      (void) compositional_field;
 
-      if (boundary_name == "bottom")
-        return inner_composition;
-      else if (boundary_name =="top")
-        return outer_composition;
-      else
-        {
-          Assert (false, ExcMessage ("Unknown boundary indicator for geometry model. "
-                                     "The given boundary should be ``top'' or ``bottom''."));
-          return numbers::signaling_nan<double>();
-        }
-    }
+      Assert (this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "top" ||
+              this->get_geometry_model().translate_id_to_symbol_name(boundary_indicator) == "bottom",
+              ExcMessage ("Unknown boundary indicator for geometry model. "
+                          "The given boundary should be ``top'' or ``bottom''."));
 
-
-
-    template <int dim>
-    double
-    SphericalConstant<dim>::
-    minimal_composition (const std::set<types::boundary_id> &) const
-    {
-      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
-        return outer_composition;
-      else
-        return std::min (inner_composition, outer_composition);
-    }
-
-
-
-    template <int dim>
-    double
-    SphericalConstant<dim>::
-    maximal_composition (const std::set<types::boundary_id> &) const
-    {
-      if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
-        return outer_composition;
-      else
-        return std::max (inner_composition, outer_composition);
+      return boundary_compositions[boundary_indicator];
     }
 
 
@@ -116,8 +88,14 @@ namespace aspect
       {
         prm.enter_subsection("Spherical constant");
         {
-          inner_composition = prm.get_double ("Inner composition");
-          outer_composition = prm.get_double ("Outer composition");
+          const auto boundary_names_map = this->get_geometry_model().get_symbolic_boundary_names_map();
+          boundary_compositions.resize(boundary_names_map.size(),numbers::signaling_nan<double>());
+
+          if (boundary_names_map.find("bottom") != boundary_names_map.end())
+            boundary_compositions[boundary_names_map.at("bottom")] =  prm.get_double ("Inner composition");
+
+          if (boundary_names_map.find("top") != boundary_names_map.end())
+            boundary_compositions[boundary_names_map.at("top")] =  prm.get_double ("Outer composition");
         }
         prm.leave_subsection ();
       }

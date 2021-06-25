@@ -55,17 +55,14 @@ namespace aspect
     SphericalConstant<dim>::
     minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      if (fixed_boundary_ids.empty())
-        return *std::min_element(boundary_temperatures.begin(), boundary_temperatures.end());
-      else
-        {
-          double min = std::numeric_limits<double>::max();
-          for (const auto id : fixed_boundary_ids)
-            min = std::min(min,boundary_temperatures[id]);
-          return min;
-        }
+      double min = std::numeric_limits<double>::max();
 
-      return std::numeric_limits<double>::max();
+      for (unsigned int id=0; id<boundary_temperatures.size(); ++id)
+        if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(id) != fixed_boundary_ids.end())
+          if (std::isnan(boundary_temperatures[id]) == false)
+            min = std::min(min,boundary_temperatures[id]);
+
+      return min;
     }
 
 
@@ -75,17 +72,14 @@ namespace aspect
     SphericalConstant<dim>::
     maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
     {
-      if (fixed_boundary_ids.empty())
-        return *std::max_element(boundary_temperatures.begin(), boundary_temperatures.end());
-      else
-        {
-          double max = -std::numeric_limits<double>::max();
-          for (const auto id : fixed_boundary_ids)
-            max = std::max(max,boundary_temperatures[id]);
-          return max;
-        }
+      double max = -std::numeric_limits<double>::max();
 
-      return -std::numeric_limits<double>::max();
+      for (unsigned int id=0; id<boundary_temperatures.size(); ++id)
+        if (std::isnan(boundary_temperatures[id]) == false)
+          if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(id) != fixed_boundary_ids.end())
+            max = std::max(max,boundary_temperatures[id]);
+
+      return max;
     }
 
 
@@ -120,9 +114,13 @@ namespace aspect
         prm.enter_subsection("Spherical constant");
         {
           const auto boundary_names_map = this->get_geometry_model().get_symbolic_boundary_names_map();
-          boundary_temperatures.resize(boundary_names_map.size(),0.0);
-          boundary_temperatures[boundary_names_map.at("bottom")] =  prm.get_double ("Inner temperature");
-          boundary_temperatures[boundary_names_map.at("top")] =  prm.get_double ("Outer temperature");
+          boundary_temperatures.resize(boundary_names_map.size(), std::numeric_limits<double>::quiet_NaN());
+
+          if (boundary_names_map.find("bottom") != boundary_names_map.end())
+            boundary_temperatures[boundary_names_map.at("bottom")] =  prm.get_double ("Inner temperature");
+
+          if (boundary_names_map.find("top") != boundary_names_map.end())
+            boundary_temperatures[boundary_names_map.at("top")] =  prm.get_double ("Outer temperature");
         }
         prm.leave_subsection ();
       }

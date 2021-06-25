@@ -56,20 +56,6 @@ namespace aspect
                                      const unsigned int compositional_field) const override;
 
         /**
-         * Return the minimal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        virtual
-        double minimal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
-         * Return the maximal composition on that part of the boundary on
-         * which Dirichlet conditions are posed.
-         */
-        virtual
-        double maximal_composition (const std::set<types::boundary_id> &fixed_boundary_ids) const;
-
-        /**
          * Declare the parameters this class takes through input files. This
          * class declares the inner and outer boundary compositions.
          */
@@ -85,10 +71,9 @@ namespace aspect
 
       private:
         /**
-         * Compositions at the inner and outer boundaries.
+         * Compositions at the boundaries.
          */
-        double inner_composition;
-        double outer_composition;
+        std::vector<double> boundary_compositions;
     };
   }
 }
