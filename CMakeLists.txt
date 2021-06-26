@@ -467,6 +467,9 @@ ENDIF()
 ADD_EXECUTABLE(${TARGET} ${TARGET_SRC})
 DEAL_II_SETUP_TARGET(${TARGET})
 
+# deal.II does not define NDEBUG, but the world builder relies on it to disable
+# its asserts in release mode. Set it manually for anything but debug mode.
+# Note: If deal.II decides in the future to define this, this can be removed.
 IF (NOT CMAKE_BUILD_TYPE MATCHES Debug)
     ADD_DEFINITIONS("-DNDEBUG")
 ENDIF()
