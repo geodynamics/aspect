@@ -1013,11 +1013,6 @@ namespace aspect
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
     Assert(sim.introspection.variable("pressure").block_index==1, ExcNotImplemented());
 
-    // This is not terribly complicated, but we need to check that constraints
-    // are set correctly, that the preconditioner converges, and requires
-    // testing.
-    AssertThrow(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
-
     // We currently only support averaging of the viscosity to a constant or Q1:
     using avg = MaterialModel::MaterialAveraging::AveragingOperation;
     AssertThrow((sim.parameters.material_averaging &
@@ -2327,6 +2322,29 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::setup_dofs()
   {
+    // Periodic boundary conditions with hanging nodes on the boundary currently
+    // cause the GMG not to converge. We catch this case early to provide the
+    // user with a reasonable error message:
+    {
+      bool have_periodic_hanging_nodes = false;
+      for (const auto &cell : sim.triangulation.active_cell_iterators())
+        if (cell->is_locally_owned())
+          for (const auto f : cell->face_indices())
+            {
+              if (cell->has_periodic_neighbor(f))
+                {
+                  const auto &neighbor = cell->periodic_neighbor(f);
+                  // This way, we can only detect the case where the neighbor is coarser,
+                  // but this is fine as the other owner covers that situation:
+                  if (neighbor->level()<cell->level())
+                    have_periodic_hanging_nodes = true;
+                }
+            }
+
+      have_periodic_hanging_nodes = (dealii::Utilities::MPI::max(have_periodic_hanging_nodes ? 1 : 0, sim.triangulation.get_communicator())) == 1;
+      AssertThrow(have_periodic_hanging_nodes==false, ExcNotImplemented());
+    }
+
     // This vector will be refilled with the new MatrixFree objects below:
     matrix_free_objects.clear();
 
@@ -2342,6 +2360,20 @@ namespace aspect
       DoFTools::extract_locally_relevant_dofs (dof_handler_v,
                                                locally_relevant_dofs);
       constraints_v.reinit(locally_relevant_dofs);
+
+
+      {
+        const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
+
+        for (const auto p: pbs)
+          {
+            DoFTools::make_periodicity_constraints(dof_handler_v,
+                                                   p.first.first,  // first boundary id
+                                                   p.first.second, // second boundary id
+                                                   p.second,       // cartesian direction for translational symmetry
+                                                   constraints_v);
+          }
+      }
       DoFTools::make_hanging_node_constraints (dof_handler_v, constraints_v);
       sim.compute_initial_velocity_boundary_constraints(constraints_v);
       sim.compute_current_velocity_boundary_constraints(constraints_v);
@@ -2368,6 +2400,18 @@ namespace aspect
       DoFTools::extract_locally_relevant_dofs (dof_handler_p,
                                                locally_relevant_dofs);
       constraints_p.reinit(locally_relevant_dofs);
+      {
+        const auto &pbs = sim.geometry_model->get_periodic_boundary_pairs();
+
+        for (const auto p: pbs)
+          {
+            DoFTools::make_periodicity_constraints(dof_handler_p,
+                                                   p.first.first,  // first boundary id
+                                                   p.first.second, // second boundary id
+                                                   p.second,       // cartesian direction for translational symmetry
+                                                   constraints_p);
+          }
+      }
       DoFTools::make_hanging_node_constraints (dof_handler_p, constraints_p);
       constraints_p.close();
     }
