@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 1183 11420 5061  0 81 84 84 output-periodic_box_gmg/solution/solution-00000 
+1 4.926446589980e+03 4.926446589980e+03 1183 11420 5061 15 77 80 80 output-periodic_box_gmg/solution/solution-00001 
+2 9.796687352611e+03 4.870240762631e+03 1183 11420 5061 15 77 80 80 output-periodic_box_gmg/solution/solution-00002 
+3 1.461193301446e+04 4.815245661852e+03 1183 11420 5061 15 77 80 80 output-periodic_box_gmg/solution/solution-00003 
+4 1.937662151295e+04 4.764688498488e+03 1183 11420 5061 14 77 80 80 output-periodic_box_gmg/solution/solution-00004 
+5 2.000000000000e+04 6.233784870485e+02 1183 11420 5061 12 77 80 80 output-periodic_box_gmg/solution/solution-00005 
