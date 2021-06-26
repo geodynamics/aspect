@@ -1,4 +1,0 @@
-Fixed: The Newton solver schemes now correctly postprocess
-nonlinear iterations.
-<br>
-(Juliane Dannberg, 2020/08/07)

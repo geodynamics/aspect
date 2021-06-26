@@ -1,4 +1,0 @@
-New: Added new rheology module, namespace MaterialModel::Rheology::FrankKamenetskii.
-This new rheology computes the temperature dependent Frank Kamenetskii viscosity approximation.
-<br>
-(Erin Heilman, 2020/08/07)

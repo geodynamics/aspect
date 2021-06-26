@@ -1,7 +1,0 @@
-Changed: ASPECT now uses a mapping caching strategy provided by deal.II for
-models with curved cells (spherical shells, chunk, sphere) as long as there is
-no mesh deformation. The new mapping drastically decreases the time for sorting
-particles, but has little influence (as far as we know) on other timings, and
-has no influence on the accuracy.
-<br>
-(Rene Gassmoeller, 2021/02/01)

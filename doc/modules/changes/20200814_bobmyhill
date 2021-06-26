@@ -1,7 +1,0 @@
-New: The PerpleX Lookup module can now accept phase volume
-fractions, for use in the material models or simply to visualize
-after the model runs. A python file is also provided in the
-contributions folder to allow users to easily create input files 
-in the correct format.
-<br>
-(Bob Myhill, 2020/08/14)

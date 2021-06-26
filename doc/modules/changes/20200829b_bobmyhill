@@ -1,7 +1,0 @@
-New: The rheology module for Peierls creep now includes a formulation
-to compute the exact Peierls viscosity, using an internal Newton-Raphson
-iterative scheme. The module now also contains a function to calculate the
-strain rate and derivative as a function of stress
-for both the exact and approximate formulations.
-<br>
-(Bob Myhill, John Naliboff and Magali Billen, 2020/08/29)

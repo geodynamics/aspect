@@ -1,5 +1,0 @@
-New: Particle advection can now be used in combination with
-the repetition of timesteps. Before each repetition the particles
-are restored to their previous position.
-<br>
-(Anne Glerum, 2020/12/18)
