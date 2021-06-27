@@ -53,14 +53,18 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    minimal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    minimal_temperature (const std::set<types::boundary_id> &) const
     {
       double min = std::numeric_limits<double>::max();
 
+      // We would want to limit this check to only the boundary ids specified
+      // in the input parameter, but some models expect all temperatures
+      // to be checked, in particular to non-dimensionalize temperature
+      // in models with a full spherical geometry, which has only one
+      // boundary. Thus, check all boundaries.
       for (unsigned int id=0; id<boundary_temperatures.size(); ++id)
-        if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(id) != fixed_boundary_ids.end())
-          if (std::isnan(boundary_temperatures[id]) == false)
-            min = std::min(min,boundary_temperatures[id]);
+        if (std::isnan(boundary_temperatures[id]) == false)
+          min = std::min(min,boundary_temperatures[id]);
 
       return min;
     }
@@ -70,14 +74,18 @@ namespace aspect
     template <int dim>
     double
     SphericalConstant<dim>::
-    maximal_temperature (const std::set<types::boundary_id> &fixed_boundary_ids) const
+    maximal_temperature (const std::set<types::boundary_id> &) const
     {
       double max = -std::numeric_limits<double>::max();
 
+      // We would want to limit this check to only the boundary ids specified
+      // in the input parameter, but some models expect all temperatures
+      // to be checked, in particular to non-dimensionalize temperature
+      // in models with a full spherical geometry, which has only one
+      // boundary. Thus, check all boundaries.
       for (unsigned int id=0; id<boundary_temperatures.size(); ++id)
         if (std::isnan(boundary_temperatures[id]) == false)
-          if (fixed_boundary_ids.empty() || fixed_boundary_ids.find(id) != fixed_boundary_ids.end())
-            max = std::max(max,boundary_temperatures[id]);
+          max = std::max(max,boundary_temperatures[id]);
 
       return max;
     }
@@ -109,6 +117,14 @@ namespace aspect
     void
     SphericalConstant<dim>::parse_parameters (ParameterHandler &prm)
     {
+      // verify that the geometry is supported by this plugin
+      AssertThrow ( Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()),
+                    ExcMessage ("This boundary model is only implemented if the geometry is "
+                                "one of the spherical geometries."));
+
       prm.enter_subsection("Boundary temperature model");
       {
         prm.enter_subsection("Spherical constant");
@@ -116,11 +132,21 @@ namespace aspect
           const auto boundary_names_map = this->get_geometry_model().get_symbolic_boundary_names_map();
           boundary_temperatures.resize(boundary_names_map.size(), std::numeric_limits<double>::quiet_NaN());
 
+          boundary_temperatures[boundary_names_map.at("top")] =  prm.get_double ("Outer temperature");
+
           if (boundary_names_map.find("bottom") != boundary_names_map.end())
             boundary_temperatures[boundary_names_map.at("bottom")] =  prm.get_double ("Inner temperature");
-
-          if (boundary_names_map.find("top") != boundary_names_map.end())
-            boundary_temperatures[boundary_names_map.at("top")] =  prm.get_double ("Outer temperature");
+          else if (Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(this->get_geometry_model()))
+            {
+              // This is a workaround to preserve legacy behavior. Some plugins use the inner temperature
+              // in a sphere geometry model, not to prescribe a boundary temperature (since there is no boundary
+              // in the center of a full sphere), but to prescribe initial conditions as a transition between
+              // outer and inner temperature. Keep this behavior.
+              boundary_temperatures.push_back(prm.get_double ("Inner temperature"));
+            }
+          else
+            AssertThrow(false, ExcMessage("No boundary with name 'bottom' found for the boundary temperature "
+                                          "model 'spherical constant'. Your geometry model is not supported by this plugin."));
         }
         prm.leave_subsection ();
       }
