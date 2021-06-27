@@ -1,4 +1,0 @@
-Changed: The AsciiDataLookup class has been renamed to StructuredDataLookup to
-reflect that other file formats will be supported in the future.
-<br>
-(Timo Heister, 2021/01/05)

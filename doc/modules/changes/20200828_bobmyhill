@@ -1,9 +1,0 @@
-Changed: The steinberger material model now performs
-consistent averaging of material properties when multiple
-material lookups are used. Specifically, the density,
-thermal expansivity, compressibility and phase volume fractions
-are averaged according to volume fractions, the specific heat
-is averaged according to mass fractions and the
-seismic velocities are Voigt-Reuss-Hill averaged.
-<br>
-(Bob Myhill, 2020/08/28)

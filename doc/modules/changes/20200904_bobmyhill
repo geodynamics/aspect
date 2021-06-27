@@ -1,6 +1,0 @@
-New: The Peierls creep rheology can now accept different
-parameter values for distinct phases in each compositional field.
-This unifies the functionality of the Peierls creep rheology
-with that of diffusion creep and dislocation creep.
-<br>
-(Bob Myhill, 2020/09/04)

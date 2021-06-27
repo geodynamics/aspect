@@ -1,5 +1,0 @@
-New: There is now a new property in the depth average postprocessor 
-that averages the mass of a compositional field (rather than its volume, 
-as the "composition" property).
-<br>
-(Juliane Dannberg, 2020/11/09)
