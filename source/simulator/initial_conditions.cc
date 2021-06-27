@@ -270,11 +270,39 @@ namespace aspect
           ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
           property_mask.set(particle_property,true);
 
-          const std::vector<std::vector<double> > particle_properties =
-            particle_interpolator->properties_at_points(particle_postprocessor.get_particle_world().get_particle_handler(),
-                                                        quadrature_points,
-                                                        property_mask,
-                                                        cell);
+          std::vector<std::vector<double> > particle_properties;
+
+          try
+            {
+              particle_properties =
+                particle_interpolator->properties_at_points(particle_postprocessor.get_particle_world().get_particle_handler(),
+                                                            quadrature_points,
+                                                            property_mask,
+                                                            cell);
+            }
+          // interpolators that throw exceptions usually do not result in
+          // anything good, because they result in an unwinding of the stack
+          // and, if only one processor triggers an exception, the
+          // destruction of objects often causes a deadlock or completely
+          // unrelated MPI error messages. Thus, if an exception is
+          // generated, catch it, print an error message, and abort the program.
+          catch (std::exception &exc)
+            {
+              std::cerr << std::endl << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+              std::cerr << "Exception on MPI process <"
+                        << Utilities::MPI::this_mpi_process(MPI_COMM_WORLD)
+                        << "> while interpolating particle properties: "
+                        << std::endl
+                        << exc.what() << std::endl
+                        << "Aborting!" << std::endl
+                        << "----------------------------------------------------"
+                        << std::endl;
+
+              // terminate the program!
+              MPI_Abort (MPI_COMM_WORLD, 1);
+            }
 
           // go through the composition dofs and set their global values
           // to the particle field interpolated at these points
