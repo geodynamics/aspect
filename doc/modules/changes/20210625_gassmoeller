@@ -1,0 +1,6 @@
+New: It is now possible to only call the world builder to determine initial
+compositions for selected compositional fields by specifying the parameter
+'List of relevant compositions' in the world builder initial composition
+plugin.
+<br>
+(Rene Gassmoeller, Juliane Dannberg, 2021/06/25)
