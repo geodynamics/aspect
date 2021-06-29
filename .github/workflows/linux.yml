@@ -68,3 +68,27 @@ jobs:
       with:
         name: manual.log
         path: doc/manual/manual.log
+
+  dealii-dev:
+    # linux build with deal.II dev
+    name: test-dealii-dev
+    runs-on: [ubuntu-18.04]
+    container:
+      image: dealii/dealii:master-focal
+      options: --user 0
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile
+      run: |
+        mkdir build
+        cd build
+        cmake \
+        -G 'Ninja' \
+        -D CMAKE_CXX_FLAGS='-Werror' \
+        -D ASPECT_TEST_GENERATOR='Ninja' \
+        -D ASPECT_PRECOMPILE_HEADERS=ON \
+        -D ASPECT_UNITY_BUILD=ON \
+        ..
+        ninja
+        ./aspect --test
