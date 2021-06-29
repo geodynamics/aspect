@@ -580,7 +580,10 @@ namespace aspect
     // We have to compute the constraints here because the vector that tells
     // us if a cell is a melt cell is not saved between restarts.
     if (parameters.include_melt_transport)
-      compute_current_constraints ();
+      {
+        initialize_current_linearization_point();
+        compute_current_constraints ();
+      }
   }
 
 }
