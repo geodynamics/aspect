@@ -281,7 +281,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200, C3:300, all:400, C5:500, bg:3",
   {"C1","C2","C3","C4","C5"},
   true,
-  "TestField"), Contains("The keyword `all' in the property TestField is only allowed if there is no other keyword."));
+  "TestField"), Contains("The keyword `all' in the property TestField is only allowed if"));
 
   INFO("check fail 6: ");
   REQUIRE_THROWS_WITH(
@@ -337,7 +337,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     "TestField",
     true,
     n_values_per_key),
-    Contains("the expected number of values"));
+    Contains("The key <C1> in <TestField> does not have the expected number"));
   }
 
   {
@@ -360,7 +360,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     "TestField",
     true,
     n_values_per_key),
-    Contains("the expected number of values"));
+    Contains("The key <C1> in <TestField> does not have the expected number"));
   }
 }
 
