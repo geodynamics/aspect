@@ -108,3 +108,13 @@ jobs:
         --no-compress-output \
         --test-action Test \
         --output-on-failure
+    - name: write test results
+      run: |
+        cd build
+        ninja generate_reference_output
+        git diff ../tests > changes-test-results.diff
+    - name: archive
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-test-results.diff
+        path: build/changes-test-results.diff
