@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <velocity> <velocity> <p> <T> <strain_xx> <strain_xy> <strain_yx> <strain_yy> <stress_xx> <stress_xy> <stress_yx> <stress_yy> 
+# <x> <y> <velocity> <velocity> <p> <T> <strain_xx> <strain_xy> <strain_yx> <strain_yy> <stress> <stress> <stress> <stress> 
 0 0 0 0 9991.66 0 1 0 0 1 9426.39 -5.39599e-08 -5.39599e-08 9925.68 
 0.0625 0 0.0781647 0 9990.7 0 1 0 0 1 9426.39 -5.39599e-08 -5.39599e-08 9925.68 
 

@@ -19,6 +19,9 @@ An error occurred in file <plugins.h> in function
 The violated condition was: 
     plugin_type_matches<TestType>(object)
 Additional information: 
-    You have requested to convert a plugin of type <aspect::BoundaryComposition::InitialComposition<2>> into type <aspect::BoundaryComposition::Box<2>>, but this cast cannot be performed.
+    You have requested to convert a plugin of type
+    <aspect::BoundaryComposition::InitialComposition<2>> into type
+    <aspect::BoundaryComposition::Box<2>>, but this cast cannot be
+    performed.
 
 Aborting!

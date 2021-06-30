@@ -18,6 +18,10 @@ An error occurred in file <interface.h> in function
 The violated condition was: 
     has_matching_mesh_refinement_strategy<MeshRefinementType> ()
 Additional information: 
-    You asked MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a mesh refinement strategy of type <aspect::MeshRefinement::Boundary<2>> that could not be found in the current model. Activate this mesh refinement strategy in the input file.
+    You asked
+    MeshRefinement::Manager::get_matching_mesh_refinement_strategy() for a
+    mesh refinement strategy of type <aspect::MeshRefinement::Boundary<2>>
+    that could not be found in the current model. Activate this mesh
+    refinement strategy in the input file.
 
 Aborting!
