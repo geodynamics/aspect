@@ -7,9 +7,6 @@
  */
 int f()
 {
-  if (dealii::Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) != 0)
-    return 0;
-
   std::cout << "* starting from beginning:" << std::endl;
 
   // call ASPECT with "--" and pipe an existing input file into it.
