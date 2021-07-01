@@ -64,21 +64,7 @@ namespace
         // If the locale doesn't work, just give up
       }
 
-#ifdef ASPECT_USE_PETSC
-    // TODO: PETSc statistics, n_nonzero_elements doesn't exist.
-#else
-    output << "Total " << matrix_name << " nnz: "
-           << matrix.n_nonzero_elements() << std::endl;
 
-    // output number of nonzero elements in each matrix block
-    output << matrix_name << " nnz by block: " << std::endl;
-    for (unsigned int i=0; i<matrix.n_block_rows(); ++i)
-      {
-        for (unsigned int j=0; j<matrix.n_block_rows(); ++j)
-          output << std::setw(12) << matrix.block(i,j).n_nonzero_elements();
-        output << std::endl;
-      }
-#endif
 
     return output.str();
   }
