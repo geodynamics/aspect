@@ -464,9 +464,6 @@ namespace aspect
     Amg_preconditioner = std_cxx14::make_unique<LinearAlgebra::PreconditionAMG>();
 
     LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef ASPECT_USE_PETSC
-    Amg_data.symmetric_operator = false;
-#else
     Amg_data.constant_modes = constant_modes;
     Amg_data.elliptic = true;
     Amg_data.higher_order_elements = true;
@@ -484,7 +481,6 @@ namespace aspect
     Amg_data.smoother_sweeps = parameters.AMG_smoother_sweeps;
     Amg_data.aggregation_threshold = parameters.AMG_aggregation_threshold;
     Amg_data.output_details = parameters.AMG_output_details;
-#endif
 
     /*  The stabilization term for the free surface (Kaus et. al., 2010)
      *  makes changes to the system matrix which are of the same form as

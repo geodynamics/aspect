@@ -678,12 +678,7 @@ int main (int argc, char *argv[])
         }
       else if (arg=="-j" || arg =="--threads")
         {
-#ifdef ASPECT_USE_PETSC
-          std::cerr << "Using multiple threads (using -j) is not supported when using PETSc for linear algebra. Exiting." << std::endl;
-          return -1;
-#else
           use_threads = true;
-#endif
         }
       else if (arg == "--test")
         {
