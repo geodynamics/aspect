@@ -16,26 +16,38 @@ RUN DEBIAN_FRONTEND=noninteractive apt update && apt upgrade -yq && \
 RUN pip3 install cpp-coveralls
 
 # we need a newer version of cmake to support unity builds:
-RUN cd $HOME && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
-ENV PATH="/root/cmake-3.17.3-Linux-x86_64/bin:$PATH"
+RUN cd /opt && wget https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3-Linux-x86_64.tar.gz && tar xf cmake*.tar.gz && rm cmake*.tar.gz
+ENV PATH="/opt/cmake-3.17.3-Linux-x86_64/bin:$PATH"
+ONBUILD ENV PATH="/opt/cmake-3.17.3-Linux-x86_64/bin:$PATH"
 
-COPY local.cfg /root/
+COPY local.cfg /opt/
 
 # Install deal.II with minimal dependencies for ASPECT
-RUN cd $HOME && \
+RUN cd /opt && \
     git clone https://github.com/dealii/candi && \
     cd candi && \
-    mv /root/local.cfg . && \
-    git checkout dealii-9.3 && \
-    ./candi.sh -p $HOME -j64 && \
-    rm -rf $HOME/tmp
+    mv /opt/local.cfg . && \
+    git checkout v9.3.1-r1 && \
+    ./candi.sh -p /opt -j64 && \
+    rm -rf /opt/tmp && \
+    ln -s /opt/astyle-2.04/astyle /usr/bin/astyle
 
-ENV DEAL_II_DIR /root/deal.II-v9.3.0
-
+# Set environment variables for this image to be used
+# by Github Actions
+ENV DEAL_II_DIR /opt/deal.II-v9.3.1
 ENV OMPI_MCA_btl_base_warn_component_unused=0
 ENV OMPI_MCA_mpi_yield_when_idle=1
 ENV OMPI_MCA_rmaps_base_oversubscribe=1
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 
-WORKDIR /root
+# Set environment variables for derived images, which
+# are build by Jenkins
+ONBUILD ENV DEAL_II_DIR /opt/deal.II-v9.3.1
+ONBUILD ENV OMPI_MCA_btl_base_warn_component_unused=0
+ONBUILD ENV OMPI_MCA_mpi_yield_when_idle=1
+ONBUILD ENV OMPI_MCA_rmaps_base_oversubscribe=1
+ONBUILD ENV OMPI_ALLOW_RUN_AS_ROOT=1
+ONBUILD ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
+WORKDIR /opt

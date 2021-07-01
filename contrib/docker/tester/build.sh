@@ -5,4 +5,4 @@
 # communicate with the docker daemon without root user privileges (see the docker
 # webpage for an explanation).
 
-docker build -t gassmoeller/aspect-tester:focal-9.3 .
+docker build -t gassmoeller/aspect-tester:focal-dealii-9.3-v1 .
