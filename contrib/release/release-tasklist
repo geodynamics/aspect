@@ -130,6 +130,130 @@
        https://community.geodynamics.org/c/aspect
        dealii@googlegroups.com
 
+
+Announcement for 2.3.0 (June 30, 2021)
+-----------------------------------------
+We are pleased to announce the release of ASPECT 2.3.0. ASPECT is the Advanced
+Solver for Problems in Earth's ConvecTion. It uses modern numerical methods such
+as adaptive mesh refinement, multigrid solvers, and a modular software design to
+provide a fast, flexible, and extensible mantle convection solver. ASPECT is
+available from
+
+                   https://aspect.geodynamics.org/
+
+and the release is available from
+
+        https://geodynamics.org/cig/software/aspect/
+
+and
+
+        https://github.com/geodynamics/aspect/releases/tag/v2.3.0
+
+Among others this release includes the following significant changes:
+
+- New: ASPECT now requires deal.II 9.2.0 or newer.
+  (Timo Heister)
+
+- New: ASPECT has a new, reproducible logo.
+  (Rene Gassmoeller, Juliane Dannberg)
+
+- New: Mesh deformation now also works in combination with particles. Instead
+  of the end of the timestep, particles are now advected before solving
+  the compositional field advection equations. In iterative advection
+  schemes, the particle location is restored before each iteration.
+  (Anne Glerum, Rene Gassmoeller, Robert Citron)
+
+- New: ASPECT now supports the creation of visualization postprocessors that
+  only output data on the surface of a model. An example is the "surface
+  stress" visualization postprocessor.
+  (Wolfgang Bangerth)
+
+- New: A new class TimeStepping::Manager to control time stepping with a plugin
+  architecture has been added. The architecture allows to repeat time steps
+  if the time step length changes significantly.
+  (Timo Heister)
+
+- New: A mesh refinement plugin that allows to set regions of minimum and
+  maximum refinement level between isosurfaces of solution variables.
+  (Menno Fraters and Haoyuan Li)
+
+- New: There is a new nullspace removal option 'net surface rotation',
+  which removes the net rotation of the surface.
+  (Rene Gassmoeller)
+
+- New: Particle advection can now be used in combination with the repetition of
+  timesteps. Before each repetition the particles are restored to their previous
+  position.
+  (Anne Glerum)
+
+- New: There is a new property in the depth average postprocessor that averages
+  the mass of a compositional field (rather than its volume).
+  (Juliane Dannberg)
+
+- New: The Drucker Prager rheology module now has an option to include a
+  plastic damper, which acts to stabilize the plasticity formulation. At
+  sufficient resolutions for a given plastic damper viscosity, the plastic
+  shear band characteristics will be resolution independent.
+  (John Naliboff and Cedric Thieulot)
+
+- New: ASPECT can now compute viscosity values depending on the values
+  of phase functions for an arbitrary number of phases.
+  (Haoyuan Li, 2020/08/06)
+
+- New: Added calculation for temperature-dependent strain healing in the strain
+  dependent rheology module.
+  (Erin Heilman)
+
+- New: Added new rheology module, which computes the
+  temperature dependent Frank Kamenetskii viscosity approximation.
+  (Erin Heilman)
+
+- New: ASPECT now includes a CompositeViscoPlastic rheology module. This
+  rheology is an isostress composite of diffusion, dislocation and Peierls
+  creep rheologies and optionally includes a damped Drucker-Prager plastic
+  element. The rheology module for Peierls creep includes a formulation to
+  compute the exact Peierls viscosity, using an internal Newton-Raphson
+  iterative scheme.
+  (Bob Myhill, John Naliboff and Magali Billen)
+
+- New: There is a new visualization postprocessor 'principal stress',
+  which outputs the principal stress values and directions at every point in the
+  model.
+  (Rene Gassmoeller)
+
+- New: Added the functionality to compute averages in user defined depth layers
+  (e.g. lithosphere, asthenosphere, transition zone, lower mantle) to the depth
+  average postprocessor and the lateral averaging plugin.
+  (Rene Gassmoeller)
+
+- New: The 'spherical shell' geometry model now supports periodic boundary
+  conditions in polar angle direction for a 2D quarter shell (90 degree opening
+  angle).
+  (Kiran Chotalia, Timo Heister, Rene Gassmoeller)
+
+- New: A new particle interpolator based on quadratic least squares has been
+  added.
+  (Mack Gregory, Gerry Puckett)
+
+- New: There is now a mesh deformation plugin "diffusion" that can be used to
+  diffuse surface topography in box geometry models.
+  (Anne Glerum)
+
+- Bug fixes to: Steinberger and Calderwood viscosity profile, particle
+  generation, viscous strain weakening, incompressible equation of state,
+  pressure sign convention, Neumann heat flow boundaries with the Newton
+  solver, viscosity on the adiabat for extended Boussinesq approximation
+  models, and many more.
+  (many authors)
+
+A complete list of all changes and their contributing authors can be found at
+  https://aspect.geodynamics.org/doc/doxygen/changes_between_2_82_80_and_2_83_80.html
+
+Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmoeller,
+Anne Glerum, Timo Heister, Bob Myhill, John Naliboff,
+and many other contributors.
+
+
 Announcement for 2.2.0 (June 30, 2020)
 -----------------------------------------
 We are pleased to announce the release of ASPECT 2.2.0. ASPECT is the Advanced
