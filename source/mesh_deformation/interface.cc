@@ -591,29 +591,17 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-#ifdef ASPECT_USE_PETSC
-      LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
-#else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             sim.mpi_communicator);
-#endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        mesh_velocity_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 sim.mpi_communicator, mesh_locally_relevant);
-      sp.compress();
-      mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
-#else
       sp.compress();
       mesh_matrix.reinit (sp);
-#endif
 
       // carry out the solution
       FEValuesExtractors::Vector extract_vel(0);
@@ -656,15 +644,11 @@ namespace aspect
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef ASPECT_USE_PETSC
-      Amg_data.symmetric_operator = false;
-#else
       Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-#endif
       preconditioner_stiffness.initialize(mesh_matrix);
 
       SolverControl solver_control(5*rhs.size(), sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
@@ -716,29 +700,17 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-#ifdef ASPECT_USE_PETSC
-      LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
-#else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             sim.mpi_communicator);
-#endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        initial_deformation_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 sim.mpi_communicator, mesh_locally_relevant);
-      sp.compress();
-      mesh_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, sim.mpi_communicator);
-#else
       sp.compress();
       mesh_matrix.reinit (sp);
-#endif
 
       // carry out the solution
       FEValuesExtractors::Vector extract_vel(0);
@@ -779,15 +751,11 @@ namespace aspect
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef ASPECT_USE_PETSC
-      Amg_data.symmetric_operator = false;
-#else
       Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-#endif
       preconditioner_stiffness.initialize(mesh_matrix);
 
       SolverControl solver_control(5*rhs.size(), 1e-5*sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
