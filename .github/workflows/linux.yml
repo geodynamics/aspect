@@ -2,6 +2,10 @@ name: linux
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.actor }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linux-nounity:
     #linux build with unity/precomiled headers disabled
