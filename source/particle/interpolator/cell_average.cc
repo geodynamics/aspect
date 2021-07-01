@@ -150,7 +150,8 @@ namespace aspect
                                Patterns::Bool (),
                                "By default, every cell needs to contain particles to use this interpolator "
                                "plugin. If this parameter is set to true, cells are allowed to have no particles, "
-                               "in which case the interpolator will return 0 for the cell's properties.");
+                               "In case both the current cell and its neighbors are empty, "
+                               "the interpolator will return 0 for the current cell's properties.");
           }
           prm.leave_subsection ();
         }
@@ -187,7 +188,11 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(CellAverage,
                                             "cell average",
-                                            "Return the arithmetic average of all particle properties in the given cell.")
+                                            "Return the arithmetic average of all particle properties in the given cell, "
+                                            "or in the neighboring cells if the given cell is empty. "
+                                            "In case the neighboring cells are also empty, and 'Allow cells "
+                                            "without particles' is set to true, the interpolator returns 0. "
+                                            "Otherwise, an exception is thrown. ")
     }
   }
 }

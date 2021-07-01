@@ -152,8 +152,9 @@ namespace aspect
             prm.declare_entry ("Allow cells without particles", "false",
                                Patterns::Bool (),
                                "By default, every cell needs to contain particles to use this interpolator "
-                               "plugin. If this parameter is set to true, cells are allowed to have no particles, "
-                               "in which case the interpolator will return 0 for the cell's properties.");
+                               "plugin. If this parameter is set to true, cells are allowed to have no particles. "
+                               "In case both the current cell and its neighbors are empty, "
+                               "the interpolator will return 0 for the current cell's properties.");
           }
           prm.leave_subsection ();
         }
@@ -192,7 +193,10 @@ namespace aspect
                                             "harmonic average",
                                             "Return the harmonic average of all particle properties in the "
                                             "given cell. If the cell contains no particles, return the "
-                                            "harmonic average of the properties in the neighboring cells.")
+                                            "harmonic average of the properties in the neighboring cells. "
+                                            "In case the neighboring cells are also empty, and 'Allow cells "
+                                            "without particles' is set to true, the interpolator returns 0. "
+                                            "Otherwise, an exception is thrown. ")
     }
   }
 }

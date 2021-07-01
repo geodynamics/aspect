@@ -151,8 +151,9 @@ namespace aspect
             prm.declare_entry ("Allow cells without particles", "false",
                                Patterns::Bool (),
                                "By default, every cell needs to contain particles to use this interpolator "
-                               "plugin. If this parameter is set to true, cells are allowed to have no particles, "
-                               "in which case the interpolator will return 0 for the cell's properties.");
+                               "plugin. If this parameter is set to true, cells are allowed to have no particles. "
+                               "In case both the current cell and its neighbors are empty, "
+                               "the interpolator will return 0 for the current cell's properties.");
           }
           prm.leave_subsection ();
         }
@@ -191,7 +192,10 @@ namespace aspect
                                             "nearest neighbor",
                                             "Return the properties of the nearest neighboring particle "
                                             "in the current cell, or nearest particle in nearest neighboring "
-                                            "cell if current cell is empty.")
+                                            "cell if current cell is empty. "
+                                            "In case the neighboring cells are also empty, and 'Allow cells "
+                                            "without particles' is set to true, the interpolator returns 0. "
+                                            "Otherwise, an exception is thrown. ")
     }
   }
 }
