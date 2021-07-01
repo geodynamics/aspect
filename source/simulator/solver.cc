@@ -27,11 +27,7 @@
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
 
-#ifdef ASPECT_USE_PETSC
-#include <deal.II/lac/solver_cg.h>
-#else
 #include <deal.II/lac/trilinos_solver.h>
-#endif
 
 #include <deal.II/fe/fe_values.h>
 
@@ -280,11 +276,8 @@ namespace aspect
       {
         SolverControl solver_control(1000, src.block(1).l2_norm() * S_block_tolerance);
 
-#ifdef ASPECT_USE_PETSC
-        SolverCG<LinearAlgebra::Vector> solver(solver_control);
-#else
         TrilinosWrappers::SolverCG solver(solver_control);
-#endif
+
         // Trilinos reports a breakdown
         // in case src=dst=0, even
         // though it should return
@@ -335,11 +328,7 @@ namespace aspect
       if (do_solve_A == true)
         {
           SolverControl solver_control(10000, utmp.l2_norm() * A_block_tolerance);
-#ifdef ASPECT_USE_PETSC
-          SolverCG<LinearAlgebra::Vector> solver(solver_control);
-#else
           TrilinosWrappers::SolverCG solver(solver_control);
-#endif
           try
             {
               dst.block(0) = 0.0;
@@ -639,11 +628,7 @@ namespace aspect
 
         SolverControl cn;
         // TODO: can we re-use the direct solver?
-#ifdef ASPECT_USE_PETSC
-        PETScWrappers::SparseDirectMUMPS solver(cn, mpi_communicator);
-#else
         TrilinosWrappers::SolverDirect solver(cn);
-#endif
         try
           {
             solver.solve(system_matrix.block(0,0),
