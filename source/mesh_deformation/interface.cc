@@ -591,19 +591,15 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-
-
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             sim.mpi_communicator);
-
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        mesh_velocity_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
-
       sp.compress();
       mesh_matrix.reinit (sp);
 
@@ -648,13 +644,11 @@ namespace aspect
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-
       Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-
       preconditioner_stiffness.initialize(mesh_matrix);
 
       SolverControl solver_control(5*rhs.size(), sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
@@ -706,18 +700,15 @@ namespace aspect
         coupling[c][c] = DoFTools::always;
 
       LinearAlgebra::SparseMatrix mesh_matrix;
-
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             sim.mpi_communicator);
-
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
                                        coupling, sp,
                                        initial_deformation_constraints, false,
                                        Utilities::MPI::
                                        this_mpi_process(sim.mpi_communicator));
-
       sp.compress();
       mesh_matrix.reinit (sp);
 
@@ -760,13 +751,11 @@ namespace aspect
       // TODO: think about keeping object between time steps
       LinearAlgebra::PreconditionAMG preconditioner_stiffness;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-
       Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-
       preconditioner_stiffness.initialize(mesh_matrix);
 
       SolverControl solver_control(5*rhs.size(), 1e-5*sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
