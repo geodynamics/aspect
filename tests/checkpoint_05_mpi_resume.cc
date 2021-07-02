@@ -21,10 +21,10 @@ int f()
             << std::endl;
   const int ret = system (command.c_str());
   if (ret!=0)
-  {
-    std::cout << "system() returned error " << ret << std::endl;
-    exit(1);
-  }
+    {
+      std::cout << "system() returned error " << ret << std::endl;
+      exit(1);
+    }
 
   std::cout << "* Finished copying files. Now resuming model." << std::endl;
 
