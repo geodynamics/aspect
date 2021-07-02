@@ -17,7 +17,7 @@ The violated condition was:
     Utilities::fexists(filename) || filename_is_url(filename)
 Additional information: 
     Ascii data file
-    <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt> not
-    found!
+    <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt>
+    not found!
 
 Aborting!

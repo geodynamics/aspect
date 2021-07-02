@@ -24,8 +24,7 @@ Additional information:
     
     --------------------------------------------------------
     An error occurred in line <1074> of file
-    </root/deal.II-dealii-9.3/include/deal.II/lac/solver_gmres.h> in
-    function
+    </opt/deal.II-v9.3.1/include/deal.II/lac/solver_gmres.h> in function
     void dealii::SolverGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
     MatrixType = dealii::TrilinosWrappers::SparseMatrix;
