@@ -6,7 +6,11 @@ set Start time                                      = 0
 set End time                                        = 1e6
 set Use years in output instead of seconds          = true
 set Nonlinear solver scheme                         = single Advection, iterated Stokes
-set Nonlinear solver tolerance                      = 1e-8
+
+# This model is very sensitive to the nonlinear solver tolerance,
+# results still change slightly down to a tolerance of 1e-8, but
+# require much more resources than reasonable for a cookbook.
+set Nonlinear solver tolerance                      = 2e-6
 set Max nonlinear iterations                        = 100
 set CFL number                                      = 0.5
 set Output directory                                = output-crustal_model_2D
