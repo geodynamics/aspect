@@ -402,13 +402,13 @@ namespace aspect
     // computing the *geometric* mean of the viscosities, but the
     // formula above is numerically stable.
 
-    // Do return 0 if we do not solve the Stokes equation. Technically, there is
+    // Do return NaN if we do not solve the Stokes equation. Technically, there is
     // no harm in computing the factor anyway, but the viscosity has to be positive
-    // for this function to work, and some models may set it to 0 if not solving
-    // the Stokes equation.
+    // for this function to work, and some models may set viscosity to 0 if not solving
+    // the Stokes equation. Returning NaN guarantees this value cannot be used.
     if (parameters.nonlinear_solver == NonlinearSolver::no_Advection_no_Stokes ||
         parameters.nonlinear_solver == NonlinearSolver::single_Advection_no_Stokes)
-      return 0.0;
+      return numbers::signaling_nan<double>();
 
     const QMidpoint<dim> quadrature_formula;
 
