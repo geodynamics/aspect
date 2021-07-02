@@ -1,6 +1,0 @@
-# Like checkpoint_01, but in parallel. The parallel runs are started
-# inside the shared library that will be loaded, so they do not appear here.
-
-set Dimension = 2
-
-include $ASPECT_SOURCE_DIR/tests/checkpoint_01.prm

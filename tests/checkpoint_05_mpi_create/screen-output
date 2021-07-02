@@ -7,8 +7,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00000
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00000
      Temperature min/avg/max:  1 K, 1.041 K, 1.1 K
      RMS, max velocity:        5.92e-09 m/s, 1.52e-08 m/s
 
@@ -17,8 +17,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00001
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00001
      Temperature min/avg/max:  1.001 K, 1.041 K, 1.099 K
      RMS, max velocity:        5.75e-09 m/s, 1.46e-08 m/s
 
@@ -27,8 +27,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00002
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00002
      Temperature min/avg/max:  1.002 K, 1.041 K, 1.097 K
      RMS, max velocity:        5.58e-09 m/s, 1.39e-08 m/s
 
@@ -37,8 +37,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00003
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00003
      Temperature min/avg/max:  1.003 K, 1.041 K, 1.096 K
      RMS, max velocity:        5.4e-09 m/s, 1.34e-08 m/s
 
@@ -49,8 +49,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00004
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00004
      Temperature min/avg/max:  1.003 K, 1.041 K, 1.094 K
      RMS, max velocity:        5.22e-09 m/s, 1.28e-08 m/s
 
@@ -59,8 +59,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00005
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00005
      Temperature min/avg/max:  1.004 K, 1.041 K, 1.093 K
      RMS, max velocity:        5.03e-09 m/s, 1.22e-08 m/s
 
@@ -69,8 +69,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00006
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00006
      Temperature min/avg/max:  1.005 K, 1.041 K, 1.091 K
      RMS, max velocity:        4.84e-09 m/s, 1.17e-08 m/s
 
@@ -79,8 +79,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00007
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00007
      Temperature min/avg/max:  1.006 K, 1.041 K, 1.09 K
      RMS, max velocity:        4.65e-09 m/s, 1.11e-08 m/s
 
@@ -91,8 +91,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00008
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00008
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.088 K
      RMS, max velocity:        4.45e-09 m/s, 1.06e-08 m/s
 
@@ -101,8 +101,8 @@ Number of degrees of freedom: 13,764 (9,539+4,225)
    Solving Stokes system... done.
 
    Postprocessing:
-     Writing depth average:    output1.tmp/depth_average
-     Writing graphical output: output1.tmp/solution/solution-00009
+     Writing depth average:    output-checkpoint_05_mpi_create/depth_average
+     Writing graphical output: output-checkpoint_05_mpi_create/solution/solution-00009
      Temperature min/avg/max:  1.007 K, 1.041 K, 1.087 K
      RMS, max velocity:        4.41e-09 m/s, 1.05e-08 m/s
 
