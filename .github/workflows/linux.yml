@@ -8,8 +8,8 @@ concurrency:
 
 jobs:
   linux-nounity:
-    #linux build with unity/precomiled headers disabled
-    name: no-unity
+    #linux build with unity/precompiled headers disabled
+    name: no-unity-build
     runs-on: [ubuntu-20.04]
 
     steps:
@@ -97,9 +97,10 @@ jobs:
         ./aspect --test
 
   job:
-    #linux build including indent and documentation
+    #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
+    continue-on-error: true
     container: gassmoeller/aspect-tester:focal-dealii-9.3-v1
 
     steps:
