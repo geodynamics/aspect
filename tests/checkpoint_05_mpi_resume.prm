@@ -4,7 +4,7 @@
 # output directory of this test before starting the run.
 #
 # MPI: 2
-# DEPENDS-ON: checkpoint_05_mpi_write
+# DEPENDS-ON: checkpoint_05_mpi_create
 
 set Dimension = 2
 set Resume computation = true
