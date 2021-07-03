@@ -102,6 +102,7 @@ namespace aspect
     void
     Command<dim>::parse_parameters (ParameterHandler &prm)
     {
+#if ASPECT_SAFE==0
       prm.enter_subsection("Postprocess");
       {
         prm.enter_subsection("Command");
@@ -113,6 +114,13 @@ namespace aspect
         prm.leave_subsection();
       }
       prm.leave_subsection();
+#else
+      AssertThrow(false, ExcMessage("The 'command' postprocessor requires "
+                                    "the ability to execute arbitrary code, "
+                                    "which is disabled by the ASPECT_SAFE "
+                                    "variable. Please check your build "
+                                    "configuration."));
+#endif
     }
   }
 }
