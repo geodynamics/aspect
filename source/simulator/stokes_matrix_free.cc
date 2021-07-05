@@ -1242,15 +1242,32 @@ namespace aspect
 
   template <int dim, int velocity_degree>
   void
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &/*prm*/)
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::declare_parameters(ParameterHandler &prm)
   {
+    prm.enter_subsection ("Solver parameters");
+    prm.enter_subsection ("Matrix Free");
+    {
+      prm.declare_entry ("Output details", "false",
+                         Patterns::Bool(),
+                         "Turns on extra information for the matrix free GMG solver to be printed.");
+    }
+    prm.leave_subsection ();
+    prm.leave_subsection ();
+
   }
 
 
 
   template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &/*prm*/)
+  void StokesMatrixFreeHandlerImplementation<dim,velocity_degree>::parse_parameters(ParameterHandler &prm)
   {
+    prm.enter_subsection ("Solver parameters");
+    prm.enter_subsection ("Matrix Free");
+    {
+      print_details = prm.get_bool ("Output details");
+    }
+    prm.leave_subsection ();
+    prm.leave_subsection ();
   }
 
 
@@ -1754,6 +1771,8 @@ namespace aspect
 
     // Estimate the eigenvalues for the Chebyshev smoothers.
 
+    types::global_dof_index coarse_A_size, coarse_S_size;
+
     //TODO: The setup for the smoother (as well as the entire GMG setup) should
     //       be moved to an assembly timing block instead of the Stokes solve
     //       timing block (as is currently the case).
@@ -1766,6 +1785,12 @@ namespace aspect
 
         mg_smoother_A[level].estimate_eigenvalues(temp_velocity);
         mg_smoother_Schur[level].estimate_eigenvalues(temp_pressure);
+
+        if (level==0)
+          {
+            coarse_A_size = temp_velocity.size();
+            coarse_S_size = temp_pressure.size();
+          }
       }
 
 
@@ -1778,6 +1803,14 @@ namespace aspect
     //Schur complement matrix GMG
     MGCoarseGridApplySmoother<VectorType> mg_coarse_Schur;
     mg_coarse_Schur.initialize(mg_smoother_Schur);
+
+
+    if (print_details)
+      {
+        sim.pcout << "\n    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << '\n';
+        const double imbalance = MGTools::workload_imbalance(sim.triangulation);
+        sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl;
+      }
 
     // Interface matrices
     // Ablock GMG
@@ -2130,6 +2163,19 @@ namespace aspect
     // into the ghosted one with all solution components
     sim.solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
     sim.solution.block(block_p) = distributed_stokes_solution.block(block_p);
+
+    if (print_details)
+      {
+        sim.pcout << "    Schur iterations: " << preconditioner_cheap.n_iterations_Schur_complement()
+                  << "+"
+                  << preconditioner_expensive.n_iterations_Schur_complement()
+                  << '\n';
+        sim.pcout << "    A iterations: " << preconditioner_cheap.n_iterations_A_block()
+                  << "+"
+                  << preconditioner_expensive.n_iterations_A_block()
+                  << '\n';
+        sim.pcout <<"    Stokes: " << std::flush;
+      }
 
     // print the number of iterations to screen
     sim.pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
