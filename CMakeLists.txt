@@ -119,6 +119,8 @@ ENDIF()
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 PROJECT(${TARGET} CXX)
 
+SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored ouput when compiling with gcc and clang.")
+
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 MESSAGE(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
@@ -453,6 +455,16 @@ ENDIF()
 IF (ASPECT_HAVE_LINK_H)
   MESSAGE(STATUS "Enabling checking of compatible deal.II library when loading plugins")
 ENDIF()
+
+if (${FORCE_COLORED_OUTPUT})
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER MATCHES "AppleClang")
+    STRING(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fcolor-diagnostics")
+    STRING(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fcolor-diagnostics")
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    STRING(APPEND DEAL_II_CXX_FLAGS_DEBUG " -fdiagnostics-color=always")
+    STRING(APPEND DEAL_II_CXX_FLAGS_RELEASE " -fdiagnostics-color=always")
+  endif()
+endif()
 
 SET(ASPECT_ADDITIONAL_CXX_FLAGS "" CACHE STRING "Additional CMAKE_CXX_FLAGS applied after the deal.II options.")
 
