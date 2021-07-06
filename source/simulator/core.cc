@@ -996,14 +996,11 @@ namespace aspect
     const Table<2,DoFTools::Coupling> coupling = setup_system_matrix_coupling();
     LinearAlgebra::BlockDynamicSparsityPattern sp;
 
-#ifdef ASPECT_USE_PETSC
-    sp.reinit (introspection.index_sets.system_relevant_partitioning);
-#else
     sp.reinit (system_partitioning,
                system_partitioning,
                introspection.index_sets.system_relevant_partitioning,
                mpi_communicator);
-#endif
+
 
     if ((parameters.use_discontinuous_temperature_discretization) ||
         (parameters.use_discontinuous_composition_discretization) ||
@@ -1047,15 +1044,7 @@ namespace aspect
                                        Utilities::MPI::
                                        this_mpi_process(mpi_communicator));
 
-#ifdef ASPECT_USE_PETSC
-    SparsityTools::distribute_sparsity_pattern(sp,
-                                               dof_handler.locally_owned_dofs_per_processor(),
-                                               mpi_communicator, introspection.index_sets.system_relevant_set);
 
-    sp.compress();
-
-    system_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
-#else
     sp.compress();
 
     // We may only allocate some of the matrix blocks, but the sparsity pattern
@@ -1084,7 +1073,6 @@ namespace aspect
       }
 
     system_matrix.reinit (sp);
-#endif
   }
 
 
@@ -1156,14 +1144,10 @@ namespace aspect
 
     LinearAlgebra::BlockDynamicSparsityPattern sp;
 
-#ifdef ASPECT_USE_PETSC
-    sp.reinit (introspection.index_sets.system_relevant_partitioning);
-#else
     sp.reinit (system_partitioning,
                system_partitioning,
                introspection.index_sets.system_relevant_partitioning,
                mpi_communicator);
-#endif
 
     DoFTools::make_sparsity_pattern (dof_handler,
                                      coupling, sp,
@@ -1171,15 +1155,7 @@ namespace aspect
                                      Utilities::MPI::
                                      this_mpi_process(mpi_communicator));
 
-#ifdef ASPECT_USE_PETSC
-    SparsityTools::distribute_sparsity_pattern(sp,
-                                               dof_handler.locally_owned_dofs_per_processor(),
-                                               mpi_communicator, introspection.index_sets.system_relevant_set);
 
-    sp.compress();
-
-    system_preconditioner_matrix.reinit (system_partitioning, system_partitioning, sp, mpi_communicator);
-#else
     sp.compress();
 
     // We are not interested in temperature and composition matrices for the
@@ -1208,7 +1184,6 @@ namespace aspect
       }
 
     system_preconditioner_matrix.reinit (sp);
-#endif
   }
 
 
