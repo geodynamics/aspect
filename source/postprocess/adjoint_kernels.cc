@@ -30,7 +30,6 @@ namespace aspect
   namespace Postprocess
   {
 
-
     template <int dim>
     std::pair<std::string,std::string>
     AdjointKernels<dim>::execute (TableHandler &)
@@ -38,11 +37,14 @@ namespace aspect
       if (this->n_compositional_fields() == 0)
         return std::pair<std::string,std::string>();
 
-      // create a quadrature formula based on the compositional element alone.
-      // be defensive about determining that a compositional field actually exists
-      AssertThrow (this->introspection().base_elements.compositional_fields
-                   != numbers::invalid_unsigned_int,
-                   ExcMessage("This postprocessor cannot be used without compositional fields."));
+      // This postprocessor is only useful when solving the adjoint Stokes equations so throw
+      // an exception if a different solver is chosen.
+      Assert(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::no_Advection_adjoint_Stokes,
+             ExcMessage("Error: Postprocessor Adjoint kernels is only sensible with the no Advection, adjoint Stokes solver scheme."))
+
+      // If the no Advection, adjoint Stokes solver scheme is chosen the parameter file is already checked such
+      // that it has at least 2 compositional fields and that the compositional fields have the correct names.
+
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree+1);
 
       const unsigned int n_q_points = quadrature_formula.size();
@@ -61,9 +63,18 @@ namespace aspect
       endc = this->get_dof_handler().end();
 
       std::ostringstream output;
-      std::vector <double> kernel_density_vec;
-      std::vector <double> kernel_viscosity_vec;
+      std::vector<double> kernel_density_vec;
+      std::vector<double> kernel_viscosity_vec;
       std::vector<Point<dim> > location;
+
+      // Prevent frequent memory reallocation when the vector grows
+      kernel_density_vec.reserve(this->get_triangulation().n_locally_owned_active_cells());
+      kernel_viscosity_vec.reserve(this->get_triangulation().n_locally_owned_active_cells());
+      location.reserve(this->get_triangulation().n_locally_owned_active_cells());
+
+      // get the index for the two compositional fields that correspond to the kernels
+      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_increment");
+      const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_factor");
 
       // compute the integral quantities by quadrature
       for (; cell!=endc; ++cell)
@@ -74,11 +85,12 @@ namespace aspect
             double kernel_density = 0;
             double kernel_viscosity = 0;
             double volume = 0;
-            const Point<dim> midpoint_of_cell = cell->center();
+            const bool use_manifold_in_curved_meshes = true;
+            const Point<dim> midpoint_of_cell = cell->center(use_manifold_in_curved_meshes);
 
-            fe_values[this->introspection().extractors.compositional_fields[0]].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.compositional_fields[density_idx]].get_function_values (this->get_solution(),
                 compositional_values_density);
-            fe_values[this->introspection().extractors.compositional_fields[1]].get_function_values (this->get_solution(),
+            fe_values[this->introspection().extractors.compositional_fields[viscosity_idx]].get_function_values (this->get_solution(),
                 compositional_values_viscosity);
 
             for (unsigned int q=0; q<n_q_points; ++q)
@@ -105,10 +117,11 @@ namespace aspect
                  << std::endl;
         }
 
-
-      const std::string filename = this->get_output_directory() +
-                                   "adjoint_kernel." +
-                                   Utilities::int_to_string(this->get_timestep_number(), 5);
+      std::string filename = this->get_output_directory() +
+                             "adjoint_kernel." +
+                             Utilities::int_to_string(this->get_timestep_number(), 5);
+      if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
+        filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
       const unsigned int max_data_length = Utilities::MPI::max (output.str().size()+1,
                                                                 this->get_mpi_communicator());
@@ -160,7 +173,6 @@ namespace aspect
 
       return std::pair<std::string,std::string> ("Writing adjoint kernels:", filename);
     }
-
   }
 }
 
@@ -172,32 +184,20 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(AdjointKernels,
                                   "adjoint kernels",
-                                  "A postprocessor that computes a measure of dynamic topography "
-                                  "based on the stress at the surface. The data is written into text "
-                                  "files named 'dynamic\\_topography.NNNNN' in the output directory, "
-                                  "where NNNNN is the number of the time step."
-                                  "\n\n"
-                                  "The exact approach works as follows: At the centers of all cells "
-                                  "that sit along the top surface, we evaluate the stress and "
-                                  "evaluate the component of it in the direction in which "
-                                  "gravity acts. In other words, we compute "
-                                  "$\\sigma_{rr}={\\hat g}^T(2 \\eta \\varepsilon(\\mathbf u)- \\frac 13 (\\textrm{div}\\;\\mathbf u)I)\\hat g - p_d$ "
-                                  "where $\\hat g = \\mathbf g/\\|\\mathbf g\\|$ is the direction of "
-                                  "the gravity vector $\\mathbf g$ and $p_d=p-p_a$ is the dynamic "
-                                  "pressure computed by subtracting the adiabatic pressure $p_a$ "
-                                  "from the total pressure $p$ computed as part of the Stokes "
-                                  "solve. From this, the dynamic "
-                                  "topography is computed using the formula "
-                                  "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
-                                  "is the density at the cell center."
+                                  "A postprocessor that writes out the sensitivity kernel for "
+                                  "density and viscosity. These sensitivity kernels are calculated "
+                                  "based on the solution of the forward and adjoint Stokes equations. "
+                                  "This postprocessor is therefore only sensible if the solver "
+                                  "scheme is no Advection, adjoint Stokes. The sensitivity "
+                                  "kernels are computed by the helper function compute_sensitivity_kernel "
+                                  "and are stored in the two compositional fields. Consequently this "
+                                  "postprocessor requires at least 2 compositional fields (to store "
+                                  "the two kernels) and the fields have to have the names density_increment "
+                                  "and viscosity_factor."
                                   "\n"
-                                  "The file format then consists of lines with Euclidean coordinates "
-                                  "followed by the corresponding topography value."
-                                  "\n\n"
-                                  "(As a side note, the postprocessor chooses the cell center "
-                                  "instead of the center of the cell face at the surface, where we "
-                                  "really are interested in the quantity, since "
-                                  "this often gives better accuracy. The results should in essence "
-                                  "be the same, though.)")
+                                  "The file format consists of lines with Euclidean coordinates "
+                                  "followed by the corresponding density and then viscosity sensitivity "
+                                  "kernel value."
+                                  "\n\n")
   }
 }

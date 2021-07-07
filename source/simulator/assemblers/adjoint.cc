@@ -18,11 +18,10 @@
   <http://www.gnu.org/licenses/>.
 */
 
+#include <aspect/simulator/assemblers/adjoint.h>
 #include <aspect/simulator.h>
-#include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
 
-#include <aspect/simulator/assemblers/adjoint.h>
 #include <aspect/postprocess/dynamic_topography.h>
 
 namespace aspect
@@ -47,21 +46,21 @@ namespace aspect
 
       const double pressure_scaling = this->get_pressure_scaling();
 
-      // TODO: make this consistent with input eventually
-      const double density_above = 0.;
-
       // Get a pointer to the dynamic topography postprocessor.
       const Postprocess::DynamicTopography<dim> &dynamic_topography =
         this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
 
-      // Get the already-computed dynamic topography solution.
+      // Get the already computed dynamic topography solution.
       const LinearAlgebra::BlockVector &topography_vector = dynamic_topography.topography_vector();
       std::vector<double> topo_values( n_face_q_points );
 
-      // check that the cell is at the top and that the cell is at the top
+      // Get the density_above from the dynamic topography postprocessor
+      const double density_above = dynamic_topography.return_density_above();
+
+      // check that the cell is at the top and that the boundary is at the top
       if (scratch.cell->face(scratch.face_number)->at_boundary()
           &&
-          this->get_geometry_model().depth (scratch.cell->face(scratch.face_number)->center()) < scratch.cell->face(scratch.face_number)->minimum_vertex_distance()/3)
+          scratch.cell->face(scratch.face_number)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
         {
           // get values at the surface of the cell
           scratch.face_finite_element_values.reinit (scratch.cell, scratch.face_number);
@@ -91,8 +90,10 @@ namespace aspect
 
               for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
                 {
-                  data.local_rhs(i) += topo_values[q] * (2.0*eta *(n_hat * (scratch.grads_phi_u[i] * n_hat))
-                                                           - pressure_scaling *scratch.phi_p[i]) / ((density-density_above)* gravity.norm())
+                  // The new RHS is the derivative of the objective function with respect to pressure and velocity.
+                  // The objective functional is currently just the squared topography and not yet a specific data misfit.
+                  data.local_rhs(i) += topo_values[q] * (- 2.0 * eta *(n_hat * (scratch.grads_phi_u[i] * n_hat))
+                                                         + pressure_scaling * scratch.phi_p[i]) / ((density - density_above) * gravity.norm())
                                        * JxW;
                 }
             }

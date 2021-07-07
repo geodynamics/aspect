@@ -195,7 +195,7 @@ namespace aspect
                                                "iterated Advection and Newton Stokes|single Advection, iterated Newton Stokes|"
                                                "single Advection, no Stokes|IMPES|iterated IMPES|"
                                                "iterated Stokes|Newton Stokes|Stokes only|Advection only|"
-                                               "first timestep only, single Stokes|no Advection, no Stokes|Stokes adjoint";
+                                               "first timestep only, single Stokes|no Advection, no Stokes|no Advection, adjoint Stokes";
 
     prm.declare_entry ("Nonlinear solver scheme", "single Advection, single Stokes",
                        Patterns::Selection (allowed_solver_schemes),
@@ -251,7 +251,10 @@ namespace aspect
                        "backwards compatibility. It is the same as `single Advection, no Stokes'. "
                        "The `Newton Stokes' scheme is deprecated and only allowed for reasons of "
                        "backwards compatibility. It is the same as `iterated Advection and Newton Stokes'."
-                       "The `Stokes adjoint' scheme solves the forward and adjoint stokes equation");
+                       "The `no Advection, adjoint Stokes' scheme iteratively solves the forward and adjoint "
+                       "Stokes equations. This solver scheme does currently not return the correct solution "
+                       "at the surface cells, which leads to an incorrect update of the viscosity and density "
+                       "variables in each iteration. ");
 
     prm.declare_entry ("Nonlinear solver tolerance", "1e-5",
                        Patterns::Double(0., 1.),
@@ -1292,32 +1295,6 @@ namespace aspect
 
     VolumeOfFluidHandler<dim>::declare_parameters(prm);
 
-
-    prm.enter_subsection("Adjoint problem");
-    {
-      prm.declare_entry ("Input filename for adjoint points", "$ASPECT_SOURCE_DIR/data/adjoint-observations/dynamic_topography_observations.txt",
-                         Patterns::Anything(),
-                         "");
-      prm.declare_entry ("Read points from file", "false",
-                         Patterns::Bool (),
-                         "");
-      prm.declare_entry ("Number of iterations in adjoint inversion", "1",
-                         Patterns::Integer (),
-                         "");
-      prm.declare_entry ("Use fixed surface value", "false",
-                         Patterns::Bool (),
-                         "");
-      prm.declare_entry ("Factor to update the density properties", "0.",
-                         Patterns::Double (),
-                         "");
-      prm.declare_entry ("Factor to update the viscosity properties", "0.",
-                         Patterns::Double (),
-                         "");
-    }
-    prm.leave_subsection();
-
-
-
     // then, finally, let user additions that do not go through the usual
     // plugin mechanism, declare their parameters if they have subscribed
     // to the relevant signals
@@ -1381,8 +1358,8 @@ namespace aspect
         nonlinear_solver = NonlinearSolver::first_timestep_only_single_Stokes;
       else if (solver_scheme == "no Advection, no Stokes")
         nonlinear_solver = NonlinearSolver::no_Advection_no_Stokes;
-      else if (solver_scheme == "Stokes adjoint")
-        nonlinear_solver = NonlinearSolver::Stokes_adjoint;
+      else if (solver_scheme == "no Advection, adjoint Stokes")
+        nonlinear_solver = NonlinearSolver::no_Advection_adjoint_Stokes;
       else
         AssertThrow (false, ExcNotImplemented());
     }
@@ -1577,6 +1554,13 @@ namespace aspect
     prm.enter_subsection ("Melt settings");
     {
       include_melt_transport = prm.get_bool ("Include melt transport");
+
+      // The no Advection, adjoint Stokes solver scheme does not currently work with melt transport
+      // so throw and excpetion if both are chosen
+      if (include_melt_transport && nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
+        AssertThrow (false, ExcMessage("The melt transport does not work with the no Advection, "
+                                       "adjoint Stokes solver scheme."));
+
     }
     prm.leave_subsection();
 
@@ -1674,6 +1658,14 @@ namespace aspect
       AssertThrow(use_discontinuous_composition_discretization == true || composition_degree > 0,
                   ExcMessage("Using a composition polynomial degree of 0 (cell-wise constant composition) "
                              "is only supported if a discontinuous composition discretization is selected."));
+
+      if (nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes && composition_degree > 0)
+        AssertThrow (false, ExcMessage("Using the no advection, adjoint Stokes solver scheme requires a compositional "
+                                       "polynomial degree of 0."));
+
+      if (nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes && use_discontinuous_composition_discretization == false)
+        AssertThrow (false, ExcMessage("Using the no advection, adjoint Stokes solver scheme requires the discontinuous composition "
+                                       "discretization to be true."));
 
       prm.enter_subsection ("Stabilization parameters");
       {
@@ -1793,6 +1785,31 @@ namespace aspect
       if (names_of_compositional_fields.size() == 0)
         for (unsigned int i=0; i<n_compositional_fields; ++i)
           names_of_compositional_fields.push_back("C_" + Utilities::int_to_string(i+1));
+
+
+      // if we want to solve the adjoint stokes equations make sure that there are at
+      // least two compositional fields and that they have the names density_increment and
+      // viscosity_factor
+      if (nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
+        {
+          Assert(n_compositional_fields >= 2,
+                 ExcMessage ("The no Advection, adjoint Stokes solver scheme requires two "
+                             "compositional fields for the density and viscosity kernels."));
+
+          std::vector<std::string>::const_iterator
+          it = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_increment");
+          AssertThrow (it != names_of_compositional_fields.end(),
+                       ExcMessage ("The no Advection, adjoint Stokes solver scheme requires specific "
+                                   "names for the two compositional fields, which are density_increment and viscosity_factor. You are "
+                                   "missing the field density_increment."))
+
+          it = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "viscosity_factor");
+          AssertThrow (it != names_of_compositional_fields.end(),
+                       ExcMessage ("The no Advection, adjoint Stokes solver scheme requires specific "
+                                   "names for the two compositional fields, which are density_increment and viscosity_factor. You are "
+                                   "missing the field viscosity_factor."))
+        }
+
 
       // if we want to solve the melt transport equations, check that one of the fields
       // has the name porosity
@@ -1977,16 +1994,6 @@ namespace aspect
       material_averaging
         = MaterialModel::MaterialAveraging::parse_averaging_operation_name
           (prm.get ("Material averaging"));
-    }
-    prm.leave_subsection ();
-
-    prm.enter_subsection("Adjoint problem");
-    {
-      adjoint_input_file              = prm.get ("Input filename for adjoint points");
-      read_in_points                  = prm.get_bool ("Read points from file");
-      use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
-      update_factor_rho               = prm.get_double ("Factor to update the density properties");
-      update_factor_eta               = prm.get_double ("Factor to update the viscosity properties");
     }
     prm.leave_subsection ();
 

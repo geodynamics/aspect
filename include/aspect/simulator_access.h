@@ -259,11 +259,6 @@ namespace aspect
       get_pcout () const;
 
       /**
-       * Return the current problem (forward or adjoint).
-       */
-      bool get_adjoint_problem () const;
-
-      /**
        * Return the current simulation time in seconds.
        */
       double get_time () const;
@@ -433,6 +428,15 @@ namespace aspect
       const LinearAlgebra::BlockVector &
       get_current_linearization_point () const;
 
+      /**
+       * Return a reference to the vector that has the current linearization
+       * point of the entire adjoint system, i.e. tha adjoint velocity and
+       * and pressure variables as well as the temperature and compositional
+       * fields even though these are 0 when solving the adjoint Stokes equations.
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
       const LinearAlgebra::BlockVector &
       get_current_adjoint_solution () const;
 

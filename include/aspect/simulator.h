@@ -2105,14 +2105,27 @@ namespace aspect
       friend class StokesMatrixFreeHandlerImplementation;
       friend struct Parameters<dim>;
 
-      /** Parameters for the adjoint problem
+
+      /**
+       * Non-linear solver scheme function that solves first the forward and then
+       * the adjoint Stokes equation.
        */
-      bool                                                      adjoint_problem;
-      LinearAlgebra::BlockVector                                current_adjoint_solution;
       void solve_stokes_adjoint ();
 
-      void compute_parameter_update ();
+      /**
+       * A Block vector that stores the adjoint solution. For the adjoint
+       * equations we first solve the forward then the adjoint equations and
+       * we will need both solutions at the same time to calculate the sensitivity
+       * kernels and to visualize the output.
+       */
+      LinearAlgebra::BlockVector                                current_adjoint_solution;
 
+      /**
+       * A function that takes the solution of the forward and adjoint Stokes
+       * equations and calculates the sensitivity kernels and writes them into
+       * the compositional fields, which then update the density and viscosity.
+       */
+      void adjoint_update_compositional_fields();
   };
 }
 

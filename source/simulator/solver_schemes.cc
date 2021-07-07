@@ -25,12 +25,15 @@
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/newton.h>
 #include <aspect/melt.h>
-#include <aspect/simulator/assemblers/adjoint.h>
 
 #include <deal.II/numerics/vector_tools.h>
 
 #include <aspect/stokes_matrix_free.h>
 
+#include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/postprocess/global_statistics.h>
+#include <aspect/simulator/assemblers/adjoint.h>
+#include <aspect/material_model/additive.h>
 
 namespace aspect
 {
@@ -1459,7 +1462,19 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::solve_stokes_adjoint ()
   {
+    // This solver scheme requires the use of the additive material model if you iterate to
+    // update material properties
+    Assert(dynamic_cast<const MaterialModel::Additive<dim>*>(material_model.get()) != nullptr ||
+           parameters.max_nonlinear_iterations == 1,
+           ExcMessage("If you're choosing the 'no Advection, adjoint Stokes' solver scheme with more "
+                      "than 1 nonlinear iterations, you need to choose the 'additive' material model "
+                      "so that the material properties can be updated after each iteration."));
 
+    // This calculation requires that the DT postprocessor is selected
+    AssertThrow(postprocess_manager.template has_matching_postprocessor<const Postprocess::DynamicTopography<dim>> (),
+                ExcMessage("The dynamic topography postprocessor has to be active for the current adjoint computations."));
+
+    // determine how often to iterate over the forward & adjoint Stokes equations
     const unsigned int max_nonlinear_iterations =
       (pre_refinement_step < parameters.initial_adaptive_refinement)
       ?
@@ -1468,117 +1483,121 @@ namespace aspect
       :
       parameters.max_nonlinear_iterations;
 
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
 
-    for (unsigned int i=0; i<max_nonlinear_iterations; ++i)
-       {
+    // follow the standardized format for nonlinear solver loops. We are not currently recomputing
+    // a residual in the iteration, which means that the number of iterations is always given by the
+    // maximum number of iterations.
+    double relative_residual = std::numeric_limits<double>::max();
 
-        pcout << " ^^ Adjoint iteration number " << i  << std::endl;
+    // start the iteration.
+    nonlinear_iteration = 0;
+    do
+      {
+        pcout << "      Number of current adjoint iteration: " << nonlinear_iteration+1  << std::endl;
+        pcout << "      Solving the forward problem ... " << std::endl;
 
-    // -------------------------------------------------------------
-    // SOLVE FORWARD PROBLEM
+        // set the assemblers for the RHS
+        set_assemblers();
 
-    pcout << "   Forward problem ... " << std::endl;
+        // build the Stokes system
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
-    // I think at this point this flag only affects postprocessing
-    adjoint_problem = false;
+        assemble_stokes_system();
+        build_stokes_preconditioner();
 
-    // set the assemblers for the RHS
-    set_assemblers();
+        // solve the stokes system and put the solution (x in Ax=b) into 'solution'
+        solve_stokes();
 
-    rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+        // save the solution from overwriting during the adjoint problem by
+        // storing it in 'current_linearization_point'
+        current_linearization_point.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_linearization_point.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
 
-    assemble_stokes_system();
-    build_stokes_preconditioner();
+        // calculate the dynamic topography based on the forward solution,
+        // which will be needed for the new RHS assembly of the adjoint system
+        Postprocess::DynamicTopography<dim> &dynamic_topography =
+          const_cast<Postprocess::DynamicTopography<dim> &> (postprocess_manager.template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >());
 
-    solve_stokes(); // solves Ax=b, puts x into 'solution'
-    // put 'solution' into 'current_linearization_point' (=u/p)
-    current_linearization_point.block(introspection.block_indices.velocities)
-      = solution.block(introspection.block_indices.velocities);
-    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      current_linearization_point.block(introspection.block_indices.pressure)
-        = solution.block(introspection.block_indices.pressure);
-
-    // postprocess forward solution to calculate DT and maybe geoid etc.
-    // TODO: only run the postprocessors I need, e.g. DT
-    postprocess ();
-
-    // -------------------------------------------------------------
-    // SOLVE ADJOINT PROBLEM
-
-    pcout << "   Adjoint problem ... " << std::endl;
-
-    // only do adjoint if final (refined) mesh is reached
-    // I think at this point this flag only affects postprocessing
-    adjoint_problem = true;
-
-    // clear all RHS assemblers and only do pressure rhs compatibility and assemble the Adjoint RHS;
-    assemblers->stokes_system.clear();
-    assemblers->stokes_system_on_boundary_face.clear();
+        dynamic_topography.execute(statistics);
 
 
-    // assemble the Stokes RHS - this is done on the boundary since it's a surface force
-    assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
+        // start adjoint calculation
+        pcout << "      Solving the adjoint problem ... " << std::endl;
 
-    assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
-    assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
+        // set the pressure rhs compatibility to true for the ajdoint problem.
+        do_pressure_rhs_compatibility_modification = true;
 
-    assemblers->stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
-
-    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system_on_boundary_face[0].get()))
-      p->initialize_simulator(*this);
+        // clear all RHS assemblers
+        assemblers->stokes_system.clear();
+        assemblers->stokes_system_on_boundary_face.clear();
 
 
-    // add the terms necessary to normalize the pressure
-    if (do_pressure_rhs_compatibility_modification)
-      assemblers->stokes_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+        // assemble the Stokes RHS - this is done on the boundary since it's a surface force
+        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags =
+          (update_values | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
 
-    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
-      p->initialize_simulator(*this);
+        assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+        assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
 
+        assemblers->stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
 
-    // Don't need to reassmble the stokes system because it's the same as for the forward problem
-    rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
-
-    // the right hand side is assembled differently when adjoint_problem is true
-    assemble_stokes_system();
-    solve_stokes();  // solve Ax=b_adj
-
-    // put 'solution' into 'current_adjoint_solution' (=lambda_u/lambda_p)
-    current_adjoint_solution.block(introspection.block_indices.velocities)
-      = solution.block(introspection.block_indices.velocities);
-    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      current_adjoint_solution.block(introspection.block_indices.pressure)
-        = solution.block(introspection.block_indices.pressure);
-
-    // put forward solution back into solution vector for postprocessing output
-    solution.block(introspection.block_indices.velocities) =
-      current_linearization_point.block(introspection.block_indices.velocities);
-    if (introspection.block_indices.velocities != introspection.block_indices.pressure)
-      solution.block(introspection.block_indices.pressure)
-        = current_linearization_point.block(introspection.block_indices.pressure);
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system_on_boundary_face[0].get()))
+          p->initialize_simulator(*this);
 
 
-    // -------------------------------------------------------------
-    // COMPUTE UPDATES FOR ETA AND RHO
+        // do pressure rhs compatibility
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+        pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
 
-    // the inversion only works with a specific material model
-    // this doesn't actually check the material model yet just the number of comp fields, but okay
-    Assert(introspection.n_compositional_fields == 2,
-           ExcMessage ("You're not using the right material model for the adjoint problem. "
-                       "The only model that is consistent is the additive material model."));
 
-    // set up rhs and mass matrix
-    // solve system for gradients in eta and rho
-    compute_parameter_update();
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
+          p->initialize_simulator(*this);
 
-// might want to postprocess if any of the information within iterations should be saved
- //    postprocess ();
 
-    }
+        // No need to reassemble the stokes system because it's the same as for the forward problem
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
+
+        // Assemble and solve the adjoint stokes system
+        assemble_stokes_system();
+        solve_stokes();
+
+        // save the solution in 'current_adjoint_solution'. This will be accessed during visualization and
+        // to calculate the sensitivity kernels
+        current_adjoint_solution.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_adjoint_solution.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
+
+        // put forward solution back into solution vector so that the forward equation is processed during postprocessing
+        solution.block(introspection.block_indices.velocities) =
+          current_linearization_point.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          solution.block(introspection.block_indices.pressure)
+            = current_linearization_point.block(introspection.block_indices.pressure);
+
+
+        // calculate the gradient of the objective function and write it into the compositional fields. The next time
+        // the material model is called it will use these compositional fields to update the density and viscosity.
+        adjoint_update_compositional_fields();
+
+        // postprocess unless this is the last iteration because then it will be postprocessed outside of this solver scheme
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
   }
-
 
 }
 

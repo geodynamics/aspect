@@ -471,9 +471,7 @@ namespace aspect
     do_pressure_rhs_compatibility_modification = ((material_model->is_compressible() && !parameters.include_melt_transport)
                                                   ||
                                                   (parameters.include_melt_transport && !material_model->is_compressible())
-                                                  || parameters.enable_prescribed_dilation
-                                                  ||
-                                                  parameters.nonlinear_solver == NonlinearSolver::Stokes_adjoint)
+                                                  || parameters.enable_prescribed_dilation)
                                                  &&
                                                  (open_velocity_boundary_indicators.size() == 0);
 
@@ -798,13 +796,13 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::Stokes_adjoint:
             return true;
 
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_iterated_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::no_Advection_no_Stokes:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_adjoint_Stokes:
             return false;
         }
       Assert(false, ExcNotImplemented());
@@ -830,7 +828,7 @@ namespace aspect
           case Parameters<dim>::NonlinearSolver::Kind::iterated_Advection_and_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_iterated_Newton_Stokes:
           case Parameters<dim>::NonlinearSolver::Kind::first_timestep_only_single_Stokes:
-          case Parameters<dim>::NonlinearSolver::Kind::Stokes_adjoint:
+          case Parameters<dim>::NonlinearSolver::Kind::no_Advection_adjoint_Stokes:
             return true;
 
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_no_Stokes:
@@ -960,13 +958,15 @@ namespace aspect
       }
 
     // Only enable temperature coupling if temperature block is needed
-    if (solver_scheme_solves_advection_equations(parameters)
+    if ((solver_scheme_solves_advection_equations(parameters)
+         || parameters.nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
         &&
         parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field)
       coupling[x.temperature][x.temperature] = DoFTools::always;
 
     // Only enable composition coupling if a composition block is needed
-    if (solver_scheme_solves_advection_equations(parameters)
+    if ((solver_scheme_solves_advection_equations(parameters)
+         || parameters.nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
         &&
         compositional_fields_need_matrix_block(introspection))
       {
@@ -1017,12 +1017,14 @@ namespace aspect
         const typename Introspection<dim>::ComponentIndices &x
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization &&
-            solver_scheme_solves_advection_equations(parameters) &&
+            (solver_scheme_solves_advection_equations(parameters) ||
+             parameters.nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes) &&
             parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
         if (parameters.use_discontinuous_composition_discretization &&
-            solver_scheme_solves_advection_equations(parameters) &&
+            (solver_scheme_solves_advection_equations(parameters) ||
+             parameters.nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes) &&
             compositional_fields_need_matrix_block(introspection))
           face_coupling[x.compositional_fields[0]][x.compositional_fields[0]] = DoFTools::always;
 
@@ -1396,7 +1398,9 @@ namespace aspect
     old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
-    current_adjoint_solution.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+
+    if (parameters.nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
+      current_adjoint_solution.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
     if (parameters.use_operator_splitting)
       operator_split_reaction_vector.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
@@ -1834,7 +1838,7 @@ namespace aspect
           break;
         }
 
-        case NonlinearSolver::Stokes_adjoint:
+        case NonlinearSolver::no_Advection_adjoint_Stokes:
         {
           solve_stokes_adjoint();
           break;
@@ -1935,7 +1939,7 @@ namespace aspect
           }
       }
 
-// Start the principal loop over time steps. At this point, everything
+    // Start the principal loop over time steps. At this point, everything
     // is completely initialized, so set that status as well
     simulator_is_past_initialization = true;
     do
@@ -2037,6 +2041,7 @@ namespace aspect
     stokes_matrix_free.reset();
   }
 }
+
 
 
 // explicit instantiation of the functions we implement in this file
