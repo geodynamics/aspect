@@ -71,7 +71,6 @@ namespace aspect
          * steady state.
          */
         std::list<std::pair<double, double> >   time_temperature;
-
     };
   }
 }
