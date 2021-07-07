@@ -530,6 +530,8 @@ namespace aspect
 
       Simulator<dim> &sim;
 
+      bool print_details;
+
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
