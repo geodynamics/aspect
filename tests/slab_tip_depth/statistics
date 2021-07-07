@@ -1,0 +1,20 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: RMS velocity (m/year)
+# 16: Max. velocity (m/year)
+# 17: Max depth [km] for composition OP
+# 18: Max depth [km] for composition ML_SP
+# 19: Max depth [km] for composition crust_SP
+0 0.000000000000e+00 0.000000000000e+00 5056 47316 20987 62961 0 0 0 0 214 835 1071 2.03570070e-02 5.10456726e-02 7.85156250e+01 1.09921875e+02 7.85156250e+01 
