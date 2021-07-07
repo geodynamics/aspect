@@ -56,7 +56,7 @@ namespace aspect
       const std::string name = "CMB heat flux out of the core (TW)";
       statistics.add_value (name, -core_data.Q/1e12);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       statistics.set_precision (name, 3);
       statistics.set_scientific (name, true);
@@ -69,14 +69,14 @@ namespace aspect
       const std::string name1 = "CMB Temperature (K)";
       statistics.add_value (name1, core_data.Ti);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       statistics.set_precision (name1, 2);
       statistics.set_scientific (name1, false);
 
       const std::string name2 = "Inner core radius (km)";
       statistics.add_value (name2, core_data.Ri*1e-3);
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       statistics.set_precision (name2, 2);
       statistics.set_scientific (name2, false);

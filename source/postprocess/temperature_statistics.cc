@@ -124,7 +124,7 @@ namespace aspect
                                -
                                this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal temperature (K)",

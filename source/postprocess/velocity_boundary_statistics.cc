@@ -207,7 +207,7 @@ namespace aspect
                                                                                          .translate_id_to_symbol_name (rms->first))
                                            + " (m/s)";
               statistics.add_value (name_rms, rms->second);
-              // also make sure that the other columns filled by the this object
+              // also make sure that the other columns filled by this object
               // all show up with sufficient accuracy and in scientific notation
               statistics.set_precision (name_max, 8);
               statistics.set_scientific (name_max, true);

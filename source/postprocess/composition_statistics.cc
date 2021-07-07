@@ -125,7 +125,7 @@ namespace aspect
                                 global_compositional_integrals[c]);
         }
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {

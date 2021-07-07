@@ -104,7 +104,7 @@ namespace aspect
       statistics.add_value ("Maximal pressure (Pa)",
                             global_max_pressure);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal pressure (Pa)",
