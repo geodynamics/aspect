@@ -135,7 +135,7 @@ namespace aspect
           /**
            * Local contributions to the global rhs from the face terms in the
            * discontinuous Galerkin interpretation of the VolumeOfFluid method.
-           **/
+           */
           std::array<Vector<double>,
               GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
               local_face_rhs;
@@ -148,7 +148,7 @@ namespace aspect
            * field assembly. Entries not used (for example, those corresponding
            * to non-existent subfaces; or faces being assembled by the
            * neighboring cell) are set to false.
-           **/
+           */
           std::array<bool,
               GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
               face_contributions_mask;
@@ -168,7 +168,7 @@ namespace aspect
            * Indices of the degrees of freedom corresponding to the volume_of_fluid field
            * on all possible neighboring cells. This is used in the
            * discontinuous Galerkin interpretation of the VolumeOfFluid method.
-           **/
+           */
           std::array<std::vector<types::global_dof_index>,
               GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
               neighbor_dof_indices;

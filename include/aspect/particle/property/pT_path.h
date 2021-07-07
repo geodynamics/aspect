@@ -60,7 +60,7 @@ namespace aspect
 
           /**
           * @copydoc aspect::Particle::Property::Interface::update_particle_property()
-          **/
+          */
           virtual
           void
           update_particle_property (const unsigned int data_position,

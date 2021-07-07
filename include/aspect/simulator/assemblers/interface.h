@@ -428,7 +428,7 @@ namespace aspect
            * _int_ext and ext_int hold the terms arising from the pairing between a cell
            * and its neighbor, while _ext_ext is the pairing of the neighbor's dofs with
            * themselves. In the continuous Galerkin case, these are unused, and set to size zero.
-           **/
+           */
           std::vector<FullMatrix<double> >         local_matrices_int_ext;
           std::vector<FullMatrix<double> >         local_matrices_ext_int;
           std::vector<FullMatrix<double> >         local_matrices_ext_ext;
@@ -443,7 +443,7 @@ namespace aspect
            * assembly. Entries for matrices not used (for example, those corresponding
            * to non-existent subfaces; or faces being assembled by the neighboring cell)
            * are set to false.
-           **/
+           */
           std::vector<bool>               assembled_matrices;
 
           /**
@@ -463,7 +463,7 @@ namespace aspect
            * in the discontinuous Galerkin method. The outer std::vector has
            * length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
            * and has size zero if in the continuous Galerkin case.
-           **/
+           */
           std::vector<std::vector<types::global_dof_index> >   neighbor_dof_indices;
         };
       }
