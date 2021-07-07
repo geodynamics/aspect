@@ -720,17 +720,17 @@ namespace aspect
         VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
 
         velocity.reinit (cell);
-        velocity.read_dof_values (src.block(0));
 #if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.evaluate (EvaluationFlags::gradients);
+        velocity.gather_evaluate (src.block(0), EvaluationFlags::gradients);
 #else
+        velocity.read_dof_values (src.block(0));
         velocity.evaluate (false,true,false);
 #endif
         pressure.reinit (cell);
-        pressure.read_dof_values (src.block(1));
 #if DEAL_II_VERSION_GTE(9,3,0)
-        pressure.evaluate (EvaluationFlags::values);
+        pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
 #else
+        pressure.read_dof_values (src.block(1));
         pressure.evaluate (true,false,false);
 #endif
 
@@ -759,17 +759,18 @@ namespace aspect
           }
 
 #if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.integrate (EvaluationFlags::gradients);
+        velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
 #else
         velocity.integrate (false,true);
-#endif
         velocity.distribute_local_to_global (dst.block(0));
+#endif
+
 #if DEAL_II_VERSION_GTE(9,3,0)
-        pressure.integrate (EvaluationFlags::values);
+        pressure.integrate_scatter (EvaluationFlags::values, dst.block(1));
 #else
         pressure.integrate (true,false);
-#endif
         pressure.distribute_local_to_global (dst.block(1));
+#endif
       }
   }
 
@@ -840,10 +841,10 @@ namespace aspect
           one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
 
         pressure.reinit (cell);
-        pressure.read_dof_values(src);
 #if DEAL_II_VERSION_GTE(9,3,0)
-        pressure.evaluate (EvaluationFlags::values);
+        pressure.gather_evaluate (src, EvaluationFlags::values);
 #else
+        pressure.read_dof_values(src);
         pressure.evaluate (true,false);
 #endif
         for (unsigned int q=0; q<pressure.n_q_points; ++q)
@@ -867,11 +868,11 @@ namespace aspect
                                   pressure.get_value(q),q);
           }
 #if DEAL_II_VERSION_GTE(9,3,0)
-        pressure.integrate (EvaluationFlags::values);
+        pressure.integrate_scatter (EvaluationFlags::values, dst);
 #else
         pressure.integrate (true,false);
-#endif
         pressure.distribute_local_to_global (dst);
+#endif
       }
   }
 
@@ -1056,10 +1057,11 @@ namespace aspect
         VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
 
         velocity.reinit (cell);
-        velocity.read_dof_values(src);
+
 #if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.evaluate (EvaluationFlags::gradients);
+        velocity.gather_evaluate (src, EvaluationFlags::gradients);
 #else
+        velocity.read_dof_values(src);
         velocity.evaluate (false,true,false);
 #endif
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
@@ -1081,11 +1083,12 @@ namespace aspect
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 #if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.integrate (EvaluationFlags::gradients);
+        velocity.integrate_scatter (EvaluationFlags::gradients, dst);
 #else
         velocity.integrate (false,true);
-#endif
         velocity.distribute_local_to_global (dst);
+#endif
+
       }
   }
 
@@ -1680,17 +1683,19 @@ namespace aspect
           }
 
 #if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.integrate (EvaluationFlags::gradients);
+        velocity.integrate_scatter (EvaluationFlags::gradients,
+                                    rhs_correction.block(0));
 #else
         velocity.integrate (false,true);
-#endif
         velocity.distribute_local_to_global (rhs_correction.block(0));
+#endif
 #if DEAL_II_VERSION_GTE(9,3,0)
-        pressure.integrate (EvaluationFlags::values);
+        pressure.integrate_scatter (EvaluationFlags::values,
+                                    rhs_correction.block(1));
 #else
         pressure.integrate (true,false);
-#endif
         pressure.distribute_local_to_global (rhs_correction.block(1));
+#endif
       }
     rhs_correction.compress(VectorOperation::add);
 
