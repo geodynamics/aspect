@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -35,7 +35,9 @@ namespace aspect
       using namespace dealii;
 
       /**
-       *
+       * An equation of state class that reads thermodynamic properties
+       * from pressure-temperature tables in input files. These input files
+       * can be created using codes such as Perple_X or HeFESTo.
        */
       template <int dim>
       class ThermodynamicTableLookup : public ::aspect::SimulatorAccess<dim>
@@ -54,9 +56,92 @@ namespace aspect
           virtual unsigned int number_of_lookups() const;
 
           /**
-           * Returns the list of unique phase names
+           * Return whether the model is compressible or not.  Incompressibility
+           * does not necessarily imply that the density is constant; rather, it
+           * may still depend on temperature or pressure. In the current
+           * context, compressibility means whether we should solve the continuity
+           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
+           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
            */
-          std::vector<std::string> unique_phase_names_list() const;
+          bool is_compressible () const;
+
+          /**
+          * Function to compute the thermodynamic properties in @p out given the
+          * inputs in @p in over all evaluation points.
+          * This function also fills the mass_fraction and volume_fraction vectors.
+          */
+          void
+          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
+                   MaterialModel::MaterialModelOutputs<dim> &out,
+                   std::vector<std::vector<double>> &mass_fractions,
+                   std::vector<std::vector<double>> &volume_fractions) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm);
+
+          void
+          create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+
+        private:
+          bool has_background;
+          unsigned int first_composition_index;
+
+          unsigned int n_material_lookups;
+          bool use_bilinear_interpolation;
+          bool latent_heat;
+
+          /**
+           * Information about the location of data files.
+           */
+          std::string data_directory;
+          std::vector<std::string> material_file_names;
+          std::vector<std::string> derivatives_file_names;
+
+          /**
+           * The maximum number of substeps over the temperature pressure range
+           * to calculate the averaged enthalpy gradient over a cell
+           */
+          unsigned int max_latent_heat_substeps;
+
+          /**
+           * The format of the provided material files. Currently we support
+           * the PERPLEX and HeFESTo data formats.
+           */
+          enum formats
+          {
+            perplex,
+            hefesto
+          } material_file_format;
+
+          /**
+           * List of pointers to objects that read and process data we get from
+           * material data files. There is one pointer/object per lookup file.
+           */
+          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+
+          /**
+          * Vector of strings containing the names of the unique phases in all the material lookups.
+          */
+          std::vector<std::string> unique_phase_names;
+
+          /**
+          * Vector of vector of unsigned ints which constitutes mappings
+          * between lookup phase name vectors and unique_phase_names.
+          * The element unique_phase_indices[i][j] contains the
+          * index of phase name j from lookup i as it is found in unique_phase_names.
+          */
+          std::vector<std::vector<unsigned int>> unique_phase_indices;
 
           void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                                std::vector<std::vector<double>> &mass_fractions,
@@ -83,6 +168,23 @@ namespace aspect
                                             NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
           /**
+           * Compute the specific heat and thermal expansivity using the pressure
+           * and temperature derivatives of the specific enthalpy.
+           * This evaluation incorporates the effects of latent heat production.
+           */
+          void evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
+                                                     MaterialModel::MaterialModelOutputs<dim> &out) const;
+
+          /**
+           * Function to compute the thermodynamic properties in @p out given the
+           * inputs in @p in at a single evaluation point.
+           */
+          void
+          evaluate_at_single_point(const MaterialModel::MaterialModelInputs<dim> &in,
+                                   const unsigned int q,
+                                   MaterialModel::EquationOfStateOutputs<dim> &out) const;
+
+          /**
            * Returns the cell-wise averaged enthalpy derivatives for the evaluate
            * function and postprocessors. The function returns two pairs, the
            * first one represents the temperature derivative, the second one the
@@ -95,125 +197,6 @@ namespace aspect
            */
           std::array<std::pair<double, unsigned int>,2>
           enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
-
-          /**
-           * Compute the specific heat and thermal expansivity using the pressure
-           * and temperature derivatives of the specific enthalpy.
-           * This evaluation incorporates the effects of latent heat production.
-           */
-          void evaluate_using_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
-                                                   MaterialModel::MaterialModelOutputs<dim> &out) const;
-          /**
-           * @}
-           */
-
-          /**
-           * @name Qualitative properties one can ask a material model
-           * @{
-           */
-
-          /**
-           * Return whether the model is compressible or not.  Incompressibility
-           * does not necessarily imply that the density is constant; rather, it
-           * may still depend on temperature or pressure. In the current
-           * context, compressibility means whether we should solve the continuity
-           * equation as $\nabla \cdot (\rho \mathbf u)=0$ (compressible Stokes)
-           * or as $\nabla \cdot \mathbf{u}=0$ (incompressible Stokes).
-           */
-          bool is_compressible () const;
-          /**
-           * @}
-           */
-
-          /**
-           * @}
-           */
-
-          /**
-           * Function to compute the material properties in @p out given the
-           * inputs in @p in. If MaterialModelInputs.strain_rate has the length
-           * 0, then the viscosity does not need to be computed.
-           */
-          void
-          evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                   const unsigned int q,
-                   MaterialModel::EquationOfStateOutputs<dim> &out) const;
-
-          /**
-           * @name Functions used in dealing with run-time parameters
-           * @{
-           */
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          void
-          parse_parameters (ParameterHandler &prm);
-          /**
-           * @}
-           */
-
-          void
-          create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-
-        private:
-          bool has_background;
-          unsigned int first_composition_index;
-
-          unsigned int n_material_lookups;
-          bool use_bilinear_interpolation;
-          bool latent_heat;
-
-          /**
-           * Information about the location of data files.
-           */
-          std::string data_directory;
-          std::vector<std::string> material_file_names;
-          std::vector<std::string> derivatives_file_names;
-
-          /**
-           * The maximum number of substeps over the temperature pressure range
-           " to calculate the averaged enthalpy gradient over a cell
-           */
-          unsigned int max_latent_heat_substeps;
-
-          /**
-           * The format of the provided material files. Currently we support
-           * the PERPLEX and HeFESTo data formats.
-           */
-          enum formats
-          {
-            perplex,
-            hefesto
-          } material_file_format;
-
-          /**
-           * List of pointers to objects that read and process data we get from
-           * material data files. There is one pointer/object per compositional
-           * field provided.
-           */
-          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
-
-          /**
-          * Vector of strings containing the names of the unique phases in all the material lookups.
-          */
-          std::vector<std::string> unique_phase_names;
-
-          /**
-          * Vector of vector of unsigned ints which constitutes mappings
-          * between lookup phase name vectors and unique_phase_names.
-          * The element unique_phase_indices[i][j] contains the
-          * index of phase name j from lookup i as it is found in unique_phase_names.
-          */
-          std::vector<std::vector<unsigned int>> unique_phase_indices;
-
       };
     }
   }

@@ -214,7 +214,7 @@ namespace aspect
     Steinberger<dim>::
     is_compressible () const
     {
-      return true;
+      return equation_of_state.is_compressible();
     }
 
 
@@ -224,11 +224,11 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      EquationOfStateOutputs<dim> eos_outputs (equation_of_state.number_of_lookups());
-
       std::vector<std::vector<double>> mass_fractions;
       std::vector<std::vector<double>> volume_fractions;
-      equation_of_state.fill_mass_and_volume_fractions (in, mass_fractions, volume_fractions);
+
+      // Evaluate the equation of state properties over all evaluation points
+      equation_of_state.evaluate(in, out, mass_fractions, volume_fractions);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -238,35 +238,7 @@ namespace aspect
           out.thermal_conductivities[i] = thermal_conductivity_value;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c]            = 0;
-
-          // Evaluate the equation of state properties at the current evaluation point
-          equation_of_state.evaluate(in, i, eos_outputs);
-
-          // The density and isothermal compressibility are both volume-averaged
-          out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.densities, MaterialUtilities::arithmetic);
-          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.compressibilities, MaterialUtilities::arithmetic);
-          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
-          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
-
-          if (!latent_heat)
-            {
-              // Specific heat is measured per unit mass, so it is mass averaged.
-              // Thermal expansivity is volume averaged.
-              out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
-              out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
-            }
         }
-
-      if (latent_heat)
-        equation_of_state.evaluate_using_enthalpy_derivatives(in, out);
-
-      // fill seismic velocity outputs if they exist
-      if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
-        equation_of_state.fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
-
-      // fill phase volume outputs if they exist
-      if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
-        equation_of_state.fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
     }
 
 
@@ -362,50 +334,53 @@ namespace aspect
         prm.enter_subsection("Steinberger model");
         {
           data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
-          material_file_names  = Utilities::split_string_list
-                                 (prm.get ("Material file names"));
           radial_viscosity_file_name   = prm.get ("Radial viscosity file name");
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
           n_lateral_slices = prm.get_integer("Number lateral average bands");
-          latent_heat          = prm.get_bool ("Latent heat");
           reference_eta        = prm.get_double ("Reference viscosity");
           min_eta              = prm.get_double ("Minimum viscosity");
           max_eta              = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
 
-
           // Parse the table lookup parameters
-
-          // The Steinberger material model currently assumes that all the
-          // compositional fields correspond to materials with
-          // PerpleX lookup tables.
-          // Therefore the first composition index is hard-coded as zero and
-          // a background field exists if the number of files is one greater
-          // then the number of compositional fields.
-          prm.set("Material file format", "perplex");
-          prm.set("Index of first mass fraction compositional field", "0");
-          if (material_file_names.size() == this->n_compositional_fields() + 1)
-            prm.set("Background material", "true");
-          else
-            prm.set("Background material", "false");
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters(prm);
+
+          // Some error checking
+          AssertThrow (prm.get_integer ("Index of first mass fraction compositional field") == 0,
+                       ExcMessage("The Steinberger material model currently assumes that all the "
+                                  "compositional fields correspond to materials with PerpleX lookup tables. "
+                                  "Therefore the 'Index of first mass fraction compositional field' "
+                                  "parameter must be equal to zero. "));
+
+          if (prm.get_bool ("Background material"))
+            {
+              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1),
+                           ExcMessage("You have specified that a background material field exists, "
+                                      "and the Steinberger material model assumes that all compositional "
+                                      "fields correspond to mass fractions of materials. "
+                                      "You must therefore specify one more material file name "
+                                      "than the number of compositional fields.  You have prescribed "
+                                      + Utilities::int_to_string(equation_of_state.number_of_lookups())
+                                      + " material data files, but there are "
+                                      + Utilities::int_to_string(this->n_compositional_fields())
+                                      + " compositional fields."));
+            }
+          else
+            {
+              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields()),
+                           ExcMessage("You have specified that no background material field exists, "
+                                      "and the Steinberger material model assumes that all compositional "
+                                      "fields correspond to mass fractions of materials. "
+                                      "You must therefore specify the same number of material file names "
+                                      "as the number of compositional fields."));
+            }
 
           prm.leave_subsection();
         }
         prm.leave_subsection();
-
-        // Do some error checking
-        AssertThrow ((material_file_names.size() == 1) ||
-                     (material_file_names.size() == this->n_compositional_fields()) ||
-                     (material_file_names.size() == this->n_compositional_fields() + 1),
-                     ExcMessage("This material model expects either one material data file, or as many files as compositional fields, "
-                                "or as many files as compositional fields plus one (in which case the first file "
-                                "is assumed to contain a background composition). This condition is not fulfilled. You "
-                                "prescribed " + Utilities::int_to_string(material_file_names.size()) + " material data files, but there are " +
-                                Utilities::int_to_string(this->n_compositional_fields()) + " compositional fields."));
 
         // Declare dependencies on solution variables
         this->model_dependence.viscosity = NonlinearDependence::temperature;
@@ -422,19 +397,7 @@ namespace aspect
     void
     Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (equation_of_state.unique_phase_names_list(), n_points));
-        }
-
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
-        {
-          const unsigned int n_points = out.n_evaluation_points();
-          out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
-        }
+      equation_of_state.create_additional_named_outputs(out);
     }
 
   }
