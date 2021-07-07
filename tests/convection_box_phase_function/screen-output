@@ -1,0 +1,688 @@
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.306e+06 W, 1.31e+06 W
+
+*** Timestep 1:  t=100000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.284e+06 W, 1.286e+06 W
+
+*** Timestep 2:  t=200000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.194e+06 W, 1.194e+06 W
+
+*** Timestep 3:  t=300000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.122e+06 W, 1.12e+06 W
+
+*** Timestep 4:  t=400000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.066e+06 W, 1.059e+06 W
+
+*** Timestep 5:  t=500000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.022e+06 W, 1.008e+06 W
+
+*** Timestep 6:  t=600000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -9.883e+05 W, 9.648e+05 W
+
+*** Timestep 7:  t=700000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -9.646e+05 W, 9.274e+05 W
+
+*** Timestep 8:  t=800000 years, dt=100000 years
+   Solving temperature system... 6 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -9.515e+05 W, 8.947e+05 W
+
+*** Timestep 9:  t=900000 years, dt=100000 years
+   Solving temperature system... 7 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -9.509e+05 W, 8.657e+05 W
+
+*** Timestep 10:  t=1e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -9.66e+05 W, 8.395e+05 W
+
+*** Timestep 11:  t=1.1e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.001e+06 W, 8.158e+05 W
+
+*** Timestep 12:  t=1.2e+06 years, dt=100000 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.059e+06 W, 7.939e+05 W
+
+*** Timestep 13:  t=1.28718e+06 years, dt=87179.6 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.128e+06 W, 7.764e+05 W
+
+*** Timestep 14:  t=1.36117e+06 years, dt=73989.1 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.199e+06 W, 7.625e+05 W
+
+*** Timestep 15:  t=1.42913e+06 years, dt=67961.1 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.268e+06 W, 7.507e+05 W
+
+*** Timestep 16:  t=1.49499e+06 years, dt=65858.3 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.336e+06 W, 7.4e+05 W
+
+*** Timestep 17:  t=1.56127e+06 years, dt=66280.6 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.402e+06 W, 7.3e+05 W
+
+*** Timestep 18:  t=1.62995e+06 years, dt=68685.8 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.467e+06 W, 7.199e+05 W
+
+*** Timestep 19:  t=1.703e+06 years, dt=73042.8 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.532e+06 W, 7.097e+05 W
+
+*** Timestep 20:  t=1.78243e+06 years, dt=79435.9 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.594e+06 W, 6.991e+05 W
+
+*** Timestep 21:  t=1.85946e+06 years, dt=77022 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.643e+06 W, 6.898e+05 W
+
+*** Timestep 22:  t=1.93134e+06 years, dt=71889.7 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.675e+06 W, 6.827e+05 W
+
+*** Timestep 23:  t=2.00291e+06 years, dt=71568.1 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.689e+06 W, 6.777e+05 W
+
+*** Timestep 24:  t=2.07687e+06 years, dt=73957.7 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.688e+06 W, 6.754e+05 W
+
+*** Timestep 25:  t=2.15514e+06 years, dt=78270.9 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.674e+06 W, 6.767e+05 W
+
+*** Timestep 26:  t=2.23937e+06 years, dt=84230.7 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.649e+06 W, 6.836e+05 W
+
+*** Timestep 27:  t=2.33117e+06 years, dt=91795.4 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.616e+06 W, 6.998e+05 W
+
+*** Timestep 28:  t=2.43117e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.577e+06 W, 7.311e+05 W
+
+*** Timestep 29:  t=2.53117e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.54e+06 W, 7.806e+05 W
+
+*** Timestep 30:  t=2.63117e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.505e+06 W, 8.522e+05 W
+
+*** Timestep 31:  t=2.73117e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.475e+06 W, 9.477e+05 W
+
+*** Timestep 32:  t=2.83117e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.448e+06 W, 1.065e+06 W
+
+*** Timestep 33:  t=2.92469e+06 years, dt=93522.3 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.427e+06 W, 1.186e+06 W
+
+*** Timestep 34:  t=3.01431e+06 years, dt=89618.6 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.409e+06 W, 1.304e+06 W
+
+*** Timestep 35:  t=3.1025e+06 years, dt=88192.5 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.392e+06 W, 1.411e+06 W
+
+*** Timestep 36:  t=3.19104e+06 years, dt=88540.2 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.375e+06 W, 1.501e+06 W
+
+*** Timestep 37:  t=3.28169e+06 years, dt=90647.2 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.357e+06 W, 1.572e+06 W
+
+*** Timestep 38:  t=3.37257e+06 years, dt=90880.3 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.338e+06 W, 1.621e+06 W
+
+*** Timestep 39:  t=3.4655e+06 years, dt=92931.6 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.316e+06 W, 1.649e+06 W
+
+*** Timestep 40:  t=3.56278e+06 years, dt=97278.5 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.291e+06 W, 1.662e+06 W
+
+*** Timestep 41:  t=3.66278e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.264e+06 W, 1.661e+06 W
+
+*** Timestep 42:  t=3.76278e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.236e+06 W, 1.65e+06 W
+
+*** Timestep 43:  t=3.86278e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.208e+06 W, 1.633e+06 W
+
+*** Timestep 44:  t=3.96278e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.18e+06 W, 1.61e+06 W
+
+*** Timestep 45:  t=4.06278e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.153e+06 W, 1.583e+06 W
+
+*** Timestep 46:  t=4.16278e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.129e+06 W, 1.552e+06 W
+
+*** Timestep 47:  t=4.26278e+06 years, dt=100000 years
+   Solving temperature system... 8 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.105e+06 W, 1.519e+06 W
+
+*** Timestep 48:  t=4.36278e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.088e+06 W, 1.48e+06 W
+
+*** Timestep 49:  t=4.46278e+06 years, dt=100000 years
+   Solving temperature system... 9 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.071e+06 W, 1.445e+06 W
+
+*** Timestep 50:  t=4.56278e+06 years, dt=100000 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.064e+06 W, 1.4e+06 W
+
+*** Timestep 51:  t=4.66278e+06 years, dt=100000 years
+   Solving temperature system... 10 iterations.
+   Solving Stokes system... 7+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.054e+06 W, 1.365e+06 W
+
+*** Timestep 52:  t=4.76278e+06 years, dt=100000 years
+   Solving temperature system... 11 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.059e+06 W, 1.316e+06 W
+
+*** Timestep 53:  t=4.86278e+06 years, dt=100000 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.056e+06 W, 1.286e+06 W
+
+*** Timestep 54:  t=4.96278e+06 years, dt=100000 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.074e+06 W, 1.236e+06 W
+
+*** Timestep 55:  t=5.06131e+06 years, dt=98534.6 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.081e+06 W, 1.211e+06 W
+
+*** Timestep 56:  t=5.16131e+06 years, dt=100000 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.109e+06 W, 1.165e+06 W
+
+*** Timestep 57:  t=5.25761e+06 years, dt=96299.3 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.126e+06 W, 1.145e+06 W
+
+*** Timestep 58:  t=5.35761e+06 years, dt=100000 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.161e+06 W, 1.107e+06 W
+
+*** Timestep 59:  t=5.45105e+06 years, dt=93435.6 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.184e+06 W, 1.092e+06 W
+
+*** Timestep 60:  t=5.54935e+06 years, dt=98298.9 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.223e+06 W, 1.064e+06 W
+
+*** Timestep 61:  t=5.64025e+06 years, dt=90903.4 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.247e+06 W, 1.055e+06 W
+
+*** Timestep 62:  t=5.73699e+06 years, dt=96743.8 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.283e+06 W, 1.036e+06 W
+
+*** Timestep 63:  t=5.82638e+06 years, dt=89385.4 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.3e+06 W, 1.034e+06 W
+
+*** Timestep 64:  t=5.92262e+06 years, dt=96236.4 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.328e+06 W, 1.023e+06 W
+
+*** Timestep 65:  t=6.0115e+06 years, dt=88880.4 years
+   Solving temperature system... 12 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.334e+06 W, 1.027e+06 W
+
+*** Timestep 66:  t=6.10839e+06 years, dt=96896.9 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.351e+06 W, 1.024e+06 W
+
+*** Timestep 67:  t=6.19763e+06 years, dt=89238.3 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.345e+06 W, 1.035e+06 W
+
+*** Timestep 68:  t=6.29632e+06 years, dt=98691.6 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.35e+06 W, 1.039e+06 W
+
+*** Timestep 69:  t=6.38663e+06 years, dt=90310.2 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.332e+06 W, 1.056e+06 W
+
+*** Timestep 70:  t=6.48663e+06 years, dt=100000 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.327e+06 W, 1.067e+06 W
+
+*** Timestep 71:  t=6.57881e+06 years, dt=92177.2 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.302e+06 W, 1.09e+06 W
+
+*** Timestep 72:  t=6.67881e+06 years, dt=100000 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.291e+06 W, 1.106e+06 W
+
+*** Timestep 73:  t=6.7733e+06 years, dt=94493.5 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.263e+06 W, 1.133e+06 W
+
+*** Timestep 74:  t=6.8733e+06 years, dt=100000 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.25e+06 W, 1.153e+06 W
+
+*** Timestep 75:  t=6.9695e+06 years, dt=96191.7 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.223e+06 W, 1.181e+06 W
+
+*** Timestep 76:  t=7.06826e+06 years, dt=98765 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.21e+06 W, 1.2e+06 W
+
+*** Timestep 77:  t=7.16529e+06 years, dt=97025.3 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.187e+06 W, 1.226e+06 W
+
+*** Timestep 78:  t=7.26298e+06 years, dt=97696 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.179e+06 W, 1.242e+06 W
+
+*** Timestep 79:  t=7.36062e+06 years, dt=97640.3 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.16e+06 W, 1.263e+06 W
+
+*** Timestep 80:  t=7.45817e+06 years, dt=97547.1 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.157e+06 W, 1.273e+06 W
+
+*** Timestep 81:  t=7.55474e+06 years, dt=96565.1 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.146e+06 W, 1.287e+06 W
+
+*** Timestep 82:  t=7.65365e+06 years, dt=98916.9 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.148e+06 W, 1.289e+06 W
+
+*** Timestep 83:  t=7.74776e+06 years, dt=94104.3 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.144e+06 W, 1.297e+06 W
+
+*** Timestep 84:  t=7.84566e+06 years, dt=97898.9 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.152e+06 W, 1.293e+06 W
+
+*** Timestep 85:  t=7.93778e+06 years, dt=92120.4 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.154e+06 W, 1.295e+06 W
+
+*** Timestep 86:  t=8.03404e+06 years, dt=96261.6 years
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.169e+06 W, 1.286e+06 W
+
+*** Timestep 87:  t=8.12443e+06 years, dt=90388.4 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.176e+06 W, 1.284e+06 W
+
+*** Timestep 88:  t=8.21889e+06 years, dt=94460.4 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.195e+06 W, 1.273e+06 W
+
+*** Timestep 89:  t=8.30783e+06 years, dt=88948 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.205e+06 W, 1.269e+06 W
+
+*** Timestep 90:  t=8.40083e+06 years, dt=92999 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.227e+06 W, 1.256e+06 W
+
+*** Timestep 91:  t=8.48879e+06 years, dt=87956 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.238e+06 W, 1.251e+06 W
+
+*** Timestep 92:  t=8.58105e+06 years, dt=92263.4 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.26e+06 W, 1.238e+06 W
+
+*** Timestep 93:  t=8.66858e+06 years, dt=87522.7 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.268e+06 W, 1.233e+06 W
+
+*** Timestep 94:  t=8.76098e+06 years, dt=92405.3 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.287e+06 W, 1.22e+06 W
+
+*** Timestep 95:  t=8.84865e+06 years, dt=87668.1 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.292e+06 W, 1.215e+06 W
+
+*** Timestep 96:  t=8.94201e+06 years, dt=93359.6 years
+   Solving temperature system... 13 iterations.
+   Solving Stokes system... 8+0 iterations.
+
+   Postprocessing:
+     Heat fluxes through boundary parts: 0 W, 0 W, -1.306e+06 W, 1.203e+06 W
+
+Termination requested by criterion: steady state heat flux
+
+
+

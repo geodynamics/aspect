@@ -1,0 +1,4 @@
+New: There is now a termination criterion based on the steady state
+heat flux. 
+<br>
+(Juliane Dannberg, 2021/07/07)
