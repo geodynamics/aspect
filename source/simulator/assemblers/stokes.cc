@@ -21,7 +21,6 @@
 #include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator.h>
 #include <aspect/utilities.h>
-#include <aspect/postprocess/dynamic_topography.h>
 
 #include <deal.II/base/signaling_nan.h>
 
@@ -374,7 +373,7 @@ namespace aspect
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
-                                    * JxW;
+                                   * JxW;
 
               if (force != nullptr && this->get_parameters().enable_additional_stokes_rhs)
                 data.local_rhs(i) += (force->rhs_u[q] * scratch.phi_u[i]
@@ -937,7 +936,6 @@ namespace aspect
             }
         }
     }
-
   }
 } // namespace aspect
 

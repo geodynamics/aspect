@@ -127,11 +127,13 @@ namespace aspect
           }
       };
 
-
+      // Set up the adjoint base variables, which are the adjoint velocity and pressure for the Stokes equations.
+      // This part of the code is general enough to include cases that include melt.
       template <int dim>
       class BaseAdjointVariablePostprocessor: public DataPostprocessor< dim >, public SimulatorAccess<dim>
       {
         public:
+
           virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -147,9 +149,9 @@ namespace aspect
                   if (this->introspection().component_masks.velocities[i] ||
                       (this->include_melt_transport()
                        && this->introspection().variable("fluid velocity").component_mask[i]))
-                    computed_quantities[q][i]=input_data.solution_values[q][i] * velocity_scaling_factor;
+                    computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
                   else
-                    computed_quantities[q][i]=input_data.solution_values[q][i];
+                    computed_quantities[q][i] = input_data.solution_values[q][i];
                 }
           }
 
@@ -157,30 +159,28 @@ namespace aspect
           {
 
             std::vector<std::string> solution_names (dim, "adjoint_velocity");
+            solution_names.push_back ("adjoint_p");
 
             if (this->include_melt_transport())
               {
-                solution_names.push_back ("p_f");
-                solution_names.push_back ("p_c_bar");
+                solution_names.emplace_back("adjoint_p_f");
+                solution_names.emplace_back("adjoint_p_c_bar");
                 for (unsigned int i=0; i<dim; ++i)
-                  solution_names.push_back ("u_f");
+                  solution_names.emplace_back("adjoint_u_f");
               }
-            solution_names.push_back ("adjoint_p");
-            solution_names.push_back ("adjoint_T");
-//             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-//                 solution_names.push_back (this->introspection().name_for_compositional_index(c));
 
             return solution_names;
           }
-
 
           virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
           get_data_component_interpretation () const
           {
+
             std::vector<DataComponentInterpretation::DataComponentInterpretation>
             interpretation (dim,
                             DataComponentInterpretation::component_is_part_of_vector);
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
             if (this->include_melt_transport())
               {
                 interpretation.push_back (DataComponentInterpretation::component_is_scalar);
@@ -188,10 +188,6 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
               }
-            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
-            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // T
-            //            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            //               interpretation.push_back (DataComponentInterpretation::component_is_scalar);
 
             return interpretation;
           }
@@ -647,41 +643,33 @@ namespace aspect
     std::pair<std::string,std::string>
     Visualization<dim>::execute (TableHandler &statistics)
     {
-
-      // do this otherwise there is no graphical output after the first iteration
-      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::Stokes_adjoint) {}
-      else
+      // if this is the first time we get here, set the last output time
+      // to the current time - output_interval. this makes sure we
+      // always produce data during the first time step
+      if (std::isnan(last_output_time))
         {
-
-          // if this is the first time we get here, set the last output time
-          // to the current time - output_interval. this makes sure we
-          // always produce data during the first time step
-          if (std::isnan(last_output_time))
-            {
-              last_output_time = this->get_time() - output_interval;
-              last_output_timestep = this->get_timestep_number();
-            }
-
-          // Return if graphical output is not requested at this time. Do not
-          // return in the first timestep, or if the last output was more than
-          // output_interval in time ago, or maximum_timesteps_between_outputs in
-          // number of timesteps ago.
-          // The comparison in number of timesteps is safe from integer overflow for
-          // at most 2 billion timesteps, which is not likely to
-          // be ever reached (both values are unsigned int,
-          // and the default value of maximum_timesteps_between_outputs is
-          // set to numeric_limits<int>::max())
-          if ((this->get_time() < last_output_time + output_interval)
-              && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
-              && (this->get_timestep_number() != 0))
-            return std::pair<std::string,std::string>();
+          last_output_time = this->get_time() - output_interval;
+          last_output_timestep = this->get_timestep_number();
         }
+
+      // Return if graphical output is not requested at this time. Do not
+      // return in the first timestep, or if the last output was more than
+      // output_interval in time ago, or maximum_timesteps_between_outputs in
+      // number of timesteps ago.
+      // The comparison in number of timesteps is safe from integer overflow for
+      // at most 2 billion timesteps, which is not likely to
+      // be ever reached (both values are unsigned int,
+      // and the default value of maximum_timesteps_between_outputs is
+      // set to numeric_limits<int>::max())
+      if ((this->get_time() < last_output_time + output_interval)
+          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
+          && (this->get_timestep_number() != 0))
+        return std::pair<std::string,std::string>();
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
       // iterations, only increase file number in the first nonlinear iteration
       const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
-
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
       else if (increase_file_number)
@@ -697,8 +685,6 @@ namespace aspect
       add_data_names_to_set(base_variables.get_names(), visualization_field_names);
 
       std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
-      internal::BaseAdjointVariablePostprocessor<dim> adjoint_base_variables;
-      adjoint_base_variables.initialize_simulator (this->get_simulator());
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
@@ -720,11 +706,15 @@ namespace aspect
                 (p.get()) != nullptr);
       })
       != postprocessors.end());
- 
+
       // If we want to visualize the solution of the adjoint problem
-      if (this->get_adjoint_problem() == true)
-        data_out.add_data_vector (this->get_current_adjoint_solution(),
-                                  adjoint_base_variables);
+      internal::BaseAdjointVariablePostprocessor<dim> adjoint_base_variables;
+      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::no_Advection_adjoint_Stokes)
+        {
+          adjoint_base_variables.initialize_simulator (this->get_simulator());
+          data_out.add_data_vector (this->get_current_adjoint_solution(),
+                                    adjoint_base_variables);
+        }
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)

@@ -31,7 +31,9 @@ namespace aspect
   {
 
     /**
-         */
+     * A class containing the functions to assemble the right hand side for the
+     * adjoint Stokes equations.
+     */
     template <int dim>
     class StokesAdjointRHS : public Assemblers::Interface<dim>,
       public SimulatorAccess<dim>

@@ -26,21 +26,31 @@ namespace aspect
 {
   namespace MaterialModel
   {
-
     template <int dim>
     void
     Additive<dim>::initialize()
     {
-      base_model_add->initialize();
+
+      // This material model is only useful when using and adjoint Stokes solver scheme so throw
+      // an exception if a different solver is chosen.
+      Assert(this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::no_Advection_adjoint_Stokes,
+             ExcMessage("Error: Material model Additive is only sensible with the no Advection, adjoint Stokes solver scheme."))
+
+      // If the no Advection, adjoint Stokes solver scheme is chosen the parameter file is already checked such
+      // that it has at least 2 compositional fields and that the compositional fields have the correct names.
+
+      base_model->initialize();
     }
+
 
 
     template <int dim>
     void
     Additive<dim>::update()
     {
-      base_model_add->update();
+      base_model->update();
     }
+
 
 
     template <int dim>
@@ -48,19 +58,24 @@ namespace aspect
     Additive<dim>::evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                             typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_term");
+
+      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_increment");
       const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_factor");
 
-      base_model_add -> evaluate(in,out);
+      base_model -> evaluate(in,out);
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
+          // add / multiply the values from the compositional field to the density / viscosity to update
+          // the parameters. This allows material properties to change over several adjoint iterations.
           out.densities[i] += in.composition[i][density_idx];
           out.viscosities[i] *= in.composition[i][viscosity_idx];
 
         }
 
     }
+
+
 
     template <int dim>
     void
@@ -70,7 +85,7 @@ namespace aspect
       {
         prm.enter_subsection("Additive model");
         {
-          prm.declare_entry("Base model additive","simple",
+          prm.declare_entry("Base model","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model that will be modified by an"
                             "addition operation. Valid values for this parameter "
@@ -91,15 +106,15 @@ namespace aspect
       {
         prm.enter_subsection("Additive model");
         {
-          Assert( prm.get("Base model additive") != "additive",
+          Assert( prm.get("Base model") != "additive",
                   ExcMessage("You may not use ``additive'' as the base model for "
                              "an additive model.") );
 
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
           // leave the current section
-          base_model_add.reset(create_material_model<dim>(prm.get("Base model additive")));
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model_add.get()))
+          base_model.reset(create_material_model<dim>(prm.get("Base model")));
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
 
         }
@@ -107,20 +122,18 @@ namespace aspect
       }
       prm.leave_subsection();
 
-      /* After parsing the parameters for averaging, it is essential to parse
-      parameters related to the base model. */
-      base_model_add->parse_parameters(prm);
-      this->model_dependence = base_model_add->get_model_dependence();
-
+      // After parsing the parameters for averaging, it is essential to parse
+      // parameters related to the base model.
+      base_model->parse_parameters(prm);
+      this->model_dependence = base_model->get_model_dependence();
     }
-
 
     template <int dim>
     bool
     Additive<dim>::
     is_compressible () const
     {
-      return base_model_add->is_compressible();
+      return base_model->is_compressible();
     }
 
     template <int dim>
@@ -128,9 +141,8 @@ namespace aspect
     Additive<dim>::
     reference_viscosity() const
     {
-      return base_model_add->reference_viscosity();
+      return base_model->reference_viscosity();
     }
-
   }
 }
 
@@ -141,7 +153,15 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(Additive,
                                    "additive",
-                                   " Explanation ")
+                                   "This material model is only sensible with the adjoint "
+                                   "Stokes nonlinear solver scheme. "
+                                   "The material model allows the density and viscosity "
+                                   "to change over several iterations within the same "
+                                   "timestep. The change in parameters is given by the "
+                                   "the two compositional fields. This material model "
+                                   "therefore needs to be run with at least 2 compositional fields. "
+                                   "with the names 'density_increment' and 'viscosity_factor'. "
+                                   "The compositional fields are updated to minimize "
+                                   "the objective functional in the adjoint equations.")
   }
 }
-

@@ -31,11 +31,11 @@ namespace aspect
     using namespace dealii;
 
     /**
-     * A material model that applies an average of the quadrature points in a cell  to
-     * a ''base model'' chosen from any of the other available material models.
+     * A material model that uses the current compositional field to change the
+     * the starting viscosity and density field of the ''base model''. This base
+     * model can be chosen from any of the other available material models
      * @ingroup MaterialModels
      */
-
     template <int dim>
     class Additive : public MaterialModel::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
@@ -47,60 +47,51 @@ namespace aspect
         void initialize();
 
         /**
-         * Update the base model and viscosity function at the beginning of
-         * each timestep.
+         * Update the base model at the beginning of each timestep.
          */
         virtual
         void update();
 
-
         /**
-         * Function to compute the material properties in @p out given the
-         * inputs in @p in.
+         * Function to update the density and viscosity using the values
+         * of the compositional field
          */
         virtual
         void
         evaluate (const typename Interface<dim>::MaterialModelInputs &in,
                   typename Interface<dim>::MaterialModelOutputs &out) const;
+
         /**
-         * Method to declare parameters related to depth-dependent model
+         * Method to declare parameters related to additive model
          */
         static void
         declare_parameters (ParameterHandler &prm);
 
         /**
-         * Method to parse parameters related to depth-dependent model
+         * Method to parse parameters related to additive model
          */
         virtual void
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * Method that indicates whether material is compressible. Depth dependent model is compressible
+         * Method that indicates whether the material is compressible. The additive model is compressible
          * if and only if base model is compressible.
          */
         virtual bool is_compressible () const;
 
         /**
-         * Method to calculate reference viscosity for the depth-dependent model. The reference
-         * viscosity is determined by evaluating the depth-dependent part of the viscosity at
+         * Method to calculate reference viscosity for the additive model. The reference
+         * viscosity is determined by evaluating the viscosity at
          * the mean depth of the model.
          */
-
         virtual double reference_viscosity () const;
-
-        /**
-         * Method to calculate reference density for the depth-dependent model. Because the depth-
-         * dependent model deos not modify density, the reference density is equivalent to the
-         * base model's reference density.
-         */
-        //virtual double reference_density () const;
 
 
       private:
         /**
          * Pointer to the material model used as the base model
          */
-        std::shared_ptr<MaterialModel::Interface<dim> > base_model_add;
+        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
     };
   }
 }

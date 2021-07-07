@@ -43,7 +43,6 @@
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/fe/fe_values.h>
-#include <deal.II/numerics/data_out.h>
 
 #include <limits>
 
@@ -254,7 +253,6 @@ namespace aspect
             assemblers->advection_system_assembler_on_face_properties[i].need_face_finite_element_evaluation = true;
           }
       }
-
   }
 
   template <int dim>
@@ -583,7 +581,6 @@ namespace aspect
 
     material_model->evaluate(scratch.material_model_inputs,
                              scratch.material_model_outputs);
-
     MaterialModel::MaterialAveraging::average (parameters.material_averaging,
                                                cell,
                                                scratch.finite_element_values.get_quadrature(),
@@ -1244,6 +1241,7 @@ namespace aspect
 }
 
 
+
 // explicit instantiation of the functions we implement in this file
 namespace aspect
 {
@@ -1282,7 +1280,9 @@ namespace aspect
                                                                       const FEValuesBase<dim,dim>                           &input_finite_element_values, \
                                                                       const DoFHandler<dim>::active_cell_iterator  &cell, \
                                                                       const bool                                             compute_strainrate, \
-                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const; 
+                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const;
+
+
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

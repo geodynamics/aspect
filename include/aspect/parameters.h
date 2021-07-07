@@ -77,7 +77,7 @@ namespace aspect
         single_Advection_no_Stokes,
         first_timestep_only_single_Stokes,
         no_Advection_no_Stokes,
-        Stokes_adjoint
+        no_Advection_adjoint_Stokes
       };
     };
 
@@ -703,14 +703,7 @@ namespace aspect
      * @}
      */
 
-    /**
-     * Adjoint problem
-     */
-    std::string        adjoint_input_file;
-    bool               read_in_points;
-    bool          use_fixed_surface_value;
-    double        update_factor_eta;
-    double        update_factor_rho;
+
   };
 
 }
