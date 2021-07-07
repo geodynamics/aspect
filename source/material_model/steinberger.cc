@@ -348,35 +348,27 @@ namespace aspect
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters(prm);
 
-          // Some error checking
+          // Assign background field and do some error checking
+          if (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1)
+            {
+              prm.set("Background material", "true");
+            }
+          else
+            {
+              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields()),
+                           ExcMessage("The Steinberger material model assumes that all compositional "
+                                      "fields correspond to mass fractions of materials. There must either be "
+                                      "the same number of material lookup files as compositional fields, "
+                                      "or one additional file (if a background field is used)."));
+
+              prm.set("Background material", "false");
+            }
+
           AssertThrow (prm.get_integer ("Index of first mass fraction compositional field") == 0,
                        ExcMessage("The Steinberger material model currently assumes that all the "
                                   "compositional fields correspond to materials with PerpleX lookup tables. "
                                   "Therefore the 'Index of first mass fraction compositional field' "
                                   "parameter must be equal to zero. "));
-
-          if (prm.get_bool ("Background material"))
-            {
-              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1),
-                           ExcMessage("You have specified that a background material field exists, "
-                                      "and the Steinberger material model assumes that all compositional "
-                                      "fields correspond to mass fractions of materials. "
-                                      "You must therefore specify one more material file name "
-                                      "than the number of compositional fields.  You have prescribed "
-                                      + Utilities::int_to_string(equation_of_state.number_of_lookups())
-                                      + " material data files, but there are "
-                                      + Utilities::int_to_string(this->n_compositional_fields())
-                                      + " compositional fields."));
-            }
-          else
-            {
-              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields()),
-                           ExcMessage("You have specified that no background material field exists, "
-                                      "and the Steinberger material model assumes that all compositional "
-                                      "fields correspond to mass fractions of materials. "
-                                      "You must therefore specify the same number of material file names "
-                                      "as the number of compositional fields."));
-            }
 
           prm.leave_subsection();
         }
