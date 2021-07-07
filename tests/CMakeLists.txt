@@ -75,14 +75,16 @@ ENDFUNCTION()
 # This is encoded in .prm files through lines of the form
 #    '# DEPENDS-ON: testname'
 # The result is returned in a variable _depends_on in the
-# caller's scope.
+# caller's scope. Having test dependencies is helpful if
+# one test requires another test to finish first, for example
+# because the result of the first test is used by the later test.
 FUNCTION(get_depends_on _filename)
   FILE(STRINGS ${_filename} _input_lines
        REGEX "DEPENDS-ON:")
   IF("${_input_lines}" STREQUAL "")
     SET(_depends_on "" PARENT_SCOPE)
   ELSE()
-    # go over the (possibly multiple) lines with MPI markers and choose the last
+    # go over the (possibly multiple) lines with DEPENDS-ON markers and choose the last
     FOREACH(_input_line ${_input_lines})
      SET(_last_line ${_input_line})
     ENDFOREACH()
@@ -419,7 +421,7 @@ FOREACH(_test ${_tests})
     # Check if this test depends on another test
     GET_DEPENDS_ON(${CMAKE_CURRENT_SOURCE_DIR}/${_testname}.prm)
     IF(NOT "${_depends_on}" STREQUAL "")
-      MESSAGE(STATUS "DEPENDENCY DETECTED. TEST:" ${_testname} "DEPENDENCY:" ${_depends_on})
+      MESSAGE(STATUS "Test dependency detected for test:" ${_testname} ", depending on:" ${_depends_on})
       SET_TESTS_PROPERTIES(${_testname} PROPERTIES DEPENDS ${_depends_on})
     ENDIF()
   ENDIF()
