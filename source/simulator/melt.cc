@@ -1221,15 +1221,12 @@ namespace aspect
 
       LinearAlgebra::PreconditionAMG preconditioner;
       LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef ASPECT_USE_PETSC
-      Amg_data.symmetric_operator = false;
-#else
+
       // Amg_data.constant_modes = constant_modes;
       Amg_data.elliptic = true;
       Amg_data.higher_order_elements = false;
       Amg_data.smoother_sweeps = 2;
       Amg_data.aggregation_threshold = 0.02;
-#endif
       preconditioner.initialize(system_matrix.block(block_idx, block_idx));
 
       SolverControl solver_control(system_rhs.block(block_idx).size(),
