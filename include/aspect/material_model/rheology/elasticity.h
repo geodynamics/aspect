@@ -111,6 +111,13 @@ namespace aspect
           get_elastic_shear_moduli () const;
 
           /**
+           * Calculates the effective elastic viscosity (this is the equivalent viscosity of
+           * a material which was unstressed at the end of the previous timestep).
+           */
+          double
+          calculate_elastic_viscosity (const double shear_modulus) const;
+
+          /**
            * Given the (viscous or visco-plastic) viscosity and the shear modulus, compute the viscoelastic
            * viscosity (eqn 28 in Moresi et al., 2003, J. Comp. Phys.).
            */
@@ -134,6 +141,12 @@ namespace aspect
           elastic_timestep () const;
 
         private:
+          /**
+           * Viscosity of a damper used to stabilize elasticity.
+           * A value of 0 Pas is equivalent to not using a damper.
+           */
+          double elastic_damper_viscosity;
+
           /**
            * Vector for field elastic shear moduli, read from parameter file.
            */
