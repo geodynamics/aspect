@@ -958,7 +958,9 @@ namespace aspect
     // Only enable temperature coupling if temperature block is needed
     if (solver_scheme_solves_advection_equations(parameters)
         &&
-        parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+        parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field
+        &&
+        parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::static_field)
       coupling[x.temperature][x.temperature] = DoFTools::always;
 
     // Only enable composition coupling if a composition block is needed
@@ -1014,7 +1016,8 @@ namespace aspect
           = introspection.component_indices;
         if (parameters.use_discontinuous_temperature_discretization &&
             solver_scheme_solves_advection_equations(parameters) &&
-            parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field)
+            parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::prescribed_field &&
+            parameters.temperature_method != Parameters<dim>::AdvectionFieldMethod::static_field)
           face_coupling[x.temperature][x.temperature] = DoFTools::always;
 
         if (parameters.use_discontinuous_composition_discretization &&
