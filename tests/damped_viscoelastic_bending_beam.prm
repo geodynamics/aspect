@@ -1,7 +1,6 @@
 # This test checks whether the viscoelastic bending beam benchmark
-# run successfully. In particular, this benchmark is a good test to
-# ensure that a model with compositional fields that affect material
-# properties works.
+# run successfully in combination with a viscous damper for the
+# elastic viscosity.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_bending_beam/viscoelastic_bending_beam.prm
 
@@ -20,6 +19,8 @@ end
 # The material response is only significantly affected if
 # the damper viscosity is similar to or greater than
 # the product of the elastic timestep and the shear modulus.
+# A damper value of 0 Pas corresponds to purely elastic deformation.
+
 subsection Material model
 
   set Model name = viscoelastic
