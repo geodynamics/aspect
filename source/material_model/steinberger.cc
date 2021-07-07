@@ -224,11 +224,15 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
+
+      std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
+
       std::vector<std::vector<double>> mass_fractions;
       std::vector<std::vector<double>> volume_fractions;
+      equation_of_state.fill_mass_and_volume_fractions (in, mass_fractions, volume_fractions);
 
       // Evaluate the equation of state properties over all evaluation points
-      equation_of_state.evaluate(in, out, mass_fractions, volume_fractions);
+      equation_of_state.evaluate(in, eos_outputs);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -237,8 +241,20 @@ namespace aspect
 
           out.thermal_conductivities[i] = thermal_conductivity_value;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
-            out.reaction_terms[i][c]            = 0;
+            out.reaction_terms[i][c] = 0;
+
+          // The density and isothermal compressibility are both volume-averaged
+          out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].densities, MaterialUtilities::arithmetic);
+          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].compressibilities, MaterialUtilities::arithmetic);
+          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_pressure, MaterialUtilities::arithmetic);
+          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_temperature, MaterialUtilities::arithmetic);
+          out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].specific_heat_capacities, MaterialUtilities::arithmetic);
+          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].thermal_expansion_coefficients, MaterialUtilities::arithmetic);
         }
+
+      // fill additional outputs if they exist
+      equation_of_state.fill_additional_outputs(in, volume_fractions, out);
+
     }
 
 
@@ -363,12 +379,6 @@ namespace aspect
 
               prm.set("Background material", "false");
             }
-
-          AssertThrow (prm.get_integer ("Index of first mass fraction compositional field") == 0,
-                       ExcMessage("The Steinberger material model currently assumes that all the "
-                                  "compositional fields correspond to materials with PerpleX lookup tables. "
-                                  "Therefore the 'Index of first mass fraction compositional field' "
-                                  "parameter must be equal to zero. "));
 
           prm.leave_subsection();
         }

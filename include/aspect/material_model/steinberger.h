@@ -219,14 +219,9 @@ namespace aspect
         EquationOfState::ThermodynamicTableLookup<dim> equation_of_state;
 
         /**
-         * Boolean describing whether to calculate material properties
-         * including latent heat effects.
-         */
-        bool latent_heat;
-
-
-        /**
-         * Boolean describing whether to use the lateral average temperature.
+         * Boolean describing whether to use the lateral average temperature
+         * for computing the viscosity, rather than the temperature
+         * on the reference adiabat.
          */
         bool use_lateral_average_temperature;
 

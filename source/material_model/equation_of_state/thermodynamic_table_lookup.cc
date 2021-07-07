@@ -136,7 +136,7 @@ namespace aspect
                     mass_fractions[i][0] = 1.;
                     for (unsigned int j=1; j<material_lookup.size(); ++j)
                       {
-                        const double mass_fraction = in.composition[i][first_composition_index+j-1];
+                        const double mass_fraction = in.composition[i][j-1];
                         mass_fractions[i][j] = mass_fraction;
                         mass_fractions[i][0] -= mass_fraction;
                         volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
@@ -150,7 +150,7 @@ namespace aspect
                   {
                     for (unsigned int j=0; j<material_lookup.size(); ++j)
                       {
-                        const double mass_fraction = in.composition[i][first_composition_index+j];
+                        const double mass_fraction = in.composition[i][j];
                         mass_fractions[i][j] = mass_fraction;
                         volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
                         summed_volumes += volume_fractions[i][j];
@@ -293,77 +293,35 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::
       evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-               MaterialModel::MaterialModelOutputs<dim> &out,
-               std::vector<std::vector<double>> &mass_fractions,
-               std::vector<std::vector<double>> &volume_fractions) const
+               std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const
       {
-        EquationOfStateOutputs<dim> eos_outputs (number_of_lookups());
-
-        fill_mass_and_volume_fractions (in, mass_fractions, volume_fractions);
-
         for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           {
-            // Evaluate the equation of state properties at the current evaluation point
-            evaluate_at_single_point(in, i, eos_outputs);
+            const double pressure = in.pressure[i];
+            const double temperature = in.temperature[i];
 
-            // The density and isothermal compressibility are both volume-averaged
-            out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.densities, MaterialUtilities::arithmetic);
-            out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.compressibilities, MaterialUtilities::arithmetic);
-            out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
-            out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
-
-            // Only calculate the averaged non-reactive specific heat and
-            // thermal expansivity if latent heat is to be ignored.
-            if (!latent_heat)
+            for (unsigned int j=0; j<eos_outputs[i].densities.size(); ++j)
               {
-                // Specific heat is measured per unit mass, so it is mass averaged.
-                // Thermal expansivity is volume averaged.
-                out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
-                out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+                eos_outputs[i].densities[j] = material_lookup[j]->density(temperature, pressure);
+                eos_outputs[i].compressibilities[j] = material_lookup[j]->dRhodp(temperature, pressure)/eos_outputs[i].densities[j];
+
+                // Only calculate the non-reactive specific heat and
+                // thermal expansivity if latent heat is to be ignored.
+                if (!latent_heat)
+                  {
+                    eos_outputs[i].thermal_expansion_coefficients[j] = material_lookup[j]->thermal_expansivity(temperature, pressure);
+                    eos_outputs[i].specific_heat_capacities[j] = material_lookup[j]->specific_heat(temperature, pressure);
+                  }
+
+                eos_outputs[i].entropy_derivative_pressure[j] = 0.;
+                eos_outputs[i].entropy_derivative_temperature[j] = 0.;
               }
           }
-
         // Calculate the specific heat and thermal expansivity
         // including the effects of reaction.
         if (latent_heat)
-          evaluate_thermal_enthalpy_derivatives(in, out);
-
-        // fill seismic velocity outputs if they exist
-        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
-          fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
-
-        // fill phase volume outputs if they exist
-        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
-          fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
-      }
-
-
-
-      template <int dim>
-      void
-      ThermodynamicTableLookup<dim>::
-      evaluate_at_single_point(const MaterialModel::MaterialModelInputs<dim> &in,
-                               const unsigned int q,
-                               MaterialModel::EquationOfStateOutputs<dim> &out) const
-      {
-        const double pressure = in.pressure[q];
-        const double temperature = in.temperature[q];
-
-        for (unsigned int j=0; j<out.densities.size(); ++j)
           {
-            out.densities[j] = material_lookup[j]->density(temperature, pressure);
-            out.compressibilities[j] = material_lookup[j]->dRhodp(temperature, pressure)/out.densities[j];
-
-            // Only calculate the non-reactive specific heat and
-            // thermal expansivity if latent heat is to be ignored.
-            if (!latent_heat)
-              {
-                out.thermal_expansion_coefficients[j] = material_lookup[j]->thermal_expansivity(temperature, pressure);
-                out.specific_heat_capacities[j] = material_lookup[j]->specific_heat(temperature, pressure);
-              }
-
-            out.entropy_derivative_pressure[j] = 0.;
-            out.entropy_derivative_temperature[j] = 0.;
+            evaluate_thermal_enthalpy_derivatives(in, eos_outputs);
           }
       }
 
@@ -373,7 +331,7 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::
       evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
-                                            MaterialModel::MaterialModelOutputs<dim> &out) const
+                                            std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const
       {
         // The second derivatives of the thermodynamic potentials (compressibility, thermal expansivity, specific heat)
         // are dependent not only on the phases present in the assemblage at the given temperature and pressure,
@@ -401,7 +359,7 @@ namespace aspect
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
             average_temperature += in.temperature[i];
-            average_density += out.densities[i];
+            average_density += eos_outputs[i].densities[0];
           }
         average_temperature /= in.n_evaluation_points();
         average_density /= in.n_evaluation_points();
@@ -418,13 +376,13 @@ namespace aspect
             if ((in.current_cell.state() == IteratorState::valid)
                 && (dH[0].second > 0) && (dH[1].second > 0))
               {
-                out.thermal_expansion_coefficients[i] = (1 - average_density * dH[1].first) / average_temperature;
-                out.specific_heat[i] = dH[0].first;
+                eos_outputs[i].thermal_expansion_coefficients[0] = (1 - average_density * dH[1].first) / average_temperature;
+                eos_outputs[i].specific_heat_capacities[0] = dH[0].first;
               }
             else
               {
-                out.thermal_expansion_coefficients[i] = (1 - out.densities[i] * material_lookup[0]->dHdp(in.temperature[i],pressure)) / in.temperature[i];
-                out.specific_heat[i] = material_lookup[0]->dHdT(in.temperature[i],pressure);
+                eos_outputs[i].thermal_expansion_coefficients[0] = (1 - eos_outputs[i].densities[0] * material_lookup[0]->dHdp(in.temperature[i],pressure)) / in.temperature[i];
+                eos_outputs[i].specific_heat_capacities[0] = material_lookup[0]->dHdT(in.temperature[i],pressure);
               }
           }
       }
@@ -513,7 +471,6 @@ namespace aspect
         max_latent_heat_substeps     = prm.get_integer ("Maximum latent heat substeps");
 
         has_background               = prm.get_bool ("Background material");
-        first_composition_index      = prm.get_integer ("Index of first mass fraction compositional field");
 
         if (prm.get ("Material file format") == "perplex")
           material_file_format       = perplex;
@@ -522,50 +479,59 @@ namespace aspect
         else
           AssertThrow (false, ExcNotImplemented());
 
-        // Do some error checking
-
-        // First, do a fairly lax check on the number of material files.
-        // If the following comparison evaluates to be an equality,
-        // it implies that all compositional fields after
-        // "first_composition_index" correspond to mass fractions
-
+        // Check the number of material files.
+        // If the following comparison evaluates to be an equality, it
+        // implies that all compositional fields correspond to mass fractions.
         if (has_background)
           {
-            AssertThrow ((material_file_names.size() <= this->n_compositional_fields() - first_composition_index + 1),
+            AssertThrow ((n_material_lookups <= this->n_compositional_fields() + 1),
                          ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
                                     "for every compositional field that corresponds to a mass fraction. "
                                     "You have said that there is a background field and prescribed "
-                                    + Utilities::int_to_string(material_file_names.size())
+                                    + Utilities::int_to_string(n_material_lookups)
                                     + " material data files, but there are "
                                     + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields, where field "
-                                    + Utilities::int_to_string(first_composition_index)
-                                    + " is the first which you say corresponds to a mass fraction. "
+                                    + " compositional fields. "
                                     "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields() - first_composition_index + 1)
+                                    + Utilities::int_to_string(this->n_compositional_fields() + 1)
                                     + ". "));
           }
         else
           {
-            AssertThrow ((material_file_names.size() <= this->n_compositional_fields() - first_composition_index),
+            AssertThrow ((n_material_lookups <= this->n_compositional_fields()),
                          ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
                                     "for every compositional field that corresponds to a mass fraction. "
                                     "You have said that there is no background field and prescribed "
-                                    + Utilities::int_to_string(material_file_names.size())
+                                    + Utilities::int_to_string(n_material_lookups)
                                     + " material data files, but there are "
                                     + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields, where field "
-                                    + Utilities::int_to_string(first_composition_index)
-                                    + " is the first which you say corresponds to a mass fraction. "
+                                    + " compositional fields. "
                                     "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields() - first_composition_index)
+                                    + Utilities::int_to_string(this->n_compositional_fields())
                                     + ". "));
           }
 
         if (latent_heat)
-          AssertThrow (material_file_names.size() == 1,
+          AssertThrow (n_material_lookups == 1,
                        ExcMessage("Isochemical latent heat calculations are only implemented for a single material lookup."));
 
+      }
+
+
+
+      template <int dim>
+      void
+      ThermodynamicTableLookup<dim>::fill_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                              const std::vector<std::vector<double>> &volume_fractions,
+                                                              MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // fill seismic velocity outputs if they exist
+        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+          fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
+
+        // fill phase volume outputs if they exist
+        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
+          fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
       }
 
 

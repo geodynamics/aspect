@@ -65,6 +65,10 @@ namespace aspect
            */
           bool is_compressible () const;
 
+          void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                               std::vector<std::vector<double>> &mass_fractions,
+                                               std::vector<std::vector<double>> &volume_fractions) const;
+
           /**
           * Function to compute the thermodynamic properties in @p out given the
           * inputs in @p in over all evaluation points.
@@ -72,9 +76,15 @@ namespace aspect
           */
           void
           evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
-                   MaterialModel::MaterialModelOutputs<dim> &out,
-                   std::vector<std::vector<double>> &mass_fractions,
-                   std::vector<std::vector<double>> &volume_fractions) const;
+                   std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
+
+          /**
+          * Function to fill the seismic velocity and phase volume additional outputs
+          */
+          void
+          fill_additional_outputs(const MaterialModel::MaterialModelInputs<dim> &in,
+                                  const std::vector<std::vector<double>> &volume_fractions,
+                                  MaterialModel::MaterialModelOutputs<dim> &out) const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -95,7 +105,6 @@ namespace aspect
 
         private:
           bool has_background;
-          unsigned int first_composition_index;
 
           unsigned int n_material_lookups;
           bool use_bilinear_interpolation;
@@ -116,7 +125,7 @@ namespace aspect
 
           /**
            * The format of the provided material files. Currently we support
-           * the PERPLEX and HeFESTo data formats.
+           * the Perple_X and HeFESTo data formats.
            */
           enum formats
           {
@@ -143,46 +152,13 @@ namespace aspect
           */
           std::vector<std::vector<unsigned int>> unique_phase_indices;
 
-          void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                               std::vector<std::vector<double>> &mass_fractions,
-                                               std::vector<std::vector<double>> &volume_fractions) const;
-
-          void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
-                                        const std::vector<double> &composite_densities,
-                                        const std::vector<std::vector<double>> &volume_fractions,
-                                        SeismicAdditionalOutputs<dim> *seismic_out) const;
-
-          /**
-          * This function uses the MaterialModelInputs &in to fill the output_values
-          * of the phase_volume_fractions_out output object with the volume
-          * fractions of each of the unique phases at each of the evaluation points.
-          * These volume fractions are obtained from the PerpleX-derived
-          * pressure-temperature lookup tables.
-          * The filled output_values object is a vector of vector<double>;
-          * the outer vector is expected to have a size that equals the number
-          * of unique phases, the inner vector is expected to have a size that
-          * equals the number of evaluation points.
-          */
-          void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                            const std::vector<std::vector<double>> &volume_fractions,
-                                            NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
-
           /**
            * Compute the specific heat and thermal expansivity using the pressure
            * and temperature derivatives of the specific enthalpy.
            * This evaluation incorporates the effects of latent heat production.
            */
           void evaluate_thermal_enthalpy_derivatives(const MaterialModel::MaterialModelInputs<dim> &in,
-                                                     MaterialModel::MaterialModelOutputs<dim> &out) const;
-
-          /**
-           * Function to compute the thermodynamic properties in @p out given the
-           * inputs in @p in at a single evaluation point.
-           */
-          void
-          evaluate_at_single_point(const MaterialModel::MaterialModelInputs<dim> &in,
-                                   const unsigned int q,
-                                   MaterialModel::EquationOfStateOutputs<dim> &out) const;
+                                                     std::vector<MaterialModel::EquationOfStateOutputs<dim>> &eos_outputs) const;
 
           /**
            * Returns the cell-wise averaged enthalpy derivatives for the evaluate
@@ -197,6 +173,26 @@ namespace aspect
            */
           std::array<std::pair<double, unsigned int>,2>
           enthalpy_derivatives (const typename Interface<dim>::MaterialModelInputs &in) const;
+
+          void fill_seismic_velocities (const MaterialModel::MaterialModelInputs<dim> &in,
+                                        const std::vector<double> &composite_densities,
+                                        const std::vector<std::vector<double>> &volume_fractions,
+                                        SeismicAdditionalOutputs<dim> *seismic_out) const;
+
+          /**
+          * This function uses the MaterialModelInputs &in to fill the output_values
+          * of the phase_volume_fractions_out output object with the volume
+          * fractions of each of the unique phases at each of the evaluation points.
+          * These volume fractions are obtained from the Perple_X-derived
+          * pressure-temperature lookup tables.
+          * The filled output_values object is a vector of vector<double>;
+          * the outer vector is expected to have a size that equals the number
+          * of unique phases, the inner vector is expected to have a size that
+          * equals the number of evaluation points.
+          */
+          void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
+                                            const std::vector<std::vector<double>> &volume_fractions,
+                                            NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
       };
     }
   }
