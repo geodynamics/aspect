@@ -29,7 +29,6 @@ namespace aspect
 {
   namespace Postprocess
   {
-
     /**
      * A postprocessor that computes the deepest point of the given composition.
      *

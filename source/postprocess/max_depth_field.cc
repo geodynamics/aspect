@@ -68,8 +68,6 @@ namespace aspect
               {
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(), compositional_values);
 
-                //TODO make less crude. Maybe max rule of check all points of cell
-                //Calculate the biggest depth per processor
                 for (unsigned int q = 0; q < n_q_points; ++q)
                   {
                     const double depth = this->get_geometry_model().depth(position_values[q]);
