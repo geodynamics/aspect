@@ -118,7 +118,7 @@ namespace aspect
 
       for (const auto p : boundary_indicators)
         {
-          local_max_vel[p] = -std::numeric_limits<double>::max();
+          local_max_vel[p] = std::numeric_limits<double>::lowest();
           local_min_vel[p] = std::numeric_limits<double>::max();
         }
 
@@ -141,7 +141,7 @@ namespace aspect
 
                 // determine the max, min, and squared velocity residual on the face
                 // also determine the face area
-                double local_max = -std::numeric_limits<double>::max();
+                double local_max = std::numeric_limits<double>::lowest();
                 double local_min = std::numeric_limits<double>::max();
                 double local_sqvel = 0.0;
                 double local_fe_face_area = 0.0;

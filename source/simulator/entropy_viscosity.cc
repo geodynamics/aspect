@@ -55,7 +55,7 @@ namespace aspect
     std::vector<double> old_old_field_values(n_q_points);
 
     double min_entropy = std::numeric_limits<double>::max(),
-           max_entropy = -std::numeric_limits<double>::max(),
+           max_entropy = std::numeric_limits<double>::lowest(),
            area = 0,
            entropy_integrated = 0;
 

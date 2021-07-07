@@ -1107,7 +1107,7 @@ namespace aspect
                            "The maximum global temperature value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from temperature advection fields.");
         prm.declare_entry ("Global temperature minimum",
-                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::Double (),
                            "The minimum global temperature value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from temperature advection fields.");
@@ -1120,7 +1120,7 @@ namespace aspect
                            "one or the same as the number of the compositional fields. When only one value "
                            "is supplied, this same value is assumed for all compositional fields.");
         prm.declare_entry ("Global composition minimum",
-                           boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                            Patterns::List(Patterns::Double ()),
                            "The minimum global composition value that will be used in the bound preserving "
                            "limiter for the discontinuous solutions from composition advection fields. "

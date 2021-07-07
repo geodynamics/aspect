@@ -600,7 +600,7 @@ namespace aspect
 
             case pick_largest:
             {
-              double max = -std::numeric_limits<double>::max();
+              double max = std::numeric_limits<double>::lowest();
               for (unsigned int i=0; i<N; ++i)
                 max = std::max(max, values_out[i]);
 
@@ -617,7 +617,7 @@ namespace aspect
               for (unsigned int i=0; i<N; ++i)
                 min = std::min(min, values_out[i]);
 
-              double max = -std::numeric_limits<double>::max();
+              double max = std::numeric_limits<double>::lowest();
               for (unsigned int i=0; i<N; ++i)
                 max = std::max(max, values_out[i]);
 

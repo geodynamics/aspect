@@ -70,7 +70,7 @@ namespace aspect
         return *std::max_element(temperature_, temperature_+2*dim);
       else
         {
-          double max = -std::numeric_limits<double>::max();
+          double max = std::numeric_limits<double>::lowest();
           for (const auto id : fixed_boundary_ids)
             max = std::max(max,temperature_[id]);
           return max;

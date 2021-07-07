@@ -55,7 +55,7 @@ namespace aspect
 
       double local_pressure_integral = 0;
       double local_min_pressure      = std::numeric_limits<double>::max();
-      double local_max_pressure      = -std::numeric_limits<double>::max();
+      double local_max_pressure      = std::numeric_limits<double>::lowest();
 
       // compute the integral quantities by quadrature. note that compared to
       // the temperature statistics postprocessor, we can not just loop over

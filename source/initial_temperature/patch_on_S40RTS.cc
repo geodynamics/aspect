@@ -125,7 +125,7 @@ namespace aspect
                              "The boundary is smoothed using a depth weighted combination of Vs "
                              "values from the ascii grid and S40RTS at each point in the region of smoothing.");
           prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
-                             boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                             boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                              Patterns::Double (),
                              "This will set the heterogeneity prescribed by the Vs ascii grid and S40RTS to zero "
                              "down to the specified depth (in meters). Note that your resolution has "

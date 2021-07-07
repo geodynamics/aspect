@@ -394,7 +394,7 @@ namespace aspect
                              "The reference temperature that is perturbed by the spherical "
                              "harmonic functions. Only used in incompressible models.");
           prm.declare_entry ("Remove temperature heterogeneity down to specified depth",
-                             boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                             boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                              Patterns::Double (),
                              "This will set the heterogeneity prescribed by S20RTS or S40RTS to zero "
                              "down to the specified depth (in meters). Note that your resolution has "

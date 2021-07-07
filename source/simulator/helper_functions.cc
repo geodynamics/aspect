@@ -690,7 +690,7 @@ namespace aspect
     // the communication step at the
     // latest.
     double min_local_field = std::numeric_limits<double>::max(),
-           max_local_field = -std::numeric_limits<double>::max();
+           max_local_field = std::numeric_limits<double>::lowest();
 
     if (timestep_number > 1)
       {

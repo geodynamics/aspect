@@ -65,7 +65,7 @@ namespace aspect
       std::ostringstream output_file;
 
       // Choose stupidly large values for initialization
-      double local_max_height = -std::numeric_limits<double>::max();
+      double local_max_height = std::numeric_limits<double>::lowest();
       double local_min_height = std::numeric_limits<double>::max();
 
       // loop over all of the surface cells and save the elevation to stored_value
