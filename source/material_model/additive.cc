@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -58,7 +58,6 @@ namespace aspect
           out.densities[i] += in.composition[i][density_idx];
           out.viscosities[i] *= in.composition[i][viscosity_idx];
 
-//          std::cout << "dens " << out.densities[i] << " visc " << out.viscosities[i] << std::endl;
         }
 
     }
@@ -74,7 +73,7 @@ namespace aspect
           prm.declare_entry("Base model additive","simple",
                             Patterns::Selection(MaterialModel::get_valid_model_names_pattern<dim>()),
                             "The name of a material model that will be modified by an"
-                            "averaging operation. Valid values for this parameter "
+                            "addition operation. Valid values for this parameter "
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
@@ -94,7 +93,7 @@ namespace aspect
         {
           Assert( prm.get("Base model additive") != "additive",
                   ExcMessage("You may not use ``additive'' as the base model for "
-                             "a averaging model.") );
+                             "an additive model.") );
 
           // create the base model and initialize its SimulatorAccess base
           // class; it will get a chance to read its parameters below after we
@@ -132,13 +131,6 @@ namespace aspect
       return base_model_add->reference_viscosity();
     }
 
-//    template <int dim>
-//    double
-//    Additive<dim>::
-//    reference_density() const
-//    {
-//      return base_model->reference_density();
-//    }
   }
 }
 

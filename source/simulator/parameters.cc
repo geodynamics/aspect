@@ -1984,7 +1984,6 @@ namespace aspect
     {
       adjoint_input_file              = prm.get ("Input filename for adjoint points");
       read_in_points                  = prm.get_bool ("Read points from file");
-      num_it_adjoint                  = prm.get_integer ("Number of iterations in adjoint inversion");
       use_fixed_surface_value         = prm.get_bool ("Use fixed surface value");
       update_factor_rho               = prm.get_double ("Factor to update the density properties");
       update_factor_eta               = prm.get_double ("Factor to update the viscosity properties");

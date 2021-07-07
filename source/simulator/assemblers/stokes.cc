@@ -373,7 +373,6 @@ namespace aspect
 
           for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
-              // if we're solving the adjoint problem use the adjoint RHS instead of the normal body force
               data.local_rhs(i) += (density * gravity * scratch.phi_u[i])
                                     * JxW;
 

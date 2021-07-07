@@ -1460,7 +1460,16 @@ namespace aspect
   void Simulator<dim>::solve_stokes_adjoint ()
   {
 
-    for (unsigned int i=0; i<=parameters.num_it_adjoint; ++i)
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+
+    for (unsigned int i=0; i<max_nonlinear_iterations; ++i)
        {
 
         pcout << " ^^ Adjoint iteration number " << i  << std::endl;
@@ -1506,16 +1515,8 @@ namespace aspect
     assemblers->stokes_system.clear();
     assemblers->stokes_system_on_boundary_face.clear();
 
-    // add the terms necessary to normalize the pressure
-    if (do_pressure_rhs_compatibility_modification)
-      assemblers->stokes_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
 
-    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
-      p->initialize_simulator(*this);
-
-
-    // I moved this over from assembly.cc
+    // assemble the Stokes RHS - this is done on the boundary since it's a surface force
     assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags = (update_values  | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
 
     assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
@@ -1525,6 +1526,15 @@ namespace aspect
       std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
 
     if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system_on_boundary_face[0].get()))
+      p->initialize_simulator(*this);
+
+
+    // add the terms necessary to normalize the pressure
+    if (do_pressure_rhs_compatibility_modification)
+      assemblers->stokes_system.push_back(
+        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+
+    if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
       p->initialize_simulator(*this);
 
 
@@ -1549,10 +1559,6 @@ namespace aspect
       solution.block(introspection.block_indices.pressure)
         = current_linearization_point.block(introspection.block_indices.pressure);
 
-    // postprocess adjoint solution to get output
-    // TODO: only run the postprocessors I need, e.g. DT
-    // postprocess ();
-
 
     // -------------------------------------------------------------
     // COMPUTE UPDATES FOR ETA AND RHO
@@ -1567,6 +1573,7 @@ namespace aspect
     // solve system for gradients in eta and rho
     compute_parameter_update();
 
+// might want to postprocess if any of the information within iterations should be saved
  //    postprocess ();
 
     }

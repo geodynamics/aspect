@@ -708,7 +708,6 @@ namespace aspect
      */
     std::string        adjoint_input_file;
     bool               read_in_points;
-    unsigned int           num_it_adjoint;
     bool          use_fixed_surface_value;
     double        update_factor_eta;
     double        update_factor_rho;

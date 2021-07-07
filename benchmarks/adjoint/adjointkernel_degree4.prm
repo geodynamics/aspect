@@ -9,10 +9,10 @@ set Output directory                       = output_4
 set Pressure normalization                = surface
 set Surface pressure                      = 0
 set Nonlinear solver scheme = Stokes adjoint
+set Max nonlinear iterations = 1
 
 subsection Adjoint problem
   set Read points from file             = false #true
-  set Number of iterations in adjoint inversion  =  0
   set Factor to update the density properties    =  1
   set Factor to update the viscosity properties  =  1
 end

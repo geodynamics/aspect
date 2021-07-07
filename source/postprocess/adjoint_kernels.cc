@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+  Copyright (C) 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -191,7 +191,7 @@ namespace aspect
                                   "$h=\\frac{\\sigma_{rr}}{\\|\\mathbf g\\| \\rho}$ where $\\rho$ "
                                   "is the density at the cell center."
                                   "\n"
-                                  "The file format then consists of lines with Euclidiean coordinates "
+                                  "The file format then consists of lines with Euclidean coordinates "
                                   "followed by the corresponding topography value."
                                   "\n\n"
                                   "(As a side note, the postprocessor chooses the cell center "

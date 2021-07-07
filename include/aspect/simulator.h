@@ -373,7 +373,6 @@ namespace aspect
         unsigned int polynomial_degree(const Introspection<dim> &introspection) const;
       };
 
-
     private:
 
       /**

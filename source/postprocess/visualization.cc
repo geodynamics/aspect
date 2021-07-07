@@ -667,7 +667,7 @@ namespace aspect
           // output_interval in time ago, or maximum_timesteps_between_outputs in
           // number of timesteps ago.
           // The comparison in number of timesteps is safe from integer overflow for
-          // at most 2 billion timesteps , which is not likely to
+          // at most 2 billion timesteps, which is not likely to
           // be ever reached (both values are unsigned int,
           // and the default value of maximum_timesteps_between_outputs is
           // set to numeric_limits<int>::max())

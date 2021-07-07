@@ -34,6 +34,7 @@
 #include <aspect/particle/interpolator/interface.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/postprocess/visualization.h>
+#include <aspect/postprocess/dynamic_topography.h>
 
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/conditional_ostream.h>
@@ -2403,6 +2404,240 @@ namespace aspect
       }
     return new_linear_stokes_solver_tolerance;
   }
+
+
+
+  template <int dim>
+  void
+  Simulator<dim>::compute_parameter_update ()
+  {
+    // This calculation requires that the DT postprocessor is selected
+    AssertThrow(postprocess_manager.template has_matching_postprocessor<const Postprocess::DynamicTopography<dim>> (),
+   ExcMessage("The dynamic topography postprocessor has to be active for adjoint computations."));
+
+    // INTERIOR TERM
+    system_matrix = 0.;
+    system_rhs = 0.;
+
+    const unsigned int quadrature_degree = introspection.polynomial_degree.compositional_fields + 1;
+
+    // Gauss quadrature in the interior for best accuracy.
+    const QGauss<dim> quadrature_formula(quadrature_degree);
+    const unsigned int dofs_per_cell = finite_element.dofs_per_cell;
+    const unsigned int n_q_points = quadrature_formula.size();
+
+    const QGauss<dim-1> quadrature_formula_face(quadrature_degree);
+    const unsigned int n_q_face_points = quadrature_formula_face.size();
+
+    FEValues<dim> fe_values (*mapping,
+                             finite_element,
+                             quadrature_formula,
+                             update_values |
+                             update_gradients |
+                             update_quadrature_points |
+                             update_JxW_values);
+
+    FEValues<dim> fe_values_adjoint (*mapping,
+                                     finite_element,
+                                     quadrature_formula,
+                                     update_values |
+                                     update_gradients |
+                                     update_quadrature_points |
+                                     update_JxW_values);
+
+    FEFaceValues<dim> fe_face_values (*mapping,
+                                      finite_element,
+                                      quadrature_formula_face,
+                                      update_values |
+                                      update_gradients |
+                                      update_quadrature_points |
+                                      update_JxW_values);
+
+    // Storage for shape function values for the current solution.
+    // Used for constructing the known side of the CBF system.
+    std::vector<double> phi_eta (dofs_per_cell);
+    std::vector<double> phi_rho (dofs_per_cell);
+
+    // Initializing local rhs and mass matrix
+    Vector<double> local_rhs(dofs_per_cell);
+    FullMatrix<double> local_mass_matrix(dofs_per_cell, dofs_per_cell);
+
+    // Loop over all of the surface cells and if one less than h/3 away from
+    // one of the top or bottom boundaries, assemble CBF system for it.
+    typename DoFHandler<dim>::active_cell_iterator
+    cell = dof_handler.begin_active(),
+    endc = dof_handler.end();
+
+    std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
+
+    // Get a pointer to the dynamic topography postprocessor.
+    const Postprocess::DynamicTopography<dim> &dynamic_topography =
+      postprocess_manager.template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
+
+    // Get the already-computed dynamic topography solution.
+    const LinearAlgebra::BlockVector topo_vector = dynamic_topography.topography_vector();
+
+    std::vector<double> topo_values( quadrature_formula.size() );
+
+    const double density_above = 0;
+
+    for (; cell!=endc; ++cell)
+      if (cell->is_locally_owned())
+        {
+          fe_values.reinit (cell);
+          fe_values_adjoint.reinit (cell);
+
+          // Evaluate the material properties and the solution within the cell
+          MaterialModel::MaterialModelInputs<dim> in(fe_values, cell, introspection, solution);
+          MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, introspection.n_compositional_fields);
+          material_model->evaluate(in, out);
+
+          MaterialModel::MaterialModelInputs<dim> in_adjoint(fe_values, cell, introspection, current_adjoint_solution);
+
+          local_rhs = 0.;
+          local_mass_matrix = 0.;
+
+          for (unsigned int q=0; q<n_q_points; ++q)
+            {
+              // for density kernel
+              const Tensor<1,dim> velocity_adjoint = in_adjoint.velocity[q];
+              const Tensor<1,dim> gravity = gravity_model->gravity_vector(in.position[q]);
+
+              // for viscosity kernel
+              const double eta = out.viscosities[q];
+              const SymmetricTensor<2,dim> strain_rate_forward = in.strain_rate[q] - 1./3 * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>();
+              const SymmetricTensor<2,dim> strain_rate_adjoint = in_adjoint.strain_rate[q] - 1./3 * trace(in_adjoint.strain_rate[q]) * unit_symmetric_tensor<dim>();
+
+              for (unsigned int k=0; k<dofs_per_cell; ++k)
+                {
+                  phi_rho[k] = fe_values[introspection.extractors.compositional_fields[0]].value(k,q);
+                  phi_eta[k] = fe_values[introspection.extractors.compositional_fields[1]].value(k,q);
+                }
+
+              for (unsigned int i = 0; i<dofs_per_cell; ++i)
+                {
+                  // density kernel
+                  local_rhs(i) += -(gravity * velocity_adjoint) * phi_rho[i] * fe_values.JxW(q);
+
+                  // viscosity kernel
+                  local_rhs(i) += (2 * eta * strain_rate_forward * strain_rate_adjoint) * phi_eta[i] * fe_values.JxW(q);
+                  // it's fine to add both of them because only one of them at a time is nonzero
+
+                  for (unsigned int j = 0; j<dofs_per_cell; j++)
+                    {
+                      // Assemble Mass Matrix for the first compositional field. the mass
+                      // matrix for the second compositional field would look exactly the
+                      // same, so we can avoid building it for efficiency. (in fact we
+                      // also would have to deal with the fact that no sparsity pattern
+                      // and memory is allocated for the second compositional field; but
+                      // because we don't build the matrix, we don't care here.)
+                      local_mass_matrix(i,j) += fe_values[introspection.extractors.compositional_fields[0]].value(i,q) *
+                                                fe_values[introspection.extractors.compositional_fields[0]].value(j,q) *
+                                                fe_values.JxW(q);
+                    }
+                }
+            }
+
+
+          // SURFACE TERM
+
+          // see if the cell is at the *top* boundary and if so start surface term calculation
+          unsigned int top_face_idx = numbers::invalid_unsigned_int;
+          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            if (cell->at_boundary(f) && geometry_model->depth (cell->face(f)->center()) < cell->face(f)->minimum_vertex_distance()/3)
+              {
+                top_face_idx = f;
+                break;
+              }
+
+          if (top_face_idx != numbers::invalid_unsigned_int)
+            {
+              //fe_values.reinit (cell); //(cell,top_face_idx);
+              fe_face_values.reinit (cell,top_face_idx);
+
+              // Evaluate the material properties and the solution within the cell
+              //MaterialModel::MaterialModelInputs<dim> in(fe_values, cell, introspection, solution);
+              //MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, introspection.n_compositional_fields);
+              //material_model->evaluate(in, out);
+
+              MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, introspection, solution);
+              MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, introspection.n_compositional_fields);
+              material_model->evaluate(in_face, out_face);
+
+              fe_face_values[introspection.extractors.temperature].get_function_values(topo_vector, topo_values);
+
+
+              for (unsigned int q=0; q<n_q_face_points; ++q)
+                {
+                  Point<dim> location = fe_face_values.quadrature_point(q);
+
+                  const double density   = out_face.densities[q];
+                  const double eta       = out_face.viscosities[q];
+
+                  const SymmetricTensor<2,dim> strain_rate = in_face.strain_rate[q] - 1./3 * trace(in_face.strain_rate[q]) * unit_symmetric_tensor<dim>();
+                  const Tensor<1,dim> gravity = gravity_model->gravity_vector(location);
+                  const Tensor<1,dim> n_hat = - gravity/gravity.norm();
+
+                  for (unsigned int k=0; k<dofs_per_cell; ++k)
+                    {
+                      phi_rho[k] = fe_values[introspection.extractors.compositional_fields[0]].value(k,q);
+                      phi_eta[k] = fe_values[introspection.extractors.compositional_fields[1]].value(k,q);
+                    }
+
+                  // TODO: does this need to be integrated across the surface? I think so ..
+                  for (unsigned int i = 0; i<dofs_per_cell; ++i)
+                    {
+                      // density kernel
+                      local_rhs(i) += - topo_values[q] * topo_values[q] / (density - density_above) * phi_eta[i] * fe_face_values.JxW(q);
+
+                      // viscosity kernel
+                      local_rhs(i) += topo_values[q] * n_hat * (2 * eta * strain_rate  * n_hat)
+                                      / ((density - density_above)*gravity.norm()) * phi_eta[i] * fe_face_values.JxW(q);
+                      // it's fine to add both of them because only one of them at a time is nonzero
+
+                    }
+                }
+            }
+
+
+
+          // get local dofs for this compositional fields
+          cell->get_dof_indices (local_dof_indices);
+
+          // assemble local mass matrix and rhs into global mass matrix and rhs
+          current_constraints.distribute_local_to_global (local_mass_matrix,
+                                                          local_rhs,
+                                                          local_dof_indices,
+                                                          system_matrix,
+                                                          system_rhs);
+
+        }   // loop over all cells
+
+    system_rhs.compress(VectorOperation::add);
+    system_matrix.compress(VectorOperation::add);
+
+    // solve linear system
+    const unsigned int rho_comp_block = AdvectionField::composition(0).block_index(introspection);
+    const unsigned int eta_comp_block = AdvectionField::composition(1).block_index(introspection);
+
+    LinearAlgebra::BlockVector delta (system_rhs);
+    SolverControl control(1000, 1e-6);
+    SolverCG<LinearAlgebra::Vector> solver_cg (control);
+    solver_cg.solve (system_matrix.block(rho_comp_block, rho_comp_block),
+                     delta.block(rho_comp_block),
+                     system_rhs.block(rho_comp_block),
+                     PreconditionIdentity());
+    solver_cg.solve (system_matrix.block(rho_comp_block, rho_comp_block),    // reuse the same matrix, as discussed above
+                     delta.block(eta_comp_block),
+                     system_rhs.block(eta_comp_block),
+                     PreconditionIdentity());
+
+    solution.block(rho_comp_block).add (parameters.update_factor_rho, delta.block(rho_comp_block));
+    solution.block(eta_comp_block).add (parameters.update_factor_eta, delta.block(eta_comp_block));
+
+  }
+
+
 }
 // explicit instantiation of the functions we implement in this file
 namespace aspect
@@ -2440,8 +2675,8 @@ namespace aspect
                                                                             const double linear_stokes_solver_tolerance, \
                                                                             const double stokes_residual, \
                                                                             const double newton_residual, \
-                                                                            const double newton_residual_old);
-
+                                                                            const double newton_residual_old); \
+  template void Simulator<dim>::compute_parameter_update (); 
   ASPECT_INSTANTIATE(INSTANTIATE)
 
 #undef INSTANTIATE
