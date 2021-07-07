@@ -3,4 +3,4 @@ This parameter corresponds to the viscosity of a viscous damper which deforms
 at the same strain rate as the elastic element.
 The default value of 0 Pas corresponds to purely elastic deformation.
 <br>
-(Bob Myhill, 2020/12/08)
+(Bob Myhill, 2021/07/07)
