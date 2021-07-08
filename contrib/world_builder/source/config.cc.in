@@ -19,17 +19,17 @@
 
 #include "world_builder/config.h"
 
-using namespace WorldBuilder;
+namespace WorldBuilder
+{
+  const std::string Version::MAJOR = "@WORLD_BUILDER_VERSION_MAJOR@";
+  const std::string Version::MINOR = "@WORLD_BUILDER_VERSION_MINOR@";
+  const std::string Version::PATCH = "@WORLD_BUILDER_VERSION_PATCH@";
+  const std::string Version::LABEL = "@WORLD_BUILDER_VERSION_LABEL@";
 
-const std::string Version::MAJOR = "@WORLD_BUILDER_VERSION_MAJOR@";
-const std::string Version::MINOR = "@WORLD_BUILDER_VERSION_MINOR@";
-const std::string Version::PATCH = "@WORLD_BUILDER_VERSION_PATCH@";
-const std::string Version::LABEL = "@WORLD_BUILDER_VERSION_LABEL@";
+  const std::string Version::GIT_SHA1 = "@GIT_SHA1@";
+  const std::string Version::GIT_BRANCH = "@GIT_BRANCH@";
+  const std::string Version::GIT_DATE = "@GIT_DATE@";
+  const std::string Version::GIT_COMMIT_SUBJECT = "@GIT_COMMIT_SUBJECT@";
 
-const std::string Version::GIT_SHA1 = "@GIT_SHA1@";
-const std::string Version::GIT_BRANCH = "@GIT_BRANCH@";
-const std::string Version::GIT_DATE = "@GIT_DATE@";
-const std::string Version::GIT_COMMIT_SUBJECT = "@GIT_COMMIT_SUBJECT@";
-
-const std::string Data::WORLD_BUILDER_SOURCE_DIR = "@WORLD_BUILDER_SOURCE_DIR@"; 
-
+  const std::string Data::WORLD_BUILDER_SOURCE_DIR = "@WORLD_BUILDER_SOURCE_DIR@";
+}
