@@ -24,11 +24,7 @@
 
 #include <deal.II/lac/solver_gmres.h>
 
-#ifdef ASPECT_USE_PETSC
-#include <deal.II/lac/solver_cg.h>
-#else
 #include <deal.II/lac/trilinos_solver.h>
-#endif
 
 #include <deal.II/base/tensor_function.h>
 
