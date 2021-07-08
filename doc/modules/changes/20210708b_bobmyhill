@@ -1,4 +1,4 @@
-New: It is now possible to use phase transitions and Peierls creep
-in composite (viscoplastic) rheologies.
+New: It is now possible to use default or single values for Peierls creep
+parameters in composite (viscoplastic) rheologies with phase transitions.
 <br>
 (Bob Myhill, 2021/07/08)
