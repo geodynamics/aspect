@@ -10,8 +10,9 @@ set Nonlinear solver scheme                = single Advection, single Stokes
 
 subsection Boundary temperature model
   set List of model names = constant
+  set Fixed temperature boundary indicators   = east, west
   subsection Constant
-    set Boundary indicator to temperature mappings = west: 0, east: 1, south: 2, north: 3, inner: 4, outer:5
+    set Boundary indicator to temperature mappings = west: 0, east: 1
   end
 end
 
@@ -69,10 +70,6 @@ end
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0, 1
-end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 1
