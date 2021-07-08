@@ -321,27 +321,6 @@ namespace aspect
     }
 
 
-#if !DEAL_II_VERSION_GTE(9,2,0)
-    /**
-     * Split the set of DoFs (typically locally owned or relevant) in @p whole_set into blocks
-     * given by the @p dofs_per_block structure.
-     */
-    void split_by_block (const std::vector<types::global_dof_index> &dofs_per_block,
-                         const IndexSet &whole_set,
-                         std::vector<IndexSet> &partitioned)
-    {
-      const unsigned int n_blocks = dofs_per_block.size();
-      partitioned.clear();
-
-      partitioned.resize(n_blocks);
-      types::global_dof_index start = 0;
-      for (unsigned int i=0; i<n_blocks; ++i)
-        {
-          partitioned[i] = whole_set.get_view(start, start + dofs_per_block[i]);
-          start += dofs_per_block[i];
-        }
-    }
-#endif
 
     template <int dim>
     std::vector<std::string>

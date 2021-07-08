@@ -33,12 +33,7 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/fe.h>
 #include <deal.II/fe/mapping_q.h>
-
-#if !DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/constraint_matrix.h>
-#else
-#  include <deal.II/lac/affine_constraints.h>
-#endif
+#include <deal.II/lac/affine_constraints.h>
 
 namespace WorldBuilder
 {

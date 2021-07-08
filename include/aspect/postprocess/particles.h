@@ -77,17 +77,12 @@ namespace aspect
           /**
            * Implementation of the corresponding function of the base class.
            */
-#if DEAL_II_VERSION_GTE(9,1,0)
           std::vector<
           std::tuple<unsigned int,
               unsigned int,
               std::string,
               DataComponentInterpretation::DataComponentInterpretation> >
               get_nonscalar_data_ranges () const override;
-#else
-          std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-          get_vector_data_ranges() const override;
-#endif
 
           /**
            * Output information that is filled by build_patches() and
@@ -103,17 +98,12 @@ namespace aspect
           /**
            * Store which of the data fields are vectors.
            */
-#if DEAL_II_VERSION_GTE(9,1,0)
           std::vector<
           std::tuple<unsigned int,
               unsigned int,
               std::string,
               DataComponentInterpretation::DataComponentInterpretation> >
               vector_datasets;
-#else
-          std::vector<std::tuple<unsigned int, unsigned int, std::string> >
-          vector_datasets;
-#endif
       };
     }
 
