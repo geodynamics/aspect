@@ -520,7 +520,7 @@ namespace aspect
                              "layer. The default value is 200. Note that sampling "
                              "becomes more uniform with increasing number of satellites");
           prm.declare_entry ("Quadrature degree increase", "0",
-                             Patterns::Integer (0),
+                             Patterns::Integer (-1),
                              "Quadrature degree increase over the velocity element "
                              "degree may be required when gravity is calculated near "
                              "the surface or inside the model. An increase in the "
