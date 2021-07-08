@@ -626,7 +626,7 @@ namespace aspect
           {
             peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
-            peierls_creep->parse_parameters(prm);
+            peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
 
         // Constant viscosity prefactor parameters
