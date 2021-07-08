@@ -20,6 +20,7 @@
 
 
 #include <aspect/material_model/steinberger.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/adiabatic_conditions/interface.h>
 #include <aspect/utilities.h>
 #include <aspect/lateral_averaging.h>
@@ -233,6 +234,11 @@ namespace aspect
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(in, eos_outputs);
 
+      MaterialModel::fill_averaged_equation_of_state_outputs(eos_outputs, mass_fractions, volume_fractions, out);
+
+      // fill additional outputs if they exist
+      equation_of_state.fill_additional_outputs(in, volume_fractions, out);
+
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           if (in.requests_property(MaterialProperties::viscosity))
@@ -241,18 +247,7 @@ namespace aspect
           out.thermal_conductivities[i] = thermal_conductivity_value;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0;
-
-          // The density and isothermal compressibility are both volume-averaged
-          out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].densities, MaterialUtilities::arithmetic);
-          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].compressibilities, MaterialUtilities::arithmetic);
-          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_pressure, MaterialUtilities::arithmetic);
-          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_temperature, MaterialUtilities::arithmetic);
-          out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].specific_heat_capacities, MaterialUtilities::arithmetic);
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].thermal_expansion_coefficients, MaterialUtilities::arithmetic);
         }
-
-      // fill additional outputs if they exist
-      equation_of_state.fill_additional_outputs(in, volume_fractions, out);
 
     }
 
