@@ -1319,6 +1319,14 @@ namespace aspect
     // testing.
     AssertThrow(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
 
+    // Check whether the user provided velocity boundary conditions in different directions.
+    for (const auto &it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
+      {
+        AssertThrow(it.second.first=="",
+                    ExcMessage("The matrix-free Sokes solver currently only works if all velocity "
+                               "components are fixed, so no [XYZ] can be specified."));
+      }
+
     // We currently only support averaging that gives a constant value:
     using avg = MaterialModel::MaterialAveraging::AveragingOperation;
     AssertThrow((sim.parameters.material_averaging &
