@@ -29,13 +29,7 @@
 
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/dofs/dof_handler.h>
-
-#if DEAL_II_VERSION_GTE(9,1,0)
-#  include <deal.II/lac/affine_constraints.h>
-#else
-#  include <deal.II/lac/constraint_matrix.h>
-#endif
-
+#include <deal.II/lac/affine_constraints.h>
 #include <deal.II/base/index_set.h>
 
 
