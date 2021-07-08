@@ -145,12 +145,6 @@ namespace aspect
                 {
                   boundary_id
                     = this->get_geometry_model().translate_symbolic_boundary_name_to_id (parts[0]);
-
-                  AssertThrow((this->get_fixed_temperature_boundary_indicators().find(boundary_id) != this->get_fixed_temperature_boundary_indicators().end()),
-                              ExcMessage ("You have indicated a temperature mapping for "
-                                          "Boundary indicator " + parts[0] + ", but that "
-                                          "indicator isn't in the "
-                                          "list of Fixed temperature boundary indicators."));
                 }
               catch (const std::string &error)
                 {
@@ -159,6 +153,12 @@ namespace aspect
                                                   "the conversion function complained as follows: "
                                                   + error));
                 }
+
+              AssertThrow((this->get_fixed_temperature_boundary_indicators().find(boundary_id) != this->get_fixed_temperature_boundary_indicators().end()),
+                          ExcMessage ("You have indicated a temperature mapping for "
+                                      "boundary indicator " + parts[0] + ", but that "
+                                      "indicator isn't in the "
+                                      "list of Fixed temperature boundary indicators."));
 
               AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
                            ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
