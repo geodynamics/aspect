@@ -268,26 +268,43 @@ namespace aspect
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double derivative_scaling_factor = this->get_newton_handler().parameters.newton_derivative_scaling_factor;
 
-
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
 
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
+<<<<<<< HEAD
                                                                             scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
                                                                             :
                                                                             nullptr;
+=======
+                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()
+                                                                            : nullptr;
+>>>>>>> bc7e89c26 (Fix the 'prescribed dilation' in netwon_stokes)
 
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
 
       const MaterialModel::ElasticOutputs<dim> *elastic_outputs = enable_elasticity ?
+<<<<<<< HEAD
                                                                   scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()
                                                                   :
                                                                   nullptr;
+=======
+                                                                  scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()
+                                                                  : nullptr;
+>>>>>>> bc7e89c26 (Fix the 'prescribed dilation' in netwon_stokes)
 
+      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation; 
+      
       const MaterialModel::PrescribedPlasticDilation<dim>
+<<<<<<< HEAD
       *prescribed_dilation =
         (this->get_parameters().enable_prescribed_dilation)
         ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
         : nullptr;
+=======
+      *prescribed_dilation = enable_prescribed_dilation ?
+                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >()
+                             : nullptr;
+>>>>>>> bc7e89c26 (Fix the 'prescribed dilation' in netwon_stokes)
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());
 
@@ -312,7 +329,6 @@ namespace aspect
                 }
               ++i;
             }
-
 
           // Viscosity scalar
           const double eta = scratch.material_model_outputs.viscosities[q];
@@ -346,7 +362,7 @@ namespace aspect
                 data.local_rhs(i) += (scalar_product(elastic_outputs->elastic_force[q],Tensor<2,dim>(scratch.grads_phi_u[i])))
                                      * JxW;
 
-              if (enable_additional_stokes_rhs)
+              if (enable_prescribed_dilation)
                 data.local_rhs(i) += (
                                        // RHS of - (div u,q) = - (R,q)
                                        - pressure_scaling
@@ -356,7 +372,7 @@ namespace aspect
 
               // Only assemble this term if we are running incompressible, otherwise this term
               // is already included on the LHS of the equation.
-              if (enable_additional_stokes_rhs && !material_model_is_compressible)
+              if (enable_prescribed_dilation && !material_model_is_compressible)
                 data.local_rhs(i) += (
                                        // RHS of momentum eqn: - \int 2/3 eta R, div v
                                        - 2.0 / 3.0 * eta
