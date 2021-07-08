@@ -49,13 +49,12 @@ namespace aspect
                                this->get_fe(),
                                quadrature_formula,
                                update_values   |
-                               update_quadrature_points |
-                               update_JxW_values);
+                               update_quadrature_points);
 
       std::vector<double> compositional_values(n_q_points);
       std::vector<Point<dim> > position_values(n_q_points);
 
-      std::vector<double> local_max_depth(this->n_compositional_fields(), std::numeric_limits<double>::min());
+      std::vector<double> local_max_depth(this->n_compositional_fields(), std::numeric_limits<double>::lowest());
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -86,15 +85,15 @@ namespace aspect
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          statistics.add_value("Max depth [km] for composition " + this->introspection().name_for_compositional_index(c),
-                               global_max_depth[c] / 1000.0);
+          statistics.add_value("Max depth [m] for composition " + this->introspection().name_for_compositional_index(c),
+                               global_max_depth[c]);
         }
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          const std::string columns[] = {"Max depth [km] for composition " + this->introspection().name_for_compositional_index(c)};
+          const std::string columns[] = {"Max depth [m] for composition " + this->introspection().name_for_compositional_index(c)};
           for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
             {
               statistics.set_precision(columns[i], 8);
@@ -106,11 +105,11 @@ namespace aspect
       output.precision(4);
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          output << global_max_depth[c] / 1000.;
+          output << global_max_depth[c];
           if (c + 1 != this->n_compositional_fields())
             output << " // ";
         }
-      return std::pair<std::string, std::string>("Compositions max depth [km]:",
+      return std::pair<std::string, std::string>("Compositions max depth [m]:",
                                                  output.str());
 
     }
@@ -125,7 +124,11 @@ namespace aspect
   {
     ASPECT_REGISTER_POSTPROCESSOR(MaxDepthField,
                                   "maximum depth of field",
-                                  "A postprocessor that outputs the biggest depth "
-                                  "of the given field or of several given fields.")
+                                  "A postprocessor that for each compositional field "
+                                  "outputs the largest depth at which "
+                                  "a quadrature point is found where the field "
+                                  "has a value of 0.5 or larger. For fields that do not "
+                                  "represent materials, but for example track a certain quantity "
+                                  "like strain, this value of 0.5 does not necessarily make sense. ")
   }
 }
