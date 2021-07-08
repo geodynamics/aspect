@@ -115,9 +115,10 @@ namespace aspect
     */
     template <int dim>
     void
-    fill_averaged_equation_of_state_outputs(const std::vector<EquationOfStateOutputs<dim>> &eos_outputs,
-                                            const std::vector<std::vector<double>> &mass_fractions,
-                                            const std::vector<std::vector<double>> &volume_fractions,
+    fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
+                                            const std::vector<double> &mass_fractions,
+                                            const std::vector<double> &volume_fractions,
+                                            const unsigned int i,
                                             MaterialModelOutputs<dim> &out);
 
     /**

@@ -25,6 +25,7 @@
 #include <aspect/material_model/equation_of_state/thermodynamic_table_lookup.h>
 
 #include <aspect/simulator_access.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace aspect
 {
@@ -213,6 +214,9 @@ namespace aspect
 
 
       private:
+        bool has_background;
+        std::unique_ptr<ComponentMask> composition_mask;
+
         /**
          * The thermodynamic lookup equation of state.
          */
