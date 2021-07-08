@@ -120,8 +120,8 @@ namespace aspect
         void reinit(const std::vector<std::string> &column_names,
                     std::vector<std::vector<double>> &&coordinate_values,
                     std::vector<Table<dim,double> > &&data_table,
-                    const MPI_Comm &mpi_communicator,
-                    const unsigned int root_process);
+                    const MPI_Comm &mpi_communicator = MPI_COMM_SELF,
+                    const unsigned int root_process = numbers::invalid_unsigned_int);
 
         /**
          * Loads a data text file. Throws an exception if the file does not
