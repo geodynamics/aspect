@@ -391,6 +391,23 @@ namespace aspect
 
       template <int dim>
       void
+      ThermodynamicTableLookup<dim>::fill_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
+                                                              const std::vector<std::vector<double>> &volume_fractions,
+                                                              MaterialModel::MaterialModelOutputs<dim> &out) const
+      {
+        // fill seismic velocity outputs if they exist
+        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+          fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
+
+        // fill phase volume outputs if they exist
+        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
+          fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
+      }
+
+
+
+      template <int dim>
+      void
       ThermodynamicTableLookup<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Data directory", "$ASPECT_SOURCE_DIR/data/material-model/steinberger/",
@@ -515,23 +532,6 @@ namespace aspect
           AssertThrow (n_material_lookups == 1,
                        ExcMessage("Isochemical latent heat calculations are only implemented for a single material lookup."));
 
-      }
-
-
-
-      template <int dim>
-      void
-      ThermodynamicTableLookup<dim>::fill_additional_outputs (const MaterialModel::MaterialModelInputs<dim> &in,
-                                                              const std::vector<std::vector<double>> &volume_fractions,
-                                                              MaterialModel::MaterialModelOutputs<dim> &out) const
-      {
-        // fill seismic velocity outputs if they exist
-        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
-          fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
-
-        // fill phase volume outputs if they exist
-        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
-          fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
       }
 
 

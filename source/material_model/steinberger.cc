@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -224,7 +224,6 @@ namespace aspect
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-
       std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
 
       std::vector<std::vector<double>> mass_fractions;
@@ -371,11 +370,13 @@ namespace aspect
             }
           else
             {
-              AssertThrow ((equation_of_state.number_of_lookups() == this->n_compositional_fields()),
+              AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
+                           (equation_of_state.number_of_lookups() == this->n_compositional_fields()),
                            ExcMessage("The Steinberger material model assumes that all compositional "
                                       "fields correspond to mass fractions of materials. There must either be "
-                                      "the same number of material lookup files as compositional fields, "
-                                      "or one additional file (if a background field is used)."));
+                                      "one material lookup file, the same number of material lookup files "
+                                      "as compositional fields, or one additional file "
+                                      "(if a background field is used)."));
 
               prm.set("Background material", "false");
             }
