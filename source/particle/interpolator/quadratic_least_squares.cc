@@ -218,7 +218,7 @@ namespace aspect
                                    "'Global particle property maximum' values separated by ',' has to be "
                                    "the same as the number of particle properties.");
                 prm.declare_entry ("Global particle property minimum",
-                                   boost::lexical_cast<std::string>(-std::numeric_limits<double>::max()),
+                                   boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
                                    Patterns::List(Patterns::Double ()),
                                    "The minimum global particle property that will be used as a "
                                    "limiter for the quadratic least squares interpolation. The number of the input "

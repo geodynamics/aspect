@@ -55,7 +55,7 @@ namespace aspect
 
       double local_pressure_integral = 0;
       double local_min_pressure      = std::numeric_limits<double>::max();
-      double local_max_pressure      = -std::numeric_limits<double>::max();
+      double local_max_pressure      = std::numeric_limits<double>::lowest();
 
       // compute the integral quantities by quadrature. note that compared to
       // the temperature statistics postprocessor, we can not just loop over
@@ -104,7 +104,7 @@ namespace aspect
       statistics.add_value ("Maximal pressure (Pa)",
                             global_max_pressure);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal pressure (Pa)",

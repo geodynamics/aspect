@@ -49,13 +49,13 @@ subsection Material model
     set Include Peierls creep                     = true
     set Peierls creep flow law                    = exact
     set Prefactors for Peierls creep              = background:2.8e-19|1.4e-19|0.7e-19, right:2.8e-18|1.4e-18|0.7e-18
-    set Activation energies for Peierls creep     = background:320.e3|320.e3|320.e3, right:320.e3|320.e3|320.e3
-    set Activation volumes for Peierls creep      = background:0.|0.|0., right:0.|0.|0.
-    set Peierls stresses                          = background:5.9e9|5.9e9|5.9e9, right:5.9e9|5.9e9|5.9e9
-    set Stress exponents for Peierls creep        = background:2.0|2.0|2.0, right:2.0|2.0|2.0
-    set Peierls fitting parameters                = background:0.15|0.15|0.15, right:0.15|0.15|0.15
-    set Peierls glide parameters p                = background:0.5|0.5|0.5, right:0.5|0.5|0.5
-    set Peierls glide parameters q                = background:1.0|1.0|1.0, right:1.0|1.0|1.0
+    set Activation energies for Peierls creep     = 320.e3
+    set Activation volumes for Peierls creep      = 0.
+    set Peierls stresses                          = 5.9e9
+    set Stress exponents for Peierls creep        = 2.0
+    set Peierls fitting parameters                = 0.15
+    set Peierls glide parameters p                = 0.5
+    set Peierls glide parameters q                = 1.0
 
     set Peierls strain rate residual tolerance = 1e-22
     set Maximum Peierls strain rate iterations = 40

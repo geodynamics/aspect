@@ -1,0 +1,119 @@
+# Test that when we do material model averaging, that the material
+# model parameters such as the viscosity are also averaged when output
+# in graphical format. We want to do this because we want to visualize
+# what these parameters really are to the computational model, not
+# what they are in a pointwise sense before the computational model
+# gets to see them.
+#
+# This test uses the SolKz model, which has a viscosity that grows
+# exponentially in z-direction. The various output_averaging_*prm
+# files then simply apply different cellwise averaging options to
+# this viscosity.
+
+
+set Dimension = 2
+
+
+set CFL number                             = 1.0
+
+set End time                               = 0
+
+
+set Resume computation                     = false
+
+set Start time                             = 0
+
+set Adiabatic surface temperature          = 0
+
+set Surface pressure                       = 0
+
+set Use years in output instead of seconds = false  # default: true
+
+set Nonlinear solver scheme                = no Advection, iterated Stokes
+
+
+subsection Boundary temperature model
+  set List of model names = box
+
+end
+
+
+subsection Discretization
+  set Stokes velocity polynomial degree       = 2
+
+  set Temperature polynomial degree           = 2
+
+  set Use locally conservative discretization = false
+
+  subsection Stabilization parameters
+    set alpha = 2
+
+    set beta  = 0.078
+
+    set cR    = 0.5   # default: 0.11
+  end
+
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent = 1
+
+    set Y extent = 1
+
+    set Z extent = 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+end
+
+
+subsection Initial temperature model
+  set Model name = perturbed box
+
+end
+
+
+subsection Material model
+  set Model name = SolKzMaterial
+  set Material averaging = arithmetic average
+end
+
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial global refinement          = 4                       # default: 2
+
+  set Strategy                           = density, temperature
+end
+
+
+# The parameters below this comment were created by the update script
+# as replacement for the old 'Model settings' subsection. They can be
+# safely merged with any existing subsections with the same name.
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = 0, 1
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization
+
+  subsection Visualization
+    set Output format                 = gnuplot
+    set List of output variables      = viscosity
+    set Interpolate output            = false
+  end
+end

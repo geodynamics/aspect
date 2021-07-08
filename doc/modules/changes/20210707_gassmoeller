@@ -1,0 +1,4 @@
+New: Tests can now depend on another test if a special tag 'DEPENDS-ON:'
+is specified in the test parameter file.
+<br>
+(Rene Gassmoeller, 2021/07/07)

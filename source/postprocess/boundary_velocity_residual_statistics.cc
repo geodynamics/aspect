@@ -118,7 +118,7 @@ namespace aspect
 
       for (const auto p : boundary_indicators)
         {
-          local_max_vel[p] = -std::numeric_limits<double>::max();
+          local_max_vel[p] = std::numeric_limits<double>::lowest();
           local_min_vel[p] = std::numeric_limits<double>::max();
         }
 
@@ -141,7 +141,7 @@ namespace aspect
 
                 // determine the max, min, and squared velocity residual on the face
                 // also determine the face area
-                double local_max = -std::numeric_limits<double>::max();
+                double local_max = std::numeric_limits<double>::lowest();
                 double local_min = std::numeric_limits<double>::max();
                 double local_sqvel = 0.0;
                 double local_fe_face_area = 0.0;
@@ -277,7 +277,7 @@ namespace aspect
                                                                                          .translate_id_to_symbol_name (rms->first))
                                            + " (m/s)";
               statistics.add_value (name_rms, rms->second);
-              // also make sure that the other columns filled by the this object
+              // also make sure that the other columns filled by this object
               // all show up with sufficient accuracy and in scientific notation
               statistics.set_precision (name_max, 8);
               statistics.set_scientific (name_max, true);

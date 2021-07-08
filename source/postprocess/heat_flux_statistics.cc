@@ -92,7 +92,7 @@ namespace aspect
                                    + " (W)";
           statistics.add_value (name, p->second);
 
-          // also make sure that the other columns filled by the this object
+          // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           statistics.set_precision (name, 8);
           statistics.set_scientific (name, true);

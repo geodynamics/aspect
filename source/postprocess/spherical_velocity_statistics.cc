@@ -116,7 +116,7 @@ namespace aspect
         }
       else
         {
-          // make sure that the columns filled by the this object
+          // make sure that the columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           const char *columns[] = { "Radial RMS velocity (m/s)",
                                     "Tangential RMS velocity (m/s)",

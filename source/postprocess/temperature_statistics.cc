@@ -75,7 +75,7 @@ namespace aspect
       // points gives an inaccurate
       // picture of their true values
       double local_min_temperature = std::numeric_limits<double>::max();
-      double local_max_temperature = -std::numeric_limits<double>::max();
+      double local_max_temperature = std::numeric_limits<double>::lowest();
       const unsigned int temperature_block = this->introspection().block_indices.temperature;
       IndexSet range = this->get_solution().block(temperature_block).locally_owned_elements();
       for (unsigned int i=0; i<range.n_elements(); ++i)
@@ -124,7 +124,7 @@ namespace aspect
                                -
                                this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators())));
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Minimal temperature (K)",

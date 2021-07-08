@@ -59,7 +59,7 @@ namespace aspect
 
       double local_melt_integral = 0.0;
       double local_min_melt = std::numeric_limits<double>::max();
-      double local_max_melt = -std::numeric_limits<double>::max();
+      double local_max_melt = std::numeric_limits<double>::lowest();
 
       // compute the integral quantities by quadrature
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())

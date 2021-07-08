@@ -112,7 +112,7 @@ namespace aspect
          *   of the domain on which the point is located at which we are requesting the
          *   temperature.
          * @param location The location of the point at which we ask for the temperature.
-         **/
+         */
         double  boundary_temperature (const types::boundary_id            boundary_indicator,
                                       const Point<dim>                    &location) const override;
 

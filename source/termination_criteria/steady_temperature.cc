@@ -27,8 +27,14 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    namespace internal
+    namespace
     {
+      /**
+       * A function that trims the handed over list and removes all entries from the front that are
+       * further back in time measured from the last entry than given by the first argument.
+       * Additionally it makes sure to always keep two entries in the list, if the list had
+       * two or more entries. Otherwise the function does not change the list.
+       */
       void trim_time_temperature_list (const double necessary_time_in_steady_state,
                                        std::list<std::pair<double, double> > &time_temperature_list)
       {
@@ -42,6 +48,8 @@ namespace aspect
         time_temperature_list.erase(time_temperature_list.begin(), it);
       }
     }
+
+
 
     template <int dim>
     bool
@@ -93,7 +101,7 @@ namespace aspect
         return false;
 
       // Remove old entries outside of current time window
-      internal::trim_time_temperature_list(necessary_time_in_steady_state,time_temperature);
+      trim_time_temperature_list(necessary_time_in_steady_state,time_temperature);
 
       // Scan through the list and calculate the min, mean and max temperature
       // We assume a linear change of temperatures between times

@@ -1105,7 +1105,7 @@ namespace aspect
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                           "before the end of file was reached. Is the file corrupted or"
+                                           "before the end of file was reached. Is the file corrupted or "
                                            "too large for the input buffer?"));
                   return data_string; // never reached
                 }

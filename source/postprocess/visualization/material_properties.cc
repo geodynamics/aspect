@@ -81,6 +81,8 @@ namespace aspect
         return interpretation;
       }
 
+
+
       template <int dim>
       UpdateFlags
       MaterialProperties<dim>::
@@ -89,6 +91,8 @@ namespace aspect
         return update_gradients | update_values  | update_quadrature_points;
       }
 
+
+
       template <int dim>
       void
       MaterialProperties<dim>::
@@ -96,8 +100,10 @@ namespace aspect
                             std::vector<Vector<double> > &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
-        Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
-        Assert (input_data.solution_values[0].size() == this->introspection().n_components,           ExcInternalError());
+        Assert (computed_quantities.size() == n_quadrature_points,
+                ExcInternalError());
+        Assert (input_data.solution_values[0].size() == this->introspection().n_components,
+                ExcInternalError());
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
@@ -105,6 +111,35 @@ namespace aspect
                                                      this->n_compositional_fields());
 
         this->get_material_model().evaluate(in, out);
+
+        // We want to output material properties as they are used in the
+        // program during assembly. To do so, some of the material averaging
+        // modes require a quadrature object -- but we do not have this,
+        // all we have is the mapped quadrature points. As a consequence,
+        // only do the averaging for those modes that do not require a
+        // functional quadrature object. This means that we only
+        // do the wrong thing for the Q1 averaging where the difference
+        // between input and output of the averaging operation is generally
+        // small and probably not visible anyway.
+        //
+        // The average() function checks whether any quadrature object
+        // it uses has the correct size. So passing an invalid object
+        // in the following code carries little risk if the list of
+        // averaging modes that require a quadrature object expands:
+        // Every time we generate graphical output for a model that
+        // uses this kind of averaging, we will trigger an exception.
+        if (this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1
+            &&
+            this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity)
+          MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
+#if DEAL_II_VERSION_GTE(9,3,0)
+                                                     input_data.template get_cell<dim>(),
+#else
+                                                     input_data.template get_cell<DoFHandler<dim>>(),
+#endif
+                                                     Quadrature<dim>(),
+                                                     this->get_mapping(),
+                                                     out);
 
         std::vector<double> melt_fractions(n_quadrature_points);
         if (std::find(property_names.begin(), property_names.end(), "melt fraction") != property_names.end())
@@ -249,7 +284,16 @@ namespace aspect
                                                   "The current postprocessor allows to output a (potentially "
                                                   "large) subset of all of the information provided by "
                                                   "material models at once, with just a single material model "
-                                                  "evaluation per output point.")
+                                                  "evaluation per output point."
+                                                  "\n\n"
+                                                  "In almost all places inside \\aspect{}, the program "
+                                                  "can use ``averaged'' material properties, for example for "
+                                                  "the assembly of matrices and right hand side vectors. To "
+                                                  "accurately reflect the material parameters used internally, "
+                                                  "this visualization postprocessor averages in the same way "
+                                                  "as is used to do the assembly, and consequently the "
+                                                  "graphical output will reflect not pointwise properties, "
+                                                  "but averaged properties.")
     }
   }
 }

@@ -84,7 +84,7 @@ namespace aspect
       std::vector<double> local_min_compositions (this->n_compositional_fields(),
                                                   std::numeric_limits<double>::max());
       std::vector<double> local_max_compositions (this->n_compositional_fields(),
-                                                  -std::numeric_limits<double>::max());
+                                                  std::numeric_limits<double>::lowest());
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
@@ -104,7 +104,7 @@ namespace aspect
       std::vector<double> global_min_compositions (this->n_compositional_fields(),
                                                    std::numeric_limits<double>::max());
       std::vector<double> global_max_compositions (this->n_compositional_fields(),
-                                                   -std::numeric_limits<double>::max());
+                                                   std::numeric_limits<double>::lowest());
       {
         Utilities::MPI::min (local_min_compositions,
                              this->get_mpi_communicator(),
@@ -125,7 +125,7 @@ namespace aspect
                                 global_compositional_integrals[c]);
         }
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {
