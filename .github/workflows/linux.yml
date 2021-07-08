@@ -96,11 +96,10 @@ jobs:
         ninja
         ./aspect --test
 
-  job:
+  tests:
     #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
-    continue-on-error: true
     container: gassmoeller/aspect-tester:focal-dealii-9.3-v1
 
     steps:
@@ -126,6 +125,7 @@ jobs:
         cd build/tests
         ninja -k 0 tests || true
     - name: report test results
+      continue-on-error: true
       run: |
         cd build
         ctest \
@@ -133,6 +133,7 @@ jobs:
         --test-action Test \
         --output-on-failure
     - name: write test results
+      continue-on-error: true
       run: |
         cd build
         ninja generate_reference_output
