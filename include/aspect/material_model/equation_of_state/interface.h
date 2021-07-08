@@ -23,6 +23,7 @@
 
 #include <aspect/global.h>
 #include <aspect/material_model/utilities.h>
+#include <aspect/material_model/interface.h>
 
 
 
