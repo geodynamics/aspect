@@ -46,7 +46,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
   peierls_creep->initialize_simulator (simulator_access.get_simulator());
   peierls_creep->declare_parameters(prm);
-  peierls_creep->parse_parameters(prm); // multiple phases not yet implemented for peierls
+  peierls_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
   drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
