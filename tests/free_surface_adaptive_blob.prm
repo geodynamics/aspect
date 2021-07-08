@@ -91,10 +91,6 @@ end
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
 
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1
 end

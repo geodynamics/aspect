@@ -1,0 +1,5 @@
+Changed: When using the constant temperature boundary plugin, ASPECT
+now checks that the Fixed temperature boundary indicators match the
+indicators in the model subsection.
+<br>
+(Bob Myhill, 2021/07/09)
