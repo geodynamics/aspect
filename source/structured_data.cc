@@ -189,7 +189,7 @@ namespace aspect
                ExcMessage("Error: One of the data tables has an incorrect size."));
 
       // compute maximum_component_value for each component:
-      maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
+      maximum_component_value = std::vector<double>(components,std::numeric_limits<double>::lowest());
       for (unsigned int c=0; c<components; ++c)
         {
           const unsigned int n_elements = data_table[c].n_elements();

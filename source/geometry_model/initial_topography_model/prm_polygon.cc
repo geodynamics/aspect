@@ -110,7 +110,7 @@ namespace aspect
              * we need to fill the point lists and topography values. They
              * are stored in the Topography subsection in the Topography parameter.
              */
-            maximum_topography = -std::numeric_limits<double>::max();
+            maximum_topography = std::numeric_limits<double>::lowest();
             const std::string temptopo = prm.get("Topography parameters");
             const std::vector<std::string> temp_topographies = Utilities::split_string_list(temptopo,'&');
             const unsigned int temp_topographies_size = temp_topographies.size();

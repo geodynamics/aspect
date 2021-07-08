@@ -1361,7 +1361,7 @@ namespace aspect
     const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
 
     double min_el = std::numeric_limits<double>::max();
-    double max_el = -std::numeric_limits<double>::max();
+    double max_el = std::numeric_limits<double>::lowest();
 
     // Fill the DGQ0 or DGQ1 vector of viscosity values on the active mesh
     {

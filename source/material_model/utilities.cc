@@ -269,10 +269,10 @@ namespace aspect
           interpolation = interpol;
           delta_press=numbers::signaling_nan<double>();
           min_press=std::numeric_limits<double>::max();
-          max_press=-std::numeric_limits<double>::max();
+          max_press=std::numeric_limits<double>::lowest();
           delta_temp=numbers::signaling_nan<double>();
           min_temp=std::numeric_limits<double>::max();
-          max_temp=-std::numeric_limits<double>::max();
+          max_temp=std::numeric_limits<double>::lowest();
           n_temperature=0;
           n_pressure=0;
 
@@ -475,10 +475,10 @@ namespace aspect
           interpolation = interpol;
           delta_press=numbers::signaling_nan<double>();
           min_press=std::numeric_limits<double>::max();
-          max_press=-std::numeric_limits<double>::max();
+          max_press=std::numeric_limits<double>::lowest();
           delta_temp=numbers::signaling_nan<double>();
           min_temp=std::numeric_limits<double>::max();
-          max_temp=-std::numeric_limits<double>::max();
+          max_temp=std::numeric_limits<double>::lowest();
           n_temperature=0;
           n_pressure=0;
 

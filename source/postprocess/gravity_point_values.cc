@@ -294,10 +294,10 @@ namespace aspect
       // This loop corresponds to the 3 integrals of Newton law:
       double sum_g = 0;
       double min_g = std::numeric_limits<double>::max();
-      double max_g = -std::numeric_limits<double>::max();
+      double max_g = std::numeric_limits<double>::lowest();
       double sum_g_potential = 0;
       double min_g_potential = std::numeric_limits<double>::max();
-      double max_g_potential = -std::numeric_limits<double>::max();
+      double max_g_potential = std::numeric_limits<double>::lowest();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 

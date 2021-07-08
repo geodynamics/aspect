@@ -75,7 +75,7 @@ namespace aspect
       // points gives an inaccurate
       // picture of their true values
       double local_min_temperature = std::numeric_limits<double>::max();
-      double local_max_temperature = -std::numeric_limits<double>::max();
+      double local_max_temperature = std::numeric_limits<double>::lowest();
       const unsigned int temperature_block = this->introspection().block_indices.temperature;
       IndexSet range = this->get_solution().block(temperature_block).locally_owned_elements();
       for (unsigned int i=0; i<range.n_elements(); ++i)
