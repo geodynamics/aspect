@@ -138,8 +138,15 @@ jobs:
         cd build
         ninja generate_reference_output
         git diff ../tests > changes-test-results.diff
-    - name: archive
+    - name: archive test results
       uses: actions/upload-artifact@v2
       with:
         name: changes-test-results.diff
         path: build/changes-test-results.diff
+    - name: check test results
+      run: |
+        if [ -s diff ]; then
+          exit 1
+        else
+          exit 0
+        fi
