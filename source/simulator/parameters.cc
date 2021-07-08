@@ -2057,7 +2057,7 @@ namespace aspect
             {
               AssertThrow (false, ExcMessage ("While parsing the entry <Boundary traction model/Prescribed "
                                               "traction indicators>, there was an error. Specifically, "
-                                              "the conversion function complained as follows: "
+                                              "the conversion function complained as follows:\n\n"
                                               + error));
             }
 
@@ -2089,7 +2089,7 @@ namespace aspect
         {
           AssertThrow (false, ExcMessage ("While parsing the entry <Boundary heat flux model/Fixed heat flux "
                                           "boundary indicators>, there was an error. Specifically, "
-                                          "the conversion function complained as follows: "
+                                          "the conversion function complained as follows:\n\n"
                                           + error));
         }
     }
