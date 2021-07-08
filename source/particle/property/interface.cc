@@ -300,8 +300,9 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int> >
       IntegratorProperties<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,
-                                                                                      std::make_pair("integrator properties",n_integrator_properties));
+        const std::vector<std::pair<std::string, unsigned int>> property_information =
+        {{"internal: integrator properties", n_integrator_properties}};
+
         return property_information;
       }
 
@@ -780,7 +781,7 @@ namespace aspect
             property_list.back()->parse_parameters (prm);
           }
 
-        // laslty store internal integrator properties
+        // lastly store internal integrator properties
         property_list.emplace_back (std::make_unique<IntegratorProperties<dim>>());
         property_list.back()->parse_parameters (prm);
       }

@@ -513,7 +513,8 @@ namespace aspect
         public:
           /**
            * Initialization function. Since these properties are set and used
-           * only by the integrator there is not much to do.
+           * by the integrator this function only resizes them to the correct
+           * size, but does not need to do any initialization.
            */
           void
           initialize_one_particle_property (const Point<dim> &position,

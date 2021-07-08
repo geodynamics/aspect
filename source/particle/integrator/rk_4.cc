@@ -40,7 +40,7 @@ namespace aspect
       {
         const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
 
-        property_k[0] = property_information.get_position_by_field_name("integrator properties");
+        property_k[0] = property_information.get_position_by_field_name("internal: integrator properties");
         property_k[1] = property_k[0] + dim;
         property_k[2] = property_k[1] + dim;
         property_k[3] = property_k[2] + dim;
@@ -97,6 +97,7 @@ namespace aspect
                     loc0[i] = properties[property_k[0] + i];
                     properties[property_k[2] + i] = k2[i];
                   }
+
                 it->set_location(loc0 + 0.5 * k2);
               }
             else if (integrator_substep == 2)
