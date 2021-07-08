@@ -7206,19 +7206,19 @@ The Case 1 model setup considers three materials (compositional fields) apart fr
     \item the mantle lithosphere of the subducting plate (SHB and thermal layer combined).
 \end{enumerate}{}
 The geometry of these compositions is implemented as follows:
-\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/Case1_compositions.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/doc/Case1_compositions.prm.out}
 
 No differences in material properties exist, except for density and viscosity, so we use the multicomponent material model. To keep the boundaries between fields as sharp as possible in terms of viscosity, we use the maximum composition to determine the viscosity in each evaluation point (note that this can be harder on the solver):
-\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/Case1_materialmodel.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/doc/Case1_materialmodel.prm.out}
 
 Temperature effects are ignored. Subduction is driven by prescribed in- and outflow through the right boundary (with a gradual transition of the flow direction), all other boundaries are free slip. The volume of material that flows in is balanced by the volume that is prescribed to flow out (this is important as the model is incompressible). A weak crust along the plate interface and the subducting lithosphere facilitates subduction. Through the function plugin, we prescribe the in- and outflow:
-\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/Case1_velocity.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/doc/Case1_velocity.prm.out}
 
 To follow the slab on its descent into the mantle, we use adaptive mesh refinement based on viscosity in combination with the minimum refinement strategy to ensure sufficient resolution in the crust and weak zone that allow the slab to detach from the surface:
-\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/Case1_meshrefinement.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/doc/Case1_meshrefinement.prm.out}
 
 To monitor the model evolution, several diagnostic quantities are tracked over time: the depth of the tip of the slab, the position of the trench, the RMS velocity of the slab and the whole model domain, and the work done (viscous dissipation) in the slab and total model domain. The computation of these quantities in done in several new plugins:
-\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/Case1_postprocessing.prm.out}
+\lstinputlisting[language=prmfile]{cookbooks/kinematically_driven_subduction_2d_case1/doc/Case1_postprocessing.prm.out}
 
 \begin{figure}
     \centering
