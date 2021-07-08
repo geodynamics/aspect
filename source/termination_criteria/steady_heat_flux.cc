@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,8 +25,14 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    namespace internal
+    namespace
     {
+      /**
+       * A function that trims the handed over list and removes all entries from the front that are
+       * further back in time measured from the last entry than given by the first argument.
+       * Additionally it makes sure to always keep two entries in the list, if the list had
+       * two or more entries. Otherwise the function does not change the list.
+       */
       void trim_time_heat_flux_list (const double necessary_time_in_steady_state,
                                      std::list<std::pair<double, double> > &time_heat_flux_list)
       {
@@ -41,11 +47,13 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     bool
     SteadyHeatFlux<dim>::execute()
     {
-      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      const std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
         Postprocess::internal::compute_heat_flux_through_boundary_faces (*this);
 
       double local_boundary_fluxes = 0.0;
@@ -75,7 +83,7 @@ namespace aspect
         return false;
 
       // Remove old entries outside of current time window
-      internal::trim_time_heat_flux_list(necessary_time_in_steady_state,time_heat_flux);
+      trim_time_heat_flux_list(necessary_time_in_steady_state,time_heat_flux);
 
       // Scan through the list and calculate the min, mean and max heat flux
       // We assume a linear change of heat flux between times

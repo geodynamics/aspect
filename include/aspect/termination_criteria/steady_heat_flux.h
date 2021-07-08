@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 by the authors of the ASPECT code.
+  Copyright (C) 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -30,18 +30,6 @@ namespace aspect
 {
   namespace TerminationCriteria
   {
-    namespace internal
-    {
-      /**
-       * A function that trims the handed over list and removes all entries from the front that are
-       * further back in time measured from the last entry than given by the first argument.
-       * Additionally it makes sure to always keep two entries in the list, if the list had
-       * two or more entries. Otherwise the function does not change the list.
-       */
-      void trim_time_heat_flux_list (const double necessary_time_in_steady_state,
-                                     std::list<std::pair<double, double> > &time_heat_flux_list);
-    }
-
     /**
      * A class that implements a termination criterion based on the steady state
      * of the average heat flux.
@@ -75,8 +63,17 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-        double                                  necessary_time_in_steady_state;
-        double                                  allowed_relative_deviation;
+        /**
+         * The minimum length of simulation time that the system
+         * should be in steady state before termination.
+         */
+        double necessary_time_in_steady_state;
+
+        /**
+         * The maximum relative deviation of the heat flux in recent
+         * simulation time for the system to be considered in steady state.
+         */
+        double allowed_relative_deviation;
 
         /**
          * A set of boundary ids on which the average heat flux will be
@@ -90,7 +87,6 @@ namespace aspect
          * steady state.
          */
         std::list<std::pair<double, double> >   time_heat_flux;
-
     };
   }
 }
