@@ -19,6 +19,8 @@
  */
 
 #include <aspect/particle/integrator/rk_2.h>
+#include <aspect/particle/property/interface.h>
+#include <aspect/particle/world.h>
 
 namespace aspect
 {
