@@ -125,7 +125,7 @@ namespace aspect
       statistics.add_value ("Density at bottom (kg/m^3)",
                             bottom_density);
 
-      // also make sure that the other columns filled by the this object
+      // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
       {
         const char *columns[] = { "Density at top (kg/m^3)",

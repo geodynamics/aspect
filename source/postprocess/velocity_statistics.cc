@@ -80,7 +80,7 @@ namespace aspect
           statistics.add_value ("Max. velocity (m/year)",
                                 global_max_velocity * year_in_seconds);
 
-          // also make sure that the other columns filled by the this object
+          // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           {
             const char *columns[] = { "RMS velocity (m/year)",
@@ -98,7 +98,7 @@ namespace aspect
           statistics.add_value ("RMS velocity (m/s)", vrms);
           statistics.add_value ("Max. velocity (m/s)", global_max_velocity);
 
-          // also make sure that the other columns filled by the this object
+          // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
           {
             const char *columns[] = { "RMS velocity (m/s)",
