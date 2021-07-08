@@ -1,0 +1,193 @@
+# This cookbook models oceanic subduction in a 2d
+# box of 3000 x 670 km.
+# The subducting plate is driven by inflow boundary
+# conditions on the top part of the right boundary,
+# while a balancing outflow is prescribed underneath.
+# Only density and viscosity differ per composition.
+# High resolution is required to a.o. resolve the weak zone
+# between the subducting and overriding plate, so about
+# 100 MPI processes are required.
+set Additional shared libraries            = /scratch/usr/bbpanneg/software/aspect/QQ_subduction_cookbook/shared_libs/build_debug/lib2d_driven_subduction_box.so
+# 2D
+set Dimension                              = 2
+# Run for 15 My
+set Start time                             = 0
+set End time                               = 15.01e6
+set CFL number                             = 0.5
+set Use years in output instead of seconds = true
+# Linear solver
+set Nonlinear solver scheme                = single Advection, single Stokes
+set Output directory                       = output-Case1
+set Adiabatic surface temperature          = 0
+#set Resume computation                     = true
+
+
+# We fix composition on the right boundary,
+# because we have inflow there.
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = right
+  set List of model names = initial composition
+end
+
+
+# We fix temperature on the top and bottom,
+# as well as on the right boundary because
+# we have inflow through the latter.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top, right
+
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 0
+    set Left temperature   = 0
+    set Right temperature  = 0
+    set Top temperature    = 0
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, bottom, top
+  set Prescribed velocity boundary indicators = right x:function
+
+  subsection Function
+    set Function constants  = cm=100.0 #*3600.0*24.0*365.25
+    set Function expression = if(z<540000.0, (600.0/550.0)/cm, \
+                                 if(z>560000.0, -5.0/cm, \
+                                    ((((-600.0/550.0)-5.0)/-20.0)*((z/1000.0)-560.0)+5.0)*(-1.0/cm))); \
+                              0
+    set Variable names      = x,z
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 200
+  set Time between checkpoint  = 0
+end
+
+subsection Material model
+  set Model name = multicomponent
+
+  subsection Multicomponent
+    set Reference temperature         = 0.0
+    set Viscosity averaging scheme    = maximum composition
+    # OP, ML SP, crust SP
+    set Viscosities                   = 1.e20, 1.e23, 1.e23, 1.e20
+    set Densities                     = 3200.0, 3250.0, 3250.0, 3250.0
+    set Thermal conductivities        = 1
+  end
+
+end
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields  = OP, ML_SP, crust_SP
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Function constants  = Ax=1475600.0, Az=670000.0, \
+                              Bx=1500000.0, Bz=670000.0, \
+                              Cx=1358500.0, Cz=588000.0, \
+                              Dx=1382900.0, Dz=588000.0, \
+                              Ex=1530000.0, Ez=560000.0, \
+                              Fz=663000.0, Gz=662000.0, \
+                              Hz=631000.0, Iz=630000.0
+    set Function expression = \
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
+                              if((x>=Ex&z>=Ez&z<Gz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
+                              if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)|z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0)
+    set Variable names      = x,z
+  end
+end
+
+
+subsection Discretization
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent   = 3000e3
+    set Y extent   = 670e3
+    set X repetitions = 4
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+# We ignore any temperature effects
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Function constants  =
+    set Function expression = 0
+    set Variable names      = x,y,t
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 8
+  set Minimum refinement level                 = 6 #7
+  set Normalize individual refinement criteria = true
+  set Refinement criteria merge operation      = plus #max
+  set Coarsening fraction                      = 0.01
+  set Refinement fraction                      = 0.95
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = true
+  set Skip setup initial conditions on initial refinement = true
+  set Strategy                                 = minimum refinement function, viscosity
+  set Time steps between mesh refinement       = 16
+
+  subsection Minimum refinement function
+    set Coordinate system = depth
+    set Variable names = x,z,t
+    set Function constants = vel=150e3, L=100e3, crust=10e3
+    set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
+  end
+
+end
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, heating statistics, slab tip depth QQCase1, velocity statistics QQCase2a, viscous dissipation statistics QQCase2a
+
+
+  subsection Visualization
+    set List of output variables      = density, viscosity, strain rate, error indicator
+    set Time between graphical output = 5e5
+  end
+
+end
+
+
+subsection Termination criteria
+  set Checkpoint on termination = true
+  set Termination criteria      = end time
+end
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Linear solver tolerance = 1e-6
+    set Number of cheap Stokes solver steps = 200
+  end
+end
