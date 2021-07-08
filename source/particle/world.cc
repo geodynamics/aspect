@@ -428,9 +428,6 @@ namespace aspect
                         particles_to_remove.push_back(particle_to_remove);
                       }
 
-#if DEAL_II_VERSION_GTE(10,0,0)
-                    particle_handler->remove_particles(particles_to_remove);
-#else
                     for (const auto &particle : particles_to_remove)
                       {
                         particle_handler->remove_particle(particle);
@@ -974,17 +971,13 @@ namespace aspect
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
                   {
-#if !DEAL_II_VERSION_GTE(9,3,0)
-
                     local_update_particles(cell,
                                            particles_in_cell.begin(),
-                                           particles_in_cell.end());
-#else
-                    local_update_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end(),
-                                           evaluators);
+                                           particles_in_cell.end()
+#if DEAL_II_VERSION_GTE(9,3,0)
+                                           , evaluators
 #endif
+                                          );
                   }
 
               }
@@ -1192,16 +1185,13 @@ namespace aspect
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
-#if !DEAL_II_VERSION_GTE(9,3,0)
                   local_advect_particles(cell,
                                          particles_in_cell.begin(),
-                                         particles_in_cell.end());
-#else
-                  local_advect_particles(cell,
-                                         particles_in_cell.begin(),
-                                         particles_in_cell.end(),
-                                         evaluators);
+                                         particles_in_cell.end()
+#if DEAL_II_VERSION_GTE(9,3,0)
+                                         , evaluators
 #endif
+                                        );
                 }
             }
 
