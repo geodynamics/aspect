@@ -71,35 +71,6 @@ namespace aspect
                                          this->get_mapping(),
                                          property_manager->get_n_property_components());
 
-      auto size_callback_function
-      = [&] () -> std::size_t
-      {
-        return integrator->get_data_size();
-      };
-
-      auto store_callback_function
-        = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
-               void *data) -> void *
-      {
-        return integrator->write_data(p, data);
-      };
-
-
-      const auto load_callback_function
-        = [&] (const typename ParticleHandler<dim>::particle_iterator &p,
-               const void *data) -> const void *
-      {
-        return integrator->read_data(p, data);
-      };
-
-      particle_handler->register_additional_store_load_functions(size_callback_function,
-                                                                 store_callback_function,
-                                                                 load_callback_function);
-
-      particle_handler_backup.register_additional_store_load_functions(size_callback_function,
-                                                                       store_callback_function,
-                                                                       load_callback_function);
-
       connect_to_signals(this->get_signals());
     }
 
