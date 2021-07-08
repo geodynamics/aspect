@@ -121,6 +121,23 @@ PROJECT(${TARGET} CXX)
 
 SET(FORCE_COLORED_OUTPUT ON CACHE BOOL "Forces colored ouput when compiling with gcc and clang.")
 
+# determine whether to use clang-tidy
+set(ASPECT_CHECK_CLANG_TIDY OFF CACHE BOOL "Whether or not to check the code with clang-tidy while compiling the world builder.")
+
+if(ASPECT_CHECK_CLANG_TIDY)
+  set(ASPECT_CHECK_CLANG_TIDY_CHECKS "clang-analyzer-*,performance-*,modernize-a*,modernize-c*,modernize-c*,modernize-l*,modernize-m*,modernize-p*,modernize-r*\
+,modernize-s*,modernize-un*,modernize-use-b*,modernize-use-d*,modernize-use-e*,modernize-use-n*,modernize-use-o*,modernize-use-tran*,modernize-use-u*\
+,misc-*,mpi-*,readability-c*,readability-d*,readability-e*,readability-i*,readability-mak*,readability-mi*,readability-n*,llvm-*\
+,readability-q*,readability-r*,readability-s*,readability-u*"
+  CACHE STRING "A list of items to check with clang-tidy")
+  set(ASPECT_CHECK_CLANG_TIDY_FIX OFF CACHE BOOL "Whether or not to try to automatically fix the clang-tidy issues when found.")
+  if(ASPECT_CHECK_CLANG_TIDY_FIX)
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=${ASPECT_CHECK_CLANG_TIDY_CHECKS};--fix")
+  else()
+    set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-checks=${ASPECT_CHECK_CLANG_TIDY_CHECKS}")
+  endif()
+endif()
+
 SET(ASPECT_WITH_WORLD_BUILDER ON CACHE BOOL "Whether to enable compiling aspect with the Geodynamic World Builder.")
 MESSAGE(STATUS "ASPECT_WITH_WORLD_BUILDER = '${ASPECT_WITH_WORLD_BUILDER}'")
 if(ASPECT_WITH_WORLD_BUILDER)
