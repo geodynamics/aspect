@@ -723,8 +723,7 @@ namespace aspect
 
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask,
-                                    const bool has_background_field)
+                                    const ComponentMask &field_mask)
       {
         std::vector<double> composition_fractions(compositional_fields.size()+1);
 
@@ -755,9 +754,6 @@ namespace aspect
                 composition_fractions[i+1] = x_comp[i];
             }
 
-        if (!has_background_field)
-          composition_fractions.erase(composition_fractions.begin());
-
         return composition_fractions;
       }
 
@@ -779,6 +775,13 @@ namespace aspect
       {
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
+
+        if (n_fields == 1)
+          {
+            volumes[0] = 1.0;
+            return volumes;
+          }
+
         double sum_volumes = 0.0;
         for (unsigned int j=0; j < n_fields; ++j)
           {

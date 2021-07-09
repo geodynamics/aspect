@@ -241,25 +241,20 @@ namespace aspect
             out.reaction_terms[i][c] = 0;
 
           // Calculate volume fractions from mass fractions
-          std::vector<double> mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], *composition_mask, has_background);
-
           // If there is only one lookup table, set the mass and volume fractions to 1
-          if (eos_outputs[i].densities.size() == 1)
-            {
-              volume_fractions[i][0] = 1.0;
-              mass_fractions.resize(1);
-              mass_fractions[0] = 1.0;
-            }
-          else if (eos_outputs[i].densities.size() == mass_fractions.size())
-            volume_fractions[i] = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
-                                                                                 eos_outputs[i].densities,
-                                                                                 true);
+          std::vector<double> mass_fractions;
+          if (equation_of_state.number_of_lookups() == 1)
+            mass_fractions.push_back(1.0);
           else
-            Assert(false,
-                   ExcMessage("The number of lookups in the Steinberger model is "
-                              + Utilities::int_to_string(eos_outputs[i].densities.size()) + ", but needs to be either 1, "
-                              "or correspond to the number of compositional fields (without a background field)"
-                              "or correspond to the number of compositional fields + 1 (with a background field)."));
+            {
+              mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], *composition_mask);
+              if (!has_background_field)
+                mass_fractions.erase(mass_fractions.begin());
+            }
+
+          volume_fractions[i] = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
+                                                                               eos_outputs[i].densities,
+                                                                               true);
 
           MaterialModel::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
         }
@@ -389,7 +384,7 @@ namespace aspect
                                   + Utilities::int_to_string(this->n_compositional_fields())
                                   + " compositional fields. "));
 
-          has_background = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
+          has_background_field = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
 
           // All compositional fields are assumed to represent mass fractions.
           composition_mask = std_cxx14::make_unique<ComponentMask> (this->n_compositional_fields(), true);
