@@ -1,0 +1,82 @@
+# A simple setup for testing the gravity postprocessor using the 
+# sample scheme 'map'.
+
+# General parameters
+set Dimension                              = 3
+set End time                               = 0
+set Output directory                       = output_thin_shell_gravity
+set Nonlinear solver scheme                = no Advection, no Stokes
+
+# Model geometry
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    # layer 0km depth
+    #set Inner radius = 6366e3
+    #set Outer radius = 6376e3
+    # layer 100km depth
+    set Inner radius = 6266e3
+    set Outer radius = 6276e3
+    # layer 500km depth
+    #set Inner radius = 5866e3
+    #set Outer radius = 5876e3
+    # layer 1500km depth
+    #set Inner radius = 4866e3
+    #set Outer radius = 4876e3
+    # layer 3000km depth
+    #set Inner radius = 3366e3
+    #set Outer radius = 3376e3
+    set Custom mesh subdivision = number of slices
+    set Number of slices = 1
+    set Initial lateral refinement = 5
+  end
+end
+
+# Model boundary velocity
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+# Material model
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3300
+    set Thermal expansion coefficient = 0
+  end
+end
+
+# Model gravity
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# Mesh refinement
+subsection Mesh refinement
+  set Initial global refinement = 0
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = gravity calculation,visualization
+  subsection Visualization
+    set List of output variables = density, viscosity, partition
+    set Time between graphical output = 0
+    set Interpolate output = false 
+  end
+  subsection Gravity calculation
+    set Sampling scheme = map 
+    set Minimum radius = 6621e3 
+    set Minimum longitude = -180
+    set Maximum longitude = 179
+    set Number points longitude = 180
+    set Minimum latitude = -90
+    set Maximum latitude = +90
+    set Number points latitude  = 90
+    set Quadrature degree increase = 1
+  end
+end
+
