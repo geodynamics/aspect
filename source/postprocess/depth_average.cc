@@ -33,7 +33,7 @@
 #include <deal.II/numerics/data_out_stack.h>
 
 
-#include <math.h>
+#include <cmath>
 
 namespace aspect
 {

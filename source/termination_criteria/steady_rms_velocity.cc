@@ -30,7 +30,7 @@ namespace aspect
   {
     template <int dim>
     bool
-    SteadyRMSVelocity<dim>::execute(void)
+    SteadyRMSVelocity<dim>::execute()
     {
       const QGauss<dim> quadrature_formula (this->get_fe()
                                             .base_element(this->introspection().base_elements.velocities).degree+1);

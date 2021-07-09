@@ -26,7 +26,7 @@
 #include <aspect/global.h>
 #include <deal.II/numerics/vector_tools.h>
 
-#include <math.h>
+#include <cmath>
 
 namespace aspect
 {
