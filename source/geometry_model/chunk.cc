@@ -498,9 +498,8 @@ namespace aspect
     Chunk<dim>::
     create_coarse_mesh (parallel::distributed::Triangulation<dim> &coarse_grid) const
     {
-      std::vector<unsigned int> rep_vec(repetitions, repetitions+dim);
       GridGenerator::subdivided_hyper_rectangle (coarse_grid,
-                                                 rep_vec,
+                                                 repetitions,
                                                  point1,
                                                  point2,
                                                  true);
@@ -880,25 +879,21 @@ namespace aspect
 
           const double degtorad = dealii::numbers::PI/180;
 
-          Assert (dim >= 2, ExcInternalError());
-          Assert (dim <= 3, ExcInternalError());
+          repetitions.resize(dim);
 
-          if (dim >= 2)
-            {
-              point1[0] = prm.get_double ("Chunk inner radius");
-              point2[0] = prm.get_double ("Chunk outer radius");
-              repetitions[0] = prm.get_integer ("Radius repetitions");
-              point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
-              point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
-              repetitions[1] = prm.get_integer ("Longitude repetitions");
+          point1[0] = prm.get_double ("Chunk inner radius");
+          point2[0] = prm.get_double ("Chunk outer radius");
+          repetitions[0] = prm.get_integer ("Radius repetitions");
+          point1[1] = prm.get_double ("Chunk minimum longitude") * degtorad;
+          point2[1] = prm.get_double ("Chunk maximum longitude") * degtorad;
+          repetitions[1] = prm.get_integer ("Longitude repetitions");
 
-              AssertThrow (point1[0] < point2[0],
-                           ExcMessage ("Inner radius must be less than outer radius."));
-              AssertThrow (point1[1] < point2[1],
-                           ExcMessage ("Minimum longitude must be less than maximum longitude."));
-              AssertThrow (point2[1] - point1[1] < 2.*numbers::PI,
-                           ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
-            }
+          AssertThrow (point1[0] < point2[0],
+                       ExcMessage ("Inner radius must be less than outer radius."));
+          AssertThrow (point1[1] < point2[1],
+                       ExcMessage ("Minimum longitude must be less than maximum longitude."));
+          AssertThrow (point2[1] - point1[1] < 2.*numbers::PI,
+                       ExcMessage ("Maximum - minimum longitude should be less than 360 degrees."));
 
           // Inform the manifold about the minimum longitude
           manifold.set_min_longitude(point1[1]);
