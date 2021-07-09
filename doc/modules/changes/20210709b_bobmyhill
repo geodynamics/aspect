@@ -1,0 +1,5 @@
+Changed: The Boundary temperature model plugin now requires that the
+"Fixed temperature boundary indicators" parameter is non-empty whenever
+the "Model names" parameter is not empty.
+<br>
+(Bob Myhill, 2021/07/09)
