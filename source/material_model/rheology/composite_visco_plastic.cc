@@ -167,9 +167,9 @@ namespace aspect
         // Drucker-Prager yield stress. Probably fine for a first guess.
         if (use_drucker_prager)
           {
-            drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);            
-            const double yield_stress = drucker_prager->compute_yield_stress(drucker_prager_parameters.cohesions,
-                                                                             drucker_prager_parameters.angles_internal_friction,
+            drucker_prager_parameters = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);
+            const double yield_stress = drucker_prager->compute_yield_stress(drucker_prager_parameters.cohesion,
+                                                                             drucker_prager_parameters.angle_internal_friction,
                                                                              pressure,
                                                                              drucker_prager_parameters.max_yield_stress);
 
@@ -193,12 +193,10 @@ namespace aspect
             const std::pair<double, double> creep_edot_and_deriv = compute_strain_rate_and_derivative (creep_stress,
                                                                    pressure,
                                                                    temperature,
-                                                                   composition,
                                                                    diffusion_creep_parameters,
                                                                    dislocation_creep_parameters,
                                                                    peierls_creep_parameters,
-                                                                   phase_function_values,
-                                                                   n_phases_per_composition);
+                                                                   drucker_prager_parameters);
 
             const double strain_rate = creep_stress/(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.first;
             strain_rate_deriv = 1./(2.*max_viscosity) + (max_viscosity/(max_viscosity - min_viscosity))*creep_edot_and_deriv.second;
@@ -261,7 +259,7 @@ namespace aspect
 
         if (use_drucker_prager)
           {
-            const std::pair<double, double> drpr_edot_and_deriv = drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, composition, phase_function_values, n_phases_per_composition);
+            const std::pair<double, double> drpr_edot_and_deriv = drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, drucker_prager_parameters);
             partial_strain_rates[3] = drpr_edot_and_deriv.first;
           }
 
@@ -280,17 +278,16 @@ namespace aspect
       }
 
 
+
       template <int dim>
       std::pair<double, double>
       CompositeViscoPlastic<dim>::compute_strain_rate_and_derivative (const double creep_stress,
                                                                       const double pressure,
                                                                       const double temperature,
-                                                                      const unsigned int composition,
                                                                       const DiffusionCreepParameters diffusion_creep_parameters,
                                                                       const DislocationCreepParameters dislocation_creep_parameters,
                                                                       const PeierlsCreepParameters peierls_creep_parameters,
-                                                                      const std::vector<double> &phase_function_values,
-                                                                      const std::vector<unsigned int> &n_phases_per_composition) const
+                                                                      const DruckerPragerParameters drucker_prager_parameters) const
       {
         std::pair<double, double> creep_edot_and_deriv = std::make_pair(0., 0.);
 
@@ -304,7 +301,7 @@ namespace aspect
           creep_edot_and_deriv = creep_edot_and_deriv + peierls_creep->compute_strain_rate_and_derivative(creep_stress, pressure, temperature, peierls_creep_parameters);
 
         if (use_drucker_prager)
-          creep_edot_and_deriv = creep_edot_and_deriv + drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, composition, phase_function_values, n_phases_per_composition);
+          creep_edot_and_deriv = creep_edot_and_deriv + drucker_prager->compute_strain_rate_and_derivative(creep_stress, pressure, drucker_prager_parameters);
 
         return creep_edot_and_deriv;
       }
@@ -428,8 +425,8 @@ namespace aspect
           {
             drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
-            drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);              
- 
+            drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
+
             AssertThrow(prm.get_bool("Use plastic damper") && prm.get_double("Plastic damper viscosity") > 0.,
                         ExcMessage("If Drucker-Prager plasticity is included in the rheological formulation, you must use a viscous damper with a positive viscosity."));
           }

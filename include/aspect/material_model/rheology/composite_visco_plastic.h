@@ -111,12 +111,10 @@ namespace aspect
           compute_strain_rate_and_derivative (const double creep_stress,
                                               const double pressure,
                                               const double temperature,
-                                              const unsigned int composition,
                                               const DiffusionCreepParameters diffusion_creep_parameters,
                                               const DislocationCreepParameters dislocation_creep_parameters,
                                               const PeierlsCreepParameters peierls_creep_parameters,
-                                              const std::vector<double> &phase_function_values = std::vector<double>(),
-                                              const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+                                              const DruckerPragerParameters drucker_prager_parameters) const;
 
         private:
 

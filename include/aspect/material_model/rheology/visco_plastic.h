@@ -174,11 +174,10 @@ namespace aspect
                                      const MaterialModel::MaterialModelInputs<dim> &in,
                                      MaterialModel::MaterialModelOutputs<dim> &out,
                                      const std::vector<double> &phase_function_values = std::vector<double>(),
-                                     const std::vector<unsigned int> &n_phases_per_composition =
-                                     std::vector<unsigned int>()) const;
+                                     const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
-          
-           /**
+
+          /**
            * Reference viscosity used by material models using this rheology.
            */
           double ref_visc;
