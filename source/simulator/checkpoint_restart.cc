@@ -333,9 +333,9 @@ namespace aspect
           // build compression header
           const uint32_t compression_header[4]
             = { 1,                                   /* number of blocks */
-                (uint32_t)oss.str().length(), /* size of block */
-                (uint32_t)oss.str().length(), /* size of last block */
-                (uint32_t)compressed_data_length
+                static_cast<uint32_t>(oss.str().length()), /* size of block */
+                static_cast<uint32_t>(oss.str().length()), /* size of last block */
+                static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());

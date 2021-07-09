@@ -26,7 +26,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 namespace aspect

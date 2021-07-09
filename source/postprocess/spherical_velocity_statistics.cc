@@ -108,10 +108,10 @@ namespace aspect
                                 tan_vrms * year_in_seconds);
           statistics.add_value (columns[2],
                                 vrms * year_in_seconds);
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+          for (auto &column : columns)
             {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
+              statistics.set_precision (column, 8);
+              statistics.set_scientific (column, true);
             }
         }
       else
@@ -125,10 +125,10 @@ namespace aspect
           statistics.add_value (columns[0], rad_vrms);
           statistics.add_value (columns[1], tan_vrms);
           statistics.add_value (columns[2], vrms);
-          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+          for (auto &column : columns)
             {
-              statistics.set_precision (columns[i], 8);
-              statistics.set_scientific (columns[i], true);
+              statistics.set_precision (column, 8);
+              statistics.set_scientific (column, true);
             }
         }
 

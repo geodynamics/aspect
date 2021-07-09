@@ -28,7 +28,7 @@ namespace aspect
   {
     template <int dim>
     bool
-    UserRequest<dim>::execute(void)
+    UserRequest<dim>::execute()
     {
       // Only check for the file on the root process to avoid overloading the filesystem.
       // The plugin manager later does an OR operation over all

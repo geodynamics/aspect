@@ -34,7 +34,7 @@
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
-#include <fenv.h>
+#include <cfenv>
 #endif
 #endif
 
