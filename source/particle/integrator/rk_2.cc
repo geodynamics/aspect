@@ -41,7 +41,7 @@ namespace aspect
       RK2<dim>::initialize ()
       {
         const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
-        property_location = property_information.get_position_by_field_name("internal: integrator properties");
+        property_index_old_location = property_information.get_position_by_field_name("internal: integrator properties");
       }
 
 
@@ -78,7 +78,7 @@ namespace aspect
                 const Point<dim> loc0 = it->get_location();
 
                 for (unsigned int i=0; i<dim; ++i)
-                  properties[property_location + i] = loc0[i];
+                  properties[property_index_old_location + i] = loc0[i];
 
                 it->set_location(loc0 + 0.5 * k1);
               }
@@ -88,7 +88,7 @@ namespace aspect
                 Point<dim> loc0;
 
                 for (unsigned int i=0; i<dim; ++i)
-                  loc0[i] = properties[property_location + i];
+                  loc0[i] = properties[property_index_old_location + i];
 
                 it->set_location(loc0 + k2);
               }

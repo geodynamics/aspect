@@ -269,6 +269,8 @@ namespace aspect
                                 ExcMessage("Make sure that the size of list 'Global minimum particle property' "
                                            "is equivalent to the number of particle properties."));
 
+                    // Check that if a global limiter is used, we were given the minimum and maximum value for each
+                    // particle property that is not an internal property.
                     AssertThrow(global_maximum_particle_properties.size() == n_property_components - n_internal_components,
                                 ExcMessage("Make sure that the size of list 'Global maximum particle property' "
                                            "is equivalent to the number of particle properties."));

@@ -42,10 +42,10 @@ namespace aspect
       {
         const auto &property_information = this->get_particle_world().get_property_manager().get_data_info();
 
-        property_k[0] = property_information.get_position_by_field_name("internal: integrator properties");
-        property_k[1] = property_k[0] + dim;
-        property_k[2] = property_k[1] + dim;
-        property_k[3] = property_k[2] + dim;
+        property_index_k[0] = property_information.get_position_by_field_name("internal: integrator properties");
+        property_index_k[1] = property_index_k[0] + dim;
+        property_index_k[2] = property_index_k[1] + dim;
+        property_index_k[3] = property_index_k[2] + dim;
       }
 
 
@@ -83,8 +83,8 @@ namespace aspect
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    properties[property_k[0] + i] = loc0[i];
-                    properties[property_k[1] + i] = k1[i];
+                    properties[property_index_k[0] + i] = loc0[i];
+                    properties[property_index_k[1] + i] = k1[i];
                   }
 
                 it->set_location(loc0 + 0.5 * k1);
@@ -96,8 +96,8 @@ namespace aspect
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    loc0[i] = properties[property_k[0] + i];
-                    properties[property_k[2] + i] = k2[i];
+                    loc0[i] = properties[property_index_k[0] + i];
+                    properties[property_index_k[2] + i] = k2[i];
                   }
 
                 it->set_location(loc0 + 0.5 * k2);
@@ -109,8 +109,8 @@ namespace aspect
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    loc0[i] = properties[property_k[0] + i];
-                    properties[property_k[3] + i] = k3[i];
+                    loc0[i] = properties[property_index_k[0] + i];
+                    properties[property_index_k[3] + i] = k3[i];
                   }
 
                 it->set_location(loc0 + k3);
@@ -122,10 +122,10 @@ namespace aspect
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    loc0[i] = properties[property_k[0] + i];
-                    k1[i] = properties[property_k[1] + i];
-                    k2[i] = properties[property_k[2] + i];
-                    k3[i] = properties[property_k[3] + i];
+                    loc0[i] = properties[property_index_k[0] + i];
+                    k1[i] = properties[property_index_k[1] + i];
+                    k2[i] = properties[property_index_k[2] + i];
+                    k3[i] = properties[property_index_k[3] + i];
                   }
 
                 it->set_location(loc0 + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0);

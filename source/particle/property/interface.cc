@@ -21,6 +21,11 @@
 #include <aspect/particle/property/interface.h>
 #include <aspect/utilities.h>
 
+#include <aspect/particle/integrator/euler.h>
+#include <aspect/particle/integrator/rk_2.h>
+#include <aspect/particle/integrator/rk_4.h>
+
+
 #include <aspect/boundary_composition/interface.h>
 
 #include <deal.II/grid/grid_tools.h>
@@ -291,7 +296,7 @@ namespace aspect
       IntegratorProperties<dim>::initialize_one_particle_property(const Point<dim> &/*position*/,
                                                                   std::vector<double> &data) const
       {
-        data.resize(data.size() + n_integrator_properties);
+        data.resize(data.size() + n_integrator_properties, 0.0);
       }
 
 
@@ -300,10 +305,7 @@ namespace aspect
       std::vector<std::pair<std::string, unsigned int> >
       IntegratorProperties<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string, unsigned int>> property_information =
-        {{"internal: integrator properties", n_integrator_properties}};
-
-        return property_information;
+        return {{"internal: integrator properties", n_integrator_properties}};
       }
 
 
@@ -320,11 +322,11 @@ namespace aspect
             name = prm.get ("Integration scheme");
 
             if (name == "rk2")
-              n_integrator_properties = dim;
+              n_integrator_properties = Particle::Integrator::RK2<dim>::n_integrator_properties;
             else if (name == "rk4")
-              n_integrator_properties = 4*dim;
+              n_integrator_properties = Particle::Integrator::RK4<dim>::n_integrator_properties;
             else if (name == "euler")
-              n_integrator_properties = 0;
+              n_integrator_properties = Particle::Integrator::Euler<dim>::n_integrator_properties;
             else
               AssertThrow(false,
                           ExcMessage("Unknown integrator scheme. The particle property 'Integrator properties' "

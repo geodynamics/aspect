@@ -88,6 +88,19 @@ namespace aspect
            */
           bool new_integration_step() override;
 
+          /**
+           * We need to tell the property manager how many intermediate properties this integrator requires,
+           * so that it can allocate sufficient space for each particle. However, the integrator is not
+           * created at the time the property manager is set up and we can not reverse the order of creation,
+           * because the integrator needs to know where to store its properties, which requires the property manager
+           * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
+           * a static property of this class. Therefore, the property manager can access this variable even
+           * before any object is constructed.
+           *
+           * The Runge-Kutta 2 integrator requires a single point with dim components.
+           */
+          static const unsigned int n_integrator_properties = dim;
+
         private:
           /**
            * The current integration step, i.e for RK2 a number that is either
@@ -98,7 +111,7 @@ namespace aspect
           /**
            * The location of the RK2 data that is stored in the particle properties.
            */
-          unsigned int property_location;
+          unsigned int property_index_old_location;
       };
 
     }

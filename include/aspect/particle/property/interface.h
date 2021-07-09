@@ -503,7 +503,9 @@ namespace aspect
       /**
        * A particle property that provides storage space for
        * the properties that particle integrators need to
-       * store.
+       * store. This is an internal property that is not
+       * intended for use outside of the particle integrators
+       * and that will not be written to output files.
        *
        * @ingroup ParticleProperties
        */
@@ -540,7 +542,8 @@ namespace aspect
 
         private:
           /**
-           * The number of integrator properties to store.
+           * The number of integrator properties to store. This variable is initialized in
+           * parse_parameters().
            */
           unsigned int n_integrator_properties;
       };

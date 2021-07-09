@@ -87,6 +87,19 @@ namespace aspect
            */
           bool new_integration_step() override;
 
+          /**
+            * We need to tell the property manager how many intermediate properties this integrator requires,
+            * so that it can allocate sufficient space for each particle. However, the integrator is not
+            * created at the time the property manager is set up and we can not reverse the order of creation,
+            * because the integrator needs to know where to store its properties, which requires the property manager
+            * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
+            * a static property of this class. Therefore, the property manager can access this variable even
+            * before any object is constructed.
+            *
+            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
+            */
+          static const unsigned int n_integrator_properties = 4*dim;
+
         private:
           /**
            * The current integration step, i.e. for RK4 a number between 0
@@ -97,7 +110,7 @@ namespace aspect
           /**
            * The location of the 4 RK4 data fields stored in the particle properties.
            */
-          std::array<unsigned int,4> property_k;
+          std::array<unsigned int,4> property_index_k;
       };
     }
   }
