@@ -1,0 +1,252 @@
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 2e6
+set Resume computation                     = auto
+set Use years in output instead of seconds = true
+
+# JBN - change  scheme below to: single Advection, iterated defect correction Stoke
+set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
+
+set Nonlinear solver tolerance             = 1e-5
+
+# JBN - change value below to 100, but we can add comment that this many
+# nonlinear iterations should only really happen in the first 1 or 2 time steps
+# and the rest should require quite a few less (<20)
+set Max nonlinear iterations               = 20
+
+# JBN - Add a comment here that in the case of issue with the stokes or 
+# advection solvers, these values below can be reduced to help
+# improve convergence behavior 
+set CFL number                             = 0.5
+set Maximum time step                      = 20e3
+set Output directory                       = output_oceanic_extension
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+set Adiabatic surface temperature          = 273
+
+# Governing equations
+subsection Formulation
+  set Formulation          = custom
+  set Mass conservation    = ask material model
+  # JBN - for BA approximation, we should change to parameter to "reference density model"
+  set Temperature equation = reference density profile
+end
+
+# Model geometry (500x20x100 km, initial 5 km spacing)
+# To extend
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X repetitions = 200
+    set Y repetitions = 50
+    set X extent      = 400e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specification
+# The following specifications produce grid spacing of 1.25 km above 50 km
+# depth, 2.5 km between 50 and 100 km depth, and 5 km below 100 km depth.
+#
+# JBN - with the settings beelow, we are doing no global or adpative refinement.
+# Should we add one or both back in?
+subsection Mesh refinement
+  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 0 
+  set Time steps between mesh refinement = 0
+end
+
+# Q2Q1 Element
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 2
+  # JBN - we can remove this section if we don't want to use DG for the compositional fields
+  # In fact, DG is currently not enabled (next parameter below is "false". Something to discuss
+  set Use discontinuous composition discretization = false
+  subsection Stabilization parameters
+    set Use limiter for discontinuous composition solution = true
+    set Global composition maximum   = 200, 1, 1
+    set Global composition minimum   =   0, 0, 0
+  end
+end
+
+# Solver parameters
+subsection Solver parameters
+  subsection Stokes solver parameters
+
+    # JBN - we should comment here about why we set this to 0 (faster when plasticity is used),
+    # but also check with Menno to make sure this is still the case with defect correction
+    set Number of cheap Stokes solver steps = 0
+    set Linear solver tolerance = 1e-7
+  end
+  subsection Newton solver parameters
+    set Max Newton line search iterations        = 5 #JBN - we can delete this line (for Newton only)
+    set Max pre-Newton nonlinear iterations      = 20 # JBN - change to 100 to match global value
+    set Maximum linear Stokes solver tolerance   = 0.1 # JBN - Menno said this value is safe :)
+    set Nonlinear Newton solver switch tolerance = 1e-5
+    set SPD safety factor                        = 0.9 # JBN - we can delete this line (for Newton only)
+    set Stabilization preconditioner             = SPD # JBN - we can delete this line (for Newton only)
+    set Stabilization velocity block             = SPD # JBN - we can delete this line (for Newton only)
+    set Use Newton failsafe                      = false # JBN - we can delete this line (for Newton only)
+    set Use Newton residual scaling method       = false # JBN - we can delete this line (for Newton only)
+    set Use Eisenstat Walker method for Picard iterations = true
+  end
+end
+
+# Free surface advection (vertical or normal)
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: free surface
+  set Additional tangential mesh velocity boundary indicators = right, left
+  subsection Free surface
+    set Surface velocity projection = normal # JBN - we should change this to "normal" 
+  end
+end
+
+# Velocity on boundaries characterized by functions
+# JBN - expand documenation here
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom
+  set Prescribed velocity boundary indicators = left x: function, right x:function 
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = cm=0.01, year=1
+    set Function expression = if (x<200e3 , -0.5*cm/year, 0.5*cm/year); 0; 
+  end
+end
+
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = plastic_strain, oceanic_crust, mantle_lithosphere
+end
+
+
+# Spatial domain of different compositional fields
+# JBN - expand documenation here
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+  # JBN - repalce rand() with reproducible "seed" randomization?
+    set Variable names      = x,y
+    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand()*1.0, 0); \
+			      if(y>=93.e3, 1, 0); \
+                              if(y<93.e3 && y>-100.e3, 1, 0); 
+  end
+end
+
+
+# Composition boundary conditions
+# JBN - expand documenation here
+subsection Boundary composition model
+  set Fixed composition boundary indicators  = bottom
+  set Model name = initial composition
+end
+
+# Temperature boundary conditions
+# JBN - expand document here
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set Model name = initial temperature
+end
+
+# Initial temperature field
+# JBN - expand documentation here
+subsection Initial temperature model
+  set List of model names = function
+  subsection Function
+    set Variable names = x,y
+    set Function constants = ymax=100e3, ageop=1.26e15, Tm=1573, Ts=273, kappa=1e-6
+    set Function expression = (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop)))))
+  end
+end
+
+
+# Material model
+subsection Material model
+  set Model name = visco plastic
+
+  # JBN - add comment here about what this parameter does and why we choose "harmonic average" (or a different value)
+  set Material averaging = harmonic average
+
+  subsection Visco Plastic
+
+    set Reference temperature = 273
+    set Reference viscosity   = 1e21
+    set Minimum strain rate = 1.e-20
+    set Reference strain rate = 1.e-15
+    set Minimum viscosity = 1e18
+    set Maximum viscosity = 1e26
+
+    # JBN - we should change to use thermal conductivities
+    set Thermal diffusivities = 1.010101e-6, 1.010101e-6, 1.010101e-6, 1.010101e-6
+    set Densities             =        3300,        3300,        2900,        3300
+    set Heat capacities       = 750.
+    set Thermal expansivities = 2e-5
+
+    # JBN - Add comment explaining what this value does and how it affects solution
+    set Viscosity averaging scheme = maximum composition
+
+    set Viscous flow law = composite
+
+    # JBN - add documenation about where these values come from
+    set Prefactors for dislocation creep          = 6.52e-16, 6.52e-16, 1.12e-10, 6.52e-16 
+    set Stress exponents for dislocation creep    =      3.5,      3.5,      3.4,      3.5
+    set Activation energies for dislocation creep =   530.e3,   530.e3,   497.e3,   530.e3
+    set Activation volumes for dislocation creep  =   18.e-6,   18.e-6,       0.,   18.e-6
+
+    set Prefactors for diffusion creep            = 2.37e-15, 1.00e-50, 1.00e-50, 2.37e-15
+    set Grain size exponents for diffusion creep  =      3.0,       0.,       0.,      3.0
+    set Activation energies for diffusion creep   =   375.e3,       0.,       0.,   375.e3
+    set Activation volumes for diffusion creep    =    2.e-6,       0.,       0.,    2.e-6
+
+    set Grain size = 5.e-3
+    set Angles of internal friction = 30.
+    set Cohesions = 20.e6, 20.e6, 20.e6, 20.e6
+
+    # The parameters below weaken the friction and cohesion by a
+    # a factor of 2 between plastic strain values of 0.5 and 1.5.
+    # To reduce the friction and cohesion by a factor of 4 simply
+    # set the strain weakening factors to 0.25.
+    set Strain weakening mechanism                  = plastic weakening with plastic strain only
+    set Start plasticity strain weakening intervals = 0.5
+    set End plasticity strain weakening intervals   = 1.5
+    set Cohesion strain weakening factors           = 0.75
+    set Friction strain weakening factors           = 0.75
+
+  end
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+# JBN - we can likely reduce some of the outputs below
+# Post processing
+subsection Postprocess
+set List of postprocessors = basic statistics, composition statistics, heat flux densities, heat flux statistics, mass flux statistics, material statistics, matrix statistics, pressure statistics, temperature statistics, topography, velocity statistics, visualization
+  subsection Visualization
+    set List of output variables      =  heat flux map, named additional outputs, strain rate, density, viscosity, melt fraction
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+    set Time between graphical output =	100.e3
+    set Interpolate output            = true
+    set Write higher order output     = true
+    set Output format                 = vtu
+    set Number of grouped files       = 0
+  end
+end
+
+# Checkpointing
+subsection Checkpointing
+  set Steps between checkpoint = 5
+end
