@@ -261,7 +261,7 @@ namespace aspect
                               "or correspond to the number of compositional fields (without a background field)"
                               "or correspond to the number of compositional fields + 1 (with a background field)."));
 
-          MaterialModel::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
+          MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
         }
 
       // fill additional outputs if they exist

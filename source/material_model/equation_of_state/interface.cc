@@ -42,26 +42,6 @@ namespace aspect
 
     template <int dim>
     void
-    fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
-                                            const std::vector<double> &mass_fractions,
-                                            const std::vector<double> &volume_fractions,
-                                            const unsigned int i,
-                                            MaterialModelOutputs<dim> &out)
-    {
-      // The density, isothermal compressibility and thermal expansivity are volume-averaged
-      // The specific entropy derivatives and heat capacity are mass-averaged
-      out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
-      out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
-      out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
-      out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
-      out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
-      out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
-    }
-
-
-
-    template <int dim>
-    void
     phase_average_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs_all_phases,
                                             const std::vector<double> &phase_function_values,
                                             const std::vector<unsigned int> &n_phases_per_composition,
@@ -93,11 +73,6 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template struct EquationOfStateOutputs<dim>; \
-  template void fill_averaged_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
-                                                              const std::vector<double> &, \
-                                                              const std::vector<double> &, \
-                                                              const unsigned int, \
-                                                              MaterialModelOutputs<dim> &); \
   template void phase_average_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
                                                               const std::vector<double> &phase_function_values, \
                                                               const std::vector<unsigned int> &n_phases_per_composition, \
