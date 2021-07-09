@@ -4,11 +4,11 @@
 # equal to the start time to force a single time
 # step before the program terminates.
 
-set Dimension                              = 3 
+set Dimension                              = 3
 
-set Start time                             = 0 
-set End time                               = 0 
-set Use years in output instead of seconds = false 
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
 
 set Output directory                       = output-stokes
 
@@ -22,12 +22,12 @@ set Output directory                       = output-stokes
 
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
 
   subsection Box
-    set X extent  = 2890000 
-    set Y extent  = 2890000 
-    set Z extent  = 2890000 
+    set X extent  = 2890000
+    set Y extent  = 2890000
+    set Z extent  = 2890000
   end
 end
 
@@ -38,20 +38,20 @@ end
 
 
 subsection Material model
-  set Model name = simple 
+  set Model name = simple
 
   subsection Simple model
-    set Reference density             = 3300 
-    set Viscosity                     = 1e22 
+    set Reference density             = 3300
+    set Viscosity                     = 1e22
   end
 end
 
 
 subsection Gravity model
-  set Model name = vertical 
+  set Model name = vertical
 
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
@@ -60,15 +60,11 @@ end
 # As above, there is no need to set anything for the
 # temperature boundary conditions.
 
-subsection Boundary temperature model
-  set List of model names = box 
-end
-
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
 
   subsection Function
-    set Function expression = 0 
+    set Function expression = 0
   end
 end
 
@@ -85,22 +81,22 @@ end
 # 100.
 
 subsection Compositional fields
-  set Number of fields = 1 
+  set Number of fields = 1
 end
 
 subsection Initial composition model
-  set Model name = function 
+  set Model name = function
 
   subsection Function
-    set Variable names      = x,y,z 
-    set Function constants  = r=200000,p=1445000 
-    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)+(z-p)*(z-p)) > r, 0, 1) 
+    set Variable names      = x,y,z
+    set Function constants  = r=200000,p=1445000
+    set Function expression = if(sqrt((x-p)*(x-p)+(y-p)*(y-p)+(z-p)*(z-p)) > r, 0, 1)
   end
 end
 
 subsection Material model
   subsection Simple model
-    set Density differential for compositional field 1 = 100 
+    set Density differential for compositional field 1 = 100
   end
 end
 
@@ -114,10 +110,10 @@ end
 # indicator to use when refining the mesh adaptively.
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 4 
-  set Initial global refinement          = 4 
-  set Refinement fraction                = 0.2 
-  set Strategy                           = velocity 
+  set Initial adaptive refinement        = 4
+  set Initial global refinement          = 4
+  set Refinement fraction                = 0.2
+  set Strategy                           = velocity
 end
 
 
@@ -130,9 +126,9 @@ end
 # velocity field.
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics 
+  set List of postprocessors = visualization, velocity statistics
 
   subsection Visualization
-    set List of output variables = density, viscosity 
+    set List of output variables = density, viscosity
   end
 end

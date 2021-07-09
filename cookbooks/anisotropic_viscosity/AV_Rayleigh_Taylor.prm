@@ -14,10 +14,6 @@ set Use years in output instead of seconds = false  # default: true
 set Output directory                       = output-AV-Rayleigh-Taylor-noAV
 
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Gravity model
   set Model name = vertical
 end

@@ -1,4 +1,4 @@
-# This test ensures that the PerpleX lookup material model works 
+# This test ensures that the PerpleX lookup material model works
 # with compositional fields enabled
 
 # WARNING: Please understand that the PerpleX Lookup material model is only a
@@ -41,21 +41,17 @@ subsection Material model
 end
 
 subsection Geometry model
-  set Model name = box 
+  set Model name = box
   subsection Box
-    set X extent                = 200e3 
-    set X repetitions           = 1      
-    set Y extent                = 800e3  
+    set X extent                = 200e3
+    set X repetitions           = 1
+    set Y extent                = 800e3
     set Y repetitions           = 16
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = initial temperature 
-end
-
 subsection Initial temperature model
-  set Model name = function 
+  set Model name = function
   subsection Function
     set Function expression = 1300
   end
@@ -66,15 +62,15 @@ subsection Boundary velocity model
 end
 
 subsection Gravity model
-  set Model name = vertical 
+  set Model name = vertical
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 0         
-  set Initial global refinement                = 1         
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 1
 end
 
 subsection Postprocess

@@ -45,11 +45,6 @@ end
 
 ############### Parameters describing the temperature field
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
-
 subsection Initial temperature model
   set Model name = perturbed box
 end

@@ -139,9 +139,6 @@ end
 
 
 # The temperature plays no role in this model
-subsection Boundary temperature model
-  set List of model names = box
-end
 
 subsection Initial temperature model
   set Model name = function
