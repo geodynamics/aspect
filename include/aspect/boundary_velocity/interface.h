@@ -188,7 +188,7 @@ namespace aspect
          * for a particular boundary, this boundary identifier will not appear
          * in the map.
          */
-        const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > &
+        const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> &
         get_active_boundary_velocity_names () const;
 
         /**
@@ -200,7 +200,7 @@ namespace aspect
          * boundary velocity plugins for a particular boundary this boundary
          * identifier will not appear in the map.
          */
-        const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > &
+        const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> &
         get_active_boundary_velocity_conditions () const;
 
         /**
@@ -294,7 +294,7 @@ namespace aspect
          * A list of boundary velocity objects that have been requested in the
          * parameter file.
          */
-        std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > boundary_velocity_objects;
+        std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> boundary_velocity_objects;
 
         /**
          * Map from boundary id to a pair
@@ -304,7 +304,7 @@ namespace aspect
          * "function"). If the components string is empty, it is assumed the
          * plugins are used for all components.
          */
-        std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > > boundary_velocity_indicators;
+        std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>> boundary_velocity_indicators;
 
         /**
          * A set of boundary indicators, on which velocities are prescribed to
@@ -361,7 +361,7 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "boundary velocity model in the input file."));
 
-      typename std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > >::const_iterator boundary_velocity_model;
+      typename std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>>::const_iterator boundary_velocity_model;
       for (const auto &boundary : boundary_velocity_objects)
         for (const auto &p : boundary)
           if (Plugins::plugin_type_matches<BoundaryVelocityType>(*p))
@@ -395,12 +395,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_VELOCITY_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryVelocity::Manager<2>::register_boundary_velocity, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryVelocity::Manager<3>::register_boundary_velocity, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::BoundaryVelocity::Manager<2>::register_boundary_velocity, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryVelocity::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::BoundaryVelocity::Manager<3>::register_boundary_velocity, \
+                                    name, description); \
   }
   }
 }

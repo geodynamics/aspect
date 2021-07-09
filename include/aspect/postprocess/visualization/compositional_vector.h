@@ -58,7 +58,7 @@ namespace aspect
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override;
+                                std::vector<Vector<double>> &computed_quantities) const override;
 
           static
           void
@@ -77,7 +77,7 @@ namespace aspect
            * Stores sets of compositional field indices to
            * be visualized together as vector fields.
            */
-          std::vector<std::vector<unsigned int > > sets;
+          std::vector<std::vector<unsigned int >> sets;
       };
     }
   }

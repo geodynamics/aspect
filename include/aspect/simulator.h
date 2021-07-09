@@ -1051,7 +1051,7 @@ namespace aspect
        * Consequently, we just store a pointer to such an object, and create
        * the object pointed to at the top of set_assemblers().
        */
-      std::unique_ptr<Assemblers::Manager<dim> > assemblers;
+      std::unique_ptr<Assemblers::Manager<dim>> assemblers;
 
       /**
        * Determine, based on the run-time parameters of the current simulation,
@@ -1803,14 +1803,14 @@ namespace aspect
        * if we do not need the machinery for doing melt stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeltHandler<dim> > melt_handler;
+      std::unique_ptr<MeltHandler<dim>> melt_handler;
 
       /**
        * Unique pointer for an instance of the NewtonHandler. This way,
        * if we do not need the machinery for doing Newton stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<NewtonHandler<dim> > newton_handler;
+      std::unique_ptr<NewtonHandler<dim>> newton_handler;
 
       SimulatorSignals<dim>               signals;
 
@@ -1823,7 +1823,7 @@ namespace aspect
        *
        * Located here due to needing signals access
        */
-      std::unique_ptr<VolumeOfFluidHandler<dim> > volume_of_fluid_handler;
+      std::unique_ptr<VolumeOfFluidHandler<dim>> volume_of_fluid_handler;
 
       Introspection<dim>                  introspection;
 
@@ -1894,28 +1894,28 @@ namespace aspect
        * @name Variables that describe the physical setup of the problem
        * @{
        */
-      const std::unique_ptr<InitialTopographyModel::Interface<dim> >          initial_topography_model;
-      const std::unique_ptr<GeometryModel::Interface<dim> >                   geometry_model;
+      const std::unique_ptr<InitialTopographyModel::Interface<dim>>          initial_topography_model;
+      const std::unique_ptr<GeometryModel::Interface<dim>>                   geometry_model;
       const IntermediaryConstructorAction                                     post_geometry_model_creation_action;
-      const std::unique_ptr<MaterialModel::Interface<dim> >                   material_model;
-      const std::unique_ptr<GravityModel::Interface<dim> >                    gravity_model;
+      const std::unique_ptr<MaterialModel::Interface<dim>>                   material_model;
+      const std::unique_ptr<GravityModel::Interface<dim>>                    gravity_model;
       BoundaryTemperature::Manager<dim>                                       boundary_temperature_manager;
       BoundaryComposition::Manager<dim>                                       boundary_composition_manager;
-      const std::unique_ptr<PrescribedStokesSolution::Interface<dim> >        prescribed_stokes_solution;
+      const std::unique_ptr<PrescribedStokesSolution::Interface<dim>>        prescribed_stokes_solution;
       InitialComposition::Manager<dim>                                        initial_composition_manager;
       InitialTemperature::Manager<dim>                                        initial_temperature_manager;
-      const std::unique_ptr<AdiabaticConditions::Interface<dim> >             adiabatic_conditions;
+      const std::unique_ptr<AdiabaticConditions::Interface<dim>>             adiabatic_conditions;
 #ifdef ASPECT_WITH_WORLD_BUILDER
       const std::unique_ptr<WorldBuilder::World>                              world_builder;
 #endif
       BoundaryVelocity::Manager<dim>                                          boundary_velocity_manager;
-      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > boundary_traction;
-      const std::unique_ptr<BoundaryHeatFlux::Interface<dim> >                boundary_heat_flux;
+      std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> boundary_traction;
+      const std::unique_ptr<BoundaryHeatFlux::Interface<dim>>                boundary_heat_flux;
 
       /**
        * The world holding the particles
        */
-      std::unique_ptr<Particle::World<dim> > particle_world;
+      std::unique_ptr<Particle::World<dim>> particle_world;
 
       /**
        * A copy of the particle handler to reset the particles
@@ -1977,7 +1977,7 @@ namespace aspect
        * a MappingQ1Eulerian object to describe the mesh deformation,
        * swapping it in for the original MappingQ or MappingCartesian object.
        */
-      std::unique_ptr<Mapping<dim> >                            mapping;
+      std::unique_ptr<Mapping<dim>>                            mapping;
 
       const FESystem<dim>                                       finite_element;
 
@@ -2089,12 +2089,12 @@ namespace aspect
        * if we do not need the machinery for doing mesh deformation stuff, we do
        * not even allocate it.
        */
-      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim> > mesh_deformation;
+      std::unique_ptr<MeshDeformation::MeshDeformationHandler<dim>> mesh_deformation;
 
       /**
        * Unique pointer for the matrix-free Stokes solver
        */
-      std::unique_ptr<StokesMatrixFreeHandler<dim> > stokes_matrix_free;
+      std::unique_ptr<StokesMatrixFreeHandler<dim>> stokes_matrix_free;
 
       friend class boost::serialization::access;
       friend class SimulatorAccess<dim>;

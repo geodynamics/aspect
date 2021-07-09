@@ -222,7 +222,7 @@ namespace aspect
       void
       Elasticity<dim>::create_elastic_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output<ElasticAdditionalOutputs<dim> >() == nullptr)
+        if (out.template get_additional_output<ElasticAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
@@ -241,7 +241,7 @@ namespace aspect
         // Create a reference to the structure for the elastic force terms that are needed to compute the
         // right-hand side of the Stokes system
         MaterialModel::ElasticOutputs<dim>
-        *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim> >();
+        *force_out = out.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
 
         if (force_out == nullptr)
           return;
@@ -279,7 +279,7 @@ namespace aspect
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             // Get old (previous time step) velocity gradients
-            std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+            std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
@@ -291,7 +291,7 @@ namespace aspect
                                      update_gradients);
 
             fe_values.reinit (in.current_cell);
-            std::vector<Tensor<2,dim> > old_velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+            std::vector<Tensor<2,dim>> old_velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
             fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
                                                                                            old_velocity_gradients);
 

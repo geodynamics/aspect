@@ -40,8 +40,8 @@ namespace aspect
   {
     namespace SimulatorSignals
     {
-      std::list<std::function<void (aspect::SimulatorSignals<2> &)> > connector_functions_2d;
-      std::list<std::function<void (aspect::SimulatorSignals<3> &)> > connector_functions_3d;
+      std::list<std::function<void (aspect::SimulatorSignals<2> &)>> connector_functions_2d;
+      std::list<std::function<void (aspect::SimulatorSignals<3> &)>> connector_functions_3d;
 
       static bool connector_functions_have_been_called = false;
 

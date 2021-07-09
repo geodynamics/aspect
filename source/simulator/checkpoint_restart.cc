@@ -285,7 +285,7 @@ namespace aspect
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
-      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > mesh_deformation_trans;
+      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
           mesh_deformation_trans

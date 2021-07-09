@@ -31,11 +31,11 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      std::vector<std::vector<double> >
-      NearestNeighbor<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                 const std::vector<Point<dim> > &positions,
-                                                 const ComponentMask &selected_properties,
-                                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      std::vector<std::vector<double>>
+                                    NearestNeighbor<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                                               const std::vector<Point<dim>> &positions,
+                                                                               const ComponentMask &selected_properties,
+                                                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
@@ -65,7 +65,7 @@ namespace aspect
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
         std::vector<double> temp(n_particle_properties, 0.0);
-        std::vector<std::vector<double> > point_properties(positions.size(), temp);
+        std::vector<std::vector<double>> point_properties(positions.size(), temp);
 
         for (unsigned int pos_idx=0; pos_idx < positions.size(); ++pos_idx)
           {
@@ -91,7 +91,7 @@ namespace aspect
             else
               {
                 std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbors;
-                GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim> >(found_cell,neighbors);
+                GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(found_cell,neighbors);
 
                 unsigned int nearest_neighbor_cell = numbers::invalid_unsigned_int;
                 for (unsigned int i=0; i<neighbors.size(); ++i)
@@ -120,7 +120,7 @@ namespace aspect
                 if (nearest_neighbor_cell != numbers::invalid_unsigned_int)
                   {
                     point_properties[pos_idx] = properties_at_points(particle_handler,
-                                                                     std::vector<Point<dim> > (1,positions[pos_idx]),
+                                                                     std::vector<Point<dim>> (1,positions[pos_idx]),
                                                                      selected_properties,
                                                                      neighbors[nearest_neighbor_cell])[0];
                   }

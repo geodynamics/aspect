@@ -36,7 +36,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+      UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
         const Tensor<1,dim> P_diff = P_max - P_min;
 

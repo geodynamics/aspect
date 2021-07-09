@@ -283,30 +283,30 @@ namespace aspect
         /**
          * Generation scheme for creating particles in this world
          */
-        std::unique_ptr<Generator::Interface<dim> > generator;
+        std::unique_ptr<Generator::Interface<dim>> generator;
 
         /**
          * Integration scheme for moving particles in this world
          */
-        std::unique_ptr<Integrator::Interface<dim> > integrator;
+        std::unique_ptr<Integrator::Interface<dim>> integrator;
 
         /**
          * Interpolation scheme for moving particles in this world
          */
-        std::unique_ptr<Interpolator::Interface<dim> > interpolator;
+        std::unique_ptr<Interpolator::Interface<dim>> interpolator;
 
         /**
          * The property manager stores information about the additional
          * particle properties and handles the initialization and update of
          * these properties.
          */
-        std::unique_ptr<Property::Manager<dim> > property_manager;
+        std::unique_ptr<Property::Manager<dim>> property_manager;
 
         /**
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
-        std::unique_ptr<Particles::ParticleHandler<dim> > particle_handler;
+        std::unique_ptr<Particles::ParticleHandler<dim>> particle_handler;
 
         /**
          * Particle handler object that is responsible for storing and

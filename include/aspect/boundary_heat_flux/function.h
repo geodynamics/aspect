@@ -47,11 +47,11 @@ namespace aspect
         /**
          * Return the boundary heat flux as a function of position.
          */
-        std::vector<Tensor<1,dim> >
-        heat_flux (const types::boundary_id boundary_indicator,
-                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                   const std::vector<Tensor<1,dim> > &normal_vectors) const override;
+        std::vector<Tensor<1,dim>>
+                                heat_flux (const types::boundary_id boundary_indicator,
+                                           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                           const std::vector<Tensor<1,dim>> &normal_vectors) const override;
 
         /**
          * A function that is called at the beginning of each time step to

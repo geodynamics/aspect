@@ -345,11 +345,11 @@ namespace aspect
                                                               MaterialModel::MaterialModelOutputs<dim> &out) const
       {
         // fill seismic velocity outputs if they exist
-        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+        if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
           fill_seismic_velocities(in, out.densities, volume_fractions, seismic_out);
 
         // fill phase volume outputs if they exist
-        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
+        if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>())
           fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
       }
 
@@ -446,14 +446,14 @@ namespace aspect
       void
       ThermodynamicTableLookup<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
       {
-        if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >() == nullptr)
+        if (out.template get_additional_output<NamedAdditionalMaterialOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
           }
 
-        if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
+        if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(

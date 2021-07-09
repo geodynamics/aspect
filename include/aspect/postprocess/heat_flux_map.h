@@ -70,7 +70,7 @@ namespace aspect
        * for several postprocessors.
        */
       template <int dim>
-      std::vector<std::vector<std::pair<double, double> > >
+      std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access);
     }
 

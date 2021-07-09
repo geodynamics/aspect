@@ -48,7 +48,7 @@ namespace aspect
 
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
-      std::vector<Tensor<1,dim> > composition_gradients (quadrature.size());
+      std::vector<Tensor<1,dim>> composition_gradients (quadrature.size());
 
       for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
         {

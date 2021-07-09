@@ -61,7 +61,7 @@ namespace aspect
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override
+                                std::vector<Vector<double>> &computed_quantities) const override
           {
             const double velocity_scaling_factor =
               this->convert_output_to_years() ? year_in_seconds : 1.0;
@@ -142,7 +142,7 @@ namespace aspect
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override
+                                std::vector<Vector<double>> &computed_quantities) const override
           {
             // check that the first quadrature point has dim components
             Assert( computed_quantities[0].size() == dim,
@@ -364,7 +364,7 @@ namespace aspect
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           (is_cell_data_output ? "solution.visit" : "solution_surface.visit")).c_str());
 
-      std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
+      std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
         times_and_output_file_names.push_back(std::make_pair(output_history.times_and_pvtu_names[timestep].first,
                                                              output_history.output_file_names_by_timestep[timestep]));
@@ -612,7 +612,7 @@ namespace aspect
       // Insert base variable names into set of all output field names
       add_data_names_to_set(base_variables.get_names(), visualization_field_names);
 
-      std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
+      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_variables;
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
@@ -628,7 +628,7 @@ namespace aspect
       const bool have_face_viz_postprocessors
         = (std::find_if (postprocessors.begin(),
                          postprocessors.end(),
-                         [](const std::unique_ptr<VisualizationPostprocessors::Interface<dim> > &p)
+                         [](const std::unique_ptr<VisualizationPostprocessors::Interface<dim>> &p)
       {
         return (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
                 (p.get()) != nullptr);
@@ -652,7 +652,7 @@ namespace aspect
       // add the computed quantity as well. keep a list of
       // pointers to data vectors created by cell data visualization
       // postprocessors that will later be deleted
-      std::list<std::unique_ptr<Vector<float> > > cell_data_vectors;
+      std::list<std::unique_ptr<Vector<float>>> cell_data_vectors;
       for (const auto &p : postprocessors)
         {
           try
@@ -696,7 +696,7 @@ namespace aspect
                   add_data_names_to_set(std::vector<std::string>(1,cell_data.first), visualization_field_names);
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std::unique_ptr<Vector<float> >
+                  cell_data_vectors.push_back (std::unique_ptr<Vector<float>>
                                                (cell_data.second));
 
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
@@ -899,8 +899,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2> >,
-      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<3> > > registered_visualization_plugins;
+      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<2>>,
+      aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<3>>> registered_visualization_plugins;
     }
 
 
@@ -1170,7 +1170,7 @@ namespace aspect
                          "all") != viz_names.end())
             {
               viz_names.clear();
-              for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim> >::PluginInfo>::const_iterator
+              for (typename std::list<typename aspect::internal::Plugins::PluginList<VisualizationPostprocessors::Interface<dim>>::PluginInfo>::const_iterator
                    p = std::get<dim>(registered_visualization_plugins).plugins->begin();
                    p != std::get<dim>(registered_visualization_plugins).plugins->end(); ++p)
                 viz_names.push_back (std::get<0>(*p));
@@ -1250,7 +1250,7 @@ namespace aspect
                               "dealii::DataPostprocessor or "
                               "VisualizationPostprocessors::CellDataVectorCreator!?"));
 
-          postprocessors.push_back (std::unique_ptr<VisualizationPostprocessors::Interface<dim> >
+          postprocessors.push_back (std::unique_ptr<VisualizationPostprocessors::Interface<dim>>
                                     (viz_postprocessor));
 
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(&*postprocessors.back()))
@@ -1423,11 +1423,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2>>::PluginInfo> *
+          internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3>>::PluginInfo> *
+          internal::Plugins::PluginList<Postprocess::VisualizationPostprocessors::Interface<3>>::plugins = nullptr;
     }
   }
 

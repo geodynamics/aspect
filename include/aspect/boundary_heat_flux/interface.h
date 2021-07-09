@@ -90,11 +90,11 @@ namespace aspect
          * @return A vector of heat flux vectors at the evaluation points.
          */
         virtual
-        std::vector<Tensor<1,dim> >
-        heat_flux (const types::boundary_id boundary_indicator,
-                   const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-                   const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-                   const std::vector<Tensor<1,dim> > &normal_vectors) const = 0;
+        std::vector<Tensor<1,dim>>
+                                heat_flux (const types::boundary_id boundary_indicator,
+                                           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
+                                           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+                                           const std::vector<Tensor<1,dim>> &normal_vectors) const = 0;
 
         /**
          * Declare the parameters this class takes through input files. The
@@ -192,12 +192,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_HEAT_FLUX_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryHeatFlux::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryHeatFlux::register_boundary_heat_flux<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryHeatFlux::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryHeatFlux::register_boundary_heat_flux<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryHeatFlux::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::BoundaryHeatFlux::register_boundary_heat_flux<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryHeatFlux::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::BoundaryHeatFlux::register_boundary_heat_flux<3>, \
+                                    name, description); \
   }
   }
 }

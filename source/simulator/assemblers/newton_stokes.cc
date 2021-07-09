@@ -131,7 +131,7 @@ namespace aspect
           else
             {
               const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+                = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
               AssertThrow(derivatives != nullptr,
                           ExcMessage ("Error: The newton method requires derivatives from the material model."));
 
@@ -149,7 +149,7 @@ namespace aspect
                                    1;
 
               // pre-compute the tensor contractions
-              std::vector<SymmetricTensor<2,dim> > deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
+              std::vector<SymmetricTensor<2,dim>> deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
               for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
                 deta_deps_times_eps_times_phi[i] = (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate;
 
@@ -272,21 +272,21 @@ namespace aspect
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
 
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
-                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()
+                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
                                                                             :
                                                                             nullptr;
 
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
 
       const MaterialModel::ElasticOutputs<dim> *elastic_outputs = enable_elasticity ?
-                                                                  scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()
+                                                                  scratch.material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()
                                                                   :
                                                                   nullptr;
 
       const MaterialModel::PrescribedPlasticDilation<dim>
       *prescribed_dilation =
         (this->get_parameters().enable_prescribed_dilation)
-        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >()
+        ? scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
         : nullptr;
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());
@@ -390,7 +390,7 @@ namespace aspect
               if (derivative_scaling_factor != 0)
                 {
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                    = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+                    = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   // This one is only available in debug mode, because normally
                   // the AssertThrow in the preconditioner should already have
@@ -414,7 +414,7 @@ namespace aspect
                                         1;
 
                   // pre-compute the tensor contractions
-                  std::vector<SymmetricTensor<2,dim> > deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
+                  std::vector<SymmetricTensor<2,dim>> deta_deps_times_eps_times_phi(stokes_dofs_per_cell);
                   for (unsigned int i = 0; i < stokes_dofs_per_cell; ++i)
                     deta_deps_times_eps_times_phi[i] = (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[i]) * strain_rate;
 
@@ -502,7 +502,7 @@ namespace aspect
       const unsigned int n_points = outputs.viscosities.size();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
@@ -510,11 +510,11 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
 
       if ((this->get_parameters().enable_elasticity) &&
-          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >() == nullptr)
+          outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
             std_cxx14::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
@@ -522,7 +522,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_elasticity
              ||
-             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim> >()->elastic_force.size()
+             outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>()->elastic_force.size()
              == n_points, ExcInternalError());
 
       // prescribed dilation:
@@ -535,7 +535,7 @@ namespace aspect
 
       Assert(!this->get_parameters().enable_prescribed_dilation
              ||
-             outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >()->dilation.size()
+             outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()->dilation.size()
              == n_points, ExcInternalError());
 
       if (this->get_newton_handler().parameters.newton_derivative_scaling_factor != 0)
@@ -596,7 +596,7 @@ namespace aspect
             }
           else
             {
-              const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+              const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
               // This one is only available in debug mode, because normally
               // the AssertThrow in the preconditioner should already have

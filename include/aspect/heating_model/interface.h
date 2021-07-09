@@ -341,7 +341,7 @@ namespace aspect
          * Return a list of pointers to all heating models currently used in the
          * computation, as specified in the input file.
          */
-        const std::list<std::unique_ptr<Interface<dim> > > &
+        const std::list<std::unique_ptr<Interface<dim>>> &
         get_active_heating_models () const;
 
         /**
@@ -405,7 +405,7 @@ namespace aspect
          * A list of heating model objects that have been requested in the
          * parameter file.
          */
-        std::list<std::unique_ptr<Interface<dim> > > heating_model_objects;
+        std::list<std::unique_ptr<Interface<dim>>> heating_model_objects;
 
         /**
          * A list of names of heating model objects that have been requested
@@ -454,8 +454,8 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "heating model in the input file."));
 
-      typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator heating_model;
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+      typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator heating_model;
+      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
            p = heating_model_objects.begin();
            p != heating_model_objects.end(); ++p)
         if (Plugins::plugin_type_matches<HeatingModelType>(*(*p)))
@@ -489,12 +489,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_HEATING_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::HeatingModel::Manager<2>::register_heating_model, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::HeatingModel::Manager<3>::register_heating_model, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::HeatingModel::Manager<2>::register_heating_model, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::HeatingModel::Manager<3>::register_heating_model, \
+                                    name, description); \
   }
   }
 }

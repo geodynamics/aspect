@@ -381,7 +381,7 @@ namespace aspect
 
 
   template <int dim>
-  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
+  const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
   SimulatorAccess<dim>::get_boundary_traction () const
   {
     return simulator->boundary_traction;
@@ -645,7 +645,7 @@ namespace aspect
 
   template <int dim>
   void
-  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+  SimulatorAccess<dim>::get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                                            const unsigned int                      q,
                                                            std::vector<double>                    &composition_values_at_q_point)
   {

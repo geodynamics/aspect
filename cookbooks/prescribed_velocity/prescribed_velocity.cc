@@ -139,10 +139,10 @@ namespace aspect
    * evaluation at the pressure support points.
    */
   template <int dim>
-  std::vector< Point<dim> >
-  get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access)
+  std::vector< Point<dim>>
+                        get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access)
   {
-    std::vector< Point<dim> > unit_support_points;
+    std::vector< Point<dim>> unit_support_points;
     if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
       {
         return simulator_access.get_fe().get_unit_support_points();
@@ -150,7 +150,7 @@ namespace aspect
     else
       {
         //special case for discontinuous pressure elements, which lack unit support points
-        std::vector< Point<dim> > unit_support_points;
+        std::vector< Point<dim>> unit_support_points;
         const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
         for (unsigned int dof=0; dof < dofs_per_cell; ++dof)
           {
@@ -159,7 +159,7 @@ namespace aspect
             base       = simulator_access.get_fe().system_to_base_index(dof).first.first,
             base_index = simulator_access.get_fe().system_to_base_index(dof).second;
             // get the unit support points for the relevant element
-            std::vector< Point<dim> > my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
+            std::vector< Point<dim>> my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
             if ( my_support_points.size() == 0 )
               {
                 //manufacture a support point, arbitrarily at cell center
@@ -217,7 +217,7 @@ namespace aspect
   {
     if (prescribe_internal_velocities)
       {
-        const std::vector< Point<dim> > points = get_unit_support_points_for_velocity(simulator_access);
+        const std::vector< Point<dim>> points = get_unit_support_points_for_velocity(simulator_access);
         const Quadrature<dim> quadrature (points);
         FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;

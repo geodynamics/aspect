@@ -68,7 +68,7 @@ namespace aspect
                                    quadrature_formula,
                                    update_gradients);
 
-          std::vector<Tensor<2,dim> > velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
+          std::vector<Tensor<2,dim>> velocity_gradients (quadrature_formula.size(), Tensor<2,dim>());
 
           fe_values.reinit (in.current_cell);
           fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),

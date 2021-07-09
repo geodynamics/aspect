@@ -52,7 +52,7 @@ namespace aspect
                                update_quadrature_points);
 
       std::vector<double> compositional_values(n_q_points);
-      std::vector<Point<dim> > position_values(n_q_points);
+      std::vector<Point<dim>> position_values(n_q_points);
 
       std::vector<double> local_max_depth(this->n_compositional_fields(), std::numeric_limits<double>::lowest());
 

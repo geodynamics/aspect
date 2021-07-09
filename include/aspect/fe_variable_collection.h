@@ -66,7 +66,7 @@ namespace aspect
      * component.
      */
     VariableDeclaration(const std::string &name,
-                        const std::shared_ptr<FiniteElement<dim> > &fe,
+                        const std::shared_ptr<FiniteElement<dim>> &fe,
                         const unsigned int multiplicity,
                         const unsigned int n_blocks);
 
@@ -88,7 +88,7 @@ namespace aspect
     /**
      * The FiniteElement space.
      */
-    std::shared_ptr<FiniteElement<dim> > fe;
+    std::shared_ptr<FiniteElement<dim>> fe;
 
     /**
      * The multiplicity used in FESystem: how many copies of @p fe are there?
@@ -185,12 +185,12 @@ namespace aspect
        * Construct object from a vector of variables (identical to calling
        * initialize()).
        */
-      FEVariableCollection(const std::vector<VariableDeclaration<dim> > &variable_definitions);
+      FEVariableCollection(const std::vector<VariableDeclaration<dim>> &variable_definitions);
 
       /**
        * Fill this object with the given list of @p variables.
        */
-      void initialize(const std::vector<VariableDeclaration<dim> > &variable_definitions);
+      void initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions);
 
       /**
        * Return the variable with name @p name. Throws an exception if this
@@ -207,7 +207,7 @@ namespace aspect
       /**
        * Return the list of all variables.
        */
-      const std::vector<FEVariable<dim> > &get_variables() const;
+      const std::vector<FEVariable<dim>> &get_variables() const;
 
       /**
        * Return the total number of components in the system.
@@ -241,7 +241,7 @@ namespace aspect
       /**
        * A std::vector that contains a collection of variables.
        */
-      std::vector<FEVariable<dim> > variables;
+      std::vector<FEVariable<dim>> variables;
 
       /**
        * Total number of components of all variables, returned by n_components().

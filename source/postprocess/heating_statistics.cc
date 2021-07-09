@@ -55,7 +55,7 @@ namespace aspect
       MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
       this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(in, out);
 
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       const auto &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
       const std::vector<std::string> &heating_model_names = this->get_heating_model_manager().get_active_heating_model_names();
@@ -100,7 +100,7 @@ namespace aspect
               local_mass += out.densities[q] * fe_values.JxW(q);
 
             unsigned int index = 0;
-            for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
+            for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
                  heating_model = heating_model_objects.begin();
                  heating_model != heating_model_objects.end(); ++heating_model, ++index)
               {
@@ -122,7 +122,7 @@ namespace aspect
       global_mass = Utilities::MPI::sum (local_mass, this->get_mpi_communicator());
 
       unsigned int index = 0;
-      for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
            heating_model = heating_model_objects.begin();
            heating_model != heating_model_objects.end(); ++heating_model, ++index)
         {

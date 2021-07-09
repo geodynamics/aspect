@@ -247,7 +247,7 @@ namespace aspect
          * Return a list of pointers to all boundary temperature models
          * currently used in the computation, as specified in the input file.
          */
-        const std::vector<std::unique_ptr<Interface<dim> > > &
+        const std::vector<std::unique_ptr<Interface<dim>>> &
         get_active_boundary_temperature_conditions () const;
 
         /**
@@ -325,7 +325,7 @@ namespace aspect
          * A list of boundary temperature objects that have been requested in the
          * parameter file.
          */
-        std::vector<std::unique_ptr<Interface<dim> > > boundary_temperature_objects;
+        std::vector<std::unique_ptr<Interface<dim>>> boundary_temperature_objects;
 
         /**
          * A list of names of boundary temperature objects that have been requested
@@ -399,7 +399,7 @@ namespace aspect
           return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*p);
 
       // We will never get here, because we had the Assert above. Just to avoid warnings.
-      typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator boundary_temperature_model;
+      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator boundary_temperature_model;
       return Plugins::get_plugin_as_type<BoundaryTemperatureType>(*(*boundary_temperature_model));
     }
 
@@ -427,12 +427,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, \
+                                    name, description); \
   }
   }
 }

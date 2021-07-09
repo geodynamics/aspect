@@ -51,7 +51,7 @@ namespace aspect
        * Add the Volume of Fluid field declaration to the list to be included
        * in the solution vector.
        */
-      void edit_finite_element_variables (std::vector<VariableDeclaration<dim> > &vars);
+      void edit_finite_element_variables (std::vector<VariableDeclaration<dim>> &vars);
 
       /**
        * Declare the parameters this class takes through input files.

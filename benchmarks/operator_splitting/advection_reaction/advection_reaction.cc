@@ -54,7 +54,7 @@ namespace aspect
         /**
          * Pointer to the material model used as the base model
          */
-        std::unique_ptr<MaterialModel::Interface<dim> > base_model;
+        std::unique_ptr<MaterialModel::Interface<dim>> base_model;
 
         /**
          * Parameters determining the initial decay rate.
@@ -127,7 +127,7 @@ namespace aspect
           out.reaction_terms[q][c] = 0.0;
 
       // fill melt reaction rates if they exist
-      ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
       if (reaction_out != NULL)
         {
@@ -206,7 +206,7 @@ namespace aspect
     void
     ExponentialDecay<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<ReactionRateOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<ReactionRateOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

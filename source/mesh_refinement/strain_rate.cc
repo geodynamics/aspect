@@ -43,7 +43,7 @@ namespace aspect
                                quadrature,
                                update_quadrature_points | update_values | update_gradients);
 
-      std::vector<SymmetricTensor<2,dim> > strain_rates (quadrature.size());
+      std::vector<SymmetricTensor<2,dim>> strain_rates (quadrature.size());
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())

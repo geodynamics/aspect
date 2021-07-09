@@ -243,7 +243,7 @@ namespace aspect
 
               // Compute viscosity derivatives if they are requested
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
-                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >())
+                    out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
                 rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
             }
 
@@ -265,7 +265,7 @@ namespace aspect
                                                                                  rheology->viscosity_averaging);
 
               // Fill the material properties that are part of the elastic additional outputs
-              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim> >())
+              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
                 {
                   elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
                 }

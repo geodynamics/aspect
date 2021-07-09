@@ -128,16 +128,16 @@ namespace aspect
          * The inner vector stores theta, phi, spherical infinitesimal, and function value on a spherical surface.
          * The outer vector stores the inner vector associated with each quadrature point on a spherical surface.
          */
-        std::pair<std::vector<double>,std::vector<double> >
-        to_spherical_harmonic_coefficients(const std::vector<std::vector<double> > &spherical_function) const;
+        std::pair<std::vector<double>,std::vector<double>>
+                                                        to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const;
 
         /**
          * Function to compute the density contribution in spherical harmonic expansion throughout the mantle
          * The input outer radius is needed to evaluate the density integral contribution of whole model domain at the surface
          * This function returns a pair containing real spherical harmonics of density integral (cos and sin part) from min degree to max degree.
          */
-        std::pair<std::vector<double>,std::vector<double> >
-        density_contribution (const double &outer_radius) const;
+        std::pair<std::vector<double>,std::vector<double>>
+                                                        density_contribution (const double &outer_radius) const;
 
         /**
          * Function to compute the surface and CMB dynamic topography contribution in spherical harmonic expansion
@@ -146,7 +146,7 @@ namespace aspect
          * This function returns a pair containing surface and CMB dynamic topography's real spherical harmonic coefficients (cos and sin part)
          * from min degree to max degree. The surface and CMB average density are also included as the first single element of each subpair respectively.
          */
-        std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
+        std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
         dynamic_topography_contribution(const double &outer_radius,
                                         const double &inner_radius) const;
 

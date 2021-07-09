@@ -45,7 +45,7 @@ namespace aspect
 
       template <int dim>
       void
-      ProbabilityDensityFunction<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+      ProbabilityDensityFunction<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
         // Get the local accumulated probabilities for every cell
         const std::vector<double> accumulated_cell_weights = compute_local_accumulated_cell_weights();
@@ -162,7 +162,7 @@ namespace aspect
                                  update_JxW_values);
 
         fe_values.reinit (cell);
-        const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
+        const std::vector<Point<dim>> position = fe_values.get_quadrature_points();
         const double quadrature_point_weight = function.value(position[0]);
 
         AssertThrow(quadrature_point_weight >= 0.0,
@@ -176,7 +176,7 @@ namespace aspect
       ProbabilityDensityFunction<dim>::generate_particles_in_subdomain (const std::vector<unsigned int> &particles_per_cell,
                                                                         const types::particle_index first_particle_index,
                                                                         const types::particle_index n_local_particles,
-                                                                        std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+                                                                        std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
         // Generate particles per cell
         unsigned int cell_index = 0;
@@ -187,7 +187,7 @@ namespace aspect
         // order to be later transferred to the multimap with O(N) complexity.
         // If we would insert them into the multimap one-by-one it would
         // increase the complexity to O(N log(N)).
-        std::vector<std::pair<Particles::internal::LevelInd, Particle<dim> > > local_particles;
+        std::vector<std::pair<Particles::internal::LevelInd, Particle<dim>>> local_particles;
         local_particles.reserve(n_local_particles);
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())

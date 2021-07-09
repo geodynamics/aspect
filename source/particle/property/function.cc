@@ -42,10 +42,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      Function<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     Function<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("function",n_components));
+        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("function",n_components));
         return property_information;
       }
 

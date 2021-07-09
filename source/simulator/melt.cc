@@ -50,7 +50,7 @@ namespace aspect
     MeltInputs<dim>::MeltInputs (const unsigned int n_points)
       :
       compaction_pressures(n_points, numbers::signaling_nan<double>()),
-      fluid_velocities(n_points, numbers::signaling_nan<Tensor<1,dim> >())
+      fluid_velocities(n_points, numbers::signaling_nan<Tensor<1,dim>>())
     {}
 
 
@@ -104,7 +104,7 @@ namespace aspect
       if (consider_is_melt_cell && !melt_handler.is_melt_cell(inputs.current_cell))
         return 0.0;
 
-      const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      const MaterialModel::MeltOutputs<dim> *melt_outputs = outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       const double ref_K_D = this->reference_darcy_coefficient();
 
       double K_D = 0.0;
@@ -167,15 +167,15 @@ namespace aspect
       const unsigned int n_points = outputs.viscosities.size();
 
       if (this->get_parameters().enable_additional_stokes_rhs
-          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >() == nullptr)
+          && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >(n_points));
+            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
              ||
-             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()->rhs_u.size()
+             outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
     }
 
@@ -204,7 +204,7 @@ namespace aspect
                                                                        this->get_melt_handler(),
                                                                        true);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
@@ -313,7 +313,7 @@ namespace aspect
           return 0.0;
 
         const Introspection<dim> &introspection = simulator_access->introspection();
-        const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
         Assert(melt_out != nullptr, ExcInternalError());
 
@@ -393,9 +393,9 @@ namespace aspect
       const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
       const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+      *force = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
       const double pressure_scaling = this->get_pressure_scaling();
 
@@ -568,7 +568,7 @@ namespace aspect
 
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.face_material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       std::vector<double> grad_p_f(n_face_q_points);
       this->get_melt_handler().get_boundary_fluid_pressure().fluid_pressure_gradient(
@@ -675,14 +675,14 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(introspection);
 
-      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+      MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
       Assert(melt_outputs->compaction_viscosities[0] > 0.0,
              ExcMessage ("MeltOutputs have to be filled for models with melt transport. "
                          "At the moment, these outputs are not filled, or they do not have "
                          "reasonable values."));
 
-      std::vector<Tensor<1,dim> > fluid_velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
       const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
 
@@ -1100,8 +1100,8 @@ namespace aspect
       FullMatrix<double> cell_matrix (fluid_velocity_dofs_per_cell, fluid_velocity_dofs_per_cell);
 
       std::vector<double> porosity_values(quadrature.size());
-      std::vector<Tensor<1,dim> > grad_p_f_values(quadrature.size());
-      std::vector<Tensor<1,dim> > u_s_values(quadrature.size());
+      std::vector<Tensor<1,dim>> grad_p_f_values(quadrature.size());
+      std::vector<Tensor<1,dim>> u_s_values(quadrature.size());
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());
@@ -1146,11 +1146,11 @@ namespace aspect
 
             const bool is_melt_cell = this->get_melt_handler().is_melt_cell(in.current_cell);
 
-            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+            MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
             Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for computing the melt variables."));
             const FEValuesExtractors::Vector fluid_velocity_extractor = this->introspection().variable("fluid velocity").extractor_vector();
 
-            std::vector<Tensor<1,dim> > phi_u_f(fluid_velocity_dofs_per_cell);
+            std::vector<Tensor<1,dim>> phi_u_f(fluid_velocity_dofs_per_cell);
 
             double K_D_over_phi = 1.0;
 
@@ -1597,7 +1597,7 @@ namespace aspect
   void
   MeltHandler<dim>::
   edit_finite_element_variables(const Parameters<dim> &parameters,
-                                std::vector<VariableDeclaration<dim> > &variables)
+                                std::vector<VariableDeclaration<dim>> &variables)
   {
 
     if (!parameters.include_melt_transport)
@@ -1638,8 +1638,8 @@ namespace aspect
   MeltHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<Assemblers::MeltStokesPreconditioner<dim> > ());
-    assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim> > ());
+    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<Assemblers::MeltStokesPreconditioner<dim>> ());
+    assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim>> ());
 
     AssertThrow((this->get_parameters().formulation_mass_conservation ==
                  Parameters<dim>::Formulation::MassConservation::isentropic_compression) ||
@@ -1656,29 +1656,29 @@ namespace aspect
 
 
     assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim> >());
+      std_cxx14::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
     if (!this->get_boundary_traction().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim> > ());
+          std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
       }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim> > ());
+          std_cxx14::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
       }
 
     assemblers.advection_system.push_back(
-      std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim> > ());
+      std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
 
     if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers.advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
         assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
         assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
       }
@@ -1802,7 +1802,7 @@ namespace aspect
   MeltHandler<dim>::
   create_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &output)
   {
-    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim> >() != nullptr)
+    if (output.template get_additional_output<MaterialModel::MeltOutputs<dim>>() != nullptr)
       return;
 
     const unsigned int n_points = output.viscosities.size();

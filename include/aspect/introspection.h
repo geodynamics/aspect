@@ -40,8 +40,8 @@ namespace aspect
    * based on the given set of @p parameters.
    */
   template <int dim>
-  std::vector<VariableDeclaration<dim> >
-  construct_default_variables (const Parameters<dim> &parameters);
+  std::vector<VariableDeclaration<dim>>
+                                     construct_default_variables (const Parameters<dim> &parameters);
 
 
 
@@ -69,7 +69,7 @@ namespace aspect
       /**
        * Constructor.
        */
-      Introspection (const std::vector<VariableDeclaration<dim> > &variables,
+      Introspection (const std::vector<VariableDeclaration<dim>> &variables,
                      const Parameters<dim> &parameters);
 
       /**

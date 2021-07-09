@@ -121,8 +121,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -332,9 +332,9 @@ namespace aspect
           for (const auto &object_name : boundary_and_object_names.second)
             {
               mesh_deformation_objects[boundary_and_object_names.first].push_back(
-                std::unique_ptr<Interface<dim> > (std::get<dim>(registered_plugins)
-                                                  .create_plugin (object_name,
-                                                                  "Mesh deformation::Model names")));
+                std::unique_ptr<Interface<dim>> (std::get<dim>(registered_plugins)
+                                                 .create_plugin (object_name,
+                                                                 "Mesh deformation::Model names")));
 
               if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(mesh_deformation_objects[boundary_and_object_names.first].back().get()))
                 sim->initialize_simulator (this->get_simulator());
@@ -388,7 +388,7 @@ namespace aspect
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
@@ -477,7 +477,7 @@ namespace aspect
 
       // Add the vanilla periodic boundary constraints
       std::set< types::boundary_id > periodic_boundaries;
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         {
@@ -637,7 +637,7 @@ namespace aspect
       mesh_matrix.compress (VectorOperation::add);
 
       // Make the AMG preconditioner
-      std::vector<std::vector<bool> > constant_modes;
+      std::vector<std::vector<bool>> constant_modes;
       DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
@@ -744,7 +744,7 @@ namespace aspect
       mesh_matrix.compress (VectorOperation::add);
 
       // Make the AMG preconditioner
-      std::vector<std::vector<bool> > constant_modes;
+      std::vector<std::vector<bool>> constant_modes;
       DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         constant_modes);
@@ -780,8 +780,8 @@ namespace aspect
         distributed_initial_topography = 0.;
       else
         {
-          const std::vector<Point<dim> > support_points
-            = mesh_deformation_fe.base_element(0).get_unit_support_points();
+          const std::vector<Point<dim>> support_points
+                                     = mesh_deformation_fe.base_element(0).get_unit_support_points();
 
           const Quadrature<dim> quad(support_points);
           const UpdateFlags update_flags = UpdateFlags(update_quadrature_points);
@@ -839,8 +839,8 @@ namespace aspect
       LinearAlgebra::BlockVector distributed_mesh_velocity;
       distributed_mesh_velocity.reinit(sim.introspection.index_sets.system_partitioning, sim.mpi_communicator);
 
-      const std::vector<Point<dim> > support_points
-        = sim.finite_element.base_element(sim.introspection.component_indices.velocities[0]).get_unit_support_points();
+      const std::vector<Point<dim>> support_points
+                                 = sim.finite_element.base_element(sim.introspection.component_indices.velocities[0]).get_unit_support_points();
 
       const Quadrature<dim> quad(support_points);
       const UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values);
@@ -851,7 +851,7 @@ namespace aspect
 
       std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
       FEValuesExtractors::Vector extract_vel(0);
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       typename DoFHandler<dim>::active_cell_iterator
       cell = sim.dof_handler.begin_active(), endc= sim.dof_handler.end();
@@ -945,8 +945,8 @@ namespace aspect
 
 
     template <int dim>
-    const std::map<types::boundary_id, std::vector<std::string> > &
-    MeshDeformationHandler<dim>::get_active_mesh_deformation_names () const
+    const std::map<types::boundary_id, std::vector<std::string>> &
+                                                              MeshDeformationHandler<dim>::get_active_mesh_deformation_names () const
     {
       return mesh_deformation_object_names;
     }
@@ -954,7 +954,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > &
+    const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> &
     MeshDeformationHandler<dim>::get_active_mesh_deformation_models () const
     {
       return mesh_deformation_objects;
@@ -1025,11 +1025,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshDeformation::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<2>>::PluginInfo> *
+                                                                          internal::Plugins::PluginList<MeshDeformation::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshDeformation::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MeshDeformation::Interface<3>>::PluginInfo> *
+                                                                          internal::Plugins::PluginList<MeshDeformation::Interface<3>>::plugins = nullptr;
     }
   }
 

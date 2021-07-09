@@ -195,12 +195,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PRESCRIBED_STOKES_SOLUTION_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedStokesSolution::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::PrescribedStokesSolution::register_prescribed_stokes_solution_model<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedStokesSolution::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::PrescribedStokesSolution::register_prescribed_stokes_solution_model<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedStokesSolution::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::PrescribedStokesSolution::register_prescribed_stokes_solution_model<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::PrescribedStokesSolution::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::PrescribedStokesSolution::register_prescribed_stokes_solution_model<3>, \
+                                    name, description); \
   }
   }
 }

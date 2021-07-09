@@ -108,7 +108,7 @@ namespace aspect
 
         std::vector<double> old_temperatures (n_q_points);
         std::vector<double> old_old_temperatures (n_q_points);
-        std::vector<Tensor<1,dim> > temperature_gradients (n_q_points);
+        std::vector<Tensor<1,dim>> temperature_gradients (n_q_points);
 
         const double time_step = simulator_access.get_timestep();
         const double old_time_step = simulator_access.get_old_timestep();
@@ -258,7 +258,7 @@ namespace aspect
                             }
                         }
 
-                      std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
+                      std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
                       heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
                                     boundary_id,
                                     face_in,
@@ -308,12 +308,12 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::vector<std::pair<double, double> > >
+      std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
       {
-        std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
-                                                                                 std::vector<std::pair<double, double> >(GeometryInfo<dim>::faces_per_cell,
-                                                                                     std::pair<double,double>(0.0,0.0)));
+        std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
+                                                                               std::vector<std::pair<double, double>>(GeometryInfo<dim>::faces_per_cell,
+                                                                                   std::pair<double,double>(0.0,0.0)));
 
         // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
         // for a justification of the chosen quadrature degree.
@@ -403,7 +403,7 @@ namespace aspect
                     // Compute heat flux through Neumann boundary by integrating the heat flux
                     if (prescribed_heat_flux)
                       {
-                        std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
+                        std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
                         heat_flux = simulator_access.get_boundary_heat_flux().heat_flux(
                                       boundary_id,
                                       face_in,
@@ -440,13 +440,13 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxMap<dim>::execute (TableHandler &)
     {
-      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
       // have a stream into which we write the data. the text stream is then
       // later sent to processor 0
       std::ostringstream output;
-      std::vector<std::pair<Point<dim>,double> > stored_values;
+      std::vector<std::pair<Point<dim>,double>> stored_values;
 
       // loop over all of the surface cells and evaluate the heat flux
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())

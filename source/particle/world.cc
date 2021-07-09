@@ -119,7 +119,7 @@ namespace aspect
                                        this->get_mapping(),
                                        n_properties);
 
-        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
+        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
 
         for (const auto &particle : from_particle_handler)
           {
@@ -342,7 +342,7 @@ namespace aspect
                   {
                     for (unsigned int i = n_particles_in_cell; i < min_particles_per_cell; ++i,++local_next_particle_index)
                       {
-                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim> > new_particle = generator->generate_particle(cell,local_next_particle_index);
+                        std::pair<Particles::internal::LevelInd,Particles::Particle<dim>> new_particle = generator->generate_particle(cell,local_next_particle_index);
 
                         const std::vector<double> particle_properties =
                           property_manager->initialize_late_particle(new_particle.second.get_location(),
@@ -465,14 +465,14 @@ namespace aspect
 
           const Point<dim> origin = geometry.get_origin();
           const Point<dim> extent = geometry.get_extents();
-          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries =
-            geometry.get_periodic_boundary_pairs();
+          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries =
+                geometry.get_periodic_boundary_pairs();
 
           if (periodic_boundaries.size() != 0)
             {
               std::vector<bool> periodic(dim,false);
-              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
-                periodic_boundaries.begin();
+              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>::const_iterator boundary =
+                    periodic_boundaries.begin();
               for (; boundary != periodic_boundaries.end(); ++boundary)
                 periodic[boundary->second] = true;
 
@@ -502,14 +502,14 @@ namespace aspect
 
           const Point<dim> origin = geometry.get_origin();
           const Point<dim> extent = geometry.get_extents();
-          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> > periodic_boundaries =
-            geometry.get_periodic_boundary_pairs();
+          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries =
+                geometry.get_periodic_boundary_pairs();
 
           if (periodic_boundaries.size() != 0)
             {
               std::vector<bool> periodic(dim,false);
-              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >::const_iterator boundary =
-                periodic_boundaries.begin();
+              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>::const_iterator boundary =
+                    periodic_boundaries.begin();
               for (; boundary != periodic_boundaries.end(); ++boundary)
                 periodic[boundary->second] = true;
 
@@ -601,11 +601,11 @@ namespace aspect
       const unsigned int solution_components = this->introspection().n_components;
 
       Vector<double>              value (solution_components);
-      std::vector<Tensor<1,dim> > gradient (solution_components,Tensor<1,dim>());
+      std::vector<Tensor<1,dim>> gradient (solution_components,Tensor<1,dim>());
 
-      std::vector<Vector<double> >              values(particles_in_cell,value);
-      std::vector<std::vector<Tensor<1,dim> > > gradients(particles_in_cell,gradient);
-      std::vector<Point<dim> >                  positions(particles_in_cell);
+      std::vector<Vector<double>>              values(particles_in_cell,value);
+      std::vector<std::vector<Tensor<1,dim>>> gradients(particles_in_cell,gradient);
+      std::vector<Point<dim>>                  positions(particles_in_cell);
 
       typename ParticleHandler<dim>::particle_iterator it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
@@ -645,8 +645,8 @@ namespace aspect
     {
       const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
 
-      std::vector<Tensor<1,dim> >  velocity(particles_in_cell);
-      std::vector<Tensor<1,dim> >  old_velocity(particles_in_cell);
+      std::vector<Tensor<1,dim>>  velocity(particles_in_cell);
+      std::vector<Tensor<1,dim>>  old_velocity(particles_in_cell);
 
       // Below we manually evaluate the solution at all support points of the
       // current cell, and then use the shape functions to interpolate the
@@ -753,10 +753,10 @@ namespace aspect
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
 
-      std::multimap<Particles::internal::LevelInd, Particles::Particle<dim> > particles;
+      std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
       generator->generate_particles(particles);
 
-      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim> > new_particles;
+      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
 
       for (const auto &particle : particles)
         new_particles.insert(new_particles.end(),

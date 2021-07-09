@@ -34,8 +34,8 @@ namespace aspect
       void
       Euler<dim>::local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                                       const std::vector<Tensor<1,dim> > &old_velocities,
-                                       const std::vector<Tensor<1,dim> > &,
+                                       const std::vector<Tensor<1,dim>> &old_velocities,
+                                       const std::vector<Tensor<1,dim>> &,
                                        const double dt)
       {
         Assert(static_cast<unsigned int> (std::distance(begin_particle, end_particle)) == old_velocities.size(),
@@ -43,7 +43,7 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
-        typename std::vector<Tensor<1,dim> >::const_iterator old_velocity = old_velocities.begin();
+        typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
 
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++old_velocity)

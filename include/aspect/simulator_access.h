@@ -631,7 +631,7 @@ namespace aspect
        * Return a reference to the object that describes traction
        * boundary conditions.
        */
-      const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim> > > &
+      const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
       get_boundary_traction () const;
 
       /**
@@ -839,7 +839,7 @@ namespace aspect
        */
       static
       void
-      get_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+      get_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                          const unsigned int                      q,
                                          std::vector<double>                    &composition_values_at_q_point);
 

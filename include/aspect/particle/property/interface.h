@@ -96,7 +96,7 @@ namespace aspect
            * Particle::Property::Interface<dim>::get_property_information()
            * functions of all property plugins.
            */
-          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int> > > &property_information);
+          ParticlePropertyInformation(const std::vector<std::vector<std::pair<std::string,unsigned int>>> &property_information);
 
           /**
            * Checks if the particle property specified by @p name exists
@@ -368,7 +368,7 @@ namespace aspect
           void
           update_particle_property (const unsigned int data_position,
                                     const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim> > &gradients,
+                                    const std::vector<Tensor<1,dim>> &gradients,
                                     typename ParticleHandler<dim>::particle_iterator &particle) const;
 
           /**
@@ -405,7 +405,7 @@ namespace aspect
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim> > &gradients,
+                                        const std::vector<Tensor<1,dim>> &gradients,
                                         const ArrayView<double> &particle_properties) const;
 
           /**
@@ -468,8 +468,8 @@ namespace aspect
            * number of components this property plugin defines.
            */
           virtual
-          std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const = 0;
+          std::vector<std::pair<std::string, unsigned int>>
+                                                         get_property_information() const = 0;
 
 
           /**
@@ -603,7 +603,7 @@ namespace aspect
           void
           update_one_particle (typename ParticleHandler<dim>::particle_iterator &particle,
                                const Vector<double> &solution,
-                               const std::vector<Tensor<1,dim> > &gradients) const;
+                               const std::vector<Tensor<1,dim>> &gradients) const;
 
           /**
            * Returns an enum, which denotes at what time this class needs to
@@ -757,7 +757,7 @@ namespace aspect
            * A list of property objects that have been requested in the
            * parameter file.
            */
-          std::list<std::unique_ptr<Interface<dim> > > property_list;
+          std::list<std::unique_ptr<Interface<dim>>> property_list;
 
           /**
            * A class that stores all information about the particle properties,
@@ -778,12 +778,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_PROPERTY_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
+                                    name, description); \
   }
 
     }

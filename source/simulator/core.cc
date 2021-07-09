@@ -79,12 +79,12 @@ namespace aspect
      * setup based on parameters followed by a signal to allow modifications.
      */
     template <int dim>
-    std::vector<VariableDeclaration<dim> > construct_variables(const Parameters<dim> &parameters,
-                                                               SimulatorSignals<dim> &signals,
-                                                               std::unique_ptr<MeltHandler<dim> > &melt_handler)
+    std::vector<VariableDeclaration<dim>> construct_variables(const Parameters<dim> &parameters,
+                                                              SimulatorSignals<dim> &signals,
+                                                              std::unique_ptr<MeltHandler<dim>> &melt_handler)
     {
-      std::vector<VariableDeclaration<dim> > variables
-        = construct_default_variables (parameters);
+      std::vector<VariableDeclaration<dim>> variables
+                                         = construct_default_variables (parameters);
       if (melt_handler)
         melt_handler->edit_finite_element_variables (parameters, variables);
 
@@ -408,7 +408,7 @@ namespace aspect
     postprocess_manager.initialize_simulator (*this);
     postprocess_manager.parse_parameters (prm);
 
-    if (postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim> >())
+    if (postprocess_manager.template has_matching_postprocessor<Postprocess::Particles<dim>>())
       {
         particle_world.reset(new Particle::World<dim>());
         if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(particle_world.get()))
@@ -1476,8 +1476,8 @@ namespace aspect
 
     // run all the postprocessing routines and then write
     // the current state of the statistics table to a file
-    std::list<std::pair<std::string,std::string> >
-    output_list = postprocess_manager.execute (statistics);
+    std::list<std::pair<std::string,std::string>>
+                                               output_list = postprocess_manager.execute (statistics);
 
     // if we are on processor zero, print to screen
     // whatever the postprocessors have generated
@@ -1514,8 +1514,8 @@ namespace aspect
     parallel::distributed::SolutionTransfer<dim,LinearAlgebra::BlockVector>
     system_trans(dof_handler);
 
-    std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> >
-    mesh_deformation_trans;
+    std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+        mesh_deformation_trans;
 
     {
       TimerOutput::Scope timer (computing_timer, "Refine mesh structure, part 1");

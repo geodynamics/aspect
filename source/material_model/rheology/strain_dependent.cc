@@ -322,9 +322,9 @@ namespace aspect
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
         // Currently this functionality only works in field composition
-        if (healing_mechanism != no_healing && this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim> >())
+        if (healing_mechanism != no_healing && this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim>>())
           {
-            const Postprocess::Particles<dim> &particle_postprocessor = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+            const Postprocess::Particles<dim> &particle_postprocessor = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
             const Particle::Property::Manager<dim> &particle_property_manager = particle_postprocessor.get_particle_world().get_property_manager();
 
             AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
@@ -543,7 +543,7 @@ namespace aspect
           {
             // We need the velocity gradient for the finite strain (they are not
             // in material model inputs), so we get them from the finite element.
-            std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+            std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
@@ -552,7 +552,7 @@ namespace aspect
                                      Quadrature<dim>(quadrature_positions),
                                      update_gradients);
 
-            std::vector<Tensor<2,dim> > velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+            std::vector<Tensor<2,dim>> velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
 
             fe_values.reinit (in.current_cell);
             fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),

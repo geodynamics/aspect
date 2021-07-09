@@ -46,7 +46,7 @@ namespace aspect
                                         update_JxW_values |
                                         update_quadrature_points);
 
-      std::vector<Tensor<1,dim> > velocities (fe_face_values.n_quadrature_points);
+      std::vector<Tensor<1,dim>> velocities (fe_face_values.n_quadrature_points);
 
       std::map<types::boundary_id, double> local_max_vel;
       std::map<types::boundary_id, double> local_min_vel;

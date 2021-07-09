@@ -43,7 +43,7 @@ namespace aspect
       void
       SphericalVelocityComponents<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.evaluation_points.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());

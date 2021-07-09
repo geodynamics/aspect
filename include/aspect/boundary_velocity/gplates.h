@@ -318,13 +318,13 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from
          * gplates files.
          */
-        std::unique_ptr<internal::GPlatesLookup<dim> > lookup;
+        std::unique_ptr<internal::GPlatesLookup<dim>> lookup;
 
         /**
          * Pointer to an object that reads and processes data we get from
          * gplates files. This saves the previous data time step.
          */
-        std::unique_ptr<internal::GPlatesLookup<dim> > old_lookup;
+        std::unique_ptr<internal::GPlatesLookup<dim>> old_lookup;
 
         /**
          * Handles the update of the velocity data in lookup. The input

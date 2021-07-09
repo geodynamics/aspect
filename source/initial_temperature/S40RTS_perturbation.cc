@@ -214,8 +214,8 @@ namespace aspect
       // NOTE: there is apparently a factor of sqrt(2) difference
       // between the standard orthonormalized spherical harmonics
       // and those used for S40RTS (see PR # 966)
-      std::vector<std::vector<double> > cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
-      std::vector<std::vector<double> > sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double>> cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double>> sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
 
       for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
         {

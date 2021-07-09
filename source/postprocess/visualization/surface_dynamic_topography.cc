@@ -39,7 +39,7 @@ namespace aspect
       void
       SurfaceDynamicTopography<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         // Initialize everything to zero, so that we can ignore faces we are
         // not interested in (namely, those not labeled as 'top' or 'bottom'
@@ -47,12 +47,12 @@ namespace aspect
           computed_quantities[q](0) = 0;
 
         const Postprocess::DynamicTopography<dim> &dynamic_topography =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
 
 #if DEAL_II_VERSION_GTE(9,3,0)
         auto cell = input_data.template get_cell<dim>();
 #else
-        auto cell = input_data.template get_cell<DoFHandler<dim> >();
+        auto cell = input_data.template get_cell<DoFHandler<dim>>();
 #endif
 
         // We only want to output dynamic topography at the top and bottom

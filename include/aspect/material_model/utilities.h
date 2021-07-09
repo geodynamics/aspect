@@ -479,7 +479,7 @@ namespace aspect
           /**
            * A vector that stores how many phase transitions there are for each compositional field.
            */
-          std::shared_ptr<std::vector<unsigned int> > n_phase_transitions_per_composition;
+          std::shared_ptr<std::vector<unsigned int>> n_phase_transitions_per_composition;
       };
     }
   }

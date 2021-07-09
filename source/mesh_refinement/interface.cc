@@ -154,10 +154,10 @@ namespace aspect
       // call the execute() functions of all plugins we have
       // here in turns. then normalize the output vector and
       // verify that its values are non-negative numbers
-      std::vector<Vector<float> > all_error_indicators (mesh_refinement_objects.size(),
-                                                        Vector<float>(error_indicators.size()));
+      std::vector<Vector<float>> all_error_indicators (mesh_refinement_objects.size(),
+                                                       Vector<float>(error_indicators.size()));
       unsigned int index = 0;
-      for (typename std::list<std::unique_ptr<Interface<dim> > >::const_iterator
+      for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
            p = mesh_refinement_objects.begin();
            p != mesh_refinement_objects.end(); ++p, ++index)
         {
@@ -327,8 +327,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -478,7 +478,7 @@ namespace aspect
                    ExcMessage ("You need to provide at least one mesh refinement criterion in the input file!"));
       for (auto &plugin_name : plugin_names)
         {
-          mesh_refinement_objects.push_back (std::unique_ptr<Interface<dim> >
+          mesh_refinement_objects.push_back (std::unique_ptr<Interface<dim>>
                                              (std::get<dim>(registered_plugins)
                                               .create_plugin (plugin_name,
                                                               "Mesh refinement::Refinement criteria merge operation")));
@@ -527,11 +527,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<2>>::PluginInfo> *
+                                                                         internal::Plugins::PluginList<MeshRefinement::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<MeshRefinement::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MeshRefinement::Interface<3>>::PluginInfo> *
+                                                                         internal::Plugins::PluginList<MeshRefinement::Interface<3>>::plugins = nullptr;
     }
   }
 

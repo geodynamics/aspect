@@ -114,8 +114,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -260,13 +260,13 @@ namespace aspect
     MaterialModelInputs<dim>::MaterialModelInputs(const unsigned int n_points,
                                                   const unsigned int n_comp)
       :
-      position(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim> >())),
+      position(n_points, Point<dim>(numbers::signaling_nan<Tensor<1,dim>>())),
       temperature(n_points, numbers::signaling_nan<double>()),
       pressure(n_points, numbers::signaling_nan<double>()),
-      pressure_gradient(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
-      velocity(n_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      pressure_gradient(n_points, numbers::signaling_nan<Tensor<1,dim>>()),
+      velocity(n_points, numbers::signaling_nan<Tensor<1,dim>>()),
       composition(n_points, std::vector<double>(n_comp, numbers::signaling_nan<double>())),
-      strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+      strain_rate(n_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
       current_cell(),
       requested_properties(MaterialProperties::all_properties)
     {}
@@ -279,14 +279,14 @@ namespace aspect
       position(input_data.evaluation_points),
       temperature(input_data.solution_values.size(), numbers::signaling_nan<double>()),
       pressure(input_data.solution_values.size(), numbers::signaling_nan<double>()),
-      pressure_gradient(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
-      velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim> >()),
+      pressure_gradient(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim>>()),
+      velocity(input_data.solution_values.size(), numbers::signaling_nan<Tensor<1,dim>>()),
       composition(input_data.solution_values.size(), std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
-      strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+      strain_rate(input_data.solution_values.size(), numbers::signaling_nan<SymmetricTensor<2,dim>>()),
 #if DEAL_II_VERSION_GTE(9,3,0)
       current_cell(input_data.template get_cell<dim>()),
 #else
-      current_cell(input_data.template get_cell<DoFHandler<dim> >()),
+      current_cell(input_data.template get_cell<DoFHandler<dim>>()),
 #endif
       requested_properties(MaterialProperties::all_properties)
     {
@@ -323,10 +323,10 @@ namespace aspect
       position(fe_values.get_quadrature_points()),
       temperature(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
       pressure(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
-      pressure_gradient(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
-      velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim> >()),
+      pressure_gradient(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim>>()),
+      velocity(fe_values.n_quadrature_points, numbers::signaling_nan<Tensor<1,dim>>()),
       composition(fe_values.n_quadrature_points, std::vector<double>(introspection.n_compositional_fields, numbers::signaling_nan<double>())),
-      strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim> >()),
+      strain_rate(fe_values.n_quadrature_points, numbers::signaling_nan<SymmetricTensor<2,dim>>()),
       current_cell (cell_x),
       requested_properties(MaterialProperties::all_properties)
     {
@@ -375,7 +375,7 @@ namespace aspect
         this->strain_rate.resize(0);
 
       // Vectors for evaluating the compositional field parts of the finite element solution
-      std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
+      std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields, std::vector<double> (fe_values.n_quadrature_points));
       for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
         {
           fe_values[introspection.extractors.compositional_fields[c]].get_function_values(solution_vector,composition_values[c]);
@@ -1082,12 +1082,12 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<MaterialModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<MaterialModel::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MaterialModel::Interface<2>>::PluginInfo> *
+                                                                        internal::Plugins::PluginList<MaterialModel::Interface<2>>::plugins = nullptr;
 
       template <>
-      std::list<internal::Plugins::PluginList<MaterialModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<MaterialModel::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<MaterialModel::Interface<3>>::PluginInfo> *
+                                                                        internal::Plugins::PluginList<MaterialModel::Interface<3>>::plugins = nullptr;
     }
   }
 

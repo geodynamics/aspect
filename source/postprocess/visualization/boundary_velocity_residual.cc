@@ -42,13 +42,13 @@ namespace aspect
       void
       BoundaryVelocityResidual<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         Assert ((computed_quantities[0].size() == dim), ExcInternalError());
 #if DEAL_II_VERSION_GTE(9,3,0)
         auto cell = input_data.template get_cell<dim>();
 #else
-        auto cell = input_data.template get_cell<DoFHandler<dim> >();
+        auto cell = input_data.template get_cell<DoFHandler<dim>>();
 #endif
 
         for (unsigned int q=0; q<computed_quantities.size(); ++q)
@@ -59,7 +59,7 @@ namespace aspect
           this->convert_output_to_years() ? year_in_seconds : 1.0;
 
         const Postprocess::BoundaryVelocityResidualStatistics<dim> &boundary_velocity_residual_statistics =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryVelocityResidualStatistics<dim> >();
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryVelocityResidualStatistics<dim>>();
 
         // We only want the output at the top boundary, so only compute it if the current cell
         // has a face at the top boundary.

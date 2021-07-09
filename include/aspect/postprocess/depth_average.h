@@ -128,7 +128,7 @@ namespace aspect
         struct DataPoint
         {
           double time;
-          std::vector<std::vector<double> > values;
+          std::vector<std::vector<double>> values;
 
           template <class Archive>
           void serialize (Archive &ar, const unsigned int version);

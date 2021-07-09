@@ -348,7 +348,7 @@ namespace aspect
 
       const AnnulusMaterial<2> &
       material_model
-        = Plugins::get_plugin_as_type<const AnnulusMaterial<2> >(this->get_material_model());
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<2>>(this->get_material_model());
 
       return AnalyticSolutions::Annulus_velocity (p, material_model.get_beta());
     }
@@ -428,10 +428,10 @@ namespace aspect
     std::pair<std::string,std::string>
     AnnulusPostprocessor<dim>::execute (TableHandler &)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const AnnulusMaterial<dim> &material_model
-          = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+          = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());
 
         ref_func.reset (new AnalyticSolutions::FunctionAnnulus<dim>(material_model.get_beta()));
       }
@@ -512,10 +512,10 @@ namespace aspect
     AnnulusPostprocessor<dim>::compute_dynamic_topography_error() const
     {
       const Postprocess::DynamicTopography<dim> &dynamic_topography =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<dim>>();
 
       const AnnulusMaterial<dim> &material_model
-        = Plugins::get_plugin_as_type<const AnnulusMaterial<dim> >(this->get_material_model());
+        = Plugins::get_plugin_as_type<const AnnulusMaterial<dim>>(this->get_material_model());
       const double beta = material_model.get_beta();
 
       const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

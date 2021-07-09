@@ -216,12 +216,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_TRACTION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryTraction::register_boundary_traction<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryTraction::register_boundary_traction<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::BoundaryTraction::register_boundary_traction<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTraction::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::BoundaryTraction::register_boundary_traction<3>, \
+                                    name, description); \
   }
   }
 }

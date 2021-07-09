@@ -145,7 +145,7 @@ namespace aspect
         {
           Triangulation<1> mesh;
           const Point<1> p(depth_bounds[0]);
-          std::vector<std::vector<double> > spacing(1,std::vector<double>(depth_bounds.size()-1,0.0));
+          std::vector<std::vector<double>> spacing(1,std::vector<double>(depth_bounds.size()-1,0.0));
           for (unsigned int i=0; i<spacing[0].size(); ++i)
             spacing[0][i]=depth_bounds[i+1]-depth_bounds[i];
 
@@ -430,7 +430,7 @@ namespace aspect
               this->get_material_model().create_additional_named_outputs(out);
 
               const bool material_model_provides_seismic_output =
-                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim> >() != nullptr);
+                (out.template get_additional_output<MaterialModel::SeismicAdditionalOutputs<dim>>() != nullptr);
 
               const bool output_vs = std::find( output_variables.begin(), output_variables.end(), "Vs") != output_variables.end();
               const bool output_vp = std::find( output_variables.begin(), output_variables.end(), "Vp") != output_variables.end();

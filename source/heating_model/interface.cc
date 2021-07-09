@@ -129,7 +129,7 @@ namespace aspect
     bool
     Manager<dim>::adiabatic_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim> >() ;
+      return has_matching_heating_model<HeatingModel::AdiabaticHeating<dim>>() ;
     }
 
 
@@ -138,7 +138,7 @@ namespace aspect
     bool
     Manager<dim>::shear_heating_enabled() const
     {
-      return has_matching_heating_model<HeatingModel::ShearHeating<dim> >() ;
+      return has_matching_heating_model<HeatingModel::ShearHeating<dim>>() ;
     }
 
 
@@ -148,8 +148,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -189,7 +189,7 @@ namespace aspect
       // their own parameters
       for (auto &model_name : model_names)
         {
-          heating_model_objects.push_back (std::unique_ptr<Interface<dim> >
+          heating_model_objects.push_back (std::unique_ptr<Interface<dim>>
                                            (std::get<dim>(registered_plugins)
                                             .create_plugin (model_name,
                                                             "Heating model::Model names")));
@@ -232,7 +232,7 @@ namespace aspect
                                                                    this->n_compositional_fields());
 
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
       for (const auto &heating_model : heating_model_objects)
         {
@@ -289,7 +289,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::list<std::unique_ptr<Interface<dim> > > &
+    const std::list<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_heating_models () const
     {
       return heating_model_objects;
@@ -379,11 +379,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<HeatingModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<HeatingModel::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<HeatingModel::Interface<2>>::PluginInfo> *
+                                                                       internal::Plugins::PluginList<HeatingModel::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<HeatingModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<HeatingModel::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<HeatingModel::Interface<3>>::PluginInfo> *
+                                                                       internal::Plugins::PluginList<HeatingModel::Interface<3>>::plugins = nullptr;
     }
   }
 

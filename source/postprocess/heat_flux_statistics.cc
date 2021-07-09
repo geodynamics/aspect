@@ -37,7 +37,7 @@ namespace aspect
     std::pair<std::string,std::string>
     HeatFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
       std::map<types::boundary_id, double> local_boundary_fluxes;

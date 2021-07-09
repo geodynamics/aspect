@@ -77,7 +77,7 @@ namespace aspect
                                     const double para_eccentricity,
                                     const double para_semi_minor_axis_b,
                                     const double para_bottom_depth,
-                                    const std::vector<Point<2> > &para_corners);
+                                    const std::vector<Point<2>> &para_corners);
 
             /**
              * The deal.ii pull back function in 3d. This function receives
@@ -120,8 +120,8 @@ namespace aspect
             /**
              * Return a copy of this manifold.
              */
-            std::unique_ptr<Manifold<dim,3> >
-            clone() const override;
+            std::unique_ptr<Manifold<dim,3>>
+                                          clone() const override;
 
           private:
             /**
@@ -141,7 +141,7 @@ namespace aspect
             double eccentricity;
             double semi_minor_axis_b;
             double bottom_depth;
-            std::vector<Point<2> > corners;
+            std::vector<Point<2>> corners;
             const InitialTopographyModel::Interface<dim> *topography;
         };
 
@@ -296,8 +296,8 @@ namespace aspect
          * vectors represent respectively the point in the North-East,
          * North-West, South-West and South-East.
          */
-        const std::vector<Point<2> > &
-        get_corners() const;
+        const std::vector<Point<2>> &
+                                 get_corners() const;
 
 
         /**
@@ -308,7 +308,7 @@ namespace aspect
 
       private:
         // Declare variables for reading in coordinates of the region of interest.
-        std::vector<Point<2> > corners;
+        std::vector<Point<2>> corners;
         double semi_major_axis_a;
         double eccentricity;
         double semi_minor_axis_b;
