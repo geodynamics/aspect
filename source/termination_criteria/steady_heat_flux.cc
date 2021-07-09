@@ -135,6 +135,12 @@ namespace aspect
                              Patterns::Double (0.),
                              "The minimum length of simulation time that the system "
                              "should be in steady state before termination. "
+                             "Note that if the time step size is similar to or larger than "
+                             "this value, the termination criterion will only have very few "
+                             "(in the most extreme case, just two) heat flux values to check. "
+                             "To ensure that a larger number of time steps are included in "
+                             "the check for steady state, this value should be much larger "
+                             "than the time step size. "
                              "Units: years if the "
                              "'Use years in output instead of seconds' parameter is set; "
                              "seconds otherwise.");
