@@ -251,13 +251,19 @@ namespace aspect
 
                     const Postprocess::Particles<dim> &particle_postprocessor =
                       this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim> >();
-                    const unsigned int n_property_components = particle_postprocessor.get_particle_world().get_property_manager().get_n_property_components();
+                    const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
+                    const unsigned int n_property_components = particle_property_information.n_components();
+                    const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
 
-                    AssertThrow(global_minimum_particle_properties.size() == n_property_components,
+                    // Check that if a global limiter is used, we were given the minimum and maximum value for each
+                    // particle property that is not an internal property.
+                    AssertThrow(global_minimum_particle_properties.size() == n_property_components - n_internal_components,
                                 ExcMessage("Make sure that the size of list 'Global minimum particle property' "
                                            "is equivalent to the number of particle properties."));
 
-                    AssertThrow(global_maximum_particle_properties.size() == n_property_components,
+                    // Check that if a global limiter is used, we were given the minimum and maximum value for each
+                    // particle property that is not an internal property.
+                    AssertThrow(global_maximum_particle_properties.size() == n_property_components - n_internal_components,
                                 ExcMessage("Make sure that the size of list 'Global maximum particle property' "
                                            "is equivalent to the number of particle properties."));
                   }

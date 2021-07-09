@@ -500,6 +500,54 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
       };
 
+      /**
+       * A particle property that provides storage space for
+       * the properties that particle integrators need to
+       * store. This is an internal property that is not
+       * intended for use outside of the particle integrators
+       * and that will not be written to output files.
+       *
+       * @ingroup ParticleProperties
+       */
+      template <int dim>
+      class IntegratorProperties : public Interface<dim>
+      {
+        public:
+          /**
+           * Initialization function. Since these properties are set and used
+           * by the integrator this function only resizes them to the correct
+           * size, but does not need to do any initialization.
+           */
+          void
+          initialize_one_particle_property (const Point<dim> &position,
+                                            std::vector<double> &particle_properties) const override;
+
+          /**
+           * Set up the information about the names and number of components
+           * this property requires. This depends on the chosen integration scheme.
+           *
+           * @return A vector that contains pairs of the property names and the
+           * number of components this property plugin defines.
+           */
+          std::vector<std::pair<std::string, unsigned int> >
+          get_property_information() const override;
+
+          /**
+           * Read the parameters this class needs to determine which integrator is used,
+           * and therefore how many properties to reserve.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          /**
+           * The number of integrator properties to store. This variable is initialized in
+           * parse_parameters().
+           */
+          unsigned int n_integrator_properties;
+      };
+
 
 
       /**
