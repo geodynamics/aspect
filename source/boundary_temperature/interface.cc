@@ -179,7 +179,7 @@ namespace aspect
           {
             AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Fixed temperature "
                                             "boundary indicators>, there was an error. Specifically, "
-                                            "the conversion function complained as follows: "
+                                            "the conversion function complained as follows:\n\n"
                                             + error));
           }
 
