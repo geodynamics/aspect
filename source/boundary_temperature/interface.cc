@@ -171,14 +171,13 @@ namespace aspect
             // If that is indeed the case, clear the model_operators vector. Otherwise, raise an exception.
             if (fixed_temperature_boundary_indicators.size() == 0)
               {
-                if (model_names.size() == 0)
-                  model_operators.clear();
-                else
-                  AssertThrow(false,
-                              ExcMessage ("You have indicated that you wish to apply a boundary temperature "
-                                          "model, but the <Fixed temperature boundary indicators> parameter "
-                                          "is empty. Please use this parameter to specify the boundaries "
-                                          "on which the model(s) should be applied."));
+                AssertThrow(model_names.size() == 0,
+                            ExcMessage ("You have indicated that you wish to apply a boundary temperature "
+                                        "model, but the <Fixed temperature boundary indicators> parameter "
+                                        "is empty. Please use this parameter to specify the boundaries "
+                                        "on which the model(s) should be applied."));
+
+                model_operators.clear();
               }
           }
         catch (const std::string &error)
