@@ -51,11 +51,6 @@ subsection Initial temperature model
 end
 
 
-subsection Boundary temperature model
-  set List of model names = constant
-end
-
-
 subsection Gravity model
   set Model name = radial constant
 

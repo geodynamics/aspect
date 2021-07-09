@@ -75,10 +75,6 @@ subsection Initial composition model
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Boundary composition model
   set List of model names = box
 end

@@ -13,13 +13,6 @@ set Pressure normalization                 = no
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 
-subsection Boundary temperature model
-  set List of model names = constant
-  subsection Constant
-    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
-  end
-end
-
 
 subsection Discretization
   set Stokes velocity polynomial degree       = 2

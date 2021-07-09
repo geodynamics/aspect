@@ -16,10 +16,6 @@ set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Gravity model
   set Model name = vertical
 end

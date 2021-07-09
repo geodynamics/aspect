@@ -65,7 +65,7 @@ end
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators =
-  set List of model names = box
+  set List of model names =
 end
 
 
