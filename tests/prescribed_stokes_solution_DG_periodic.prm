@@ -40,17 +40,6 @@ subsection Initial temperature model
 end
 
 
-subsection Boundary temperature model
-  set List of model names = box
-  subsection Box
-    set Bottom temperature = 0
-    set Left temperature   = 0
-    set Right temperature  = 0
-    set Top temperature    = 0
-  end
-end
-
-
 subsection Gravity model
   set Model name = vertical
   subsection Vertical

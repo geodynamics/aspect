@@ -85,13 +85,6 @@ end
 ############### Parameters describing the temperature field
 # We set the temperature to zero, as it is not important.
 
-subsection Boundary temperature model
-  set List of model names = box
-  subsection Box
-    set Left temperature = 0
-  end
-end
-
 subsection Initial temperature model
   set Model name = function
   subsection Function

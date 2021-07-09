@@ -5,10 +5,6 @@ set Dimension                              = 2
 set CFL number                             = 1.0
 set End time                               = 0
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 
 subsection Gravity model
   set Model name = vertical

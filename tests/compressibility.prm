@@ -43,14 +43,6 @@ set Nonlinear solver scheme                = no Advection, iterated Stokes
 set Max nonlinear iterations               = 1
 
 
-
-
-subsection Boundary temperature model
-  set List of model names = box
-end
-
-
-
 subsection Gravity model
   set Model name = vertical
 end

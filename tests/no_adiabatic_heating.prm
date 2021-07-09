@@ -20,12 +20,6 @@ set Max nonlinear iterations               = 5
 
 
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
-
-
 subsection Gravity model
   set Model name = vertical
 end

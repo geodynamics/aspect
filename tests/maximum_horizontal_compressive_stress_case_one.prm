@@ -59,10 +59,6 @@ end
 # As above, there is no need to set anything for the
 # temperature boundary conditions.
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Initial temperature model
   set Model name = function
 

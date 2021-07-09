@@ -60,10 +60,6 @@ subsection Initial temperature model
   end
 end
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
