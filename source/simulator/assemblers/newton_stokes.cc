@@ -292,8 +292,8 @@ namespace aspect
                                                                   : nullptr;
 >>>>>>> bc7e89c26 (Fix the 'prescribed dilation' in netwon_stokes)
 
-      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation; 
-      
+      const bool enable_prescribed_dilation = this->get_parameters().enable_prescribed_dilation;
+
       const MaterialModel::PrescribedPlasticDilation<dim>
 <<<<<<< HEAD
       *prescribed_dilation =

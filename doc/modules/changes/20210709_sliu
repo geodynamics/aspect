@@ -1,0 +1,4 @@
+Changed: Fixed the "prescribed_dilation" option
+in newton.stokes.cc.
+<br>
+(Sibiao Liu, 2021/07/09)
