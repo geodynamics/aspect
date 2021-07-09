@@ -7128,4 +7128,3 @@ TEST_CASE("Fast version of fmod")
   CHECK(std::isnan(FT::fmod(1,0)));
   CHECK(std::isnan(std::fmod(1,0)));
 }
-

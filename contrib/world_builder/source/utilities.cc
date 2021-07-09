@@ -1352,6 +1352,3 @@ namespace WorldBuilder
     template std::array<double,3> convert_point_to_array<3>(const Point<3> &point_);
   }
 }
-
-
-

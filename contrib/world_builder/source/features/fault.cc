@@ -764,4 +764,3 @@ namespace WorldBuilder
     WB_REGISTER_FEATURE(Fault, fault)
   }
 }
-

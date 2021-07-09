@@ -30,7 +30,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/source/config.cc.in" "${CMAKE_BINARY
 
 # finding support for different languages
 # finding a fortran compiler
-if(${CMAKE_VERSION} VERSION_LESS "2.8.8") 
+if(${CMAKE_VERSION} VERSION_LESS "2.8.8")
   message(STATUS "Fortran not supported with cmake version lower than  2.8.8. Please upgrade your cmake version if you need it. Disabling Fortran wrapper and tests.")
   SET(CMAKE_Fortran_COMPILER FALSE)
 else()
@@ -76,9 +76,9 @@ endif()
 
 
 #find python libs
-SET(WB_ENABLE_PYTHON TRUE CACHE STRING "Whether or not to enable Python when compiling the world builder.") 
+SET(WB_ENABLE_PYTHON TRUE CACHE STRING "Whether or not to enable Python when compiling the world builder.")
 if(${WB_ENABLE_PYTHON})
-  if(${CMAKE_VERSION} VERSION_LESS "3.12.0") 
+  if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
     FIND_PACKAGE(PythonLibs 3.0)
     FIND_PACKAGE(PythonInterp 3.0)
 
@@ -171,7 +171,7 @@ if(MAKE_PYTHON_WRAPPER)
 endif()
 
 # Add include directory
-include_directories("include/" "tests/") 
+include_directories("include/" "tests/")
 
 # Add source directory
 file(GLOB_RECURSE SOURCES_CXX "source/*.cc" "${CMAKE_BINARY_DIR}/source/*.cc")
@@ -235,7 +235,7 @@ if(MAKE_PYTHON_WRAPPER)
 
   # Add swig module
   SET_SOURCE_FILES_PROPERTIES(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/source/wrapper_cpp.i PROPERTIES CPLUSPLUS ON)
-  if(${CMAKE_VERSION} VERSION_LESS "3.8.0") 
+  if(${CMAKE_VERSION} VERSION_LESS "3.8.0")
     swig_add_module(gwb python ${CMAKE_CURRENT_SOURCE_DIR}/source/wrapper_cpp.i)
   else()
     swig_add_library(gwb LANGUAGE python SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/source/wrapper_cpp.i)
@@ -274,9 +274,9 @@ if (NOT MSVC AND NOT APPLE)
       # Preventing issues with older cmake compilers (<2.8.12) which do not support VERSION_GREATER_EQUAL
       # cmake vesrion 3.12.0 introduces COMPILE_LANGUAGE:FORTAN, otherwise this would be >=2.8.12
       if(NOT ${CMAKE_VERSION} VERSION_LESS "3.9.0")
-        SET(WB_COMPILER_OPTIONS_PRIVATE -pedantic -fPIC -Wall -Wextra  
-        $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -Wmost -Wconversion -Wunreachable-code -Wuninitialized -Wold-style-cast -Wshadow -Wfloat-equal -Wpointer-arith -Wwrite-strings 
-        -Wsynth -Wsign-compare -Woverloaded-virtual -Wliteral-range -Wparentheses -Wunused-local-typedefs -Wcast-qual -fstrict-aliasing -Werror=uninitialized -Wundef 
+        SET(WB_COMPILER_OPTIONS_PRIVATE -pedantic -fPIC -Wall -Wextra
+        $<$<COMPILE_LANGUAGE:CXX>:-std=c++11 -Wmost -Wconversion -Wunreachable-code -Wuninitialized -Wold-style-cast -Wshadow -Wfloat-equal -Wpointer-arith -Wwrite-strings
+        -Wsynth -Wsign-compare -Woverloaded-virtual -Wliteral-range -Wparentheses -Wunused-local-typedefs -Wcast-qual -fstrict-aliasing -Werror=uninitialized -Wundef
         -Wcast-align -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wunused>)
       else()
         SET(WB_COMPILER_OPTIONS_PRIVATE "-std=c++11 -pedantic -fPIC -Wall -Wextra -Wmost -Wconversion -Wunreachable-code -Wuninitialized -Wold-style-cast -Wshadow -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wsynth -Wsign-compare -Woverloaded-virtual -Wliteral-range -Wparentheses -Wunused-local-typedefs -Wcast-qual -fstrict-aliasing -Werror=uninitialized -Wundef -Wcast-align -Wmissing-declarations -Wredundant-decls -Wdiv-by-zero -Wdisabled-optimization -Wswitch-default -Wunused")
@@ -345,7 +345,7 @@ else()
   target_compile_options(WorldBuilderVisualization INTERFACE ${WB_COMPILER_OPTIONS_INTERFACE} PRIVATE ${WB_COMPILER_OPTIONS_PRIVATE} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_NEW})
 endif()
 
-if(${CMAKE_VERSION} VERSION_LESS "3.13.0") 
+if(${CMAKE_VERSION} VERSION_LESS "3.13.0")
     SET(CMAKE_EXE_LINKER_FLAGS "${WB_LINKER_OPTIONS} ${WB_VISU_LINKER_OPTIONS} ${WB_COMPILER_OPTIONS_PRIVATE_COVERAGE_OLD}")
 else()
     target_link_options(WorldBuilder INTERFACE ${WB_LINKER_OPTIONS})
@@ -370,10 +370,10 @@ endif()
 if(${USE_MPI})
   target_link_libraries (WorldBuilder PUBLIC MPI::MPI_CXX)
   target_link_libraries (WorldBuilderApp PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} )
-  target_link_libraries (WorldBuilderVisualization PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} ) 
+  target_link_libraries (WorldBuilderVisualization PUBLIC MPI::MPI_CXX ${GWB_LIBRARY_WHOLE} )
 else()
   target_link_libraries (WorldBuilderApp ${GWB_LIBRARY_WHOLE} )
-  target_link_libraries (WorldBuilderVisualization ${GWB_LIBRARY_WHOLE} ) 
+  target_link_libraries (WorldBuilderVisualization ${GWB_LIBRARY_WHOLE} )
 endif()
 
 
@@ -407,7 +407,7 @@ if(MAKE_PYTHON_WRAPPER)
       swig_link_libraries(gwb ${GWB_LIBRARY_WHOLE} ${Python_LIBRARIES})
     endif()
   endif()
-  
+
   set_target_properties(${TARGET} PROPERTIES PREFIX "_" OUTPUT_NAME "gwb")
 
 

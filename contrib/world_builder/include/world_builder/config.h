@@ -46,4 +46,3 @@ namespace WorldBuilder
 
 
 #endif /* WORLD_BUILDER_CONFIG_H_ */
-

@@ -134,4 +134,3 @@ namespace WorldBuilder
     WB_REGISTER_COORDINATE_SYSTEM(Spherical, spherical)
   }
 }
-

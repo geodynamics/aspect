@@ -241,4 +241,3 @@ namespace WorldBuilder
     WB_REGISTER_FEATURE(OceanicPlate, oceanic plate)
   }
 }
-

@@ -3130,7 +3130,7 @@ class GenericDocument : public GenericValue<Encoding, Allocator>
     {
       return Parse<kParseDefaultFlags>(str);
     }
-#endif // RAPIDJSON_HAS_STDSTRING    
+#endif // RAPIDJSON_HAS_STDSTRING
 
     //!@}
 

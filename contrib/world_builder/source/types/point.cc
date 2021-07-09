@@ -174,4 +174,3 @@ namespace WorldBuilder
     template WorldBuilder::Point<3> operator*(const double scalar, const Point<3> &point);
   }
 }
-

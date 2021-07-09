@@ -212,5 +212,3 @@ namespace WorldBuilder
     }
   }
 }
-
-

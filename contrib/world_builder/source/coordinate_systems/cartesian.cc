@@ -89,4 +89,3 @@ namespace WorldBuilder
     WB_REGISTER_COORDINATE_SYSTEM(Cartesian, cartesian)
   }
 }
-

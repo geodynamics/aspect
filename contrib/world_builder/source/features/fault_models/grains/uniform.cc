@@ -164,5 +164,3 @@ namespace WorldBuilder
     }
   }
 }
-
-

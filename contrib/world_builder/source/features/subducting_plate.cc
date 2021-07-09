@@ -776,4 +776,3 @@ namespace WorldBuilder
     WB_REGISTER_FEATURE(SubductingPlate, subducting plate)
   }
 }
-

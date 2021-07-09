@@ -22,8 +22,8 @@ set(EXECUTE_COMMAND ${TEST_PROGRAM} ${TEST_ARGS})
 
 # run the test program, capture the stdout/stderr and the result var ${TEST_ARGS}
 execute_process(
-  COMMAND ${TEST_PROGRAM} ${TEST_ARGS} 
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/ 
+  COMMAND ${TEST_PROGRAM} ${TEST_ARGS}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/app/
   OUTPUT_FILE ${TEST_OUTPUT}
   ERROR_VARIABLE TEST_ERROR_VAR
   RESULT_VARIABLE TEST_RESULT_VAR
@@ -32,7 +32,7 @@ execute_process(
 
 # if the return value is !=0 bail out
 if( TEST_RESULT_VAR )
-	message( FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != 0.\n${TEST_ERROR_VAR}" )
+  message( FATAL_ERROR "Failed: Test program ${TEST_PROGRAM} exited != 0.\n${TEST_ERROR_VAR}" )
 endif( TEST_RESULT_VAR )
 file(TO_NATIVE_PATH "${TEST_OUTPUT}" TEST_NATIVE_OUTPUT)
 file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)
@@ -41,17 +41,17 @@ file(TO_NATIVE_PATH "${TEST_REFERENCE}" TEST_NATIVE_REFERENCE)
 IF("${TEST_DIFF}" MATCHES ".*exe")
   # windows
   FIND_PROGRAM(DOS2UNIX_EXECUTABLE
-	     NAMES dos2unix
-	     HINTS ${DIFF_DIR}
-	     PATH_SUFFIXES bin
-	     )
+       NAMES dos2unix
+       HINTS ${DIFF_DIR}
+       PATH_SUFFIXES bin
+       )
      IF(NOT DOS2UNIX_EXECUTABLE MATCHES "-NOTFOUND")
-	     SET(TEST_D2U ${DOS2UNIX_EXECUTABLE})
+       SET(TEST_D2U ${DOS2UNIX_EXECUTABLE})
      ELSE()
-	     MESSAGE(FATAL_ERROR
-		     "Could not find dos2unix. This is required for running the testsuite in windows.\n"
-		     "Please specify TEST_D2U by hand."
-		     )
+       MESSAGE(FATAL_ERROR
+         "Could not find dos2unix. This is required for running the testsuite in windows.\n"
+         "Please specify TEST_D2U by hand."
+         )
      ENDIF()
      execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_OUTPUT})
      execute_process(COMMAND ${TEST_D2U} ${TEST_NATIVE_REFERENCE})
@@ -59,12 +59,12 @@ ENDIF()
 
 # now compare the output with the reference
 execute_process(
-	COMMAND ${TEST_DIFF} -q ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
+  COMMAND ${TEST_DIFF} -q ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE}
   RESULT_VARIABLE TEST_RESULT
   )
 
 # again, if return value is !=0 scream and shout
 if( TEST_RESULT )
-	execute_process(COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE})
-	message( FATAL_ERROR "Failed: The output of ${TEST_NAME} stored in ${TEST_NATIVE_OUTPUT} did not match the reference output stored in ${TEST_NATIVE_REFERENCE}")
+  execute_process(COMMAND ${TEST_DIFF} ${TEST_NATIVE_OUTPUT} ${TEST_NATIVE_REFERENCE})
+  message( FATAL_ERROR "Failed: The output of ${TEST_NAME} stored in ${TEST_NATIVE_OUTPUT} did not match the reference output stored in ${TEST_NATIVE_REFERENCE}")
 endif( TEST_RESULT )
