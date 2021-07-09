@@ -66,8 +66,12 @@ namespace aspect
     constexpr double avogadro = 6.02214129e23;
     /**
      * Gravitational constant [m^3 kg^-1 s^-2]
+     * Value: 6.67430(15)E-11 (standard uncertainty in parenthesis)
+     * Source: 2018 CODATA Value: Newtonian constants of gravitation.
+     *         The NIST Reference on Constants, Units, and Uncertainty.
+     *         NIST. 20 May 2019.
      */
-    constexpr double big_g = 6.67384e-11;
+    constexpr double big_g = 6.67430e-11;
 
     /**
      * Constants for Earth:
