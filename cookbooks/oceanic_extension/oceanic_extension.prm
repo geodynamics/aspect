@@ -21,11 +21,13 @@ set Max nonlinear iterations               = 20
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
 set Output directory                       = output_oceanic_extension
+# AG - I'd remove this line. The default is wall time statistics every 100 timesteps, which is usually enough.
 set Timing output frequency                = 1
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 273
 
 # Governing equations
+# AG - For BA, it's easier to just set Formulation = boussinesq approximation 
 subsection Formulation
   set Formulation          = custom
   set Mass conservation    = ask material model
@@ -59,6 +61,7 @@ end
 
 # Q2Q1 Element
 subsection Discretization
+  # AG - these 3 lines can be removed as they are the default
   set Composition polynomial degree           = 2
   set Stokes velocity polynomial degree       = 2
   set Temperature polynomial degree           = 2
@@ -131,7 +134,7 @@ subsection Initial composition model
   subsection Function
   # JBN - repalce rand() with reproducible "seed" randomization?
     set Variable names      = x,y
-    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand()*1.0, 0); \
+    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand()*1.0, 0); \ 
 			      if(y>=93.e3, 1, 0); \
                               if(y<93.e3 && y>-100.e3, 1, 0); 
   end
@@ -140,6 +143,7 @@ end
 
 # Composition boundary conditions
 # JBN - expand documenation here
+# AG - no need to fix the composition at the bottom for this setup, there's no inflow
 subsection Boundary composition model
   set Fixed composition boundary indicators  = bottom
   set Model name = initial composition
@@ -177,6 +181,7 @@ subsection Material model
     set Reference viscosity   = 1e21
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
+    # AG - maybe comment on how to choose the right min/max
     set Minimum viscosity = 1e18
     set Maximum viscosity = 1e26
 
