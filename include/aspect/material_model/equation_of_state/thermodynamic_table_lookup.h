@@ -65,10 +65,6 @@ namespace aspect
            */
           bool is_compressible () const;
 
-          void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                               std::vector<std::vector<double>> &mass_fractions,
-                                               std::vector<std::vector<double>> &volume_fractions) const;
-
           /**
           * Function to compute the thermodynamic properties in @p out given the
           * inputs in @p in over all evaluation points.
@@ -104,8 +100,6 @@ namespace aspect
 
 
         private:
-          bool has_background;
-
           unsigned int n_material_lookups;
           bool use_bilinear_interpolation;
           bool latent_heat;

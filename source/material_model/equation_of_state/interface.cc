@@ -42,22 +42,20 @@ namespace aspect
 
     template <int dim>
     void
-    fill_averaged_equation_of_state_outputs(const std::vector<EquationOfStateOutputs<dim>> &eos_outputs,
-                                            const std::vector<std::vector<double>> &mass_fractions,
-                                            const std::vector<std::vector<double>> &volume_fractions,
+    fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
+                                            const std::vector<double> &mass_fractions,
+                                            const std::vector<double> &volume_fractions,
+                                            const unsigned int i,
                                             MaterialModelOutputs<dim> &out)
     {
-      for (unsigned int i=0; i < eos_outputs.size(); ++i)
-        {
-          // The density, isothermal compressibility and thermal expansivity are volume-averaged
-          // The specific entropy derivatives and heat capacity are mass-averaged
-          out.densities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].densities, MaterialUtilities::arithmetic);
-          out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].compressibilities, MaterialUtilities::arithmetic);
-          out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions[i], eos_outputs[i].thermal_expansion_coefficients, MaterialUtilities::arithmetic);
-          out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_pressure, MaterialUtilities::arithmetic);
-          out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].entropy_derivative_temperature, MaterialUtilities::arithmetic);
-          out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions[i], eos_outputs[i].specific_heat_capacities, MaterialUtilities::arithmetic);
-        }
+      // The density, isothermal compressibility and thermal expansivity are volume-averaged
+      // The specific entropy derivatives and heat capacity are mass-averaged
+      out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+      out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+      out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+      out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+      out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
+      out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
     }
 
 
@@ -95,9 +93,10 @@ namespace aspect
   {
 #define INSTANTIATE(dim) \
   template struct EquationOfStateOutputs<dim>; \
-  template void fill_averaged_equation_of_state_outputs<dim> (const std::vector<EquationOfStateOutputs<dim>> &, \
-                                                              const std::vector<std::vector<double>> &mass_fractions, \
-                                                              const std::vector<std::vector<double>> &volume_fractions, \
+  template void fill_averaged_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
+                                                              const std::vector<double> &, \
+                                                              const std::vector<double> &, \
+                                                              const unsigned int, \
                                                               MaterialModelOutputs<dim> &); \
   template void phase_average_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
                                                               const std::vector<double> &phase_function_values, \

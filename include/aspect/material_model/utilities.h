@@ -242,7 +242,8 @@ namespace aspect
        */
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask = ComponentMask());
+                                    const ComponentMask &field_mask = ComponentMask(),
+                                    const bool has_background_field = true);
 
       /**
        * See compute_composition_fractions() for the documentation of this function.

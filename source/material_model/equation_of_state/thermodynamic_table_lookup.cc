@@ -114,57 +114,6 @@ namespace aspect
       }
 
 
-      template <int dim>
-      void
-      ThermodynamicTableLookup<dim>::
-      fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                      std::vector<std::vector<double>> &mass_fractions,
-                                      std::vector<std::vector<double>> &volume_fractions) const
-      {
-        // Resize mass and volume fraction vectors
-        mass_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
-        volume_fractions.resize(in.n_evaluation_points(), std::vector<double>(material_lookup.size(), 1.));
-
-        if (material_lookup.size() > 1)
-          {
-            for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
-              {
-                double summed_volumes = 0.;
-
-                if (has_background)
-                  {
-                    mass_fractions[i][0] = 1.;
-                    for (unsigned int j=1; j<material_lookup.size(); ++j)
-                      {
-                        const double mass_fraction = in.composition[i][j-1];
-                        mass_fractions[i][j] = mass_fraction;
-                        mass_fractions[i][0] -= mass_fraction;
-                        volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
-                        summed_volumes += volume_fractions[i][j];
-                      }
-                    volume_fractions[i][0] = mass_fractions[i][0]/material_lookup[0]->density(in.temperature[i],in.pressure[i]);
-                    summed_volumes += volume_fractions[i][0];
-
-                  }
-                else
-                  {
-                    for (unsigned int j=0; j<material_lookup.size(); ++j)
-                      {
-                        const double mass_fraction = in.composition[i][j];
-                        mass_fractions[i][j] = mass_fraction;
-                        volume_fractions[i][j] = mass_fraction/material_lookup[j]->density(in.temperature[i],in.pressure[i]);
-                        summed_volumes += volume_fractions[i][j];
-                      }
-                  }
-
-                for (unsigned int j=0; j<material_lookup.size(); ++j)
-                  volume_fractions[i][j] /= summed_volumes;
-
-              }
-          }
-      }
-
-
 
       template <int dim>
       void
@@ -440,15 +389,6 @@ namespace aspect
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields).");
-        prm.declare_entry ("Index of first mass fraction compositional field", "0",
-                           Patterns::Integer (0),
-                           "The index of the first compositional field which "
-                           "corresponds to the mass fraction of a material. "
-                           "The indexing starts at 0.");
-        prm.declare_entry ("Background material", "true",
-                           Patterns::Bool (),
-                           "Whether there is a background compositional "
-                           "field.");
         prm.declare_entry ("Material file format", "perplex",
                            Patterns::Selection ("perplex|hefesto"),
                            "The material file format to be read in the property "
@@ -487,46 +427,12 @@ namespace aspect
         latent_heat                  = prm.get_bool ("Latent heat");
         max_latent_heat_substeps     = prm.get_integer ("Maximum latent heat substeps");
 
-        has_background               = prm.get_bool ("Background material");
-
         if (prm.get ("Material file format") == "perplex")
           material_file_format       = perplex;
         else if (prm.get ("Material file format") == "hefesto")
           material_file_format       = hefesto;
         else
           AssertThrow (false, ExcNotImplemented());
-
-        // Check the number of material files.
-        // If the following comparison evaluates to be an equality, it
-        // implies that all compositional fields correspond to mass fractions.
-        if (has_background)
-          {
-            AssertThrow ((n_material_lookups <= this->n_compositional_fields() + 1),
-                         ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
-                                    "for every compositional field that corresponds to a mass fraction. "
-                                    "You have said that there is a background field and prescribed "
-                                    + Utilities::int_to_string(n_material_lookups)
-                                    + " material data files, but there are "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields. "
-                                    "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields() + 1)
-                                    + ". "));
-          }
-        else
-          {
-            AssertThrow ((n_material_lookups <= this->n_compositional_fields()),
-                         ExcMessage("The thermodynamic table lookup plugin requires that there is a material file "
-                                    "for every compositional field that corresponds to a mass fraction. "
-                                    "You have said that there is no background field and prescribed "
-                                    + Utilities::int_to_string(n_material_lookups)
-                                    + " material data files, but there are "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + " compositional fields. "
-                                    "The maximum number of material data files should therefore be "
-                                    + Utilities::int_to_string(this->n_compositional_fields())
-                                    + ". "));
-          }
 
         if (latent_heat)
           AssertThrow (n_material_lookups == 1,
