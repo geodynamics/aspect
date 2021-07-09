@@ -154,6 +154,12 @@ namespace aspect
                                                   + error));
                 }
 
+              AssertThrow((this->get_fixed_temperature_boundary_indicators().find(boundary_id) != this->get_fixed_temperature_boundary_indicators().end()),
+                          ExcMessage ("You have indicated a temperature mapping for "
+                                      "boundary indicator " + parts[0] + ", but that "
+                                      "indicator isn't in the "
+                                      "list of Fixed temperature boundary indicators."));
+
               AssertThrow (boundary_temperatures.find(boundary_id) == boundary_temperatures.end(),
                            ExcMessage ("Boundary indicator <" + Utilities::int_to_string(boundary_id) +
                                        "> appears more than once in the list of indicators "
