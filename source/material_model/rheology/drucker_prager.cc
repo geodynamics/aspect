@@ -35,34 +35,33 @@ namespace aspect
       template <int dim>
       DruckerPrager<dim>::DruckerPrager ()
       {}
-      
+
       template <int dim>
       const DruckerPragerParameters
       DruckerPrager<dim>::compute_drucker_prager_parameters (const unsigned int composition,
-                                                            const std::vector<double> &phase_function_values,
-                                                            const std::vector<unsigned int> &n_phases_per_composition) const
+                                                             const std::vector<double> &phase_function_values,
+                                                             const std::vector<unsigned int> &n_phases_per_composition) const
       {
         DruckerPragerParameters drucker_prager_parameters;
-        
+
         drucker_prager_parameters.max_yield_stress = max_yield_stress;
 
         if (phase_function_values == std::vector<double>())
           {
-           // no phases
-           drucker_prager_parameters.angles_internal_friction = angles_internal_friction[composition];
-           drucker_prager_parameters.cohesions = cohesions[composition];
+            // no phases
+            drucker_prager_parameters.angle_internal_friction = angles_internal_friction[composition];
+            drucker_prager_parameters.cohesion = cohesions[composition];
           }
         else
           {
-           // Average among phases
-           drucker_prager_parameters.angles_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
-                                                               angles_internal_friction, composition);       
-           drucker_prager_parameters.cohesions = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+            // Average among phases
+            drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                                                angles_internal_friction, composition);
+            drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  cohesions, composition);
           }
         return drucker_prager_parameters;
       }
-
 
       template <int dim>
       double
@@ -71,7 +70,6 @@ namespace aspect
                                                 const double pressure,
                                                 const double max_yield_stress) const
       {
-        
         const double sin_phi = std::sin(angle_internal_friction);
         const double cos_phi = std::cos(angle_internal_friction);
         const double stress_inv_part = 1. / (std::sqrt(3.0) * (3.0 + sin_phi));
@@ -85,6 +83,7 @@ namespace aspect
 
         return std::min(yield_stress, max_yield_stress);
       }
+
 
 
       template <int dim>
@@ -121,20 +120,15 @@ namespace aspect
       }
 
 
-      
+
       template <int dim>
       std::pair<double, double>
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
-                                                              const unsigned int composition,
-                                                              const std::vector<double> &phase_function_values,
-                                                              const std::vector<unsigned int> &n_phases_per_composition) const
+                                                              const DruckerPragerParameters p) const
       {
-        const DruckerPragerParameters p = compute_drucker_prager_parameters(composition,
-                                                                            phase_function_values,
-                                                                            n_phases_per_composition);
- 
-        const double yield_stress = compute_yield_stress(p.cohesions, p.angles_internal_friction, pressure, max_yield_stress);
+
+        const double yield_stress = compute_yield_stress(p.cohesion, p.angle_internal_friction, pressure, p.max_yield_stress);
 
         if (stress > yield_stress)
           {
@@ -208,33 +202,30 @@ namespace aspect
       template <int dim>
       void
       DruckerPrager<dim>::parse_parameters (ParameterHandler &prm,
-                                            const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
-        // Retrieve the list of composition name 
+        // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
         // Establish that a background field is required here
         const bool has_background_field = true;
-        
 
         angles_internal_friction = Utilities::parse_map_to_double_array(prm.get("Angles of internal friction"),
-                                                                                   list_of_composition_names,
-                                                                                   has_background_field,
-                                                                                   "Angles of internal friction",
-                                                                                   true,
-                                                                                   expected_n_phases_per_composition);
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Angles of internal friction",
+                                                                        true,
+                                                                        expected_n_phases_per_composition);
 
-        
         // Convert angles from degrees to radians
         for (double &angle : angles_internal_friction)
           angle *= numbers::PI/180.0;
 
         cohesions = Utilities::parse_map_to_double_array(prm.get("Cohesions"),
-                                                                    list_of_composition_names,
-                                                                    has_background_field,         
-                                                                    "Cohesions",
-                                                                    true,
-                                                                    expected_n_phases_per_composition); 
-                                                                 
+                                                         list_of_composition_names,
+                                                         has_background_field,
+                                                         "Cohesions",
+                                                         true,
+                                                         expected_n_phases_per_composition);
 
         // Limit maximum value of the Drucker-Prager yield stress
         max_yield_stress = prm.get_double("Maximum yield stress");

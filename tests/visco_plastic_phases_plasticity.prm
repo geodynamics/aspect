@@ -1,12 +1,14 @@
-# Copy of visco_plastic.prm, but include a phase transition for the EoS
-
+# Copy of visco_plastic_phases.prm, but tests different plasticity parameters for different phases.
+# Above the 50km depth phase transition we set 10MPa and 20 degrees for the cohesion and internal friction angle.
+# Below the 50km depth phase transition plastic yielding is switched off by setting a high cohesion of 1e20, and friction changes to 0.
+# This is visible in the visualisation output.
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 0
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
-set Output directory                       = visco_plastic
+set Output directory                       = visco_plastic_phases_plasticity
 set Timing output frequency                = 1
 
 # Model geometry (100x100 km, 10 km spacing)
@@ -74,9 +76,9 @@ subsection Material model
     set Stress exponents for dislocation creep = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep = 0.
- 
-    set Angles of internal friction = background: 0 | 0.1
-    set Cohesions                   = background: 1e20 | 1e7
+
+    set Angles of internal friction = background: 20 | 0
+    set Cohesions                   = background: 1e7 | 1e20
 
   end
 end
@@ -94,7 +96,8 @@ subsection Postprocess
   set List of postprocessors = velocity statistics, mass flux statistics, visualization, material statistics
 
   subsection Visualization
-    set List of output variables = material properties
+    set List of output variables = material properties, named additional outputs
+    set Output format = gnuplot
   end
 end
 
