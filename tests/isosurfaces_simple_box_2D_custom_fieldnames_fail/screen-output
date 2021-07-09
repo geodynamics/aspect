@@ -13,6 +13,8 @@ An error occurred in file <isosurfaces.cc> in function
 The violated condition was: 
     false
 Additional information: 
-    The key given for the isosurface could not be converted. The provided key was: C_2. The following keys are allowed for this model: Temperature, field1, FieldB, fIEld_C.
+    The key given for the isosurface could not be converted. The provided
+    key was: C_2. The following keys are allowed for this model:
+    Temperature, field1, FieldB, fIEld_C.
 
 Aborting!

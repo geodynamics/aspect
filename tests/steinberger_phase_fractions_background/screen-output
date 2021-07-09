@@ -6,7 +6,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 0 iterations.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+214 iterations.
+   Solving Stokes system... 200+213 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00000
@@ -19,7 +19,7 @@ Number of degrees of freedom: 3,557 (1,666+225+833+833)
    Solving temperature system... 9 iterations.
    Solving C_1 system ... 9 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 200+240 iterations.
+   Solving Stokes system... 200+245 iterations.
 
    Postprocessing:
      Writing graphical output:           output-steinberger_phase_fractions_background/solution/solution-00001

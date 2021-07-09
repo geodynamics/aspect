@@ -110,7 +110,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    The linear solver tolerance is set to 0.1. Stabilization Preconditioner is SPD and A block is SPD.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 39+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 5.09712e-12, norm of the rhs: 340470, newton_derivative_scaling_factor: 1
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 17: 5.09711e-12, norm of the rhs: 340470, newton_derivative_scaling_factor: 1
 
    Skipping temperature solve because RHS is zero.
    The linear solver tolerance is set to 0.1. Stabilization Preconditioner is SPD and A block is SPD.
@@ -131,7 +131,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69235e-12, norm of the rhs: 123564
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69234e-12, norm of the rhs: 123563
 
 
    Postprocessing:
@@ -145,7 +145,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69236e-12, norm of the rhs: 123564
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69235e-12, norm of the rhs: 123563
 
 
    Postprocessing:
@@ -160,7 +160,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69236e-12, norm of the rhs: 123564
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69235e-12, norm of the rhs: 123563
 
 
    Postprocessing:
@@ -174,7 +174,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69236e-12, norm of the rhs: 123564
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 2.69235e-12, norm of the rhs: 123563
 
 
    Postprocessing:

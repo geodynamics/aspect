@@ -48,7 +48,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.24 m/year, 1.87 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.27e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.56e-23 1/year, 3.88e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.84e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.31e-23 1/year, 3.87e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -60,7 +60,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.65 m/year, 2.5 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.65e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.37e-23 1/year, 3.27e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.69e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.41e-23 1/year, 3.58e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -72,7 +72,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.98 m/year, 3.02 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.07e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.61e-23 1/year, 3.95e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.69e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.41e-23 1/year, 3.34e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -84,7 +84,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.23 m/year, 3.43 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.76e+08 kg*m^2/year, 7.67e+30 kg*m^2, 4.91e-23 1/year, 3.56e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.39e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.03e-23 1/year, 2.44e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -96,7 +96,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.39 m/year, 3.7 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 2.79e+08 kg*m^2/year, 7.67e+30 kg*m^2, 3.64e-23 1/year, 3.27e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.01e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.84e-23 1/year, 3.36e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -108,7 +108,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.46 m/year, 3.83 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.94e+08 kg*m^2/year, 7.67e+30 kg*m^2, 9.05e-23 1/year, 3.62e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.42e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.76e-23 1/year, 2.83e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -120,7 +120,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.46 m/year, 3.84 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.32e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.94e-23 1/year, 4.35e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.05e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.89e-23 1/year, 3.61e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -132,7 +132,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.4 m/year, 3.73 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.59e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.99e-23 1/year, 3.69e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.31e+08 kg*m^2/year, 7.67e+30 kg*m^2, 4.32e-23 1/year, 3.8e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -144,7 +144,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.28 m/year, 3.55 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 6.32e+08 kg*m^2/year, 7.67e+30 kg*m^2, 8.24e-23 1/year, 3.47e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.63e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.03e-23 1/year, 4.13e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -156,7 +156,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               2.13 m/year, 3.34 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.99e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.5e-23 1/year, 4.01e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.99e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.51e-23 1/year, 3.79e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -168,7 +168,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.94 m/year, 3.1 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.84e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.31e-23 1/year, 4.28e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.48e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.14e-23 1/year, 4.1e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -180,7 +180,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.75 m/year, 2.86 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.82e+08 kg*m^2/year, 7.67e+30 kg*m^2, 7.59e-23 1/year, 4.48e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.66e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.08e-23 1/year, 4.98e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -192,7 +192,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.54 m/year, 2.59 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.94e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.13e-23 1/year, 5.21e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.62e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.03e-23 1/year, 5.3e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -204,7 +204,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.33 m/year, 2.32 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.69e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.12e-23 1/year, 5.41e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.4e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.74e-23 1/year, 5.11e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -216,7 +216,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               1.13 m/year, 2.04 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.75e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.2e-23 1/year, 4.91e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.13e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.69e-23 1/year, 4.62e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -228,7 +228,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.935 m/year, 1.76 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.96e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.17e-23 1/year, 5.13e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.26e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.56e-23 1/year, 4.73e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -240,7 +240,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.762 m/year, 1.49 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 5.05e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.59e-23 1/year, 4.9e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.36e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.69e-23 1/year, 5.25e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -252,7 +252,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.611 m/year, 1.25 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.99e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.51e-23 1/year, 4.8e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.48e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.84e-23 1/year, 4.96e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -264,7 +264,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.484 m/year, 1.04 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.79e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.24e-23 1/year, 4.91e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.92e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.41e-23 1/year, 4.63e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -276,7 +276,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.383 m/year, 0.855 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.77e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.22e-23 1/year, 4.87e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.9e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.39e-23 1/year, 4.53e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -288,7 +288,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.306 m/year, 0.73 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.88e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.37e-23 1/year, 4.51e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.64e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.05e-23 1/year, 5.43e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -300,7 +300,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.25 m/year, 0.656 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.74e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.18e-23 1/year, 5.02e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.78e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.23e-23 1/year, 4.95e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -312,7 +312,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.21 m/year, 0.586 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.73e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.17e-23 1/year, 5.18e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.75e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.19e-23 1/year, 4.41e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -324,7 +324,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.18 m/year, 0.516 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.65e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.07e-23 1/year, 4.97e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.84e+08 kg*m^2/year, 7.67e+30 kg*m^2, 6.32e-23 1/year, 4.43e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -336,7 +336,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.157 m/year, 0.448 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.41e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.76e-23 1/year, 4.43e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.55e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.93e-23 1/year, 4.54e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -348,7 +348,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.141 m/year, 0.41 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.44e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.79e-23 1/year, 4.46e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 4.51e+08 kg*m^2/year, 7.67e+30 kg*m^2, 5.88e-23 1/year, 4.25e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
@@ -360,7 +360,7 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 
    Postprocessing:
      RMS, max velocity:                                                               0.14 m/year, 0.409 m/year
-     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.5e+08 kg*m^2/year, 7.67e+30 kg*m^2, 4.56e-23 1/year, 4.71e-19 1/year
+     Angular momentum, Moment of inertia, Angular velocity, Surface angular velocity: 3.58e+08 kg*m^2/year, 7.67e+30 kg*m^2, 4.67e-23 1/year, 4.38e-19 1/year
 
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)

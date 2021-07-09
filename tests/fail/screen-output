@@ -8,6 +8,7 @@ An error occurred in file <main.cc> in function
 The violated condition was: 
     (dim >= 2) && (dim <= 3)
 Additional information: 
-    ASPECT can only be run in 2d and 3d but a different space dimension is given in the parameter file.
+    ASPECT can only be run in 2d and 3d but a different space dimension is
+    given in the parameter file.
 
 Aborting!
