@@ -389,11 +389,6 @@ namespace aspect
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields).");
-        prm.declare_entry ("Index of first mass fraction compositional field", "0",
-                           Patterns::Integer (0),
-                           "The index of the first compositional field which "
-                           "corresponds to the mass fraction of a material. "
-                           "The indexing starts at 0.");
         prm.declare_entry ("Material file format", "perplex",
                            Patterns::Selection ("perplex|hefesto"),
                            "The material file format to be read in the property "
