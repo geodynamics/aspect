@@ -163,6 +163,14 @@ namespace aspect
 
 
       template <int dim>
+      Interface<dim>::Interface (const std::string &physical_units)
+        :
+        physical_units (physical_units)
+      {}
+
+
+
+      template <int dim>
       Interface<dim>::~Interface ()
       {}
 
