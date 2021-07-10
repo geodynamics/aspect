@@ -1218,6 +1218,11 @@ namespace aspect
     namespace MaterialUtilities
     {
 #define INSTANTIATE(dim) \
+  template void fill_averaged_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
+                                                              const std::vector<double> &, \
+                                                              const std::vector<double> &, \
+                                                              const unsigned int, \
+                                                              MaterialModelOutputs<dim> &); \
   template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>;
 

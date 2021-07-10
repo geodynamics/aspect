@@ -325,7 +325,7 @@ namespace aspect
       /**
       * This function computes averages of multicomponent thermodynamic properties
       * that are stored in a vector of EquationOfStateOutputs.
-      * Each EquationOfStateOutput contains the thermodynamic properties for
+      * Each @p eos_outputs contains the thermodynamic properties for
       * all materials at a given evaluation point.
       * The averaged properties are:
       * density, isothermal compressibility, thermal_expansivity,
