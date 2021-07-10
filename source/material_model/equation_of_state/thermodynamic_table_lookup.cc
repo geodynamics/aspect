@@ -47,8 +47,8 @@ namespace aspect
         // phases from different lookups if they have the same phase name.
         std::set<std::string> set_phase_volume_column_names;
 
-        // Resize the unique_phase_indices object
         unique_phase_indices.resize(n_material_lookups, std::vector<unsigned int>());
+        global_index_of_lookup_phase.resize (n_material_lookups, std::vector<unsigned int>());
 
         for (unsigned i = 0; i < n_material_lookups; i++)
           {
@@ -91,6 +91,49 @@ namespace aspect
                 if (it == unique_phase_names.end())
                   unique_phase_names.push_back(phase_volume_column_name);
               }
+
+            // Do the same for the dominant phases
+            std::vector<std::string> phase_names_one_lookup = material_lookup[i]->get_dominant_phase_names();
+            for (const auto &phase_name : phase_names_one_lookup)
+              {
+                std::vector<std::string>::iterator it = std::find(list_of_dominant_phases.begin(),
+                                                                  list_of_dominant_phases.end(),
+                                                                  phase_name);
+
+                // Each lookup only stores the index for the individual lookup, so we have to know
+                // how to convert from the indices of the individual lookup to the index in the
+                // list_of_dominant_phases vector. Here we fill the global_index_of_lookup_phase
+                // object to contain the global indices.
+                global_index_of_lookup_phase[i].push_back(std::distance(list_of_dominant_phases.begin(), it));
+
+                if (it == list_of_dominant_phases.end())
+                  list_of_dominant_phases.push_back(phase_name);
+              }
+          }
+
+        // Since the visualization output can only contain numbers and not strings
+        // we have to output the index instead of the name of the phase.
+        // We write out a data file that contains the list of dominant phases so
+        // that it is clear which index corresponds to which phase from the table.
+        const std::string filename = (this->get_output_directory() +
+                                      "phases.txt");
+
+        if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          {
+            std::ofstream file;
+            file.open(filename);
+            file << "# <index>  <phase> ";
+            for (unsigned int p=0; p<this->list_of_dominant_phases.size(); ++p)
+              {
+                file << std::endl
+                     << p
+                     << " "
+                     << list_of_dominant_phases[p];
+              }
+            AssertThrow (file, ExcMessage("Writing data to <" + filename +
+                                          "> did not succeed in the `phase outputs' additional names outputs "
+                                          "visualization postprocessor."));
+            file.close();
           }
       }
 
@@ -189,6 +232,36 @@ namespace aspect
               phase_volume_fractions[unique_phase_indices[j][k]][i] += volume_fractions[i][j] * material_lookup[j]->phase_volume_fraction(k,in.temperature[i],in.pressure[i]);
 
         phase_volume_fractions_out->output_values = phase_volume_fractions;
+      }
+
+
+
+      template <int dim>
+      void
+      ThermodynamicTableLookup<dim>::
+      fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
+                            const std::vector<std::vector<double>> &volume_fractions,
+                            PhaseOutputs<dim> *dominant_phases_out) const
+      {
+        Assert(material_lookup[0]->has_dominant_phase(),
+               ExcMessage("You are trying to fill in outputs for the dominant phase, "
+                          "but these values do not exist in the material lookup."));
+
+        // Each call to material_lookup[j]->dominant_phase(temperature,pressure)
+        // returns the phase with the largest volume fraction in that material lookup
+        // at the requested temperature and pressure.
+        // In the following function,
+        // the index i corresponds to the ith evaluation point
+        // the index j corresponds to the jth compositional field
+        std::vector<std::vector<double> > dominant_phase_indices(1, std::vector<double>(in.n_evaluation_points(),
+                                                                                        std::numeric_limits<double>::quiet_NaN()));
+        for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
+          {
+            const unsigned int index_of_lookup = distance(volume_fractions[i].begin(), max_element(volume_fractions[i].begin(), volume_fractions[i].end()));
+            const unsigned int index_in_lookup = material_lookup[index_of_lookup]->dominant_phase(in.temperature[i],in.pressure[i]);
+            dominant_phase_indices[0][i] = global_index_of_lookup_phase[index_of_lookup][index_in_lookup];
+          }
+        dominant_phases_out->output_values = dominant_phase_indices;
       }
 
 
@@ -351,6 +424,9 @@ namespace aspect
         // fill phase volume outputs if they exist
         if (NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out = out.template get_additional_output<NamedAdditionalMaterialOutputs<dim> >())
           fill_phase_volume_fractions(in, volume_fractions, phase_volume_fractions_out);
+
+        if (PhaseOutputs<dim> *dominant_phases_out = out.template get_additional_output<PhaseOutputs<dim> >())
+          fill_dominant_phases(in, volume_fractions, dominant_phases_out);
       }
 
 
@@ -458,6 +534,14 @@ namespace aspect
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
               std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+          }
+
+        if (out.template get_additional_output<PhaseOutputs<dim> >() == nullptr
+            && material_lookup[0]->has_dominant_phase())
+          {
+            const unsigned int n_points = out.n_evaluation_points();
+            out.additional_outputs.push_back(
+              std_cxx14::make_unique<MaterialModel::PhaseOutputs<dim>> (n_points));
           }
       }
     }

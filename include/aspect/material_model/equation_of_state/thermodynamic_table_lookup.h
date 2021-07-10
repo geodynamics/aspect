@@ -147,6 +147,23 @@ namespace aspect
           std::vector<std::vector<unsigned int>> unique_phase_indices;
 
           /**
+           * Vector of strings containing the names of the dominant phases in all the material lookups.
+           */
+          std::vector<std::string> list_of_dominant_phases;
+
+          /**
+           * Each lookup table reads in their own dominant phases and assigns indices based
+           * on all phases in that particular lookup. Since a model can have more than one
+           * lookup, it might have more phases than present in each lookup. We want to output
+           * unique/consistent indices for each phase, so we have to convert the indices of a phase
+           * in the individual lookup to the index in the global list of phases. This vector
+           * of vectors of unsigned int stores the global index for each lookup (so there are
+           * as many inner vectors as lookups, and each one stores the indices for an individual
+           * lookup, to be filled in the initialize function).
+           */
+          std::vector<std::vector<unsigned int> > global_index_of_lookup_phase;
+
+          /**
            * Compute the specific heat and thermal expansivity using the pressure
            * and temperature derivatives of the specific enthalpy.
            * This evaluation incorporates the effects of latent heat production.
@@ -177,7 +194,7 @@ namespace aspect
           * This function uses the MaterialModelInputs &in to fill the output_values
           * of the phase_volume_fractions_out output object with the volume
           * fractions of each of the unique phases at each of the evaluation points.
-          * These volume fractions are obtained from the Perple_X-derived
+          * These volume fractions are obtained from the Perple_X- or HeFESTo-derived
           * pressure-temperature lookup tables.
           * The filled output_values object is a vector of vector<double>;
           * the outer vector is expected to have a size that equals the number
@@ -187,6 +204,22 @@ namespace aspect
           void fill_phase_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                                             const std::vector<std::vector<double>> &volume_fractions,
                                             NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
+
+
+
+          /**
+          * This function uses the MaterialModelInputs &in to fill the output_values
+          * of the dominant_phases_out output object with the index of the
+          * dominant phase at each of the evaluation points.
+          * The phases are obtained from the Perple_X- or HeFESTo-derived
+          * pressure-temperature lookup tables.
+          * The filled output_values object is a vector of vector<unsigned int>;
+          * the outer vector is expected to have a size of 1, the inner vector is
+          * expected to have a size that equals the number of evaluation points.
+          */
+          void fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
+                                     const std::vector<std::vector<double>> &volume_fractions,
+                                     PhaseOutputs<dim> *dominant_phases_out) const;
       };
     }
   }

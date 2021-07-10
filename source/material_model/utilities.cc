@@ -184,6 +184,21 @@ namespace aspect
           return (drho - rho) / delta_press;
         }
 
+        unsigned int
+        MaterialLookup::dominant_phase (const double temperature,
+                                        const double pressure) const
+        {
+          if (!has_dominant_phase_column)
+            AssertThrow(false, ExcMessage("You can not ask for the column with the dominant phase if it does not exist in the data file."));
+          return value(temperature, pressure, dominant_phase_values);
+        }
+
+        bool
+        MaterialLookup::has_dominant_phase() const
+        {
+          return has_dominant_phase_column;
+        }
+
         std::vector<std::string>
         MaterialLookup::phase_volume_column_names() const
         {
@@ -196,6 +211,13 @@ namespace aspect
                                               const double pressure) const
         {
           return value(temperature,pressure,phase_volume_fractions[phase_id],interpolation);
+        }
+
+
+        const std::vector<std::string> &
+        MaterialLookup::get_dominant_phase_names() const
+        {
+          return dominant_phase_names;
         }
 
         double
@@ -231,6 +253,23 @@ namespace aspect
                       (1-xi)*eta    *values[inT][inp+1] +
                       xi    *eta    *values[inT+1][inp+1]);
             }
+        }
+
+        unsigned int
+        MaterialLookup::value (const double temperature,
+                               const double pressure,
+                               const Table<2, unsigned int> &values) const
+        {
+          const double nT = get_nT(temperature);
+          const unsigned int inT = static_cast<unsigned int>(nT);
+
+          const double np = get_np(pressure);
+          const unsigned int inp = static_cast<unsigned int>(np);
+
+          Assert(inT<values.n_rows(), ExcMessage("Attempting to look up a temperature value with index greater than the number of rows."));
+          Assert(inp<values.n_cols(), ExcMessage("Attempting to look up a pressure value with index greater than the number of columns."));
+
+          return values[inT][inp];
         }
 
         std::array<double,2>
@@ -553,6 +592,7 @@ namespace aspect
           // Properties are stored in the order rho, alpha, cp, vp, vs, h
           std::vector<int> prp_indices(6, -1);
           std::vector<int> phase_column_indices;
+          unsigned int dominant_phase_column_index = numbers::invalid_unsigned_int;
 
           // First two columns should be P(bar) and T(K).
           // Here we find the order.
@@ -592,6 +632,11 @@ namespace aspect
                 prp_indices[4] = n;
               else if (column_name == "h,J/kg")
                 prp_indices[5] = n;
+              else if (column_name == "phase")
+                {
+                  has_dominant_phase_column = true;
+                  dominant_phase_column_index = n;
+                }
               else if (column_name.length() > 3)
                 {
                   if (column_name.substr(0,13).compare("vol_fraction_") == 0)
@@ -640,6 +685,9 @@ namespace aspect
           vs_values.reinit(n_temperature,n_pressure);
           enthalpy_values.reinit(n_temperature,n_pressure);
 
+          if (has_dominant_phase_column)
+            dominant_phase_values.reinit(n_temperature,n_pressure);
+
           phase_volume_fractions.resize(phase_column_names.size());
           for (auto &phase_volume_fraction : phase_volume_fractions)
             phase_volume_fraction.reinit(n_temperature,n_pressure);
@@ -650,10 +698,14 @@ namespace aspect
           while (!in.eof())
             {
               std::vector<double> row_values(n_columns);
+              std::string phase;
 
               for (unsigned int n=0; n<n_columns; n++)
                 {
-                  in >> row_values[n]; // assigned as 0 if in.fail() == True
+                  if (n==dominant_phase_column_index)
+                    in >> phase;
+                  else
+                    in >> row_values[n]; // assigned as 0 if in.fail() == True
 
                   // P-T grids created with PerpleX-werami sometimes contain rows
                   // filled with NaNs at extreme P-T conditions where the thermodynamic
@@ -679,6 +731,9 @@ namespace aspect
               if (in.eof())
                 break;
 
+              if (std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase) == dominant_phase_names.end())
+                dominant_phase_names.push_back(phase);
+
               // The ordering of the first two columns in the PerpleX table files
               // dictates whether the inner loop is over temperature or pressure.
               // The first column is always the inner loop.
@@ -693,6 +748,12 @@ namespace aspect
                   vs_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[4]];
                   enthalpy_values[i%n_temperature][i/n_temperature]=row_values[prp_indices[5]];
 
+                  if (has_dominant_phase_column)
+                    {
+                      std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
+                      dominant_phase_values[i%n_temperature][i/n_temperature] = std::distance(dominant_phase_names.begin(), it);
+                    }
+
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {
                       phase_volume_fractions[n][i%n_temperature][i/n_temperature]=row_values[phase_column_indices[n]];
@@ -706,6 +767,12 @@ namespace aspect
                   vp_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[3]];
                   vs_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[4]];
                   enthalpy_values[i/n_pressure][i%n_pressure]=row_values[prp_indices[5]];
+
+                  if (has_dominant_phase_column)
+                    {
+                      std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
+                      dominant_phase_values[i/n_pressure][i%n_pressure] = std::distance(dominant_phase_names.begin(), it);
+                    }
 
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
                     {

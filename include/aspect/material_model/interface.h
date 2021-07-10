@@ -963,6 +963,21 @@ namespace aspect
     };
 
 
+
+    /**
+     * Additional output fields for the phase with the largest fraction
+     * to be added to the MaterialModel::MaterialModelOutputs structure
+     * and filled in the MaterialModel::evaluate() function.
+     */
+    template <int dim>
+    class PhaseOutputs : public NamedAdditionalMaterialOutputs<dim>
+    {
+      public:
+        PhaseOutputs(const unsigned int n_points);
+    };
+
+
+
     /**
      * Additional output fields for prescribed field outputs to be added to
      * the MaterialModel::MaterialModelOutputs structure and filled in the

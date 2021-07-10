@@ -1028,6 +1028,26 @@ namespace aspect
 
 
 
+    namespace
+    {
+      std::vector<std::string> make_phase_outputs_names()
+      {
+        std::vector<std::string> names;
+        names.emplace_back("phase");
+        return names;
+      }
+    }
+
+
+
+    template <int dim>
+    PhaseOutputs<dim>::PhaseOutputs (const unsigned int n_points)
+      :
+      NamedAdditionalMaterialOutputs<dim>(make_phase_outputs_names(), n_points)
+    {}
+
+
+
     template<int dim>
     PrescribedFieldOutputs<dim>::PrescribedFieldOutputs (const unsigned int n_points,
                                                          const unsigned int n_comp)
@@ -1134,6 +1154,8 @@ namespace aspect
   template class SeismicAdditionalOutputs<dim>; \
   \
   template class ReactionRateOutputs<dim>; \
+  \
+  template class PhaseOutputs<dim>; \
   \
   template class PrescribedPlasticDilation<dim>; \
   \
