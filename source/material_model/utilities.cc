@@ -776,7 +776,7 @@ namespace aspect
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
 
-        if (n_fields == 1)
+        if (n_fields == 1 && return_as_fraction)
           {
             volumes[0] = 1.0;
             return volumes;
