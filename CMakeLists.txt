@@ -22,6 +22,16 @@ MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
 MESSAGE(STATUS "====================================================")
 
+IF ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  MESSAGE(FATAL_ERROR  "ASPECT does not support in-source builds in ${CMAKE_BINARY_DIR}. \
+  Run cmake from a separate build directory. \
+  \
+  Note that cmake created a file \
+  called CMakeCache.txt and a folder called CMakeFiles in the source \
+  directory that you have to remove before you can begin a build in a \
+  different directory.")
+ENDIF()
+
 # Set the name of the project and target:
 SET(TARGET "aspect")
 
