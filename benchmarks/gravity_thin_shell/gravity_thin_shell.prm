@@ -1,13 +1,19 @@
 # A simple setup for testing the gravity postprocessor using the 
-# sample scheme 'map'.
+# sample scheme 'map'. The domain is a 5km thick thin shell of constant density.
+# An analytical solution exists for the gravitational acceleration 
+# and potential so that values returned by the gravity postprocessor
+# can be benchmarked on a longitude-latitude grid at satellite orbit height.  
 
-# General parameters
 set Dimension                              = 3
 set End time                               = 0
 set Output directory                       = output_thin_shell_gravity
 set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry
+# The thin shell (5km thickness) can be centered around 5 different depths, 
+# 0, 100, 500, 1500 and 3000km, i.e. radii 6371, 6271, 5871, 4871 and 3371km.
+# The default depth is here 100km while other corresponding inner and outer
+# radii are commented.
 subsection Geometry model
   set Model name = spherical shell
   subsection Spherical shell
@@ -32,12 +38,10 @@ subsection Geometry model
   end
 end
 
-# Model boundary velocity
 subsection Boundary velocity model
   set Zero velocity boundary indicators = top, bottom
 end
 
-# Material model
 subsection Material model
   set Model name = simple
   subsection Simple model
@@ -46,7 +50,6 @@ subsection Material model
   end
 end
 
-# Model gravity
 subsection Gravity model
   set Model name = radial constant
   subsection Radial constant
@@ -54,12 +57,10 @@ subsection Gravity model
   end
 end
 
-# Mesh refinement
 subsection Mesh refinement
   set Initial global refinement = 0
 end
 
-# Postprocessing
 subsection Postprocess
   set List of postprocessors = gravity calculation,visualization
   subsection Visualization

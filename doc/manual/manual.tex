@@ -9477,28 +9477,30 @@ The parameter file and initial temperature model for this benchmark can be found
 \subsubsection{Thin shell gravity benchmark}
 \label{sec:benchmark-thin-shell-gravity}
 
-\textit{This section was contributed by Cedric Thieulot, Bart Root and Paul Bremmer.}
+\textit{This section was contributed by Cedric Thieulot, Bart Root and Paul Bremner.}
 
-The domain is a spherical shell of 10~\si{\km} radius centered at a depth $D$, i.e. the inner radius is $R_i=6371-D-5~\si{\km}$ and the outer radius $R_o=6371-D+5~ \si{\km}$. It is filled with a fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\metre}$ with total mass $M=\frac43 \pi (R_o^3-R_i^3)$.
+The idea behind this benchmark is to test the accuracy of the gravity postprocessor: the domain is a thin shell of constant density somewhere in the Earth mantle and we wish to compute the resultiong gravity field and potential at satellite height.
 
-\noindent Both the Stokes and energy equations solve are bypassed:
+The domain is a spherical shell of 10~\si{\km} radius centered at a depth $D$, i.e. the inner radius is $R\textsubscript{inner}=6371-D-5~\si{\km}$ and the outer radius $R\textsubscript{outer}=6371-D+5~ \si{\km}$. It is filled with a fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\metre}$ with total mass $M=\frac43 \pi (R\textsubscript{outer}^3-R\textsubscript{inner}^3)\rho_0$.
+
+Both the Stokes and energy equations solve are bypassed:
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/gravity_thin_shell/doc/thinshell_b.prm.out}
 
-We make use of the Custom mesh subdivision option to generate a mesh where a single cell is used in the radial direction (parameterized with the number of 'slices') while 6 blocks (default value) of $2^5\times 2^5$ cells are used in the lateral direction. This gives a total of 6,144 mesh cells. For $D=100~\si{\km}$ the parameterization of the mesh is then as follows:
+We make use of the Custom mesh subdivision option to generate a mesh where a single cell is used in the radial direction (parameterized with the number of `slices') while 6 blocks (default value) of $2^5\times 2^5$ cells are used in the lateral direction. This gives a total of 6,144 mesh cells. For $D=100~\si{\km}$ the parameterization of the mesh is then as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/gravity_thin_shell/doc/thinshell_a.prm.out}
 
-We wish to compute the gravity potential $U$ and the gravity vector ${\mathbf g}$ at a height of $250~\si{\km}$ above the surface of the Earth (i.e. the satellite is flying at a radius of $R_s=6371+250=6621~\si{\km}$) on a regular longitude-latitude grid spanning the whole Earth, with a $2\si{\degree}\times 2\si{\degree}$ resolution:
+We wish to compute the gravity potential $U$ and the gravity vector ${\mathbf g}$ at a radius of $R\textsubscript{s}=6371+250=6621~\si{\km}$ (i.e. the gravity experienced by a satellite flying at a height of $250~\si{\km}$ above the surface of the Earth) on a regular longitude-latitude grid spanning the whole Earth, with a $2\si{\degree}\times 2\si{\degree}$ resolution:
 
 \lstinputlisting[language=prmfile]{cookbooks/benchmarks/gravity_thin_shell/doc/thinshell_c.prm.out}
 
-The Gauss-Legendre Quadrature (GLQ) algorithm is central to the ASPECT code as it is used to compute the elemental integrals stemming from the discretisation of the weak form of the PDEs. Logically, the gravity postprocessor is also based on the GLQ since the potential $U$ at any location in space is given by the integral 
+The Gauss-Legendre Quadrature (GLQ) algorithm is central to the \aspect{} code as it is used to compute the elemental integrals stemming from the discretization of the weak form of the PDEs. Logically, the gravity postprocessor is also based on the GLQ since the potential $U$ at any location in space is given by the integral 
 \begin{equation}
 U({\mathbf r}) = \iiint_\Omega \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
 = \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
 \end{equation}
-where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\si{\cubic\metre\per\kg\per\square\second}$ is the gravitaional constant. The gravity acceleration vector is obtained via ${\mathbf g}=-{\mathbf \nabla} U$, or 
+where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\si{\cubic\metre\per\kg\per\square\second}$ is the gravitational constant. The gravity acceleration vector is obtained via ${\mathbf g}=-{\mathbf \nabla} U$, or 
 \begin{equation}
 {\mathbf g}({\mathbf r}) = 
 \iiint_\Omega  \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'
@@ -9506,9 +9508,9 @@ where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\s
 \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|^2} d{\mathbf r}'.
 \end{equation}
 
-The default number of quadrature points for each cell in the postprocessor is $2^{ndim}$, where $ndim$ is the number of dimensions. The $n$-point GLQ allows exact integration of $(2n-1)$-order polynomials. However, the integrand of the Newton integral is not a polynomial (it contains a term $\sim r^{-m}$), so there is not an optimal number of quadrature points to use. Therefore, the postprocessor allows the user to choose how many additional points per dimension are used with an expectation that an increase in the number of quadrature points inside the cells leads to a more accurate calculation. This increase number $I$ is set to 1 in the example above, although it can also be chosen to be 0, 1, 2 or even -1. The case $I=-1$ approximates the cell as a point mass since there is a single quadrature point in the middle of the cell.
+The default number of quadrature points for each cell in the postprocessor is $2\textsuperscript{ndim}$, where ndim is the number of dimensions. The $n$-point GLQ allows exact integration of $(2n-1)$-order polynomials. However, the integrand of the Newton integral is not a polynomial (it contains a term $\sim r^{-m}$), so there is not an optimal number of quadrature points to use. Therefore, the postprocessor allows the user to choose how many additional points per dimension are used with an expectation that an increase in the number of quadrature points inside the cells leads to a more accurate calculation. This increase number $I$ is set to 1 in the example above, although it can also be chosen to be 0, 1, 2 or even -1. The case $I=-1$ approximates the cell as a point mass since there is a single quadrature point in the middle of the cell.
 
-Given the symmetry of the problem the value of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(R_s) = - {\cal G}M/R_s$ and $|{\mathbf g}(R_s)|= g_r(R_s)={\cal G}M/R_s^2$. 
+Given the symmetry of the problem the value of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(R\textsubscript{s}) = - GM/R\textsubscript{s}$ and $|{\mathbf g}(R\textsubscript{s})|= g_r(R\textsubscript{s})=GM/R\textsubscript{s}^2$. 
 
 Minimum, maximum, and average values of both the potential and the acceleration are printed in the statistics file while measurements at all the desired points are written in the output\_gravity folder inside the output folder. We ran the input file for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results are presented in Table~\ref{tab:thin_shell_gravity_benchmark} alongside the analytical values.
 
@@ -9676,9 +9678,8 @@ avrg. & min & max    \\
 \label{tab:thin_shell_gravity_benchmark}
 \end{table}
 
-The accuracy of the calculations increases with $I$ but so does the time spent in the postprocessor: for $I\in\{-1,0,1,2\}$  this time was about 18, 132, 440 and 1040~\si{s} respectively. This is easily explained when one realises that increasing $I$ from 0 to 1 means that the number of GLQ points per cell goes from $2^3=8$ to $3^3=27$, i.e. a $3.375$ increase in operations for the same number of cells and measurement points. Coincidentally, the time spent in the postprocessor increases by the same amount $440/132\sim 3.4$.
-The accuracy obtained with lower $I$ values increases with increasing anomaly depth (or increasing distance from the observation point). Note that this simplistic case has uniform density so that the projection of the density from the nodes onto the quadrature points is exact and it does not introduce any smoothing of data which might occur in the presence of density discontinuities (e.g. air-water, water-crust, moho, etc.) inside a cell.
-In conclusion, $I=1$ seems to be the best compromise between accuracy and compute time for this experiment.
+The accuracy of the calculations increases with $I$ but so does the time spent in the postprocessor: for $I\in\{-1,0,1,2\}$  this time was about 18, 132, 440 and 1040~\si{s} respectively. This is easily explained when one realizes that increasing $I$ from 0 to 1 means that the number of GLQ points per cell goes from $2^3=8$ to $3^3=27$, i.e. a $3.375$ increase in operations for the same number of cells and measurement points. The time spent in the postprocessor increases by a similar factor $440/132\sim 3.4$.
+The accuracy obtained with lower $I$ values increases with increasing anomaly depth (or increasing distance from the observation point). Note that this benchmark has uniform density so that the projection of the density from the nodes onto the quadrature points is exact and it does not introduce any smoothing of data which might occur in the presence of density discontinuities (e.g. air-water, water-crust, moho, etc.) inside a cell. $I=1$ seems to be the best compromise between accuracy (gravity acceleration errors are less than 0.01~mGal for all shells) and compute time for this experiment.
 
 \subsubsection{Brittle thrust wedges benchmark}
 \label{sec:benchmark-brittle-thrust-wedge}
