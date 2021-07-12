@@ -1,0 +1,14 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Average gravity acceleration (m/s^2)
+# 9: Minimum gravity acceleration (m/s^2)
+# 10: Maximum gravity acceleration (m/s^2)
+# 11: Average gravity potential (m^2/s^2)
+# 12: Minimum gravity potential (m^2/s^2)
+# 13: Maximum gravity potential (m^2/s^2)
+0 0.000000000000e+00 0.000000000000e+00 12 478 150 0 1.311789843774e-04 1.311789843774e-04 1.311789843774e-04 -5.219418013409e-04 -5.219418013409e-04 -5.219418013409e-04 
