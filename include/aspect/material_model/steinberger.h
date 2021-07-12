@@ -214,7 +214,24 @@ namespace aspect
 
 
       private:
-        bool has_background;
+        /**
+         * Whether the compositional fields representing mass fractions
+         * should be normalized to one when computing their fractions
+         * (if false), or whether there is an additional composition
+         * (the background field) that is not represented by a
+         * compositional field, and makes up the remaining fraction of
+         * material if the compositional fields add up to less than one
+         * at any given location (if true).
+         */
+        bool has_background_field;
+
+        /**
+         * Pointer to a composition mask, which is meant to be filled with
+         * one entry per compositional field that determines if this
+         * field is considered to represent a mass fractions (if the entry
+         * is set to true) or not (if set to false). This is needed for
+         * averaging of material properties.
+         */
         std::unique_ptr<ComponentMask> composition_mask;
 
         /**

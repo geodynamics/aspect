@@ -245,8 +245,7 @@ namespace aspect
        */
       std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
-                                    const ComponentMask &field_mask = ComponentMask(),
-                                    const bool has_background_field = true);
+                                    const ComponentMask &field_mask = ComponentMask());
 
       /**
        * See compute_composition_fractions() for the documentation of this function.
@@ -261,7 +260,8 @@ namespace aspect
        * Given a vector of component masses,
        * and another of the corresponding densities, calculate the volumes
        * of each component. If return_as_fraction is true, the returned vector
-       * will sum to one.
+       * will sum to one. If the input vectors have a length of one, the
+       * returned volume fraction is one.
        */
       std::vector<double>
       compute_volumes_from_masses(const std::vector<double> &masses,
