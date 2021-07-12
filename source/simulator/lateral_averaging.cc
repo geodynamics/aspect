@@ -165,6 +165,54 @@ namespace aspect
 
 
     template <int dim>
+    class FunctorDepthAverageRisingVelocity: public internal::FunctorBase<dim>
+    {
+      public:
+        FunctorDepthAverageRisingVelocity(const FEValuesExtractors::Vector &field,
+                                          const GravityModel::Interface<dim> *gravity,
+                                          bool convert_to_years)
+          : field_(field),
+            gravity_(gravity),
+            convert_to_years_(convert_to_years)
+        {}
+
+        bool need_material_properties() const override
+        {
+          // this is needed because we want to access in.position in operator()
+          return true;
+        }
+
+        void setup(const unsigned int q_points) override
+        {
+          velocity_values.resize(q_points);
+        }
+
+        void operator()(const MaterialModel::MaterialModelInputs<dim> &in,
+                        const MaterialModel::MaterialModelOutputs<dim> &,
+                        const FEValues<dim> &fe_values,
+                        const LinearAlgebra::BlockVector &solution,
+                        std::vector<double> &output) override
+        {
+          fe_values[field_].get_function_values (solution, velocity_values);
+          for (unsigned int q=0; q<output.size(); ++q)
+            {
+              const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
+              const Tensor<1,dim> vertically_up = (g.norm() > 0 ? -g/g.norm() : Tensor<1,dim>());
+
+              output[q] = std::fabs(std::max(0.0, velocity_values[q] * vertically_up))
+                          * (convert_to_years_ ? year_in_seconds : 1.0);
+            }
+        }
+
+        std::vector<Tensor<1,dim>> velocity_values;
+        const FEValuesExtractors::Vector field_;
+        const GravityModel::Interface<dim> *gravity_;
+        const bool convert_to_years_;
+    };
+
+
+
+    template <int dim>
     class FunctorDepthAverageVsVp: public internal::FunctorBase<dim>
     {
       public:
@@ -640,6 +688,15 @@ namespace aspect
 
 
   template <int dim>
+  void LateralAveraging<dim>::get_rising_velocity_averages(std::vector<double> &values) const
+  {
+    values = compute_lateral_averages(values.size(),
+                                      std::vector<std::string>(1,"rising_velocity"))[0];
+  }
+
+
+
+  template <int dim>
   void LateralAveraging<dim>::get_Vs_averages(std::vector<double> &values) const
   {
     values = compute_lateral_averages(values.size(),
@@ -732,6 +789,13 @@ namespace aspect
         else if (property_names[property_index] == "sinking_velocity")
           {
             functors.push_back(std_cxx14::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
+                               (this->introspection().extractors.velocities,
+                                &this->get_gravity_model(),
+                                this->convert_output_to_years()));
+          }
+        else if (property_names[property_index] == "rising_velocity")
+          {
+            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageRisingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));

@@ -248,7 +248,7 @@ namespace aspect
       get_velocity_magnitude_averages(std::vector<double> &values) const;
 
       /**
-       * Compute a lateral average of the current sinking velocity.
+       * Compute a lateral average of the current rising velocity.
        *
        * @param values The output vector of laterally averaged values. The
        * function takes the pre-existing size of this vector as the number of
@@ -256,6 +256,16 @@ namespace aspect
        */
       void
       get_sinking_velocity_averages(std::vector<double> &values) const;
+
+      /**
+       * Compute a lateral average of the current sinking velocity.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_rising_velocity_averages(std::vector<double> &values) const;
 
       /**
        * Compute a lateral average of the seismic shear wave speed: Vs.
