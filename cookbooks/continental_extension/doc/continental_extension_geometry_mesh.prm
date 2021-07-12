@@ -1,15 +1,22 @@
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X repetitions = 200
-    set Y repetitions = 50
-    set X extent      = 400e3
+    set X repetitions = 10
+    set Y repetitions = 5
+    set X extent      = 200e3
     set Y extent      = 100e3
   end
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 2
   set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if ( y>=50e3 && x>=40.e3 && x<=160.e3, 4, 3)
+  end
+  set Run postprocessors on initial refinement = false
 end
