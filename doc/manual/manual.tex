@@ -9479,7 +9479,7 @@ The parameter file and initial temperature model for this benchmark can be found
 
 \textit{This section was contributed by Cedric Thieulot, Bart Root and Paul Bremner.}
 
-The idea behind this benchmark is to test the accuracy of the gravity postprocessor: the domain is a thin shell of constant density somewhere in the Earth mantle and we wish to compute the resultiong gravity field and potential at satellite height.
+The idea behind this benchmark is to test the accuracy of the gravity postprocessor: the domain is a thin shell of constant density somewhere in the Earth mantle and we wish to compute the resulting gravity field and potential at satellite height.
 
 The domain is a spherical shell of 10~\si{\km} radius centered at a depth $D$, i.e. the inner radius is $R\textsubscript{inner}=6371-D-5~\si{\km}$ and the outer radius $R\textsubscript{outer}=6371-D+5~ \si{\km}$. It is filled with a fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\metre}$ with total mass $M=\frac43 \pi (R\textsubscript{outer}^3-R\textsubscript{inner}^3)\rho_0$.
 
@@ -9678,7 +9678,7 @@ avrg. & min & max    \\
 \label{tab:thin_shell_gravity_benchmark}
 \end{table}
 
-The accuracy of the calculations increases with $I$ but so does the time spent in the postprocessor: for $I\in\{-1,0,1,2\}$  this time was about 18, 132, 440 and 1040~\si{s} respectively. This is easily explained when one realizes that increasing $I$ from 0 to 1 means that the number of GLQ points per cell goes from $2^3=8$ to $3^3=27$, i.e. a $3.375$ increase in operations for the same number of cells and measurement points. The time spent in the postprocessor increases by a similar factor $440/132\sim 3.4$.
+The accuracy of the calculations increases with $I$ but so does the time spent in the postprocessor: for $I\in\{-1,0,1,2\}$  this time was about 18, 132, 440 and 1040~\si{s} respectively. This is easily explained when one realizes that increasing $I$ from 0 to 1 means that the number of GLQ points per cell goes from $2^3=8$ to $3^3=27$, i.e. a $3.375$ increase in operations for the same number of cells and measurement points. The time spent in the postprocessor increases by a similar factor ($440/132\sim 3.4$).
 The accuracy obtained with lower $I$ values increases with increasing anomaly depth (or increasing distance from the observation point). Note that this benchmark has uniform density so that the projection of the density from the nodes onto the quadrature points is exact and it does not introduce any smoothing of data which might occur in the presence of density discontinuities (e.g. air-water, water-crust, moho, etc.) inside a cell. $I=1$ seems to be the best compromise between accuracy (gravity acceleration errors are less than 0.01~mGal for all shells) and compute time for this experiment.
 
 \subsubsection{Brittle thrust wedges benchmark}

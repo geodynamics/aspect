@@ -1,8 +1,8 @@
-# A simple setup for testing the gravity postprocessor using the 
-# sample scheme 'map'. The domain is a 5km thick thin shell of constant density.
-# An analytical solution exists for the gravitational acceleration 
+# A simple setup for testing the gravity postprocessor using the
+# sample scheme 'map'. The domain is a 5 km thick thin shell of constant density.
+# An analytical solution exists for the gravitational acceleration
 # and potential so that values returned by the gravity postprocessor
-# can be benchmarked on a longitude-latitude grid at satellite orbit height.  
+# can be benchmarked on a longitude-latitude grid at satellite orbit height.
 
 set Dimension                              = 3
 set End time                               = 0
@@ -10,26 +10,26 @@ set Output directory                       = output_thin_shell_gravity
 set Nonlinear solver scheme                = no Advection, no Stokes
 
 # Model geometry
-# The thin shell (5km thickness) can be centered around 5 different depths, 
-# 0, 100, 500, 1500 and 3000km, i.e. radii 6371, 6271, 5871, 4871 and 3371km.
-# The default depth is here 100km while other corresponding inner and outer
+# The thin shell (5 km thickness) can be centered around 5 different depths,
+# 0, 100, 500, 1500 and 3000 km, i.e. radii 6371, 6271, 5871, 4871 and 3371 km.
+# The default depth is here 100 km while other corresponding inner and outer
 # radii are commented.
 subsection Geometry model
   set Model name = spherical shell
   subsection Spherical shell
-    # layer 0km depth
+    # layer 0 km depth
     #set Inner radius = 6366e3
     #set Outer radius = 6376e3
-    # layer 100km depth
+    # layer 100 km depth
     set Inner radius = 6266e3
     set Outer radius = 6276e3
-    # layer 500km depth
+    # layer 500 km depth
     #set Inner radius = 5866e3
     #set Outer radius = 5876e3
-    # layer 1500km depth
+    # layer 1500 km depth
     #set Inner radius = 4866e3
     #set Outer radius = 4876e3
-    # layer 3000km depth
+    # layer 3000 km depth
     #set Inner radius = 3366e3
     #set Outer radius = 3376e3
     set Custom mesh subdivision = number of slices
@@ -66,11 +66,11 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = density, viscosity, partition
     set Time between graphical output = 0
-    set Interpolate output = false 
+    set Interpolate output = false
   end
   subsection Gravity calculation
-    set Sampling scheme = map 
-    set Minimum radius = 6621e3 
+    set Sampling scheme = map
+    set Minimum radius = 6621e3
     set Minimum longitude = -180
     set Maximum longitude = 179
     set Number points longitude = 180
@@ -80,4 +80,3 @@ subsection Postprocess
     set Quadrature degree increase = 1
   end
 end
-
