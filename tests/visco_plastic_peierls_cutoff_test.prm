@@ -41,10 +41,6 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top, left, right
 end
 
-# Temperature boundary and initial conditions
-subsection Boundary temperature model
-  set List of model names = initial temperature
-end
 subsection Initial temperature model
   set Model name = function
   subsection Function
