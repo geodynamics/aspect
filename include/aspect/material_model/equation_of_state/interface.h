@@ -99,27 +99,7 @@ namespace aspect
       std::vector<double> entropy_derivative_temperature;
     };
 
-    /**
-    * This function computes averages of multicomponent thermodynamic properties
-    * that are stored in a vector of EquationOfStateOutputs.
-    * Each EquationOfStateOutput contains the thermodynamic properties for
-    * all materials at a given evaluation point.
-    * The averaged properties are:
-    * density, isothermal compressibility, thermal_expansivity,
-    * the specific entropy derivatives with respect to pressure and temperature
-    * and the specific heat capacity. The first three of these properties
-    * are averaged by volume fraction, and the second three
-    * (the specific properties) are averaged by mass fraction.
-    * These averages are used to fill the corresponding attributes of
-    * a MaterialModelOutputs object.
-    */
-    template <int dim>
-    void
-    fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
-                                            const std::vector<double> &mass_fractions,
-                                            const std::vector<double> &volume_fractions,
-                                            const unsigned int i,
-                                            MaterialModelOutputs<dim> &out);
+
 
     /**
      * This function takes the output of an equation of state @p eos_outputs_all_phases,
