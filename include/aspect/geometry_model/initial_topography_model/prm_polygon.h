@@ -77,7 +77,7 @@ namespace aspect
         /**
          * The polygons and their points are stored in this vector.
          */
-        std::vector<std::vector<Point<2> > > point_lists;
+        std::vector<std::vector<Point<2>>> point_lists;
 
     };
   }

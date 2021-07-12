@@ -105,7 +105,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) = 0;
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) = 0;
 
           /**
            * Generate one particle in the given cell. This function's main purpose
@@ -113,9 +113,9 @@ namespace aspect
            * after refinement. Of course it can also be utilized by derived classes
            * to generate the initial particle distribution.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim> >
-          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                             const types::particle_index id);
+          std::pair<Particles::internal::LevelInd,Particle<dim>>
+                                                              generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                                                                 const types::particle_index id);
 
 
           /**
@@ -147,9 +147,9 @@ namespace aspect
            * throws an exception of type ExcParticlePointNotInDomain, which
            * can be caught in the calling plugin.
            */
-          std::pair<Particles::internal::LevelInd,Particle<dim> >
-          generate_particle(const Point<dim> &position,
-                            const types::particle_index id) const;
+          std::pair<Particles::internal::LevelInd,Particle<dim>>
+                                                              generate_particle(const Point<dim> &position,
+                                                                                const types::particle_index id) const;
 
           /**
            * Random number generator. For reproducibility of tests it is
@@ -230,12 +230,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 > > \
-    dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 >> \
+        dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
+                                    name, description); \
   }
     }
   }

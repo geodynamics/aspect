@@ -153,7 +153,7 @@ namespace aspect
       std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // Declare the vector 'position_point' to store the position of quadrature points:
-      std::vector<Point<dim> > position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<Point<dim>> position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // The following loop perform the storage of the position and density * JxW values
       // at local quadrature points:
@@ -164,7 +164,7 @@ namespace aspect
         if (cell->is_locally_owned())
           {
             fe_values.reinit (cell);
-            const std::vector<Point<dim> > &position_point_cell = fe_values.get_quadrature_points();
+            const std::vector<Point<dim>> &position_point_cell = fe_values.get_quadrature_points();
             in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
             this->get_material_model().evaluate(in, out);
             for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
@@ -188,7 +188,7 @@ namespace aspect
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
-      std::vector<Point<dim> > satellites_coordinate(n_satellites);
+      std::vector<Point<dim>> satellites_coordinate(n_satellites);
       if (sampling_scheme == map)
         {
           unsigned int p = 0;
@@ -520,7 +520,7 @@ namespace aspect
                              "layer. The default value is 200. Note that sampling "
                              "becomes more uniform with increasing number of satellites");
           prm.declare_entry ("Quadrature degree increase", "0",
-                             Patterns::Integer (0),
+                             Patterns::Integer (-1),
                              "Quadrature degree increase over the velocity element "
                              "degree may be required when gravity is calculated near "
                              "the surface or inside the model. An increase in the "

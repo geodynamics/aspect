@@ -83,8 +83,8 @@ namespace aspect
 
     // the values of the compositional fields are stored as block vectors for each field
     // we have to extract them in this structure
-    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
+    std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
+                                                         std::vector<double> (n_q_points));
 
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,
@@ -109,7 +109,7 @@ namespace aspect
     template <int dim, class AssemblerType>
     void
     initialize_simulator(const Simulator<dim> &simulator,
-                         std::vector<std::unique_ptr<AssemblerType> > &assemblers)
+                         std::vector<std::unique_ptr<AssemblerType>> &assemblers)
     {
       for (unsigned int i=0; i<assemblers.size(); ++i)
         if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers[i].get()))
@@ -122,31 +122,31 @@ namespace aspect
   Simulator<dim>::
   set_stokes_assemblers()
   {
-    assemblers->stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesPreconditioner<dim> >());
-    assemblers->stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim> >());
+    assemblers->stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesPreconditioner<dim>>());
+    assemblers->stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::StokesIncompressibleTerms<dim>>());
 
     if (material_model->is_compressible())
       {
         // The compressible part of the preconditioner is only necessary if we use the simplified A block
         if (parameters.use_full_A_block_preconditioner == false)
           assemblers->stokes_preconditioner.push_back(
-            std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim> >());
+            std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
 
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesCompressibleStrainRateViscosityTerm<dim>>());
       }
 
     if (parameters.formulation_mass_conservation ==
         Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesImplicitReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile)
       {
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::incompressible)
@@ -157,20 +157,20 @@ namespace aspect
              Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesIsentropicCompressionTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesIsentropicCompressionTerm<dim>>());
       }
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::hydrostatic_compression)
       {
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesHydrostaticCompressionTerm<dim>>());
       }
     else if (parameters.formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::projected_density_field)
       {
         CitationInfo::add("pda");
         assemblers->stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesProjectedDensityFieldTerm<dim>>());
       }
     else
       AssertThrow(false,
@@ -181,13 +181,13 @@ namespace aspect
     if (!boundary_traction.empty())
       {
         assemblers->stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
       }
 
     // add the terms necessary to normalize the pressure
     if (do_pressure_rhs_compatibility_modification)
       assemblers->stokes_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
 
   }
 
@@ -197,13 +197,13 @@ namespace aspect
   set_advection_assemblers()
   {
     assemblers->advection_system.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim> >());
+      std_cxx14::make_unique<aspect::Assemblers::AdvectionSystem<dim>>());
 
     // add the diffusion assemblers if we have fields that use this method
     if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
                   Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end())
       assemblers->advection_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim> >());
+        std_cxx14::make_unique<aspect::Assemblers::DiffusionSystem<dim>>());
 
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
@@ -226,16 +226,16 @@ namespace aspect
                                "Please switch off any of those options or run on a single process."));
 
         assemblers->advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryFace<dim>>());
 
         assemblers->advection_system_on_interior_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemInteriorFace<dim>>());
       }
 
     if (parameters.fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers->advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim> >());
+          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
       }
 
     if (parameters.use_discontinuous_temperature_discretization
@@ -451,7 +451,7 @@ namespace aspect
 
     // then extract the other information necessary to build the
     // AMG preconditioners for the A and M blocks
-    std::vector<std::vector<bool> > constant_modes;
+    std::vector<std::vector<bool>> constant_modes;
     DoFTools::extract_constant_modes (dof_handler,
                                       introspection.component_masks.velocities,
                                       constant_modes);
@@ -507,7 +507,7 @@ namespace aspect
 #ifdef ASPECT_USE_PETSC
         Amg_data.symmetric_operator = false;
 #else
-        std::vector<std::vector<bool> > constant_modes;
+        std::vector<std::vector<bool>> constant_modes;
         dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
         if (parameters.include_melt_transport)
           cm_pressure = cm_pressure | introspection.variable("compaction pressure").component_mask;
@@ -948,7 +948,7 @@ namespace aspect
       {
         material_model->create_additional_named_outputs(scratch.material_model_outputs);
         MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+          = scratch.material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
         Assert(reaction_rate_outputs == nullptr,
                ExcMessage("You are using a material model where the reaction rate outputs "

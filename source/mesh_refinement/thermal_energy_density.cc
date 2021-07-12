@@ -57,8 +57,8 @@ namespace aspect
 
       // the values of the compositional fields are stored as block vectors for each field
       // we have to extract them in this structure
-      std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
-                                                                   std::vector<double> (quadrature.size()));
+      std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
+                                                                  std::vector<double> (quadrature.size()));
 
       MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(), this->n_compositional_fields());

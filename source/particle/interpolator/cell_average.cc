@@ -32,11 +32,11 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      std::vector<std::vector<double> >
-      CellAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                             const std::vector<Point<dim> > &positions,
-                                             const ComponentMask &selected_properties,
-                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      std::vector<std::vector<double>>
+                                    CellAverage<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                                           const std::vector<Point<dim>> &positions,
+                                                                           const ComponentMask &selected_properties,
+                                                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 
@@ -92,7 +92,7 @@ namespace aspect
         else
           {
             std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> neighbors;
-            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim> >(found_cell,neighbors);
+            GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(found_cell,neighbors);
 
             unsigned int non_empty_neighbors = 0;
             for (unsigned int i=0; i<neighbors.size(); ++i)
@@ -103,7 +103,7 @@ namespace aspect
                   continue;
 
                 const std::vector<double> neighbor_properties = properties_at_points(particle_handler,
-                                                                                     std::vector<Point<dim> > (1,neighbors[i]->center(true,false)),
+                                                                                     std::vector<Point<dim>> (1,neighbors[i]->center(true,false)),
                                                                                      selected_properties,
                                                                                      neighbors[i])[0];
 
@@ -133,7 +133,7 @@ namespace aspect
 
           }
 
-        return std::vector<std::vector<double> > (positions.size(),cell_properties);
+        return std::vector<std::vector<double>> (positions.size(),cell_properties);
       }
 
 

@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+      AsciiFile<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
         const std::string filename = data_directory+data_filename;
 

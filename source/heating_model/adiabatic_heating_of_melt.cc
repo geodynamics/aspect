@@ -42,7 +42,7 @@ namespace aspect
                   ExcMessage ("Heating model Adiabatic heating with melt only works if melt transport is enabled."));
 
       // get the melt velocity
-      const MaterialModel::MeltInputs<dim> *melt_in = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >();
+      const MaterialModel::MeltInputs<dim> *melt_in = material_model_inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>();
       AssertThrow(melt_in != nullptr,
                   ExcMessage ("Need MeltInputs from the material model for adiabatic heating with melt!"));
 
@@ -57,7 +57,7 @@ namespace aspect
                                                             * material_model_inputs.temperature[q];
           else
             {
-              const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+              const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
               Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for adiabatic heating with melt."));
 
               heating_model_outputs.heating_source_terms[q] = (-porosity * material_model_inputs.velocity[q]
@@ -131,7 +131,7 @@ namespace aspect
     create_additional_material_model_inputs(MaterialModel::MaterialModelInputs<dim> &inputs) const
     {
       // we need the melt inputs for this adiabatic heating of melt
-      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim> >() != nullptr)
+      if (inputs.template get_additional_input<MaterialModel::MeltInputs<dim>>() != nullptr)
         return;
 
       inputs.additional_inputs.push_back(

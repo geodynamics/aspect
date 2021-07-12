@@ -109,19 +109,19 @@ namespace aspect
             out.reaction_terms[i][c]            = 0.;
 
           // set up variable to interpolate prescribed field outputs onto compositional fields
-          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >())
+          if (PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>())
             {
               prescribed_field_out->prescribed_field_outputs[i][projected_density_index] = out.densities[i];
             }
 
           // set up variable to interpolate prescribed field outputs onto temperature field
-          if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim> >())
+          if (PrescribedTemperatureOutputs<dim> *prescribed_temperature_out = out.template get_additional_output<PrescribedTemperatureOutputs<dim>>())
             {
               prescribed_temperature_out->prescribed_temperature_outputs[i] = material_lookup->get_data(entropy_pressure,0);
             }
 
           // fill seismic velocities outputs if they exist
-          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
               seismic_out->vp[i] = material_lookup->get_data(entropy_pressure,4);
               seismic_out->vs[i] = material_lookup->get_data(entropy_pressure,5);
@@ -196,26 +196,26 @@ namespace aspect
     void
     EntropyModel<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr)
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<PrescribedFieldOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim> >
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>>
             (n_points, this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim> >() == NULL)
+      if (out.template get_additional_output<PrescribedTemperatureOutputs<dim>>() == NULL)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
-            std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim> >
+            std::make_unique<MaterialModel::PrescribedTemperatureOutputs<dim>>
             (n_points));
         }
     }

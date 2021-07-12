@@ -149,7 +149,7 @@ namespace aspect
                                const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key = false,
-                               const std::shared_ptr<std::vector<unsigned int> > &n_values_per_key = nullptr,
+                               const std::shared_ptr<std::vector<unsigned int>> &n_values_per_key = nullptr,
                                const bool allow_missing_keys = false);
 
     /**
@@ -280,7 +280,7 @@ namespace aspect
      */
     template <int dim>
     bool
-    polygon_contains_point(const std::vector<Point<2> > &point_list,
+    polygon_contains_point(const std::vector<Point<2>> &point_list,
                            const dealii::Point<2> &point);
 
     /**
@@ -290,7 +290,7 @@ namespace aspect
      */
     template <int dim>
     double
-    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+    signed_distance_to_polygon(const std::vector<Point<2>> &point_list,
                                const dealii::Point<2> &point);
 
 
@@ -487,7 +487,7 @@ namespace aspect
      */
     inline
     void
-    extract_composition_values_at_q_point (const std::vector<std::vector<double> > &composition_values,
+    extract_composition_values_at_q_point (const std::vector<std::vector<double>> &composition_values,
                                            const unsigned int q,
                                            std::vector<double> &composition_values_at_q_point)
     {
@@ -796,7 +796,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim> > &,
+                       const std::vector<Point<dim>> &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result);
 

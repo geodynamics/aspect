@@ -26,7 +26,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 namespace aspect
@@ -140,8 +140,8 @@ namespace aspect
       }
 
       template <int dim>
-      const std::vector<DataOutBase::Patch<0,dim> > &
-      ParticleOutput<dim>::get_patches () const
+      const std::vector<DataOutBase::Patch<0,dim>> &
+                                                ParticleOutput<dim>::get_patches () const
       {
         return patches;
       }
@@ -157,7 +157,7 @@ namespace aspect
       std::vector<
       std::tuple<unsigned int,
           unsigned int, std::string,
-          DataComponentInterpretation::DataComponentInterpretation> >
+          DataComponentInterpretation::DataComponentInterpretation>>
           ParticleOutput<dim>::get_nonscalar_data_ranges () const
       {
         return vector_datasets;
@@ -311,7 +311,7 @@ namespace aspect
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           "particles.visit").c_str());
 
-      std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
+      std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<times_and_pvtu_file_names.size(); ++timestep)
         times_and_output_file_names.emplace_back(times_and_pvtu_file_names[timestep].first,
                                                  output_file_names_by_timestep[timestep]);
@@ -712,6 +712,9 @@ namespace aspect
             }
 
           exclude_output_properties = Utilities::split_string_list(prm.get("Exclude output properties"));
+
+          // Never output the integrator properties that are for internal use only
+          exclude_output_properties.push_back("internal: integrator properties");
         }
         prm.leave_subsection ();
       }

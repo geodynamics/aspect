@@ -15,8 +15,9 @@ set Use years in output instead of seconds = true
 
 subsection Boundary temperature model
   set List of model names = constant
+  set Fixed temperature boundary indicators   = 2,3
   subsection Constant
-    set Boundary indicator to temperature mappings = 0:0,1:0,2:0,3:0
+    set Boundary indicator to temperature mappings = 2:0,3:0
   end
 end
 
@@ -93,10 +94,6 @@ end
 # The parameters below this comment were created by the update script
 # as replacement for the old 'Model settings' subsection. They can be
 # safely merged with any existing subsections with the same name.
-
-subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3
-end
 
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1

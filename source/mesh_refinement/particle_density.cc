@@ -32,13 +32,13 @@ namespace aspect
     void
     ParticleDensity<dim>::execute(Vector<float> &indicators) const
     {
-      AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim> >(),
+      AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim>>(),
                   ExcMessage("The mesh refinement plugin `particle density' requires the "
                              "postprocessor plugin `particles' to be selected. Please activate the "
                              "particles or deactivate this mesh refinement plugin."));
 
       const Postprocess::Particles<dim> &particle_postprocessor =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
 
       const Particle::ParticleHandler<dim> &particle_handler = particle_postprocessor.get_particle_world().get_particle_handler();
 

@@ -214,7 +214,7 @@ namespace aspect
                  ExcMessage("The entropy advection assembler requires "
                             "that adiabatic heating is disabled."));
 
-    assemblers.advection_system[0] = std_cxx14::make_unique<Assemblers::EntropyAdvectionSystem<dim> >();
+    assemblers.advection_system[0] = std_cxx14::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
 
     assemblers.advection_system_assembler_properties[0].needed_update_flags = update_hessians;
   }

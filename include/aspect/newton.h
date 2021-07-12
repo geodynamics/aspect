@@ -52,7 +52,7 @@ namespace aspect
          * The derivatives of the viscosities
          */
         std::vector<double> viscosity_derivative_wrt_pressure;
-        std::vector<SymmetricTensor<2,dim> > viscosity_derivative_wrt_strain_rate;
+        std::vector<SymmetricTensor<2,dim>> viscosity_derivative_wrt_strain_rate;
 
     };
   }

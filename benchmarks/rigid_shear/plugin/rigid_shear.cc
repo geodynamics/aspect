@@ -198,7 +198,7 @@ namespace aspect
         initialize_one_particle_property (const Point<dim> &position,
                                           std::vector<double> &particle_properties) const
         {
-          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
+          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>().
                                          get_particle_world().
                                          get_property_manager();
           const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
@@ -211,10 +211,10 @@ namespace aspect
         void
         update_particle_property (const unsigned int data_position,
                                   const Vector<double> &/*solution*/,
-                                  const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                  const std::vector<Tensor<1,dim>> &/*gradients*/,
                                   typename Particles::ParticleHandler<dim>::particle_iterator &particle) const
         {
-          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >().
+          const auto &property_manager = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>().
                                          get_particle_world().
                                          get_property_manager();
           const unsigned density_index = property_manager.get_data_info().get_field_index_by_name("function");
@@ -238,10 +238,10 @@ namespace aspect
         }
 
         virtual
-        std::vector<std::pair<std::string, unsigned int> >
-        get_property_information() const
+        std::vector<std::pair<std::string, unsigned int>>
+                                                       get_property_information() const
         {
-          std::vector<std::pair<std::string,unsigned int> > property_information;
+          std::vector<std::pair<std::string,unsigned int>> property_information;
 
           const std::string field_name = "forcing_term_y";
           property_information.emplace_back(field_name,1);

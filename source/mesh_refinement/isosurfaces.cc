@@ -20,13 +20,13 @@
 
 
 
+#include <algorithm>
+#include <aspect/geometry_model/interface.h>
 #include <aspect/mesh_refinement/isosurfaces.h>
 #include <aspect/utilities.h>
-#include <aspect/geometry_model/interface.h>
+#include <cmath>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
-#include <math.h>
-#include <algorithm>
 
 namespace aspect
 {

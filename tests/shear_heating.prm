@@ -17,12 +17,6 @@ set Nonlinear solver scheme                = single Advection, single Stokes
 
 
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
-
-
 subsection Gravity model
   set Model name = vertical
 end

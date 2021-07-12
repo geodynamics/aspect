@@ -30,9 +30,9 @@
 
 #include <deal.II/base/parameter_handler.h>
 
-#include <sys/stat.h>
-#include <stdlib.h>
 #include <boost/lexical_cast.hpp>
+#include <cstdlib>
+#include <sys/stat.h>
 
 namespace aspect
 {

@@ -41,7 +41,7 @@ namespace aspect
       void
       PTPath<dim>::update_particle_property(const unsigned int data_position,
                                             const Vector<double> &solution,
-                                            const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                            const std::vector<Tensor<1,dim>> &/*gradients*/,
                                             typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         particle->get_properties()[data_position]   = solution[this->introspection().component_indices.pressure];
@@ -63,10 +63,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      PTPath<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     PTPath<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("p",1));
+        std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("p",1));
         property_information.emplace_back("T",1);
         return property_information;
       }

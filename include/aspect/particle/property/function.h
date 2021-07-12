@@ -65,8 +65,8 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const override;
+          std::vector<std::pair<std::string, unsigned int>>
+                                                         get_property_information() const override;
 
 
           /**
@@ -86,7 +86,7 @@ namespace aspect
           /**
            * A function object representing the particle property.
            */
-          std::unique_ptr<Functions::ParsedFunction<dim> > function;
+          std::unique_ptr<Functions::ParsedFunction<dim>> function;
 
           /**
            * A private variable that stores the number of particle property

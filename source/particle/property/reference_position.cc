@@ -39,7 +39,7 @@ namespace aspect
       void
       ReferencePosition<dim>::update_particle_property(const unsigned int data_position,
                                                        const Vector<double> &/*solution*/,
-                                                       const std::vector<Tensor<1,dim> > &/*gradients*/,
+                                                       const std::vector<Tensor<1,dim>> &/*gradients*/,
                                                        typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         for (unsigned int i = 0; i < dim; ++i)
@@ -54,10 +54,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      ReferencePosition<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     ReferencePosition<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("reference position",dim));
+        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("reference position",dim));
         return property_information;
       }
     }

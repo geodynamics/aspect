@@ -240,12 +240,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_ADIABATIC_CONDITIONS_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::AdiabaticConditions::register_adiabatic_conditions<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::AdiabaticConditions::register_adiabatic_conditions<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::AdiabaticConditions::register_adiabatic_conditions<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::AdiabaticConditions::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::AdiabaticConditions::register_adiabatic_conditions<3>, \
+                                    name, description); \
   }
   }
 }

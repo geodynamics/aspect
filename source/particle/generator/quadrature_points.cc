@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      QuadraturePoints<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles)
+      QuadraturePoints<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
         const QGauss<dim> quadrature_formula(this->get_parameters().stokes_velocity_degree + 1);
 

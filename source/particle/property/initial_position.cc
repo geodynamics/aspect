@@ -37,10 +37,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      InitialPosition<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     InitialPosition<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("initial position",static_cast<unsigned int> (dim)));
+        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("initial position",static_cast<unsigned int> (dim)));
         return property_information;
       }
     }

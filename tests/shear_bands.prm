@@ -35,20 +35,6 @@ subsection Compositional fields
   set Names of fields = porosity
 end
 
-
-subsection Boundary temperature model
-  set List of model names = initial temperature
-
-  subsection Initial temperature
-    # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773 # default: 6000
-
-    # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Minimal temperature = 273  # default: 0
-  end
-
-end
-
 subsection Boundary composition model
   set List of model names = initial composition
 end

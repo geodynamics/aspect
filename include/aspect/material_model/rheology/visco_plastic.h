@@ -266,7 +266,7 @@ namespace aspect
            */
           Rheology::DiffusionCreep<dim> diffusion_creep;
           Rheology::DislocationCreep<dim> dislocation_creep;
-          std::unique_ptr<Rheology::FrankKamenetskii<dim> > frank_kamenetskii_rheology;
+          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.
@@ -276,7 +276,7 @@ namespace aspect
           /**
            * Object for computing Peierls creep viscosities.
            */
-          std::unique_ptr<Rheology::PeierlsCreep<dim> > peierls_creep;
+          std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
 
           /**
            * Object for computing the viscosity multiplied by a constant prefactor.

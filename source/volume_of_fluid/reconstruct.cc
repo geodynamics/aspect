@@ -457,7 +457,7 @@ namespace aspect
     const unsigned int volume_of_fluidN_c_index = volume_of_fluidN_var.first_component_index;
 
     const unsigned int base_element = composition_field.base_element(this->introspection());
-    const std::vector<Point<dim> > support_points = system_fe.base_element(base_element).get_unit_support_points();
+    const std::vector<Point<dim>> support_points = system_fe.base_element(base_element).get_unit_support_points();
 
     for (auto cell : this->get_dof_handler().active_cell_iterators ())
       {

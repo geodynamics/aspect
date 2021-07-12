@@ -37,7 +37,7 @@ namespace aspect
      * used to compute one of the properties that will be laterally
      * averaged. The point of the base class is to allow handing over
      * a variable of type
-     * <code> std::vector<std::unique_ptr<FunctorBase<dim> > > </code> to the
+     * <code> std::vector<std::unique_ptr<FunctorBase<dim>>> </code> to the
      * LateralAveraging::get_averages() function.
      */
     template <int dim>
@@ -115,9 +115,9 @@ namespace aspect
        * Use the function compute_lateral_averages() with the same arguments instead.
        */
       DEAL_II_DEPRECATED
-      std::vector<std::vector<double> >
-      get_averages(const unsigned int n_slices,
-                   const std::vector<std::string> &property_names) const;
+      std::vector<std::vector<double>>
+                                    get_averages(const unsigned int n_slices,
+                                                 const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -135,9 +135,9 @@ namespace aspect
        * has the same size of @p n_slices, and there are
        * as many vectors returned as names in @p property_names.
        */
-      std::vector<std::vector<double> >
-      compute_lateral_averages(const unsigned int n_slices,
-                               const std::vector<std::string> &property_names) const;
+      std::vector<std::vector<double>>
+                                    compute_lateral_averages(const unsigned int n_slices,
+                                                             const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -161,9 +161,9 @@ namespace aspect
        * of each vector is one less than the number of @p depth_bounds,
        * and there are as many vectors returned as names in @p property_names.
        */
-      std::vector<std::vector<double> >
-      compute_lateral_averages(const std::vector<double> &depth_bounds,
-                               const std::vector<std::string> &property_names) const;
+      std::vector<std::vector<double>>
+                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
+                                                             const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages. This function is the
@@ -195,9 +195,9 @@ namespace aspect
        * Each returned vector has the same size (one entry less than
        * the number of @p depth_bounds).
        */
-      std::vector<std::vector<double> >
-      compute_lateral_averages(const std::vector<double> &depth_bounds,
-                               std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const;
+      std::vector<std::vector<double>>
+                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
+                                                             std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current

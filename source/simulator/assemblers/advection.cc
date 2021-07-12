@@ -430,7 +430,7 @@ namespace aspect
           // We are in the case of a Neumann temperature boundary.
           // Impose the Neumann value weakly using a RHS term.
 
-          std::vector<Tensor<1,dim> > heat_flux(n_face_q_points);
+          std::vector<Tensor<1,dim>> heat_flux(n_face_q_points);
           heat_flux = this->get_boundary_heat_flux().heat_flux(
                         face->boundary_id(),
                         scratch.face_material_model_inputs,

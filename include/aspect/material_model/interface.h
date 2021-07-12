@@ -349,7 +349,7 @@ namespace aspect
        * Vector with global positions where the material has to be evaluated
        * in evaluate().
        */
-      std::vector<Point<dim> > position;
+      std::vector<Point<dim>> position;
 
       /**
        * Temperature values at the points given in the #position vector.
@@ -365,7 +365,7 @@ namespace aspect
        * Pressure gradients at the points given in the #position vector.
        * This is important for the heating models.
        */
-      std::vector<Tensor<1,dim> > pressure_gradient;
+      std::vector<Tensor<1,dim>> pressure_gradient;
 
       /**
        * Velocity values at the points given in the #position vector.
@@ -374,14 +374,14 @@ namespace aspect
        * The timestep that is needed for this check can be requested from
        * SimulatorAccess.
        */
-      std::vector<Tensor<1,dim> > velocity;
+      std::vector<Tensor<1,dim>> velocity;
 
       /**
        * Values of the compositional fields at the points given in the
        * #position vector: composition[i][c] is the compositional field c at
        * point i.
        */
-      std::vector<std::vector<double> > composition;
+      std::vector<std::vector<double>> composition;
 
       /**
        * Strain rate at the points given in the #position vector. Only the
@@ -395,7 +395,7 @@ namespace aspect
        * $\varepsilon(\mathbf u)=\frac 12 (\nabla \mathbf u + \nabla \mathbf
        * u^T) - \frac 13 \nabla \cdot \mathbf u \mathbf 1$.
        */
-      std::vector<SymmetricTensor<2,dim> > strain_rate;
+      std::vector<SymmetricTensor<2,dim>> strain_rate;
 
       /**
        * Optional cell object that contains these quadrature
@@ -428,7 +428,7 @@ namespace aspect
        * objects that can be added to MaterialModelInputs. By default,
        * no inputs are added.
        */
-      std::vector<std::unique_ptr<AdditionalMaterialInputs<dim> > > additional_inputs;
+      std::vector<std::unique_ptr<AdditionalMaterialInputs<dim>>> additional_inputs;
 
       /**
        * Given an additional material model input class as explicitly specified
@@ -592,14 +592,14 @@ namespace aspect
        * SimulatorAccess so you can query the time step used by the simulator
        * in order to compute the reaction increment.
        */
-      std::vector<std::vector<double> > reaction_terms;
+      std::vector<std::vector<double>> reaction_terms;
 
       /**
        * Vector of shared pointers to additional material model output
        * objects that can then be added to MaterialModelOutputs. By default,
        * no outputs are added.
        */
-      std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim> > > additional_outputs;
+      std::vector<std::unique_ptr<AdditionalMaterialOutputs<dim>>> additional_outputs;
 
       /**
        * Given an additional material model output class as explicitly specified
@@ -887,7 +887,7 @@ namespace aspect
          * Values for the outputs at a set of evaluation points
          * output_values[i][j] is the value of output i at point j.
          */
-        std::vector<std::vector<double> > output_values;
+        std::vector<std::vector<double>> output_values;
 
       private:
         const std::vector<std::string> names;
@@ -959,7 +959,7 @@ namespace aspect
          * reaction_rates[q][c] is the reaction rate at the evaluation point q
          * for the compositional field with the index c.
          */
-        std::vector<std::vector<double> > reaction_rates;
+        std::vector<std::vector<double>> reaction_rates;
     };
 
 
@@ -997,7 +997,7 @@ namespace aspect
          * prescribed_field_outputs[q][c] is the prescribed field output at the evaluation point q
          * for the compositional field with the index c.
          */
-        std::vector<std::vector<double> > prescribed_field_outputs;
+        std::vector<std::vector<double>> prescribed_field_outputs;
     };
 
     /**
@@ -1060,7 +1060,7 @@ namespace aspect
          * momentum equation (first part of the Stokes equation) in each
          * quadrature point.
          */
-        std::vector<Tensor<1,dim> > rhs_u;
+        std::vector<Tensor<1,dim>> rhs_u;
 
         /**
          * Force value for the conservation of mass equation (second Stokes
@@ -1126,7 +1126,7 @@ namespace aspect
     {
       public:
         ElasticOutputs(const unsigned int n_points)
-          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim> >() )
+          : elastic_force(n_points, numbers::signaling_nan<Tensor<2,dim>>() )
         {}
 
         ~ElasticOutputs() override
@@ -1145,7 +1145,7 @@ namespace aspect
          * momentum equation (first part of the Stokes equation) in each
          * quadrature point.
          */
-        std::vector<Tensor<2,dim> > elastic_force;
+        std::vector<Tensor<2,dim>> elastic_force;
     };
 
 
@@ -1506,12 +1506,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_MATERIAL_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::MaterialModel::register_material_model<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::MaterialModel::register_material_model<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::MaterialModel::register_material_model<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MaterialModel::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::MaterialModel::register_material_model<3>, \
+                                    name, description); \
   }
   }
 }

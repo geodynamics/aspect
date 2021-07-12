@@ -86,17 +86,17 @@ namespace aspect
 
           std::vector<double>         old_field_values;
           /* Vector for interface normal in the unit cell */
-          std::vector<Tensor<1,dim> > cell_i_n_values;
+          std::vector<Tensor<1,dim>> cell_i_n_values;
           /* "Distance" from cell center to interface as d value for the interface in the form $\vec{n}\cdot\vec{x}=d$ */
           std::vector<double>         cell_i_d_values;
 
-          std::vector<Tensor<1,dim> > face_current_velocity_values;
-          std::vector<Tensor<1,dim> > face_old_velocity_values;
-          std::vector<Tensor<1,dim> > face_old_old_velocity_values;
+          std::vector<Tensor<1,dim>> face_current_velocity_values;
+          std::vector<Tensor<1,dim>> face_old_velocity_values;
+          std::vector<Tensor<1,dim>> face_old_old_velocity_values;
 
           std::vector<double>         neighbor_old_values;
           /* Vector for interface normal in the unit cell */
-          std::vector<Tensor<1,dim> > neighbor_i_n_values;
+          std::vector<Tensor<1,dim>> neighbor_i_n_values;
           /* "Distance" from cell center to interface as d value for the interface in the form $\vec{n}\cdot\vec{x}=d$ */
           std::vector<double>         neighbor_i_d_values;
         };

@@ -65,10 +65,6 @@ namespace aspect
            */
           bool is_compressible () const;
 
-          void fill_mass_and_volume_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
-                                               std::vector<std::vector<double>> &mass_fractions,
-                                               std::vector<std::vector<double>> &volume_fractions) const;
-
           /**
           * Function to compute the thermodynamic properties in @p out given the
           * inputs in @p in over all evaluation points.
@@ -104,8 +100,6 @@ namespace aspect
 
 
         private:
-          bool has_background;
-
           unsigned int n_material_lookups;
           bool use_bilinear_interpolation;
           bool latent_heat;
@@ -137,7 +131,7 @@ namespace aspect
            * List of pointers to objects that read and process data we get from
            * material data files. There is one pointer/object per lookup file.
            */
-          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
 
           /**
           * Vector of strings containing the names of the unique phases in all the material lookups.

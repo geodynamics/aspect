@@ -46,10 +46,10 @@ namespace aspect
                             cell_distribution.avg);
 
       if (this->get_postprocess_manager().template
-          has_matching_postprocessor<const Postprocess::Particles<dim> >())
+          has_matching_postprocessor<const Postprocess::Particles<dim>>())
         {
           const auto &particle_postprocessor = this->get_postprocess_manager().template
-                                               get_matching_postprocessor<const Postprocess::Particles<dim> >();
+                                               get_matching_postprocessor<const Postprocess::Particles<dim>>();
           const unsigned int locally_owned_particles = particle_postprocessor.get_particle_world().
                                                        get_particle_handler().n_locally_owned_particles();
           const dealii::Utilities::MPI::MinMaxAvg particles_per_process =

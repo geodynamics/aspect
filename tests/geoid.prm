@@ -50,17 +50,6 @@ subsection Nullspace removal
 end
 
 
-subsection Boundary temperature model
-  set List of model names = function
-  subsection Function
-    set Coordinate system = spherical
-    set Function constants = pi=3.1415926536
-    set Variable names = r,phi,theta,t
-    set Function expression = (5/2)*sqrt(5/pi)*(3*(cos(theta))^2-1)
-  end
-end
-
-
 subsection Initial temperature model
   set Model name = function
   subsection Function
@@ -104,7 +93,7 @@ subsection Postprocess
     set Also output the spherical harmonic coefficients of surface dynamic topography contribution = true
     set Also output the spherical harmonic coefficients of CMB dynamic topography contribution = true
     set Also output the spherical harmonic coefficients of density anomaly contribution = true
-    set Include the contributon from dynamic topography = true
+    set Include the contribution from dynamic topography = true
 
     set Also output the gravity anomaly  = true
   end

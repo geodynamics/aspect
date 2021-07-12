@@ -78,8 +78,8 @@ namespace aspect
         const unsigned int base_element = advf.base_element(introspection);
 
         // get the temperature/composition support points
-        const std::vector<Point<dim> > support_points
-          = finite_element.base_element(base_element).get_unit_support_points();
+        const std::vector<Point<dim>> support_points
+                                   = finite_element.base_element(base_element).get_unit_support_points();
         Assert (support_points.size() != 0,
                 ExcInternalError());
 
@@ -218,7 +218,7 @@ namespace aspect
     // write into vectors with ghost elements
 
     const Postprocess::Particles<dim> &particle_postprocessor =
-      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim> >();
+      postprocess_manager.template get_matching_postprocessor<Postprocess::Particles<dim>>();
 
     const Particle::Interpolator::Interface<dim> *particle_interpolator = &particle_postprocessor.get_particle_world().get_interpolator();
     const Particle::Property::Manager<dim> *particle_property_manager = &particle_postprocessor.get_particle_world().get_property_manager();
@@ -249,8 +249,8 @@ namespace aspect
     const unsigned int base_element = advection_field.base_element(introspection);
 
     // get the temperature/composition support points
-    const std::vector<Point<dim> > support_points
-      = finite_element.base_element(base_element).get_unit_support_points();
+    const std::vector<Point<dim>> support_points
+                               = finite_element.base_element(base_element).get_unit_support_points();
     Assert (support_points.size() != 0,
             ExcInternalError());
 
@@ -265,12 +265,12 @@ namespace aspect
       if (cell->is_locally_owned())
         {
           fe_values.reinit (cell);
-          const std::vector<Point<dim> > quadrature_points = fe_values.get_quadrature_points();
+          const std::vector<Point<dim>> quadrature_points = fe_values.get_quadrature_points();
 
           ComponentMask property_mask  (particle_property_manager->get_data_info().n_components(),false);
           property_mask.set(particle_property,true);
 
-          std::vector<std::vector<double> > particle_properties;
+          std::vector<std::vector<double>> particle_properties;
 
           try
             {
@@ -330,11 +330,12 @@ namespace aspect
     const unsigned int blockidx = advection_field.block_index(introspection);
     solution.block(blockidx) = particle_solution.block(blockidx);
 
-    // In the first timestep initialize all solution vectors with the initial
+    // In the first timestep, and for iterative Advection schemes only
+    // in the first nonlinear iteration, initialize all solution vectors with the initial
     // particle solution, identical to the end of the
     // Simulator<dim>::set_initial_temperature_and_compositional_fields ()
     // function.
-    if (timestep_number == 0)
+    if (timestep_number == 0 && nonlinear_iteration == 0)
       {
         old_solution.block(blockidx) = particle_solution.block(blockidx);
         old_old_solution.block(blockidx) = particle_solution.block(blockidx);
@@ -419,7 +420,7 @@ namespace aspect
                                                                     introspection.component_indices.pressure,
                                                                     quadrature,
                                                                     [&](const typename DoFHandler<dim>::active_cell_iterator & /*cell*/,
-                                                                        const std::vector<Point<dim> > &q_points,
+                                                                        const std::vector<Point<dim>> &q_points,
                                                                         std::vector<double> &values) -> void
         {
           for (unsigned int i=0; i<values.size(); ++i)

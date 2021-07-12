@@ -285,7 +285,7 @@ namespace aspect
       // If we are deforming the mesh, also serialize the mesh vertices vector, which
       // uses its own dof handler
       std::vector<const LinearAlgebra::Vector *> x_fs_system (2);
-      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector> > mesh_deformation_trans;
+      std::unique_ptr<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>> mesh_deformation_trans;
       if (parameters.mesh_deformation_enabled)
         {
           mesh_deformation_trans
@@ -333,9 +333,9 @@ namespace aspect
           // build compression header
           const uint32_t compression_header[4]
             = { 1,                                   /* number of blocks */
-                (uint32_t)oss.str().length(), /* size of block */
-                (uint32_t)oss.str().length(), /* size of last block */
-                (uint32_t)compressed_data_length
+                static_cast<uint32_t>(oss.str().length()), /* size of block */
+                static_cast<uint32_t>(oss.str().length()), /* size of last block */
+                static_cast<uint32_t>(compressed_data_length)
               }; /* list of compressed sizes of blocks */
 
           std::ofstream f ((parameters.output_directory + "restart.resume.z.new").c_str());

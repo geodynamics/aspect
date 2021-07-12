@@ -1,0 +1,13 @@
+
+Number of active cells: 12 (on 1 levels)
+Number of degrees of freedom: 628 (450+28+150)
+
+*** Timestep 0:  t=0 years, dt=0 years
+
+   Postprocessing:
+     Writing gravity output: output-gravity_quadrature_degree_increase/output_gravity/gravity-00000
+
+Termination requested by criterion: end time
+
+
+

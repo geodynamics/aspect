@@ -47,8 +47,8 @@ namespace aspect
       const QMidpoint<dim> qMidC;
 
       // Create a map from vertices to adjacent cells
-      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator> >
-      vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
+      const std::vector<std::set<typename Triangulation<dim>::active_cell_iterator>>
+                                                                                  vertex_to_cells(GridTools::vertex_to_cell_map(this->get_triangulation()));
 
       std::set<typename Triangulation<dim>::active_cell_iterator> marked_cells;
       FEValues<dim> fe_values (this->get_mapping(),

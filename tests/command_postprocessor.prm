@@ -4,10 +4,6 @@
 set Dimension = 2
 set End time                               = 0
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
 subsection Geometry model
   set Model name = box
 end

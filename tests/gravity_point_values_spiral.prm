@@ -31,14 +31,6 @@ subsection Material model
   end
 end
 
-# Model boundary temperature
-subsection Boundary temperature model
-  set List of model names = spherical constant
-   subsection Spherical constant
-    set Outer temperature = 273
-  end
-end
-
 # Model initial temperature
 subsection Initial temperature model
   set Model name = function

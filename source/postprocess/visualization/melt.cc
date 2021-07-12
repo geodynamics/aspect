@@ -99,7 +99,7 @@ namespace aspect
       void
       MeltMaterialProperties<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         AssertThrow(this->include_melt_transport()==true,
                     ExcMessage("'Include melt transport' has to be on when using melt transport postprocessors."));
@@ -115,7 +115,7 @@ namespace aspect
         MeltHandler<dim>::create_material_model_outputs(out);
 
         this->get_material_model().evaluate(in, out);
-        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        MaterialModel::MeltOutputs<dim> *melt_outputs = out.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
         AssertThrow(melt_outputs != nullptr,
                     ExcMessage("Need MeltOutputs from the material model for computing the melt properties."));
 

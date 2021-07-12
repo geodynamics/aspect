@@ -141,8 +141,8 @@ namespace aspect
           /**
            * Return a copy of this manifold.
            */
-          std::unique_ptr<Manifold<dim,dim> >
-          clone() const override;
+          std::unique_ptr<Manifold<dim,dim>>
+                                          clone() const override;
 
           /**
            * Set the minimal radius of the domain.

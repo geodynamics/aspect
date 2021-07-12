@@ -35,7 +35,7 @@ namespace aspect
     DynamicTopography<dim>::execute (TableHandler &)
     {
       const Postprocess::BoundaryPressures<dim> &boundary_pressures =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryPressures<dim>>();
 
       // Get the average pressure at the top and bottom boundaries.
       // This will be used to compute the dynamic pressure at the boundaries.
@@ -80,8 +80,8 @@ namespace aspect
 
       // Storage for shape function values for the current solution.
       // Used for constructing the known side of the CBF system.
-      std::vector<Tensor<1,dim> > phi_u (dofs_per_cell);
-      std::vector<SymmetricTensor<2,dim> > epsilon_phi_u (dofs_per_cell);
+      std::vector<Tensor<1,dim>> phi_u (dofs_per_cell);
+      std::vector<SymmetricTensor<2,dim>> epsilon_phi_u (dofs_per_cell);
       std::vector<double> div_phi_u (dofs_per_cell);
       std::vector<double> div_solution(n_q_points);
 
@@ -104,8 +104,8 @@ namespace aspect
 
       // Possibly keep track of the dynamic topography values for
       // later surface output.
-      std::vector<std::pair<Point<dim>, double> > stored_values_surface;
-      std::vector<std::pair<Point<dim>, double> > stored_values_bottom;
+      std::vector<std::pair<Point<dim>, double>> stored_values_surface;
+      std::vector<std::pair<Point<dim>, double>> stored_values_bottom;
       visualization_values.reinit(this->get_triangulation().n_active_cells());
       visualization_values = 0.;
 
@@ -222,7 +222,7 @@ namespace aspect
                                            update_values | update_normal_vectors
                                            | update_gradients | update_quadrature_points);
 
-      std::vector<Tensor<1,dim> > stress_support_values( support_quadrature.size() );
+      std::vector<Tensor<1,dim>> stress_support_values( support_quadrature.size() );
       std::vector<double> topo_values( support_quadrature.size() );
       std::vector<types::global_dof_index> face_dof_indices (dofs_per_face);
 
@@ -234,7 +234,7 @@ namespace aspect
                                           output_quadrature,
                                           update_values | update_normal_vectors | update_gradients |
                                           update_quadrature_points | update_JxW_values);
-      std::vector<Tensor<1,dim> > stress_output_values( output_quadrature.size() );
+      std::vector<Tensor<1,dim>> stress_output_values( output_quadrature.size() );
 
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -422,7 +422,7 @@ namespace aspect
     void
     DynamicTopography<dim>::output_to_file(const bool upper,
                                            std::vector<std::pair<Point<dim>,
-                                           double> > &stored_values)
+                                           double>> &stored_values)
     {
       std::ostringstream output;
 

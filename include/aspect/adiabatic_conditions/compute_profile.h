@@ -162,7 +162,7 @@ namespace aspect
          * Function object that computes the reference composition profile
          * if the reference_composition variable is set to function.
          */
-        std::unique_ptr<Functions::ParsedFunction<1> > composition_function;
+        std::unique_ptr<Functions::ParsedFunction<1>> composition_function;
 
         /**
          * Whether to use the surface_conditions_function to determine surface

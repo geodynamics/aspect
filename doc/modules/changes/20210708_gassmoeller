@@ -1,0 +1,6 @@
+Improved: Particle operations have been optimized for speed. Particles now
+always carry a hidden internal property that stores properties necessary for
+their advection scheme. These properties are not written into output but are
+included if the particles are asked for their properties internally.
+<br>
+(Rene Gassmoeller, 2021/07/08)

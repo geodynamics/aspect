@@ -34,10 +34,10 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<std::vector<double> >
-      Interface<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                           const std::vector<Point<dim> > &positions,
-                                           const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      std::vector<std::vector<double>>
+                                    Interface<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                                         const std::vector<Point<dim>> &positions,
+                                                                         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         return properties_at_points(particle_handler,positions,ComponentMask(), cell);
       }
@@ -66,8 +66,8 @@ namespace aspect
         std::tuple
         <void *,
         void *,
-        aspect::internal::Plugins::PluginList<Interface<2> >,
-        aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+        aspect::internal::Plugins::PluginList<Interface<2>>,
+        aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
       }
 
 
@@ -154,11 +154,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Interpolator::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Interpolator::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Interpolator::Interface<2>>::PluginInfo> *
+                                                                                 internal::Plugins::PluginList<Particle::Interpolator::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Interpolator::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Interpolator::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Interpolator::Interface<3>>::PluginInfo> *
+                                                                                 internal::Plugins::PluginList<Particle::Interpolator::Interface<3>>::plugins = nullptr;
     }
   }
 

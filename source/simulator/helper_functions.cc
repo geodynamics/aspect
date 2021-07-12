@@ -483,7 +483,7 @@ namespace aspect
 
 
     FEValues<dim> fe_values (*mapping, finite_element, quadrature_formula, update_values);
-    std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+    std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
     double max_local_velocity = 0;
 
@@ -753,7 +753,7 @@ namespace aspect
     hanging_constraints.close();
 
     Assert(introspection.block_indices.velocities == 0, ExcNotImplemented());
-    const std::vector<Point<dim> > mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
+    const std::vector<Point<dim>> mesh_support_points = finite_element.base_element(introspection.base_elements.velocities).get_unit_support_points();
     FEValues<dim> mesh_points (*mapping, finite_element, mesh_support_points, update_quadrature_points);
     std::vector<types::global_dof_index> cell_dof_indices (finite_element.dofs_per_cell);
 
@@ -1311,7 +1311,7 @@ namespace aspect
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
     const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
 
-    std::vector< Point <dim> > quadrature_points;
+    std::vector< Point <dim>> quadrature_points;
     quadrature_points.reserve(n_q_points);
 
     switch (dim)
@@ -1618,10 +1618,10 @@ namespace aspect
     material_model->create_additional_named_outputs(out_T);
 
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_C
-      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+      = out_C.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
     MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs_T
-      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+      = out_T.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
     AssertThrow(reaction_rate_outputs_C != nullptr && reaction_rate_outputs_T != nullptr,
                 ExcMessage("You are trying to use the operator splitting solver scheme, "
@@ -1662,7 +1662,7 @@ namespace aspect
               in_T.reinit(fe_values_T, cell, introspection, solution);
             }
 
-          std::vector<std::vector<double> > accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
+          std::vector<std::vector<double>> accumulated_reactions_C (quadrature_C.size(),std::vector<double> (introspection.n_compositional_fields));
           std::vector<double> accumulated_reactions_T (quadrature_T.size());
 
           // Make the reaction time steps: We have to update the values of compositional fields and the temperature.
@@ -1841,9 +1841,9 @@ namespace aspect
     material_model->create_additional_named_outputs(out);
 
     MaterialModel::PrescribedFieldOutputs<dim> *prescribed_field_out
-      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim> >();
+      = out.template get_additional_output<MaterialModel::PrescribedFieldOutputs<dim>>();
     MaterialModel::PrescribedTemperatureOutputs<dim> *prescribed_temperature_out
-      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim> >();
+      = out.template get_additional_output<MaterialModel::PrescribedTemperatureOutputs<dim>>();
 
     // check if the material model computes the correct prescribed field outputs
     if (adv_field.is_temperature())
@@ -2007,7 +2007,7 @@ namespace aspect
                                "Please check the consistency of your input file."));
 
         const bool use_simplified_adiabatic_heating =
-          heating_model_manager.template get_matching_heating_model<HeatingModel::AdiabaticHeating<dim> >()
+          heating_model_manager.template get_matching_heating_model<HeatingModel::AdiabaticHeating<dim>>()
           .use_simplified_adiabatic_heating();
 
         AssertThrow(use_simplified_adiabatic_heating == true,
@@ -2032,7 +2032,7 @@ namespace aspect
                                       update_values   | update_normal_vectors |
                                       update_quadrature_points | update_JxW_values);
 
-    std::vector<Tensor<1,dim> > face_current_velocity_values (fe_face_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
@@ -2140,7 +2140,7 @@ namespace aspect
       {
         for (const auto it : intersection)
           {
-            const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >::const_iterator
+            const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>>::const_iterator
             boundary_velocity_names = boundary_velocity_manager.get_active_boundary_velocity_names().find(it);
             Assert(boundary_velocity_names != boundary_velocity_manager.get_active_boundary_velocity_names().end(),
                    ExcInternalError());
@@ -2249,7 +2249,7 @@ namespace aspect
 
     // Check that the periodic boundaries do not have other boundary conditions set
     using periodic_boundary_set
-      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int>>;
 
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 

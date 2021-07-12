@@ -86,7 +86,7 @@ namespace aspect
 
           //set up additional output for the derivatives
           MaterialModel::MaterialModelDerivatives<dim> *derivatives;
-          derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+          derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -561,7 +561,7 @@ namespace aspect
                                             .degree+1);
 
       const unsigned int n_q_points = quadrature_formula.size();
-      std::vector<Tensor<1,dim> > velocities(n_q_points);
+      std::vector<Tensor<1,dim>> velocities(n_q_points);
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),
@@ -577,8 +577,8 @@ namespace aspect
 
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
-      std::vector<std::vector<double> > prelim_composition_values (this->n_compositional_fields(),
-                                                                   std::vector<double> (n_q_points));
+      std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
+                                                                  std::vector<double> (n_q_points));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                      this->n_compositional_fields());

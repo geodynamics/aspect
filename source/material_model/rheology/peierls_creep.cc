@@ -59,6 +59,7 @@ namespace aspect
             creep_parameters.glide_parameter_p = glide_parameters_p[composition];
             creep_parameters.glide_parameter_q = glide_parameters_q[composition];
             creep_parameters.fitting_parameter = fitting_parameters[composition];
+            creep_parameters.stress_cutoff = stress_cutoffs[composition];
           }
         else
           {
@@ -80,6 +81,8 @@ namespace aspect
                                                  glide_parameters_q, composition);
             creep_parameters.fitting_parameter = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  fitting_parameters, composition);
+            creep_parameters.stress_cutoff = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
+                                             stress_cutoffs, composition);
           }
         return creep_parameters;
       }
@@ -317,17 +320,49 @@ namespace aspect
         * deriv = edot_ii / stress * (s + n)
         */
         const PeierlsCreepParameters p = creep_parameters;
+        if (stress < p.stress_cutoff)
+          {
 
-        const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
-        const double c = std::pow(stress/p.peierls_stress, p.glide_parameter_p);
-        const double d = std::pow(1. - c, p.glide_parameter_q);
-        const double s = b*p.glide_parameter_p*p.glide_parameter_q*c*d/(1. - c);
-        const double arrhenius = std::exp(-b*d);
+            /**
+            * For Peierls creep flow laws that have a stress exponent equal to zero the strain rate does not approach zero as
+            * stress approaches zero. To ensure convergence in the solver, the strain rate is modelled as a quadratic function
+            * of stress;
+            * edot_ii = quadratic_term*stress^2 + linear_term*stress
+            * Where the quadratic and linear terms are defined at a constant cutoff temperature and pressure.
+            * T_cutoff = (E/R), P_cutoff = 0
+            * s_cutoff = p*q*c_cutoff*d_cutoff / (1 - c_cutoff)
+            * arrhenius_cutoff = std::exp(-d_cutoff)
+            */
+            const double c_cutoff = std::pow(p.stress_cutoff/p.peierls_stress, p.glide_parameter_p);
+            const double d_cutoff = std::pow(1. - c_cutoff, p.glide_parameter_q);
+            const double s_cutoff = p.glide_parameter_p*p.glide_parameter_q*c_cutoff*d_cutoff/(1. - c_cutoff);
+            const double arrhenius_cutoff = std::exp(-d_cutoff);
+            const double edot_ii_cutoff = p.prefactor * std::pow(p.stress_cutoff, p.stress_exponent) * arrhenius_cutoff;
+            const double deriv_cutoff = edot_ii_cutoff / p.stress_cutoff * (s_cutoff + p.stress_exponent);
+            const double quadratic_term = (deriv_cutoff - edot_ii_cutoff / p.stress_cutoff) / p.stress_cutoff / arrhenius_cutoff;
+            const double linear_term = (2*(edot_ii_cutoff / p.stress_cutoff) - deriv_cutoff) / arrhenius_cutoff;
 
-        const double edot_ii = p.prefactor * std::pow(stress, p.stress_exponent) * arrhenius;
-        const double deriv = edot_ii / stress * (s + p.stress_exponent);
+            const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+            const double arrhenius = std::exp(-b*d_cutoff);
+            const double edot_ii = (quadratic_term*std::pow(stress, 2.) + linear_term*stress) * arrhenius;
+            const double deriv = (2*quadratic_term*stress + linear_term) * arrhenius;
 
-        return std::make_pair(edot_ii, deriv);
+            return std::make_pair(edot_ii, deriv);
+          }
+
+        else
+          {
+            const double b = (p.activation_energy + pressure*p.activation_volume)/(constants::gas_constant * temperature);
+            const double c = std::pow(stress/p.peierls_stress, p.glide_parameter_p);
+            const double d = std::pow(1. - c, p.glide_parameter_q);
+            const double s = b*p.glide_parameter_p*p.glide_parameter_q*c*d/(1. - c);
+            const double arrhenius = std::exp(-b*d);
+
+            const double edot_ii = p.prefactor * std::pow(stress, p.stress_exponent) * arrhenius;
+            const double deriv = edot_ii / stress * (s + p.stress_exponent);
+
+            return std::make_pair(edot_ii, deriv);
+          }
       }
 
 
@@ -428,6 +463,10 @@ namespace aspect
                            "List of the second Peierls creep glide parameters, $q$, for background and compositional "
                            "fields for a total of N+1 values, where N is the number of compositional fields. "
                            "If only one value is given, then all use the same value. Units: none");
+        prm.declare_entry ("Cutoff stresses for Peierls creep", "0.0",
+                           Patterns::Anything(),
+                           "List of the Stress thresholds below which the strain rate is solved for as a quadratic "
+                           "function of stress to aid with convergence when stress exponent n=0. Units: \\si{\\pascal}");
 
       }
 
@@ -511,6 +550,12 @@ namespace aspect
                                                                   "Peierls glide parameters q",
                                                                   true,
                                                                   expected_n_phases_per_composition);
+        stress_cutoffs = Utilities::parse_map_to_double_array(prm.get("Cutoff stresses for Peierls creep"),
+                                                              list_of_composition_names,
+                                                              has_background_field,
+                                                              "Cutoff stresses for Peierls creep",
+                                                              true,
+                                                              expected_n_phases_per_composition);
       }
     }
   }

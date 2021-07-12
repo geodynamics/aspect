@@ -65,8 +65,8 @@ namespace aspect
           /**
            * Implementation of the corresponding function of the base class.
            */
-          const std::vector<DataOutBase::Patch<0,dim> > &
-          get_patches () const override;
+          const std::vector<DataOutBase::Patch<0,dim>> &
+                                                    get_patches () const override;
 
           /**
            * Implementation of the corresponding function of the base class.
@@ -81,14 +81,14 @@ namespace aspect
           std::tuple<unsigned int,
               unsigned int,
               std::string,
-              DataComponentInterpretation::DataComponentInterpretation> >
+              DataComponentInterpretation::DataComponentInterpretation>>
               get_nonscalar_data_ranges () const override;
 
           /**
            * Output information that is filled by build_patches() and
            * written by the write function of the base class.
            */
-          std::vector<DataOutBase::Patch<0,dim> > patches;
+          std::vector<DataOutBase::Patch<0,dim>> patches;
 
           /**
            * A list of field names for all data components stored in patches.
@@ -102,7 +102,7 @@ namespace aspect
           std::tuple<unsigned int,
               unsigned int,
               std::string,
-              DataComponentInterpretation::DataComponentInterpretation> >
+              DataComponentInterpretation::DataComponentInterpretation>>
               vector_datasets;
       };
     }
@@ -220,21 +220,21 @@ namespace aspect
          * is done because there is no way to store the simulation
          * time inside the .pvtu or .vtu files).
          */
-        std::vector<std::pair<double,std::string> > times_and_pvtu_file_names;
+        std::vector<std::pair<double,std::string>> times_and_pvtu_file_names;
 
         /**
          * A corresponding variable that we use for the .visit files created
          * by DataOutInterface::write_visit_record. The second part of a
          * pair contains all files that together form a time step.
          */
-        std::vector<std::pair<double,std::vector<std::string> > > times_and_vtu_file_names;
+        std::vector<std::pair<double,std::vector<std::string>>> times_and_vtu_file_names;
 
         /**
          * A list of list of filenames, sorted by timestep, that correspond to
          * what has been created as output. This is used to create a master
          * .visit file for the entire simulation.
          */
-        std::vector<std::vector<std::string> > output_file_names_by_timestep;
+        std::vector<std::vector<std::string>> output_file_names_by_timestep;
 
         /**
          * A set of data related to XDMF file sections describing the HDF5

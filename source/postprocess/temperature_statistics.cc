@@ -131,10 +131,10 @@ namespace aspect
                                   "Average temperature (K)",
                                   "Maximal temperature (K)"
                                 };
-        for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+        for (auto &column : columns)
           {
-            statistics.set_precision (columns[i], 8);
-            statistics.set_scientific (columns[i], true);
+            statistics.set_precision (column, 8);
+            statistics.set_scientific (column, true);
           }
 
         if ((this->get_fixed_temperature_boundary_indicators().size() > 0)

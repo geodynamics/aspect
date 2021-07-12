@@ -29,11 +29,6 @@ subsection Initial temperature model
 end
 
 
-subsection Boundary temperature model
-  set List of model names = box
-end
-
-
 subsection Compositional fields
   set Number of fields = 1
 end

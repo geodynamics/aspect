@@ -45,7 +45,7 @@ namespace aspect
                                update_values   |
                                update_quadrature_points |
                                update_JxW_values);
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;
@@ -86,10 +86,10 @@ namespace aspect
             const char *columns[] = { "RMS velocity (m/year)",
                                       "Max. velocity (m/year)"
                                     };
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            for (auto &column : columns)
               {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
+                statistics.set_precision (column, 8);
+                statistics.set_scientific (column, true);
               }
           }
         }
@@ -104,10 +104,10 @@ namespace aspect
             const char *columns[] = { "RMS velocity (m/s)",
                                       "Max. velocity (m/s)"
                                     };
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            for (auto &column : columns)
               {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
+                statistics.set_precision (column, 8);
+                statistics.set_scientific (column, true);
               }
           }
         }

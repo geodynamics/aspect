@@ -54,6 +54,14 @@ namespace aspect
           virtual ~Interface ();
 
           /**
+           * Initialization function. This function is called once at the
+           * beginning of the program after parse_parameters is run.
+           */
+          virtual
+          void
+          initialize ();
+
+          /**
            * Perform an integration step of moving the particles of one cell
            * by the specified timestep dt. Implementations of this function
            * must update the particle location. Between calls to this function
@@ -76,8 +84,8 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim> > &old_velocities,
-                               const std::vector<Tensor<1,dim> > &velocities,
+                               const std::vector<Tensor<1,dim>> &old_velocities,
+                               const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) = 0;
 
           /**
@@ -243,12 +251,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
+                                    name, description); \
   }
     }
   }

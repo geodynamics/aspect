@@ -43,11 +43,11 @@ namespace aspect
            * Return the cell-wise harmonic averaged properties of all particles of the cell containing the
            * given positions.
            */
-          std::vector<std::vector<double> >
-          properties_at_points(const ParticleHandler<dim> &particle_handler,
-                               const std::vector<Point<dim> > &positions,
-                               const ComponentMask &selected_properties,
-                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
+          std::vector<std::vector<double>>
+                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                             const std::vector<Point<dim>> &positions,
+                                                             const ComponentMask &selected_properties,
+                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const override;
 
           // avoid -Woverloaded-virtual:
           using Interface<dim>::properties_at_points;

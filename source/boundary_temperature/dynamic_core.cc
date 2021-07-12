@@ -594,11 +594,11 @@ namespace aspect
       // It is not available at the time initialize() function of boundary temperature is called.
       if (is_first_call==true)
         {
-          AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<const Postprocess::CoreStatistics<dim> >(),
+          AssertThrow(this->get_postprocess_manager().template has_matching_postprocessor<const Postprocess::CoreStatistics<dim>>(),
                       ExcMessage ("Dynamic core boundary condition has to work with dynamic core statistics postprocessor."));
 
           const Postprocess::CoreStatistics<dim> &core_statistics
-            = this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::CoreStatistics<dim> >();
+            = this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::CoreStatistics<dim>>();
           // The restart data is stored in 'core statistics' postprocessor.
           // If restart from checkpoint, extract data from there.
           core_data = core_statistics.get_core_data();
@@ -664,8 +664,8 @@ namespace aspect
                                           update_normal_vectors |
                                           update_quadrature_points       | update_JxW_values);
 
-        std::vector<Tensor<1,dim> > temperature_gradients (quadrature_formula.size());
-        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+        std::vector<Tensor<1,dim>> temperature_gradients (quadrature_formula.size());
+        std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
         //std::map<types::boundary_id, double> local_boundary_fluxes;
         double local_CMB_flux   = 0.;

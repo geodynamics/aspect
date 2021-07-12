@@ -26,6 +26,7 @@
 #include <aspect/gravity_model/interface.h>
 
 #include <aspect/material_model/interface.h>
+#include <aspect/material_model/equation_of_state/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/utilities.h>
 
@@ -775,6 +776,13 @@ namespace aspect
       {
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
+
+        if (n_fields == 1 && return_as_fraction)
+          {
+            volumes[0] = 1.0;
+            return volumes;
+          }
+
         double sum_volumes = 0.0;
         for (unsigned int j=0; j < n_fields; ++j)
           {
@@ -875,6 +883,27 @@ namespace aspect
           }
         return averaged_parameter;
       }
+
+
+
+      template <int dim>
+      void
+      fill_averaged_equation_of_state_outputs(const EquationOfStateOutputs<dim> &eos_outputs,
+                                              const std::vector<double> &mass_fractions,
+                                              const std::vector<double> &volume_fractions,
+                                              const unsigned int i,
+                                              MaterialModelOutputs<dim> &out)
+      {
+        // The density, isothermal compressibility and thermal expansivity are volume-averaged
+        // The specific entropy derivatives and heat capacity are mass-averaged
+        out.densities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.densities, MaterialUtilities::arithmetic);
+        out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
+        out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
+        out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
+        out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
+        out.specific_heat[i] = MaterialUtilities::average_value (mass_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
+      }
+
 
 
       double phase_average_value (const std::vector<double> &phase_function_values,
@@ -1192,6 +1221,11 @@ namespace aspect
     namespace MaterialUtilities
     {
 #define INSTANTIATE(dim) \
+  template void fill_averaged_equation_of_state_outputs<dim> (const EquationOfStateOutputs<dim> &, \
+                                                              const std::vector<double> &, \
+                                                              const std::vector<double> &, \
+                                                              const unsigned int, \
+                                                              MaterialModelOutputs<dim> &); \
   template struct PhaseFunctionInputs<dim>; \
   template class PhaseFunction<dim>;
 

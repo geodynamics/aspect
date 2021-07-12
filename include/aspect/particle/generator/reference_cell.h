@@ -51,7 +51,7 @@ namespace aspect
            * particles. This map will be filled in this function.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) override;
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -72,7 +72,7 @@ namespace aspect
            *
            * @return A vector container of points each of size dim.
            */
-          std::vector<Point<dim> > generate_particle_positions_in_unit_cell();
+          std::vector<Point<dim>> generate_particle_positions_in_unit_cell();
 
           /**
            * Number of particles to create for each spatial dimension as

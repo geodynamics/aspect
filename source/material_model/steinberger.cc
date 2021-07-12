@@ -226,18 +226,10 @@ namespace aspect
                                MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
-
-      std::vector<std::vector<double>> mass_fractions;
-      std::vector<std::vector<double>> volume_fractions;
-      equation_of_state.fill_mass_and_volume_fractions (in, mass_fractions, volume_fractions);
+      std::vector<std::vector<double>> volume_fractions (in.n_evaluation_points(), std::vector<double> (equation_of_state.number_of_lookups()));
 
       // Evaluate the equation of state properties over all evaluation points
       equation_of_state.evaluate(in, eos_outputs);
-
-      MaterialModel::fill_averaged_equation_of_state_outputs(eos_outputs, mass_fractions, volume_fractions, out);
-
-      // fill additional outputs if they exist
-      equation_of_state.fill_additional_outputs(in, volume_fractions, out);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -247,8 +239,33 @@ namespace aspect
           out.thermal_conductivities[i] = thermal_conductivity_value;
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0;
+
+          // Calculate volume fractions from mass fractions
+          // If there is only one lookup table, set the mass and volume fractions to 1
+          std::vector<double> mass_fractions;
+          if (equation_of_state.number_of_lookups() == 1)
+            mass_fractions.push_back(1.0);
+          else
+            {
+              mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], *composition_mask);
+
+              // The function compute_volumes_from_masses expects as many mass_fractions as densities.
+              // But the function compute_composition_fractions always adds another element at the start
+              // of the vector that represents the the background field. If there is no lookup table for
+              // the background field, the mass_fractions vector is too long and we remove this element.
+              if (!has_background_field)
+                mass_fractions.erase(mass_fractions.begin());
+            }
+
+          volume_fractions[i] = MaterialUtilities::compute_volumes_from_masses(mass_fractions,
+                                                                               eos_outputs[i].densities,
+                                                                               true);
+
+          MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
         }
 
+      // fill additional outputs if they exist
+      equation_of_state.fill_additional_outputs(in, volume_fractions, out);
     }
 
 
@@ -359,22 +376,23 @@ namespace aspect
           equation_of_state.parse_parameters(prm);
 
           // Assign background field and do some error checking
-          if (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1)
-            {
-              prm.set("Background material", "true");
-            }
-          else
-            {
-              AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
-                           (equation_of_state.number_of_lookups() == this->n_compositional_fields()),
-                           ExcMessage("The Steinberger material model assumes that all compositional "
-                                      "fields correspond to mass fractions of materials. There must either be "
-                                      "one material lookup file, the same number of material lookup files "
-                                      "as compositional fields, or one additional file "
-                                      "(if a background field is used)."));
+          AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
+                       (equation_of_state.number_of_lookups() == this->n_compositional_fields()) ||
+                       (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1),
+                       ExcMessage("The Steinberger material model assumes that all compositional "
+                                  "fields correspond to mass fractions of materials. There must either be "
+                                  "one material lookup file, the same number of material lookup files "
+                                  "as compositional fields, or one additional file "
+                                  "(if a background field is used). You have "
+                                  + Utilities::int_to_string(equation_of_state.number_of_lookups())
+                                  + " material data files, but there are "
+                                  + Utilities::int_to_string(this->n_compositional_fields())
+                                  + " compositional fields. "));
 
-              prm.set("Background material", "false");
-            }
+          has_background_field = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
+
+          // All compositional fields are assumed to represent mass fractions.
+          composition_mask = std_cxx14::make_unique<ComponentMask> (this->n_compositional_fields(), true);
 
           prm.leave_subsection();
         }

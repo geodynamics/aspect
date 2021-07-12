@@ -30,7 +30,7 @@ namespace aspect
   {
     template <int dim>
     bool
-    SteadyRMSVelocity<dim>::execute(void)
+    SteadyRMSVelocity<dim>::execute()
     {
       const QGauss<dim> quadrature_formula (this->get_fe()
                                             .base_element(this->introspection().base_elements.velocities).degree+1);
@@ -42,7 +42,7 @@ namespace aspect
                                update_values   |
                                update_quadrature_points |
                                update_JxW_values);
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
 
@@ -78,7 +78,7 @@ namespace aspect
         return false;
 
       // Remove old times until we're at the correct time period
-      std::list<std::pair<double, double> >::iterator it = time_rmsvel.begin();
+      std::list<std::pair<double, double>>::iterator it = time_rmsvel.begin();
       while (time_rmsvel.back().first - (*it).first > adjusted_time)
         it++;
       time_rmsvel.erase(time_rmsvel.begin(), it);

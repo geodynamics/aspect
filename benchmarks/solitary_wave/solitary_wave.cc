@@ -390,7 +390,7 @@ namespace aspect
           // solitary wave initial condition.
           const SolitaryWaveInitialCondition<dim> &initial_composition =
             this->get_initial_composition_manager().template
-            get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim> >();
+            get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>>();
 
           return reference_permeability * pow(initial_composition.get_background_porosity(), 3.0) / eta_f;
 
@@ -442,7 +442,7 @@ namespace aspect
             }
 
           // fill melt outputs if they exist
-          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
           if (melt_out != NULL)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -686,7 +686,7 @@ namespace aspect
         unsigned int max_points;
         std::vector<double> initial_pressure;
         double maximum_pressure;
-        std::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim> > ref_func;
+        std::shared_ptr<AnalyticSolutions::FunctionSolitaryWave<dim>> ref_func;
 
     };
 
@@ -698,7 +698,7 @@ namespace aspect
       // then get the parameters we need
 
       const SolitaryWaveInitialCondition<dim> &initial_composition
-        = this->get_initial_composition_manager().template get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim> > ();
+        = this->get_initial_composition_manager().template get_matching_initial_composition_model<SolitaryWaveInitialCondition<dim>> ();
 
       amplitude           = initial_composition.get_amplitude();
       background_porosity = initial_composition.get_background_porosity();
@@ -708,7 +708,7 @@ namespace aspect
                   ExcMessage("Postprocessor Solitary Wave only works with the material model Solitary wave."));
 
       const SolitaryWaveMaterial<dim> &material_model
-        = Plugins::get_plugin_as_type<const SolitaryWaveMaterial<dim> >(this->get_material_model());
+        = Plugins::get_plugin_as_type<const SolitaryWaveMaterial<dim>>(this->get_material_model());
 
       compaction_length = material_model.length_scaling(background_porosity);
       velocity_scaling = material_model.velocity_scaling(background_porosity);

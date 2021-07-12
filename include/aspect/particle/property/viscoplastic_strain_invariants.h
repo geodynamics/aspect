@@ -67,7 +67,7 @@ namespace aspect
           void
           update_particle_property (const unsigned int data_position,
                                     const Vector<double> &solution,
-                                    const std::vector<Tensor<1,dim> > &gradients,
+                                    const std::vector<Tensor<1,dim>> &gradients,
                                     typename ParticleHandler<dim>::particle_iterator &particle) const override;
 
           /**
@@ -85,8 +85,8 @@ namespace aspect
           /**
            * @copydoc aspect::Particle::Property::Interface::get_property_information()
            */
-          std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const override;
+          std::vector<std::pair<std::string, unsigned int>>
+                                                         get_property_information() const override;
 
         private:
           unsigned int n_components;

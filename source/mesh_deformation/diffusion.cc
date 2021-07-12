@@ -53,8 +53,8 @@ namespace aspect
     void
     Diffusion<dim>::initialize ()
     {
-      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()),
+      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
                   ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
     }
 
@@ -97,7 +97,7 @@ namespace aspect
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 
       std::set< types::boundary_id > periodic_boundary_indicators;
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         {
@@ -229,10 +229,10 @@ namespace aspect
       FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
       // Vector for getting the local dim displacement values
-      std::vector<Tensor<1, dim> > displacement_values(n_fs_face_q_points);
+      std::vector<Tensor<1, dim>> displacement_values(n_fs_face_q_points);
 
       // Vector for getting the local dim initial topography values
-      std::vector<Tensor<1, dim> > initial_topography_values(n_fs_face_q_points);
+      std::vector<Tensor<1, dim>> initial_topography_values(n_fs_face_q_points);
 
       // The global displacements on the MeshDeformation FE
       LinearAlgebra::Vector displacements = this->get_mesh_deformation_handler().get_mesh_displacements();
@@ -300,8 +300,8 @@ namespace aspect
                     // TODO this is only correct for box geometries
                     else
                       {
-                        AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()),
+                        AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+                                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
                                     ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
                         direction[dim-1] = 1.;
                       }
@@ -322,7 +322,7 @@ namespace aspect
                     std::vector<double> phi(dofs_per_cell);
 
                     // The projected gradients of the shape values for the i-loop
-                    std::vector<Tensor<1, dim, double> > projected_grad_phi(dofs_per_cell);
+                    std::vector<Tensor<1, dim, double>> projected_grad_phi(dofs_per_cell);
 
                     // Loop over the shape functions
                     for (unsigned int i=0; i<dofs_per_cell; ++i)
@@ -330,8 +330,8 @@ namespace aspect
                         // Make sure we only assemble for the y-component
                         // TODO this is only correct for box geometries
                         // Check that a box geometry is used
-                        AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()),
+                        AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+                                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
                                     ExcMessage("The surface diffusion mesh deformation plugin only works for Box geometries."));
                         if (mesh_deformation_dof_handler.get_fe().system_to_component_index(i).first == dim-1)
                           {

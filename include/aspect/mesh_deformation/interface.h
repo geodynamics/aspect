@@ -219,14 +219,14 @@ namespace aspect
          * Return a map of boundary indicators to the names of all mesh deformation models currently
          * used in the computation, as specified in the input file.
          */
-        const std::map<types::boundary_id, std::vector<std::string> > &
-        get_active_mesh_deformation_names () const;
+        const std::map<types::boundary_id, std::vector<std::string>> &
+                                                                  get_active_mesh_deformation_names () const;
 
         /**
          * Return a map of boundary indicators to vectors of pointers to all mesh deformation models
          * currently used in the computation, as specified in the input file.
          */
-        const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > &
+        const std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> &
         get_active_mesh_deformation_models () const;
 
         /**
@@ -455,13 +455,13 @@ namespace aspect
          * A map of boundary ids to mesh deformation objects that have been requested
          * in the parameter file.
          */
-        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim> > > > mesh_deformation_objects;
+        std::map<types::boundary_id,std::vector<std::unique_ptr<Interface<dim>>>> mesh_deformation_objects;
 
         /**
          * Map from boundary id to a vector of names representing
          * mesh deformation objects.
          */
-        std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_object_names;
+        std::map<types::boundary_id, std::vector<std::string>> mesh_deformation_object_names;
 
         /**
          * The set of boundary indicators for which mesh deformation
@@ -505,7 +505,7 @@ namespace aspect
     bool
     MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
     {
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
            = mesh_deformation_objects.begin();
            boundary_id != mesh_deformation_objects.end(); ++boundary_id)
         for (const auto &p : boundary_id->second)
@@ -529,11 +529,11 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "mesh deformation in the input file."));
 
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim> > > >::iterator boundary_id
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
            = mesh_deformation_objects.begin();
            boundary_id != mesh_deformation_objects.end(); ++boundary_id)
         {
-          typename std::vector<std::unique_ptr<Interface<dim> > >::const_iterator mesh_def;
+          typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
           for (const auto &p : boundary_id->second)
             {
               if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
@@ -570,12 +570,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
+                                    name, description); \
   }
   }
 }

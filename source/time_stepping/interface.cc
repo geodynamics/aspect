@@ -31,8 +31,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -344,7 +344,7 @@ namespace aspect
 
         for (unsigned int name=0; name<model_names.size(); ++name)
           {
-            active_plugins.push_back (std::unique_ptr<Interface<dim> >
+            active_plugins.push_back (std::unique_ptr<Interface<dim>>
                                       (std::get<dim>(registered_plugins)
                                        .create_plugin (model_names[name],
                                                        "Time stepping::Model names")));
@@ -391,11 +391,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<TimeStepping::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<TimeStepping::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<TimeStepping::Interface<2>>::PluginInfo> *
+                                                                       internal::Plugins::PluginList<TimeStepping::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<TimeStepping::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<TimeStepping::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<TimeStepping::Interface<3>>::PluginInfo> *
+                                                                       internal::Plugins::PluginList<TimeStepping::Interface<3>>::plugins = nullptr;
     }
   }
 

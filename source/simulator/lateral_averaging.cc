@@ -109,7 +109,7 @@ namespace aspect
                         (convert_to_years_ ? year_in_seconds : 1.0);
         }
 
-        std::vector<Tensor<1,dim> > velocity_values;
+        std::vector<Tensor<1,dim>> velocity_values;
         const FEValuesExtractors::Vector field_;
         const bool convert_to_years_;
     };
@@ -156,7 +156,7 @@ namespace aspect
             }
         }
 
-        std::vector<Tensor<1,dim> > velocity_values;
+        std::vector<Tensor<1,dim>> velocity_values;
         const FEValuesExtractors::Vector field_;
         const GravityModel::Interface<dim> *gravity_;
         const bool convert_to_years_;
@@ -192,7 +192,7 @@ namespace aspect
                         std::vector<double> &output) override
         {
           const MaterialModel::SeismicAdditionalOutputs<dim> *seismic_outputs
-            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim> >();
+            = out.template get_additional_output<const MaterialModel::SeismicAdditionalOutputs<dim>>();
 
           Assert(seismic_outputs != nullptr,ExcInternalError());
 
@@ -259,8 +259,8 @@ namespace aspect
         const FEValuesExtractors::Vector velocity_field_;
         const FEValuesExtractors::Scalar temperature_field_;
         const GravityModel::Interface<dim> *gravity_model;
-        std::vector<Tensor<1,dim> > velocity_values;
-        std::vector<Tensor<1,dim> > temperature_gradients;
+        std::vector<Tensor<1,dim>> velocity_values;
+        std::vector<Tensor<1,dim>> temperature_gradients;
         std::vector<double> temperature_values;
     };
 
@@ -306,7 +306,7 @@ namespace aspect
 
         const FEValuesExtractors::Vector velocity_field_;
         const GravityModel::Interface<dim> *gravity_model;
-        std::vector<Tensor<1,dim> > velocity_values;
+        std::vector<Tensor<1,dim>> velocity_values;
     };
 
 
@@ -424,9 +424,9 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<std::vector<double> >
-  LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_bounds,
-                                                  std::vector<std::unique_ptr<internal::FunctorBase<dim> > > &functors) const
+  std::vector<std::vector<double>>
+                                LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_bounds,
+                                                                                std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const
   {
     Assert (functors.size() > 0,
             ExcMessage ("To call this function, you need to request a positive "
@@ -441,8 +441,8 @@ namespace aspect
     const unsigned int n_properties = functors.size();
     const unsigned int n_slices = depth_bounds.size()-1;
 
-    std::vector<std::vector<double> > values(n_properties,
-                                             std::vector<double>(n_slices,0.0));
+    std::vector<std::vector<double>> values(n_properties,
+                                            std::vector<double>(n_slices,0.0));
     std::vector<double> volume(n_slices,0.0);
 
     // We would like to use a quadrature formula that is appropriately accurate laterally,
@@ -458,12 +458,12 @@ namespace aspect
     // the lower quadrature, so we leave it at the conservative quadrature for now.
 
     unsigned int geometry_unique_depth_direction;
-    if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-        Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
-        Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()))
+    if (Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+        Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()))
       geometry_unique_depth_direction = dim;
-    else if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
-             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim> >(this->get_geometry_model()))
+    else if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+             Plugins::plugin_type_matches<GeometryModel::EllipsoidalChunk<dim>>(this->get_geometry_model()))
       geometry_unique_depth_direction = numbers::invalid_unsigned_int;
     else
       geometry_unique_depth_direction = numbers::invalid_unsigned_int;
@@ -476,12 +476,12 @@ namespace aspect
     // need a quadrature of at least q, with p <= 2q-1 --> q >= (p+1)/2
     const unsigned int lateral_quadrature_degree = static_cast<unsigned int>(std::ceil((max_fe_degree+1.0)/2.0));
 
-    std::unique_ptr<Quadrature<dim> > quadrature_formula;
+    std::unique_ptr<Quadrature<dim>> quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
-      quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
-                                                                    geometry_unique_depth_direction));
+      quadrature_formula = std_cxx14::make_unique<Quadrature<dim>>(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
+                                                                   geometry_unique_depth_direction));
     else
-      quadrature_formula = std_cxx14::make_unique<Quadrature<dim> >(QIterated<dim>(QMidpoint<1>(),10));
+      quadrature_formula = std_cxx14::make_unique<Quadrature<dim>>(QIterated<dim>(QMidpoint<1>(),10));
 
     const unsigned int n_q_points = quadrature_formula->size();
 
@@ -490,10 +490,10 @@ namespace aspect
                              *quadrature_formula,
                              update_values | update_gradients | update_quadrature_points | update_JxW_values);
 
-    std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
-                                                          std::vector<double> (n_q_points));
-    std::vector<std::vector<double> > output_values(n_properties,
-                                                    std::vector<double>(n_q_points));
+    std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),
+                                                         std::vector<double> (n_q_points));
+    std::vector<std::vector<double>> output_values(n_properties,
+                                                   std::vector<double>(n_q_points));
 
     MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                this->n_compositional_fields());
@@ -676,9 +676,9 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<std::vector<double> >
-  LateralAveraging<dim>::get_averages(const unsigned int n_slices,
-                                      const std::vector<std::string> &property_names) const
+  std::vector<std::vector<double>>
+                                LateralAveraging<dim>::get_averages(const unsigned int n_slices,
+                                                                    const std::vector<std::string> &property_names) const
   {
     return compute_lateral_averages(n_slices, property_names);
   }
@@ -686,9 +686,9 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<std::vector<double> >
-  LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
-                                                  const std::vector<std::string> &property_names) const
+  std::vector<std::vector<double>>
+                                LateralAveraging<dim>::compute_lateral_averages(const unsigned int n_slices,
+                                                                                const std::vector<std::string> &property_names) const
   {
     const double maximal_depth = this->get_geometry_model().maximal_depth();
     std::vector<double> depth_bounds(n_slices+1, 0.0);
@@ -703,11 +703,11 @@ namespace aspect
 
 
   template <int dim>
-  std::vector<std::vector<double> >
-  LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_thresholds,
-                                                  const std::vector<std::string> &property_names) const
+  std::vector<std::vector<double>>
+                                LateralAveraging<dim>::compute_lateral_averages(const std::vector<double> &depth_thresholds,
+                                                                                const std::vector<std::string> &property_names) const
   {
-    std::vector<std::unique_ptr<internal::FunctorBase<dim> > > functors;
+    std::vector<std::unique_ptr<internal::FunctorBase<dim>>> functors;
     for (unsigned int property_index=0; property_index<property_names.size(); ++property_index)
       {
         if (property_names[property_index] == "temperature")

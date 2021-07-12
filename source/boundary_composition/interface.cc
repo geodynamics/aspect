@@ -106,8 +106,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -201,7 +201,7 @@ namespace aspect
       for (auto &model_name : model_names)
         {
           // create boundary composition objects
-          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim> >
+          boundary_composition_objects.push_back (std::unique_ptr<Interface<dim>>
                                                   (std::get<dim>(registered_plugins)
                                                    .create_plugin (model_name,
                                                                    "Boundary composition::Model names")));
@@ -244,7 +244,7 @@ namespace aspect
 
 
     template <int dim>
-    const std::vector<std::unique_ptr<Interface<dim> > > &
+    const std::vector<std::unique_ptr<Interface<dim>>> &
     Manager<dim>::get_active_boundary_composition_conditions () const
     {
       return boundary_composition_objects;
@@ -397,11 +397,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryComposition::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<2>>::PluginInfo> *
+                                                                              internal::Plugins::PluginList<BoundaryComposition::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<BoundaryComposition::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<BoundaryComposition::Interface<3>>::PluginInfo> *
+                                                                              internal::Plugins::PluginList<BoundaryComposition::Interface<3>>::plugins = nullptr;
     }
   }
 

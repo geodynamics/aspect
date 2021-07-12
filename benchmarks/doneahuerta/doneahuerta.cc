@@ -293,7 +293,7 @@ namespace aspect
     std::pair<std::string,std::string>
     DoneaHuertaPostprocessor<dim>::execute (TableHandler &)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
 
         ref_func.reset (new AnalyticSolutions::FunctionDoneaHuerta<dim>());

@@ -52,7 +52,7 @@ namespace aspect
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
+      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
 
       // loop over all of the surface cells and if one less than h/3 away from
       // the top or bottom surface, evaluate the density on that face

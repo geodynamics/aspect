@@ -37,8 +37,8 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    std::pair<std::vector<double>,std::vector<double> >
-    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double> > &spherical_function) const
+    std::pair<std::vector<double>,std::vector<double>>
+                                                    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
     {
       std::vector<double> cosi(spherical_function.size(),0);
       std::vector<double> sini(spherical_function.size(),0);
@@ -80,8 +80,8 @@ namespace aspect
     }
 
     template <int dim>
-    std::pair<std::vector<double>,std::vector<double> >
-    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
+    std::pair<std::vector<double>,std::vector<double>>
+                                                    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
     {
       Assert(false, ExcNotImplemented());
       return std::make_pair(std::vector<double>(), std::vector<double>());
@@ -89,8 +89,8 @@ namespace aspect
     }
 
     template <>
-    std::pair<std::vector<double>,std::vector<double> >
-    Geoid<3>::density_contribution (const double &outer_radius) const
+    std::pair<std::vector<double>,std::vector<double>>
+                                                    Geoid<3>::density_contribution (const double &outer_radius) const
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       // need to evaluate density contribution of each volume quadrature point
@@ -107,7 +107,7 @@ namespace aspect
       MaterialModel::MaterialModelInputs<3> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<3> out(fe_values.n_quadrature_points, this->n_compositional_fields());
 
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
       // Directly do the global 3D integral over each quadrature point of every cell (different from traditional way to do layer integral).
       // This work around ASPECT's adaptive mesh refinement feature.
@@ -162,30 +162,30 @@ namespace aspect
     }
 
     template <int dim>
-    std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
+    std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
     Geoid<dim>::dynamic_topography_contribution(const double &/*outer_radius*/,
                                                 const double &/*inner_radius*/) const
     {
       Assert(false, ExcNotImplemented());
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > temp;
+      std::pair<double, std::pair<std::vector<double>,std::vector<double>>> temp;
       return std::make_pair(temp, temp);
     }
 
     template <>
-    std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > >
+    std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
     Geoid<3>::dynamic_topography_contribution(const double &outer_radius,
                                               const double &inner_radius) const
     {
       // Get a pointer to the dynamic topography postprocessor.
       const Postprocess::DynamicTopography<3> &dynamic_topography =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<3> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::DynamicTopography<3>>();
 
       // Get the already-computed dynamic topography solution.
       const LinearAlgebra::BlockVector &topo_vector = dynamic_topography.topography_vector();
 
       // Get a pointer to the boundary densities postprocessor.
       const Postprocess::BoundaryDensities<3> &boundary_densities =
-        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<3> >();
+        this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::BoundaryDensities<3>>();
 
       const double top_layer_average_density = boundary_densities.density_at_top();
       const double bottom_layer_average_density = boundary_densities.density_at_bottom();
@@ -204,8 +204,8 @@ namespace aspect
       std::vector<double> topo_values( quadrature_formula_face.size());
 
       // vectors to store the location, infinitesimal area, and dynamic topography associated with each quadrature point of each surface and bottom cell respectively.
-      std::vector<std::pair<Point<3>,std::pair<double,double> > > surface_stored_values;
-      std::vector<std::pair<Point<3>,std::pair<double,double> > > CMB_stored_values;
+      std::vector<std::pair<Point<3>,std::pair<double,double>>> surface_stored_values;
+      std::vector<std::pair<Point<3>,std::pair<double,double>>> CMB_stored_values;
 
       // loop over all of the boundary cells and if one is at
       // surface or CMB, evaluate the dynamic topography vector there.
@@ -276,8 +276,8 @@ namespace aspect
               }
           }
 
-      std::vector<std::vector<double> > surface_topo_spherical_function;
-      std::vector<std::vector<double> > CMB_topo_spherical_function;
+      std::vector<std::vector<double>> surface_topo_spherical_function;
+      std::vector<std::vector<double>> CMB_topo_spherical_function;
 
       for (unsigned int i=0; i<surface_stored_values.size(); ++i)
         {
@@ -309,9 +309,9 @@ namespace aspect
                                                                        });
         }
 
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes
+      std::pair<double, std::pair<std::vector<double>,std::vector<double>>> SH_surface_dyna_topo_coes
         = std::make_pair(top_layer_average_density,to_spherical_harmonic_coefficients(surface_topo_spherical_function));
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes
+      std::pair<double, std::pair<std::vector<double>,std::vector<double>>> SH_CMB_dyna_topo_coes
         = std::make_pair(bottom_layer_average_density,to_spherical_harmonic_coefficients(CMB_topo_spherical_function));
       return std::make_pair(SH_surface_dyna_topo_coes,SH_CMB_dyna_topo_coes);
     }
@@ -342,17 +342,17 @@ namespace aspect
       const double G = aspect::constants::big_g;
 
       // Get the spherical harmonic coefficients of the density contribution.
-      std::pair<std::vector<double>,std::vector<double> > SH_density_coes = density_contribution(outer_radius);
+      std::pair<std::vector<double>,std::vector<double>> SH_density_coes = density_contribution(outer_radius);
 
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_surface_dyna_topo_coes;
-      std::pair<double, std::pair<std::vector<double>,std::vector<double> > > SH_CMB_dyna_topo_coes;
+      std::pair<double, std::pair<std::vector<double>,std::vector<double>>> SH_surface_dyna_topo_coes;
+      std::pair<double, std::pair<std::vector<double>,std::vector<double>>> SH_CMB_dyna_topo_coes;
       // Initialize the surface and CMB density contrasts with NaNs because they may be unused in case of no dynamic topography contribution.
       double surface_delta_rho = numbers::signaling_nan<double>();
       double CMB_delta_rho = numbers::signaling_nan<double>();
       if (include_dynamic_topo_contribution == true)
         {
           // Get the spherical harmonic coefficients of the surface and CMB dynamic topography
-          std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double> > >, std::pair<double, std::pair<std::vector<double>,std::vector<double> > > > SH_dyna_topo_coes;
+          std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>> SH_dyna_topo_coes;
           SH_dyna_topo_coes = dynamic_topography_contribution(outer_radius,inner_radius);
           SH_surface_dyna_topo_coes = SH_dyna_topo_coes.first;
           SH_CMB_dyna_topo_coes = SH_dyna_topo_coes.second;
@@ -437,7 +437,7 @@ namespace aspect
                                                update_JxW_values);
 
       // define a vector to store the location of the cells along the surface
-      std::vector<Point<dim> > surface_cell_locations;
+      std::vector<Point<dim>> surface_cell_locations;
 
       // loop over all the cells to get the locations of the surface cells to prepare for the geoid computation.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -455,7 +455,7 @@ namespace aspect
           }
 
       // Transfer the geocentric coordinates of the surface cells to the surface spherical coordinates(theta,phi)
-      std::vector<std::pair<double,double> > surface_cell_spherical_coordinates;
+      std::vector<std::pair<double,double>> surface_cell_spherical_coordinates;
       for (unsigned int i=0; i<surface_cell_locations.size(); ++i)
         {
           const std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(surface_cell_locations.at(i));
@@ -931,7 +931,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          prm.declare_entry("Include the contributon from dynamic topography", "true",
+          prm.declare_entry("Include the contribution from dynamic topography", "true",
                             Patterns::Bool(),
                             "Option to include the contribution from dynamic topography on geoid. The default is true.");
           prm.declare_entry("Maximum degree","20",
@@ -989,7 +989,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          include_dynamic_topo_contribution = prm.get_bool ("Include the contributon from dynamic topography");
+          include_dynamic_topo_contribution = prm.get_bool ("Include the contribution from dynamic topography");
           max_degree = prm.get_integer ("Maximum degree");
           min_degree = prm.get_integer ("Minimum degree");
           output_in_lat_lon = prm.get_bool ("Output data in geographical coordinates");

@@ -70,7 +70,7 @@ namespace aspect
          * previous time steps. This is used to determine when we have reached
          * steady state.
          */
-        std::list<std::pair<double, double> >   time_temperature;
+        std::list<std::pair<double, double>>   time_temperature;
     };
   }
 }

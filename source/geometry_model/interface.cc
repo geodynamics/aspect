@@ -53,11 +53,11 @@ namespace aspect
 
 
     template <int dim>
-    std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int > >
-    Interface<dim>::get_periodic_boundary_pairs() const
+    std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int >>
+        Interface<dim>::get_periodic_boundary_pairs() const
     {
       // return an empty set in the base class
-      return std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int > >();
+      return std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int >>();
     }
 
 
@@ -250,8 +250,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -336,7 +336,7 @@ namespace aspect
                                                  AffineConstraints<double> &constraints) const
     {
       using periodic_boundary_set
-        = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int> >;
+        = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int>>;
       periodic_boundary_set pbs = get_periodic_boundary_pairs();
 
       for (const auto &pb : pbs)
@@ -359,12 +359,12 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<GeometryModel::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<GeometryModel::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<GeometryModel::Interface<2>>::PluginInfo> *
+                                                                        internal::Plugins::PluginList<GeometryModel::Interface<2>>::plugins = nullptr;
 
       template <>
-      std::list<internal::Plugins::PluginList<GeometryModel::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<GeometryModel::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<GeometryModel::Interface<3>>::PluginInfo> *
+                                                                        internal::Plugins::PluginList<GeometryModel::Interface<3>>::plugins = nullptr;
     }
   }
 

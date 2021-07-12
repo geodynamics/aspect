@@ -31,16 +31,24 @@ namespace aspect
     {
       /**
        * Runge Kutta fourth order integrator. This scheme requires
-       * storing the original location and intermediate k1, k2, k3, k4
-       * values, so the read/write_data functions reflect this.
+       * storing the original location and intermediate k1, k2, k3
+       * values in the particle properties.
        *
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class RK4 : public Interface<dim>
+      class RK4 : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           RK4();
+
+          /**
+          * Look up where the RK4 data is stored. Done once and cached to
+          * avoid repeated lookups.
+          */
+          virtual
+          void
+          initialize ();
 
           /**
            * Perform an integration step of moving the particles of one cell
@@ -63,8 +71,8 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim> > &old_velocities,
-                               const std::vector<Tensor<1,dim> > &velocities,
+                               const std::vector<Tensor<1,dim>> &old_velocities,
+                               const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) override;
 
           /**
@@ -80,32 +88,17 @@ namespace aspect
           bool new_integration_step() override;
 
           /**
-           * Return data length of the integration related data required for
-           * communication in terms of number of bytes. When data about
-           * particles is transported from one processor to another, or stored
-           * on disk for snapshots, integrators get the chance to store
-           * whatever information they need with each particle. This function
-           * returns how many pieces of additional information a concrete
-           * integrator class needs to store for each particle.
-           *
-           * @return The number of bytes required to store the relevant
-           * integrator data for one particle.
-           */
-          std::size_t get_data_size() const override;
-
-          /**
-           * @copydoc Interface::read_data()
-           */
-          const void *
-          read_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                    const void *data) override;
-
-          /**
-           * @copydoc Interface::write_data()
-           */
-          void *
-          write_data(const typename ParticleHandler<dim>::particle_iterator &particle,
-                     void *data) const override;
+            * We need to tell the property manager how many intermediate properties this integrator requires,
+            * so that it can allocate sufficient space for each particle. However, the integrator is not
+            * created at the time the property manager is set up and we can not reverse the order of creation,
+            * because the integrator needs to know where to store its properties, which requires the property manager
+            * to be finished setting up properties. Luckily the number of properties is constant, so we can make it
+            * a static property of this class. Therefore, the property manager can access this variable even
+            * before any object is constructed.
+            *
+            * The Runge-Kutta 4 integrator requires 4 tensors with dim components each.
+            */
+          static const unsigned int n_integrator_properties = 4*dim;
 
         private:
           /**
@@ -115,19 +108,9 @@ namespace aspect
           unsigned int integrator_substep;
 
           /**
-           * The particle location before the first integration step. This is
-           * used in the following steps and transferred to another process if
-           * the particle leaves the domain during one of the steps.
+           * The location of the 4 RK4 data fields stored in the particle properties.
            */
-          std::map<types::particle_index, Point<dim> > loc0;
-
-          /**
-           * The intermediate values of the RK4 scheme. These are
-           * used in the following steps and transferred to another process if
-           * the particle leaves the domain during one of the steps.
-           */
-          std::map<types::particle_index, Tensor<1,dim> > k1, k2, k3;
-
+          std::array<unsigned int,4> property_index_k;
       };
     }
   }
