@@ -29,7 +29,7 @@ namespace aspect
   namespace Postprocess
   {
     template <int dim>
-    class SeaLevel : public Utilities::AsciiDataInitial<dim>, public Interface<dim> //, public ::aspect::SimulatorAccess<dim>
+    class SeaLevel : public Interface<dim>, public ::aspect::SimulatorAccess<dim> //, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -44,9 +44,7 @@ namespace aspect
         void
         initialize () override;
 
-        // 
-        using Utilities::AsciiDataInitial<dim>::initialize;
-
+        //
 
         /**
          * Register with the simulator the other postprocessors that we need
@@ -86,6 +84,23 @@ namespace aspect
          * Whether or not to produce text files with sea level values
          */
         bool write_to_file;
+
+        /**
+         * Pointer to the structured data
+         */
+        std::unique_ptr<Utilities::StructuredDataLookup<dim-1>> data_lookup;
+        /**
+         * Directory in which the input data files, i.e., GPlates model or ascii data
+         * are present.
+         */
+        std::string data_directory;
+
+        /**
+         * Filename of the input Gplates model or ascii data file. For GPlates, the file names
+         * can contain the specifiers %s and/or %c (in this order), meaning the name of the
+         * boundary and the number of the data file time step.
+         */
+        std::string data_file_name;
 
         /**
          * Interval between the generation of text output. This parameter

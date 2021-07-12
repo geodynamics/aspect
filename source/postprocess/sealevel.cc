@@ -87,6 +87,18 @@ namespace aspect
     double
     SeaLevel<dim>::sea_level_equation(const Point<dim> &position)
     {
+      Point<dim-1> internal_position;
+
+          if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
+            {
+              const std::array<double,dim> spherical_position = this->get_geometry_model().
+                                                                cartesian_to_natural_coordinates(position);
+
+              for (unsigned int d = 0; d < dim-1; ++d)
+                internal_position[d-1] = spherical_position[d];
+            }
+
+      double topography = data_lookup->get_data(internal_position, 1);
       double c = 0.0;
       double gravity_perturbation = 0.0;
       const double elevation = this->get_geometry_model().height_above_reference_surface(position);
@@ -99,7 +111,9 @@ namespace aspect
     void
     SeaLevel<dim>::initialize ()
     {
-      Utilities::AsciiDataInitial<dim>::initialize(1);
+          // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
+          data_lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1> >(1, 1);
+          data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -296,9 +310,24 @@ namespace aspect
       {
         prm.enter_subsection("Sea level");
         {
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
-                                                          "shell_3d_outer.0.txt");
+          prm.declare_entry ("Data directory",
+                             "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
+                             Patterns::DirectoryName (),
+                             "The name of a directory that contains the GPlates model or the "
+                             "ascii data. This path may either be absolute (if starting with a "
+                             "`/') or relative to the current directory. The path may also "
+                             "include the special text `$ASPECT_SOURCE_DIR' which will be "
+                             "interpreted as the path in which the ASPECT source files were "
+                             "located when ASPECT was compiled. This interpretation allows, "
+                             "for example, to reference files located in the `data/' subdirectory "
+                             "of ASPECT.");
+          prm.declare_entry ("Data file name", "shell_3d_outer_2.0.txt",
+                             Patterns::Anything (),
+                             "The file name of the input velocity as a GPlates model or an ascii data. "
+                             "For the GPlates model, provide file in the same format as described "
+                             "in the 'gplates' boundary velocity plugin. "
+                             "For the ascii data, provide file in the same format as described in "
+                             " 'ascii data' initial composition plugin." );
           prm.declare_entry ("Output to file", "false",
                              Patterns::List(Patterns::Bool()),
                              "Whether or not to write sea level to a text file named named "
@@ -368,7 +397,8 @@ namespace aspect
       {
         prm.enter_subsection("Sea level");
         {
-          Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+          data_directory = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
+          data_file_name    = prm.get ("Data file name");          
           write_to_file = prm.get_bool ("Output to file");
           output_interval = prm.get_double ("Time between text output");
           if (this->convert_output_to_years())
