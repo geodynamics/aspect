@@ -190,7 +190,7 @@ namespace aspect
         {
           if (!has_dominant_phase_column)
             AssertThrow(false, ExcMessage("You can not ask for the column with the dominant phase if it does not exist in the data file."));
-          return value(temperature, pressure, dominant_phase_values);
+          return value(temperature, pressure, dominant_phase_indices);
         }
 
         bool
@@ -686,7 +686,7 @@ namespace aspect
           enthalpy_values.reinit(n_temperature,n_pressure);
 
           if (has_dominant_phase_column)
-            dominant_phase_values.reinit(n_temperature,n_pressure);
+            dominant_phase_indices.reinit(n_temperature,n_pressure);
 
           phase_volume_fractions.resize(phase_column_names.size());
           for (auto &phase_volume_fraction : phase_volume_fractions)
@@ -702,7 +702,7 @@ namespace aspect
 
               for (unsigned int n=0; n<n_columns; n++)
                 {
-                  if (n==dominant_phase_column_index)
+                  if (n == dominant_phase_column_index)
                     in >> phase;
                   else
                     in >> row_values[n]; // assigned as 0 if in.fail() == True
@@ -751,7 +751,7 @@ namespace aspect
                   if (has_dominant_phase_column)
                     {
                       std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
-                      dominant_phase_values[i%n_temperature][i/n_temperature] = std::distance(dominant_phase_names.begin(), it);
+                      dominant_phase_indices[i%n_temperature][i/n_temperature] = std::distance(dominant_phase_names.begin(), it);
                     }
 
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)
@@ -771,7 +771,7 @@ namespace aspect
                   if (has_dominant_phase_column)
                     {
                       std::vector<std::string>::iterator it = std::find(dominant_phase_names.begin(), dominant_phase_names.end(), phase);
-                      dominant_phase_values[i/n_pressure][i%n_pressure] = std::distance(dominant_phase_names.begin(), it);
+                      dominant_phase_indices[i/n_pressure][i%n_pressure] = std::distance(dominant_phase_names.begin(), it);
                     }
 
                   for (unsigned int n=0; n<phase_volume_fractions.size(); n++)

@@ -126,6 +126,10 @@ namespace aspect
             dominant_phase (const double temperature,
                             const double pressure) const;
 
+            /**
+             * Returns whether a lookup has a column that indicates which is the
+             * phase with the largest volume fraction is this material.
+             */
             bool
             has_dominant_phase() const;
 
@@ -176,8 +180,6 @@ namespace aspect
                    const Table<2, double> &values,
                    const bool interpol) const;
 
-
-
             /**
              * Access that data value of the property that is stored in table
              * @p values at pressure @p pressure and temperature @p temperature
@@ -187,8 +189,6 @@ namespace aspect
             value (const double temperature,
                    const double pressure,
                    const Table<2, unsigned int> &values) const;
-
-
 
             /**
              * Find the position in a data table given a temperature.
@@ -206,7 +206,7 @@ namespace aspect
             dealii::Table<2,double> vp_values;
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
-            dealii::Table<2,unsigned int> dominant_phase_values;
+            dealii::Table<2,unsigned int> dominant_phase_indices;
 
             /**
             * The vector of column names corresponding to each phase,

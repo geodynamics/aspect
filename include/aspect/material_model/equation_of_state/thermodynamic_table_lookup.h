@@ -148,6 +148,9 @@ namespace aspect
 
           /**
            * Vector of strings containing the names of the dominant phases in all the material lookups.
+           * In case the lookup table contains one string with the dominant phase rather than separate
+           * columns with volume fraction for each phase, this vector will be used instead of the
+           * unique_phase_names vector above.
            */
           std::vector<std::string> list_of_dominant_phases;
 
@@ -160,6 +163,10 @@ namespace aspect
            * of vectors of unsigned int stores the global index for each lookup (so there are
            * as many inner vectors as lookups, and each one stores the indices for an individual
            * lookup, to be filled in the initialize function).
+           *
+           * In case the lookup table contains one string with the dominant phase rather than separate
+           * columns with volume fraction for each phase, this vector will be used instead of the
+           * unique_phase_indices vector above.
            */
           std::vector<std::vector<unsigned int> > global_index_of_lookup_phase;
 
@@ -205,8 +212,6 @@ namespace aspect
                                             const std::vector<std::vector<double>> &volume_fractions,
                                             NamedAdditionalMaterialOutputs<dim> *phase_volume_fractions_out) const;
 
-
-
           /**
           * This function uses the MaterialModelInputs &in to fill the output_values
           * of the dominant_phases_out output object with the index of the
@@ -219,7 +224,7 @@ namespace aspect
           */
           void fill_dominant_phases (const MaterialModel::MaterialModelInputs<dim> &in,
                                      const std::vector<std::vector<double>> &volume_fractions,
-                                     PhaseOutputs<dim> *dominant_phases_out) const;
+                                     PhaseOutputs<dim> &dominant_phases_out) const;
       };
     }
   }
