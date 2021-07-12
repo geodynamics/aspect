@@ -71,8 +71,8 @@ namespace aspect
           void
           local_integrate_step(const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
-                               const std::vector<Tensor<1,dim> > &old_velocities,
-                               const std::vector<Tensor<1,dim> > &velocities,
+                               const std::vector<Tensor<1,dim>> &old_velocities,
+                               const std::vector<Tensor<1,dim>> &velocities,
                                const double dt) override;
 
           /**

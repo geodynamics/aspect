@@ -40,8 +40,8 @@ namespace aspect
       // initialize this to a nonsensical value; set it to the actual time
       // the first time around we get to check it
       last_output_time (std::numeric_limits<double>::quiet_NaN()),
-      evaluation_points_cartesian (std::vector<Point<dim> >() ),
-      point_values (std::vector<std::pair<double, std::vector<Vector<double> > > >() ),
+      evaluation_points_cartesian (std::vector<Point<dim>>() ),
+      point_values (std::vector<std::pair<double, std::vector<Vector<double>>>>() ),
       use_natural_coordinates (false)
     {}
 
@@ -60,9 +60,9 @@ namespace aspect
         return std::pair<std::string,std::string>();
 
       // evaluate the solution at all of our evaluation points
-      std::vector<Vector<double> >
-      current_point_values (evaluation_points_cartesian.size(),
-                            Vector<double> (this->introspection().n_components));
+      std::vector<Vector<double>>
+                               current_point_values (evaluation_points_cartesian.size(),
+                                                     Vector<double> (this->introspection().n_components));
 
       for (unsigned int p=0; p<evaluation_points_cartesian.size(); ++p)
         {
@@ -235,7 +235,7 @@ namespace aspect
           const std::vector<std::string> point_list
             = Utilities::split_string_list(prm.get("Evaluation points"), ';');
 
-          std::vector<std::array<double,dim> > evaluation_points;
+          std::vector<std::array<double,dim>> evaluation_points;
 
           for (unsigned int p=0; p<point_list.size(); ++p)
             {

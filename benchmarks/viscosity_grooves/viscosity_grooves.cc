@@ -402,7 +402,7 @@ namespace aspect
     std::pair<std::string,std::string>
     ViscosityGroovesPostprocessor<dim>::execute (TableHandler &)
     {
-      std::shared_ptr<Function<dim> > ref_func;
+      std::shared_ptr<Function<dim>> ref_func;
       {
 
         ref_func.reset (new AnalyticSolutions::FunctionViscosityGrooves<dim>(this->get_geometry_model()));

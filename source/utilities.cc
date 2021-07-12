@@ -204,7 +204,7 @@ namespace aspect
                                const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
-                               const std::shared_ptr<std::vector<unsigned int> > &n_values_per_key,
+                               const std::shared_ptr<std::vector<unsigned int>> &n_values_per_key,
                                const bool allow_missing_keys)
     {
       std::vector<std::string> field_names = list_of_keys;
@@ -643,7 +643,7 @@ namespace aspect
 
     template <int dim>
     bool
-    polygon_contains_point(const std::vector<Point<2> > &point_list,
+    polygon_contains_point(const std::vector<Point<2>> &point_list,
                            const dealii::Point<2> &point)
     {
       /**
@@ -743,7 +743,7 @@ namespace aspect
 
     template <int dim>
     double
-    signed_distance_to_polygon(const std::vector<Point<2> > &point_list,
+    signed_distance_to_polygon(const std::vector<Point<2>> &point_list,
                                const dealii::Point<2> &point)
     {
       // If the point lies outside polygon, we give it a negative sign,
@@ -770,7 +770,7 @@ namespace aspect
       std::vector<double> distances(n_poly_points, 1e23);
 
       // Create another polygon but with all points shifted 1 position to the right
-      std::vector<Point<2> > shifted_point_list(n_poly_points);
+      std::vector<Point<2>> shifted_point_list(n_poly_points);
       shifted_point_list[0] = point_list[n_poly_points-1];
 
       for (unsigned int i = 0; i < n_poly_points-1; ++i)
@@ -1283,11 +1283,11 @@ namespace aspect
           /**
            * diagonal and off-diagonals above
            */
-          std::vector< std::vector<double> > m_upper;
+          std::vector< std::vector<double>> m_upper;
           /**
            * diagonals below the diagonal
            */
-          std::vector< std::vector<double> > m_lower;
+          std::vector< std::vector<double>> m_lower;
       };
 
       band_matrix::band_matrix(int dim, int n_u, int n_l)
@@ -2196,7 +2196,7 @@ namespace aspect
                      const Quadrature<dim>                                     &quadrature,
                      const std::function<void(
                        const typename DoFHandler<dim>::active_cell_iterator &,
-                       const std::vector<Point<dim> > &,
+                       const std::vector<Point<dim>> &,
                        std::vector<double> &)>                                 &function,
                      VectorType                                                &vec_result)
     {
@@ -2340,11 +2340,11 @@ namespace aspect
   std::array<double,dim> Coordinates::WGS84_coordinates<dim>(const Point<dim> &position); \
   \
   template \
-  bool polygon_contains_point<dim>(const std::vector<Point<2> > &pointList, \
+  bool polygon_contains_point<dim>(const std::vector<Point<2>> &pointList, \
                                    const dealii::Point<2> &point); \
   \
   template \
-  double signed_distance_to_polygon<dim>(const std::vector<Point<2> > &pointList, \
+  double signed_distance_to_polygon<dim>(const std::vector<Point<2>> &pointList, \
                                          const dealii::Point<2> &point); \
   \
   template \
@@ -2355,7 +2355,7 @@ namespace aspect
   derivative_of_weighted_p_norm_average (const double averaged_parameter, \
                                          const std::vector<double> &weights, \
                                          const std::vector<double> &values, \
-                                         const std::vector<dealii::SymmetricTensor<2, dim, double> > &derivatives, \
+                                         const std::vector<dealii::SymmetricTensor<2, dim, double>> &derivatives, \
                                          const double p); \
   \
   template \
@@ -2384,7 +2384,7 @@ namespace aspect
                    const Quadrature<dim> &quadrature, \
                    const std::function<void( \
                                              const DoFHandler<dim>::active_cell_iterator &, \
-                                             const std::vector<Point<dim> > &, \
+                                             const std::vector<Point<dim>> &, \
                                              std::vector<double> &)> &function, \
                    dealii::LinearAlgebra::distributed::Vector<double> &vec_result); \
   \
@@ -2396,7 +2396,7 @@ namespace aspect
                    const Quadrature<dim> &quadrature, \
                    const std::function<void( \
                                              const DoFHandler<dim>::active_cell_iterator &, \
-                                             const std::vector<Point<dim> > &, \
+                                             const std::vector<Point<dim>> &, \
                                              std::vector<double> &)> &function, \
                    LinearAlgebra::BlockVector &vec_result);
 

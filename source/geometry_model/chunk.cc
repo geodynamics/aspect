@@ -359,9 +359,9 @@ namespace aspect
 
 
       template <int dim>
-      std::unique_ptr<Manifold<dim,dim> >
-      ChunkGeometry<dim>::
-      clone() const
+      std::unique_ptr<Manifold<dim,dim>>
+                                      ChunkGeometry<dim>::
+                                      clone() const
       {
         return std_cxx14::make_unique<ChunkGeometry>(*this);
       }

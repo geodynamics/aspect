@@ -86,7 +86,7 @@ namespace aspect
           const types::boundary_id boundary_indicator,
           const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
           const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-          const std::vector<Tensor<1,dim> > &normal_vectors,
+          const std::vector<Tensor<1,dim>> &normal_vectors,
           std::vector<double> &fluid_pressure_gradient_outputs
         ) const = 0;
 
@@ -186,12 +186,12 @@ namespace aspect
   template class classname<3>; \
   namespace ASPECT_REGISTER_BOUNDARY_FLUID_PRESSURE_MODEL_ ## classname \
   { \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<2>,classname<2> > \
-    dummy_ ## classname ## _2d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<2>, \
-                                name, description); \
-    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<3>,classname<3> > \
-    dummy_ ## classname ## _3d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<3>, \
-                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<2>,classname<2>> \
+        dummy_ ## classname ## _2d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<2>, \
+                                    name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::BoundaryFluidPressure::Interface<3>,classname<3>> \
+        dummy_ ## classname ## _3d (&aspect::BoundaryFluidPressure::register_boundary_fluid_pressure<3>, \
+                                    name, description); \
   }
   }
 }

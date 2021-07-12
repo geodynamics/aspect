@@ -39,7 +39,7 @@ namespace aspect
     {
       const char *unit = (dim==2)? "W/m" : "W/m^2";
 
-      std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         internal::compute_heat_flux_through_boundary_faces (*this);
 
       std::map<types::boundary_id, double> local_boundary_fluxes;

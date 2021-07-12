@@ -45,7 +45,7 @@ namespace aspect
       void
       SPD_Factor<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,                             ExcInternalError());
@@ -63,7 +63,7 @@ namespace aspect
 
         this->get_material_model().evaluate(in, out);
 
-        const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+        const MaterialModel::MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {

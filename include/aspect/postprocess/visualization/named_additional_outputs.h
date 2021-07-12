@@ -67,7 +67,7 @@ namespace aspect
 
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                                std::vector<Vector<double> > &computed_quantities) const override;
+                                std::vector<Vector<double>> &computed_quantities) const override;
 
         private:
           std::vector<std::string> property_names;

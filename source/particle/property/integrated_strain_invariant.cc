@@ -40,7 +40,7 @@ namespace aspect
       void
       IntegratedStrainInvariant<dim>::update_particle_property(const unsigned int data_position,
                                                                const Vector<double> &/*solution*/,
-                                                               const std::vector<Tensor<1,dim> > &gradients,
+                                                               const std::vector<Tensor<1,dim>> &gradients,
                                                                typename ParticleHandler<dim>::particle_iterator &particle) const
       {
         // Integrated strain invariant from prior time step
@@ -87,10 +87,10 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      IntegratedStrainInvariant<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     IntegratedStrainInvariant<dim>::get_property_information() const
       {
-        const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("integrated strain invariant",1));
+        const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("integrated strain invariant",1));
         return property_information;
       }
     }

@@ -349,7 +349,7 @@ namespace aspect
     std::pair<std::string,std::string>
     LayeredFlowPostprocessor<dim>::execute (TableHandler &)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const LayeredFlowMaterial<dim> &
         material_model

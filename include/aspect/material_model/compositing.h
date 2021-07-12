@@ -135,7 +135,7 @@ namespace aspect
          * compositing.
          */
         std::vector<std::string>                             model_names;
-        std::vector<std::unique_ptr<Interface<dim> > > models;
+        std::vector<std::unique_ptr<Interface<dim>>> models;
     };
   }
 }

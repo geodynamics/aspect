@@ -77,7 +77,7 @@ namespace aspect
       void
       Heating<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         const auto &heating_model_objects = this->get_heating_model_manager().get_active_heating_models();
@@ -97,7 +97,7 @@ namespace aspect
         MaterialModel::MaterialModelInputs<dim> in(input_data, this->introspection());
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points, this->n_compositional_fields());
 
-        std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
+        std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (n_quadrature_points));
 
         this->get_heating_model_manager().create_additional_material_model_inputs_and_outputs(in, out);
         HeatingModel::HeatingModelOutputs heating_model_outputs(n_quadrature_points, this->n_compositional_fields());
@@ -107,11 +107,11 @@ namespace aspect
 #if DEAL_II_VERSION_GTE(9,3,0)
         in.current_cell = input_data.template get_cell<dim>();
 #else
-        in.current_cell = input_data.template get_cell<DoFHandler<dim> > ();
+        in.current_cell = input_data.template get_cell<DoFHandler<dim>> ();
 #endif
 
         // we need an fevalues object to get the melt velocities
-        std::vector<Point<dim> > quadrature_points(n_quadrature_points);
+        std::vector<Point<dim>> quadrature_points(n_quadrature_points);
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           quadrature_points[q] = this->get_mapping().transform_real_to_unit_cell(in.current_cell,input_data.evaluation_points[q]);
 
@@ -148,7 +148,7 @@ namespace aspect
           AssertThrow(false, ExcNotImplemented());
 
         unsigned int index = 0;
-        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim> > >::const_iterator
+        for (typename std::list<std::unique_ptr<HeatingModel::Interface<dim>>>::const_iterator
              heating_model = heating_model_objects.begin();
              heating_model != heating_model_objects.end(); ++heating_model, ++index)
           {

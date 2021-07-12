@@ -165,7 +165,7 @@ namespace aspect
         /**
          * Centers for the sinkers provided by Cedric Thielot (pers. comm. from Dave May)
          */
-        std::vector<Point<3> > centers;
+        std::vector<Point<3>> centers;
 
         /**
          * Parameters for evaluating viscosity

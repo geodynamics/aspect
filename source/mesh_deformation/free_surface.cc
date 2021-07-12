@@ -161,7 +161,7 @@ namespace aspect
                                           tmp_tangential_vel_boundary_indicators.end());
 
       // Get the active velocity boundary indicators
-      const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string> > >
+      const std::map<types::boundary_id, std::pair<std::string,std::vector<std::string>>>
       tmp_active_vel_boundary_indicators = this->get_boundary_velocity_manager().get_active_boundary_velocity_names();
 
       for (const auto &p : tmp_active_vel_boundary_indicators)
@@ -191,7 +191,7 @@ namespace aspect
         = new aspect::Assemblers::ApplyStabilization<dim>(free_surface_theta);
 
       assemblers.stokes_system.push_back(
-        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim> > (surface_stabilization));
+        std::unique_ptr<aspect::Assemblers::ApplyStabilization<dim>> (surface_stabilization));
 
       // Note that we do not want face_material_model_data, because we do not
       // connect to a face assembler. We instead connect to a normal assembler,
@@ -230,13 +230,13 @@ namespace aspect
       FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
 
       // stuff for getting the velocity values
-      std::vector<Tensor<1,dim> > velocity_values(n_face_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_face_q_points);
 
       // set up constraints
       AffineConstraints<double> mass_matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int> >;
+      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,

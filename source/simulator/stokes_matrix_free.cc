@@ -568,7 +568,7 @@ namespace aspect
           // as a mass matrix with the inverse of the viscosity
           SolverControl solver_control(100, src.block(1).l2_norm() * Schur_complement_tolerance,true);
 
-          SolverCG<dealii::LinearAlgebra::distributed::Vector<double> > solver(solver_control);
+          SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> solver(solver_control);
           // Trilinos reports a breakdown
           // in case src=dst=0, even
           // though it should return
@@ -667,7 +667,7 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::StokesOperator ()
     :
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number> >()
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>()
   {}
 
   template <int dim, int degree_v, typename number>
@@ -675,7 +675,7 @@ namespace aspect
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::clear ()
   {
     viscosity = nullptr;
-    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::BlockVector<number> >::clear();
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::BlockVector<number>>::clear();
   }
 
   template <int dim, int degree_v, typename number>
@@ -780,8 +780,8 @@ namespace aspect
   ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
   {
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number> >::
-    data->cell_loop(&StokesOperator::local_apply, this, dst, src);
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+        data->cell_loop(&StokesOperator::local_apply, this, dst, src);
   }
 
   /**
@@ -790,7 +790,7 @@ namespace aspect
   template <int dim, int degree_p, typename number>
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::MassMatrixOperator ()
     :
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number> >()
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
   {}
 
   template <int dim, int degree_p, typename number>
@@ -798,7 +798,7 @@ namespace aspect
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::clear ()
   {
     viscosity = nullptr;
-    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::clear();
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
   template <int dim, int degree_p, typename number>
@@ -882,8 +882,8 @@ namespace aspect
   ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
                const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
-    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::
-    data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
+                                                                                   data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
   }
 
   template <int dim, int degree_p, typename number>
@@ -892,9 +892,9 @@ namespace aspect
   ::compute_diagonal ()
   {
     this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number> >());
+    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
     this->diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number> >());
+    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
 
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
@@ -936,7 +936,7 @@ namespace aspect
   {
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data, 0);
 
-    AlignedVector<VectorizedArray<number> > diagonal(pressure.dofs_per_cell);
+    AlignedVector<VectorizedArray<number>> diagonal(pressure.dofs_per_cell);
 
     const bool use_viscosity_at_quadrature_points
       = (viscosity->size(1) == pressure.n_q_points);
@@ -1012,7 +1012,7 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::ABlockOperator ()
     :
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number> >()
+    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
   {}
 
 
@@ -1022,7 +1022,7 @@ namespace aspect
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::clear ()
   {
     viscosity = nullptr;
-    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::clear();
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
 
@@ -1100,8 +1100,8 @@ namespace aspect
   ::apply_add (dealii::LinearAlgebra::distributed::Vector<number> &dst,
                const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
-    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number> >::
-    data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
+    MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
+                                                                                   data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
   }
 
 
@@ -1112,7 +1112,7 @@ namespace aspect
   ::compute_diagonal ()
   {
     this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number> >());
+    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
     this->data->initialize_dof_vector(inverse_diagonal);
@@ -1150,7 +1150,7 @@ namespace aspect
     const bool use_viscosity_at_quadrature_points
       = (viscosity->size(1) == velocity.n_q_points);
 
-    AlignedVector<VectorizedArray<number> > diagonal(velocity.dofs_per_cell);
+    AlignedVector<VectorizedArray<number>> diagonal(velocity.dofs_per_cell);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
@@ -1211,7 +1211,7 @@ namespace aspect
   ::set_diagonal (const dealii::LinearAlgebra::distributed::Vector<number> &diag)
   {
     this->inverse_diagonal_entries.
-    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number> >());
+    reset(new DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<number>>());
     dealii::LinearAlgebra::distributed::Vector<number> &inverse_diagonal =
       this->inverse_diagonal_entries->get_vector();
     this->data->initialize_dof_vector(inverse_diagonal);
@@ -1827,14 +1827,14 @@ namespace aspect
 
     // Interface matrices
     // Ablock GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGABlockMatrixType> > mg_interface_matrices_A;
+    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGABlockMatrixType>> mg_interface_matrices_A;
     mg_interface_matrices_A.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_A[level].initialize(mg_matrices_A_block[level]);
     mg::Matrix<VectorType > mg_interface_A(mg_interface_matrices_A);
 
     // Schur complement matrix GMG
-    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGSchurComplementMatrixType> > mg_interface_matrices_Schur;
+    MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGSchurComplementMatrixType>> mg_interface_matrices_Schur;
     mg_interface_matrices_Schur.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_Schur[level].initialize(mg_matrices_Schur_complement[level]);
@@ -1862,7 +1862,7 @@ namespace aspect
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement
-    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMatrixFree<dim,GMGNumberType> >;
+    using GMGPreconditioner = PreconditionMG<dim, VectorType, MGTransferMatrixFree<dim,GMGNumberType>>;
     GMGPreconditioner prec_A(dof_handler_v, mg_A, mg_transfer_A_block);
     GMGPreconditioner prec_Schur(dof_handler_p, mg_Schur, mg_transfer_Schur_complement);
 
@@ -2033,7 +2033,7 @@ namespace aspect
                               sim.parameters.linear_solver_A_block_tolerance,
                               sim.parameters.linear_solver_S_block_tolerance);
 
-    PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double> > mem;
+    PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double>> mem;
 
     // step 1a: try if the simple and fast solver
     // succeeds in n_cheap_stokes_solver_steps steps or less.
@@ -2052,11 +2052,11 @@ namespace aspect
         // instead of requiring FGMRES, greatly lowing the memory requirement of the solver.
         if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::gmres)
           {
-            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >
-            solver(solver_control_cheap, mem,
-                   SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double> >::
-                   AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
-                                  true));
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
+                                                                              solver(solver_control_cheap, mem,
+                                                                                     SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+                                                                                     AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+                                                                                         true));
 
             solver.solve (stokes_matrix,
                           solution_copy,
@@ -2065,10 +2065,10 @@ namespace aspect
           }
         else if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s)
           {
-            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >
-            solver(solver_control_cheap, mem,
-                   SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double> >::
-                   AdditionalData(sim.parameters.idr_s_parameter));
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
+                                                                            solver(solver_control_cheap, mem,
+                                                                                   SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+                                                                                   AdditionalData(sim.parameters.idr_s_parameter));
 
             solver.solve (stokes_matrix,
                           solution_copy,
@@ -2329,8 +2329,8 @@ namespace aspect
       stokes_constraints.push_back(&constraints_v);
       stokes_constraints.push_back(&constraints_p);
 
-      std::shared_ptr<MatrixFree<dim,double> >
-      stokes_mf_storage(new MatrixFree<dim,double>());
+      std::shared_ptr<MatrixFree<dim,double>>
+                                           stokes_mf_storage(new MatrixFree<dim,double>());
       stokes_mf_storage->reinit(*sim.mapping,stokes_dofs, stokes_constraints,
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
       stokes_matrix.clear();
@@ -2345,8 +2345,8 @@ namespace aspect
         MatrixFree<dim,double>::AdditionalData::none;
       additional_data.mapping_update_flags = (update_values | update_gradients |
                                               update_JxW_values | update_quadrature_points);
-      std::shared_ptr<MatrixFree<dim,double> >
-      ablock_mf_storage(new MatrixFree<dim,double>());
+      std::shared_ptr<MatrixFree<dim,double>>
+                                           ablock_mf_storage(new MatrixFree<dim,double>());
       ablock_mf_storage->reinit(*sim.mapping,dof_handler_v, constraints_v,
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
 
@@ -2361,8 +2361,8 @@ namespace aspect
         MatrixFree<dim,double>::AdditionalData::none;
       additional_data.mapping_update_flags = (update_values | update_JxW_values |
                                               update_quadrature_points);
-      std::shared_ptr<MatrixFree<dim,double> >
-      Schur_mf_storage(new MatrixFree<dim,double>());
+      std::shared_ptr<MatrixFree<dim,double>>
+                                           Schur_mf_storage(new MatrixFree<dim,double>());
       Schur_mf_storage->reinit(*sim.mapping,dof_handler_p, constraints_p,
                                QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
 
@@ -2416,8 +2416,8 @@ namespace aspect
             additional_data.mapping_update_flags = (update_gradients | update_JxW_values |
                                                     update_quadrature_points);
             additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,GMGNumberType> >
-            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+            std::shared_ptr<MatrixFree<dim,GMGNumberType>>
+                                                        mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
@@ -2447,8 +2447,8 @@ namespace aspect
             additional_data.mapping_update_flags = (update_values | update_JxW_values |
                                                     update_quadrature_points);
             additional_data.mg_level = level;
-            std::shared_ptr<MatrixFree<dim,GMGNumberType> >
-            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+            std::shared_ptr<MatrixFree<dim,GMGNumberType>>
+                                                        mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
             mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
@@ -2493,7 +2493,7 @@ namespace aspect
             IndexSet locally_relevant_dofs;
             DoFTools::extract_locally_relevant_level_dofs (dof_handler_v, level, locally_relevant_dofs);
 
-            DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<double> > diagonal_matrix;
+            DiagonalMatrix<dealii::LinearAlgebra::distributed::Vector<double>> diagonal_matrix;
             dealii::LinearAlgebra::distributed::Vector<double> &diagonal_vector =
               diagonal_matrix.get_vector();
 
@@ -2518,7 +2518,7 @@ namespace aspect
             std::vector<types::global_dof_index> local_dof_indices (dofs_per_cell);
             const FEValuesExtractors::Vector velocities (0);
 
-            std::vector<SymmetricTensor<2,dim> > symgrad_phi_u (dofs_per_cell);
+            std::vector<SymmetricTensor<2,dim>> symgrad_phi_u (dofs_per_cell);
             std::vector<double> div_phi_u (dofs_per_cell);
 
             AffineConstraints<double> boundary_constraints;

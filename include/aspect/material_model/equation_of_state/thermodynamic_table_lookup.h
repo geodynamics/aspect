@@ -131,7 +131,7 @@ namespace aspect
            * List of pointers to objects that read and process data we get from
            * material data files. There is one pointer/object per lookup file.
            */
-          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup> > material_lookup;
+          std::vector<std::unique_ptr<MaterialModel::MaterialUtilities::Lookup::MaterialLookup>> material_lookup;
 
           /**
           * Vector of strings containing the names of the unique phases in all the material lookups.

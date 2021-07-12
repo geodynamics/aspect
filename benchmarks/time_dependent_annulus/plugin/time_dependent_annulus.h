@@ -61,9 +61,9 @@ namespace aspect
       double vel[],
       double *pressure,
       double *density,
-      std::shared_ptr<Functions::ParsedFunction<dim> > pressure_function,
-      std::shared_ptr<Functions::ParsedFunction<dim> > velocity_function,
-      std::shared_ptr<Functions::ParsedFunction<dim> > density_function)
+      std::shared_ptr<Functions::ParsedFunction<dim>> pressure_function,
+      std::shared_ptr<Functions::ParsedFunction<dim>> velocity_function,
+      std::shared_ptr<Functions::ParsedFunction<dim>> density_function)
     {
       /****************************************************************************************/
       /****************************************************************************************/
@@ -83,9 +83,9 @@ namespace aspect
     class FunctionStreamline : public Function<dim>
     {
       public:
-        FunctionStreamline (std::shared_ptr<Functions::ParsedFunction<dim> > pressure,
-                            std::shared_ptr<Functions::ParsedFunction<dim> > velocity,
-                            std::shared_ptr<Functions::ParsedFunction<dim> > density,
+        FunctionStreamline (std::shared_ptr<Functions::ParsedFunction<dim>> pressure,
+                            std::shared_ptr<Functions::ParsedFunction<dim>> velocity,
+                            std::shared_ptr<Functions::ParsedFunction<dim>> density,
                             const unsigned int n_components)
           :
           Function<dim>(n_components),
@@ -104,9 +104,9 @@ namespace aspect
            &values[0], &values[2], &values[4], pressure_function, velocity_function, density_function);
         }
       private:
-        std::shared_ptr<Functions::ParsedFunction<dim> > pressure_function;
-        std::shared_ptr<Functions::ParsedFunction<dim> > velocity_function;
-        std::shared_ptr<Functions::ParsedFunction<dim> > density_function;
+        std::shared_ptr<Functions::ParsedFunction<dim>> pressure_function;
+        std::shared_ptr<Functions::ParsedFunction<dim>> velocity_function;
+        std::shared_ptr<Functions::ParsedFunction<dim>> density_function;
     };
   }
 
@@ -118,7 +118,7 @@ namespace aspect
     class TimeDependentAnnulus : public MaterialModel::Interface<dim>
     {
       private:
-        std::shared_ptr<Functions::ParsedFunction<dim> > density_function, pressure_function, velocity_function;
+        std::shared_ptr<Functions::ParsedFunction<dim>> density_function, pressure_function, velocity_function;
 
       public:
         virtual void evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
@@ -311,7 +311,7 @@ namespace aspect
     class TimeDependentAnnulus : public Postprocess::Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       private:
-        std::shared_ptr<Function<dim> > ref_func;
+        std::shared_ptr<Function<dim>> ref_func;
 
       public:
         virtual
@@ -319,7 +319,7 @@ namespace aspect
         initialize ()
         {
           const MaterialModel::TimeDependentAnnulus<dim> &material_model =
-            Plugins::get_plugin_as_type<const MaterialModel::TimeDependentAnnulus<dim> >(this->get_material_model());
+            Plugins::get_plugin_as_type<const MaterialModel::TimeDependentAnnulus<dim>>(this->get_material_model());
 
           ref_func.reset (new AnalyticSolutions::FunctionStreamline<dim>(material_model.get_pressure(),
                                                                          material_model.get_velocity(),

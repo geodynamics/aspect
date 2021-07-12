@@ -3128,7 +3128,7 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/)
         {
-          std::unique_ptr<Function<dim> > ref_func;
+          std::unique_ptr<Function<dim>> ref_func;
 
           AssertThrow(Plugins::plugin_type_matches<const SolCxMaterial<dim>>(this->get_material_model()),
                       ExcMessage("Postprocessor DuretzEtAl only works with the material model SolCx, SolKz, and Inclusion."));

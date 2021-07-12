@@ -35,11 +35,11 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      std::vector<std::vector<double> >
-      QuadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                       const std::vector<Point<dim> > &positions,
-                                                       const ComponentMask &selected_properties,
-                                                       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      std::vector<std::vector<double>>
+                                    QuadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                                                     const std::vector<Point<dim>> &positions,
+                                                                                     const ComponentMask &selected_properties,
+                                                                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
@@ -76,9 +76,9 @@ namespace aspect
           particle_handler.particles_in_cell(found_cell);
 
 
-        std::vector<std::vector<double> > cell_properties(positions.size(),
-                                                          std::vector<double>(n_particle_properties,
-                                                                              numbers::signaling_nan<double>()));
+        std::vector<std::vector<double>> cell_properties(positions.size(),
+                                                         std::vector<double>(n_particle_properties,
+                                                                             numbers::signaling_nan<double>()));
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
 
@@ -258,7 +258,7 @@ namespace aspect
                     global_minimum_particle_properties = Utilities::string_to_double(Utilities::split_string_list(prm.get("Global particle property minimum")));
 
                     const Postprocess::Particles<dim> &particle_postprocessor =
-                      this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim> >();
+                      this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
                     const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
                     const unsigned int n_property_components = particle_property_information.n_components();
                     const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");

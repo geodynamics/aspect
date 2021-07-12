@@ -42,8 +42,8 @@ namespace aspect
     AnalyticalTopography<dim>::execute (TableHandler &statistics)
     {
       // Only allow use of the plugin with the box geometry model
-      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
-                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim> >(this->get_geometry_model()),
+      AssertThrow(Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
+                  Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model()),
                   ExcMessage("Topography postprocessor is only implemented for the box geometry model. ") );
 
       const types::boundary_id relevant_boundary = this->get_geometry_model().translate_symbolic_boundary_name_to_id ("top");

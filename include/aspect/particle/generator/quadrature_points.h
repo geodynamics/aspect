@@ -48,7 +48,7 @@ namespace aspect
            * particles. This map will be filled in this function.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim> > &particles) override;
+          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
 
           /**
            * Declare the parameters this class takes through input files.

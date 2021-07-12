@@ -140,8 +140,8 @@ namespace aspect
     double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
     double max_conductivity = 0;
 
-    std::vector<Tensor<1,dim> > old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
-    std::vector<Tensor<1,dim> > old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
+    std::vector<Tensor<1,dim>> old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     if (parameters.include_melt_transport)
       {
         const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
@@ -289,8 +289,8 @@ namespace aspect
                                   introspection.n_compositional_fields,
                                   advection_field);
 
-    std::vector<Tensor<1,dim> > face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
-    std::vector<Tensor<1,dim> > face_old_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
+    std::vector<Tensor<1,dim>> face_old_old_velocity_values (scratch.face_finite_element_values->n_quadrature_points);
 
     for (const auto &cell : dof_handler.active_cell_iterators())
       {

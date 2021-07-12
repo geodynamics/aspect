@@ -129,7 +129,7 @@ namespace aspect
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       //set up additional output for the derivatives
-      MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModelDerivatives<dim> >();
+      MaterialModelDerivatives<dim> *derivatives = out.template get_additional_output<MaterialModelDerivatives<dim>>();
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -175,7 +175,7 @@ namespace aspect
               // distribute the strain-rate and stress over the processes.
               std::vector<double> composition_viscosities(volume_fractions.size());
 
-              std::vector<SymmetricTensor<2,dim> > composition_viscosities_derivatives(volume_fractions.size());
+              std::vector<SymmetricTensor<2,dim>> composition_viscosities_derivatives(volume_fractions.size());
 
               for (unsigned int c=0; c < volume_fractions.size(); ++c)
                 {

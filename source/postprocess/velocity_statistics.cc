@@ -45,7 +45,7 @@ namespace aspect
                                update_values   |
                                update_quadrature_points |
                                update_JxW_values);
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
 
       double local_velocity_square_integral = 0;
       double local_max_velocity = 0;

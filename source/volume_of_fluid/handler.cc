@@ -77,13 +77,13 @@ namespace aspect
           local_dof_indices(finite_element.dofs_per_cell),
           phi_field (volume_of_fluid_element.dofs_per_cell, numbers::signaling_nan<double>()),
           old_field_values (quadrature.size(), numbers::signaling_nan<double>()),
-          cell_i_n_values (quadrature.size(), numbers::signaling_nan<Tensor<1, dim> > ()),
+          cell_i_n_values (quadrature.size(), numbers::signaling_nan<Tensor<1, dim>> ()),
           cell_i_d_values (quadrature.size(), numbers::signaling_nan<double> ()),
-          face_current_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
-          face_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
-          face_old_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
+          face_current_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
+          face_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
+          face_old_old_velocity_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
           neighbor_old_values (face_quadrature.size(), numbers::signaling_nan<double>()),
-          neighbor_i_n_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim> >()),
+          neighbor_i_n_values (face_quadrature.size(), numbers::signaling_nan<Tensor<1, dim>>()),
           neighbor_i_d_values (face_quadrature.size(), numbers::signaling_nan<double>())
         {}
 
@@ -200,7 +200,7 @@ namespace aspect
     parse_parameters (prm);
 
     this->get_signals().edit_finite_element_variables.connect(
-      [&](std::vector<VariableDeclaration<dim> > &vars)
+      [&](std::vector<VariableDeclaration<dim>> &vars)
     {
       this->edit_finite_element_variables(vars);
     });
@@ -216,7 +216,7 @@ namespace aspect
 
   template <int dim>
   void
-  VolumeOfFluidHandler<dim>::edit_finite_element_variables (std::vector<VariableDeclaration<dim> > &vars)
+  VolumeOfFluidHandler<dim>::edit_finite_element_variables (std::vector<VariableDeclaration<dim>> &vars)
   {
     for (unsigned int f=0; f<n_volume_of_fluid_fields; ++f)
       {
@@ -432,7 +432,7 @@ namespace aspect
     if ( this->get_parameters().initial_adaptive_refinement > 0 ||
          this->get_parameters().adaptive_refinement_interval > 0 )
       {
-        AssertThrow(this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::VolumeOfFluidInterface<dim> >(),
+        AssertThrow(this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::VolumeOfFluidInterface<dim>>(),
                     ExcMessage("Volume of Fluid Interface Tracking requires that the 'volume of fluid interface' strategy be used for AMR"));
 
         AssertThrow(this->get_parameters().adaptive_refinement_interval <(1/this->get_parameters().CFL_number),

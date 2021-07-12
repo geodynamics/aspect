@@ -43,7 +43,7 @@ namespace aspect
       void
       VerticalHeatFlux<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
-                            std::vector<Vector<double> > &computed_quantities) const
+                            std::vector<Vector<double>> &computed_quantities) const
       {
         const unsigned int n_quadrature_points = input_data.solution_values.size();
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
@@ -52,7 +52,7 @@ namespace aspect
 
         //Create vector for the temperature gradients.  All the other things
         //we need are in MaterialModelInputs/Outputs
-        std::vector<Tensor<1,dim> > temperature_gradient(n_quadrature_points);
+        std::vector<Tensor<1,dim>> temperature_gradient(n_quadrature_points);
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           for (unsigned int d = 0; d < dim; ++d)
             temperature_gradient[q][d] = input_data.solution_gradients[q][this->introspection().component_indices.temperature][d];

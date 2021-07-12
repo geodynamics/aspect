@@ -291,14 +291,14 @@ namespace aspect
         std::pair<std::string,std::string>
         execute (TableHandler &/*statistics*/)
         {
-          std::unique_ptr<Function<dim> > ref_func;
+          std::unique_ptr<Function<dim>> ref_func;
 
           AssertThrow(Plugins::plugin_type_matches<const InclusionMaterial<dim>>(this->get_material_model()),
                       ExcMessage("Postprocessor only works with the inclusion material model."));
 
           const InclusionMaterial<dim> &
           material_model
-            = Plugins::get_plugin_as_type<const InclusionMaterial<dim> >(this->get_material_model());
+            = Plugins::get_plugin_as_type<const InclusionMaterial<dim>>(this->get_material_model());
 
           ref_func.reset (new AnalyticSolutions::FunctionInclusion<dim>(
                             material_model.get_eta_B(),

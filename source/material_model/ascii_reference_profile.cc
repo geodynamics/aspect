@@ -105,7 +105,7 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
 
           // fill seismic velocities outputs if they exist
-          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim> >())
+          if (SeismicAdditionalOutputs<dim> *seismic_out = out.template get_additional_output<SeismicAdditionalOutputs<dim>>())
             {
               if (seismic_vp_index != numbers::invalid_unsigned_int)
                 seismic_out->vp[i] = profile.get_data_component(profile_position,seismic_vp_index);
@@ -233,7 +233,7 @@ namespace aspect
     void
     AsciiReferenceProfile<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<SeismicAdditionalOutputs<dim> >() == nullptr
+      if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr
           && seismic_vp_index != numbers::invalid_unsigned_int
           && seismic_vs_index != numbers::invalid_unsigned_int)
         {

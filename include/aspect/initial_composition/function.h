@@ -74,7 +74,7 @@ namespace aspect
         /**
          * A function object representing the compositional fields.
          */
-        std::unique_ptr<Functions::ParsedFunction<dim> > function;
+        std::unique_ptr<Functions::ParsedFunction<dim>> function;
 
         /**
          * The coordinate representation to evaluate the function. Possible

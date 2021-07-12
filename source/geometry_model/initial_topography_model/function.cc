@@ -47,7 +47,7 @@ namespace aspect
     value (const Point<dim-1> &surface_point) const
     {
       Point<dim> global_point;
-      if (Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model()) ||
+      if (Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model()) ||
           Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
         {
           // No need to set the vertical coordinate correctly,
@@ -55,9 +55,9 @@ namespace aspect
           for (unsigned int d=0; d<dim-1; d++)
             global_point[d] = surface_point[d];
         }
-      else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
-               Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) )
+      else if (Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+               Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) )
         {
           // No need to set the radial coordinate correctly,
           // because it will be thrown away in get_data_component anyway

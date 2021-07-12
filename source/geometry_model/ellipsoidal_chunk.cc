@@ -92,7 +92,7 @@ namespace aspect
                                                                              const double para_eccentricity,
                                                                              const double para_semi_minor_axis_b,
                                                                              const double para_bottom_depth,
-                                                                             const std::vector<Point<2> > &para_corners)
+                                                                             const std::vector<Point<2>> &para_corners)
     {
       semi_major_axis_a = para_semi_major_axis_a;
       eccentricity = para_eccentricity;
@@ -226,8 +226,8 @@ namespace aspect
     }
 
     template <int dim>
-    std::unique_ptr<Manifold<dim,3> >
-    EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
+    std::unique_ptr<Manifold<dim,3>>
+                                  EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
     {
       return std_cxx14::make_unique<EllipsoidalChunkGeometry>(*this);
     }
@@ -680,8 +680,8 @@ namespace aspect
     }
 
     template <int dim>
-    const std::vector<Point<2> > &
-    EllipsoidalChunk<dim>::get_corners() const
+    const std::vector<Point<2>> &
+                             EllipsoidalChunk<dim>::get_corners() const
     {
       return corners;
     }

@@ -41,8 +41,8 @@ namespace aspect
       // create a quadrature formula based on the temperature element alone.
       const QGauss<dim> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
       const unsigned int n_q_points = quadrature_formula.size();
-      std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),
-                                                            std::vector<double> (n_q_points));
+      std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),
+                                                           std::vector<double> (n_q_points));
 
       FEValues<dim> fe_values (this->get_mapping(),
                                this->get_fe(),

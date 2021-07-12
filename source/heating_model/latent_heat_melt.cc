@@ -39,7 +39,7 @@ namespace aspect
       const bool use_operator_split = (this->get_parameters().use_operator_splitting);
 
       const MaterialModel::ReactionRateOutputs<dim> *reaction_rate_out
-        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim> >();
+        = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
       for (unsigned int q=0; q<heating_model_outputs.heating_source_terms.size(); ++q)
         {

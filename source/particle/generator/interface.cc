@@ -54,16 +54,16 @@ namespace aspect
 
 
       template <int dim>
-      std::pair<Particles::internal::LevelInd,Particle<dim> >
-      Interface<dim>::generate_particle(const Point<dim> &position,
-                                        const types::particle_index id) const
+      std::pair<Particles::internal::LevelInd,Particle<dim>>
+                                                          Interface<dim>::generate_particle(const Point<dim> &position,
+                                                              const types::particle_index id) const
       {
         // Try to find the cell of the given position. If the position is not
         // in the domain on the local process, throw a ExcParticlePointNotInDomain
         // exception.
 #if DEAL_II_VERSION_GTE(9,3,0)
         std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-            Point<dim> > it =
+            Point<dim>> it =
               GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
 
         // Only try to add the point if the cell it is in, is on this processor
@@ -78,7 +78,7 @@ namespace aspect
         try
           {
             std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-                Point<dim> > it =
+                Point<dim>> it =
                   GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
 
             // Only try to add the point if the cell it is in, is on this processor
@@ -96,15 +96,15 @@ namespace aspect
           }
 # endif
         // Avoid warnings about missing return
-        return std::pair<Particles::internal::LevelInd,Particle<dim> >();
+        return std::pair<Particles::internal::LevelInd,Particle<dim>>();
       }
 
 
 
       template <int dim>
-      std::pair<Particles::internal::LevelInd,Particle<dim> >
-      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                         const types::particle_index id)
+      std::pair<Particles::internal::LevelInd,Particle<dim>>
+                                                          Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                                              const types::particle_index id)
       {
         // Uniform distribution on the interval [0,1]. This
         // will be used to generate random particle locations.
@@ -188,8 +188,8 @@ namespace aspect
         std::tuple
         <void *,
         void *,
-        aspect::internal::Plugins::PluginList<Interface<2> >,
-        aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+        aspect::internal::Plugins::PluginList<Interface<2>>,
+        aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
       }
 
 
@@ -276,11 +276,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Generator::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Generator::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Generator::Interface<2>>::PluginInfo> *
+                                                                              internal::Plugins::PluginList<Particle::Generator::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<Particle::Generator::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<Particle::Generator::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<Particle::Generator::Interface<3>>::PluginInfo> *
+                                                                              internal::Plugins::PluginList<Particle::Generator::Interface<3>>::plugins = nullptr;
     }
   }
 

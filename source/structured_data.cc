@@ -169,7 +169,7 @@ namespace aspect
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
-                                      std::vector<Table<dim,double> > &&data_table)
+                                      std::vector<Table<dim,double>> &&data_table)
     {
       Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
       for (unsigned int d=0; d<dim; ++d)
@@ -367,7 +367,7 @@ namespace aspect
                               "determined automatically. Either add a header with column "
                               "names or pass the number of columns in the StructuredData "
                               "constructor."));
-      std::vector<Table<dim,double> > data_tables(components, data_table);
+      std::vector<Table<dim,double>> data_tables(components, data_table);
 
       std::vector<std::vector<double>> coordinate_values(dim);
       for (unsigned int d=0; d<dim; ++d)
@@ -1055,10 +1055,10 @@ namespace aspect
     void
     AsciiDataLayered<dim>::initialize(const unsigned int components)
     {
-      AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim> >(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Sphere<dim> >(this->get_geometry_model()) ||
-                    Plugins::plugin_type_matches<GeometryModel::Box<dim> >(this->get_geometry_model())) ||
+      AssertThrow ((Plugins::plugin_type_matches<GeometryModel::SphericalShell<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Sphere<dim>>(this->get_geometry_model()) ||
+                    Plugins::plugin_type_matches<GeometryModel::Box<dim>>(this->get_geometry_model())) ||
                    Plugins::plugin_type_matches<GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()),
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, sphere, box or two merged boxes geometry."));
@@ -1097,7 +1097,7 @@ namespace aspect
         internal_position[i] = natural_position[i];
 
       // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim> >(this->get_geometry_model()) && dim == 3)
+      if (Plugins::plugin_type_matches<GeometryModel::Chunk<dim>>(this->get_geometry_model()) && dim == 3)
         {
           internal_position[2] = numbers::PI/2. - internal_position[2];
         }

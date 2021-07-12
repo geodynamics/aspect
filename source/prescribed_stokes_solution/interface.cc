@@ -66,8 +66,8 @@ namespace aspect
       std::tuple
       <void *,
       void *,
-      aspect::internal::Plugins::PluginList<Interface<2> >,
-      aspect::internal::Plugins::PluginList<Interface<3> > > registered_plugins;
+      aspect::internal::Plugins::PluginList<Interface<2>>,
+      aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
 
 
@@ -147,11 +147,11 @@ namespace aspect
     namespace Plugins
     {
       template <>
-      std::list<internal::Plugins::PluginList<PrescribedStokesSolution::Interface<2> >::PluginInfo> *
-      internal::Plugins::PluginList<PrescribedStokesSolution::Interface<2> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<PrescribedStokesSolution::Interface<2>>::PluginInfo> *
+                                                                                   internal::Plugins::PluginList<PrescribedStokesSolution::Interface<2>>::plugins = nullptr;
       template <>
-      std::list<internal::Plugins::PluginList<PrescribedStokesSolution::Interface<3> >::PluginInfo> *
-      internal::Plugins::PluginList<PrescribedStokesSolution::Interface<3> >::plugins = nullptr;
+      std::list<internal::Plugins::PluginList<PrescribedStokesSolution::Interface<3>>::PluginInfo> *
+                                                                                   internal::Plugins::PluginList<PrescribedStokesSolution::Interface<3>>::plugins = nullptr;
     }
   }
 

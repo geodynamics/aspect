@@ -235,8 +235,8 @@ namespace aspect
 
       // Evaluate the spherical harmonics at this position. Since they are the
       // same for all depth splines, do it once to avoid multiple evaluations.
-      std::vector<std::vector<double> > cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
-      std::vector<std::vector<double> > sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double>> cosine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
+      std::vector<std::vector<double>> sine_components(max_degree+1, std::vector<double>(max_degree+1, 0.0));
 
       for (unsigned int degree_l = 0; degree_l < max_degree+1; ++degree_l)
         {

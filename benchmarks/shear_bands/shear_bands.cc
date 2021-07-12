@@ -145,7 +145,7 @@ namespace aspect
             }
 
           // fill melt outputs if they exist
-          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+          aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
           if (melt_out != NULL)
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -616,7 +616,7 @@ namespace aspect
       // write output that can be used to calculate the angle of the shear bands
       const unsigned int max_lvl = this->get_triangulation().n_global_levels();
 
-      std::vector< Point<3> > data;  //x, y, porosity
+      std::vector< Point<3>> data;  //x, y, porosity
 
       // we want to have equidistant points in the output
       const QMidpoint<1> mp_rule;
@@ -757,7 +757,7 @@ namespace aspect
 
       const PlaneWaveMeltBandsInitialCondition<dim> &initial_composition
         = this->get_initial_composition_manager().template
-          get_matching_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim> > ();
+          get_matching_initial_composition_model<PlaneWaveMeltBandsInitialCondition<dim>> ();
 
       amplitude           = initial_composition.get_wave_amplitude();
       initial_band_angle  = initial_composition.get_initial_band_angle();
@@ -797,7 +797,7 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
       std::vector<double> velocity_divergences(n_q_points);
-      std::vector<Point<dim> > position(n_q_points);
+      std::vector<Point<dim>> position(n_q_points);
 
       double local_velocity_divergence_max = 0.0;
       double local_velocity_divergence_min = 0.0;

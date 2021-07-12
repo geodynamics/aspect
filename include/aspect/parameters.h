@@ -560,7 +560,7 @@ namespace aspect
      * mapped to one of the plugins of traction boundary conditions (e.g.
      * "function")
      */
-    std::map<types::boundary_id, std::pair<std::string,std::string> > prescribed_traction_boundary_indicators;
+    std::map<types::boundary_id, std::pair<std::string,std::string>> prescribed_traction_boundary_indicators;
 
     /**
      * A set of boundary ids on which the boundary_heat_flux objects
@@ -678,7 +678,7 @@ namespace aspect
      * the component and it is of the format "[0][1][2]". In case no component
      * is specified it defaults to 0.
      */
-    std::map<unsigned int, std::pair<std::string,unsigned int> > mapped_particle_properties;
+    std::map<unsigned int, std::pair<std::string,unsigned int>> mapped_particle_properties;
 
     std::vector<unsigned int>      normalized_fields;
     /**

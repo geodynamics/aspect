@@ -260,9 +260,9 @@ namespace aspect
 
 
     // Vectors for evaluating the finite element solution
-    std::vector<std::vector<double> > composition_values (introspection.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
-    std::vector< Tensor<1,dim> > velocities( n_q_points );
+    std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
+                                                         std::vector<double> (n_q_points));
+    std::vector< Tensor<1,dim>> velocities( n_q_points );
 
     typename DoFHandler<dim>::active_cell_iterator cell;
     // loop over all local cells
@@ -413,7 +413,7 @@ namespace aspect
                 continue;
             }
 
-          const std::vector<Point<dim> > &q_points = fe.get_quadrature_points();
+          const std::vector<Point<dim>> &q_points = fe.get_quadrature_points();
 
           if (use_constant_density == false)
             {

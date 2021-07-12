@@ -37,7 +37,7 @@ namespace aspect
       ParticleCount<dim>::execute() const
       {
         const Postprocess::Particles<dim> &particle_postprocessor =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim> >();
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
 
         const Particle::ParticleHandler<dim> &particle_handler =
           particle_postprocessor.get_particle_world().get_particle_handler();

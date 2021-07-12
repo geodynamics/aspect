@@ -34,7 +34,7 @@ namespace aspect
        * two or more entries. Otherwise the function does not change the list.
        */
       void trim_time_heat_flux_list (const double necessary_time_in_steady_state,
-                                     std::list<std::pair<double, double> > &time_heat_flux_list)
+                                     std::list<std::pair<double, double>> &time_heat_flux_list)
       {
         // Remove old times until we're at the correct time period
         // but ensure at least two entries remain in the list (one old, one current timestep)
@@ -53,7 +53,7 @@ namespace aspect
     bool
     SteadyHeatFlux<dim>::execute()
     {
-      const std::vector<std::vector<std::pair<double, double> > > heat_flux_and_area =
+      const std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area =
         Postprocess::internal::compute_heat_flux_through_boundary_faces (*this);
 
       double local_boundary_fluxes = 0.0;

@@ -64,7 +64,7 @@ namespace aspect
     template <int dim>
     void
     Averaging<dim>::average (const AveragingOperation averaging_operation,
-                             const std::vector<Point<dim> >    &position,
+                             const std::vector<Point<dim>>    &position,
                              std::vector<double>           &values_out) const
     {
       // if an output field has not been filled (because it was

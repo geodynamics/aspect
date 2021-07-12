@@ -30,7 +30,7 @@ namespace aspect
 
   template <int dim>
   VariableDeclaration<dim>::VariableDeclaration(const std::string &name,
-                                                const std::shared_ptr<FiniteElement<dim> > &fe,
+                                                const std::shared_ptr<FiniteElement<dim>> &fe,
                                                 const unsigned int multiplicity,
                                                 const unsigned int n_blocks)
     : name(name),
@@ -103,7 +103,7 @@ namespace aspect
 
 
   template <int dim>
-  FEVariableCollection<dim>::FEVariableCollection(const std::vector<VariableDeclaration<dim> > &variable_definitions)
+  FEVariableCollection<dim>::FEVariableCollection(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
     initialize(variable_definitions);
   }
@@ -112,7 +112,7 @@ namespace aspect
 
   template <int dim>
   void
-  FEVariableCollection<dim>::initialize(const std::vector<VariableDeclaration<dim> > &variable_definitions)
+  FEVariableCollection<dim>::initialize(const std::vector<VariableDeclaration<dim>> &variable_definitions)
   {
     variables.clear();
     variables.reserve(variable_definitions.size());
@@ -196,8 +196,8 @@ namespace aspect
 
 
   template <int dim>
-  const std::vector<FEVariable<dim> > &
-  FEVariableCollection<dim>::get_variables() const
+  const std::vector<FEVariable<dim>> &
+                                  FEVariableCollection<dim>::get_variables() const
   {
     return variables;
   }
