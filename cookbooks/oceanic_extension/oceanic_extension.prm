@@ -1,114 +1,89 @@
+### Oceanic Extension Cookbook
+# A cookbook to illustrate the parameters and processes controlling non-linear deformation of oceanic lithosphere.
+# This parameter file is the first in a series of cookbooks that systematically build in complexity, 
+# and thus serves as a reference model for the remaining cookbooks.
+
 #  Global parameters
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 2e6
 set Resume computation                     = auto
 set Use years in output instead of seconds = true
-
-# JBN - change  scheme below to: single Advection, iterated defect correction Stoke
-set Nonlinear solver scheme                = single Advection, iterated Newton Stokes
-
+set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Nonlinear solver tolerance             = 1e-5
-
-# JBN - change value below to 100, but we can add comment that this many
-# nonlinear iterations should only really happen in the first 1 or 2 time steps
-# and the rest should require quite a few less (<20)
-set Max nonlinear iterations               = 20
-
-# JBN - Add a comment here that in the case of issue with the stokes or 
-# advection solvers, these values below can be reduced to help
-# improve convergence behavior 
+# We set the number of nonlinear iterations to 100 as the first 1-2 time steps often require a large number of iterations to converge.
+# Subsequent time steps should require substantially fewer nonlinear iterations.
+set Max nonlinear iterations               = 100
+# Reducing the CFL values and/or maximum time step may improve the convergence behavior 
+# of the Stokes and thermal (advection-diffusion) systems. 
+# However, reducing these values inherently requires more time steps to reach the same end time. 
+# Finding the optimal balance frequently requires testing, although the maximum time step 
+# in lithospheric dynamics simulations with Drucker Prager plasticity is frequently not set above 20-50 thousand years. 
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
 set Output directory                       = output_oceanic_extension
-# AG - I'd remove this line. The default is wall time statistics every 100 timesteps, which is usually enough.
-set Timing output frequency                = 1
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 273
 
-# Governing equations
-# AG - For BA, it's easier to just set Formulation = boussinesq approximation 
+# Governing equations 
 subsection Formulation
-  set Formulation          = custom
-  set Mass conservation    = ask material model
-  # JBN - for BA approximation, we should change to parameter to "reference density model"
-  set Temperature equation = reference density profile
+  set Formulation          = Boussinesq approximation
 end
 
-# Model geometry (500x20x100 km, initial 5 km spacing)
+# Model geometry (400x100 km)
 # To extend
 subsection Geometry model
   set Model name = box
   subsection Box
-    set X repetitions = 200
-    set Y repetitions = 50
+    set X repetitions = 4
+    set Y repetitions = 1
     set X extent      = 400e3
     set Y extent      = 100e3
   end
 end
 
 # Mesh refinement specification
-# The following specifications produce grid spacing of 1.25 km above 50 km
-# depth, 2.5 km between 50 and 100 km depth, and 5 km below 100 km depth.
-#
-# JBN - with the settings beelow, we are doing no global or adpative refinement.
-# Should we add one or both back in?
+# The following specifications produce grid spacing of 1.5 km.
 subsection Mesh refinement
-  set Initial global refinement          = 0
-  set Initial adaptive refinement        = 0 
+  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 1 
   set Time steps between mesh refinement = 0
-end
-
-# Q2Q1 Element
-subsection Discretization
-  # AG - these 3 lines can be removed as they are the default
-  set Composition polynomial degree           = 2
-  set Stokes velocity polynomial degree       = 2
-  set Temperature polynomial degree           = 2
-  # JBN - we can remove this section if we don't want to use DG for the compositional fields
-  # In fact, DG is currently not enabled (next parameter below is "false". Something to discuss
-  set Use discontinuous composition discretization = false
-  subsection Stabilization parameters
-    set Use limiter for discontinuous composition solution = true
-    set Global composition maximum   = 200, 1, 1
-    set Global composition minimum   =   0, 0, 0
+  set Strategy = minimum refinement function
+  subsection Minimum refinement function
+    set Coordinate system   = cartesian
+    set Variable names      = x,y
+    set Function expression = if (y>50.e3 && x>120.e3 && x<280.e3, 6, 5)
   end
+  set Run postprocessors on initial refinement = false
 end
 
 # Solver parameters
 subsection Solver parameters
   subsection Stokes solver parameters
-
-    # JBN - we should comment here about why we set this to 0 (faster when plasticity is used),
-    # but also check with Menno to make sure this is still the case with defect correction
     set Number of cheap Stokes solver steps = 0
     set Linear solver tolerance = 1e-7
-  end
-  subsection Newton solver parameters
-    set Max Newton line search iterations        = 5 #JBN - we can delete this line (for Newton only)
-    set Max pre-Newton nonlinear iterations      = 20 # JBN - change to 100 to match global value
-    set Maximum linear Stokes solver tolerance   = 0.1 # JBN - Menno said this value is safe :)
-    set Nonlinear Newton solver switch tolerance = 1e-5
-    set SPD safety factor                        = 0.9 # JBN - we can delete this line (for Newton only)
-    set Stabilization preconditioner             = SPD # JBN - we can delete this line (for Newton only)
-    set Stabilization velocity block             = SPD # JBN - we can delete this line (for Newton only)
-    set Use Newton failsafe                      = false # JBN - we can delete this line (for Newton only)
-    set Use Newton residual scaling method       = false # JBN - we can delete this line (for Newton only)
-    set Use Eisenstat Walker method for Picard iterations = true
   end
 end
 
 # Free surface advection (vertical or normal)
 subsection Mesh deformation
+# Here, we use a normal advection scheme where the free surface is advected both vertically and horizontally. 
+# This provide the most realistic approximation for the evolution of topography, but often 
+# leads to convergence issues when solving the Stokes system. The solver issues can often be dealt with 
+# by either (1) using a smoother viscosity averaging scheme over each cell and between composition 
+# fields, or (2) diffusing the free surface during each time step. In many cases, both methods are required 
+# to produce consistently stable convergence behavior.
   set Mesh deformation boundary indicators        = top: free surface
   set Additional tangential mesh velocity boundary indicators = right, left
   subsection Free surface
-    set Surface velocity projection = normal # JBN - we should change this to "normal" 
+    set Surface velocity projection = normal 
   end
 end
 
-# Velocity on boundaries characterized by functions
-# JBN - expand documenation here
+# Velocity on boundaries
+# The boundary velocities are characterized by a free-slip on the base and outflow 
+# at a rate of 1 cm/year on the model sides. As no inflow is prescribed to balance the outflow, 
+# the average free surface elevation will decrease over time and the total mass of the system will decrease.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
   set Prescribed velocity boundary indicators = left x: function, right x:function 
@@ -121,6 +96,10 @@ end
 
 
 # Number and name of compositional fields
+# Three compositional fields are tracked during the simulation. 
+# The first represents strain accrued during brittle (plastic) deformation. 
+# The initial values of this field are used to localize deformation in the center of the model away from the boundaries. 
+# The remaining two compositional fields represent distinct lithologies for the oceanic crust and mantle lithosphere.
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields = plastic_strain, oceanic_crust, mantle_lithosphere
@@ -132,22 +111,16 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-  # JBN - repalce rand() with reproducible "seed" randomization?
+  # The function rand_seed(seed_number) will also produce the same random value at each point when the parameter file is run.
+  # "seed_number" is an integer and changing this value will produce a different (reproducible) random number. 
+  # A distinct random number can be produced each time the simulation is run by replacing rand_seed(seed_number) with rand().
     set Variable names      = x,y
-    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand()*1.0, 0); \ 
-			      if(y>=93.e3, 1, 0); \
+    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand_seed(0)*1.0, 0);  \
+			                        if(y>=93.e3, 1, 0); \
                               if(y<93.e3 && y>-100.e3, 1, 0); 
   end
 end
 
-
-# Composition boundary conditions
-# JBN - expand documenation here
-# AG - no need to fix the composition at the bottom for this setup, there's no inflow
-subsection Boundary composition model
-  set Fixed composition boundary indicators  = bottom
-  set Model name = initial composition
-end
 
 # Temperature boundary conditions
 # JBN - expand document here
@@ -247,7 +220,7 @@ set List of postprocessors = basic statistics, composition statistics, heat flux
     set Interpolate output            = true
     set Write higher order output     = true
     set Output format                 = vtu
-    set Number of grouped files       = 0
+    set Number of grouped files       = 1
   end
 end
 
