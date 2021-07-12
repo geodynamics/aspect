@@ -84,7 +84,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 9: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|100, C3:300, C4:400, C5:500, background:0",
     {"C1","C2","C3","C4","C5"},
@@ -99,7 +99,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 10: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|, C3:300, C4:400, C5:500",
     {"C1","C2","C3","C4","C5"},
@@ -114,7 +114,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 11: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
     {"C1","C2","C3","C4","C5"},
@@ -137,7 +137,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 12: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("all:300|400",
     {"C1","C2"},
@@ -190,7 +190,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 17: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C5:500",
     {"C1","C2","C3","C4","C5"},
@@ -215,7 +215,7 @@ TEST_CASE("Utilities::parse_map_to_double_array")
 
   {
     INFO("check 18: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>(std::vector<unsigned int>({2,2}));
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>(std::vector<unsigned int>({2,2}));
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:300|400, C2:200",
     {"C1","C2"},
@@ -319,7 +319,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   // Wrong input structure
   {
     INFO("check fail 10: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("C1:100, C2:200|300, C3:300, C4:400, C5:500",
     {"C1","C2","C3","C4","C5"},
@@ -342,7 +342,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
 
   {
     INFO("check fail 11: ");
-    auto n_values_per_key = std::make_shared<std::vector<unsigned int>>();
+    auto n_values_per_key = std::make_unique<std::vector<unsigned int>>();
 
     compare_vectors_approx(aspect::Utilities::parse_map_to_double_array ("all:300|400",
     {"C1","C2"},

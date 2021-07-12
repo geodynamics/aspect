@@ -103,7 +103,7 @@ namespace aspect
       template <int dim>
       void
       MulticomponentIncompressible<dim>::parse_parameters (ParameterHandler &prm,
-                                                           const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                                           const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         reference_T = prm.get_double ("Reference temperature");
 
