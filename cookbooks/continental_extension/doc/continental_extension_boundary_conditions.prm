@@ -1,25 +1,29 @@
-subsection Boundary composition model
-  set Fixed composition boundary indicators   = bottom
-end
-
-subsection Free surface
-  set Free surface boundary indicators        = top
-end
-
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x: function, right x:function, bottom y:function
+
   subsection Function
     set Variable names      = x,y
-    set Function constants  = cm=0.01, year=1
-    set Function expression = if (x<200e3 , -0.25*cm/year, 0.25*cm/year) ; 0.125*cm/year;
+    set Function constants  = v=0.0025, w=200.e3, d=100.e3
+    set Function expression = if (x < w/2 , -v, v) ; v*2*d/w
   end
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators        = top: free surface, top: diffusion
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
+  subsection Diffusion
+    set Hillslope transport coefficient = 1.e-8
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = bottom
+  set List of model names = initial composition
 end
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top
-  set List of model names = box
-  subsection Box
-    set Bottom temperature = 1573
-    set Top temperature    =  273
-  end
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
 end
