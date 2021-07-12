@@ -931,7 +931,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          prm.declare_entry("Include the contributon from dynamic topography", "true",
+          prm.declare_entry("Include the contribution from dynamic topography", "true",
                             Patterns::Bool(),
                             "Option to include the contribution from dynamic topography on geoid. The default is true.");
           prm.declare_entry("Maximum degree","20",
@@ -989,7 +989,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          include_dynamic_topo_contribution = prm.get_bool ("Include the contributon from dynamic topography");
+          include_dynamic_topo_contribution = prm.get_bool ("Include the contribution from dynamic topography");
           max_degree = prm.get_integer ("Maximum degree");
           min_degree = prm.get_integer ("Minimum degree");
           output_in_lat_lon = prm.get_bool ("Output data in geographical coordinates");

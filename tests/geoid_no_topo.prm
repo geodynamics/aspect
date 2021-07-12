@@ -81,7 +81,7 @@ subsection Postprocess
     set Output data in geographical coordinates = true
     set Also output the spherical harmonic coefficients of geoid anomaly = true
     set Also output the spherical harmonic coefficients of density anomaly contribution = true
-    set Include the contributon from dynamic topography = false
+    set Include the contribution from dynamic topography = false
 
     set Also output the gravity anomaly  = true
   end
