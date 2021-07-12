@@ -209,6 +209,14 @@ namespace aspect
                                                                                "Activation volumes for dislocation creep",
                                                                                true,
                                                                                expected_n_phases_per_composition);
+
+        // Check that there are no prefactor entries set to zero,
+        // for example because the entry is for a field
+        // that is masked anyway, like strain. Despite
+        // these compositions being masked, their viscosities
+        // are computed anyway and this will lead to division by zero.
+        for (unsigned int n = 0; n < prefactors_dislocation.size(); ++n)
+          AssertThrow(prefactors_dislocation[n] > 0., ExcMessage("The dislocation prefactor should be larger than zero."));
       }
     }
   }

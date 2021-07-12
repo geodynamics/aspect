@@ -222,6 +222,14 @@ namespace aspect
                                                                             true,
                                                                             expected_n_phases_per_composition);
         grain_size = prm.get_double("Grain size");
+
+        // Check that there are no entries set to zero,
+        // for example because the entry is for a field
+        // that is masked anyway, like strain. Despite
+        // these compositions being masked, their viscosities
+        // are computed anyway and this will lead to division by zero.
+        for (unsigned int n = 0; n < prefactors_diffusion.size(); ++n)
+          AssertThrow(prefactors_diffusion[n] > 0., ExcMessage("The diffusion prefactor should be larger than zero."));
       }
     }
   }
