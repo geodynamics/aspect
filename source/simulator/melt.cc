@@ -170,7 +170,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>(n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -1638,8 +1638,8 @@ namespace aspect
   MeltHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<Assemblers::MeltStokesPreconditioner<dim>> ());
-    assemblers.stokes_system.push_back(std_cxx14::make_unique<Assemblers::MeltStokesSystem<dim>> ());
+    assemblers.stokes_preconditioner.push_back(std::make_unique<Assemblers::MeltStokesPreconditioner<dim>> ());
+    assemblers.stokes_system.push_back(std::make_unique<Assemblers::MeltStokesSystem<dim>> ());
 
     AssertThrow((this->get_parameters().formulation_mass_conservation ==
                  Parameters<dim>::Formulation::MassConservation::isentropic_compression) ||
@@ -1656,29 +1656,29 @@ namespace aspect
 
 
     assemblers.stokes_system_on_boundary_face.push_back(
-      std_cxx14::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
+      std::make_unique<aspect::Assemblers::MeltStokesSystemBoundary<dim>>());
 
     // add the terms for traction boundary conditions
     if (!this->get_boundary_traction().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
+          std::make_unique<Assemblers::MeltBoundaryTraction<dim>> ());
       }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
+          std::make_unique<Assemblers::MeltPressureRHSCompatibilityModification<dim>> ());
       }
 
     assemblers.advection_system.push_back(
-      std_cxx14::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
+      std::make_unique<Assemblers::MeltAdvectionSystem<dim>> ());
 
     if (this->get_parameters().fixed_heat_flux_boundary_indicators.size() != 0)
       {
         assemblers.advection_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
+          std::make_unique<aspect::Assemblers::AdvectionSystemBoundaryHeatFlux<dim>>());
         assemblers.advection_system_assembler_on_face_properties[0].need_face_material_model_data = true;
         assemblers.advection_system_assembler_on_face_properties[0].need_face_finite_element_evaluation = true;
       }
@@ -1808,7 +1808,7 @@ namespace aspect
     const unsigned int n_points = output.viscosities.size();
     const unsigned int n_comp = output.reaction_terms[0].size();
     output.additional_outputs.push_back(
-      std_cxx14::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
+      std::make_unique<MaterialModel::MeltOutputs<dim>> (n_points, n_comp));
   }
 
 

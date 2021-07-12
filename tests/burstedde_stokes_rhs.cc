@@ -383,7 +383,7 @@ namespace aspect
         material_model
           = dynamic_cast<const BursteddeMaterial<dim> *>(&this->get_material_model());
 
-        ref_func = std_cxx14::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
+        ref_func = std::make_unique<AnalyticSolutions::FunctionBurstedde<dim>>(material_model->get_beta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

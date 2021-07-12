@@ -638,7 +638,7 @@ namespace aspect
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)
         {
-          mesh_deformation_variables = std_cxx14::make_unique<internal::MeshDeformationPostprocessor<dim>>();
+          mesh_deformation_variables = std::make_unique<internal::MeshDeformationPostprocessor<dim>>();
           mesh_deformation_variables->initialize_simulator(this->get_simulator());
 
           // Insert mesh deformation variable names into set of all output field names
