@@ -136,7 +136,7 @@ namespace aspect
   {
     prm.enter_subsection("Boundary velocity model");
     {
-      member = std_cxx14::make_unique<Utilities::AsciiDataBoundary<dim>>();
+      member = std::make_unique<Utilities::AsciiDataBoundary<dim>>();
       member->initialize_simulator(this->get_simulator());
 
       member->parse_parameters(prm);

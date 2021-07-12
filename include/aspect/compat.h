@@ -28,7 +28,7 @@
 #include <functional>
 #include <memory>
 
-// for std_cxx14::make_unique:
+// for std::make_unique:
 #if DEAL_II_VERSION_GTE(9,3,0)
 // avoid deprecated std_cxx14 inside deal.II
 namespace std_cxx14

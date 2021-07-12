@@ -69,9 +69,9 @@ namespace aspect
       // Create a particle handler that stores the future particles.
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
-      particle_handler = std_cxx14::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
-                                                                      this->get_mapping(),
-                                                                      property_manager->get_n_property_components());
+      particle_handler = std::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
+                                                                this->get_mapping(),
+                                                                property_manager->get_n_property_components());
 
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
@@ -1498,7 +1498,7 @@ namespace aspect
       generator->initialize();
 
       // Create a property_manager object and initialize its properties
-      property_manager = std_cxx14::make_unique<Property::Manager<dim>> ();
+      property_manager = std::make_unique<Property::Manager<dim>> ();
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);

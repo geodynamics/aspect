@@ -363,7 +363,7 @@ namespace aspect
                                       ChunkGeometry<dim>::
                                       clone() const
       {
-        return std_cxx14::make_unique<ChunkGeometry>(*this);
+        return std::make_unique<ChunkGeometry>(*this);
       }
 
 

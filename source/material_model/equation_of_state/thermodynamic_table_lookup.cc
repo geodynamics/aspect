@@ -54,12 +54,12 @@ namespace aspect
           {
             if (material_file_format == perplex)
               material_lookup
-              .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(data_directory+material_file_names[i],
+              .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::PerplexReader>(data_directory+material_file_names[i],
                          use_bilinear_interpolation,
                          this->get_mpi_communicator()));
             else if (material_file_format == hefesto)
               material_lookup
-              .push_back(std_cxx14::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(data_directory+material_file_names[i],
+              .push_back(std::make_unique<MaterialModel::MaterialUtilities::Lookup::HeFESToReader>(data_directory+material_file_names[i],
                          data_directory+derivatives_file_names[i],
                          use_bilinear_interpolation,
                          this->get_mpi_communicator()));
@@ -533,14 +533,14 @@ namespace aspect
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std_cxx14::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
+              std::make_unique<MaterialModel::NamedAdditionalMaterialOutputs<dim>> (unique_phase_names, n_points));
           }
 
         if (out.template get_additional_output<SeismicAdditionalOutputs<dim>>() == nullptr)
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+              std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
           }
 
         if (out.template get_additional_output<PhaseOutputs<dim> >() == nullptr

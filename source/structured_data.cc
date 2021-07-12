@@ -226,9 +226,9 @@ namespace aspect
                 }
 
               data[c]
-                = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                       table_intervals,
-                                                                                       std::move(data_table[c]));
+                = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
+                                                                                 table_intervals,
+                                                                                 std::move(data_table[c]));
             }
           else
             // Create the object and move the big objects. Due to an old design flaw,
@@ -244,7 +244,7 @@ namespace aspect
             // create a temporary object, and that's an rvalue that the constructor
             // we call would bind to. But never a bad idea to be explicit.)
             data[c]
-              = std_cxx14::make_unique<Functions::InterpolatedTensorProductGridData<dim>>
+              = std::make_unique<Functions::InterpolatedTensorProductGridData<dim>>
                 (std::move(std::array<std::vector<double>,dim>(this->coordinate_values)),
                  std::move(data_table[c]));
         }
@@ -567,12 +567,12 @@ namespace aspect
       for (const auto &boundary_id : boundary_ids)
         {
           lookups.insert(std::make_pair(boundary_id,
-                                        std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>>
+                                        std::make_unique<Utilities::StructuredDataLookup<dim-1>>
                                         (components,
                                          this->scale_factor)));
 
           old_lookups.insert(std::make_pair(boundary_id,
-                                            std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>>
+                                            std::make_unique<Utilities::StructuredDataLookup<dim-1>>
                                             (components,
                                              this->scale_factor)));
 
@@ -1078,8 +1078,8 @@ namespace aspect
                                   +
                                   "> not found!"));
 
-          lookups.push_back(std_cxx14::make_unique<Utilities::StructuredDataLookup<dim-1>> (components,
-                            this->scale_factor));
+          lookups.push_back(std::make_unique<Utilities::StructuredDataLookup<dim-1>> (components,
+                                                                                      this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
     }
@@ -1235,8 +1235,8 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, or box geometry."));
 
-      lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim>> (components,
-                                                                             this->scale_factor);
+      lookup = std::make_unique<Utilities::StructuredDataLookup<dim>> (components,
+                                                                       this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
@@ -1287,7 +1287,7 @@ namespace aspect
     void
     AsciiDataProfile<dim>::initialize (const MPI_Comm &communicator)
     {
-      lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
+      lookup = std::make_unique<Utilities::StructuredDataLookup<1>> (this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 

@@ -69,7 +69,7 @@ namespace aspect
           if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
             {
               outputs.additional_outputs.push_back(
-                std_cxx14::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+                std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
             }
         }
 
@@ -224,7 +224,7 @@ namespace aspect
             {
               const unsigned int n_points = outputs.n_evaluation_points();
               outputs.additional_outputs.push_back(
-                std_cxx14::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+                std::make_unique<UnscaledViscosityAdditionalOutputs<dim>> (n_points));
             }
         }
 
@@ -245,7 +245,7 @@ namespace aspect
         {
           prm.enter_subsection("Material model");
           {
-            reference_viscosity_profile = std_cxx14::make_unique<Rheology::AsciiDepthProfile<dim>>();
+            reference_viscosity_profile = std::make_unique<Rheology::AsciiDepthProfile<dim>>();
             reference_viscosity_profile->initialize_simulator (this->get_simulator());
             reference_viscosity_profile->parse_parameters(prm, "Depth dependent model");
             reference_viscosity_profile->initialize();

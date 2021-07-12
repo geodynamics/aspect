@@ -330,7 +330,7 @@ namespace aspect
               try
                 {
                   function
-                    = std_cxx14::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
+                    = std::make_unique<Functions::ParsedFunction<1>>(n_compositional_fields);
                   function->parse_parameters (prm);
                 }
               catch (...)

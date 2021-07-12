@@ -392,7 +392,7 @@ namespace aspect
                                                                            n_fields,
                                                                            "Thermal conductivities");
 
-          rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
+          rheology = std::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
           rheology->parse_parameters(prm, std_cxx14::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
         }
