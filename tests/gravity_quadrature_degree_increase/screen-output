@@ -1,3 +1,4 @@
+
 Number of active cells: 12 (on 1 levels)
 Number of degrees of freedom: 628 (450+28+150)
 
@@ -7,4 +8,6 @@ Number of degrees of freedom: 628 (450+28+150)
      Writing gravity output: output-gravity_quadrature_degree_increase/output_gravity/gravity-00000
 
 Termination requested by criterion: end time
+
+
 
