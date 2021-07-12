@@ -20,26 +20,33 @@
 
 #include <aspect/postprocess/interface.h>
 #include <aspect/simulator_access.h>
-
+#include <aspect/initial_temperature/interface.h>
 
 namespace aspect
 {
+
+  
   namespace Postprocess
   {
-
-    /**
-     * A postprocessor that outputs the sea level to file.
-     *
-     * @ingroup Postprocessing
-     */
     template <int dim>
-    class SeaLevel : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+    class SeaLevel : public Utilities::AsciiDataInitial<dim>, public Interface<dim> //, public ::aspect::SimulatorAccess<dim>
     {
       public:
         /**
          * Output sea level [m] to file
          */
         std::pair<std::string,std::string> execute (TableHandler &statistics) override;
+
+        /**
+         * Initialization function. This function is called once at the
+         * beginning of the program. Checks preconditions.
+         */
+        void
+        initialize () override;
+
+        // 
+        using Utilities::AsciiDataInitial<dim>::initialize;
+
 
         /**
          * Register with the simulator the other postprocessors that we need

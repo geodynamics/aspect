@@ -26,6 +26,8 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
+#include <boost/lexical_cast.hpp>
+
 #include <cmath>
 #include <limits>
 
@@ -41,6 +43,44 @@
 
 namespace aspect
 {
+  // namespace InitialTemperature
+  // {
+  //   template <int dim>
+  //   TOPOGRAPHY<dim>::TOPOGRAPHY ()
+  //   {}
+    
+  //   template <int dim>
+  //   void
+  //   TOPOGRAPHY<dim>::initialize ()
+  //   {
+  //     Utilities::AsciiDataInitial<dim>::initialize(1);
+  //   }
+
+  //   template <int dim>
+  //   void
+  //   TOPOGRAPHY<dim>::declare_parameters (ParameterHandler &prm)
+  //   {
+  //     prm.enter_subsection ("Initial temperature model");
+  //     {
+  //       Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+  //                                                         "$ASPECT_SOURCE_DIR/../input_files/",
+  //                                                         "topo.txt");
+  //     }
+  //     prm.leave_subsection();
+  //   }
+
+  //   template <int dim>
+  //   void
+  //   TOPOGRAPHY<dim>::parse_parameters (ParameterHandler &prm)
+  //   {
+  //     prm.enter_subsection ("Initial temperature model");
+  //     {
+  //       Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+  //     }
+  //     prm.leave_subsection();
+  //   }
+
+  // }
   namespace Postprocess
   {
     template <int dim>
@@ -54,7 +94,13 @@ namespace aspect
       double sea_level = (gravity_perturbation - elevation + c)*ocean_mask;
       return sea_level;
     }
-
+    
+    template <int dim>
+    void
+    SeaLevel<dim>::initialize ()
+    {
+      Utilities::AsciiDataInitial<dim>::initialize(1);
+    }
 
     template <int dim>
     std::pair<std::string,std::string>
@@ -250,6 +296,9 @@ namespace aspect
       {
         prm.enter_subsection("Sea level");
         {
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/",
+                                                          "shell_3d_outer.0.txt");
           prm.declare_entry ("Output to file", "false",
                              Patterns::List(Patterns::Bool()),
                              "Whether or not to write sea level to a text file named named "
@@ -270,6 +319,47 @@ namespace aspect
     }
 
 
+
+    // template <int dim>
+    // void
+    // TOPOGRAPHY<dim>::declare_parameters (ParameterHandler &prm)
+    // {
+    //   prm.enter_subsection ("Initial temperature model");
+    //   {
+    //     Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+    //                                                       "$ASPECT_SOURCE_DIR/../input_files/",
+    //                                                       "topo.txt");
+    //   }
+    //   prm.leave_subsection();
+    // }
+
+    // template <int dim>
+    // void
+    // TOPOGRAPHY<dim>::parse_parameters (ParameterHandler &prm)
+    // {
+    //   prm.enter_subsection ("Initial temperature model");
+    //   {
+    //     Utilities::AsciiDataBase<dim>::parse_parameters(prm);
+    //   }
+    //   prm.leave_subsection();
+    // }
+
+  // }
+    // template <int dim>
+    // void
+    // TOPOGRAPHY<dim>::declare_parameters (ParameterHandler &prm)
+    // {
+    //   prm.enter_subsection ("Initial temperature model");
+    //   {
+    //     Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+    //                                                       "$ASPECT_SOURCE_DIR/../input_files/",
+    //                                                       "topo.txt");
+    //   }
+    //   prm.leave_subsection();
+    // }
+
+
+
     template <int dim>
     void
     SeaLevel<dim>::parse_parameters (ParameterHandler &prm)
@@ -278,6 +368,7 @@ namespace aspect
       {
         prm.enter_subsection("Sea level");
         {
+          Utilities::AsciiDataBase<dim>::parse_parameters(prm);
           write_to_file = prm.get_bool ("Output to file");
           output_interval = prm.get_double ("Time between text output");
           if (this->convert_output_to_years())
@@ -287,10 +378,6 @@ namespace aspect
       }
       prm.leave_subsection();
     }
-
-
-
-
   }
 }
 
