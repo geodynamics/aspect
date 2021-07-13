@@ -430,6 +430,47 @@ namespace aspect
 
 
 
+    template <int dim>
+    std::vector<Point<dim>>
+                         get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access)
+    {
+      std::vector<Point<dim>> unit_support_points;
+      if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
+        {
+          return simulator_access.get_fe().get_unit_support_points();
+        }
+      else
+        {
+          //special case for discontinuous pressure elements, which lack unit support points
+          std::vector<Point<dim>> unit_support_points;
+          const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
+          for (unsigned int dof=0; dof < dofs_per_cell; ++dof)
+            {
+              // base will hold element, base_index holds node/shape function within that element
+              const unsigned int
+              base       = simulator_access.get_fe().system_to_base_index(dof).first.first,
+              base_index = simulator_access.get_fe().system_to_base_index(dof).second;
+              // get the unit support points for the relevant element
+              std::vector<Point<dim>> my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
+              if ( my_support_points.size() == 0 )
+                {
+                  //manufacture a support point, arbitrarily at cell center
+                  if (dim==2)
+                    unit_support_points.push_back(Point<dim> (0.5,0.5));
+                  if (dim==3)
+                    unit_support_points.push_back(Point<dim> (0.5,0.5,0.5));
+                }
+              else
+                {
+                  unit_support_points.push_back(my_support_points[base_index]);
+                }
+            }
+          return unit_support_points;
+        }
+    }
+
+
+
     namespace Coordinates
     {
 
@@ -2319,6 +2360,11 @@ namespace aspect
   template \
   IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &, \
                                                       const ComponentMask &); \
+  \
+  template \
+  std::vector<Point<dim>> \
+  get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access); \
+  \
   template \
   std::vector<std::string> \
   expand_dimensional_variable_names<dim> (const std::vector<std::string> &var_declarations); \
