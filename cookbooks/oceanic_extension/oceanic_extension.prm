@@ -11,17 +11,23 @@ set Resume computation                     = auto
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Nonlinear solver tolerance             = 1e-5
-# We set the number of nonlinear iterations to 100 as the first 1-2 time steps often require a large number of iterations to converge.
+
+# We set the number of nonlinear iterations to 100 as the first 1-2 time steps 
+# often require a large number of iterations to converge.
 # Subsequent time steps should require substantially fewer nonlinear iterations.
 set Max nonlinear iterations               = 100
+
 # Reducing the CFL values and/or maximum time step may improve the convergence behavior 
 # of the Stokes and thermal (advection-diffusion) systems. 
 # However, reducing these values inherently requires more time steps to reach the same end time. 
 # Finding the optimal balance frequently requires testing, although the maximum time step 
-# in lithospheric dynamics simulations with Drucker Prager plasticity is frequently not set above 20-50 thousand years. 
+# in lithospheric dynamics simulations with Drucker Prager plasticity is frequently 
+# not set above 20-50 thousand years. 
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
 set Output directory                       = output_oceanic_extension
+
+# Pressure normalization is turned off because using the free surface implies a surface stress of zero. 
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 273
 
@@ -43,7 +49,9 @@ subsection Geometry model
 end
 
 # Mesh refinement specification
-# First, globally refine the mesh to 128x32 cells (3.125 km resolution). Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth and between horizontal positions of 120 and 280 km. 
+# First, globally refine the mesh to 128x32 cells (3.125 km resolution). 
+# Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth 
+# and between horizontal positions of 120 and 280 km. 
 subsection Mesh refinement
   set Initial global refinement          = 5
   set Initial adaptive refinement        = 1 
@@ -60,6 +68,8 @@ end
 # Solver parameters
 subsection Solver parameters
   subsection Stokes solver parameters
+    # Cheap Stokes solver steps are skipped, because the nonlinear rheology 
+    # introduces viscosity contrasts that require the expensive solver.
     set Number of cheap Stokes solver steps = 0
     set Linear solver tolerance = 1e-7
   end
@@ -73,7 +83,12 @@ subsection Mesh deformation
 # by either (1) using a smoother viscosity averaging scheme over each cell and between compositional 
 # fields, or (2) diffusing the free surface during each time step. In many cases, both methods are required 
 # to produce consistently stable convergence behavior.
+# A vertical projection of the surface velocity reduces the distortion of the mesh elements, 
+# but does not horizontally advect the topography properly. 
   set Mesh deformation boundary indicators        = top: free surface
+  
+# This parameter allows for movement of the mesh along the side boundaries in accordance 
+# with the free surface, avoiding too great a distortion of the top corner elements. 
   set Additional tangential mesh velocity boundary indicators = right, left
   subsection Free surface
     set Surface velocity projection = normal 
@@ -82,8 +97,9 @@ end
 
 # Velocity on boundaries
 # The boundary velocities are characterized by a free-slip on the base and outflow 
-# at a rate of 1 cm/year on the model sides. As no inflow is prescribed to balance the outflow, 
-# the average free surface elevation will decrease over time and the total mass of the system will decrease.
+# at a rate of 1 cm/year on the model sides. As no inflow is prescribed 
+# to balance the outflow, the average free surface elevation will decrease 
+# over time and the total mass of the system will decrease.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
   set Prescribed velocity boundary indicators = left x: function, right x:function 
@@ -98,8 +114,9 @@ end
 # Number and name of compositional fields
 # Three compositional fields are tracked during the simulation. 
 # The first represents strain accrued during brittle (plastic) deformation. 
-# The initial values of this field are used to localize deformation in the center of the model away from the boundaries. 
-# The remaining two compositional fields represent distinct lithologies for the oceanic crust and mantle lithosphere.
+# The initial values of this field are used to localize deformation in the 
+# center of the model away from the boundaries. The remaining two compositional 
+# fields represent distinct lithologies for the oceanic crust and mantle lithosphere.
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields = plastic_strain, oceanic_crust, mantle_lithosphere
@@ -107,7 +124,6 @@ end
 
 
 # Spatial domain of different compositional fields
-# JBN - expand documenation here
 subsection Initial composition model
   set Model name = function
   subsection Function
@@ -116,7 +132,7 @@ subsection Initial composition model
   # A distinct random number can be produced each time the simulation is run by replacing rand_seed(seed_number) with rand().
     set Variable names      = x,y
     set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand_seed(0)*1.0, 0);  \
-			                        if(y>=93.e3, 1, 0); \
+			      if(y>=93.e3, 1, 0); \
                               if(y<93.e3 && y>-100.e3, 1, 0); 
   end
 end
