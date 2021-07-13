@@ -1,0 +1,3 @@
+New: CMake now detects and reports an error if the user tries to do an in-source ASPECT build. Please create a separate build directory before running cmake.
+<br>
+(Rene Gassmoeller, Timo Heister, 2021/07/13)

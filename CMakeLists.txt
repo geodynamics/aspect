@@ -22,14 +22,20 @@ MESSAGE(STATUS "====================================================")
 MESSAGE(STATUS "============ Configuring ASPECT ====================")
 MESSAGE(STATUS "====================================================")
 
+IF (EXISTS ${CMAKE_SOURCE_DIR}/CMakeCache.txt)
+  MESSAGE(FATAL_ERROR  "Detected the file\n"
+  "${CMAKE_SOURCE_DIR}/CMakeCache.txt\n"
+  "in your source directory, which is a left-over from an in-source build. "
+  "Please delete the file before running cmake from a separate build directory.")
+ENDIF()
+
 IF ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
-  MESSAGE(FATAL_ERROR  "ASPECT does not support in-source builds in ${CMAKE_BINARY_DIR}. \
-  Run cmake from a separate build directory. \
-  \
-  Note that cmake created a file \
-  called CMakeCache.txt and a folder called CMakeFiles in the source \
-  directory that you have to remove before you can begin a build in a \
-  different directory.")
+  MESSAGE(FATAL_ERROR  "ASPECT does not support in-source builds in ${CMAKE_BINARY_DIR}. "
+  "Please run cmake from a separate build directory."
+  "\n"
+  "Note that CMake created a file called CMakeCache.txt and a folder called "
+  "CMakeFiles in the source directory that you have to remove before you can "
+  "begin a build in a different directory.")
 ENDIF()
 
 # Set the name of the project and target:
