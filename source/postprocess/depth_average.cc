@@ -328,7 +328,7 @@ namespace aspect
                             "A comma separated list which specifies which quantities to "
                             "average in each depth slice. It defaults to averaging all "
                             "available quantities, but this can be an expensive operation, "
-                            "so you may want to select only a few.\n"
+                            "so you may want to select only a few.\n\n"
                             "Specifically, the sinking velocity is defined as the scalar "
                             "product of the velocity and a unit vector in the direction of "
                             "gravity, if positive (being zero if this product is negative, "
