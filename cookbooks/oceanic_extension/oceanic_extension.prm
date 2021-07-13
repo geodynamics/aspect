@@ -29,7 +29,7 @@ set Output directory                       = output_oceanic_extension
 
 # Pressure normalization is turned off because using the free surface implies a surface stress of zero. 
 set Pressure normalization                 = no
-set Adiabatic surface temperature          = 273
+set Adiabatic surface temperature          = 1600
 
 # Governing equations 
 subsection Formulation
