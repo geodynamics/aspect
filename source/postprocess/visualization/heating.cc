@@ -38,8 +38,11 @@ namespace aspect
       Heating<dim>::
       Heating ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("W/m/m/m")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -177,7 +180,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Heating,
                                                   "heating",
                                                   "A visualization output object that generates output "
-                                                  "for all the heating terms used in the energy equation.")
+                                                  "for all the heating terms used in the energy equation."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\cubic\\meter}.")
     }
   }
 }

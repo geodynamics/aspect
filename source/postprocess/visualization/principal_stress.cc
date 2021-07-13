@@ -32,7 +32,8 @@ namespace aspect
       PrincipalStress<dim>::
       PrincipalStress ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("kg/m/s/s")
       {}
 
 
@@ -218,7 +219,10 @@ namespace aspect
                                                   "principal stress values and directions, i.e., the "
                                                   "eigenvalues and eigenvectors of the stress tensor. "
                                                   "The postprocessor can either operate on the full "
-                                                  "stress tensor or only on the deviatoric stress tensor.")
+                                                  "stress tensor or only on the deviatoric stress tensor, "
+                                                  "depending on what run-time parameters are set."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
     }
   }
 }

@@ -34,7 +34,8 @@ namespace aspect
       ShearStress ()
         :
         DataPostprocessorTensor<dim> ("shear_stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("kg/m/s/s")
       {}
 
 
@@ -127,7 +128,9 @@ namespace aspect
                                                   "elastic contribution is being accounted for. The shear "
                                                   "stress differs from the full stress tensor "
                                                   "by the absence of the pressure. Note that the convention "
-                                                  "of positive compressive stress is followed. ")
+                                                  "of positive compressive stress is followed."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
     }
   }
 }

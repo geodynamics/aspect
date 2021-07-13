@@ -33,7 +33,8 @@ namespace aspect
       BoundaryVelocityResidual ()
         :
         DataPostprocessorVector<dim> ("boundary_velocity_residual",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+        Interface<dim>("m/s")
       {}
 
 
@@ -104,7 +105,9 @@ namespace aspect
                                                   "the input data as ascii data files (e.g. GPS velocities) with columns "
                                                   "in the same format as described for the 'ascii data' initial temperature plugin "
                                                   "or a velocity field computed from the GPlates program as described in the gplates "
-                                                  "boundary velocity plugin. ")
+                                                  "boundary velocity plugin."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter\\per\\second}.")
     }
   }
 }

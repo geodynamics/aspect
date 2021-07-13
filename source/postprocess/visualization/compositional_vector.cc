@@ -30,8 +30,10 @@ namespace aspect
       CompositionalVector<dim>::
       CompositionalVector ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("")  // we don't associate these objects with physical units
       {}
+
 
 
       template <int dim>
@@ -186,7 +188,9 @@ namespace aspect
                                                   "A visualization output object that outputs vectors whose "
                                                   "components are derived from compositional fields. Input "
                                                   "parameters for this postprocessor are defined in section "
-                                                  "Postprocess/Visualization/Compositional fields as vectors")
+                                                  "Postprocess/Visualization/Compositional fields as vectors."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

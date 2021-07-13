@@ -33,8 +33,11 @@ namespace aspect
       Adiabat<dim>::
       Adiabat ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("K,kg/s/s/m,kg/m/m/m,kg/m/m/m/m")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -106,8 +109,12 @@ namespace aspect
                                                   "A visualization output "
                                                   "object that generates "
                                                   "adiabatic temperature, pressure, "
-                                                  "density, and density derivative "
-                                                  "as produced by AdiabaticConditions.")
+                                                  "density, and density derivative (with regard to depth)"
+                                                  "as produced by the \\texttt{AdiabaticConditions} class."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}, \\si{\\pascal}, "
+                                                  "\\si{\\kilo\\gram\\per\\meter\\cubed\\per\\meter}, "
+                                                  "respectively, for the four components.")
     }
   }
 }

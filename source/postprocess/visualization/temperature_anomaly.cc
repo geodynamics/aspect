@@ -37,9 +37,11 @@ namespace aspect
       TemperatureAnomaly ()
         :
         DataPostprocessorScalar<dim> ("temperature_anomaly",
-                                      update_values | update_quadrature_points )
-      {
-      }
+                                      update_values | update_quadrature_points ),
+        Interface<dim>("K")
+      {}
+
+
 
       template <int dim>
       void
@@ -180,7 +182,9 @@ namespace aspect
                                                   "temperature anomaly",
                                                   "A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature."
                                                   "The average temperature is calculated using the lateral averaging function from the ``depth average'' "
-                                                  "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''")
+                                                  "postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}.")
     }
   }
 }

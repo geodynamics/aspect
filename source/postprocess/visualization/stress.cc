@@ -34,7 +34,8 @@ namespace aspect
       Stress ()
         :
         DataPostprocessorTensor<dim> ("stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("kg/m/s/s")
       {}
 
 
@@ -127,7 +128,9 @@ namespace aspect
                                                   "in the compressible case. If elasticity is used, the "
                                                   "elastic contribution is being accounted for. "
                                                   "Note that the convention of positive "
-                                                  "compressive stress is followed. ")
+                                                  "compressive stress is followed."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
     }
   }
 }

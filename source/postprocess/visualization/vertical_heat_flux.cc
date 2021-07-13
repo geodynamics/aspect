@@ -34,7 +34,8 @@ namespace aspect
       VerticalHeatFlux ()
         :
         DataPostprocessorScalar<dim> ("vertical_heat_flux",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+        Interface<dim>("W/m/m")
       {}
 
 
@@ -94,7 +95,9 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the heat flux in the vertical direction, which is "
                                                   "the sum of the advective and the conductive heat flux, "
-                                                  "with the sign convention of positive flux upwards.")
+                                                  "with the sign convention of positive flux upwards."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\watt\\per\\square\\meter}.")
     }
   }
 }
