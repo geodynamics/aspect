@@ -180,7 +180,7 @@ subsection Material model
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
     # Respectively, the standard minimum and maximum viscosities used in
-    #  geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s. 
+    # geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s. 
     # Increasing the min/max viscosity contrast will produce more "Earth-like" 
     # simulations, but this comes at the expense of solver stability and model run times. 
     set Minimum viscosity = 1e18
@@ -192,7 +192,7 @@ subsection Material model
     set Heat capacities       = 750.
     set Thermal expansivities = 2e-5
 
-    # The `Viscosity averaging scheme ` selects how the viscosity is averaged 
+    # The `Viscosity averaging scheme` selects how the viscosity is averaged 
     # between compositional fields at each point. Choosing maximum composition 
     # will help to preserve material interfaces through time, but come at the 
     # expense of solver stability and speed.
@@ -200,7 +200,12 @@ subsection Material model
 
     set Viscous flow law = composite
 
-    # JBN - add documenation about where these values come from
+    # Flow laws for each compositional field. 
+    # Oceanic crust (3rd column): gabbro from Wilks & Carter (1990)
+    # Mantle lithosphere (4th column): dry olivine from Hirth & Kholstedt (2003)
+    # Second column represents the plastic_strain compositional field, which it 
+    # is not used when computing the viscosity. Setting clearly incorrect values, such
+    # as 1e-50,0,0,0 is a way to obtain unrealistic viscosities.
     set Prefactors for dislocation creep          = 6.52e-16, 6.52e-16, 1.12e-10, 6.52e-16 
     set Stress exponents for dislocation creep    =      3.5,      3.5,      3.4,      3.5
     set Activation energies for dislocation creep =   530.e3,   530.e3,   497.e3,   530.e3
