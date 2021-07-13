@@ -4756,7 +4756,12 @@ namespace Catch {
     bool isDebuggerActive();
 }
 
-#ifdef CATCH_PLATFORM_MAC
+
+#if defined(__arm__) || defined(__aarch64__)
+
+    #define CATCH_TRAP() __asm__("brk #0x1");
+
+#elif defined(CATCH_PLATFORM_MAC)
 
     #define CATCH_TRAP() __asm__("int $3\n" : : ) /* NOLINT */
 
