@@ -99,7 +99,7 @@ namespace aspect
 
         Assert (viscosity_diffusion > 0.0,
                 ExcMessage ("Negative diffusion viscosity detected. This is unphysical and should not happen. "
-                            "Check for negative parameters."));
+                            "Check for negative parameters. Temperature and pressure are " + std::to_string(temperature) + " K, " + std::to_string(pressure) + " Pa. "));
 
         // Creep viscosities become extremely large at low
         // temperatures and can therefore provoke floating-point overflow errors. In

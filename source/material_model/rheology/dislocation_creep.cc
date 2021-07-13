@@ -94,10 +94,9 @@ namespace aspect
                                        std::exp((p.activation_energy + pressure*p.activation_volume)/
                                                 (constants::gas_constant*temperature*p.stress_exponent)) *
                                        std::pow(strain_rate,((1. - p.stress_exponent)/p.stress_exponent));
-
         Assert (viscosity_dislocation > 0.0,
                 ExcMessage ("Negative dislocation viscosity detected. This is unphysical and should not happen. "
-                            "Check for negative parameters."));
+                            "Check for negative parameters. Temperature and pressure are " + std::to_string(temperature) + " K, " + std::to_string(pressure) + " Pa. "));
 
         // Creep viscosities become extremely large at low
         // temperatures and can therefore provoke floating-point overflow errors. In
