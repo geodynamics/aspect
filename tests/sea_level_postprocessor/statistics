@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Minimal value for composition ve_stress_xx
+# 10: Maximal value for composition ve_stress_xx
+# 11: Global mass for composition ve_stress_xx
+# 12: Minimal value for composition ve_stress_yy
+# 13: Maximal value for composition ve_stress_yy
+# 14: Global mass for composition ve_stress_yy
+# 15: Minimal value for composition ve_stress_zz
+# 16: Maximal value for composition ve_stress_zz
+# 17: Global mass for composition ve_stress_zz
+# 18: Minimal value for composition ve_stress_xy
+# 19: Maximal value for composition ve_stress_xy
+# 20: Global mass for composition ve_stress_xy
+# 21: Minimal value for composition ve_stress_xz
+# 22: Maximal value for composition ve_stress_xz
+# 23: Global mass for composition ve_stress_xz
+# 24: Minimal value for composition ve_stress_yz
+# 25: Maximal value for composition ve_stress_yz
+# 26: Global mass for composition ve_stress_yz
+# 27: Minimal temperature (K)
+# 28: Average temperature (K)
+# 29: Maximal temperature (K)
+# 30: Average nondimensional temperature (K)
+# 31: RMS velocity (m/year)
+# 32: Max. velocity (m/year)
+# 33: Minimum topography (m)
+# 34: Maximum topography (m)
+# 35: Density at top (kg/m^3)
+# 36: Density at bottom (kg/m^3)
+# 37: Minimum non-uniform sea_level change (m)
+# 38: Maximum non-uniform sea_level change (m)
+0 0.000000000000e+00 0.000000000000e+00 96 3060 150 5820 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02 4.51975236e-17 0.00000000e+00 0.00000000e+00 -2.79396772e-09 0.00000000e+00 3.30000000e+03 3.30000000e+03 -7.20241082e-11 2.82444796e-09 
