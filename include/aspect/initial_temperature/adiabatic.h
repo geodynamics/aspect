@@ -110,7 +110,7 @@ namespace aspect
 
         bool read_from_ascii_file;
 
-        bool use_halfspace_cooling; 
+        bool use_halfspace_cooling;
 
         double zlo;
 

@@ -65,14 +65,14 @@ namespace aspect
       if (read_from_ascii_file)
         {
           age_top = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
-                                                                                position,
-                                                                                0);
+                                                                          position,
+                                                                          0);
         }
       else
         {
-      // convert input ages to seconds
+          // convert input ages to seconds
           age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
-                                     : age_top_boundary_layer);
+                        : age_top_boundary_layer);
         }
 
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
@@ -103,11 +103,11 @@ namespace aspect
                                     :
                                     adiabatic_surface_temperature);
           const double T_bottom = (this->has_boundary_temperature()
-                                  ?
-                                  this->get_boundary_temperature_manager().maximal_temperature(
-                                    this->get_fixed_temperature_boundary_indicators())
-                                  :
-                                  adiabatic_bottom_temperature);
+                                   ?
+                                   this->get_boundary_temperature_manager().maximal_temperature(
+                                     this->get_fixed_temperature_boundary_indicators())
+                                   :
+                                   adiabatic_bottom_temperature);
 
           // get a representative profile of the compositional fields as an input
           // for the material model
@@ -125,24 +125,24 @@ namespace aspect
 
           const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
                                   Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                                ?
-                                out.thermal_conductivities[0] /
-                                (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
-                                :
-                                out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
-                              );
+                                 ?
+                                 out.thermal_conductivities[0] /
+                                 (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
+                                 :
+                                 out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
+                               );
 
           // analytical solution for the thermal boundary layer from half-space cooling model
           const double surface_cooling_temperature = age_top > 0.0 ?
-                                                    (T_surface - adiabatic_surface_temperature) *
-                                                    erfc(this->get_geometry_model().depth(position) /
+                                                     (T_surface - adiabatic_surface_temperature) *
+                                                     erfc(this->get_geometry_model().depth(position) /
                                                           (2 * sqrt(kappa * age_top)))
-                                                    : 0.0;
+                                                     : 0.0;
           const double bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
                                                     (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
                                                     * erfc((this->get_geometry_model().maximal_depth()
                                                             - this->get_geometry_model().depth(position)) /
-                                                          (2 * sqrt(kappa * age_bottom)))
+                                                           (2 * sqrt(kappa * age_bottom)))
                                                     : 0.0;
 
           // set the initial temperature perturbation
@@ -239,8 +239,8 @@ namespace aspect
                 }
               else
                 AssertThrow (false,
-                            ExcMessage ("Not a valid geometry model for the initial temperature model"
-                                        "adiabatic."));
+                             ExcMessage ("Not a valid geometry model for the initial temperature model"
+                                         "adiabatic."));
             }
 
           const double perturbation = (mid_point.distance(position) < radius) ? amplitude
@@ -258,54 +258,54 @@ namespace aspect
           // If adiabatic heating is disabled, apply all perturbations to
           // constant adiabatic surface temperature instead of adiabatic profile.
           const double temperature_profile = (this->include_adiabatic_heating())
-                                            ?
-                                            this->get_adiabatic_conditions().temperature(position)
-                                            :
-                                            adiabatic_surface_temperature;
+                                             ?
+                                             this->get_adiabatic_conditions().temperature(position)
+                                             :
+                                             adiabatic_surface_temperature;
 
           // return sum of the adiabatic profile, the boundary layer temperatures and the initial
           // temperature perturbation.
           return temperature_profile + surface_cooling_temperature
-                + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
+                 + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
                     : bottom_heating_temperature + subadiabatic_T);
-      }
+        }
 
-    else
-      {
-        const double depth = this->get_geometry_model().depth(position);
-        const double T_surface = this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
-        const double T_bottom = this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators());
-        double T_profile = 1623;
-        const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
-                                Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                              ?
-                              out.thermal_conductivities[0] /
-                              (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
-                                :
-                              out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
-                             );
-        if (depth > zlo)
-          { 
-            T_profile = T_bottom;
-          }
-        else
-          { 
-            const double pi = 3.1415;             
-            const double exp_fac = -kappa * std::pow(pi, 2) * age_top / std::pow(zlo, 2);
-            const double sin_fac = pi / zlo;
-            unsigned int n = 1;
-            unsigned int m = 5;
-            double sum_terms = 0;
-            while (n <= m)
-              { 
-                sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exp_fac) * std::sin((double)n * depth * sin_fac);
-                n += 1;
-              }
-            T_profile = T_surface + (T_bottom - T_surface) * (depth / zlo + 2 / pi * sum_terms);
-          }
+      else
+        {
+          const double depth = this->get_geometry_model().depth(position);
+          const double T_surface = this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
+          const double T_bottom = this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators());
+          double T_profile = 1623;
+          const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
+                                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                                 ?
+                                 out.thermal_conductivities[0] /
+                                 (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
+                                 :
+                                 out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
+                               );
+          if (depth > zlo)
+            {
+              T_profile = T_bottom;
+            }
+          else
+            {
+              const double pi = 3.1415;
+              const double exp_fac = -kappa * std::pow(pi, 2) * age_top / std::pow(zlo, 2);
+              const double sin_fac = pi / zlo;
+              unsigned int n = 1;
+              unsigned int m = 5;
+              double sum_terms = 0;
+              while (n <= m)
+                {
+                  sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exp_fac) * std::sin((double)n * depth * sin_fac);
+                  n += 1;
+                }
+              T_profile = T_surface + (T_bottom - T_surface) * (depth / zlo + 2 / pi * sum_terms);
+            }
           return T_profile;
         }
-      }  
+    }
 
     template <int dim>
     void
