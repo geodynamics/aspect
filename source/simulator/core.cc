@@ -1392,6 +1392,7 @@ namespace aspect
     old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     old_old_solution.reinit(introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
     current_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
+    initial_linearization_point.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
 
     if (parameters.use_operator_splitting)
       operator_split_reaction_vector.reinit (introspection.index_sets.system_partitioning, introspection.index_sets.system_relevant_partitioning, mpi_communicator);
@@ -1733,6 +1734,11 @@ namespace aspect
     // start any scheme with an extrapolated value from the previous
     // two time steps if those are available
     initialize_current_linearization_point();
+
+    // Copy the current linearization point for use in composition
+    // reaction terms in iterative Advection solver schemes. 
+    initial_linearization_point = current_linearization_point;
+
 
     // The mesh deformation scheme is currently not built to work inside a nonlinear solver.
     // We do the mesh deformation execution at the beginning of the timestep for a specific reason.
