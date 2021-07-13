@@ -2062,7 +2062,7 @@ namespace aspect
       LinearAlgebra::BlockVector                                current_linearization_point;
       // A copy of the linearization point at the beginning of each timestep,
       // so that composition reaction terms depending on the composition can use the
-      // composition at the beginning of the timestep. 
+      // composition at the beginning of the timestep.
       LinearAlgebra::BlockVector                                initial_linearization_point;
 
       // only used if is_compressible()

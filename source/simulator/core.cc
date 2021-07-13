@@ -1736,7 +1736,7 @@ namespace aspect
     initialize_current_linearization_point();
 
     // Copy the current linearization point for use in composition
-    // reaction terms in iterative Advection solver schemes. 
+    // reaction terms in iterative Advection solver schemes.
     initial_linearization_point = current_linearization_point;
 
 
