@@ -120,13 +120,6 @@ namespace aspect
            * for the background field.
            */
           std::vector<double> specific_heats;
-
-          /**
-           * A vector that stores how many separate phases there are per compositional
-           * field. In other words if there is a background field without phase transitions
-           * and one more composition that has 2 phase transitions this vector would store {1,3}.
-           */
-          std::shared_ptr<std::vector<unsigned int>> n_phases_per_composition;
       };
     }
   }
