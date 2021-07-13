@@ -41,8 +41,8 @@ MACRO(ASPECT_SETUP_PLUGIN _target)
     INCLUDE_DIRECTORIES "${Aspect_INCLUDE_DIRS}"
   )
 
-  # workarounds for MAC OS
-  IF (APPLE AND "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # workarounds for MAC OSX
+  IF (APPLE)
     # avoid linker errors about missing functions inside ASPECT:
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
 
