@@ -429,6 +429,20 @@ namespace aspect
       get_current_linearization_point () const;
 
       /**
+       * Return a reference to the vector that has the current linearization
+       * point of the entire system, i.e. the velocity and pressure variables
+       * as well as the temperature and compositional fields, at the beginning
+       * of the timestep. It is not updated by subsequent solves, as is the
+       * current_linearization_point, so that it can be used to compute reaction
+       * terms for fields that depend on the particular field's value. 
+       *
+       * @note In general the vector is a distributed vector; however, it
+       * contains ghost elements for all locally relevant degrees of freedom.
+       */
+      const LinearAlgebra::BlockVector &
+      get_initial_linearization_point () const;
+
+      /**
        * Return a reference to the vector that has the current solution of the
        * entire system, i.e. the velocity and pressure variables as well as
        * the temperature and compositional fields.
