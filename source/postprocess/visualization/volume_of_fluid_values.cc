@@ -32,6 +32,7 @@ namespace aspect
       VolumeOfFluidValues<dim>::
       VolumeOfFluidValues ()
         :
+        Interface<dim>("m*m*m"),
         DataPostprocessor<dim> ()
       {}
 

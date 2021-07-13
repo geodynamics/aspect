@@ -37,6 +37,7 @@ namespace aspect
       Geoid<dim>::
       Geoid ()
         :
+        Interface<dim>("m"),
         DataPostprocessorScalar<dim> ("geoid",
                                       update_quadrature_points)
       {}
