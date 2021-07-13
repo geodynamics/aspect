@@ -62,7 +62,6 @@ subsection Mesh refinement
     set Variable names      = x,y
     set Function expression = if (y>50.e3 && x>120.e3 && x<280.e3, 6, 5)
   end
-  set Run postprocessors on initial refinement = false
 end
 
 # Solver parameters
@@ -226,12 +225,9 @@ end
 # JBN - we can likely reduce some of the outputs below
 # Post processing
 subsection Postprocess
-set List of postprocessors = basic statistics, composition statistics, heat flux densities, heat flux statistics, mass flux statistics, material statistics, matrix statistics, pressure statistics, temperature statistics, topography, velocity statistics, visualization
+set List of postprocessors = heat flux densities, heat flux statistics, material statistics, matrix statistics, pressure statistics, temperature statistics, topography, velocity statistics, visualization
   subsection Visualization
     set List of output variables      = heat flux map, named additional outputs, strain rate, density, viscosity, melt fraction
-    subsection Material properties
-      set List of material properties = density, viscosity
-    end
     set Time between graphical output = 100.e3
     set Interpolate output            = true
     set Write higher order output     = true
