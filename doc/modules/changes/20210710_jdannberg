@@ -1,0 +1,5 @@
+New: The thermodynamic lookup equation of state can now read in
+a column that contains the name of the dominant phase from the
+data tables.
+<br>
+(Juliane Dannberg, 2021/07/10)

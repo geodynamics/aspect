@@ -122,6 +122,21 @@ namespace aspect
                     const double pressure) const;
 
             /**
+             * Returns the index that indicates the phase with the largest volume
+             * fraction at a given temperature and pressure.
+             */
+            unsigned int
+            dominant_phase (const double temperature,
+                            const double pressure) const;
+
+            /**
+             * Returns whether a lookup has a column that indicates which is the
+             * phase with the largest volume fraction is this material.
+             */
+            bool
+            has_dominant_phase() const;
+
+            /**
              * Returns a vector of all the column names in the lookup file
              * that start with the character string vol_fraction_
              */
@@ -144,6 +159,16 @@ namespace aspect
             std::array<double,2>
             get_pT_steps() const;
 
+
+            /**
+             * Get the list of names of all of the dominant phases
+             * in a given lookup table as given by the phase column.
+             * The names of the phases are stored in the order they
+             * first appear in the table.
+             */
+            const std::vector<std::string> &
+            get_dominant_phase_names() const;
+
           protected:
             /**
              * Access that data value of the property that is stored in table
@@ -157,6 +182,16 @@ namespace aspect
                    const double pressure,
                    const Table<2, double> &values,
                    const bool interpol) const;
+
+            /**
+             * Access that data value of the property that is stored in table
+             * @p values at pressure @p pressure and temperature @p temperature
+             * using the closest point value.
+             */
+            unsigned int
+            value (const double temperature,
+                   const double pressure,
+                   const Table<2, unsigned int> &values) const;
 
             /**
              * Find the position in a data table given a temperature.
@@ -174,6 +209,7 @@ namespace aspect
             dealii::Table<2,double> vp_values;
             dealii::Table<2,double> vs_values;
             dealii::Table<2,double> enthalpy_values;
+            dealii::Table<2,unsigned int> dominant_phase_indices;
 
             /**
             * The vector of column names corresponding to each phase,
@@ -195,6 +231,8 @@ namespace aspect
             unsigned int n_phases;
             unsigned int n_columns;
             bool interpolation;
+            bool has_dominant_phase_column;
+            std::vector<std::string> dominant_phase_names;
         };
 
         /**
