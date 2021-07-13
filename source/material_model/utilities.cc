@@ -520,6 +520,7 @@ namespace aspect
           max_temp=std::numeric_limits<double>::lowest();
           n_temperature=0;
           n_pressure=0;
+          has_dominant_phase_column = false;
 
           std::string temp;
           // Read data from disk and distribute among processes

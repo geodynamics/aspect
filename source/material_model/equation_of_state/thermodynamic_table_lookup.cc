@@ -50,8 +50,6 @@ namespace aspect
         unique_phase_indices.resize(n_material_lookups, std::vector<unsigned int>());
         global_index_of_lookup_phase.resize (n_material_lookups, std::vector<unsigned int>());
 
-        bool any_lookup_has_dominant_phase = false;
-
         for (unsigned i = 0; i < n_material_lookups; i++)
           {
             if (material_file_format == perplex)
@@ -113,12 +111,10 @@ namespace aspect
               }
 
             // Make sure that either all or none of the tables have a column with the dominant phase.
-            if (any_lookup_has_dominant_phase)
-              AssertThrow(material_lookup[i]->has_dominant_phase(),
-                          ExcMessage("Some of the lookup tables you read in contain outputs for the dominant phase, "
-                                     "as indicated by the column 'phase', but in at least of of the tables you use "
-                                     "this column is missing."));
-            any_lookup_has_dominant_phase = (material_lookup[i]->has_dominant_phase() || any_lookup_has_dominant_phase);
+            AssertThrow(material_lookup[0]->has_dominant_phase() == material_lookup[i]->has_dominant_phase(),
+                        ExcMessage("Some of the lookup tables you read in contain outputs for the dominant phase, "
+                                   "as indicated by the column 'phase', but in at least of of the tables you use "
+                                   "this column is missing."));
           }
 
         // Since the visualization output can only contain numbers and not strings
