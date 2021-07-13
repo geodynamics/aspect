@@ -66,6 +66,11 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
         /**
+         * Find if the top or bottom boundaries are free surfaces.
+         */
+        void initialize() override;
+
+        /**
          * Evaluate the geoid solution at a point. The evaluation point
          * must be outside of the model domain, and it must be called
          * after execute().
@@ -89,27 +94,27 @@ namespace aspect
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the geoid anomaly
          */
-        bool also_output_geoid_anomaly_SH_coes;
+        bool output_geoid_anomaly_SH_coes;
 
         /**
-         * A parameter to control whether to output the spherical harmonic coefficients of the surface dynamic topography contribution
+         * A parameter to control whether to output the spherical harmonic coefficients of the surface topography contribution
          */
-        bool also_output_surface_dynamic_topo_contribution_SH_coes;
+        bool output_surface_topo_contribution_SH_coes;
 
         /**
-         * A parameter to control whether to output the spherical harmonic coefficients of the CMB dynamic topography contribution
+         * A parameter to control whether to output the spherical harmonic coefficients of the CMB topography contribution
          */
-        bool also_output_CMB_dynamic_topo_contribution_SH_coes;
+        bool output_CMB_topo_contribution_SH_coes;
 
         /**
          * A parameter to control whether to output the spherical harmonic coefficients of the density anomaly
          */
-        bool also_output_density_anomaly_contribution_SH_coes;
+        bool output_density_anomaly_contribution_SH_coes;
 
         /**
          * A parameter to control whether to output the free-air gravity anomaly
          */
-        bool also_output_gravity_anomaly;
+        bool output_gravity_anomaly;
 
         /**
          * Parameters to set the density value out of the surface and CMB boundary
@@ -118,9 +123,24 @@ namespace aspect
         double density_below;
 
         /**
-         * A parameter to control whether to include the dynamic topography contribution on geoid
+         * A parameter to control whether to include the surface topography contribution on geoid
          */
-        bool include_dynamic_topo_contribution;
+        bool include_surface_topo_contribution;
+
+        /**
+         * A parameter to control whether to include the CMB topography contribution on geoid
+         */
+        bool include_CMB_topo_contribution;
+
+        /**
+         * A parameter to specify if the top boundary is an active free surface
+         */
+        bool use_free_surface_topography;
+
+        /**
+         * A parameter to specify if the bottom boundary is an active free surface
+         */
+        bool use_free_CMB_topography;
 
         /**
          * Function to compute the real spherical harmonic coefficients (cos and sin part) from min degree to max degree
@@ -140,15 +160,17 @@ namespace aspect
                                                         density_contribution (const double &outer_radius) const;
 
         /**
-         * Function to compute the surface and CMB dynamic topography contribution in spherical harmonic expansion
+         * Function to compute the surface and CMB topography contribution in spherical harmonic expansion
          * The input inner and outer radius are used to calculate spherical infinitesimal area, i.e., sin(theta)*d_theta*d_phi
          * associated with each quadrature point on surface and bottom respectively.
-         * This function returns a pair containing surface and CMB dynamic topography's real spherical harmonic coefficients (cos and sin part)
+         * This function returns a pair containing surface and CMB topography's real spherical harmonic coefficients (cos and sin part)
          * from min degree to max degree. The surface and CMB average density are also included as the first single element of each subpair respectively.
+         * The topography is based on the dynamic topography postprocessor in case of no free surface,
+         * and based on the real surface from the geometry model in case of a free surface.
          */
         std::pair<std::pair<double, std::pair<std::vector<double>,std::vector<double>>>, std::pair<double, std::pair<std::vector<double>,std::vector<double>>>>
-        dynamic_topography_contribution(const double &outer_radius,
-                                        const double &inner_radius) const;
+        topography_contribution(const double &outer_radius,
+                                const double &inner_radius) const;
 
         /**
          * A vector to store the cosine terms of the geoid anomaly spherical harmonic coefficients.

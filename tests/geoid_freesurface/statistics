@@ -1,0 +1,19 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Iterations for temperature solver
+# 9: Iterations for Stokes solver
+# 10: Velocity iterations in Stokes preconditioner
+# 11: Schur complement iterations in Stokes preconditioner
+# 12: Minimum topography (m)
+# 13: Maximum topography (m)
+# 14: Density at top (kg/m^3)
+# 15: Density at bottom (kg/m^3)
+# 16: Pressure at top (Pa)
+# 17: Pressure at bottom (Pa)
+0 0.000000000000e+00 0.000000000000e+00 96 3060 970 2 0  43  47 274 -5.82076609e-11 1.16415322e-10 1.00000000e+00 1.00000000e+00  2.66887793e+03 1.87122284e+06 
+1 4.550882293178e-14 4.550882293178e-14 96 3060 970 3 9 101 108 642 -2.91459623e+04 5.63151312e+04 9.98952521e-01 1.08117252e+00 -4.00158641e+03 1.93422562e+06 
