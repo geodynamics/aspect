@@ -15,7 +15,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // First, we set up a few objects which are used by the rheology model.
   aspect::ParameterHandler prm;
   const std::vector<std::string> list_of_composition_names = simulator_access.introspection().get_composition_names();
-  auto n_phases = std::make_shared<std::vector<unsigned int>>(1); // 1 phase per composition
+  auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
   const std::vector<double> volume_fractions = {1.};
 

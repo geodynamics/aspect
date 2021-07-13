@@ -182,7 +182,7 @@ namespace aspect
       template <int dim>
       void
       DiffusionCreep<dim>::parse_parameters (ParameterHandler &prm,
-                                             const std::shared_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
+                                             const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();

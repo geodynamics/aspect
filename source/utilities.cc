@@ -204,7 +204,7 @@ namespace aspect
                                const bool expects_background_field,
                                const std::string &property_name,
                                const bool allow_multiple_values_per_key,
-                               const std::shared_ptr<std::vector<unsigned int>> &n_values_per_key,
+                               const std::unique_ptr<std::vector<unsigned int>> &n_values_per_key,
                                const bool allow_missing_keys)
     {
       std::vector<std::string> field_names = list_of_keys;
