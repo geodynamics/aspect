@@ -258,6 +258,16 @@ namespace aspect
       get_sinking_velocity_averages(std::vector<double> &values) const;
 
       /**
+       * Compute a lateral average of the current rising velocity.
+       *
+       * @param values The output vector of laterally averaged values. The
+       * function takes the pre-existing size of this vector as the number of
+       * depth slices.
+       */
+      void
+      get_rising_velocity_averages(std::vector<double> &values) const;
+
+      /**
        * Compute a lateral average of the seismic shear wave speed: Vs.
        *
        * @param values The output vector of laterally averaged values. The

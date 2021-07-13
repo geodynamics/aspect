@@ -1,11 +1,11 @@
-#       time        depth temperature adiabatic_temperature adiabatic_pressure adiabatic_density adiabatic_density_derivative velocity_magnitude sinking_velocity viscosity vertical_heat_flux vertical_mass_flux
-           0         0.05         0.95            0            0            1            0            1            1            1    -0.501641        0.525
-           0         0.15         0.85            0     0.111111            1            0            1            1            1    -0.511641        0.575
-           0         0.25         0.75            0     0.222222            1            0            1            1            1    -0.531641        0.625
-           0         0.35         0.65            0     0.332332            1            0            1            1            1    -0.561641        0.675
-           0         0.45         0.55            0     0.444444            1            0            1            1            1    -0.601641        0.725
-           0         0.55         0.45            0     0.555556            1            0            1            1            1    -0.651641        0.775
-           0         0.65         0.35            0     0.666667            1            0            1            1            1    -0.711641        0.825
-           0         0.75         0.25            0     0.777778            1            0            1            1            1    -0.781641        0.875
-           0         0.85         0.15            0     0.888889            1            0            1            1            1    -0.861641        0.925
-           0         0.95         0.05            0            1            1            0            1            1            1    -0.951641        0.975
+#       time        depth temperature adiabatic_temperature adiabatic_pressure adiabatic_density adiabatic_density_derivative velocity_magnitude sinking_velocity rising_velocity viscosity vertical_heat_flux vertical_mass_flux
+           0         0.05         0.95            0            0            1            0            1            1            1            1    -0.501641        0.525
+           0         0.15         0.85            0     0.111111            1            0            1            1            1            1    -0.511641        0.575
+           0         0.25         0.75            0     0.222222            1            0            1            1            1            1    -0.531641        0.625
+           0         0.35         0.65            0     0.332332            1            0            1            1            1            1    -0.561641        0.675
+           0         0.45         0.55            0     0.444444            1            0            1            1            1            1    -0.601641        0.725
+           0         0.55         0.45            0     0.555556            1            0            1            1            1            1    -0.651641        0.775
+           0         0.65         0.35            0     0.666667            1            0            1            1            1            1    -0.711641        0.825
+           0         0.75         0.25            0     0.777778            1            0            1            1            1            1    -0.781641        0.875
+           0         0.85         0.15            0     0.888889            1            0            1            1            1            1    -0.861641        0.925
+           0         0.95         0.05            0            1            1            0            1            1            1            1    -0.951641        0.975

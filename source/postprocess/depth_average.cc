@@ -321,7 +321,7 @@ namespace aspect
           const std::string variables =
             "all|temperature|composition|"
             "adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|"
-            "velocity magnitude|sinking velocity|Vs|Vp|"
+            "velocity magnitude|sinking velocity|rising velocity|Vs|Vp|"
             "viscosity|vertical heat flux|vertical mass flux|composition mass";
           prm.declare_entry("List of output variables", "all",
                             Patterns::MultipleSelection(variables.c_str()),
@@ -329,6 +329,14 @@ namespace aspect
                             "average in each depth slice. It defaults to averaging all "
                             "available quantities, but this can be an expensive operation, "
                             "so you may want to select only a few.\n\n"
+                            "Specifically, the sinking velocity is defined as the scalar "
+                            "product of the velocity and a unit vector in the direction of "
+                            "gravity, if positive (being zero if this product is negative, "
+                            "which would correspond to an upward velocity). "
+                            "The rising velocity is the opposite: the scalar product of "
+                            "the velocity and a unit vector in the direction opposite of "
+                            "gravity, if positive (being zero for downward velocities). "
+                            "\n\n"
                             "List of options:\n"
                             +variables);
         }
@@ -423,6 +431,9 @@ namespace aspect
 
             if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "sinking velocity") != output_variables.end() )
               variables.emplace_back("sinking_velocity");
+
+            if ( output_all_variables || std::find( output_variables.begin(), output_variables.end(), "rising velocity") != output_variables.end() )
+              variables.emplace_back("rising_velocity");
 
             // handle seismic velocities, because they may, or may not be provided by the material model
             {
