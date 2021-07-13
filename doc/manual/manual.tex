@@ -7488,8 +7488,7 @@ We can observe that when the two-layer viscosity model is added, there is only o
 
 Early mantle modeling studies of the 1970s, 1980s and 1990s were often concerned with simple set-ups (Cartesian geometries, incompressible fluid, free slip boundary conditions) and investigated the influence of the Rayleigh number, the heating mode or the temperature dependence of the viscosity on temperature, pressure and/or strain rate \cite{youn74,buss75,buss79,BBC89,BC93,vavy93,burb97}. In this cookbook, we use the `simple' material model to reproduce the set-up in \cite{burb96}, which reported that even modest increases in mantle viscosity with depth could have a marked effect on the style of mantle convection. The prm file corresponding to this cookbook can be found at \url{cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm}.
 
-Although the original article showcases results obtained in a 3D hollow sphere, we here run the models in an annular domain of inner radius $R_i = 3480$ \si{\kilo\meter} and outer radius  $R_o = 6370$ \si{\kilo\meter}.
-The surface temperature is set to $T{\textsubscript{surf}}$ = 1060 \si{\kelvin} and
+Although the original article showcases results obtained in a 3D hollow sphere, we here run the models in an annular domain of inner radius $R\textsubscript{inner} = 3480~\si{\km}$ and outer radius  $R\textsubscript{outer} = 6370~\si{\km}$. The surface temperature is set to $T{\textsubscript{surf}}$ = 1060 \si{\kelvin} and
 the bottom temperature to $T{\textsubscript{cmb}} = 3450$ \si{\kelvin}. The gravity vector is radial and its magnitude is $g = 10$ \si{\metre\per\second\squared}.
 
 There is a single incompressible fluid in the domain, characterized by $\rho_0 = 4500$ \si{\kilogram\per\metre\cubed}, $\alpha = 2.5\cdot10^{-5}$ \si{\per\kelvin},
@@ -7605,21 +7604,19 @@ natural gas these structures have been extensively studied \cite{jahu17}.
 We consider in this experiment the three-layer viscous Rayleigh-Taylor instability proposed
 by Weinberg and Schmeling \cite{wesc92}
 and we focus in what follows on the case II of that publication.
-The domain is a 2D Cartesian box of size $2.24\si{m} \times 1\si{m}$.
-Gravity is Earth-like ($9.81\si{m}/\si{s}^2$).
+The domain is a 2D Cartesian box of size $2.24~\si{m} \times 1~\si{m}$.
+Gravity is Earth-like ($9.81~\si{\metre\per\square\second}$).
 Boundary conditions are free-slip on the sides and top and no-slip at the bottom.
 All three layers are initially horizontal. The top layer (fluid 1) has a thickness of
-$0.75\si{m}$, a viscosity $\eta_1=100\si{Pa . s}$ and a density $\rho_1=100\si{kg}/\si{m}^3$.
-The middle layer (fluid 2) has a thickness 0.125m with $\rho_2=90\si{kg}/\si{m}^3$ and $\mu_2=1\si{Pa . s}$.
-The bottom layer (fluid 3) has a thickness 0.125m with $\rho_3=89\si{kg}/\si{m}^3$ and $\mu_3=1\si{Pa . s}$.
-The two interfaces between the layers are perturbed by a random noise of amplitude $\pm 0.001\si{m}$.
+$0.75~\si{m}$, a viscosity $\eta_1=100~\si{\pascal\second}$ and a density $\rho_1=100~\si{\kg\per\cubic\metre}$.
+The middle layer (fluid 2) has a thickness $0.125~\si{\metre}$ with $\rho_2=90~\si{\kg\per\cubic\metre}$ and $\eta_2=1~\si{\pascal\second}$.
+The bottom layer (fluid 3) has a thickness $0.125~\si{\metre}$ with $\rho_3=89~\si{\kg\per\cubic\metre}$ and $\eta_3=1~\si{\pascal\second}$.
+The two interfaces between the layers are perturbed by a random noise of amplitude $\pm 0.001~\si{m}$.
 Since fluid 3 is lighter than fluid 2 and fluid 2 is lighter than fluid 1, both interfaces are unstable.
 We observe that interface 2-3 deforms first, produces domes which are subsequently incorporated in the domes
 being generated at the interface 1-2, as shown in Figure~\ref{fig:polydiapirs_density}.
-The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages ($t<50\si{s}$)
-corresponding to the
-two different growth rates of the interfaces,
-as explained by linear stability analysis \cite{wesc92,ramb81}.
+The root mean square velocity (Figure~\ref{fig:polydiapirs_vrms}) shows two slopes in the early stages ($t<50~\si{\second}$)
+corresponding to the two different growth rates of the interfaces, as explained by linear stability analysis \cite{wesc92,ramb81}.
 
 \begin{figure}
     \centering
@@ -7627,7 +7624,7 @@ as explained by linear stability analysis \cite{wesc92,ramb81}.
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0005.png}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0010.png}
     \includegraphics[width=0.48\textwidth]{cookbooks/polydiapirism/doc/diapirs0015.png}
-    \caption{\it Polydiapirism benchmark: Density field at $t=0,25,50,75\si{s}$.}
+    \caption{\it Polydiapirism benchmark: Density field at $t=0,25,50,75~\si{\second}$.}
     \label{fig:polydiapirs_density}
 \end{figure}
 
@@ -7642,33 +7639,33 @@ as explained by linear stability analysis \cite{wesc92,ramb81}.
 \label{sec:sinking_block}
 
 This benchmark is based on the benchmark presented in \cite{gery10} and extended in \cite{thie11}.
-It consists of a two-dimensional $512\text{km}\times 512\text{km}$ domain filled with a fluid (the "mantle")
-of density $\rho_1=3200$kg/m$^3$ and viscosity $\eta_1=10^{21}\text{Pa s}$.
-A square block of size $128\text{km}\times 128\text{km}$ is placed in the domain and is centered at location $(x_c,y_c)=(256\text{km},384\text{km})$
+It consists of a two-dimensional $512~\si{\km}\times 512~\si{\km}$ domain filled with a fluid (the ``mantle'')
+of density $\rho_1=3200\si{\kg\per\cubic\metre}$ and viscosity $\eta_1=10^{21}~\si{\pascal\second}$.
+A square block of size $128~\si{\km}\times 128~\si{\km}$ is placed in the domain and is centered at location $(x_c,y_c)=(256~\si{\km},384~\si{\km})$
 so as to ensure that its sides align with cell boundaries at all resolutions (GMR level $\geq 3$). It is filled with a fluid of density
 $\rho_2=\rho_1+\delta \rho$ and viscosity $\eta_2$. The gravity vector points downwards with
-$|\boldsymbol{g}|=10\text{m}/\text{s}^2$. Boundary conditions are free slip on all sides.
+$|\boldsymbol{g}|=10~\si{\metre\per\square\second}$. Boundary conditions are free slip on all sides.
 Only one time step is carried out and we measure the absolute velocity $|v_z|$ in the middle of the block.
 
 In a geodynamical context, the block could be interpreted as a detached slab or a plume head.
 As such its viscosity and density can vary (a cold slab has a higher effective viscosity than the surrounding mantle while
 it is the other way around for a plume head). The block densities can then vary from a few units to several
-hundreds of $\text{kg/m}^{3}$ and the viscosities by several orders of magnitude to represent a wide array of scenarios.
-The velocity field obtained for $\eta_2=10^{27}\text{Pa s}$ and $\delta\rho=32\text{kg/m}^{3}$ is shown in
+hundreds of $\si{\kg\per\cubic\metre}$ and the viscosities by several orders of magnitude to represent a wide array of scenarios.
+The velocity field obtained for $\eta_2=10^{27}~\si{\pascal\second}$ and $\delta\rho=32~\si{\kg\per\cubic\metre}$ is shown in
 Figure~\ref{fig:sinking_block1}.
 
 As shown in \cite{thie11} one can independently vary $\eta_1$, $\rho_2$, $\eta_2$, and measure $|v_z|$ for each combination: the quantity
 $|v_z| \eta_1/\delta\rho$ is then found to be a simple function of the ratio $\eta^\star=\eta_1/\eta_2$:
 at high enough mesh resolution all data points collapse onto a single line.
 The shell script {\sl run\_benchmark} in the folder runs the experiment for values
-$\eta_2\in [10^{17},10^{26}]\text{Pa s}$ and $\delta\rho=8,32,128\text{kg/m}^{3}$.
+$\eta_2\in [10^{17},10^{26}]~\si{\pascal\second}$ and $\delta\rho=8,32,128~\si{\kg\per\cubic\metre}$.
 Results are shown in Figure~\ref{fig:sinking_block2} and we indeed recover the expected trend with
 all data points forming a single smooth line.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{cookbooks/benchmarks/sinking_block/doc/dens_vel.png}
-  \caption{\it Density field with velocity arrows for $\eta_2=10^{27}\text{Pa s}$ and $\delta\rho=32\text{kg/m}^{3}$}
+  \caption{\it Density field with velocity arrows for $\eta_2=10^{27}~\si{\pascal\second}$ and $\delta\rho=32~\si{\kg\per\cubic\metre}$}
   \label{fig:sinking_block1}
 \end{figure}
 
@@ -8196,7 +8193,9 @@ and a second-order convergence rate for the pressure.
 \subsubsection{The 2D annulus benchmark}
 \label{sec:cookbooks-annulus}
 
-This benchmark is based on Thieulot \& Puckett [Subm.] in which an analytical solution to the
+\textit{This section was contributed by C. Thieulot and E. G. Puckett.}
+
+This benchmark is based on a manufactured solution in which an analytical solution to the
 isoviscous incompressible Stokes equations is derived in an annulus geometry.
 The velocity and pressure fields are as follows:
 
