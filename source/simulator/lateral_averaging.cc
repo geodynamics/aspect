@@ -151,7 +151,7 @@ namespace aspect
               const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
               const Tensor<1,dim> vertically_down = (g.norm() > 0 ? g/g.norm() : Tensor<1,dim>());
 
-              output[q] = std::fabs(std::max(0.0, velocity_values[q] * vertically_down))
+              output[q] = std::max(0.0, velocity_values[q] * vertically_down)
                           * (convert_to_years_ ? year_in_seconds : 1.0);
             }
         }
@@ -199,7 +199,7 @@ namespace aspect
               const Tensor<1,dim> g = gravity_->gravity_vector(in.position[q]);
               const Tensor<1,dim> vertically_up = (g.norm() > 0 ? -g/g.norm() : Tensor<1,dim>());
 
-              output[q] = std::fabs(std::max(0.0, velocity_values[q] * vertically_up))
+              output[q] = std::max(0.0, velocity_values[q] * vertically_up)
                           * (convert_to_years_ ? year_in_seconds : 1.0);
             }
         }

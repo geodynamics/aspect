@@ -1,6 +1,4 @@
 New: There is now a rising velocity output variable in the depth 
-average postprocessor.
-Fixed: The sinking velocity depth average postprocessor now computes 
-the actual sinking velocity (and not the rising velocity).  
+average postprocessor. 
 <br>
 (Juliane Dannberg, 2021/07/13)
