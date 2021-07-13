@@ -1,6 +1,7 @@
 ### Oceanic Extension Cookbook
-# A cookbook to illustrate the parameters and processes controlling non-linear deformation of oceanic lithosphere.
-# This parameter file is the first in a series of cookbooks that systematically build in complexity, 
+# A cookbook to illustrate the parameters and processes controlling 
+# non-linear deformation of oceanic lithosphere. This parameter file 
+# is the first in a series of cookbooks that systematically build in complexity, 
 # and thus serves as a reference model for the remaining cookbooks.
 
 #  Global parameters
@@ -126,9 +127,11 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-  # The function rand_seed(seed_number) will always produce the same random value at each point when the parameter file is run.
-  # "seed_number" is an integer and changing this value will produce a different (reproducible) random number. 
-  # A distinct random number can be produced each time the simulation is run by replacing rand_seed(seed_number) with rand().
+  # The function rand_seed(seed_number) will always produce the same random 
+  # value at each point when the parameter file is run. "seed_number" is an 
+  # integer and changing this value will produce a different (reproducible) random number. 
+  # A distinct random number can be produced each time the simulation is run 
+  # by replacing rand_seed(seed_number) with rand().
     set Variable names      = x,y
     set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand_seed(0)*1.0, 0);  \
 			      if(y>=93.e3, 1, 0); \
@@ -145,13 +148,17 @@ subsection Boundary temperature model
 end
 
 # Initial temperature field
-The initial temperature field follows the plate cooling model for a lithosphere of age x (40 Myr?) years. Below, "Tm" is the temperature at the base of the plate,  "Ts" is the temperature at the surface of the plate, "ageop" is the age of the oceanic plate, "ymax" is the maximum depth of the plate, and "kappa" is the the thermal diffusivity.
+# The initial temperature field follows the plate cooling model for a lithosphere 
+# of age 40 Myr years. Below, "Tm" is the temperature at the base of the plate,
+# "Ts" is the temperature at the surface of the plate, "ageop" is the age of the oceanic plate in years, 
+# "ymax" is the maximum depth of the plate, "kappa" is the the thermal diffusivity, and
+# "sec2yrs" is to convert the age from years to seconds.
 subsection Initial temperature model
   set List of model names = function
   subsection Function
     set Variable names = x,y
-    set Function constants = ymax=100e3, ageop=40e6, Tm=1573, Ts=273, kappa=1.0101e-6, sec2yrs=3.1536e13
-    set Function expression = (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop*sec2yrs)))))
+    set Function constants = ymax=100e3, ageop=40e6, Tm=1573, Ts=273, kappa=1.0101e-6, sec2yrs=3.1709e-8
+    set Function expression = (Ts + (Tm-Ts)*(1-erfc((ymax-y)/(2*sqrt(kappa*ageop/sec2yrs)))))
   end
 end
 
@@ -160,7 +167,10 @@ end
 subsection Material model
   set Model name = visco plastic
 
-  # The `Material averaging` parameter determines how material properties are averaged over each element. Using `harmonic average` will produce the smoothest and most stable solution, although this will also act to reduce sharp variations in material properties at interfaces.
+  # The `Material averaging` parameter determines how material properties 
+  # are averaged over each element. Using `harmonic average` will produce 
+  # the smoothest and most stable solution, although this will also act 
+  # to reduce sharp variations in material properties at interfaces.
   set Material averaging = harmonic average
 
   subsection Visco Plastic
@@ -169,7 +179,10 @@ subsection Material model
     set Reference viscosity   = 1e21
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
-    # Respectively, the standard minimum and maximum viscosities used in geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s. Increasing the min/max viscosity contrast will produce more "Earth-like" simulations, but this comes at the expense of solver stability and model run times. 
+    # Respectively, the standard minimum and maximum viscosities used in
+    #  geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s. 
+    # Increasing the min/max viscosity contrast will produce more "Earth-like" 
+    # simulations, but this comes at the expense of solver stability and model run times. 
     set Minimum viscosity = 1e18
     set Maximum viscosity = 1e26
 
@@ -179,7 +192,10 @@ subsection Material model
     set Heat capacities       = 750.
     set Thermal expansivities = 2e-5
 
-    # The `Viscosity averaging scheme ` selects how the viscosity is averaged between compositional fields at each point. Choosing maximum composition will help to preserve material interfaces through time, but come at the expense of solver stability and speed.
+    # The `Viscosity averaging scheme ` selects how the viscosity is averaged 
+    # between compositional fields at each point. Choosing maximum composition 
+    # will help to preserve material interfaces through time, but come at the 
+    # expense of solver stability and speed.
     set Viscosity averaging scheme = maximum composition
 
     set Viscous flow law = composite
