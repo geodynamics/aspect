@@ -141,10 +141,20 @@ end
 
 
 # Temperature boundary conditions
-# Prescribed temperature at bottom and top boundaries with values from the initial temperature field.
+# Prescribed temperature at bottom and top boundaries with fixed values of 
+# T=273K at the surface and, at the bottom, the temperature computed at 100 km
+# of depth (hight of the box)from the expression of plate cooling model,
+# which is also used to describe the initial temperature field.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
-  set Model name = initial temperature
+  set List of model names = function
+  subsection Function
+    set Variable names = x,y
+    set Function constants = ymax=100e3, ageop=40e6, Tm=1573, Ts=273, kappa=1.0101e-6, sec2yrs=3.1709e-8
+    set Function expression = if(y<ymax/2, \
+			       Ts + (Tm-Ts)*(1-erfc((ymax)/(2*sqrt(kappa*ageop/sec2yrs)))), \ 
+                               Ts);
+  end
 end
 
 # Initial temperature field
