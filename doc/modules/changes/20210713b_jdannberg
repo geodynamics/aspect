@@ -1,0 +1,4 @@
+Fixed: The sinking velocity depth average postprocessor now computes 
+the actual sinking velocity (and not the rising velocity).  
+<br>
+(Juliane Dannberg, 2021/07/13)
