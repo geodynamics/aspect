@@ -153,7 +153,7 @@ subsection Boundary temperature model
     set Function constants = ymax=100e3, ageop=40e6, Tm=1573, Ts=273, kappa=1.0101e-6, sec2yrs=3.1709e-8
     set Function expression = if(y<ymax/2, \
 			        Ts + (Tm-Ts)*(1-erfc((ymax)/(2*sqrt(kappa*ageop/sec2yrs)))), \ 
-                               Ts);
+                              Ts);
   end
 end
 
