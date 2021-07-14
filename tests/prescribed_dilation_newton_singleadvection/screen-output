@@ -1,10 +1,6 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libprescribed_dilation_newton_singleadvection.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
@@ -16,7 +12,7 @@ Number of degrees of freedom: 948 (578+81+289)
    Solving Stokes system... 0+24 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 997.366
 
-   Nonlinear residual reduction has been very large (9.97056e-13); skipping Stokes solve
+   Nonlinear residual reduction has been very large (9.97055e-13); skipping Stokes solve
 
 
    Postprocessing:
@@ -35,7 +31,7 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
    Solving Stokes system... 0+25 iterations.
       Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 898.181
 
-   Nonlinear residual reduction has been very large (8.59162e-13); skipping Stokes solve
+   Nonlinear residual reduction has been very large (8.59177e-13); skipping Stokes solve
 
 
    Postprocessing:
@@ -46,9 +42,4 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

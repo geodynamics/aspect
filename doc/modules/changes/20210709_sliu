@@ -1,4 +1,3 @@
-Changed: Fixed the "prescribed_dilation" option
-in newton.stokes.cc.
+Fixed: The "prescribed_dilation" and "additional Stokes RHS" options now work correctly with the Newton solver.
 <br>
 (Sibiao Liu, 2021/07/09)
