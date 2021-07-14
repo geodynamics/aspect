@@ -31,6 +31,7 @@
 #include <deal.II/base/function_lib.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/fe/component_mask.h>
+#include <deal.II/numerics/fe_field_function.h>
 
 #include <aspect/coordinate_systems.h>
 #include <aspect/structured_data.h>
@@ -503,12 +504,38 @@ namespace aspect
         }
     }
 
+    template <int dim>
+    std::vector<double>
+    inline evaluate_advection_solution(const DoFHandler<dim> &dof_handler,
+                                       const Mapping<dim> &mapping,
+                                       const LinearAlgebra::BlockVector &solution_vector,
+                                       const unsigned int component_index,
+                                       const typename DoFHandler<dim>::active_cell_iterator cell,
+                                       const std::vector<Point<dim>> positions)
+    {
+      // The result of the finite element evaluation
+      std::vector<double> advection_field_values(positions.size());
+
+      // Prepare the field function
+#if DEAL_II_VERSION_GTE(10, 0, 0)
+      Functions::FEFieldFunction<dim, LinearAlgebra::BlockVector>
+#else
+      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
+#endif
+      fe_value(dof_handler, solution_vector, mapping);
+
+      fe_value.set_active_cell(cell);
+      fe_value.value_list(positions,
+                          advection_field_values,
+                          component_index);
+
+      return advection_field_values;
+    }
+
     template <typename T>
-    inline
-    std::vector<T>
-    possibly_extend_from_1_to_N (const std::vector<T> &values,
-                                 const unsigned int N,
-                                 const std::string &id_text)
+    inline std::vector<T> possibly_extend_from_1_to_N(const std::vector<T> &values,
+                                                      const unsigned int N,
+                                                      const std::string &id_text)
     {
       if (values.size() == 1)
         {
