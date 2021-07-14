@@ -30,6 +30,11 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+#endif
+
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -591,6 +596,58 @@ namespace aspect
         property_manager->initialize_one_particle(it);
     }
 
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    template <int dim>
+    void
+    World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                       internal::SolutionEvaluators<dim> &evaluators)
+    {
+      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+
+      std::vector<Point<dim> > positions;
+      positions.reserve(n_particles_in_cell);
+
+      for (auto particle = begin_particle; particle!=end_particle; ++particle)
+        positions.push_back(particle->get_reference_location());
+
+      const UpdateFlags update_flags = property_manager->get_needed_update_flags();
+
+      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+
+      cell->get_dof_values(this->get_current_linearization_point(),
+                           solution_values.begin(),
+                           solution_values.end());
+
+      if (update_flags & (update_values | update_gradients))
+        evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
+
+      auto particle = begin_particle;
+      for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
+        {
+          // Evaluate the solution, but only if it is requested in the update_flags
+          const Vector<double> solution = (update_flags & update_values)
+                                          ?
+                                          evaluators.get_solution(i)
+                                          :
+                                          Vector<double>();
+
+          // Evaluate the gradients, but only if they are requested in the update_flags
+          const std::vector<Tensor<1,dim>> gradients = (update_flags & update_gradients)
+                                                       ?
+                                                       evaluators.get_gradients(i)
+                                                       :
+                                                       std::vector<Tensor<1,dim>>();
+
+          property_manager->update_one_particle(particle,
+                                                solution,
+                                                gradients);
+        }
+    }
+#else
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -636,7 +693,65 @@ namespace aspect
                                                 gradients[i]);
         }
     }
+#endif
 
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    template <int dim>
+    void
+    World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                       const typename ParticleHandler<dim>::particle_iterator &begin_particle,
+                                       const typename ParticleHandler<dim>::particle_iterator &end_particle,
+                                       internal::SolutionEvaluators<dim> &evaluators)
+    {
+      const unsigned int n_particles_in_cell = std::distance(begin_particle, end_particle);
+
+      boost::container::small_vector<Point<dim>, 100>   positions;
+      positions.reserve(n_particles_in_cell);
+      for (auto particle = begin_particle; particle!=end_particle; ++particle)
+        positions.push_back(particle->get_reference_location());
+
+      boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
+      boost::container::small_vector<double, 100> old_solution_values(this->get_fe().dofs_per_cell);
+
+      cell->get_dof_values(this->get_current_linearization_point(),
+                           solution_values.begin(),
+                           solution_values.end());
+
+      cell->get_dof_values(this->get_old_solution(),
+                           old_solution_values.begin(),
+                           old_solution_values.end());
+
+      const bool use_fluid_velocity = this->include_melt_transport() &&
+                                      property_manager->get_data_info().fieldname_exists("melt_presence");
+      auto &evaluator = (use_fluid_velocity) ? *evaluators.fluid_velocity : evaluators.velocity;
+
+      evaluator.reinit (cell, {positions.data(),positions.size()});
+
+      evaluator.evaluate({solution_values.data(),solution_values.size()},
+                         EvaluationFlags::values);
+
+      std::vector<Tensor<1,dim>> velocities;
+      velocities.reserve(n_particles_in_cell);
+      for (unsigned int i=0; i<n_particles_in_cell; ++i)
+        velocities.push_back(evaluator.get_value(i));
+
+      evaluator.evaluate({old_solution_values.data(),old_solution_values.size()},
+                         EvaluationFlags::values);
+
+      std::vector<Tensor<1,dim>> old_velocities;
+      old_velocities.reserve(n_particles_in_cell);
+      for (unsigned int i=0; i<n_particles_in_cell; ++i)
+        old_velocities.push_back(evaluator.get_value(i));
+
+      integrator->local_integrate_step(begin_particle,
+                                       end_particle,
+                                       old_velocities,
+                                       velocities,
+                                       this->get_timestep());
+    }
+#else
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -729,6 +844,7 @@ namespace aspect
                                        velocity,
                                        this->get_timestep());
     }
+#endif
 
 
 
@@ -814,6 +930,11 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+          const UpdateFlags update_flags = property_manager->get_needed_update_flags();
+          internal::SolutionEvaluators<dim> evaluators(*this, update_flags);
+#endif
+
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
@@ -823,12 +944,277 @@ namespace aspect
 
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
-                  local_update_particles(cell,
-                                         particles_in_cell.begin(),
-                                         particles_in_cell.end());
+                  {
+                    local_update_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end()
+#if DEAL_II_VERSION_GTE(9,3,0)
+                                           , evaluators
+#endif
+                                          );
+                  }
+
               }
         }
     }
+
+
+
+#if DEAL_II_VERSION_GTE(9,3,0)
+    namespace internal
+    {
+      // This class evaluates the solution vector at arbitrary positions inside a cell.
+      // It uses the deal.II class FEPointEvaluation to do this efficiently. Because
+      // FEPointEvaluation only supports a single finite element, but ASPECT uses a FESystem with
+      // many components, this class creates several FEPointEvaluation objects that are used for
+      // the individual finite elements of our solution (pressure, velocity, temperature, and
+      // all other optional variables).
+      template <int dim>
+      class SolutionEvaluators
+      {
+        public:
+          // Constructor. Create the member variables given a simulator and a set of
+          // update flags. The update flags control if only the solution or also the gradients
+          // should be evaluated.
+          SolutionEvaluators(const SimulatorAccess<dim> &simulator,
+                             const UpdateFlags update_flags);
+
+          // Reinitialize all variables to evaluate the given solution for the given cell
+          // and the given positions. The update flags control if only the solution or
+          // also the gradients should be evaluated.
+          // If other flags are set an assertion is triggered.
+          void
+          reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                 const ArrayView<Point<dim>> &positions,
+                 const ArrayView<double> &solution_values,
+                 const UpdateFlags update_flags);
+
+          // Return the value of all solution components at the given evaluation point. Note
+          // that this function only works after a successful call to reinit(),
+          // because this function only returns the results of the computation that
+          // happened in reinit().
+          Vector<double> get_solution(const unsigned int evaluation_point);
+
+          // Return the value of all solution gradients at the given evaluation point. Note
+          // that this function only works after a successful call to reinit(),
+          // because this function only returns the results of the computation that
+          // happened in reinit().
+          std::vector<Tensor<1,dim>> get_gradients(const unsigned int evaluation_point);
+
+          // FEPointEvaluation objects for all common
+          // components of ASPECT's finite element solution.
+          // These objects are used inside of the member functions of this class.
+          // These objects are public on purpose so that the owner of this object
+          // can access them individually, if they do not need to evaluate all
+          // solution components.
+          FEPointEvaluation<dim, dim> velocity;
+          FEPointEvaluation<1, dim> pressure;
+          FEPointEvaluation<1, dim> temperature;
+          std::vector<FEPointEvaluation<1, dim>> compositions;
+
+          // Pointers to FEPointEvaluation objects for all melt
+          // components of ASPECT's finite element solution, which only
+          // point to valid objects in case we use melt transport. Other
+          // documentation like for the objects directly above.
+          std::unique_ptr<FEPointEvaluation<dim, dim>> fluid_velocity;
+          std::unique_ptr<FEPointEvaluation<1, dim>> compaction_pressure;
+          std::unique_ptr<FEPointEvaluation<1, dim>> fluid_pressure;
+
+        private:
+          // The component indices for the three melt formulation
+          // variables fluid velocity, compaction pressure, and
+          // fluid pressure (in this order). They are cached
+          // to avoid repeated expensive lookups.
+          std::array<unsigned int, 3> melt_component_indices;
+
+          // Reference to the active simulator access object. Provides
+          // access to the general simulation variables.
+          const SimulatorAccess<dim> &simulator_access;
+      };
+
+
+
+      template <int dim>
+      SolutionEvaluators<dim>::SolutionEvaluators(const SimulatorAccess<dim> &simulator,
+                                                  const UpdateFlags update_flags)
+        :
+        velocity(simulator.get_mapping(),
+                 simulator.get_fe(),
+                 update_flags,
+                 simulator.introspection().component_indices.velocities[0]),
+        pressure(simulator.get_mapping(),
+                 simulator.get_fe(),
+                 update_flags,
+                 simulator.introspection().component_indices.pressure),
+        temperature(simulator.get_mapping(),
+                    simulator.get_fe(),
+                    update_flags,
+                    simulator.introspection().component_indices.temperature),
+        melt_component_indices(),
+        simulator_access(simulator)
+      {
+        // Create the evaluators for all compositional fields that exist
+        const unsigned int n_compositional_fields = simulator_access.n_compositional_fields();
+        const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
+        for (unsigned int composition = 0; composition < n_compositional_fields; ++composition)
+          compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
+                                                              simulator_access.get_fe(),
+                                                              update_flags,
+                                                              component_indices[composition]));
+
+        // Create the melt evaluators, but only if we use melt transport in the model
+        if (simulator_access.include_melt_transport())
+          {
+            // Store the melt component indices to avoid repeated string lookups later on
+            melt_component_indices[0] = simulator_access.introspection().variable("fluid velocity").first_component_index;
+            melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
+            melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
+
+            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+                                                                           simulator_access.get_fe(),
+                                                                           update_flags,
+                                                                           melt_component_indices[0]);
+            fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                         simulator_access.get_fe(),
+                                                                         update_flags,
+                                                                         melt_component_indices[1]);
+            compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                              simulator_access.get_fe(),
+                                                                              update_flags,
+                                                                              melt_component_indices[2]);
+
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      SolutionEvaluators<dim>::reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                      const ArrayView<Point<dim>> &positions,
+                                      const ArrayView<double> &solution_values,
+                                      const UpdateFlags update_flags)
+      {
+        // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
+        // Translate between the two.
+        EvaluationFlags::EvaluationFlags evaluation_flags = EvaluationFlags::nothing;
+
+        if (update_flags & update_values)
+          evaluation_flags = evaluation_flags | EvaluationFlags::values;
+
+        if (update_flags & update_gradients)
+          evaluation_flags = evaluation_flags | EvaluationFlags::gradients;
+
+        // Make sure only the flags are set that we can deal with at the moment
+        Assert ((update_flags & ~(update_gradients | update_values)) == false,
+                ExcNotImplemented());
+
+        // Reinitialize and evaluate all evaluators.
+        // TODO: It would be nice to be able to hand over a ComponentMask
+        // to specify which evaluators to use. Currently, this is only
+        // possible by manually accessing the public members of this class.
+        velocity.reinit (cell, positions);
+        pressure.reinit (cell, positions);
+        temperature.reinit (cell, positions);
+
+        for (auto &evaluator_composition: compositions)
+          evaluator_composition.reinit (cell, positions);
+
+        if (simulator_access.include_melt_transport())
+          {
+            fluid_velocity->reinit (cell, positions);
+            fluid_pressure->reinit (cell, positions);
+            compaction_pressure->reinit (cell, positions);
+          }
+
+        velocity.evaluate (solution_values, evaluation_flags);
+        pressure.evaluate (solution_values, evaluation_flags);
+        temperature.evaluate (solution_values, evaluation_flags);
+
+        for (auto &evaluator_composition: compositions)
+          evaluator_composition.evaluate (solution_values, evaluation_flags);
+
+        if (simulator_access.include_melt_transport())
+          {
+            fluid_velocity->evaluate (solution_values, evaluation_flags);
+            fluid_pressure->evaluate (solution_values, evaluation_flags);
+            compaction_pressure->evaluate (solution_values, evaluation_flags);
+          }
+      }
+
+
+
+      template <int dim>
+      Vector<double>
+      SolutionEvaluators<dim>::get_solution(const unsigned int evaluation_point)
+      {
+        const unsigned int n_components = simulator_access.introspection().n_components;
+        const auto &component_indices = simulator_access.introspection().component_indices;
+        const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+        // Copy all evaluated solutions into values_at_point and return it.
+        Vector<double> values_at_point(n_components);
+
+        const Tensor<1,dim> velocity_value = velocity.get_value(evaluation_point);
+        for (unsigned int j=0; j<dim; ++j)
+          values_at_point[component_indices.velocities[j]] = velocity_value[j];
+
+        values_at_point[component_indices.pressure] = pressure.get_value(evaluation_point);
+        values_at_point[component_indices.temperature] = temperature.get_value(evaluation_point);
+
+        for (unsigned int j=0; j<n_compositions; ++j)
+          values_at_point[component_indices.compositional_fields[j]] = compositions[j].get_value(evaluation_point);
+
+        if (simulator_access.include_melt_transport())
+          {
+            const Tensor<1,dim> fluid_velocity_value = velocity.get_value(evaluation_point);
+            for (unsigned int j=0; j<dim; ++j)
+              values_at_point[melt_component_indices[0]+j] = fluid_velocity_value[j];
+
+            values_at_point[melt_component_indices[1]] = fluid_pressure->get_value(evaluation_point);
+            values_at_point[melt_component_indices[2]] = compaction_pressure->get_value(evaluation_point);
+          }
+
+        return values_at_point;
+      }
+
+
+
+      template <int dim>
+      std::vector<Tensor<1,dim>> SolutionEvaluators<dim>::get_gradients(const unsigned int evaluation_point)
+      {
+        const unsigned int n_components = simulator_access.introspection().n_components;
+        const auto &component_indices = simulator_access.introspection().component_indices;
+        const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+        // Copy all evaluated solutions into values_at_point and return it.
+        std::vector<Tensor<1,dim>> gradients_at_point(n_components);
+
+        const Tensor<2,dim> velocity_gradient = velocity.get_gradient(evaluation_point);
+        for (unsigned int j=0; j<dim; ++j)
+          gradients_at_point[component_indices.velocities[j]] = velocity_gradient[j];
+
+        gradients_at_point[component_indices.pressure] = pressure.get_gradient(evaluation_point);
+        gradients_at_point[component_indices.temperature] = temperature.get_gradient(evaluation_point);
+
+        for (unsigned int j=0; j<n_compositions; ++j)
+          gradients_at_point[component_indices.compositional_fields[j]] =
+            compositions[j].get_gradient(evaluation_point);
+
+        if (simulator_access.include_melt_transport())
+          {
+            const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(evaluation_point);
+            for (unsigned int j=0; j<dim; ++j)
+              gradients_at_point[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
+
+            gradients_at_point[melt_component_indices[1]] = fluid_pressure->get_gradient(evaluation_point);
+            gradients_at_point[melt_component_indices[2]] = compaction_pressure->get_gradient(evaluation_point);
+          }
+
+        return gradients_at_point;
+      }
+    }
+#endif
 
 
 
@@ -840,6 +1226,10 @@ namespace aspect
         // TODO: Change this loop over all cells to use the WorkStream interface
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
+#if DEAL_II_VERSION_GTE(9,3,0)
+        internal::SolutionEvaluators<dim> evaluators(*this, update_values);
+#endif
+
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned())
@@ -849,9 +1239,15 @@ namespace aspect
 
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
-                local_advect_particles(cell,
-                                       particles_in_cell.begin(),
-                                       particles_in_cell.end());
+                {
+                  local_advect_particles(cell,
+                                         particles_in_cell.begin(),
+                                         particles_in_cell.end()
+#if DEAL_II_VERSION_GTE(9,3,0)
+                                         , evaluators
+#endif
+                                        );
+                }
             }
 
         // If particles fell out of the mesh, put them back in if they have crossed

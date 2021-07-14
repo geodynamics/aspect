@@ -65,6 +65,12 @@ namespace aspect
       class Manager;
     }
 
+    namespace internal
+    {
+      template <int dim>
+      class SolutionEvaluators;
+    }
+
     /**
      * This class manages the storage and handling of particles. It provides
      * interfaces to generate and store particles, functions to initialize,
@@ -413,7 +419,11 @@ namespace aspect
         void
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle
+#if DEAL_II_VERSION_GTE(9,3,0)
+                               , internal::SolutionEvaluators<dim> &evaluators
+#endif
+                              );
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -426,7 +436,11 @@ namespace aspect
         void
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
-                               const typename ParticleHandler<dim>::particle_iterator &end_particle);
+                               const typename ParticleHandler<dim>::particle_iterator &end_particle
+#if DEAL_II_VERSION_GTE(9,3,0)
+                               , internal::SolutionEvaluators<dim> &evaluators
+#endif
+                              );
 
         /**
          * This function registers the necessary functions to the
