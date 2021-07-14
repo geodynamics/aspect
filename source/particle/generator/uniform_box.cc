@@ -20,9 +20,7 @@
 
 #include <aspect/particle/generator/uniform_box.h>
 
-DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <boost/random.hpp>
-DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+#include <random>
 
 #include <array>
 #include <deal.II/base/exceptions.h>
