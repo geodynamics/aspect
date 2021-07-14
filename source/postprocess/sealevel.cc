@@ -94,17 +94,24 @@ namespace aspect
               const std::array<double,dim> spherical_position = this->get_geometry_model().
                                                                 cartesian_to_natural_coordinates(position);
 
-              for (unsigned int d = 0; d < dim-1; ++d)
+              for (unsigned int d = 1; d < dim; ++d)
                 internal_position[d-1] = spherical_position[d];
             }
 
-      double topography = data_lookup->get_data(internal_position, 1);
+      double topography = data_lookup->get_data(internal_position, 0);
+      double oc_fct = topography;
+      if (oc_fct < 0) {
+        oc_fct = 0;
+      }
+        else {
+        oc_fct = 1;
+      }
       double c = 0.0;
       double gravity_perturbation = 0.0;
       const double elevation = this->get_geometry_model().height_above_reference_surface(position);
       int ocean_mask = 1;
       double sea_level = (gravity_perturbation - elevation + c)*ocean_mask;
-      return sea_level;
+      return oc_fct ; //sea_level;
     }
     
     template <int dim>
@@ -185,8 +192,8 @@ namespace aspect
                             min_sealevel);
       statistics.add_value ("Maximum sea level (m)",
                             max_sealevel);
-      const char *columns[] = { "Minimum sealevel (m)",
-                                "Maximum sealevel (m)"
+      const char *columns[] = { "Minimum sea level (m)",
+                                "Maximum sea level (m)"
                               };
       for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
         {
