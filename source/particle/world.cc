@@ -1006,57 +1006,7 @@ namespace aspect
           // update flags. The update flags control if only the solution or also the gradients
           // should be evaluated.
           SolutionEvaluators(const SimulatorAccess<dim> &simulator,
-                             const UpdateFlags update_flags)
-            :
-            velocity(simulator.get_mapping(),
-                     simulator.get_fe(),
-                     update_flags,
-                     simulator.introspection().component_indices.velocities[0]),
-            pressure(simulator.get_mapping(),
-                     simulator.get_fe(),
-                     update_flags,
-                     simulator.introspection().component_indices.pressure),
-            temperature(simulator.get_mapping(),
-                        simulator.get_fe(),
-                        update_flags,
-                        simulator.introspection().component_indices.temperature),
-            melt_component_indices(),
-            simulator_access(simulator)
-          {
-            // Create the evaluators for all compositional fields that exist
-            const unsigned int n_compositional_fields = simulator_access.n_compositional_fields();
-            const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
-            for (unsigned int composition = 0; composition < n_compositional_fields; ++composition)
-              compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
-                                                                  simulator_access.get_fe(),
-                                                                  update_flags,
-                                                                  component_indices[composition]));
-
-            // Create the melt evaluators, but only if we use melt transport in the model
-            if (simulator_access.include_melt_transport())
-              {
-                // Store the melt component indices to avoid repeated string lookups later on
-                melt_component_indices[0] = simulator_access.introspection().variable("fluid velocity").first_component_index;
-                melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
-                melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
-
-                fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
-                                                                               simulator_access.get_fe(),
-                                                                               update_flags,
-                                                                               melt_component_indices[0]);
-                fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                             simulator_access.get_fe(),
-                                                                             update_flags,
-                                                                             melt_component_indices[1]);
-                compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                                  simulator_access.get_fe(),
-                                                                                  update_flags,
-                                                                                  melt_component_indices[2]);
-
-              }
-          }
-
-
+                             const UpdateFlags update_flags);
 
           // Reinitialize all variables to evaluate the given solution for the given cell
           // and the given positions. The update flags control if only the solution or
@@ -1066,134 +1016,22 @@ namespace aspect
           reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
                  const ArrayView<Point<dim>> &positions,
                  const ArrayView<double> &solution_values,
-                 const UpdateFlags update_flags)
-          {
-            // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
-            // Translate between the two.
-            EvaluationFlags::EvaluationFlags evaluation_flags = EvaluationFlags::nothing;
-
-            if (update_flags & update_values)
-              evaluation_flags = evaluation_flags | EvaluationFlags::values;
-
-            if (update_flags & update_gradients)
-              evaluation_flags = evaluation_flags | EvaluationFlags::gradients;
-
-            // Make sure only the flags are set that we can deal with at the moment
-            Assert ((update_flags & ~(update_gradients | update_values)) == false,
-                    ExcNotImplemented());
-
-            // Reinitialize and evaluate all evaluators.
-            // TODO: It would be nice to be able to hand over a ComponentMask
-            // to specify which evaluators to use. Currently, this is only
-            // possible by manually accessing the public members of this class.
-            velocity.reinit (cell, positions);
-            pressure.reinit (cell, positions);
-            temperature.reinit (cell, positions);
-
-            for (auto &evaluator_composition: compositions)
-              evaluator_composition.reinit (cell, positions);
-
-            if (simulator_access.include_melt_transport())
-              {
-                fluid_velocity->reinit (cell, positions);
-                fluid_pressure->reinit (cell, positions);
-                compaction_pressure->reinit (cell, positions);
-              }
-
-            velocity.evaluate (solution_values, evaluation_flags);
-            pressure.evaluate (solution_values, evaluation_flags);
-            temperature.evaluate (solution_values, evaluation_flags);
-
-            for (auto &evaluator_composition: compositions)
-              evaluator_composition.evaluate (solution_values, evaluation_flags);
-
-            if (simulator_access.include_melt_transport())
-              {
-                fluid_velocity->evaluate (solution_values, evaluation_flags);
-                fluid_pressure->evaluate (solution_values, evaluation_flags);
-                compaction_pressure->evaluate (solution_values, evaluation_flags);
-              }
-          }
-
-
+                 const UpdateFlags update_flags);
 
           // Return the value of all solution components at the given evaluation point. Note
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
-          Vector<double> get_solution(const unsigned int evaluation_point)
-          {
-            const unsigned int n_components = simulator_access.introspection().n_components;
-            const auto &component_indices = simulator_access.introspection().component_indices;
-            const unsigned int n_compositions = component_indices.compositional_fields.size();
-
-            // Copy all evaluated solutions into values_at_point and return it.
-            Vector<double> values_at_point(n_components);
-
-            const Tensor<1,dim> velocity_value = velocity.get_value(evaluation_point);
-            for (unsigned int j=0; j<dim; ++j)
-              values_at_point[component_indices.velocities[j]] = velocity_value[j];
-
-            values_at_point[component_indices.pressure] = pressure.get_value(evaluation_point);
-            values_at_point[component_indices.temperature] = temperature.get_value(evaluation_point);
-
-            for (unsigned int j=0; j<n_compositions; ++j)
-              values_at_point[component_indices.compositional_fields[j]] = compositions[j].get_value(evaluation_point);
-
-            if (simulator_access.include_melt_transport())
-              {
-                const Tensor<1,dim> fluid_velocity_value = velocity.get_value(evaluation_point);
-                for (unsigned int j=0; j<dim; ++j)
-                  values_at_point[melt_component_indices[0]+j] = fluid_velocity_value[j];
-
-                values_at_point[melt_component_indices[1]] = fluid_pressure->get_value(evaluation_point);
-                values_at_point[melt_component_indices[2]] = compaction_pressure->get_value(evaluation_point);
-              }
-
-            return values_at_point;
-          }
-
-
+          Vector<double> get_solution(const unsigned int evaluation_point);
 
           // Return the value of all solution gradients at the given evaluation point. Note
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
-          std::vector<Tensor<1,dim>> get_gradients(const unsigned int evaluation_point)
-          {
-            const unsigned int n_components = simulator_access.introspection().n_components;
-            const auto &component_indices = simulator_access.introspection().component_indices;
-            const unsigned int n_compositions = component_indices.compositional_fields.size();
+          std::vector<Tensor<1,dim>> get_gradients(const unsigned int evaluation_point);
 
-            // Copy all evaluated solutions into values_at_point and return it.
-            std::vector<Tensor<1,dim>> gradients_at_point(n_components);
-
-            const Tensor<2,dim> velocity_gradient = velocity.get_gradient(evaluation_point);
-            for (unsigned int j=0; j<dim; ++j)
-              gradients_at_point[component_indices.velocities[j]] = velocity_gradient[j];
-
-            gradients_at_point[component_indices.pressure] = pressure.get_gradient(evaluation_point);
-            gradients_at_point[component_indices.temperature] = temperature.get_gradient(evaluation_point);
-
-            for (unsigned int j=0; j<n_compositions; ++j)
-              gradients_at_point[component_indices.compositional_fields[j]] =
-                compositions[j].get_gradient(evaluation_point);
-
-            if (simulator_access.include_melt_transport())
-              {
-                const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(evaluation_point);
-                for (unsigned int j=0; j<dim; ++j)
-                  gradients_at_point[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
-
-                gradients_at_point[melt_component_indices[1]] = fluid_pressure->get_gradient(evaluation_point);
-                gradients_at_point[melt_component_indices[2]] = compaction_pressure->get_gradient(evaluation_point);
-              }
-
-            return gradients_at_point;
-          }
-
-          // FEPointEvaluation objects and pointers for all mandatory and
-          // optional components of ASPECT's finite element solution.
+          // FEPointEvaluation objects for all common
+          // components of ASPECT's finite element solution.
           // These objects are used inside of the member functions of this class.
           // These objects are public on purpose so that the owner of this object
           // can access them individually, if they do not need to evaluate all
@@ -1203,6 +1041,10 @@ namespace aspect
           FEPointEvaluation<1, dim> temperature;
           std::vector<FEPointEvaluation<1, dim>> compositions;
 
+          // Pointers to FEPointEvaluation objects for all melt
+          // components of ASPECT's finite element solution, which only
+          // point to valid objects in case we use melt transport. Other
+          // documentation like for the objects directly above.
           std::unique_ptr<FEPointEvaluation<dim, dim>> fluid_velocity;
           std::unique_ptr<FEPointEvaluation<1, dim>> compaction_pressure;
           std::unique_ptr<FEPointEvaluation<1, dim>> fluid_pressure;
@@ -1218,6 +1060,188 @@ namespace aspect
           // access to the general simulation variables.
           const SimulatorAccess<dim> &simulator_access;
       };
+
+
+
+      template <int dim>
+      SolutionEvaluators<dim>::SolutionEvaluators(const SimulatorAccess<dim> &simulator,
+                                                  const UpdateFlags update_flags)
+        :
+        velocity(simulator.get_mapping(),
+                 simulator.get_fe(),
+                 update_flags,
+                 simulator.introspection().component_indices.velocities[0]),
+        pressure(simulator.get_mapping(),
+                 simulator.get_fe(),
+                 update_flags,
+                 simulator.introspection().component_indices.pressure),
+        temperature(simulator.get_mapping(),
+                    simulator.get_fe(),
+                    update_flags,
+                    simulator.introspection().component_indices.temperature),
+        melt_component_indices(),
+        simulator_access(simulator)
+      {
+        // Create the evaluators for all compositional fields that exist
+        const unsigned int n_compositional_fields = simulator_access.n_compositional_fields();
+        const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
+        for (unsigned int composition = 0; composition < n_compositional_fields; ++composition)
+          compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
+                                                              simulator_access.get_fe(),
+                                                              update_flags,
+                                                              component_indices[composition]));
+
+        // Create the melt evaluators, but only if we use melt transport in the model
+        if (simulator_access.include_melt_transport())
+          {
+            // Store the melt component indices to avoid repeated string lookups later on
+            melt_component_indices[0] = simulator_access.introspection().variable("fluid velocity").first_component_index;
+            melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
+            melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
+
+            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+                                                                           simulator_access.get_fe(),
+                                                                           update_flags,
+                                                                           melt_component_indices[0]);
+            fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                         simulator_access.get_fe(),
+                                                                         update_flags,
+                                                                         melt_component_indices[1]);
+            compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                              simulator_access.get_fe(),
+                                                                              update_flags,
+                                                                              melt_component_indices[2]);
+
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      SolutionEvaluators<dim>::reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                                      const ArrayView<Point<dim>> &positions,
+                                      const ArrayView<double> &solution_values,
+                                      const UpdateFlags update_flags)
+      {
+        // FEPointEvaluation uses different evaluation flags than the common UpdateFlags.
+        // Translate between the two.
+        EvaluationFlags::EvaluationFlags evaluation_flags = EvaluationFlags::nothing;
+
+        if (update_flags & update_values)
+          evaluation_flags = evaluation_flags | EvaluationFlags::values;
+
+        if (update_flags & update_gradients)
+          evaluation_flags = evaluation_flags | EvaluationFlags::gradients;
+
+        // Make sure only the flags are set that we can deal with at the moment
+        Assert ((update_flags & ~(update_gradients | update_values)) == false,
+                ExcNotImplemented());
+
+        // Reinitialize and evaluate all evaluators.
+        // TODO: It would be nice to be able to hand over a ComponentMask
+        // to specify which evaluators to use. Currently, this is only
+        // possible by manually accessing the public members of this class.
+        velocity.reinit (cell, positions);
+        pressure.reinit (cell, positions);
+        temperature.reinit (cell, positions);
+
+        for (auto &evaluator_composition: compositions)
+          evaluator_composition.reinit (cell, positions);
+
+        if (simulator_access.include_melt_transport())
+          {
+            fluid_velocity->reinit (cell, positions);
+            fluid_pressure->reinit (cell, positions);
+            compaction_pressure->reinit (cell, positions);
+          }
+
+        velocity.evaluate (solution_values, evaluation_flags);
+        pressure.evaluate (solution_values, evaluation_flags);
+        temperature.evaluate (solution_values, evaluation_flags);
+
+        for (auto &evaluator_composition: compositions)
+          evaluator_composition.evaluate (solution_values, evaluation_flags);
+
+        if (simulator_access.include_melt_transport())
+          {
+            fluid_velocity->evaluate (solution_values, evaluation_flags);
+            fluid_pressure->evaluate (solution_values, evaluation_flags);
+            compaction_pressure->evaluate (solution_values, evaluation_flags);
+          }
+      }
+
+
+
+      template <int dim>
+      Vector<double>
+      SolutionEvaluators<dim>::get_solution(const unsigned int evaluation_point)
+      {
+        const unsigned int n_components = simulator_access.introspection().n_components;
+        const auto &component_indices = simulator_access.introspection().component_indices;
+        const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+        // Copy all evaluated solutions into values_at_point and return it.
+        Vector<double> values_at_point(n_components);
+
+        const Tensor<1,dim> velocity_value = velocity.get_value(evaluation_point);
+        for (unsigned int j=0; j<dim; ++j)
+          values_at_point[component_indices.velocities[j]] = velocity_value[j];
+
+        values_at_point[component_indices.pressure] = pressure.get_value(evaluation_point);
+        values_at_point[component_indices.temperature] = temperature.get_value(evaluation_point);
+
+        for (unsigned int j=0; j<n_compositions; ++j)
+          values_at_point[component_indices.compositional_fields[j]] = compositions[j].get_value(evaluation_point);
+
+        if (simulator_access.include_melt_transport())
+          {
+            const Tensor<1,dim> fluid_velocity_value = velocity.get_value(evaluation_point);
+            for (unsigned int j=0; j<dim; ++j)
+              values_at_point[melt_component_indices[0]+j] = fluid_velocity_value[j];
+
+            values_at_point[melt_component_indices[1]] = fluid_pressure->get_value(evaluation_point);
+            values_at_point[melt_component_indices[2]] = compaction_pressure->get_value(evaluation_point);
+          }
+
+        return values_at_point;
+      }
+
+
+
+      template <int dim>
+      std::vector<Tensor<1,dim>> SolutionEvaluators<dim>::get_gradients(const unsigned int evaluation_point)
+      {
+        const unsigned int n_components = simulator_access.introspection().n_components;
+        const auto &component_indices = simulator_access.introspection().component_indices;
+        const unsigned int n_compositions = component_indices.compositional_fields.size();
+
+        // Copy all evaluated solutions into values_at_point and return it.
+        std::vector<Tensor<1,dim>> gradients_at_point(n_components);
+
+        const Tensor<2,dim> velocity_gradient = velocity.get_gradient(evaluation_point);
+        for (unsigned int j=0; j<dim; ++j)
+          gradients_at_point[component_indices.velocities[j]] = velocity_gradient[j];
+
+        gradients_at_point[component_indices.pressure] = pressure.get_gradient(evaluation_point);
+        gradients_at_point[component_indices.temperature] = temperature.get_gradient(evaluation_point);
+
+        for (unsigned int j=0; j<n_compositions; ++j)
+          gradients_at_point[component_indices.compositional_fields[j]] =
+            compositions[j].get_gradient(evaluation_point);
+
+        if (simulator_access.include_melt_transport())
+          {
+            const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(evaluation_point);
+            for (unsigned int j=0; j<dim; ++j)
+              gradients_at_point[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
+
+            gradients_at_point[melt_component_indices[1]] = fluid_pressure->get_gradient(evaluation_point);
+            gradients_at_point[melt_component_indices[2]] = compaction_pressure->get_gradient(evaluation_point);
+          }
+
+        return gradients_at_point;
+      }
     }
 #endif
 
