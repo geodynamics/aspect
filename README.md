@@ -79,6 +79,7 @@ For more information see:
      - Rene Gassmoeller: rene.gassmoeller@mailbox.org
      - Anne Glerum: acglerum@gfz-potsdam.de
      - Timo Heister: heister@clemson.edu
+     - Bob Myhill: bob.myhill@bristol.ac.uk
      - John Naliboff: john.naliboff@nmt.edu
 
  - The following people have significantly contributed and furthered ASPECT's goals and are therefore Principal Developers:
@@ -92,6 +93,7 @@ For more information see:
    - Timo Heister
    - Bob Myhill
    - John Naliboff
+   - Cedric Thieulot
 
  - A complete and growing list of the many authors that have contributed over the years can be found at [GitHub contributors](https://github.com/geodynamics/aspect/graphs/contributors).
  - If you have specific questions about ASPECT that are not suitable for public and archived mailing lists, feel free to contact the maintainers or principal developers.
