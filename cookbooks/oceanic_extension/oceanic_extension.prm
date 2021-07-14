@@ -143,7 +143,7 @@ end
 # Temperature boundary conditions
 # Prescribed temperature at bottom and top boundaries with fixed values of 
 # T=273K at the surface and, at the bottom, the temperature computed at 100 km
-# of depth (hight of the box)from the expression of plate cooling model,
+# of depth (height of the box) from the expression of plate cooling model,
 # which is also used to describe the initial temperature field.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
