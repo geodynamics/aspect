@@ -108,7 +108,7 @@ namespace aspect
       {
         // Uniform distribution on the interval [0,1]. This
         // will be used to generate random particle locations.
-        std::uniform_real_distribution uniform_distribution_01(0.0, 1.0);
+        std::uniform_real_distribution<double> uniform_distribution_01(0.0, 1.0);
 
         Point<dim> max_bounds, min_bounds;
         // Get the bounds of the cell defined by the vertices
