@@ -185,6 +185,9 @@ namespace aspect
       const double top_layer_average_density = boundary_densities.density_at_top();
       const double bottom_layer_average_density = boundary_densities.density_at_bottom();
 
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
       const QGauss<2> quadrature_formula_face(quadrature_degree);
 
@@ -209,14 +212,14 @@ namespace aspect
             {
               for (unsigned int f=0; f<GeometryInfo<3>::faces_per_cell; ++f)
                 {
-                  if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
+                  if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                     {
                       // If the cell is at the top boundary, assign face_idx.
                       face_idx = f;
                       at_upper_surface = true;
                       break;
                     }
-                  else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom"))
+                  else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                     {
                       // If the cell is at the bottom boundary, assign face_idx.
                       face_idx = f;
@@ -400,6 +403,8 @@ namespace aspect
       const double outer_radius = geometry_model.outer_radius();
       const double inner_radius = geometry_model.inner_radius();
 
+      const types::boundary_id top_boundary_id = geometry_model.translate_symbolic_boundary_name_to_id("top");
+
       // Get the value of the surface gravity acceleration from the gravity model.
       Point<dim> surface_point;
       surface_point[0] = outer_radius;
@@ -511,7 +516,7 @@ namespace aspect
           {
             // If the cell is at the top boundary, store the cell's upper face midpoint location.
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
+              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                 {
                   fe_face_center_values.reinit(cell,f);
                   const Point<dim> midpoint_at_top_face = fe_face_center_values.get_quadrature_points().at(0);

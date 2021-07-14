@@ -42,6 +42,9 @@ namespace aspect
       const double surface_pressure = boundary_pressures.pressure_at_top();
       const double bottom_pressure = boundary_pressures.pressure_at_bottom();
 
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
       // If the gravity vector is pointed *up*, as determined by representative points
       // at the surface and at depth, then we are running backwards advection, and need
       // to reverse the dynamic topography values.
@@ -118,13 +121,13 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
-                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
                     // If the cell is at the top boundary, assign face_idx.
                     face_idx = f;
                     break;
                   }
-                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom"))
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                   {
                     // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
@@ -245,14 +248,14 @@ namespace aspect
             bool at_upper_surface = true;
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
-                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
                     // If the cell is at the top boundary, assign face_idx.
                     face_idx = f;
                     at_upper_surface = true;
                     break;
                   }
-                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom"))
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                   {
                     // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
