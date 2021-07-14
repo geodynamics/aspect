@@ -39,7 +39,7 @@ namespace aspect
     AdiabaticBoundary<dim>::initialize ()
     {
       // Find the boundary indicator that represents the surface
-      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
+      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(surface_boundary_id);
 
