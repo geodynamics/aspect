@@ -118,24 +118,20 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
-                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
-
-                // Check if cell is at upper and lower surface at the same time
-                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                "the domain are bordered by the same cell. "
-                                                "Consider using a higher mesh resolution.") );
-
-                // Check if the face is at the top or bottom boundary
-                if (depth_face_center < upper_depth_cutoff || depth_face_center > lower_depth_cutoff)
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
                   {
+                    // If the cell is at the top boundary, assign face_idx.
+                    face_idx = f;
+                    break;
+                  }
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom"))
+                  {
+                    // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
                     break;
                   }
               }
-
+            // If the cell is not at the boundary, jump to the next cell.
             if (face_idx == numbers::invalid_unsigned_int)
               continue;
 
@@ -249,32 +245,22 @@ namespace aspect
             bool at_upper_surface = true;
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               {
-                const double depth_face_center = this->get_geometry_model().depth (cell->face(f)->center());
-                const double upper_depth_cutoff = cell->face(f)->minimum_vertex_distance()/3.0;
-                const double lower_depth_cutoff = this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.0;
-
-                // Check if cell is at upper and lower surface at the same time
-                if (depth_face_center < upper_depth_cutoff && depth_face_center > lower_depth_cutoff)
-                  AssertThrow(false, ExcMessage("Your geometry model is so small that the upper and lower boundary of "
-                                                "the domain are bordered by the same cell. "
-                                                "Consider using a higher mesh resolution.") );
-
-                // Check if the face is at the top boundary
-                if (depth_face_center < upper_depth_cutoff)
+                if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"))
                   {
-                    at_upper_surface = true;
+                    // If the cell is at the top boundary, assign face_idx.
                     face_idx = f;
+                    at_upper_surface = true;
                     break;
                   }
-                // or at the bottom boundary
-                else if (depth_face_center > lower_depth_cutoff)
+                else if (cell->at_boundary(f) && cell->face(f)->boundary_id() == this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom"))
                   {
+                    // If the cell is at the bottom boundary, assign face_idx.
                     face_idx = f;
                     at_upper_surface = false;
                     break;
                   }
               }
-
+            // If the cell is not at the boundary, jump to the next cell.
             if (face_idx == numbers::invalid_unsigned_int)
               continue;
 
