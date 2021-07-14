@@ -651,7 +651,7 @@ namespace aspect
                            solution_values.begin(),
                            solution_values.end());
 
-      if (((update_flags & update_values) == true) || ((update_values & update_gradients) == true))
+      if (update_flags & (update_values | update_gradients))
         evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
 
       auto particle = begin_particle;
