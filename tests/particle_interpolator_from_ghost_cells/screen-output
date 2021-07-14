@@ -9,7 +9,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
    Postprocessing:
      Number of advected particles:        400
-     Particle count per cell min/avg/max: 0, 1, 7
+     Particle count per cell min/avg/max: 0, 1, 8
 
 Termination requested by criterion: end time
 
