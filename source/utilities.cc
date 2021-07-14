@@ -431,10 +431,8 @@ namespace aspect
 
 
     template <int dim>
-    std::vector<Point<dim>>
-                         get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access)
+    std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access)
     {
-      std::vector<Point<dim>> unit_support_points;
       if ( !simulator_access.get_parameters().use_locally_conservative_discretization )
         {
           return simulator_access.get_fe().get_unit_support_points();
@@ -442,16 +440,17 @@ namespace aspect
       else
         {
           //special case for discontinuous pressure elements, which lack unit support points
-          std::vector<Point<dim>> unit_support_points;
           const unsigned int dofs_per_cell = simulator_access.get_fe().dofs_per_cell;
+          std::vector<Point<dim>> unit_support_points;
+          unit_support_points.reserve(dofs_per_cell);
+
           for (unsigned int dof=0; dof < dofs_per_cell; ++dof)
             {
               // base will hold element, base_index holds node/shape function within that element
-              const unsigned int
-              base       = simulator_access.get_fe().system_to_base_index(dof).first.first,
-              base_index = simulator_access.get_fe().system_to_base_index(dof).second;
+              const unsigned int base       = simulator_access.get_fe().system_to_base_index(dof).first.first;
+              const unsigned int base_index = simulator_access.get_fe().system_to_base_index(dof).second;
               // get the unit support points for the relevant element
-              std::vector<Point<dim>> my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
+              const std::vector<Point<dim>> &my_support_points = simulator_access.get_fe().base_element(base).get_unit_support_points();
               if ( my_support_points.size() == 0 )
                 {
                   //manufacture a support point, arbitrarily at cell center
@@ -2363,7 +2362,7 @@ namespace aspect
   \
   template \
   std::vector<Point<dim>> \
-  get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access); \
+  get_unit_support_points(const SimulatorAccess<dim> &simulator_access); \
   \
   template \
   std::vector<std::string> \

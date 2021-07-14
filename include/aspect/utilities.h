@@ -203,13 +203,12 @@ namespace aspect
      * The DGP element used when 'set Use locally conservative discretization = true' does not
      * have support points. If these elements are in use, a fictitious support point at the cell
      * center is returned for each shape function that corresponds to the pressure variable,
-     * whereas the support points for the velocity are correct; the fictitious points don't matter
+     * whereas the support points for the velocity are correct. The fictitious points don't matter
      * because we only use this function when interpolating the velocity variable, and ignore the
      * evaluation at the pressure support points.
      */
     template <int dim>
-    std::vector<Point<dim>>
-                         get_unit_support_points_for_velocity(const SimulatorAccess<dim> &simulator_access);
+    std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access);
 
 
 
