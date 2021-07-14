@@ -28,9 +28,7 @@
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
 
-DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
-#include <boost/random.hpp>
-DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
+#include <random>
 
 #include <map>
 
@@ -155,7 +153,7 @@ namespace aspect
            * Random number generator. For reproducibility of tests it is
            * initialized in the constructor with a constant.
            */
-          boost::mt19937            random_number_generator;
+          std::mt19937            random_number_generator;
       };
 
       /**

@@ -24,9 +24,6 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/base/geometry_info.h>
 
-#include <boost/lexical_cast.hpp>
-
-
 namespace aspect
 {
   namespace Particle
@@ -88,7 +85,7 @@ namespace aspect
           {
             // Uniform distribution on the interval [0,local_weight_integral).
             // This will be used to randomly select cells for all local particles.
-            boost::random::uniform_real_distribution<double> uniform_distribution(0.0, local_weight_integral);
+            std::uniform_real_distribution<double> uniform_distribution(0.0, local_weight_integral);
 
             // Loop over all particles to create locally and pick their cells
             for (types::particle_index current_particle_index = 0; current_particle_index < n_local_particles; ++current_particle_index)

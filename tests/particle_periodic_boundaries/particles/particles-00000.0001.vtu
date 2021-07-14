@@ -10,7 +10,7 @@
 <Piece NumberOfPoints="5" NumberOfCells="5" >
   <Points>
     <DataArray type="Float32" NumberOfComponents="3" format="binary">
-AQAAADwAAAA8AAAANwAAAA==eNprevHILma6gT0DEHy71m9nuNcfzF4dw2MvvUESzNY4r2f/YLsSmD1/AYP9fpMKMBsATHQQ+w==
+AQAAADwAAAA8AAAANwAAAA==eNo7N/OFHd9mG3sGICj/KG7vskUbzN4com6/XFsJzP4y/bOdPZsLmF0cn2C/st0TzAYAJZEQNw==
     </DataArray>
   </Points>
 
@@ -27,7 +27,7 @@ AQAAAAUAAAAFAAAACwAAAA==eNpjZAQCAAAUAAY=
   </Cells>
   <PointData Scalars="scalars">
     <DataArray type="Float32" Name="initial position" NumberOfComponents="3" format="binary">
-AQAAADwAAAA8AAAANwAAAA==eNprevHILma6gT0DEHy71m9nuNcfzF4dw2MvvUESzNY4r2f/YLsSmD1/AYP9fpMKMBsATHQQ+w==    </DataArray>
+AQAAADwAAAA8AAAANwAAAA==eNo7N/OFHd9mG3sGICj/KG7vskUbzN4com6/XFsJzP4y/bOdPZsLmF0cn2C/st0TzAYAJZEQNw==    </DataArray>
     <DataArray type="Float32" Name="id" format="binary">
 AQAAABQAAAAUAAAAGQAAAA==eNpjYFjgwMBwAIgfADGDIwODgCMAKfoDkw==    </DataArray>
     <DataArray type="Float32" Name="function" format="binary">

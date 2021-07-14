@@ -16,7 +16,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10
+     Number of advected particles: 9
 
 *** Timestep 2:  t=0.25 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -24,7 +24,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 10
+     Number of advected particles: 9
 
 *** Timestep 3:  t=0.375 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -32,7 +32,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 9
+     Number of advected particles: 8
 
 *** Timestep 4:  t=0.5 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -48,7 +48,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 6
+     Number of advected particles: 7
 
 *** Timestep 6:  t=0.75 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
@@ -56,7 +56,7 @@ Number of degrees of freedom: 268 (162+25+81)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 6
+     Number of advected particles: 4
 
 *** Timestep 7:  t=0.875 seconds, dt=0.125 seconds
    Skipping temperature solve because RHS is zero.
