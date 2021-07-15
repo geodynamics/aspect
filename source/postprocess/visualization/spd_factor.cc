@@ -73,6 +73,15 @@ namespace aspect
                                                                            this->get_newton_handler().parameters.SPD_safety_factor);
           }
       }
+
+      template <int dim>
+      void
+      SPD_Factor<dim>::parse_parameters (ParameterHandler &/*prm*/)
+      {
+        AssertThrow(Parameters<dim>::is_defect_correction(this->get_parameters().nonlinear_solver),
+                    ExcMessage("The SPD factor plugin can only be used with defect correction type Stokes or Newton Stokes "
+                               "solvers."));
+      }
     }
   }
 }
