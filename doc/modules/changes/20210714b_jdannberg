@@ -1,0 +1,4 @@
+Changed: The latent heat material model is now consistent with the 
+density in the phase function formulation from Christensen and Yuen, 1985. 
+<br>
+(Juliane Dannberg, 2021/07/14)

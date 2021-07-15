@@ -84,15 +84,9 @@ namespace aspect
           // and phase dependence of viscosity
           {
             // first, calculate temperature dependence of density
-            double density_temperature_dependence = 1.0;
-            if (this->include_adiabatic_heating ())
-              {
-                // temperature dependence is 1 - alpha * (T - T(adiabatic))
-                density_temperature_dependence -= (temperature - this->get_adiabatic_conditions().temperature(position))
-                                                  * thermal_alpha;
-              }
-            else
-              density_temperature_dependence -= temperature * thermal_alpha;
+            // temperature dependence is 1 - alpha * (T - T(adiabatic))
+            const double density_temperature_dependence = 1.0 - (temperature - this->get_adiabatic_conditions().temperature(position))
+                                                          * thermal_alpha;
 
             // second, calculate composition dependence of density
             // constant density difference between peridotite and eclogite
@@ -113,16 +107,15 @@ namespace aspect
             double phase_dependence = 0.0;
             double viscosity_phase_dependence = 1.0;
 
-
             // Loop through phase transitions
             for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
                 const double depth = this->get_geometry_model().depth(position);
                 const double pressure_depth_derivative = (depth > 0.0)
                                                          ?
-                                                         pressure / depth
+                                                         this->get_adiabatic_conditions().pressure(position) / depth
                                                          :
-                                                         this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
+                                                         this->get_gravity_model().gravity_vector(position).norm() * reference_rho;
 
                 const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
                                                                            pressure,
@@ -159,6 +152,11 @@ namespace aspect
             // in the end, all the influences are added up
             out.densities[i] = (reference_rho + density_composition_dependence + pressure_dependence + phase_dependence)
                                * density_temperature_dependence;
+
+            // For the Boussinesq approximation, all terms are linearized and added separately
+            if (this->get_parameters().formulation == Parameters<dim>::Formulation::boussinesq_approximation)
+              out.densities[i] = (reference_rho * density_temperature_dependence + density_composition_dependence + phase_dependence);
+
             out.viscosities[i] = std::max(min_viscosity, std::min(max_viscosity, out.viscosities[i] * viscosity_phase_dependence));
           }
 
@@ -172,9 +170,9 @@ namespace aspect
               for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
                   const double depth = this->get_geometry_model().depth(in.position[i]);
-                  const double pressure_depth_derivative = (pressure > 0)
+                  const double pressure_depth_derivative = (this->get_adiabatic_conditions().pressure(position) > 0)
                                                            ?
-                                                           depth / pressure
+                                                           depth / this->get_adiabatic_conditions().pressure(position)
                                                            :
                                                            this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
 
