@@ -813,7 +813,7 @@ namespace aspect
     template <int dim>
     bool solver_scheme_solves_stokes_equations(const Parameters<dim> &parameters)
     {
-      // Check if we use a solver scheme that solves the advection equations
+      // Check if we use a solver scheme that solves the Stokes equations
       switch (parameters.nonlinear_solver)
         {
           case Parameters<dim>::NonlinearSolver::Kind::single_Advection_single_Stokes:
