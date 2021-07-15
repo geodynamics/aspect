@@ -598,7 +598,7 @@ namespace aspect
 
 
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -697,7 +697,7 @@ namespace aspect
 
 
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -930,7 +930,7 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
           const UpdateFlags update_flags = property_manager->get_needed_update_flags();
           internal::SolutionEvaluators<dim> evaluators(*this, update_flags);
 #endif
@@ -948,7 +948,7 @@ namespace aspect
                     local_update_particles(cell,
                                            particles_in_cell.begin(),
                                            particles_in_cell.end()
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
                                            , evaluators
 #endif
                                           );
@@ -1226,7 +1226,7 @@ namespace aspect
         // TODO: Change this loop over all cells to use the WorkStream interface
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
         internal::SolutionEvaluators<dim> evaluators(*this, update_values);
 #endif
 
@@ -1243,7 +1243,7 @@ namespace aspect
                   local_advect_particles(cell,
                                          particles_in_cell.begin(),
                                          particles_in_cell.end()
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
                                          , evaluators
 #endif
                                         );

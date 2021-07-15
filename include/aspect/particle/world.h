@@ -420,7 +420,7 @@ namespace aspect
         local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
                                , internal::SolutionEvaluators<dim> &evaluators
 #endif
                               );
@@ -437,7 +437,7 @@ namespace aspect
         local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if false
                                , internal::SolutionEvaluators<dim> &evaluators
 #endif
                               );
