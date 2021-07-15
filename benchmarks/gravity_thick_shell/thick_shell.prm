@@ -1,10 +1,10 @@
 
 # A simple setup for testing the gravity postprocessor using the
-# sample scheme 'list of points'. The domain is a 2891 km thick 
+# sample scheme 'list of points'. The domain is a 2891 km thick
 # shell of constant density, i.e. the Earth mantle.
 # An analytical solution exists for the gravitational acceleration
 # and potential so that values returned by the gravity postprocessor
-# can be benchmarked on a line from the center of the planet to 
+# can be benchmarked on a line from the center of the planet to
 # 10,000 km outside.
 # See the corresponding section in the manual for more information.
 
@@ -56,14 +56,13 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = density
     set Time between graphical output = 0
-    set Interpolate output = false 
+    set Interpolate output = false
   end
   subsection Gravity calculation
     set Sampling scheme = list of points
     set List of radius    = 0,1e6,2e6,3e6,3.5e6,4e6,4.5e6,5e6,5.5e6,6e6,6.371e6,6.5e6,7e6,8e6,9e6,10e6
-    set List of longitude = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13 
-    set List of latitude  = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13 
+    set List of longitude = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+    set List of latitude  = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
     set Quadrature degree increase = 1
   end
 end
-
