@@ -34,7 +34,8 @@ namespace aspect
       ViscoPlasticStrainInvariant<dim>::ViscoPlasticStrainInvariant ()
         :
         n_components(0),
-        material_inputs(1,0)
+        material_inputs(1,0),
+        material_outputs(1,0)
       {}
 
 
@@ -50,6 +51,8 @@ namespace aspect
 
         n_components = 0;
         material_inputs = MaterialModel::MaterialModelInputs<dim>(1,this->n_compositional_fields());
+        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
+
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
@@ -96,8 +99,8 @@ namespace aspect
                                                                  const std::vector<Tensor<1,dim>> &gradients,
                                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        // Current timestep
-        const double dt = this->get_timestep();
+        // Current timestep shouldn't need this anymore
+        //const double dt = this->get_timestep();
 
         // Velocity gradients
         Tensor<2,dim> grad_u;
@@ -118,11 +121,16 @@ namespace aspect
           }
 
         // Find out plastic yielding by calling function in material model.
-        const MaterialModel::ViscoPlastic<dim> &viscoplastic
-          = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
+        //const MaterialModel::ViscoPlastic<dim> &viscoplastic
+        //  = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
 
-        const bool plastic_yielding = viscoplastic.is_yielding(material_inputs);
+        //const bool plastic_yielding = viscoplastic.is_yielding(material_inputs);
+        
+        // Evaluate directly in the viscoplastic material model and modify the reaction outputs
+        this->get_material_model().evaluate (material_inputs,material_outputs);
 
+        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
+          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
 
         /* Next take the integrated strain invariant from the prior time step. When
          * there are two fields (plastic and viscous), this assumes plastic
@@ -130,7 +138,7 @@ namespace aspect
          * In this case old_strain will first be given the plastic strain, and then,
          * if there is no plastic yielding it will update to the viscous strain instead.
          */
-        auto &data = particle->get_properties();
+       /* auto &data = particle->get_properties();
         double old_strain = data[data_position];
         if (n_components == 2 && plastic_yielding == false)
           old_strain = data[data_position+(n_components-1)];
@@ -142,13 +150,13 @@ namespace aspect
         // New strain is the old strain plus dt*edot_ii
         const double new_strain = old_strain + dt*edot_ii;
 
-
+      */
         /* Once we know whether the particle underwent plastic, viscous, or
          * total strain assign the new strain to the correct data position.
          * NOTE: This assumes that total strain cannot be used in combination with the
          * other fields. If this changes in the future, this will need to be updated.
          * */
-        if (this->introspection().compositional_name_exists("plastic_strain") && plastic_yielding == true)
+      /*  if (this->introspection().compositional_name_exists("plastic_strain") && plastic_yielding == true)
           data[data_position] = new_strain;
 
         if (this->introspection().compositional_name_exists("viscous_strain") && plastic_yielding == false)
@@ -156,6 +164,7 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("total_strain"))
           data[data_position] = new_strain;
+      */
       }
 
 

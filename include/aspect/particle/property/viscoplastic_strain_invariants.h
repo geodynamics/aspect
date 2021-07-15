@@ -101,6 +101,7 @@ namespace aspect
            * but it is currently not used in a threaded context.
            */
           mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
+          mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
       };
     }
   }
