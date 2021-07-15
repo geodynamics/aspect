@@ -251,6 +251,9 @@ namespace aspect
           coordinate_values_are_equidistant = Utilities::MPI::broadcast (mpi_communicator,
                                                                          coordinate_values_are_equidistant,
                                                                          root_process);
+          table_points                      = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         table_points,
+                                                                         root_process);
 
           // We can then also prepare the data tables for sharing between
           // processes
@@ -284,11 +287,19 @@ namespace aspect
                 {
                   grid_extent[d].first = coordinate_values[d][0];
                   grid_extent[d].second = coordinate_values[d][table_points[d]-1];
+
+                  Assert(table_intervals[d] >= 1,
+                         ExcMessage("There needs to be at least one subinterval in each "
+                                    "coordinate direction."));
+                  Assert(grid_extent[d].first <
+                         grid_extent[d].second,
+                         ExcMessage("The interval in each coordinate direction needs "
+                                    "to have positive size"));
                 }
 
               data[c]
-                = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                 table_intervals,
+                = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (std::move(grid_extent),
+                                                                                 std::move(table_intervals),
                                                                                  std::move(data_table[c]));
             }
           else
@@ -529,16 +540,28 @@ namespace aspect
       // member variable ('components'), so that is the only one we
       // have to broadcast.
       //
-      // If data sharing is possible (deal.II version >= 9.3), then the
-      // first three arguments to the call to reinit() below will only
-      // be read on the root process, and so it is totally ok that we are
-      // passing empty arrays on all other processes.
+      // If data sharing is possible (deal.II version >= 9.3), then
+      // the first three arguments to the call to reinit() below will
+      // only be read on the root process, and so it is totally ok
+      // that we are passing empty tables on all other processes. In
+      // the case of 'data_table', we do have to make sure that it is
+      // an array of the right size, though, even though the array
+      // contains only empty tables.
       if (supports_shared_data == true)
         {
 #if DEAL_II_VERSION_GTE(9,3,0)
           components = Utilities::MPI::broadcast (comm,
                                                   components,
                                                   root_process);
+          coordinate_values = Utilities::MPI::broadcast (comm,
+                                                         coordinate_values,
+                                                         root_process);
+          column_names = Utilities::MPI::broadcast (comm,
+                                                    column_names,
+                                                    root_process);
+
+          if (Utilities::MPI::this_mpi_process(comm) != root_process)
+            data_tables.resize (components);
 #endif
         }
 
