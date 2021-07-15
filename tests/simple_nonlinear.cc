@@ -8,7 +8,7 @@
 
 #include <aspect/utilities.h>
 
-#include "../benchmarks/nonlinear_channel_flow/simple_nonlinear.cc"
+#include "../benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/simple_nonlinear.cc"
 
 template<int dim>
 int f(double parameter)

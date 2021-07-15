@@ -14,7 +14,7 @@ set Use years in output instead of seconds = false  # default: true
 set Nonlinear solver scheme = iterated Advection and Stokes #Newton Stokes
 set Max nonlinear iterations = 150
 set Nonlinear solver tolerance = 1e-14
-set Additional shared libraries = ../../nonlinear_channel_flow/libsimple_nonlinear.so
+set Additional shared libraries = libsimple_nonlinear.so
 
 subsection Solver parameters
   subsection Stokes solver parameters
