@@ -35,7 +35,10 @@ namespace aspect
         :
         n_components(0),
         material_inputs(1,0),
-        material_outputs(1,0)
+        material_outputs(1,0),
+        plastic_strain_index(numbers::invalid_unsigned_int),
+        viscous_strain_index(numbers::invalid_unsigned_int),
+        total_strain_index(numbers::invalid_unsigned_int)
       {}
 
 
@@ -51,18 +54,26 @@ namespace aspect
 
         n_components = 0;
         material_inputs = MaterialModel::MaterialModelInputs<dim>(1,this->n_compositional_fields());
-        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1, this->n_compositional_fields());
-
+        material_outputs = MaterialModel::MaterialModelOutputs<dim>(1,this->n_compositional_fields());
 
         // Find out which fields are used.
         if (this->introspection().compositional_name_exists("plastic_strain"))
-          n_components += 1;
+          {
+            n_components += 1;
+            plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain");
+          }
 
         if (this->introspection().compositional_name_exists("viscous_strain"))
-          n_components += 1;
+          {
+            n_components += 1;
+            viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+          }
 
         if (this->introspection().compositional_name_exists("total_strain"))
-          n_components += 1;
+          {
+            n_components += 1;
+            total_strain_index = this->introspection().compositional_index_for_name("total_strain");
+          }
 
         if (n_components == 0)
           AssertThrow(false,
@@ -120,21 +131,25 @@ namespace aspect
         // Evaluate directly in the viscoplastic material model and modify the reaction outputs
         this->get_material_model().evaluate (material_inputs,material_outputs);
 
-        const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain"); 
-        const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
-        const int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
-        
-        if (this->introspection().compositional_name_exists("plastic_strain"))
-          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][plastic_strain_index];
-        
-        if (this->introspection().compositional_name_exists("viscous_strain"))
-          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][viscous_strain_index];
+        unsigned int particle_property = 0;
 
-        if (this->introspection().compositional_name_exists("total_strain"))
-          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][total_strain_index];  
+        if (plastic_strain_index != numbers::invalid_unsigned_int)
+          {
+            particle->get_properties()[data_position+particle_property] += material_outputs.reaction_terms[0][plastic_strain_index];
+            ++particle_property;
+          }
 
-        //for (unsigned int i = 0; i < n_components-1 ; ++i)
-        //  particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
+        if (viscous_strain_index != numbers::invalid_unsigned_int)
+          {
+            particle->get_properties()[data_position+particle_property] += material_outputs.reaction_terms[0][viscous_strain_index];
+            ++particle_property;
+          }
+
+        if (total_strain_index != numbers::invalid_unsigned_int)
+          {
+            particle->get_properties()[data_position+particle_property] += material_outputs.reaction_terms[0][total_strain_index];
+            ++particle_property;
+          }
       }
 
 
