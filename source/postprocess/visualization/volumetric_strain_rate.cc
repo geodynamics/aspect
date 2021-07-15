@@ -31,6 +31,7 @@ namespace aspect
       VolumetricStrainRate<dim>::
       VolumetricStrainRate ()
         :
+        Interface<dim>("1/s"),
         DataPostprocessorScalar<dim> ("volumetric_strain_rate",
                                       update_gradients | update_quadrature_points)
       {}

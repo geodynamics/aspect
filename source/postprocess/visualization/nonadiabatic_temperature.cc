@@ -33,6 +33,7 @@ namespace aspect
       NonadiabaticTemperature<dim>::
       NonadiabaticTemperature ()
         :
+        Interface<dim>("k"),
         DataPostprocessorScalar<dim> ("nonadiabatic_temperature",
                                       update_values | update_quadrature_points)
       {}

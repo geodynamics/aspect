@@ -32,6 +32,7 @@ namespace aspect
       PrincipalStress<dim>::
       PrincipalStress ()
         :
+        Interface<dim>("kg/m/s/s"),
         DataPostprocessor<dim> ()
       {}
 

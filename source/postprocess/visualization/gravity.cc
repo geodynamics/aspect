@@ -34,6 +34,7 @@ namespace aspect
       Gravity<dim>::
       Gravity ()
         :
+        Interface<dim>("units"),
         DataPostprocessorVector<dim> ("gravity",
                                       update_quadrature_points)
       {}

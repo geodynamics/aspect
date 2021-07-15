@@ -33,6 +33,7 @@ namespace aspect
       StrainRate<dim>::
       StrainRate ()
         :
+        Interface<dim>("units"),
         DataPostprocessorScalar<dim> ("strain_rate",
                                       update_gradients | update_quadrature_points)
       {}

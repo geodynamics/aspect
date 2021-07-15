@@ -38,6 +38,7 @@ namespace aspect
       Heating<dim>::
       Heating ()
         :
+        Interface<dim>("units"),
         DataPostprocessor<dim> ()
       {}
 

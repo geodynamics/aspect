@@ -37,6 +37,7 @@ namespace aspect
       HeatFluxMap<dim>::
       HeatFluxMap ()
         :
+        Interface<dim>("W/m/m"),
         DataPostprocessorScalar<dim> ("heat_flux_map",
                                       update_quadrature_points)
       {}

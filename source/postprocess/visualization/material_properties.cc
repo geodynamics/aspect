@@ -36,6 +36,7 @@ namespace aspect
       MaterialProperties<dim>::
       MaterialProperties ()
         :
+        Interface<dim>("units"),
         DataPostprocessor<dim> ()
       {}
 
