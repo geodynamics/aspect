@@ -149,11 +149,18 @@ namespace aspect
             const double kappa = reference_compressibility;
             const double pressure_dependence = reference_rho * kappa * (pressure - this->get_surface_pressure());
 
-            // in the end, all the influences are added up
+            // In the end, all the influences are added up.
+            // In the non-Boussinesq case, we chose to add the composition-, pressure-, and phase-dependent terms
+            // first, before applying the density changes due to thermal expansion, because they can be relatively
+            // large and should be taken into account for the temperature dependence (for example, if the material
+            // has a different density because it is in a new phase, we should take the density of that new phase
+            // to compute thermal expansion effects).
             out.densities[i] = (reference_rho + density_composition_dependence + pressure_dependence + phase_dependence)
                                * density_temperature_dependence;
 
-            // For the Boussinesq approximation, all terms are linearized and added separately
+            // For the Boussinesq approximation, all terms are linearized and added separately (that is simply how
+            // the Boussinesq approximation is defined). This means we have to apply the temperature term first
+            // since it is (1 - alpha T).
             if (this->get_parameters().formulation == Parameters<dim>::Formulation::boussinesq_approximation)
               out.densities[i] = (reference_rho * density_temperature_dependence + density_composition_dependence + phase_dependence);
 

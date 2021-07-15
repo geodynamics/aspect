@@ -18,7 +18,7 @@ Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
    Solving Stokes system... 26+0 iterations.
 
    Postprocessing:
-     Temperature min/avg/max: 1000 K, 1002 K, 1018 K
+     Temperature min/avg/max: 1000 K, 1001 K, 1018 K
 
 Termination requested by criterion: end time
 

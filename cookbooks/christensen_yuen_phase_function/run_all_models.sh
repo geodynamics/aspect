@@ -2,7 +2,11 @@
 
 # Note that it may take a long time to run all of these models, 
 # depending on the resolution set in the input file. 
-# I used 64 cores on a work station to generate the results. 
+# I used 64 cores on a work station to generate the results, 
+# which took about a day for refinement level 7.
+# The models with layered convection are usually fast to run, 
+# but each model with one large convection cell took about an
+# hour.  
 
 for rayleigh in "10000" "100000" "400000" "2000000"; do 
 

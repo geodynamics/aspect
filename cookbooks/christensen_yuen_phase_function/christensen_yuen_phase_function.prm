@@ -1,18 +1,19 @@
+# This is a setup for convection in a 2D box with a phase transition
+# in the center, and corresponds to the setup of the Boussinesq cases
+# in Christensen & Yuen 1985.
+
 set Dimension                              = 2
-
-set Use years in output instead of seconds = true
 set End time                               = 2e8
-
 set Output directory                       = christensen_yuen
-set Nonlinear solver scheme                = iterated Advection and Stokes
 
-# This controls the solver accuracy
-set Nonlinear solver tolerance             = 1e-5
+# We use a nonlinear solver to make sure any nonlinearity that may be
+# associated with the phase transition is resolved, and we use a large
+# value for the Maximum nonlinear iterations to make it obvious if the
+# nonlinear solver does not converge. Usually, the nonlinear solver
+# should converge within 1-5 iterations.
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 500
 set Maximum time step                      = 1e5
-
-set Adiabatic surface temperature          = 500
-set Use conduction timestep = false
 
 subsection Solver parameters
   subsection Stokes solver parameters
@@ -24,11 +25,15 @@ end
 # incompressible and has a constant reference density.
 subsection Formulation
    set Formulation = Boussinesq approximation
-#  set Mass conservation = incompressible
-#  set Temperature equation = reference density profile
+end
+
+# For the Boussinesq approximation, all heating terms are switched off.
+subsection Heating model
+  set List of model names =
 end
 
 
+# The model domain is a quadratic box.
 subsection Geometry model
   set Model name = box
 
@@ -39,13 +44,11 @@ subsection Geometry model
 end
 
 
-# For the Boussinesq approximation, all heating terms are switched off.
-subsection Heating model
-  set List of model names =
-end
-
+set Adiabatic surface temperature = 500
 
 # Set the reference profile.
+# The temperature on the reference profile is 500 K, halfway between the
+# top temperature of 0 K and the bottom temperature of 1000 K.
 subsection Adiabatic conditions model
   set Model name = function
   subsection Function
@@ -54,7 +57,6 @@ subsection Adiabatic conditions model
     set Variable names = depth
   end
 end
-
 
 # This temperature initial condition resembles the one on Christensen & Yuen, 1985.
 # It has conductive boundary layers at the top and bottom, and sinusoidal
@@ -104,6 +106,8 @@ end
 # k = 2.460375e7 / Ra,                                      to control the Rayleigh number,
 # deltarho = 2 alpha rho DeltaT = 200 kg/m3,                to achieve Rb = 2Ra, as in Christensen & Yuen,
 # gamma = P * Ra/Rb * rho g h / DeltaT = P/2 * 1.35e7 Pa/K, to set the phase buoyancy parameter.
+#
+# (for a more detailed explanation, see the corresponding cookbook description in the manual).
 
 subsection Material model
   set Model name = latent heat
