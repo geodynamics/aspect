@@ -25,6 +25,7 @@
 #include <aspect/simulator_access.h>
 #include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
+#include <aspect/utilities.h>
 
 namespace aspect
 {
