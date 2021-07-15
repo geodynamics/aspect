@@ -9540,7 +9540,7 @@ We wish to compute the gravity potential $U$ and the gravity vector ${\mathbf g}
 The Gauss-Legendre Quadrature (GLQ) algorithm is central to the \aspect{} code as it is used to compute the elemental integrals stemming from the discretization of the weak form of the PDEs. Logically, the gravity postprocessor is also based on the GLQ since the potential $U$ at any location in space is given by the integral
 \begin{equation}
 U({\mathbf r}) = \iiint_\Omega \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
-= \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}'
+= \sum_K \iiint_{\Omega_K} \frac{G \rho({\mathbf r}')}{|{\mathbf r}-{\mathbf r}'|} d{\mathbf r}',
 \end{equation}
 where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\si{\cubic\metre\per\kg\per\square\second}$ is the gravitational constant. The gravity acceleration vector is obtained via ${\mathbf g}=-{\mathbf \nabla} U$, or
 \begin{equation}
@@ -9552,9 +9552,8 @@ where the sum runs over all cells of the mesh and ${G}=6.67430\times 10^{-11}~\s
 
 The default number of quadrature points for each cell in the postprocessor is $2\textsuperscript{ndim}$, where ndim is the number of dimensions. The $n$-point GLQ allows exact integration of $(2n-1)$-order polynomials. However, the integrand of the Newton integral is not a polynomial (it contains a term $\sim r^{-m}$), so there is not an optimal number of quadrature points to use. Therefore, the postprocessor allows the user to choose how many additional points per dimension are used with an expectation that an increase in the number of quadrature points inside the cells leads to a more accurate calculation. This increase number $I$ is set to 1 in the example above, although it can also be chosen to be 0, 1, 2 or even -1. The case $I=-1$ approximates the cell as a point mass since there is a single quadrature point in the middle of the cell.
 
-Given the symmetry of the problem the value of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(R\textsubscript{s}) = - GM/R\textsubscript{s}$ and $|{\mathbf g}(R\textsubscript{s})|= g_r(R\textsubscript{s})=GM/R\textsubscript{s}^2$.
-
-Minimum, maximum, and average values of both the potential and the acceleration are printed in the statistics file while measurements at all the desired points are written in the output\_gravity folder inside the output folder. We ran the input file for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results are presented in Table~\ref{tab:thin_shell_gravity_benchmark} alongside the analytical values.
+Given the symmetry of the problem, the values of the potential and acceleration depend solely on the distance $r$ from the origin, see Turcotte and Schubert \cite{TS14}. Their analytical values are given by $U(r) = - GM/r$ and $|{\mathbf g}(r)|= g_r(r)=GM/r^2$. 
+Minimum, maximum, and average values of both the potential and the acceleration are printed in the statistics file while measurements at all the desired points are written in the \texttt{output\_gravity} folder inside the output folder. We ran the input file for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results are presented in Table~\ref{tab:thin_shell_gravity_benchmark} alongside the analytical values.
 
 \begin{table}[htb]
 \center
@@ -9609,14 +9608,14 @@ avrg. & min & max    \\
 -164391.6151 &
 -164392.2246 &
 -164390.9963 \\
-&+1 & $3^3$ &
+& 1 & $3^3$ &  
 2482.8799 &
 2482.7731 &
 2482.9959 &
 -164391.6031 &
 -164391.6623 &
 -164391.5473 \\
-&+2 & $4^3$ &
+& 2 & $4^3$ & 
 2482.8819 &
 2482.8759 &
 2482.8865 &
@@ -9639,14 +9638,14 @@ avrg. & min & max    \\
 -144088.7939 &
 -144088.7971 &
 -144088.7538 \\
-& 0 & $3^3$ &
+& 1 & $3^3$ & 
 2176.2391 &
 2176.2391 &
 2176.2392 &
 -144088.7937 &
 -144088.7938 &
 -144088.7936 \\
-& 0 & $4^3$ &
+& 2 & $4^3$ & 
 2176.2391 &
 2176.2391 &
 2176.2391 &
@@ -9716,7 +9715,7 @@ avrg. & min & max    \\
 &{\small a.v.} && 717.4641 &&& -47503.2981 && \\
 \hline
 \end{tabular}\\
-\caption{\it Thin shell gravity benchmark: $1\si{mGal}=10^{-5}\si{\metre\per\square\second}$. $n_q$ is the number of GLQ points per cell. 'a.v.' stands for analytical value.}
+\caption{\it Thin shell gravity benchmark: $1\si{mGal}=10^{-5}\si{\metre\per\square\second}$. $n_q$ is the number of GLQ points per cell. `a.v.' stands for analytical value.}
 \label{tab:thin_shell_gravity_benchmark}
 \end{table}
 
