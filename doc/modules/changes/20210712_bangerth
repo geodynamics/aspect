@@ -1,0 +1,5 @@
+Changed: The "surface stress" visualization postprocessor used to just
+output a number of independent components. Like the "stress" and
+"strain rate tensor" postprocessors, it now outputs these as a tensor field.
+<br>
+(Wolfgang Bangerth, 2021/07/11)
