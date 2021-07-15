@@ -82,14 +82,6 @@ namespace aspect
 
 
   template <int dim>
-  const Introspection<dim> &
-  SimulatorAccess<dim>::introspection () const
-  {
-    return simulator->introspection;
-  }
-
-
-  template <int dim>
   MPI_Comm
   SimulatorAccess<dim>::get_mpi_communicator () const
   {

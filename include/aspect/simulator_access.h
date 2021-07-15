@@ -934,6 +934,18 @@ namespace aspect
       const Simulator<dim> *simulator;
   };
 
+
+
+  template <int dim>
+  inline
+  const Introspection<dim> &
+  SimulatorAccess<dim>::introspection () const
+  {
+    return simulator->introspection;
+  }
+
+
+
   template <int dim>
   template <typename PostprocessorType>
   inline
