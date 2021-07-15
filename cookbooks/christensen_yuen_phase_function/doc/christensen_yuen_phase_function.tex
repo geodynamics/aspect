@@ -11,7 +11,7 @@ The model setup is a 2d quadratic box with prescribed temperatures at the top an
 \end{equation}
 which defines the fraction of the material that has already undergone the transition to the denser phase and takes the shape of a hyperbolic tangent. The phase function is 0 above the transition, and 1 below the transition. Here, $p_h$ is the hydrostatic pressure, $\gamma = -2.7~\si{\mega\pascal\per\kelvin}$ is the Clapeyron slope of the phase transition, $\rho_0 = 1000~\si{\kg\per\cubic\meter}$ is the reference density, $g = 10~\si{\metre\per\square\second}$ is the magnitude of the gravitational acceleration, and $d = 67.5~\si{\km}$ is the half-thickness of the phase transition (corresponding to 5\% of the height of the box). 
 
-In the model series presented in \cite{CY85}, 2 important parameters are varied: the Rayleigh number (see for example Section~\ref{sec:cookbooks-simple-box}), which takes the values $Ra = 10^4$, $10^5$, $4 \times 10^5$ and $2 \times 10^6$, and the phase buoyancy parameter, which is controlled by the Clapeyron slope of the phase transition (see \cite{CY85}) and takes values between $-0.8$ and $0.4$. For a negative Clapeyron slope/phase buoyancy, the phase transition impedes flow; for a positive Clapeyron slope/phase buoyancy, the phase transition accelerates flow. 
+In the model series presented in \cite{CY85}, two important parameters are varied: the Rayleigh number (see for example Section~\ref{sec:cookbooks-simple-box}), which takes the values $Ra = 10^4$, $10^5$, $4 \times 10^5$ and $2 \times 10^6$, and the phase buoyancy parameter, which is controlled by the Clapeyron slope of the phase transition (see \cite{CY85}) and takes values between $-0.8$ and $0.4$. For a negative Clapeyron slope/phase buoyancy, the phase transition impedes flow; for a positive Clapeyron slope/phase buoyancy, the phase transition accelerates flow. 
 
 In order to set up this model in \aspect{}, we use the latent heat material model, which includes an implementation of the phase function formulation. 
 The model in \cite{CY85} is nondimensional, but we want to use Earth-like parameters here. To achieve this, we set most material properties to multiples of 10, and then control the three important model parameters by setting
@@ -22,6 +22,7 @@ The model in \cite{CY85} is nondimensional, but we want to use Earth-like parame
 \end{enumerate}   
 
 Our input file is for a Rayleigh number of $Ra = 10^5$ and a phase buoyancy parameter of $P=-0.4$.                                  
+The material properties are therefore set as follows:
 
 \lstinputlisting[language=prmfile]{cookbooks/christensen_yuen_phase_function/doc/material.part.prm.out}
 
@@ -34,4 +35,4 @@ Depending on the Rayleigh number and the phase buoyancy parameter, the flow patt
 \label{fig:christensen_yuen}
 \end{figure}
 
-The shell script {\sl run\_all\_models.sh} in the same folder can be used to run the whole model series of Boussinesq cases presented in \cite{CY85}.  
+The shell script \texttt{run\_all\_models.sh} in the same folder can be used to run the whole model series of Boussinesq cases presented in \cite{CY85}.  
