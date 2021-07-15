@@ -99,9 +99,6 @@ namespace aspect
                                                                  const std::vector<Tensor<1,dim>> &gradients,
                                                                  typename ParticleHandler<dim>::particle_iterator &particle) const
       {
-        // Current timestep shouldn't need this anymore
-        //const double dt = this->get_timestep();
-
         // Velocity gradients
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
@@ -123,8 +120,21 @@ namespace aspect
         // Evaluate directly in the viscoplastic material model and modify the reaction outputs
         this->get_material_model().evaluate (material_inputs,material_outputs);
 
-        for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-          particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
+        const int plastic_strain_index = this->introspection().compositional_index_for_name("plastic_strain"); 
+        const int viscous_strain_index = this->introspection().compositional_index_for_name("viscous_strain");
+        const int total_strain_index = this->introspection().compositional_index_for_name("total_strain");
+        
+        if (this->introspection().compositional_name_exists("plastic_strain"))
+          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][plastic_strain_index];
+        
+        if (this->introspection().compositional_name_exists("viscous_strain"))
+          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][viscous_strain_index];
+
+        if (this->introspection().compositional_name_exists("total_strain"))
+          particle->get_properties()[data_position] += material_outputs.reaction_terms[0][total_strain_index];  
+
+        //for (unsigned int i = 0; i < n_components-1 ; ++i)
+        //  particle->get_properties()[data_position + i] += material_outputs.reaction_terms[0][i];
       }
 
 
