@@ -33,6 +33,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      ParticleCount<dim>::
+      ParticleCount ()
+        :
+        CellDataVectorCreator<dim>("units")
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {

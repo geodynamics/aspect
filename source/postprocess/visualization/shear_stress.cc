@@ -33,9 +33,9 @@ namespace aspect
       ShearStress<dim>::
       ShearStress ()
         :
-        Interface<dim>("kg/m/s/s"),
         DataPostprocessorTensor<dim> ("shear_stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+                                      Interface<dim>("kg/m/s/s")
       {}
 
 

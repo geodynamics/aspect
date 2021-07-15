@@ -28,6 +28,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+       template <int dim>
+      ErrorIndicator<dim>::
+      ErrorIndicator ()
+        :
+        CellDataVectorCreator<dim>("units")
+      {}
+
+
+
       template <int dim>
       std::pair<std::string, Vector<float> *>
       ErrorIndicator<dim>::execute() const

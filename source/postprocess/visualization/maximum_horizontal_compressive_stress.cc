@@ -31,6 +31,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      MaximumHorizontalCompressiveStress<dim>::
+      MaximumHorizontalCompressiveStress ()
+        :
+        Interface<dim>("kg/m/s/s")
+      {}
+
+
+
+      template <int dim>
       void
       MaximumHorizontalCompressiveStress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,

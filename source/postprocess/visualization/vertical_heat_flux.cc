@@ -33,9 +33,9 @@ namespace aspect
       VerticalHeatFlux<dim>::
       VerticalHeatFlux ()
         :
-        Interface<dim>("W/m**m"),
         DataPostprocessorScalar<dim> ("vertical_heat_flux",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+                                      Interface<dim>("W/m**m")
       {}
 
 

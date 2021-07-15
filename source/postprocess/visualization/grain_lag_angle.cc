@@ -33,6 +33,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      GrainLagAngle<dim>::
+      GrainLagAngle ()
+        :
+        CellDataVectorCreator<dim>("units")
+      {}
+
+
+
       template<int dim>
       std::pair<std::string, Vector<float> *> GrainLagAngle<dim>::execute() const
       {

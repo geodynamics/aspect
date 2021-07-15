@@ -29,6 +29,13 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      ArtificialViscosityComposition<dim>::
+      ArtificialViscosityComposition ()
+        :
+        CellDataVectorCreator<dim>("kg/m/s/s")
+      {}
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       ArtificialViscosityComposition<dim>::execute() const
       {

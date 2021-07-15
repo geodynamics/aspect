@@ -34,6 +34,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      SeismicVsAnomaly<dim>::
+      SeismicVsAnomaly ()
+        :
+        CellDataVectorCreator<dim>("m/s")
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       SeismicVsAnomaly<dim>::execute() const
       {
@@ -189,6 +198,14 @@ namespace aspect
           }
         return return_value;
       }
+
+
+      template <int dim>
+      SeismicVpAnomaly<dim>::
+      SeismicVpAnomaly ()
+        :
+        CellDataVectorCreator<dim>("m/s")
+      {}
 
 
 

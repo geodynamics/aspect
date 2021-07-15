@@ -33,6 +33,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      ISARotationTimescale<dim>::
+      ISARotationTimescale ()
+        :
+        CellDataVectorCreator<dim>("s")
+      {}
+
+
+
       template<int dim>
       std::pair<std::string, Vector<float> *> ISARotationTimescale<dim>::execute() const
       {

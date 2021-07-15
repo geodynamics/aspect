@@ -30,6 +30,14 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      BoundaryIndicator<dim>::
+      BoundaryIndicator ()
+        :
+        CellDataVectorCreator<dim>("units")
+      {}
+
+
 
       template <int dim>
       std::pair<std::string, Vector<float> *>

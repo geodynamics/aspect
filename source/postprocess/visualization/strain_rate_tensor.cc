@@ -32,9 +32,9 @@ namespace aspect
       StrainRateTensor<dim>::
       StrainRateTensor ()
         :
-        Interface<dim>("units"),
         DataPostprocessorTensor<dim> ("strain_rate_tensor",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+                                      Interface<dim>("units")
       {}
 
 

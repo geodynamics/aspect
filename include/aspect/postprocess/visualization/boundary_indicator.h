@@ -46,6 +46,8 @@ namespace aspect
           public SimulatorAccess<dim>
       {
         public:
+        BoundaryIndicator();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */

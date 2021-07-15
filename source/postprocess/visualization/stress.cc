@@ -33,9 +33,9 @@ namespace aspect
       Stress<dim>::
       Stress ()
         :
-        Interface<dim>("kg/m/s/s"),
         DataPostprocessorTensor<dim> ("stress",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+                                      Interface<dim>("kg/m/s/s")
       {}
 
 

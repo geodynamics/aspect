@@ -259,6 +259,13 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes.
+           */
+          CellDataVectorCreator (const std::string &physical_units);
+
+          /**
            * Destructor.
            */
           ~CellDataVectorCreator ()  override = default;

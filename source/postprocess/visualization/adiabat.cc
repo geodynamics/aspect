@@ -33,7 +33,8 @@ namespace aspect
       Adiabat<dim>::
       Adiabat ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("units")
       {}
 
       template <int dim>

@@ -30,7 +30,8 @@ namespace aspect
       CompositionalVector<dim>::
       CompositionalVector ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("units")
       {}
 
 

@@ -35,9 +35,9 @@ namespace aspect
       MeltFraction<dim>::
       MeltFraction ()
         :
-        Interface<dim>("units"),
         DataPostprocessorScalar<dim> ("melt_fraction",
-                                      update_values | update_quadrature_points)
+                                      update_values | update_quadrature_points),
+                                      Interface<dim>("units")
       {}
 
 

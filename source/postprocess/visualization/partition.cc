@@ -33,12 +33,12 @@ namespace aspect
       Partition<dim>::
       Partition ()
         :
-        Interface<dim>("units"),
         // we don't need to know about any of the solution values
         // in order to determine the partition number. thus, no
         // need to specify any update flags
         DataPostprocessorScalar<dim> ("partition",
-                                      update_default)
+                                      update_default),
+                                      Interface<dim>("units")
       {}
 
 

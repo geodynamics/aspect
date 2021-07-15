@@ -40,8 +40,8 @@ namespace aspect
       MeltMaterialProperties<dim>::
       MeltMaterialProperties ()
         :
-        Interface<dim>("unit"),
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("unit")
       {}
 
       template <int dim>

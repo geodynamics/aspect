@@ -33,7 +33,8 @@ namespace aspect
       BoundaryVelocityResidual ()
         :
         DataPostprocessorVector<dim> ("boundary_velocity_residual",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+                                      Interface<dim>("kg/m/s/s")
       {}
 
 
