@@ -36,6 +36,8 @@ namespace aspect
     void
     Slope<dim>::execute(Vector<float> &indicators) const
     {
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+
       indicators = 0;
 
       QMidpoint<dim-1> quadrature;
@@ -61,7 +63,7 @@ namespace aspect
                         this->get_mesh_deformation_boundary_indicators().find(boundary_indicator) !=
                         this->get_mesh_deformation_boundary_indicators().end()) ||
                        (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(this->get_initial_topography_model()) &&
-                        this->get_geometry_model().translate_symbolic_boundary_name_to_id("top") == boundary_indicator)  )
+                        boundary_indicator == top_boundary_id)  )
                     {
                       fe_face_values.reinit(cell, face_no);
 
