@@ -75,6 +75,7 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
+
         types::boundary_id surface_boundary_id;
         /**
          * Age of the upper thermal boundary layer at the surface of the
@@ -107,12 +108,20 @@ namespace aspect
          * profile.
          */
         double subadiabaticity;
-
+        /*
+         * Whether seafloor ages should be read in from an ASCII file,
+         *  or input as a constant value
+         */
         bool read_from_ascii_file;
-
-        bool use_halfspace_cooling;
-
-        double zlo;
+        /*
+         * Whether to use the half space cooling model, or the plate cooling
+         * model
+         */
+        std::string cooling_model;
+        /*
+         * Depth to the base of the lithosphere for plate cooling model, in m
+         */
+        double lithosphere_thickness;
 
         /**
          * A function object representing the compositional fields that will

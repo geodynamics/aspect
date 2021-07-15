@@ -45,7 +45,7 @@ namespace aspect
     Adiabatic<dim>::initialize ()
     {
       // Find the boundary indicator that represents the surface
-      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("outer");
+      surface_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(surface_boundary_id);
 
@@ -60,8 +60,8 @@ namespace aspect
     initial_temperature (const Point<dim> &position) const
     {
       double age_top = 0;
-      double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
-                           : age_bottom_boundary_layer);
+      const double age_bottom = (this->convert_output_to_years() ? age_bottom_boundary_layer * year_in_seconds
+                                 : age_bottom_boundary_layer);
       if (read_from_ascii_file)
         {
           age_top = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
@@ -74,237 +74,211 @@ namespace aspect
           age_top =    (this->convert_output_to_years() ? age_top_boundary_layer * year_in_seconds
                         : age_top_boundary_layer);
         }
+      // First, get the temperature of the adiabatic profile at a representative
+      // point at the top and bottom boundary of the model
+      // if adiabatic heating is switched off, assume a constant profile
+      const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
+      const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
+      const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
+      const double adiabatic_bottom_temperature = (this->include_adiabatic_heating())
+                                                  ?
+                                                  this->get_adiabatic_conditions().temperature(bottom_point)
+                                                  :
+                                                  adiabatic_surface_temperature;
 
+      // then, get the temperature at the top and bottom boundary of the model
+      // if no boundary temperature is prescribed simply use the adiabatic.
+      // This implementation assumes that the top and bottom boundaries have
+      // prescribed temperatures and minimal_temperature() returns the value
+      // at the surface and maximal_temperature() the value at the bottom.
+      const double T_surface = (this->has_boundary_temperature()
+                                ?
+                                this->get_boundary_temperature_manager().minimal_temperature(
+                                  this->get_fixed_temperature_boundary_indicators())
+                                :
+                                adiabatic_surface_temperature);
+      const double T_bottom = (this->has_boundary_temperature()
+                               ?
+                               this->get_boundary_temperature_manager().maximal_temperature(
+                                 this->get_fixed_temperature_boundary_indicators())
+                               :
+                               adiabatic_bottom_temperature);
+      const double depth = this->get_geometry_model().depth(position);
+
+      // look up material properties
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
-      if (use_halfspace_cooling)
+
+      in.position[0]=position;
+      in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
+      in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
+      in.velocity[0]= Tensor<1,dim> ();
+      for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+        in.composition[0][c] = function->value(Point<1>(depth),c);
+      in.strain_rate.resize(0); // adiabat has strain=0.
+      this->get_material_model().evaluate(in, out);
+
+      const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
+                              Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
+                             ?
+                             out.thermal_conductivities[0] /
+                             (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
+                             :
+                             out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
+                           );
+
+      double surface_cooling_temperature = 0;
+      double bottom_heating_temperature = 0;
+      if (cooling_model == "half-space cooling")
         {
-          // First, get the temperature of the adiabatic profile at a representative
-          // point at the top and bottom boundary of the model
-          // if adiabatic heating is switched off, assume a constant profile
-          const Point<dim> surface_point = this->get_geometry_model().representative_point(0.0);
-          const Point<dim> bottom_point = this->get_geometry_model().representative_point(this->get_geometry_model().maximal_depth());
-          const double adiabatic_surface_temperature = this->get_adiabatic_conditions().temperature(surface_point);
-          const double adiabatic_bottom_temperature = (this->include_adiabatic_heating())
-                                                      ?
-                                                      this->get_adiabatic_conditions().temperature(bottom_point)
-                                                      :
-                                                      adiabatic_surface_temperature;
-
-          // then, get the temperature at the top and bottom boundary of the model
-          // if no boundary temperature is prescribed simply use the adiabatic.
-          // This implementation assumes that the top and bottom boundaries have
-          // prescribed temperatures and minimal_temperature() returns the value
-          // at the surface and maximal_temperature() the value at the bottom.
-          const double T_surface = (this->has_boundary_temperature()
-                                    ?
-                                    this->get_boundary_temperature_manager().minimal_temperature(
-                                      this->get_fixed_temperature_boundary_indicators())
-                                    :
-                                    adiabatic_surface_temperature);
-          const double T_bottom = (this->has_boundary_temperature()
-                                   ?
-                                   this->get_boundary_temperature_manager().maximal_temperature(
-                                     this->get_fixed_temperature_boundary_indicators())
-                                   :
-                                   adiabatic_bottom_temperature);
-
-          // get a representative profile of the compositional fields as an input
-          // for the material model
-          const double depth = this->get_geometry_model().depth(position);
-
-          // look up material properties
-          in.position[0]=position;
-          in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
-          in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
-          in.velocity[0]= Tensor<1,dim> ();
-          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            in.composition[0][c] = function->value(Point<1>(depth),c);
-          in.strain_rate.resize(0); // adiabat has strain=0.
-          this->get_material_model().evaluate(in, out);
-
-          const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
-                                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                                 ?
-                                 out.thermal_conductivities[0] /
-                                 (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
-                                 :
-                                 out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
-                               );
-
           // analytical solution for the thermal boundary layer from half-space cooling model
-          const double surface_cooling_temperature = age_top > 0.0 ?
-                                                     (T_surface - adiabatic_surface_temperature) *
-                                                     erfc(this->get_geometry_model().depth(position) /
-                                                          (2 * sqrt(kappa * age_top)))
-                                                     : 0.0;
-          const double bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
-                                                    (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
-                                                    * erfc((this->get_geometry_model().maximal_depth()
-                                                            - this->get_geometry_model().depth(position)) /
-                                                           (2 * sqrt(kappa * age_bottom)))
-                                                    : 0.0;
-
-          // set the initial temperature perturbation
-          // first: get the center of the perturbation, then check the distance to the
-          // evaluation point. the center is supposed to lie at the center of the bottom
-          // surface.
-          Point<dim> mid_point;
-          if (perturbation_position == "center")
-            {
-              if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
-                {
-                  const GeometryModel::SphericalShell<dim> &shell_geometry_model =
-                    Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
-
-                  const double inner_radius = shell_geometry_model.inner_radius();
-                  const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model.opening_angle();
-                  if (dim==2)
-                    {
-                      // choose the center of the perturbation at half angle along the inner radius
-                      mid_point(0) = inner_radius * std::sin(half_opening_angle),
-                      mid_point(1) = inner_radius * std::cos(half_opening_angle);
-                    }
-                  else if (dim==3)
-                    {
-                      // if the opening angle is 90 degrees (an eighth of a full spherical
-                      // shell, then choose the point on the inner surface along the first
-                      // diagonal
-                      if (shell_geometry_model.opening_angle() == 90)
-                        {
-                          mid_point(0) = inner_radius*std::sqrt(1./3),
-                          mid_point(1) = inner_radius*std::sqrt(1./3),
-                          mid_point(2) = inner_radius*std::sqrt(1./3);
-                        }
-                      else
-                        {
-                          // otherwise do the same as in 2d
-                          mid_point(0) = inner_radius * std::sin(half_opening_angle) * std::cos(half_opening_angle),
-                          mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
-                          mid_point(2) = inner_radius * std::cos(half_opening_angle);
-                        }
-                    }
-                }
-              else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
-                {
-                  const GeometryModel::Chunk<dim> &chunk_geometry_model =
-                    Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
-
-                  const double inner_radius = chunk_geometry_model.inner_radius();
-
-                  const double west_longitude = chunk_geometry_model.west_longitude(); // in radians
-                  const double longitude_range = chunk_geometry_model.longitude_range(); // in radians
-                  const double longitude_midpoint = west_longitude + 0.5 * longitude_range;
-
-                  if (dim==2)
-                    {
-                      // choose the center of the perturbation at half angle along the inner radius
-                      mid_point(0) = inner_radius * std::cos(longitude_midpoint),
-                      mid_point(1) = inner_radius * std::sin(longitude_midpoint);
-                    }
-                  else if (dim==3)
-                    {
-
-                      const double south_latitude = chunk_geometry_model.south_latitude(); // in radians
-                      const double latitude_range = chunk_geometry_model.latitude_range(); // in radians
-                      const double latitude_midpoint = south_latitude + 0.5 * latitude_range;
-                      mid_point(0) = inner_radius * std::cos(latitude_midpoint) * std::cos(longitude_midpoint);
-                      mid_point(1) = inner_radius * std::cos(latitude_midpoint) * std::sin(longitude_midpoint);
-                      mid_point(2) = inner_radius * std::sin(latitude_midpoint);
-                    }
-                }
-              else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()))
-                {
-                  const GeometryModel::Box<dim> &box_geometry_model =
-                    Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
-
-                  // for the box geometry, choose a point at the center of the bottom face.
-                  // (note that the loop only runs over the first dim-1 coordinates, leaving
-                  // the depth variable at zero)
-                  mid_point = box_geometry_model.get_origin();
-                  for (unsigned int i=0; i<dim-1; ++i)
-                    mid_point(i) += 0.5 * box_geometry_model.get_extents()[i];
-                }
-              else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
-                {
-                  const GeometryModel::TwoMergedBoxes<dim> &two_merged_boxes_geometry_model =
-                    Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model());
-
-                  // for the box geometry, choose a point at the center of the bottom face.
-                  // (note that the loop only runs over the first dim-1 coordinates, leaving
-                  // the depth variable at zero)
-                  mid_point = two_merged_boxes_geometry_model.get_origin();
-                  for (unsigned int i=0; i<dim-1; ++i)
-                    mid_point(i) += 0.5 * two_merged_boxes_geometry_model.get_extents()[i];
-                }
-              else
-                AssertThrow (false,
-                             ExcMessage ("Not a valid geometry model for the initial temperature model"
-                                         "adiabatic."));
-            }
-
-          const double perturbation = (mid_point.distance(position) < radius) ? amplitude
-                                      : 0.0;
-
-
-          // add the subadiabaticity
-          const double zero_depth = 0.174;
-          const double nondimensional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
-                                              / (1.0 - zero_depth);
-          double subadiabatic_T = 0.0;
-          if (nondimensional_depth > 0)
-            subadiabatic_T = -subadiabaticity * nondimensional_depth * nondimensional_depth;
-
-          // If adiabatic heating is disabled, apply all perturbations to
-          // constant adiabatic surface temperature instead of adiabatic profile.
-          const double temperature_profile = (this->include_adiabatic_heating())
-                                             ?
-                                             this->get_adiabatic_conditions().temperature(position)
-                                             :
-                                             adiabatic_surface_temperature;
-
-          // return sum of the adiabatic profile, the boundary layer temperatures and the initial
-          // temperature perturbation.
-          return temperature_profile + surface_cooling_temperature
-                 + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
-                    : bottom_heating_temperature + subadiabatic_T);
+          surface_cooling_temperature = age_top > 0.0 ?
+                                        (T_surface - adiabatic_surface_temperature) *
+                                        erfc(this->get_geometry_model().depth(position) /
+                                             (2 * sqrt(kappa * age_top)))
+                                        : 0.0;
+          bottom_heating_temperature = (age_bottom > 0.0 && this->get_adiabatic_conditions().is_initialized()) ?
+                                       (T_bottom - adiabatic_bottom_temperature + subadiabaticity)
+                                       * erfc((this->get_geometry_model().maximal_depth()
+                                               - this->get_geometry_model().depth(position)) /
+                                              (2 * sqrt(kappa * age_bottom)))
+                                       : 0.0;
         }
 
-      else
+      if (cooling_model == "plate cooling")
         {
-          const double depth = this->get_geometry_model().depth(position);
-          const double T_surface = this->get_boundary_temperature_manager().minimal_temperature(this->get_fixed_temperature_boundary_indicators());
-          const double T_bottom = this->get_boundary_temperature_manager().maximal_temperature(this->get_fixed_temperature_boundary_indicators());
-          double T_profile = 1623;
-          const double kappa = ( (this->get_parameters().formulation_temperature_equation ==
-                                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile)
-                                 ?
-                                 out.thermal_conductivities[0] /
-                                 (this->get_adiabatic_conditions().density(in.position[0]) * out.specific_heat[0])
-                                 :
-                                 out.thermal_conductivities[0] / (out.densities[0] * out.specific_heat[0])
-                               );
-          if (depth > zlo)
+          const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
+          double sum_terms = 0;
+          for (unsigned int n=1; n<11; ++n)
             {
-              T_profile = T_bottom;
+              sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exponential) * std::sin((double)n * depth * numbers::PI / lithosphere_thickness);
+            }
+          surface_cooling_temperature = (T_surface - adiabatic_surface_temperature) * (depth / lithosphere_thickness + 2 / numbers::PI * sum_terms);
+        }
+
+      // set the initial temperature perturbation
+      // first: get the center of the perturbation, then check the distance to the
+      // evaluation point. the center is supposed to lie at the center of the bottom
+      // surface.
+      Point<dim> mid_point;
+      if (perturbation_position == "center")
+        {
+          if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()))
+            {
+              const GeometryModel::SphericalShell<dim> &shell_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model());
+
+              const double inner_radius = shell_geometry_model.inner_radius();
+              const double half_opening_angle = numbers::PI/180.0 * 0.5 * shell_geometry_model.opening_angle();
+              if (dim==2)
+                {
+                  // choose the center of the perturbation at half angle along the inner radius
+                  mid_point(0) = inner_radius * std::sin(half_opening_angle),
+                  mid_point(1) = inner_radius * std::cos(half_opening_angle);
+                }
+              else if (dim==3)
+                {
+                  // if the opening angle is 90 degrees (an eighth of a full spherical
+                  // shell, then choose the point on the inner surface along the first
+                  // diagonal
+                  if (shell_geometry_model.opening_angle() == 90)
+                    {
+                      mid_point(0) = inner_radius*std::sqrt(1./3),
+                      mid_point(1) = inner_radius*std::sqrt(1./3),
+                      mid_point(2) = inner_radius*std::sqrt(1./3);
+                    }
+                  else
+                    {
+                      // otherwise do the same as in 2d
+                      mid_point(0) = inner_radius * std::sin(half_opening_angle) * std::cos(half_opening_angle),
+                      mid_point(1) = inner_radius * std::sin(half_opening_angle) * std::sin(half_opening_angle),
+                      mid_point(2) = inner_radius * std::cos(half_opening_angle);
+                    }
+                }
+            }
+          else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>>(this->get_geometry_model()))
+            {
+              const GeometryModel::Chunk<dim> &chunk_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>> (this->get_geometry_model());
+
+              const double inner_radius = chunk_geometry_model.inner_radius();
+
+              const double west_longitude = chunk_geometry_model.west_longitude(); // in radians
+              const double longitude_range = chunk_geometry_model.longitude_range(); // in radians
+              const double longitude_midpoint = west_longitude + 0.5 * longitude_range;
+
+              if (dim==2)
+                {
+                  // choose the center of the perturbation at half angle along the inner radius
+                  mid_point(0) = inner_radius * std::cos(longitude_midpoint),
+                  mid_point(1) = inner_radius * std::sin(longitude_midpoint);
+                }
+              else if (dim==3)
+                {
+
+                  const double south_latitude = chunk_geometry_model.south_latitude(); // in radians
+                  const double latitude_range = chunk_geometry_model.latitude_range(); // in radians
+                  const double latitude_midpoint = south_latitude + 0.5 * latitude_range;
+                  mid_point(0) = inner_radius * std::cos(latitude_midpoint) * std::cos(longitude_midpoint);
+                  mid_point(1) = inner_radius * std::cos(latitude_midpoint) * std::sin(longitude_midpoint);
+                  mid_point(2) = inner_radius * std::sin(latitude_midpoint);
+                }
+            }
+          else if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>>(this->get_geometry_model()))
+            {
+              const GeometryModel::Box<dim> &box_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::Box<dim>> (this->get_geometry_model());
+
+              // for the box geometry, choose a point at the center of the bottom face.
+              // (note that the loop only runs over the first dim-1 coordinates, leaving
+              // the depth variable at zero)
+              mid_point = box_geometry_model.get_origin();
+              for (unsigned int i=0; i<dim-1; ++i)
+                mid_point(i) += 0.5 * box_geometry_model.get_extents()[i];
+            }
+          else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
+            {
+              const GeometryModel::TwoMergedBoxes<dim> &two_merged_boxes_geometry_model =
+                Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model());
+
+              // for the box geometry, choose a point at the center of the bottom face.
+              // (note that the loop only runs over the first dim-1 coordinates, leaving
+              // the depth variable at zero)
+              mid_point = two_merged_boxes_geometry_model.get_origin();
+              for (unsigned int i=0; i<dim-1; ++i)
+                mid_point(i) += 0.5 * two_merged_boxes_geometry_model.get_extents()[i];
             }
           else
-            {
-              const double pi = 3.1415;
-              const double exp_fac = -kappa * std::pow(pi, 2) * age_top / std::pow(zlo, 2);
-              const double sin_fac = pi / zlo;
-              unsigned int n = 1;
-              unsigned int m = 5;
-              double sum_terms = 0;
-              while (n <= m)
-                {
-                  sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exp_fac) * std::sin((double)n * depth * sin_fac);
-                  n += 1;
-                }
-              T_profile = T_surface + (T_bottom - T_surface) * (depth / zlo + 2 / pi * sum_terms);
-            }
-          return T_profile;
+            AssertThrow (false,
+                         ExcMessage ("Not a valid geometry model for the initial temperature model"
+                                     "adiabatic."));
         }
+
+      const double perturbation = (mid_point.distance(position) < radius) ? amplitude
+                                  : 0.0;
+
+
+      // add the subadiabaticity
+      const double zero_depth = 0.174;
+      const double nondimensional_depth = (this->get_geometry_model().depth(position) / this->get_geometry_model().maximal_depth() - zero_depth)
+                                          / (1.0 - zero_depth);
+      double subadiabatic_T = 0.0;
+      if (nondimensional_depth > 0)
+        subadiabatic_T = -subadiabaticity * nondimensional_depth * nondimensional_depth;
+
+      // If adiabatic heating is disabled, apply all perturbations to
+      // constant adiabatic surface temperature instead of adiabatic profile.
+      const double temperature_profile = (this->include_adiabatic_heating())
+                                         ?
+                                         this->get_adiabatic_conditions().temperature(position)
+                                         :
+                                         adiabatic_surface_temperature;
+
+      // return sum of the adiabatic profile, the boundary layer temperatures and the initial
+      // temperature perturbation.
+      return temperature_profile + surface_cooling_temperature
+             + (perturbation > 0.0 ? std::max(bottom_heating_temperature + subadiabatic_T,perturbation)
+                : bottom_heating_temperature + subadiabatic_T);
     }
 
     template <int dim>
@@ -313,6 +287,10 @@ namespace aspect
     {
       prm.enter_subsection ("Initial temperature model");
       {
+        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
+                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/",
+                                                          "adiabatic.txt",
+                                                          "Adiabatic");
         prm.enter_subsection("Adiabatic");
         {
           prm.declare_entry ("Age top boundary layer", "0.",
@@ -361,9 +339,9 @@ namespace aspect
           prm.declare_entry ("Use ASCII file for seafloor age", "false",
                              Patterns::Bool (),
                              "Whether to define seafloor ages with an ASCII data file.");
-          prm.declare_entry ("Use halfspace cooling", "true",
-                             Patterns::Bool (),
-                             "Whether to use the half space cooling model");
+          prm.declare_entry ("Cooling model", "half-space cooling",
+                             Patterns::Selection ("half-space cooling|plate cooling"),
+                             "Whether to use the half space cooling model or the plate cooling model");
           prm.declare_entry ("Lithosphere thickness", "125e3",
                              Patterns::Double (0.),
                              "Thickness of the lithosphere for plate cooling model.");
@@ -394,10 +372,7 @@ namespace aspect
 
       prm.enter_subsection ("Initial temperature model");
       {
-        Utilities::AsciiDataBase<dim>::declare_parameters(prm,
-                                                          "$ASPECT_SOURCE_DIR/data/initial-temperature/adiabatic/",
-                                                          "adiabatic.txt",
-                                                          "Adiabatic");
+        Utilities::AsciiDataBase<dim>::parse_parameters(prm, "Adiabatic");
         prm.enter_subsection("Adiabatic");
         {
           age_top_boundary_layer = prm.get_double ("Age top boundary layer");
@@ -407,8 +382,8 @@ namespace aspect
           perturbation_position = prm.get("Position");
           subadiabaticity = prm.get_double ("Subadiabaticity");
           read_from_ascii_file = prm.get_bool ("Use ASCII file for seafloor age");
-          use_halfspace_cooling = prm.get_bool ("Use halfspace cooling");
-          zlo = prm.get_double ("Lithosphere thickness");
+          cooling_model = prm.get ("Cooling model");
+          lithosphere_thickness = prm.get_double ("Lithosphere thickness");
           if (n_compositional_fields > 0)
             {
               prm.enter_subsection("Function");
