@@ -198,6 +198,18 @@ namespace aspect
     IndexSet extract_locally_active_dofs_with_component(const DoFHandler<dim> &dof_handler,
                                                         const ComponentMask &component_mask);
 
+    /**
+     * This function retrieves the unit support points (in the unit cell) for the current element.
+     * The DGP element used when 'set Use locally conservative discretization = true' does not
+     * have support points. If these elements are in use, a fictitious support point at the cell
+     * center is returned for each shape function that corresponds to the pressure variable,
+     * whereas the support points for the velocity are correct. The fictitious points don't matter
+     * because we only use this function when interpolating the velocity variable, and ignore the
+     * evaluation at the pressure support points.
+     */
+    template <int dim>
+    std::vector<Point<dim>> get_unit_support_points(const SimulatorAccess<dim> &simulator_access);
+
 
 
     namespace Coordinates
