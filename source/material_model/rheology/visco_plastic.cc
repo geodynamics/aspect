@@ -132,70 +132,84 @@ namespace aspect
         for (unsigned int j=0; j < volume_fractions.size(); ++j)
           {
             // Step 1: viscous behavior
+            double viscosity_pre_yield = numbers::signaling_nan<double>();
+            {
 
-            // Choice of activation volume depends on whether there is an adiabatic temperature
-            // gradient used when calculating the viscosity. This allows the same activation volume
-            // to be used in incompressible and compressible models.
-            const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
-            AssertThrow(temperature_for_viscosity != 0, ExcMessage(
-                          "The temperature used in the calculation of the visco-plastic rheology is zero. "
-                          "This is not allowed, because this value is used to divide through. It is probably "
-                          "being caused by the temperature being zero somewhere in the model. The relevant "
-                          "values for debugging are: temperature (" + Utilities::to_string(in.temperature[i]) +
-                          "), adiabatic_temperature_gradient_for_viscosity ("
-                          + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
-                          + Utilities::to_string(in.pressure[i]) + ")."));
+              // Choice of activation volume depends on whether there is an adiabatic temperature
+              // gradient used when calculating the viscosity. This allows the same activation volume
+              // to be used in incompressible and compressible models.
+              const double temperature_for_viscosity = in.temperature[i] + adiabatic_temperature_gradient_for_viscosity*in.pressure[i];
+              AssertThrow(temperature_for_viscosity != 0, ExcMessage(
+                            "The temperature used in the calculation of the visco-plastic rheology is zero. "
+                            "This is not allowed, because this value is used to divide through. It is probably "
+                            "being caused by the temperature being zero somewhere in the model. The relevant "
+                            "values for debugging are: temperature (" + Utilities::to_string(in.temperature[i]) +
+                            "), adiabatic_temperature_gradient_for_viscosity ("
+                            + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
+                            + Utilities::to_string(in.pressure[i]) + ")."));
 
-            // Step 1a: compute viscosity from diffusion creep law
-            const double viscosity_diffusion = diffusion_creep.compute_viscosity(in.pressure[i], temperature_for_viscosity, j,
-                                                                                 phase_function_values,
-                                                                                 n_phases_per_composition);
+              // Step 1a: compute viscosity from diffusion creep law, at
+              // least if it is going to be used
+              const double viscosity_diffusion
+                = (viscous_flow_law != dislocation
+                   ?
+                   diffusion_creep.compute_viscosity(in.pressure[i], temperature_for_viscosity, j,
+                                                     phase_function_values,
+                                                     n_phases_per_composition)
+                   :
+                   numbers::signaling_nan<double>());
 
-            // Step 1b: compute viscosity from dislocation creep law
-            const double viscosity_dislocation = dislocation_creep.compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
-                                                                                     phase_function_values,
-                                                                                     n_phases_per_composition);
+              // Step 1b: compute viscosity from dislocation creep law
+              const double viscosity_dislocation
+                = (viscous_flow_law != diffusion
+                   ?
+                   dislocation_creep.compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                                                       phase_function_values,
+                                                       n_phases_per_composition)
+                   :
+                   numbers::signaling_nan<double>());
 
-            // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
-            double viscosity_pre_yield = 0.0;
-            switch (viscous_flow_law)
-              {
-                case diffusion:
+              // Step 1c: select what form of viscosity to use (diffusion, dislocation, fk, or composite)
+              switch (viscous_flow_law)
                 {
-                  viscosity_pre_yield = viscosity_diffusion;
-                  break;
+                  case diffusion:
+                  {
+                    viscosity_pre_yield = viscosity_diffusion;
+                    break;
+                  }
+                  case dislocation:
+                  {
+                    viscosity_pre_yield = viscosity_dislocation;
+                    break;
+                  }
+                  case frank_kamenetskii:
+                  {
+                    viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], j);
+                    break;
+                  }
+                  case composite:
+                  {
+                    viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/
+                                          (viscosity_diffusion + viscosity_dislocation);
+                    break;
+                  }
+                  default:
+                  {
+                    AssertThrow(false, ExcNotImplemented());
+                    break;
+                  }
                 }
-                case dislocation:
-                {
-                  viscosity_pre_yield = viscosity_dislocation;
-                  break;
-                }
-                case frank_kamenetskii:
-                {
-                  viscosity_pre_yield = frank_kamenetskii_rheology->compute_viscosity(in.temperature[i], j);
-                  break;
-                }
-                case composite:
-                {
-                  viscosity_pre_yield = (viscosity_diffusion * viscosity_dislocation)/
-                                        (viscosity_diffusion + viscosity_dislocation);
-                  break;
-                }
-                default:
-                {
-                  AssertThrow(false, ExcNotImplemented());
-                  break;
-                }
-              }
 
-            // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
-            if (use_peierls_creep)
-              {
-                const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
-                                                                                  phase_function_values,
-                                                                                  n_phases_per_composition);
-                viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
-              }
+              // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
+              if (use_peierls_creep)
+                {
+                  const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                                                                                    phase_function_values,
+                                                                                    n_phases_per_composition);
+                  viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
+                }
+            }
+
 
             // Step 1e: multiply the viscosity by a constant (default value is 1)
             viscosity_pre_yield = constant_viscosity_prefactors.compute_viscosity(viscosity_pre_yield, j);
