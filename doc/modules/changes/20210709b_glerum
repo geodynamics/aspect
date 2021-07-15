@@ -1,0 +1,7 @@
+New: There is now a geometry model plugin "chunk with lithosphere boundary indicators" 
+that allows for two different types of boundary conditions on the side boundaries
+of a chunk domain. On each side boundary, two boundary indicators are available
+to set these different boundary conditions. A use-case can be prescribed plate motions
+on the upper part of the domain and an open boundary underneath the plates. 
+<br>
+(Anne Glerum, 2021/07/09)
