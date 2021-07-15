@@ -189,7 +189,6 @@ namespace aspect
       internal::Assembly::Scratch::StokesPreconditioner<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesPreconditioner<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesPreconditioner<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesPreconditioner<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int   stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int   n_q_points      = scratch.finite_element_values.n_quadrature_points;
@@ -206,17 +205,17 @@ namespace aspect
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
-      const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
-      const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_f = this->introspection().variable("fluid pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_c = this->introspection().variable("compaction pressure").extractor_scalar();
 
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const unsigned int p_f_component_index = this->introspection().variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = this->introspection().variable("compaction pressure").first_component_index;
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
           const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-          if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+          if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
             {
               data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
               scratch.dof_component_indices[i_stokes] = fe.system_to_component_index(i).first;
@@ -231,7 +230,7 @@ namespace aspect
             {
               const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+              if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
                 {
                   scratch.phi_p[i_stokes]       = scratch.finite_element_values[ex_p_f].value (i, q);
                   scratch.phi_p_c[i_stokes]     = scratch.finite_element_values[ex_p_c].value (i, q);
@@ -312,12 +311,11 @@ namespace aspect
         if (!simulator_access->get_parameters().include_melt_transport)
           return 0.0;
 
-        const Introspection<dim> &introspection = simulator_access->introspection();
         const MaterialModel::MeltOutputs<dim> *melt_out = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
         Assert(melt_out != nullptr, ExcInternalError());
 
-        const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+        const unsigned int porosity_index = simulator_access->introspection().compositional_index_for_name("porosity");
         const unsigned int is_compressible = simulator_access->get_material_model().is_compressible();
 
         const double solid_density    = scratch.material_model_outputs.densities[q_point];
@@ -373,7 +371,6 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
@@ -387,11 +384,11 @@ namespace aspect
                                                                       this->get_melt_handler(),
                                                                       true);
 
-      const FEValuesExtractors::Scalar extractor_pressure = introspection.variable("fluid pressure").extractor_scalar();
-      const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar extractor_pressure = this->introspection().variable("fluid pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_c = this->introspection().variable("compaction pressure").extractor_scalar();
 
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const unsigned int p_f_component_index = this->introspection().variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = this->introspection().variable("compaction pressure").first_component_index;
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
@@ -400,16 +397,16 @@ namespace aspect
       const double pressure_scaling = this->get_pressure_scaling();
 
       std::vector<double> reactions(n_q_points, numbers::signaling_nan<double>());
-      const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+      const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
       if (this->get_parameters().use_operator_splitting)
-        scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
+        scratch.finite_element_values[this->introspection().extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
             reactions);
 
       for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
         {
           const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-          if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+          if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
             {
               data.local_dof_indices[i_stokes] = scratch.local_dof_indices[i];
               ++i_stokes;
@@ -423,17 +420,17 @@ namespace aspect
             {
               const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+              if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
                 {
-                  scratch.phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].value (i,q);
+                  scratch.phi_u[i_stokes]   = scratch.finite_element_values[this->introspection().extractors.velocities].value (i,q);
                   scratch.phi_p[i_stokes]   = scratch.finite_element_values[extractor_pressure].value (i, q);
                   scratch.phi_p_c[i_stokes] = scratch.finite_element_values[ex_p_c].value (i, q);
                   scratch.grad_phi_p[i_stokes] = scratch.finite_element_values[extractor_pressure].gradient (i, q);
 
                   if (scratch.rebuild_stokes_matrix)
                     {
-                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
-                      scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
+                      scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[this->introspection().extractors.velocities].symmetric_gradient(i,q);
+                      scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[this->introspection().extractors.velocities].divergence (i, q);
                     }
                   ++i_stokes;
                 }
@@ -463,7 +460,7 @@ namespace aspect
 
           const double density_s = scratch.material_model_outputs.densities[q]; // density of the solid
 
-          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.000);
 
           const double K_D = this->get_melt_handler().limited_darcy_coefficient(melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q],
@@ -556,14 +553,13 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
       const unsigned int n_face_q_points = scratch.face_finite_element_values.n_quadrature_points;
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-      const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const FEValuesExtractors::Scalar ex_p_f = this->introspection().variable("fluid pressure").extractor_scalar();
+      const unsigned int p_f_component_index = this->introspection().variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = this->introspection().variable("compaction pressure").first_component_index;
       const bool is_melt_cell = this->get_melt_handler().is_melt_cell(scratch.material_model_inputs.current_cell);
 
       const typename DoFHandler<dim>::face_iterator face = scratch.face_material_model_inputs.current_cell->face(scratch.face_number);
@@ -590,7 +586,7 @@ namespace aspect
             {
               const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-              if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+              if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
                 {
                   // apply the fluid pressure boundary condition
                   data.local_rhs(i_stokes) += (scratch.face_finite_element_values[ex_p_f].value(i, q)
@@ -661,7 +657,6 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
       const bool use_bdf2_scheme = (this->get_timestep_number() > 1);
@@ -671,9 +666,9 @@ namespace aspect
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
 
-      const unsigned int solution_component = scratch.advection_field->component_index(introspection);
+      const unsigned int solution_component = scratch.advection_field->component_index(this->introspection());
 
-      const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(introspection);
+      const FEValuesExtractors::Scalar solution_field = scratch.advection_field->scalar_extractor(this->introspection());
 
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
 
@@ -683,7 +678,7 @@ namespace aspect
                          "reasonable values."));
 
       std::vector<Tensor<1,dim>> fluid_velocity_values(n_q_points);
-      const FEValuesExtractors::Vector ex_u_f = introspection.variable("fluid velocity").extractor_vector();
+      const FEValuesExtractors::Vector ex_u_f = this->introspection().variable("fluid velocity").extractor_vector();
       scratch.finite_element_values[ex_u_f].get_function_values (this->get_solution(),fluid_velocity_values);
 
       // average divergence u over the cell (needed for porosity advection)
@@ -709,7 +704,7 @@ namespace aspect
               ++i;
             }
 
-          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const unsigned int porosity_index = this->introspection().compositional_index_for_name("porosity");
           const double porosity = std::max(scratch.material_model_inputs.composition[q][porosity_index],0.0);
           const double bulk_density = (1.0 - porosity) * scratch.material_model_outputs.densities[q] + porosity * melt_outputs->fluid_densities[q];
 
@@ -958,23 +953,22 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = scratch.finite_element_values.get_fe();
 
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const unsigned int p_f_component_index = this->introspection().variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = this->introspection().variable("compaction pressure").first_component_index;
 
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
 
-      const FEValuesExtractors::Scalar ex_p_f = introspection.variable("fluid pressure").extractor_scalar();
+      const FEValuesExtractors::Scalar ex_p_f = this->introspection().variable("fluid pressure").extractor_scalar();
 
       for (unsigned int q=0; q<n_q_points; ++q)
         for (unsigned int i=0, i_stokes=0; i_stokes<stokes_dofs_per_cell; /*increment at end of loop*/)
           {
             const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-            if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+            if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
               {
                 scratch.phi_p[i_stokes] = scratch.finite_element_values[ex_p_f].value (i, q);
                 data.local_pressure_shape_function_integrals(i_stokes) += scratch.phi_p[i_stokes] * scratch.finite_element_values.JxW(q);
@@ -993,14 +987,13 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
       // see if any of the faces are traction boundaries for which
       // we need to assemble force terms for the right hand side
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
-      const unsigned int p_f_component_index = introspection.variable("fluid pressure").first_component_index;
-      const unsigned int p_c_component_index = introspection.variable("compaction pressure").first_component_index;
+      const unsigned int p_f_component_index = this->introspection().variable("fluid pressure").first_component_index;
+      const unsigned int p_c_component_index = this->introspection().variable("compaction pressure").first_component_index;
 
       const typename DoFHandler<dim>::active_cell_iterator cell (&this->get_triangulation(),
                                                                  scratch.face_finite_element_values.get_cell()->level(),
@@ -1036,9 +1029,9 @@ namespace aspect
                 {
                   const unsigned int component_index_i = fe.system_to_component_index(i).first;
 
-                  if (is_velocity_or_pressures(introspection,p_c_component_index,p_f_component_index,component_index_i))
+                  if (is_velocity_or_pressures(this->introspection(),p_c_component_index,p_f_component_index,component_index_i))
                     {
-                      data.local_rhs(i_stokes) += scratch.face_finite_element_values[introspection.extractors.velocities].value(i,q) *
+                      data.local_rhs(i_stokes) += scratch.face_finite_element_values[this->introspection().extractors.velocities].value(i,q) *
                                                   traction *
                                                   scratch.face_finite_element_values.JxW(q);
                       ++i_stokes;
