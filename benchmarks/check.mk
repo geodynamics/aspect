@@ -107,18 +107,13 @@ inclusion/: dummy
 	+@$(def); make_lib $@/compositional_fields
 	@$(def); run_all_prms $@/compositional_fields
 
-
-# TODO: no .prm in folder:
-nonlinear_channel_flow/: dummy
-	+@$(def); make_lib $@
-
-newton_solver_benchmark_set/: dummy nonlinear_channel_flow/ tosi_et_al_2015_gcubed/
+newton_solver_benchmark_set/: dummy tosi_et_al_2015_gcubed/
 	+@$(def); make_lib $@/nonlinear_channel_flow
 	@$(def); run_prm $@/nonlinear_channel_flow "input_v.prm"
+	@$(def); run_prm $@/nonlinear_channel_flow "input_t.prm"
 	@$(def); run_all_prms $@/tosi_et_al_2015
 	+@$(def); make_lib $@/spiegelman_et_al_2016
 	@$(def); run_prm $@/spiegelman_et_al_2016 "input.prm"
-
 
 # TODO: prm doesn't run without replacing values:
 onset-of-convection/: dummy
