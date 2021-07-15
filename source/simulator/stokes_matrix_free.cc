@@ -695,7 +695,7 @@ namespace aspect
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::compute_diagonal ()
   {
-    // There is currently no need in the code for the diagonal of the entire stokes
+    // There is currently no need in the code for the diagonal of the entire Stokes
     // block. If needed, one could easily construct based on the diagonal of the A
     // block and append zeros to the end for the number of pressure DoFs.
     Assert(false, ExcNotImplemented());

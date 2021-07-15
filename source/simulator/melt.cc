@@ -348,7 +348,7 @@ namespace aspect
         // The whole expression for the first term on the RHS would be
         // (u_s \cdot g) (\phi \rho_f \kappa_f + (1 - \phi) \rho_s \kappa_s).
         // However, we already have the term (u_s \cdot g) \rho_s \kappa_s in the
-        // assembly of the stokes system without melt. Because of that, we only
+        // assembly of the Stokes system without melt. Because of that, we only
         // need to have -\phi \rho_s \kappa_s here.
         fluid_pressure_RHS += is_compressible
                               ?
