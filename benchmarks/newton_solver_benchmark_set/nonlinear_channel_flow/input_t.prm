@@ -2,7 +2,7 @@
 # flow benchmark. This is used to test the velocity boundary conditions
 # of the Newton Stokes solver.
 
-set Output directory = b1_TR_NS_ST1e-20_UFSfalse_NSP-SPD_NSA-none_C0_g6_ag0_AEWfalse_SF9e-1_NLT1e-14_ABT1e-2_LT1e-15_mLT1e-1_I150_P150_EW1_theta1_LS5_RSMfalse_AV-1_n5
+set Output directory = results/b1SNL_BTt_NS_ST1e-20_UFSfalse_NSP-SPD_NSA-SPD_C0_g6_ag0_AEWfalse_UDStrue_SF9e-1_NLT1e-14_ABT1e-2_LT1e-5_mLT9e-1_I150_P5_EW1_theta1_LS0_RSMtrue_AV-1_phi0_vel0_BV1e19_n5
 set Dimension = 2
 set CFL number                             = 1.0
 set Maximum time step                      = 1
@@ -11,25 +11,25 @@ set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
 set Use years in output instead of seconds = false  # default: true
-set Nonlinear solver scheme = iterated Advection and Stokes #Newton Stokes
+set Nonlinear solver scheme = iterated Advection and Newton Stokes
 set Max nonlinear iterations = 150
-set Nonlinear solver tolerance = 1e-14 #2.5e-10
+set Nonlinear solver tolerance = 1e-14
 set Additional shared libraries = ../../nonlinear_channel_flow/libsimple_nonlinear.so
 
 subsection Solver parameters
   subsection Stokes solver parameters
-    set Linear solver tolerance = 1e-15
+    set Linear solver tolerance = 1e-5
   end
 
   subsection Newton solver parameters
-    set Max pre-Newton nonlinear iterations = 3
+    set Max pre-Newton nonlinear iterations = 5
     set Nonlinear Newton solver switch tolerance = 1e-20
-    set Max Newton line search iterations = 5
-    set Maximum linear Stokes solver tolerance = 1e-1
-        set Use Newton residual scaling method = false
+    set Max Newton line search iterations = 0
+    set Maximum linear Stokes solver tolerance = 9e-1
+    set Use Newton residual scaling method = true
     set Use Newton failsafe = false
     set Stabilization preconditioner = SPD
-    set Stabilization velocity block = none
+    set Stabilization velocity block = SPD
   end
 end
 
@@ -76,7 +76,7 @@ subsection Material model
     set Stress exponent = 5
     set Viscosity averaging p = 10000
     set Viscosity prefactor = 1e-37
-    set Reference viscosity = 1e5
+    set Reference viscosity = 1e19
   end
 end
 
