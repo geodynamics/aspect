@@ -32,7 +32,7 @@ subsection Material model
 
     # isoviscous
     set Prefactors for diffusion creep          = 4e-24
-    set Activation energies for diffusion creep = 0 
+    set Activation energies for diffusion creep = 0
 
     # weakly temperature-dependent
     #set Prefactors for diffusion creep          = 5.05e-24
@@ -50,7 +50,7 @@ subsection Material model
 end
 
 subsection Geometry model
-  set Model name = chunk 
+  set Model name = chunk
   subsection Chunk
     set Chunk inner radius = 3480000
     set Chunk outer radius = 6371000
@@ -60,7 +60,7 @@ subsection Geometry model
 end
 
 subsection Boundary velocity model
-  set Tangential velocity boundary indicators = 0,1,2,3 
+  set Tangential velocity boundary indicators = 0,1,2,3
 end
 
 subsection Boundary temperature model
@@ -77,14 +77,14 @@ end
 subsection Initial temperature model
   set Model name = function
   subsection Function
-    set Function expression = 1023 
+    set Function expression = 1023
   end
 end
 
 subsection Gravity model
   set Model name = radial constant
   subsection Vertical
-    set Magnitude = 9.81 
+    set Magnitude = 9.81
   end
 end
 
@@ -103,4 +103,3 @@ subsection Postprocess
     set Number of grouped files       = 0
   end
 end
-
