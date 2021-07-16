@@ -64,6 +64,7 @@ namespace aspect
                                  : age_bottom_boundary_layer);
       if (read_from_ascii_file)
         {
+          // The input ascii contains the age of the seafloor. User must provide ages in seconds
           age_top = Utilities::AsciiDataBoundary<dim>::get_data_component(surface_boundary_id,
                                                                           position,
                                                                           0);
@@ -147,13 +148,20 @@ namespace aspect
 
       if (cooling_model == "plate cooling")
         {
-          const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
-          double sum_terms = 0;
-          for (unsigned int n=1; n<11; ++n)
+          if (depth > lithosphere_thickness)
             {
-              sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exponential) * std::sin((double)n * depth * numbers::PI / lithosphere_thickness);
+              surface_cooling_temperature = 0;
             }
-          surface_cooling_temperature = (T_surface - adiabatic_surface_temperature) * (depth / lithosphere_thickness + 2 / numbers::PI * sum_terms);
+          else
+            {
+              const double exponential = -kappa * std::pow(numbers::PI, 2) * age_top / std::pow(lithosphere_thickness, 2);
+              double sum_terms = 0;
+              for (unsigned int n=1; n<11; ++n)
+                {
+                  sum_terms += 1/(double)n * std::exp(std::pow((double)n, 2) * exponential) * std::sin((double)n * depth * numbers::PI / lithosphere_thickness);
+                  surface_cooling_temperature = T_surface - adiabatic_surface_temperature + (adiabatic_surface_temperature - T_surface) * (depth / lithosphere_thickness + 2 / numbers::PI * sum_terms);
+                }
+            }
         }
 
       // set the initial temperature perturbation
