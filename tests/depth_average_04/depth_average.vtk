@@ -77,6 +77,9 @@ LOOKUP_TABLE default
 SCALARS viscosity double 1
 LOOKUP_TABLE default
 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 1e+09 
+SCALARS log_viscosity double 1
+LOOKUP_TABLE default
+9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
 SCALARS vertical_heat_flux double 1
 LOOKUP_TABLE default
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
