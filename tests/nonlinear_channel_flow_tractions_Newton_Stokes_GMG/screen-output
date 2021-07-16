@@ -1,0 +1,76 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library </home/jiaqi2/aspect/aspect/benchmarks/newton_solver_benchmark_set/nonlinear_channel_flow/libsimple_nonlinear.so>
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 4,096 (on 7 levels)
+Number of degrees of freedom: 54,148 (33,282+4,225+16,641)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Skipping temperature solve because RHS is zero.
+   Initial Newton Stokes residual = 9.30238e+11, v = 9.30238e+11, p = 0
+
+   Solving Stokes system... 8+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 1, norm of the rhs: 9.30238e+11
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 2: 0.0898569, norm of the rhs: 8.35883e+10, newton_derivative_scaling_factor: 0
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 17+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 3: 0.0116343, norm of the rhs: 1.08226e+10, newton_derivative_scaling_factor: 0
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 12+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 4: 2.13523e-08, norm of the rhs: 19862.7, newton_derivative_scaling_factor: 0
+
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 9+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 5: 5.83645e-09, norm of the rhs: 5429.29, newton_derivative_scaling_factor: 0
+
+   Skipping temperature solve because RHS is zero.
+   Switching from defect correction form of Picard to the Newton solver scheme.
+   The linear solver tolerance is set to 0.9. Stabilization Preconditioner is SPD and A block is SPD.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 6: 4.92813e-09, norm of the rhs: 4584.33, newton_derivative_scaling_factor: 0
+
+   Skipping temperature solve because RHS is zero.
+   The linear solver tolerance is set to 0.843263. Stabilization Preconditioner is SPD and A block is SPD.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 7: 5.05388e-09, norm of the rhs: 4701.31, newton_derivative_scaling_factor: 0.155629
+
+   Skipping temperature solve because RHS is zero.
+   The linear solver tolerance is set to 0.758936. Stabilization Preconditioner is SPD and A block is SPD.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 8: 4.54079e-09, norm of the rhs: 4224.01, newton_derivative_scaling_factor: 0.134083
+
+   Skipping temperature solve because RHS is zero.
+   The linear solver tolerance is set to 0.639983. Stabilization Preconditioner is SPD and A block is SPD.
+   Solving Stokes system... 1+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 9: 4.58793e-09, norm of the rhs: 4267.87, newton_derivative_scaling_factor: 0.221995
+
+   Skipping temperature solve because RHS is zero.
+   The linear solver tolerance is set to 0.485706. Stabilization Preconditioner is SPD and A block is SPD.
+   Solving Stokes system... 2+0 iterations.
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 10: 4.70273e-09, norm of the rhs: 4374.66, newton_derivative_scaling_factor: 0.213917
+
+
+   Postprocessing:
+     RMS, max velocity:                  1.14e-07 m/s, 1.56e-07 m/s
+     Pressure min/avg/max:               -1.955e-06 Pa, 5e+08 Pa, 1e+09 Pa
+     Mass fluxes through boundary parts: 0 kg/s, 0 kg/s, -3.473 kg/s, 3.473 kg/s
+     Writing graphical output:           output-nonlinear_channel_flow_tractions_Newton_Stokes_GMG/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
++-----------------------------------------------+------------+------------+
++-----------------------------------+-----------+------------+------------+
++-----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

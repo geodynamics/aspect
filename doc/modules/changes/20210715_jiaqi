@@ -1,0 +1,4 @@
+New: The matrix-free GMG Stokes preconditioner is now 
+implemented for the Newton solver.
+<br>
+(Timo Heister, Menno Fraters, Jiaqi Zhang, 2021/07/15)
