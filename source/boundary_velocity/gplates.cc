@@ -236,9 +236,9 @@ namespace aspect
         for (unsigned int i = 0; i < 2; i++)
           {
             velocities[i]
-              = std_cxx14::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
-                                                                                   table_intervals,
-                                                                                   velocity_values[i]);
+              = std::make_unique<Functions::InterpolatedUniformGridData<2>> (grid_extent,
+                                                                             table_intervals,
+                                                                             velocity_values[i]);
           }
 
         AssertThrow(i == n_points,
@@ -594,8 +594,8 @@ namespace aspect
                                "preferred coordinate system of the geometry model is spherical "
                                "(e.g. spherical shell, chunk, sphere)."));
 
-      lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
-      old_lookup = std_cxx14::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+      lookup = std::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
+      old_lookup = std::make_unique<internal::GPlatesLookup<dim>>(pointone, pointtwo);
 
       // display the GPlates module information at model start.
       this->get_pcout() << lookup->screen_output(pointone, pointtwo);

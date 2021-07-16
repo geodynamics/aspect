@@ -346,7 +346,7 @@ namespace aspect
           material_model
             = dynamic_cast<const InclusionMaterial<dim> *>(&this->get_material_model());
 
-          ref_func = std_cxx14::make_unique<AnalyticSolutions::FunctionInclusion<dim>>(material_model->get_eta_B());
+          ref_func = std::make_unique<AnalyticSolutions::FunctionInclusion<dim>>(material_model->get_eta_B());
         }
       else
         {

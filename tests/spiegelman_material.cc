@@ -132,7 +132,7 @@ int f(double parameter)
   if (out_base.get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim> > (5));
 
   SpiegelmanMaterial<dim> mat;
   ParameterHandler prm;

@@ -86,7 +86,7 @@ namespace aspect
             n_components = prm.get_integer ("Number of components");
             try
               {
-                function = std_cxx14::make_unique<Functions::ParsedFunction<dim>>(n_components);
+                function = std::make_unique<Functions::ParsedFunction<dim>>(n_components);
                 function->parse_parameters (prm);
               }
             catch (...)

@@ -502,7 +502,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
+            std::make_unique<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>> (n_points));
         }
 
       Assert(!this->get_parameters().enable_additional_stokes_rhs
@@ -514,7 +514,7 @@ namespace aspect
           outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::ElasticOutputs<dim>> (n_points));
         }
 
       Assert(!this->get_parameters().enable_elasticity
@@ -527,7 +527,7 @@ namespace aspect
           && outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>() == nullptr)
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));
+            std::make_unique<MaterialModel::PrescribedPlasticDilation<dim>> (n_points));
         }
 
       Assert(!this->get_parameters().enable_prescribed_dilation

@@ -48,29 +48,29 @@ namespace aspect
   NewtonHandler<dim>::
   set_assemblers (Assemblers::Manager<dim> &assemblers) const
   {
-    assemblers.stokes_preconditioner.push_back(std_cxx14::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
-    assemblers.stokes_system.push_back(std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
+    assemblers.stokes_preconditioner.push_back(std::make_unique<aspect::Assemblers::NewtonStokesPreconditioner<dim>>());
+    assemblers.stokes_system.push_back(std::make_unique<aspect::Assemblers::NewtonStokesIncompressibleTerms<dim>>());
 
     if (this->get_material_model().is_compressible())
       {
         assemblers.stokes_preconditioner.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
+          std::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
 
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>>());
+          std::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>>());
       }
 
     if (this->get_parameters().formulation_mass_conservation ==
         Parameters<dim>::Formulation::MassConservation::implicit_reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>>());
+          std::make_unique<aspect::Assemblers::NewtonStokesImplicitReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::reference_density_profile)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim>>());
+          std::make_unique<aspect::Assemblers::NewtonStokesReferenceDensityCompressibilityTerm<dim>>());
       }
     else if (this->get_parameters().formulation_mass_conservation ==
              Parameters<dim>::Formulation::MassConservation::incompressible)
@@ -81,7 +81,7 @@ namespace aspect
              Parameters<dim>::Formulation::MassConservation::isentropic_compression)
       {
         assemblers.stokes_system.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim>>());
+          std::make_unique<aspect::Assemblers::NewtonStokesIsentropicCompressionTerm<dim>>());
       }
     else
       AssertThrow(false,
@@ -92,13 +92,13 @@ namespace aspect
     if (!this->get_boundary_traction().empty())
       {
         assemblers.stokes_system_on_boundary_face.push_back(
-          std_cxx14::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
+          std::make_unique<aspect::Assemblers::StokesBoundaryTraction<dim>>());
       }
 
     // add the terms necessary to normalize the pressure
     if (this->pressure_rhs_needs_compatibility_modification())
       assemblers.stokes_system.push_back(
-        std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
+        std::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim>>());
   }
 
 
@@ -113,7 +113,7 @@ namespace aspect
 
     const unsigned int n_points = output.viscosities.size();
     output.additional_outputs.push_back(
-      std_cxx14::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
+      std::make_unique<MaterialModel::MaterialModelDerivatives<dim>>(n_points));
   }
 
 

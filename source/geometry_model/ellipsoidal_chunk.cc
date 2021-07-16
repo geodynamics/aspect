@@ -229,7 +229,7 @@ namespace aspect
     std::unique_ptr<Manifold<dim,3>>
                                   EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::clone() const
     {
-      return std_cxx14::make_unique<EllipsoidalChunkGeometry>(*this);
+      return std::make_unique<EllipsoidalChunkGeometry>(*this);
     }
 
     template <int dim>
