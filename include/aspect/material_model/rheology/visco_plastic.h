@@ -250,6 +250,12 @@ namespace aspect
           bool allow_negative_pressures_in_plasticity;
 
           /**
+           * Whether to use adiabatic pressure instead of full pressure (default)
+           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
+           */
+          bool use_adiabatic_pressure_in_creep;
+
+          /**
            * List of exponents controlling the behaviour of the stress limiter
            * yielding mechanism.
            */
