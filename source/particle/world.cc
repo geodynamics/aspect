@@ -618,7 +618,7 @@ namespace aspect
 
       boost::container::small_vector<double, 100> solution_values(this->get_fe().dofs_per_cell);
 
-      cell->get_dof_values(this->get_current_linearization_point(),
+      cell->get_dof_values(this->get_solution(),
                            solution_values.begin(),
                            solution_values.end());
 
