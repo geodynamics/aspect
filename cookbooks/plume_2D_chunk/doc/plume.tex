@@ -4,12 +4,12 @@
 This cookbook is inspired by Kellogg \& King (1997) \cite{keki97} but is not an attempt at reproducing the results of their publication. Their study was entirely carried out in dimensionless form. Here, however, we choose to build a similar experiment based on Earth dimensions and material properties.
 Furthermore, in this cookbook we run strictly in 2D, whereas the original paper makes use of axisymmetry to restrict the problem to two velocity degrees of freedom \cite{kiha92}.
 
-The two-dimensional domain is a section of an annulus, i.e. a 2D chunk with $\theta \in [3\pi/8:\pi/2]$. Free-slip boundary conditions are imposed on all boundaries. The inner and outer radii are $R\textsubscript{inner}=3480~\si{\km}$ and $R\textsubscript{outer}=6371~\si{\km}$, respectively.
+The two-dimensional domain is a section of an annulus, i.e. a 2D chunk with $ 3\pi/8 \leq \phi \leq \pi/2$. Free-slip boundary conditions are imposed on all boundaries. The inner and outer radii are $R\textsubscript{inner}=3480~\si{\km}$ and $R\textsubscript{outer}=6371~\si{\km}$, respectively.
 
-Temperature boundary conditions are $T=T\textsubscript{surf}$ at the surface (outer boundary), insulating on the sides, and $T=T\textsubscript{cmb}$ at the inner boundary except along a patch $\theta > 7\pi/16$ where $T=T\textsubscript{patch}=T\textsubscript{surf}+\Delta T$.
+Temperature boundary conditions are $T=T\textsubscript{surf}$ at the surface (outer boundary), insulating on the sides, and $T=T\textsubscript{cmb}$ at the inner boundary except along a patch $\phi > 7\pi/16$ where $T=T\textsubscript{patch}=T\textsubscript{surf}+\Delta T$.
 Note that in the original publication the portion of the inner boundary that is not the patch is also insulating. By default, \aspect{} cannot accommodate two different boundary condition types on one boundary. So, we will prescribe plausible temperatures along the whole boundary, instead: $T\textsubscript{surf}=0\si{\celsius}$, $\Delta T=3000\si{\celsius}$, and $T\textsubscript{cmb}=2750\si{\celsius}$ (see for instance Steinberger \& Calderwood \cite{stca06}).
 
-The domain contains a single fluid described by the `visco plastic' material model, with thermal expansion $\alpha=3\times 10^{-5}~\si{\per\kelvin}$, heat capacity $C_p=1250~\si{\joule\per\kelvin}$, thermal diffusivity $\kappa=5.5\times 10^{-7}~\si{\meter\per\second}$ (corresponding to the thermal conductivity value  $k=\kappa \rho_0 C_p=2.25~\si{\watt\per\meter\per\kelvin}$), reference temperature $T_0=1023~\si{\kelvin}$, reference density  $\rho_0=3250~\si{\kg\per\cubic\meter}$, and viscosity $\eta_0=1.25\times 10^{23}$. Gravity is constant throughout the mantle with $g=9.81~\si{\meter\per\square\second}$.
+The domain contains a single fluid described by the `visco plastic' material model, with thermal expansion $\alpha=3\times 10^{-5}~\si{\per\kelvin}$, heat capacity $C_p=1250~\si{\joule\per\kg\per\kelvin}$, thermal diffusivity $\kappa=5.5\times 10^{-7}~\si{\square\meter\per\second}$ (corresponding to the thermal conductivity value  $k=\kappa \rho_0 C_p=2.25~\si{\watt\per\meter\per\kelvin}$), reference temperature $T_0=1023~\si{\kelvin}$, reference density  $\rho_0=3250~\si{\kg\per\cubic\meter}$, and viscosity $\eta_0=1.25\times 10^{23}$. Gravity is constant throughout the mantle with $g=9.81~\si{\meter\per\square\second}$.
 With these parameters we find that the dimensionless Rayleigh number is 
 \begin{equation}
 Ra 
@@ -20,7 +20,6 @@ In Kellogg \& King (1997), the dimensionless viscosity is temperature-dependent 
 \[
 \eta'(T')
 =\eta_0' \exp\left[ \frac{E}{R \Delta T} \left( \frac{1}{T'+T_0'} -\frac{1}{1+T_0'}  \right)   \right],
-%=\eta_0' \exp\left[ \frac{E}{R} \left( \frac{1}{T' \Delta T  +t_0 \Delta T} -\frac{1}{\Delta T +t_0 \Delta T}  \right)   \right]
 \]
 where $\eta_0'=1$ is the dimensionless viscosity, $E$ is the activation energy, and $R$ is the universal gas constant. The dimensionless temperature $T_0'$ is the surface temperature $T_{surf}$ divided by the temperature drop across the shell $\Delta T$. 
 Assuming that the authors used the common relationship	 
@@ -37,7 +36,7 @@ then multiplying the equation above by $\eta_0$, it follows that:
 so that $\eta(T_{patch})=\eta_0$.
 %
 Kellogg \& King (1997) investigated three cases:
-$E/R \Delta T = \{0,0.25328,3\}$. Setting $R=8.31~\si{\joule\per\kelvin\per\mol}$ and $\Delta T=3000\si{\kelvin}$, the activation energy becomes $E=\{ 0, 6317.6 , 74829.6 \}\si{\joule}$, lower than typical values (above 200~\si{kJ}, see for example Karato \& Wu \cite{KW93}).
+$E/R \Delta T = \{0,0.25328,3\}$. Setting $R=8.31~\si{\joule\per\kelvin\per\mol}$ and $\Delta T=3000\si{\kelvin}$, the activation energy becomes $E=\{ 0, 6317.6 , 74829.6 \}\si{\joule\per\mole}$, lower than typical values (above 200~\si{kJ}, see for example Karato \& Wu \cite{KW93}).
 
 The viscosity expression can be written as
 \[
@@ -66,8 +65,7 @@ Steady-state fields are shown in Fig.~\ref{fig:plume-diff-creep}. We find that t
   \label{fig:plume-diff-creep}
 \end{figure}
 
-
-The obtention of a steady state is contingent on the narrow angular opening. We find that simply increasing the angular opening from $\pi/8$ to $\pi/4$ yields only a statistical steady state, as multiple downwellings occur near the side but the system never stabilises (see Fig.~\ref{fig:plume-angular-opening}). Also, decreasing $\eta_0$ by a factor 10 would yield $Ra=10^7$. In this case, too, a statistical steady state is reached (not shown here).
+Obtaining a steady state is contingent on the narrow angular opening. We find that simply increasing the angular opening from $\pi/8$ to $\pi/4$ yields only a statistical steady state, as multiple downwellings occur near the side but the system never stabilises (see Fig.~\ref{fig:plume-angular-opening}). Also, decreasing $\eta_0$ by a factor 10 would yield $Ra=10^7$. In this case, too, a statistical steady state is reached (not shown here).
 
 \begin{figure}
   \centering

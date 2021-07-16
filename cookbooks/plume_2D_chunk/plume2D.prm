@@ -34,14 +34,6 @@ subsection Material model
     set Prefactors for diffusion creep          = 4e-24
     set Activation energies for diffusion creep = 0
 
-    # weakly temperature-dependent
-    #set Prefactors for diffusion creep          = 5.05e-24
-    #set Activation energies for diffusion creep = 6317.6
-
-    # strongly temperature-dependent
-    #set Prefactors for diffusion creep          = 6.26e-23
-    #set Activation energies for diffusion creep = 74829.6
-
     # Plasticity parameters - irrelevant
     # set to very high value so that it is not used
     set Cohesions = 1e15
@@ -54,7 +46,7 @@ subsection Geometry model
   subsection Chunk
     set Chunk inner radius = 3480000
     set Chunk outer radius = 6371000
-    set Chunk minimum longitude = 0 #67.5
+    set Chunk minimum longitude = 67.5
     set Chunk maximum longitude = 90
   end
 end
@@ -63,6 +55,11 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = 0,1,2,3
 end
 
+# temperature is set to 273K at the top, i.e. for r>4e6
+# where 4e6 is an arbitrary radius value falling between 
+# the CMB and the surface. # If r<4e6 then we wish to prescribe 
+# a temperature on the # bottom surface: since phi=0 at the 
+# equator (i.e. x-axis) then the patch is defined by 7pi/16<phi<pi/2.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
   set Model name = function
