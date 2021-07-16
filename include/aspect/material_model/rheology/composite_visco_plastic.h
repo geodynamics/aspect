@@ -28,6 +28,7 @@
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/peierls_creep.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
+#include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
 
 namespace aspect
@@ -80,7 +81,8 @@ namespace aspect
                              const SymmetricTensor<2,dim> &strain_rate,
                              std::vector<double> &partial_strain_rates,
                              const std::vector<double> &phase_function_values = std::vector<double>(),
-                             const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+                             const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>(),
+                             const std::vector<double> &elastic_shear_moduli = std::vector<double>()) const;
 
           /**
            * Compute the compositional field viscosity
@@ -97,7 +99,8 @@ namespace aspect
                                          const SymmetricTensor<2,dim> &strain_rate,
                                          std::vector<double> &partial_strain_rates,
                                          const std::vector<double> &phase_function_values = std::vector<double>(),
-                                         const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
+                                         const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>(),
+                                         const double elastic_shear_modulus = 0.) const;
 
           /**
             * Compute the strain rate and first stress derivative
@@ -108,14 +111,20 @@ namespace aspect
             * each phase and then averaged for each compositional field.
             */
           std::pair<double, double>
-          compute_strain_rate_and_derivative (const double creep_stress,
-                                              const double pressure,
-                                              const double temperature,
-                                              const unsigned int composition,
-                                              const DiffusionCreepParameters diffusion_creep_parameters,
-                                              const DislocationCreepParameters dislocation_creep_parameters,
-                                              const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters) const;
+          compute_creep_strain_rate_and_derivative (const double creep_stress,
+                                                    const double pressure,
+                                                    const double temperature,
+                                                    const unsigned int composition,
+                                                    const DiffusionCreepParameters diffusion_creep_parameters,
+                                                    const DislocationCreepParameters dislocation_creep_parameters,
+                                                    const PeierlsCreepParameters peierls_creep_parameters,
+                                                    const DruckerPragerParameters drucker_prager_parameters) const;
+
+          /**
+            * Get the elastic shear moduli if elasticity is active.
+            */
+          const std::vector<double> &
+          get_elastic_shear_moduli () const;
 
         private:
 
@@ -126,6 +135,7 @@ namespace aspect
           bool use_dislocation_creep;
           bool use_peierls_creep;
           bool use_drucker_prager;
+          bool use_elasticity;
 
           /**
            * Pointers to objects for computing deformation mechanism
@@ -135,6 +145,7 @@ namespace aspect
           std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
           std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
+          std::unique_ptr<Rheology::Elasticity<dim>> elasticity;
 
           DruckerPragerParameters drucker_prager_parameters;
 
