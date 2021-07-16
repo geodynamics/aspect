@@ -490,7 +490,7 @@ namespace aspect
             }
         }
 
-      if (in.strain_rate.size() )
+      if (in.requests_property(MaterialProperties::viscosity) )
         {
           // 5) Compute plastic weakening of the viscosity
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)

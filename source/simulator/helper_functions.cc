@@ -426,6 +426,9 @@ namespace aspect
     MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
                                                  introspection.n_compositional_fields);
 
+    // We do not need to compute anything but the viscosity
+    in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (cell->is_locally_owned())
         {

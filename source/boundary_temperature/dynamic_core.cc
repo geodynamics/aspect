@@ -675,6 +675,9 @@ namespace aspect
 
         typename MaterialModel::Interface<dim>::MaterialModelInputs in(fe_face_values.n_quadrature_points, this->n_compositional_fields());
         typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
+        // Do not request viscosity or reaction rates
+        in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
 
         // for every surface face on which it makes sense to compute a
         // heat flux and that is owned by this processor,

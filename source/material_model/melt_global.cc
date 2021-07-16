@@ -168,7 +168,9 @@ namespace aspect
               // calculate viscosity based on local melt
               out.viscosities[i] *= exp(- alpha_phi * porosity);
 
-              if (include_melting_and_freezing && in.requests_property(MaterialProperties::reaction_terms))
+              if (include_melting_and_freezing && (in.requests_property(MaterialProperties::reaction_terms) ||
+                                                   in.requests_property(MaterialProperties::reaction_rates) ||
+                                                   in.requests_property(MaterialProperties::viscosity)))
                 {
                   const unsigned int peridotite_idx = this->introspection().compositional_index_for_name("peridotite");
 
@@ -184,14 +186,12 @@ namespace aspect
                   if (old_porosity[i] + porosity_change < 0)
                     porosity_change = -old_porosity[i];
 
-                  for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                  for (unsigned int c = 0; c < in.composition[i].size(); ++c)
                     {
                       if (c == peridotite_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change
-                                                   - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]) * this->get_timestep();
                       else if (c == porosity_idx && this->get_timestep_number() > 1)
-                        out.reaction_terms[i][c] = porosity_change
-                                                   * out.densities[i] / this->get_timestep();
+                        out.reaction_terms[i][c] = porosity_change * out.densities[i] / this->get_timestep();
                       else
                         out.reaction_terms[i][c] = 0.0;
 
@@ -201,8 +201,7 @@ namespace aspect
                           if (reaction_rate_out != nullptr)
                             {
                               if (c == peridotite_idx && this->get_timestep_number() > 0)
-                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale
-                                                                          - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
+                                reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale - in.composition[i][peridotite_idx] * trace(in.strain_rate[i]);
                               else if (c == porosity_idx && this->get_timestep_number() > 0)
                                 reaction_rate_out->reaction_rates[i][c] = porosity_change / melting_time_scale;
                               else
@@ -213,10 +212,10 @@ namespace aspect
                     }
 
                   // find depletion = peridotite, which might affect shear viscosity:
-                  const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx],0.0));
+                  const double depletion_visc = std::min(1.0, std::max(in.composition[i][peridotite_idx], 0.0));
 
                   // calculate strengthening due to depletion:
-                  const double depletion_strengthening = std::min(exp(alpha_depletion*depletion_visc),delta_eta_depletion_max);
+                  const double depletion_strengthening = std::min(exp(alpha_depletion * depletion_visc), delta_eta_depletion_max);
 
                   // calculate viscosity change due to local melt and depletion:
                   out.viscosities[i] *= depletion_strengthening;

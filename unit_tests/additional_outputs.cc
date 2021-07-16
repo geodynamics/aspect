@@ -74,6 +74,7 @@ TEST_CASE("AdditionalOutputs works")
   using namespace aspect::MaterialModel;
   MaterialModelInputs<dim> in(1,1);
   MaterialModelOutputs<dim> out(1,1);
+  in.requested_properties = MaterialProperties::additional_outputs;
 
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim>>() == NULL);

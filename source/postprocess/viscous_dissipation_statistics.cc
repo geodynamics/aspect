@@ -58,6 +58,7 @@ namespace aspect
                                                                      n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
                                                                        n_compositional_fields);
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -68,7 +69,6 @@ namespace aspect
                       cell,
                       this->introspection(),
                       this->get_solution());
-            in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
             this->get_material_model().fill_additional_material_model_inputs(in,
                                                                              this->get_solution(),

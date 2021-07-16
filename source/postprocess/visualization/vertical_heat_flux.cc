@@ -64,6 +64,10 @@ namespace aspect
                                                    false);
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+        in.requested_properties = MaterialModel::MaterialProperties::density |
+                                  MaterialModel::MaterialProperties::specific_heat |
+                                  MaterialModel::MaterialProperties::thermal_conductivity;
+
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)

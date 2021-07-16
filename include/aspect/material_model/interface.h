@@ -203,6 +203,9 @@ namespace aspect
         entropy_derivative_pressure    = 128,
         entropy_derivative_temperature = 256,
         reaction_terms                 = 512,
+        reaction_rates                 = 1024,
+        force_terms                    = 2048,
+        additional_outputs             = 4096,
 
         equation_of_state_properties   = density |
                                          thermal_expansion_coefficient |
@@ -213,7 +216,10 @@ namespace aspect
         all_properties                 = equation_of_state_properties |
                                          viscosity |
                                          thermal_conductivity |
-                                         reaction_terms
+                                         reaction_terms |
+                                         reaction_rates |
+                                         force_terms |
+                                         additional_outputs
       };
 
       /**

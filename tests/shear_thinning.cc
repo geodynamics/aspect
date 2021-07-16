@@ -117,6 +117,7 @@ namespace aspect
 
       typename MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, this->n_compositional_fields());
       typename MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       // compute the integral of the viscosity. since we're on a unit box,
       // this also is the average value

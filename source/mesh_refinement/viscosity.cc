@@ -68,6 +68,7 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature.size(),
                                                    this->n_compositional_fields());
+      in.requested_properties = MaterialModel::MaterialProperties::viscosity;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
