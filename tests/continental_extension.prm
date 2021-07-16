@@ -15,35 +15,13 @@ include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension
 
 set Timing output frequency                = 100
 set End time                               = 1e4
+set Max nonlinear iterations               = 1
 
-#### Parameters describing the model
-
-# Model geometry (40x10 km, 10 km spacing)
-subsection Geometry model
-  set Model name = box
-  subsection Box
-    set X repetitions = 40
-    set Y repetitions = 10
-    set X extent      = 400e3
-    set Y extent      = 100e3
-  end
-end
-
-# Mesh refinement specifications (no mesh refinement,
-# but the coarse mesh is already 40x10, see above)
+# Perform only one global refinement and no adaptive refinements
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 0
+  set Initial global refinement          = 1
   set Time steps between mesh refinement = 0
-end
-
-
-# Number and names of compositional fields
-# The four compositional fields represent the upper crust, lower crust, mantle
-# and a 'seed' placed in the mantle to help localize deformation.
-subsection Compositional fields
-  set Number of fields = 4
-  set Names of fields = upper_crust, lower_crust, lithospheric_mantle, seed
 end
 
 
@@ -57,7 +35,7 @@ subsection Boundary temperature model
   set List of model names = box
 
   subsection Box
-    set Bottom temperature = 1573
+    set Bottom temperature = 1613
     set Top temperature    =  273
   end
 end
@@ -66,9 +44,9 @@ end
 subsection Initial temperature model
   set Model name = continental geotherm
   subsection Continental geotherm
-          set Lithosphere-Asthenosphere boundary isotherm = 1573.
+          set Lithosphere-Asthenosphere boundary isotherm = 1613.
           set Surface temperature = 273.
-          set Layer thicknesses = 20000., 10000., 70000.
+          set Layer thicknesses = 20000., 20000., 60000.
   end
 end
 
