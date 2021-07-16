@@ -96,6 +96,8 @@ namespace aspect
                                          const unsigned int composition,
                                          const SymmetricTensor<2,dim> &strain_rate,
                                          std::vector<double> &partial_strain_rates,
+                                         const double current_cohesion,
+                                         const double current_friction,
                                          const std::vector<double> &phase_function_values = std::vector<double>(),
                                          const std::vector<unsigned int> &n_phases_per_composition = std::vector<unsigned int>()) const;
 
@@ -115,7 +117,9 @@ namespace aspect
                                               const DiffusionCreepParameters diffusion_creep_parameters,
                                               const DislocationCreepParameters dislocation_creep_parameters,
                                               const PeierlsCreepParameters peierls_creep_parameters,
-                                              const DruckerPragerParameters drucker_prager_parameters) const;
+                                              const DruckerPragerParameters drucker_prager_parameters,
+                                              const double current_cohesion,
+                                              const double current_friction) const;
 
         private:
 

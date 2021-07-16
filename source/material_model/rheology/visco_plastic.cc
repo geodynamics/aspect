@@ -302,7 +302,9 @@ namespace aspect
                                                              in.temperature[i],
                                                              j,
                                                              in.strain_rate[i],
-                                                             partial_strain_rates);
+                                                             partial_strain_rates,
+                                                             current_cohesion,
+                                                             current_friction);
 
           }
         return output_parameters;

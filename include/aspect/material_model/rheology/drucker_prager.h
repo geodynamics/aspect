@@ -108,7 +108,9 @@ namespace aspect
           compute_strain_rate_and_derivative (const double stress,
                                               const double pressure,
                                               const unsigned int composition,
-                                              const DruckerPragerParameters p) const;
+                                              const DruckerPragerParameters p,
+                                              const double current_cohesion,
+                                              const double current_friction) const;
 
           /**
            * Compute the derivative of the plastic viscosity with respect to pressure.
