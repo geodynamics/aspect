@@ -7,7 +7,7 @@ set Adiabatic surface temperature          = 1673.0
 set Output directory                       = output
 set Use years in output instead of seconds = true
 
-# set a easy solving scheme
+# Do not solve the Stokes system. 
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
