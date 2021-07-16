@@ -84,6 +84,10 @@ namespace aspect
                              const double pressure_scaling,
                              const bool is_compressible);
 
+        /**
+         * Fills in the tables of derivatives and strain rate for Newton method,
+         * and gives information regarding stabilization schemes.
+         */
         void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
                                     &viscosity_derivative_wrt_pressure_table,
                                     const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
@@ -130,8 +134,7 @@ namespace aspect
          * Table which stores the product of viscosity derivative with respect to pressure
          * and newton derivative scaling factor.
          */
-        const Table<2, VectorizedArray<number>>
-                                             *viscosity_derivative_wrt_pressure_table;
+        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
 
         /**
          * Table which stores the strain rate for eacc cell.
@@ -258,6 +261,10 @@ namespace aspect
         void fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
                              const bool is_compressible);
 
+        /**
+         * Fills in the tables of derivatives and strain rate for Newton method,
+         * and gives information regarding stabilization schemes.
+         */
         void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
                                     &viscosity_derivative_wrt_pressure_table,
                                     const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
@@ -314,8 +321,7 @@ namespace aspect
          * Table which stores the product of viscosity derivative with respect to pressure
          * and newton derivative scaling factor.
          */
-        const Table<2, VectorizedArray<number>>
-                                             *viscosity_derivative_wrt_pressure_table;
+        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
 
         /**
          * Table which stores the strain rate for eacc cell.
@@ -611,8 +617,7 @@ namespace aspect
       Table<2, VectorizedArray<double>> active_viscosity_table;
       MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> level_viscosity_tables;
 
-      Table<2, VectorizedArray<double>>
-                                     active_viscosity_derivative_wrt_pressure_table;
+      Table<2, VectorizedArray<double>> active_viscosity_derivative_wrt_pressure_table;
 
       Table<2, SymmetricTensor<2, dim, VectorizedArray<double>>> active_strain_rate_table;
 

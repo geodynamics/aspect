@@ -792,8 +792,7 @@ namespace aspect
             if (strain_rate_table !=nullptr
                 && !(strain_rate_table->empty()))
               {
-                SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i =
-                                                              velocity.get_symmetric_gradient (q);
+                SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
 
                 // Note that derivative_scaling_factor * alpha is multiplied to
                 // viscosity_derivative_wrt_strain_rate_table
@@ -1675,9 +1674,6 @@ namespace aspect
         mg_matrices_Schur_complement[level].fill_cell_data (level_viscosity_tables[level],
                                                             sim.pressure_scaling);
       }
-
-
-
 
     {
       // create active mesh tables for derivatives needed in Newton method
