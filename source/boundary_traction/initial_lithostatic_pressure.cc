@@ -193,8 +193,8 @@ namespace aspect
           for (unsigned int c=0; c<n_compositional_fields; ++c)
             in.composition[0][c] = this->get_initial_composition_manager().initial_composition(in.position[0], c);
 
-          // We do not need the viscosity.
-          in.strain_rate.resize(0);
+          // We only need the density from the material model
+          in.requested_properties = MaterialModel::MaterialProperties::density;
 
           // Evaluate the material model to get the density at the current point.
           this->get_material_model().evaluate(in, out);

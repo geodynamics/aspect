@@ -147,6 +147,11 @@ namespace aspect
                     in.position = fe_values.get_quadrature_points();
 
                     // we do not need the strain rate
+                    // TODO this statement should be changed to
+                    // in.requested_properties = ...
+                    // but I don't know what is actually needed here,
+                    // as it seems only additional output is requested.
+                    // There is no property for that.
                     in.strain_rate.resize(0);
 
                     // Loop over compositional fields to get composition values
@@ -305,6 +310,11 @@ namespace aspect
                     in.position = fe_values.get_quadrature_points();
 
                     // we do not need the strain rate
+                    // TODO this statement should be changed to
+                    // in.requested_properties = ...
+                    // but I don't know what is actually needed here,
+                    // as it seems only additional output is requested.
+                    // There is no property for that.
                     in.strain_rate.resize(0);
 
                     // Loop over compositional fields to get composition values
