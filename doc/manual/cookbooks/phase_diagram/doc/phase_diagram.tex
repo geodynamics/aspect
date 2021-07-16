@@ -5,7 +5,7 @@ For many models it is useful to see how the material parameters vary as a functi
 
 In this phase diagram cookbook, phase diagrams are generated from model runs and visualized with VISIT, but Paraview could also be used to view the same output. % intro
 This is a simple way of using the visualization output to check the correct implementation of phase transitions in a material model. 
-The idea lies in initiating a linear temperature variation along the x-axis in a box geometry, so as to view the two axes, x and y,  as pressure and temperature, respectively. % technique
+The idea lies in using a model with an initial temperature that increases linearly along the x-axis and a pressure that changes linearly along the y-axis in a box geometry, so that the two axes, x and y, can be used as axes for pressure and temperature in the graphical output. 
 Here, I visualize a diagram of the phase transitions implemented in the visco plastic material model, as well as a lookup table in the Steinberger material model. 
 
 \paragraph{The input file.}
