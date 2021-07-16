@@ -9,7 +9,7 @@ In the crustal deformation examples above, the viscosity depends solely on the D
 This cookbook provides one such example where the continental lithosphere undergoes extension. Notably, the model design follows that of numerous previously published continental extension studies~\cite[and references therein]{Hui11,Bru14,Nal15}.
 
 \paragraph{Continental Extension}
-The 2D Cartesian model spans 200 (x) by 100 (y) km and has a finite element grid with 1.25 and 2.5 km grid spacing, respectively,above and  below 50 km depth. This variation in grid spacing is achieved with a single initial adaptive refinement step using the minimum refinement function strategy. Unlike the crustal deformation cookbook (see Section~\ref{sec:cookbooks-crustal-deformation}, the mesh is not refined with time.
+The 2D Cartesian model spans 200 ($x$) by 100 ($y$) km and has a finite element grid with 1.25 and 2.5 km grid spacing, respectively, above and  below 50 km depth. This variation in grid spacing is achieved with a single initial adaptive refinement step using the minimum refinement function strategy. Unlike the crustal deformation cookbook (see Section~\ref{sec:cookbooks-crustal-deformation}, the mesh is not refined with time.
 
 \lstinputlisting[language=prmfile]{cookbooks/continental_extension/doc/continental_extension_geometry_mesh.prm.out}
 
@@ -38,9 +38,9 @@ For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux ($
   q_B &= q_T - A \Delta z.
 \end{align}
 
-In this example, specifying the top (\SI{273}{K}) temperature, surface heat flow (55 $mW/m^2$), and thermal conductivity and radiogenic heat production of each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
+In this example, specifying the top (\SI{273}{K}) temperature, surface heat flow (\SI{55}{\milli\Watt\per\meter^2}), and thermal conductivity and radiogenic heat production of each layer provides enough constraints to successively solve for the temperature and heat flux at the top of the lower crust and mantle.
 
-As noted above, the initial zone of randomized plastic strain within the model center and strain softening of the friction and cohesion produces an initial pattern of distributed and unlocalized deformation across the zone of initial plastic strain (Fig.~\ref{fig:continental_extension_cookbook_0myr}). After 5 million years of extension distributed faulting is clearly evident in both the active and finite deformation fields and surface topography over an approximately 100 km wide region (Fig.~\ref{fig:continental_extension_cookbook_5myr}). While deformation is distributed within this region, the fault system is clearly assymetric as the rate of deformation and accumulated brittle strain varies between faults.Indeed, localization onto the two conjugate rift-bounding border faults is evident from the active deformation field. Notably, deformation of the free surface near the fixed left and right walls is evident at 5 Myr. Continued distortion of the surface mesh near the lateral boundaries may lead to solver issues, which can be overcome by either widening the model or allowing the mesh to deform along these boundaries.  
+As noted above, the initial zone of randomized plastic strain within the model center and strain softening of the friction and cohesion produces an initial pattern of distributed and unlocalized deformation across the zone of initial plastic strain (Fig.~\ref{fig:continental_extension_cookbook_0myr}). After 5 million years of extension, distributed faulting is clearly evident in both the active and finite deformation fields and surface topography over an approximately 100 km wide region (Fig.~\ref{fig:continental_extension_cookbook_5myr}). While deformation is distributed within this region, the fault system is clearly asymetric as the rate of deformation and accumulated brittle strain varies between faults. Indeed, localization onto the two conjugate rift-bounding border faults is evident from the active deformation field. Notably, deformation of the free surface near the fixed left and right walls is evident at 5 Myr. Continued distortion of the surface mesh near the lateral boundaries may lead to solver issues, which can be overcome by either widening the model or allowing the mesh to deform along these boundaries.  
 
 With further extension for millions of years, significant crustal thinning and surface topography development should occur in response to displacement along the rift-bounding faults. However, given that the model only extends to 100 km depth, the simulation will not produce a realistic representation of continental breakup due to the lack of an upwelling asthenosphere layer. Indeed, numerical studies that examine continental breakup, rather than just the initial stages of continental extension, include an asthenospheric layer or modified basal boundary conditions (e.g. Winkler boundary condition \cite[for example]{Bru14}) as temperature variations associated with lithospheric thinning exert a first-order influence on the deformation patterns. As noted below, numerous additional parameters may also affect the temporal evolution of deformation patterns.
 
@@ -49,11 +49,11 @@ With further extension for millions of years, significant crustal thinning and s
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{cookbooks/continental_extension/doc/continental_extension_cookbook_0myr.png}
-\caption{\it Initial active deformation field (strain rate second invariant in units of $s^{-1}$) and distribution of plastic strain. The white line marks the (\SI{893}{K}) isotherm (initial Moho temperature).}
+\caption{\it Initial active deformation field (strain rate second invariant in units of $\si{s}^{-1}$) and distribution of plastic strain. The white line marks the (\SI{893}{K}) isotherm (initial Moho temperature).}
 \label{fig:continental_extension_cookbook_0myr}
 \end{figure}
 \begin{figure}
 \includegraphics[width=\textwidth]{cookbooks/continental_extension/doc/continental_extension_cookbook_5myr.png}
-\caption{\it Active (strain rate second invariant in units of $s^{-1}$) and finite (plastic) deformation after \num{5e6} years of extension. The white line marks the (\SI{893}{K}) isotherm (initial Moho temperature).}
+\caption{\it Active (strain rate second invariant in units of $\si{s}^{-1}$) and finite (plastic) deformation after \num{5e6} years of extension. The white line marks the (\SI{893}{K}) isotherm (initial Moho temperature).}
 \label{fig:continental_extension_cookbook_5myr}
 \end{figure}
