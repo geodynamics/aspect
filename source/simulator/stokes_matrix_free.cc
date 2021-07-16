@@ -21,6 +21,7 @@
 
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
+#include <aspect/mesh_deformation/interface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 
@@ -1292,9 +1293,12 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    // This requires: porting the additional stabilization terms and using a
-    // different mapping in the MatrixFree operators:
-    AssertThrow(!sim.parameters.mesh_deformation_enabled, ExcNotImplemented());
+    if (sim.parameters.mesh_deformation_enabled)
+      {
+        // This requires porting the additional stabilization terms
+        AssertThrow(sim.mesh_deformation->get_free_surface_boundary_indicators().empty(),
+                    ExcMessage("The matrix-free Stokes solver does not support free surface boundaries."));
+      }
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
@@ -1354,6 +1358,17 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
+    if (sim.mesh_deformation)
+      {
+        // Update the geometry information stored in the MatrixFree
+        // objects from the mapping.  Grab the mapping stored in the
+        // object and do not replace with sim.mapping as we have
+        // different mappings per level.
+        for (auto &obj : matrix_free_objects)
+          obj->update_mapping(*obj->get_mapping_info().mapping);
+      }
+
+
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                sim.triangulation.get_communicator());
 
@@ -2295,6 +2310,9 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::setup_dofs()
   {
+    // This vector will be refilled with the new MatrixFree objects below:
+    matrix_free_objects.clear();
+
     // Velocity DoFHandler
     {
       dof_handler_v.clear();
@@ -2439,7 +2457,7 @@ namespace aspect
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
       stokes_matrix.clear();
       stokes_matrix.initialize(stokes_mf_storage);
-
+      matrix_free_objects.push_back(stokes_mf_storage);
     }
 
     // ABlock matrix
@@ -2456,6 +2474,7 @@ namespace aspect
 
       A_block_matrix.clear();
       A_block_matrix.initialize(ablock_mf_storage);
+      matrix_free_objects.push_back(ablock_mf_storage);
     }
 
     // Schur complement block matrix
@@ -2472,6 +2491,7 @@ namespace aspect
 
       Schur_complement_block_matrix.clear();
       Schur_complement_block_matrix.initialize(Schur_mf_storage);
+      matrix_free_objects.push_back(Schur_mf_storage);
     }
 
     // GMG matrices
@@ -2491,6 +2511,9 @@ namespace aspect
           level_constraints.add_lines(mg_constrained_dofs_A_block.get_boundary_indices(level));
           level_constraints.close();
 
+          const Mapping<dim> &mapping =
+            (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
+
           std::set<types::boundary_id> no_flux_boundary
             = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
           if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
@@ -2500,7 +2523,7 @@ namespace aspect
 
               internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(dof_handler_v,
                                                                                               mg_constrained_dofs_A_block,
-                                                                                              *sim.mapping,
+                                                                                              mapping,
                                                                                               level,
                                                                                               0,
                                                                                               no_flux_boundary,
@@ -2522,12 +2545,14 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
+
+            mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
             mg_matrices_A_block[level].clear();
             mg_matrices_A_block[level].initialize(mg_mf_storage_level, mg_constrained_dofs_A_block, level);
+            matrix_free_objects.push_back(mg_mf_storage_level);
 
           }
         }
@@ -2553,12 +2578,16 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
+
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
+            mg_mf_storage_level->reinit(mapping, dof_handler_p, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
             mg_matrices_Schur_complement[level].clear();
             mg_matrices_Schur_complement[level].initialize(mg_mf_storage_level, mg_constrained_dofs_Schur_complement, level);
+            matrix_free_objects.push_back(mg_mf_storage_level);
           }
         }
     }

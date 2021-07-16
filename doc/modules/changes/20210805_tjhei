@@ -1,0 +1,4 @@
+New: The GMG solver now supports boundaries with mesh deformation,
+although free surface boundaries are still not supported.
+<br>
+(Timo Heister, 2021/08/05)

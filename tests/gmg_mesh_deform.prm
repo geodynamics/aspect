@@ -1,0 +1,18 @@
+# Test GMG with initial mesh deformation
+#
+# This test is a copy of
+
+include $ASPECT_SOURCE_DIR/tests/box_initial_mesh_deformation_ascii_data.prm
+
+set Dimension = 3
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 200
+  end
+end
+
+subsection Material model
+  set Material averaging = harmonic average
+end

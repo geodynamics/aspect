@@ -1,0 +1,40 @@
+
+
+   Loading Ascii data boundary file ASPECT_DIR/data/geometry-model/initial-topography-model/ascii-data/test/box_3d_top.0.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 8 (on 2 levels)
+Number of degrees of freedom: 527 (375+27+125)
+
+Number of mesh deformation degrees of freedom: 81
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 10+0 iterations.
+
+Number of active cells: 36 (on 3 levels)
+Number of degrees of freedom: 1,968 (1,413+84+471)
+
+Number of mesh deformation degrees of freedom: 252
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 14+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-gmg_mesh_deform/solution/solution-00000
+     RMS, max velocity:        0.474 m/year, 1.45 m/year
+     Topography min/max:       2e+04 m, 5.5e+04 m
+
+Termination requested by criterion: end time
+
+
+

@@ -1,0 +1,22 @@
+
+Loading shared library <./libgmg_mesh_deform_prescribed.so>
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 948 (578+81+289)
+
+Number of mesh deformation degrees of freedom: 162
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 17+0 iterations.
+
+   Postprocessing:
+     Writing graphical output: output-gmg_mesh_deform_prescribed/solution/solution-00000
+     RMS, max velocity:        1.29e-10 m/year, 3.42e-10 m/year
+     Topography min/max:       -2e+04 m, 1.414e+04 m
+
+Termination requested by criterion: end time
+
+
+

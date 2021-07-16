@@ -612,6 +612,8 @@ namespace aspect
 
       MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_A_block;
       MGTransferMatrixFree<dim,GMGNumberType> mg_transfer_Schur_complement;
+
+      std::vector<std::shared_ptr<MatrixFree<dim,double>>> matrix_free_objects;
   };
 }
 

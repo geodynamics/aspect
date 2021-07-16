@@ -19,11 +19,11 @@
  */
 
 
+#include <aspect/global.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
-#include <aspect/global.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -32,6 +32,7 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
+#include <deal.II/fe/mapping_q_eulerian.h>
 
 #include <deal.II/lac/sparsity_tools.h>
 
@@ -375,6 +376,15 @@ namespace aspect
 
 
     template <int dim>
+    const Mapping<dim> &
+    MeshDeformationHandler<dim>::get_level_mapping(const unsigned int level) const
+    {
+      return *level_mappings[level].get();
+    }
+
+
+
+    template <int dim>
     void MeshDeformationHandler<dim>::make_constraints()
     {
       AssertThrow(sim.parameters.mesh_deformation_enabled, ExcInternalError());
@@ -667,6 +677,9 @@ namespace aspect
       distributed_mesh_displacements = mesh_displacements;
       distributed_mesh_displacements.add(this->get_timestep(), velocity_solution);
       mesh_displacements = distributed_mesh_displacements;
+
+      if (sim.stokes_matrix_free)
+        update_multilevel_deformation();
     }
 
 
@@ -894,6 +907,30 @@ namespace aspect
 
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
+      if (sim.stokes_matrix_free)
+        {
+          mesh_deformation_dof_handler.distribute_mg_dofs();
+
+          const unsigned int n_levels = sim.triangulation.n_global_levels();
+
+          level_displacements.resize(0, n_levels-1);
+          level_mappings.resize(0, n_levels-1);
+
+          // create the mappings on each level:
+          level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
+          {
+            object = std::make_unique<MappingQEulerian<dim,
+            dealii::LinearAlgebra::distributed::Vector<double>>>(
+              /* degree = */ 1,
+              mesh_deformation_dof_handler,
+              level_displacements[level],
+              level);
+          });
+
+          mg_transfer.build(mesh_deformation_dof_handler);
+
+        }
+
       this->get_pcout() << "Number of mesh deformation degrees of freedom: "
                         << mesh_deformation_dof_handler.n_dofs()
                         << std::endl;
@@ -939,9 +976,28 @@ namespace aspect
       if (this->simulator_is_past_initialization() == false ||
           this->get_timestep_number() == 0)
         deform_initial_mesh();
+
+      if (sim.stokes_matrix_free)
+        update_multilevel_deformation();
     }
 
 
+    template <int dim>
+    void MeshDeformationHandler<dim>::update_multilevel_deformation ()
+    {
+      Assert(sim.stokes_matrix_free, ExcInternalError());
+
+      dealii::LinearAlgebra::distributed::Vector<double> temp(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                                              sim.triangulation.get_communicator());
+      dealii::LinearAlgebra::ReadWriteVector<double> rwv;
+      rwv.reinit(mesh_displacements);
+      temp.import(rwv, VectorOperation::insert);
+
+      mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
+                                    level_displacements,
+                                    temp);
+
+    }
 
     template <int dim>
     const std::map<types::boundary_id, std::vector<std::string>> &
