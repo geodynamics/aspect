@@ -296,12 +296,16 @@ namespace aspect
                     if (at_upper_surface)
                       {
                         const double delta_rho = out_support.densities[support_index] - density_above;
+                        AssertThrow(std::abs(delta_rho) > std::numeric_limits<double>::min(),
+                                    ExcMessage("delta_rho is close or equal to zero at the surface."));
                         dynamic_topography = (-stress_support_values[support_index]*normal - surface_pressure)
                                              / delta_rho / gravity_norm;
                       }
                     else
                       {
                         const double delta_rho = out_support.densities[support_index] - density_below;
+                        AssertThrow(std::abs(delta_rho) > std::numeric_limits<double>::min(),
+                                    ExcMessage("delta_rho is close or equal to zero at the bottom."));
                         dynamic_topography = (-stress_support_values[support_index]*normal - bottom_pressure)
                                              / delta_rho / gravity_norm;
                       }
