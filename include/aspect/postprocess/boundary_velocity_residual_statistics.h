@@ -57,6 +57,11 @@ namespace aspect
         Tensor<1,dim>
         get_data_velocity (const Point<dim> &p) const;
 
+        Point<dim> get_spherical_position (const Point<dim> &p) const;
+
+        std::vector<Vector<double> >
+        get_data_surface_strain_rate (const Point<dim> &p) const;
+
         /**
          * Evaluate the solution statistics for some velocity residual at the top boundary.
          */
@@ -91,6 +96,12 @@ namespace aspect
         bool use_ascii_data;
 
         /**
+         * Determines if we want to compute the strain rate residual visualization
+         * postprocessor and have an input ascii strain rate data to compare with. 
+         */
+        bool use_surface_strain_rate_data;
+
+        /**
          * Pointer to the gplates boundary velocity model
          */
         std::unique_ptr<BoundaryVelocity::internal::GPlatesLookup<dim>> gplates_lookup;
@@ -99,6 +110,8 @@ namespace aspect
          * Pointer to the structured data
          */
         std::unique_ptr<Utilities::StructuredDataLookup<dim>> data_lookup;
+
+        std::unique_ptr<Utilities::StructuredDataLookup<dim>> strain_rate_data_lookup;
 
         /**
          * Directory in which the input data files, i.e., GPlates model or ascii data
