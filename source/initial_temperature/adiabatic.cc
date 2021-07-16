@@ -352,7 +352,7 @@ namespace aspect
                              "Whether to use the half space cooling model or the plate cooling model");
           prm.declare_entry ("Lithosphere thickness", "125e3",
                              Patterns::Double (0.),
-                             "Thickness of the lithosphere for plate cooling model.");
+                             "Thickness of the lithosphere for plate cooling model. \\si{\\m}");
           prm.enter_subsection("Function");
           {
             Functions::ParsedFunction<1>::declare_parameters (prm, 1);
