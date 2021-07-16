@@ -148,12 +148,19 @@ namespace aspect
                             + Utilities::to_string(adiabatic_temperature_gradient_for_viscosity) + ") and pressure ("
                             + Utilities::to_string(in.pressure[i]) + ")."));
 
-              // Step 1a: compute viscosity from diffusion creep law, at
-              // least if it is going to be used
+              // Step 1a: compute viscosity from diffusion creep law, at least if it is going to be used
+
+              // Determine whether to use the adiabatic pressure instead of the full pressure (default)
+              // when calculating creep viscosity.
+              double pressure_for_creep = in.pressure[i];
+
+              if (use_adiabatic_pressure_in_creep)
+                pressure_for_creep = this->get_adiabatic_conditions().pressure(in.position[i]);
+
               const double viscosity_diffusion
                 = (viscous_flow_law != dislocation
                    ?
-                   diffusion_creep.compute_viscosity(in.pressure[i], temperature_for_viscosity, j,
+                   diffusion_creep.compute_viscosity(pressure_for_creep, temperature_for_viscosity, j,
                                                      phase_function_values,
                                                      n_phases_per_composition)
                    :
@@ -163,7 +170,7 @@ namespace aspect
               const double viscosity_dislocation
                 = (viscous_flow_law != diffusion
                    ?
-                   dislocation_creep.compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                   dislocation_creep.compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
                                                        phase_function_values,
                                                        n_phases_per_composition)
                    :
@@ -203,7 +210,7 @@ namespace aspect
               // Step 1d: compute viscosity from Peierls creep law and harmonically average with current viscosities
               if (use_peierls_creep)
                 {
-                  const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, in.pressure[i], temperature_for_viscosity, j,
+                  const double viscosity_peierls = peierls_creep->compute_viscosity(edot_ii, pressure_for_creep, temperature_for_viscosity, j,
                                                                                     phase_function_values,
                                                                                     n_phases_per_composition);
                   viscosity_pre_yield = (viscosity_pre_yield * viscosity_peierls) / (viscosity_pre_yield + viscosity_peierls);
@@ -515,6 +522,14 @@ namespace aspect
                            "dynamic stresses are much higher than the lithostatic pressure. "
                            "If false, the minimum pressure in the plasticity formulation will "
                            "be set to zero.");
+        prm.declare_entry ("Use adiabatic pressure in creep viscosity", "false",
+                           Patterns::Bool (),
+                           "Whether to use the adiabatic pressure instead of the full "
+                           "pressure (default) when calculating creep (diffusion, dislocation, "
+                           "and peierls) viscosity. This may be helpful in models where the "
+                           "full pressure has an unusually large negative value arising from "
+                           "large negative dynamic pressure, resulting in solver convergence "
+                           "issue and in some cases a viscosity of zero.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
@@ -620,6 +635,7 @@ namespace aspect
                                "'drucker prager' plasticity option."));
 
         allow_negative_pressures_in_plasticity = prm.get_bool ("Allow negative pressures in plasticity");
+        use_adiabatic_pressure_in_creep = prm.get_bool("Use adiabatic pressure in creep viscosity");
 
         // Diffusion creep parameters
         diffusion_creep.initialize_simulator (this->get_simulator());
