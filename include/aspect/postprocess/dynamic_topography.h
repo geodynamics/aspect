@@ -71,6 +71,11 @@ namespace aspect
         required_other_postprocessors() const override;
 
         /**
+         * Return the density_above, which is specified in the parameter file
+         */
+        double return_density_above() const;
+
+        /**
          * Parse the parameters for the postprocessor.
          */
         void

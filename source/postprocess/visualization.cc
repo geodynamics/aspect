@@ -127,6 +127,78 @@ namespace aspect
           }
       };
 
+      // Set up the adjoint base variables, which are the adjoint velocity and pressure for the Stokes equations.
+      // This part of the code is general enough to include cases that include melt.
+      template <int dim>
+      class BaseAdjointVariablePostprocessor: public DataPostprocessor< dim >, public SimulatorAccess<dim>
+      {
+        public:
+
+          virtual
+          void
+          evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
+                                std::vector<Vector<double> > &computed_quantities) const
+          {
+            const double velocity_scaling_factor =
+              this->convert_output_to_years() ? year_in_seconds : 1.0;
+            const unsigned int n_q_points = input_data.solution_values.size();
+            for (unsigned int q=0; q<n_q_points; ++q)
+              for (unsigned int i=0; i<computed_quantities[q].size(); ++i)
+                {
+                  // scale velocities and fluid velocities by year_in_seconds if needed
+                  if (this->introspection().component_masks.velocities[i] ||
+                      (this->include_melt_transport()
+                       && this->introspection().variable("fluid velocity").component_mask[i]))
+                    computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
+                  else
+                    computed_quantities[q][i] = input_data.solution_values[q][i];
+                }
+          }
+
+          virtual std::vector<std::string> get_names () const
+          {
+
+            std::vector<std::string> solution_names (dim, "adjoint_velocity");
+            solution_names.push_back ("adjoint_p");
+
+            if (this->include_melt_transport())
+              {
+                solution_names.emplace_back("adjoint_p_f");
+                solution_names.emplace_back("adjoint_p_c_bar");
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_names.emplace_back("adjoint_u_f");
+              }
+
+            return solution_names;
+          }
+
+          virtual
+          std::vector<DataComponentInterpretation::DataComponentInterpretation>
+          get_data_component_interpretation () const
+          {
+
+            std::vector<DataComponentInterpretation::DataComponentInterpretation>
+            interpretation (dim,
+                            DataComponentInterpretation::component_is_part_of_vector);
+            interpretation.push_back (DataComponentInterpretation::component_is_scalar); // p
+            if (this->include_melt_transport())
+              {
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                interpretation.push_back (DataComponentInterpretation::component_is_scalar);
+                for (unsigned int i=0; i<dim; ++i)
+                  interpretation.push_back (DataComponentInterpretation::component_is_part_of_vector);
+              }
+
+            return interpretation;
+          }
+
+          virtual UpdateFlags get_needed_update_flags () const
+          {
+            return update_values;
+          }
+      };
+
+
       /**
        * This Postprocessor will generate the output variables of mesh velocity
        * for when a deforming mesh is used.
@@ -585,7 +657,7 @@ namespace aspect
       // output_interval in time ago, or maximum_timesteps_between_outputs in
       // number of timesteps ago.
       // The comparison in number of timesteps is safe from integer overflow for
-      // at most 2 billion timesteps , which is not likely to
+      // at most 2 billion timesteps, which is not likely to
       // be ever reached (both values are unsigned int,
       // and the default value of maximum_timesteps_between_outputs is
       // set to numeric_limits<int>::max())
@@ -612,7 +684,7 @@ namespace aspect
       // Insert base variable names into set of all output field names
       add_data_names_to_set(base_variables.get_names(), visualization_field_names);
 
-      std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_variables;
+      std::unique_ptr<internal::MeshDeformationPostprocessor<dim> > mesh_deformation_variables;
 
       DataOut<dim> data_out;
       data_out.attach_dof_handler (this->get_dof_handler());
@@ -634,6 +706,15 @@ namespace aspect
                 (p.get()) != nullptr);
       })
       != postprocessors.end());
+
+      // If we want to visualize the solution of the adjoint problem
+      internal::BaseAdjointVariablePostprocessor<dim> adjoint_base_variables;
+      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::no_Advection_adjoint_Stokes)
+        {
+          adjoint_base_variables.initialize_simulator (this->get_simulator());
+          data_out.add_data_vector (this->get_current_adjoint_solution(),
+                                    adjoint_base_variables);
+        }
 
       // If there is a deforming mesh, also attach the mesh velocity object
       if ( this->get_parameters().mesh_deformation_enabled && output_mesh_velocity)

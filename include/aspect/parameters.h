@@ -76,7 +76,8 @@ namespace aspect
         single_Advection_iterated_Newton_Stokes,
         single_Advection_no_Stokes,
         first_timestep_only_single_Stokes,
-        no_Advection_no_Stokes
+        no_Advection_no_Stokes,
+        no_Advection_adjoint_Stokes
       };
     };
 

@@ -71,6 +71,14 @@ namespace aspect
       end_time = prm.get_double ("End time");
       if (prm.get_bool ("Use years in output instead of seconds") == true)
         end_time *= year_in_seconds;
+
+      // if the solver scheme no Advection, adjoint Stokes is chosen, the model should
+      // only be instantaneous.
+      if (this->get_parameters().nonlinear_solver == Parameters<dim>::NonlinearSolver::no_Advection_adjoint_Stokes && end_time > 0)
+        AssertThrow (false, ExcMessage("The adjoint equations have so far only been implemented for the "
+                                       "Stokes equations, not the full system. Therefore this scheme is "
+                                       "only suitable for instantaneous calculations. Change your end time to 0."));
+
     }
   }
 }
