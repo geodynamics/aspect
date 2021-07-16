@@ -4,7 +4,7 @@
 For many models it is useful to see how the material parameters vary as a function of pressure and temperature. In this cookbook, a plot of material properties (e.g., density or viscosity) as a function of temperature (x axis) and pressure (y axis) is referred to as a phase diagram. 
 
 In this phase diagram cookbook, phase diagrams are generated from model runs and visualized with VISIT, but Paraview could also be used to view the same output. % intro
-It is a simple way to check the implementation in a material model with visible outputs.% motivation
+This is a simple way of using the visualization output to check the correct implementation of phase transitions in a material model. 
 The idea lies in initiating a linear temperature variation along the x-axis in a box geometry, so as to view the two axes, x and y,  as pressure and temperature, respectively. % technique
 Here, I visualize a diagram of the phase transitions implemented in the visco plastic material model, as well as a lookup table in the Steinberger material model. 
 
