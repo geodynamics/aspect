@@ -1,8 +1,8 @@
 # A test for using the adiabatic pressure in creep (diffusion,
-# dislocation, peierls) viscosity calculation for the visco_plastic 
-# material model. For example, the adiabatic pressure is 3.3e9 Pa 
-# (= rho * g * depth = 3300 * 10 * 100e3) at the bottom. So, the 
-# exact diffusion viscosisty ‘eta_diff’ can be calculated by the
+# dislocation, peierls) viscosity calculation for the visco_plastic
+# material model. For example, the adiabatic pressure is 3.3e9 Pa
+# (= rho * g * depth = 3300 * 10 * 100e3) at the bottom. So, the
+# predicted diffusion viscosisty ‘eta_diff’ can be calculated by the
 # following equation:
 #
 #   eta_diff = 0.5 * A^(-1/n) * d^(m/n) * exp((E + P_ad*V)/(nRT))
@@ -18,11 +18,13 @@
 #  V    = 10.e-6     # activation volume for diffusion [m^3/mol]
 #  P_ad = 3.3e9      # adiabatic pressure at the bottom (Pa)
 
-# Similarly, the exact dislocation viscosity 'eta_disl' and peierls
+# Similarly, the predicted dislocation viscosity 'eta_disl' and peierls
 # viscosity 'eta_peir' can be obtained by the corresponding equations.
 # The following 'subsection Visco Plastic' provides the relevant parameter
-# values. The material model should return the same viscosity value as
-# the minimum value between these three viscosity values at the bottom.
+# values. eta_disl = 1.14e21 Pa*s. eta_peir = 7.46e22 Pa*s. The predicted
+# composite (average) viscosity is 7.42e18 Pa*s.
+# The material model returns the harmonic average of the three creep
+# viscosities at the bottom.
 
 # Global parameters
 set Dimension                              = 2
