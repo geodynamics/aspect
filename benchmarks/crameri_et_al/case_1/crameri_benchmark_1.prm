@@ -20,7 +20,7 @@ subsection Boundary temperature model
   set Fixed temperature boundary indicators   = bottom, top
   set List of model names = constant
   subsection Constant
-    set Boundary indicator to temperature mappings = left:0, right:0, bottom:0, top:0
+    set Boundary indicator to temperature mappings = bottom:0, top:0
   end
 end
 
