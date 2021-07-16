@@ -134,31 +134,8 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    // get the various components of the solution, then
-                    // evaluate the material properties there
-                    fe_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                                                                                                 in.temperature);
-                    fe_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                              in.pressure);
-                    fe_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                                                                                                in.velocity);
-                    fe_values[this->introspection().extractors.pressure].get_function_gradients (this->get_solution(),
-                                                                                                 in.pressure_gradient);
-                    in.position = fe_values.get_quadrature_points();
-
-                    // we do not need the strain rate
-                    in.strain_rate.resize(0);
-
-                    // Loop over compositional fields to get composition values
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                          composition_values[c]);
-                    for (unsigned int i=0; i<fe_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
-                      }
-                    in.current_cell = cell;
+                    // Repopulate MaterialInputs, set use_strain_rates to false
+                    in.reinit (fe_values, cell, this->introspection(), this->get_solution(), false);
 
                     out.additional_outputs.push_back(
                       std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
