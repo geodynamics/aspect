@@ -37,8 +37,8 @@ namespace aspect
     std::pair<std::string,std::string>
     ViscousDissipationStatistics<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.velocities).degree+1);
+      // Create a quadrature formula based on the velocity element.
+      const QGauss<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 1);
 
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -50,12 +50,17 @@ namespace aspect
                                update_gradients |
                                update_JxW_values);
 
-      double local_dissipation_integral = 0.;
+      // Vector to store the local dissipation for all the fields and
+      // for the whole domain.
+      const unsigned int n_compositional_fields = this->n_compositional_fields();
+      std::vector<double> local_dissipation_integral (n_compositional_fields+1);
+
+      std::vector<double> compositional_values(n_q_points);
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
-                                                                     this->n_compositional_fields());
+                                                                     n_compositional_fields);
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(n_q_points,
-                                                                       this->n_compositional_fields());
+                                                                       n_compositional_fields);
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -69,7 +74,7 @@ namespace aspect
 
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                // Viscous dissipation D:
+                // Viscous dissipation D in 3D:
                 // D = 1/2 * volume_integral(deviatoric_stress*deviatoric_strain_rate)
                 //   = 1/2 * volume_integral(2*eta*deviatoric_strain_rate*deviatoric_strain_rate)
                 //   = volume_integral(eta*deviatoric_strain_rate*deviatoric_strain_rate)
@@ -77,56 +82,61 @@ namespace aspect
                   (this->get_material_model().is_compressible()
                    ? in.strain_rate[q] - 1. / 3. * trace(in.strain_rate[q]) * unit_symmetric_tensor<dim>()
                    : in.strain_rate[q]);
-                local_dissipation_integral += (out.viscosities[q] * deviatoric_strain_rate) *
-                                              deviatoric_strain_rate * fe_values.JxW(q);
+                const double local_dissipation = (out.viscosities[q] * deviatoric_strain_rate) *
+                                                 deviatoric_strain_rate * fe_values.JxW(q);
+
+                // Dissipation over the whole domain
+                local_dissipation_integral[n_compositional_fields] += local_dissipation;
+                // Dissipation over each compositional field
+                for (unsigned int c = 0; c<n_compositional_fields; ++c)
+                  if (in.composition[q][c] >= 0.5)
+                    local_dissipation_integral[c] += local_dissipation;
               }
           }
 
-      const double viscous_dissipation = Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator());
+      std::vector<double> viscous_dissipation (local_dissipation_integral.size());
+      Utilities::MPI::sum (local_dissipation_integral, this->get_mpi_communicator(), viscous_dissipation);
 
-      if (this->convert_output_to_years() == true)
+      const std::string unit = dim == 3 ? "(W)" : "(W/m)";
+
+      // Add the dissipation per compositional fields to the statistics output
+      for (unsigned int c = 0; c < n_compositional_fields; ++c)
         {
-          statistics.add_value("Viscous dissipation (J/year/m)",
-                               viscous_dissipation * year_in_seconds);
+          statistics.add_value ("Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c),
+                                viscous_dissipation[c]);
 
           // also make sure that the other columns filled by the this object
           // all show up with sufficient accuracy and in scientific notation
-          {
-            const std::string columns[] = { "Viscous dissipation (J/year/m)" };
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-              {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
-              }
-          }
+          const std::string columns[] = { "Viscous dissipation " + unit + " for composition " + this->introspection().name_for_compositional_index(c) };
+          for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+            {
+              statistics.set_precision (columns[i], 8);
+              statistics.set_scientific (columns[i], true);
+            }
         }
-      else
-        {
-          statistics.add_value ("Viscous dissipation (W/m)",
-                                viscous_dissipation);
 
-          // also make sure that the other columns filled by the this object
-          // all show up with sufficient accuracy and in scientific notation
-          {
-            const std::string columns[] = { "Viscous dissipation (W/m)"};
-            for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
-              {
-                statistics.set_precision (columns[i], 8);
-                statistics.set_scientific (columns[i], true);
-              }
-          }
+      // Add the dissipation over the whole domain to the statistics output
+      statistics.add_value ("Viscous dissipation " + unit,
+                            viscous_dissipation[n_compositional_fields]);
+
+      const std::string columns[] = { "Viscous dissipation " + unit };
+      for (unsigned int i=0; i<sizeof(columns)/sizeof(columns[0]); ++i)
+        {
+          statistics.set_precision (columns[i], 8);
+          statistics.set_scientific (columns[i], true);
         }
 
       std::ostringstream output;
       output.precision(4);
-      if (this->convert_output_to_years() == true)
-        output << viscous_dissipation *year_in_seconds
-               << " J/year/m";
-      else
-        output << viscous_dissipation
-               << " W/m";
+      for (unsigned int n = 0; n < n_compositional_fields + 1; ++n)
+        {
+          output << viscous_dissipation[n];
 
-      return std::pair<std::string, std::string> ("Viscous dissipation:",
+          if (n + 1 != n_compositional_fields+1)
+            output << " // ";
+        }
+
+      return std::pair<std::string, std::string> ("Viscous dissipation per field and for whole domain " + unit + ":",
                                                   output.str());
     }
   }
@@ -141,9 +151,16 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(ViscousDissipationStatistics,
                                   "viscous dissipation statistics",
                                   "A postprocessor that outputs the viscous rate of dissipation of "
-                                  "energy. The viscous dissipation is computed as: "
+                                  "energy for each compositional field (where the field has a value "
+                                  "of 0.5 or more) as well as over the whole domain. "
+                                  "When all the fields represent lithologies and there is no background "
+                                  "field, the sum of the individual field's dissipation should equal "
+                                  "that over the whole domain. "
+                                  "The viscous dissipation is computed as: "
                                   "$\\int_{V}\\left(\\sigma' \\dot{\\epsilon}' \\right)$, "
                                   "where $\\sigma'$  is the deviatoric stress and $\\dot{\\epsilon}'$ "
-                                  "the deviatoric strain rate.")
+                                  "the deviatoric strain rate."
+                                  "Note then when shear heating is included in the temperature equation, "
+                                  "it is better to use the 'heating statistics' postprocessor. ")
   }
 }

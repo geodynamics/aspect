@@ -149,7 +149,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics, viscous dissipation per compositional field
+  set List of postprocessors = velocity statistics, maximum depth of field, viscous dissipation statistics
 end
 
 
