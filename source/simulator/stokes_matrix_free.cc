@@ -1322,15 +1322,7 @@ namespace aspect
     // testing.
     AssertThrow(sim.geometry_model->get_periodic_boundary_pairs().size()==0, ExcNotImplemented());
 
-    // Check whether the user provided velocity boundary conditions in different directions.
-    for (const auto &it: sim.boundary_velocity_manager.get_active_boundary_velocity_names())
-      {
-        AssertThrow(it.second.first=="",
-                    ExcMessage("The matrix-free Sokes solver currently only works if all velocity "
-                               "components are fixed, so no [XYZ] can be specified."));
-      }
-
-    // We currently only support averaging that gives a constant value:
+    // We currently only support averaging of the viscosity to a constant or Q1:
     using avg = MaterialModel::MaterialAveraging::AveragingOperation;
     AssertThrow((sim.parameters.material_averaging &
                  (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
@@ -2286,10 +2278,41 @@ namespace aspect
         {
           const types::boundary_id bdryid = it.first;
           const std::string component=it.second.first;
-          Assert(component=="", ExcNotImplemented());
-          dirichlet_boundary.insert(bdryid);
+
+          if (component.length()>0)
+            {
+              std::vector<bool> mask(fe_v.n_components(), false);
+              for (const auto &direction : component)
+                {
+                  switch (direction)
+                    {
+                      case 'x':
+                        mask[0] = true;
+                        break;
+                      case 'y':
+                        mask[1] = true;
+                        break;
+                      case 'z':
+                        // we must be in 3d, or 'z' should never have gotten through
+                        Assert (dim==3, ExcInternalError());
+                        if (dim==3)
+                          mask[2] = true;
+                        break;
+                      default:
+                        Assert (false, ExcInternalError());
+                    }
+                }
+              mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, {bdryid}, mask);
+            }
+          else
+            {
+              // no mask given: add at the end
+              dirichlet_boundary.insert(bdryid);
+            }
         }
-      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
+
+      if (dirichlet_boundary.size()>0)
+        mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
 
       {
         const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
