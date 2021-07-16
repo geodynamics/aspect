@@ -42,6 +42,13 @@ namespace aspect
           data_lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim>>(dim, scale_factor);
           data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
         }
+
+      else if (use_surface_strain_rate_data)
+        {
+          strain_rate_data_lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim> >((dim-1)*(dim-1), scale_factor);
+          strain_rate_data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
+        }
+
       else
         {
           // The two points are used in GPlates to find the 2D plane in which
@@ -55,6 +62,23 @@ namespace aspect
 
           gplates_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
         }
+
+    }
+
+
+
+    template <int dim>
+    Point<dim>
+    BoundaryVelocityResidualStatistics<dim>::get_spherical_position (const Point<dim> &p) const
+    {
+      const std::array<double,dim> spherical_position = this->get_geometry_model().
+                                                        cartesian_to_natural_coordinates(p);
+      Point<dim> internal_position = p;
+
+      for (unsigned int d = 0; d < dim; ++d)
+        internal_position[d] = spherical_position[d];
+
+      return internal_position;
     }
 
 
@@ -88,6 +112,26 @@ namespace aspect
         }
 
       return data_velocity;
+    }
+
+
+
+    template <int dim>
+    std::vector<Vector<double> >
+    BoundaryVelocityResidualStatistics<dim>::get_data_surface_strain_rate (const Point<dim> &p) const
+    {
+      Vector <double> temp_vector (dim-1);
+      std::vector<Vector<double> > data_surface_strain_rate (dim-1, temp_vector);
+      Point<dim> position = p;
+
+      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
+        position = get_spherical_position(p);
+
+      for (unsigned int d=0; d<dim-1; ++d)
+        for (unsigned int e=0; e<dim-1; ++e)
+          data_surface_strain_rate[d][e] = strain_rate_data_lookup->get_data(position, d+e);
+
+      return data_surface_strain_rate;
     }
 
 
@@ -148,7 +192,15 @@ namespace aspect
                 for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
                   {
                     const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
-                    // Extract data velocity.
+                    // Extract data velocity or strain rate.
+
+                    if (use_surface_strain_rate_data)
+                      {
+                        std::vector<Vector<double> > data_surface_strain_rate = get_data_surface_strain_rate(point_at_surface);
+                        return std::pair<std::string, std::string> ("Strain rate residual along boundary parts:",
+                                                                    "not done yet");
+                      }
+
                     Tensor<1,dim> data_velocity = get_data_velocity(point_at_surface);
 
                     if (this->convert_output_to_years() == true)
@@ -357,6 +409,10 @@ namespace aspect
                              Patterns::Bool (),
                              "Use ascii data files (e.g., GPS) for computing residual velocities "
                              "instead of GPlates data.");
+          prm.declare_entry ("Use ascii surface strain rate data", "false",
+                             Patterns::Bool (),
+                             "Use ascii data files (e.g., GPS derived) for computing residual strain  "
+                             "rates at the surface.");
         }
         prm.leave_subsection();
       }
@@ -382,6 +438,8 @@ namespace aspect
 
           use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
           use_ascii_data = prm.get_bool("Use ascii data");
+
+          use_surface_strain_rate_data = prm.get_bool("Use ascii surface strain rate data");
 
           if (use_spherical_unit_vectors)
             AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
