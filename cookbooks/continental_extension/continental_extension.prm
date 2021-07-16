@@ -155,7 +155,11 @@ end
 # these boundaries are insulating (zero net heat flux).
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
-  set List of model names = initial temperature
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1613
+    set Top temperature    =  273
+  end
 end
 
 # Initial temperature field
