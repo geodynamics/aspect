@@ -1,7 +1,7 @@
 # A test for using the adiabatic pressure in creep (diffusion,
-# dislocation, peierls) viscosity calculation for the visco_plastic 
-# material model. For example, the adiabatic pressure is 3.3e9 Pa 
-# (= rho * g * depth = 3300 * 10 * 100e3) at the bottom. So, the 
+# dislocation, peierls) viscosity calculation for the visco_plastic
+# material model. For example, the adiabatic pressure is 3.3e9 Pa
+# (= rho * g * depth = 3300 * 10 * 100e3) at the bottom. So, the
 # exact diffusion viscosisty ‘eta_diff’ can be calculated by the
 # following equation:
 #
