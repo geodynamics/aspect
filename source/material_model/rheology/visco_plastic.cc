@@ -150,11 +150,8 @@ namespace aspect
 
               // Step 1a: compute viscosity from diffusion creep law, at least if it is going to be used
 
-              // Determine whether to use adiabatic pressure instead of full pressure (default) when
-              // calculating creep viscosity. Because in some models, the full pressure may have an
-              // unusually large negative value due to a large negative dynamic pressure, resulting
-              // in a zero viscosity and an error being reported.
-
+              // Determine whether to use the adiabatic pressure instead of the full pressure (default)
+              // when calculating creep viscosity.
               double pressure_for_creep = in.pressure[i];
 
               if (use_adiabatic_pressure_in_creep)
@@ -524,8 +521,12 @@ namespace aspect
                            "be set to zero.");
         prm.declare_entry ("Use adiabatic pressure in creep viscosity", "false",
                            Patterns::Bool (),
-                           "Whether to use adiabatic pressure instead of full pressure (default) "
-                           "in the computation of creep viscosity.");
+                           "Whether to use the adiabatic pressure instead of the full "
+                           "pressure (default) when calculating creep (diffusion, dislocation, "
+                           "and peierls) viscosity. This may be helpful in models where the "
+                           "full pressure has an unusually large negative value arising from "
+                           "large negative dynamic pressure, resulting in solver convergence "
+                           "issue and in some cases a viscosity of zero.");
 
         // Diffusion creep parameters
         Rheology::DiffusionCreep<dim>::declare_parameters(prm);
