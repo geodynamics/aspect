@@ -693,30 +693,12 @@ namespace aspect
                 if (cell->face(f)->boundary_id() == CMB_id)
                   {
                     fe_face_values.reinit (cell, f);
+
+                    // Repopulate MaterialInputs, set use_strain_rates to false
+                    in.reinit(fe_face_values, cell, this->introspection(), this->get_solution(), false);
+
                     fe_face_values[this->introspection().extractors.temperature].get_function_gradients (this->get_solution(),
                         temperature_gradients);
-                    fe_face_values[this->introspection().extractors.temperature].get_function_values (this->get_solution(),
-                        in.temperature);
-                    fe_face_values[this->introspection().extractors.pressure].get_function_values (this->get_solution(),
-                                                                                                   in.pressure);
-                    for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                      fe_face_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                          composition_values[c]);
-
-                    in.position = fe_face_values.get_quadrature_points();
-
-                    // since we are not reading the viscosity and the viscosity
-                    // is the only coefficient that depends on the strain rate,
-                    // we need not compute the strain rate. set the corresponding
-                    // array to empty, to prevent accidental use and skip the
-                    // evaluation of the strain rate in evaluate().
-                    in.strain_rate.resize(0);
-
-                    for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
-                      {
-                        for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-                          in.composition[i][c] = composition_values[c][i];
-                      }
 
                     this->get_material_model().evaluate(in, out);
 
