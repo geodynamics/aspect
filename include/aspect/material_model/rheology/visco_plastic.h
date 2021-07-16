@@ -32,6 +32,7 @@
 #include <aspect/material_model/rheology/constant_viscosity_prefactors.h>
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
+#include <aspect/material_model/rheology/composite_visco_plastic.h>
 #include <aspect/simulator_access.h>
 
 #include<deal.II/fe/component_mask.h>
@@ -276,6 +277,16 @@ namespace aspect
            * Object for computing Peierls creep viscosities.
            */
           std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
+
+          /**
+           * Whether to use the iterative composite rheology in the constitutive formulation.
+           */
+          bool use_composite_rheology;
+
+          /**
+           * Object for using the iterative composite rheology formulation
+           */
+          std::unique_ptr<Rheology::CompositeViscoPlastic<dim>> composite_rheology;
 
           /**
            * Object for computing the viscosity multiplied by a constant prefactor.

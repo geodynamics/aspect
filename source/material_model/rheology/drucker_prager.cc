@@ -92,10 +92,11 @@ namespace aspect
       DruckerPrager<dim>::compute_strain_rate_and_derivative (const double stress,
                                                               const double pressure,
                                                               const unsigned int composition,
-                                                              const DruckerPragerParameters p) const
+                                                              const DruckerPragerParameters p,
+                                                              const double current_cohesion,
+                                                              const double current_friction) const
       {
-
-        const double yield_stress = compute_yield_stress(p.cohesions[composition], p.angles_internal_friction[composition], pressure, p.max_yield_stress);
+        const double yield_stress = compute_yield_stress(current_cohesion, current_friction, pressure, p.max_yield_stress);
 
         if (stress > yield_stress)
           {

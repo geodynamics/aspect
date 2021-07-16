@@ -308,6 +308,18 @@ namespace aspect
 
             // Step 5: limit the viscosity with specified minimum and maximum bounds
             output_parameters.composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
+
+            // Step 6: If the composite rheological formulation is selected, recalculate the viscosity
+            std::vector<double> partial_strain_rates(5, 0.);
+            if (use_composite_rheology)
+              output_parameters.composition_viscosities[j] = composite_rheology->compute_composition_viscosity(in.pressure[i],
+                                                             in.temperature[i],
+                                                             j,
+                                                             in.strain_rate[i],
+                                                             partial_strain_rates,
+                                                             current_cohesion,
+                                                             current_friction);
+
           }
         return output_parameters;
       }
@@ -529,6 +541,13 @@ namespace aspect
                            Patterns::Bool (),
                            "Whether to include Peierls creep in the rheological formulation.");
 
+        // Composite rheology parameters
+        Rheology::CompositeViscoPlastic<dim>::declare_parameters(prm);
+
+        prm.declare_entry ("Use iterative composite rheology", "false",
+                           Patterns::Bool (),
+                           "Whether to use an interative composite rheological formulation.");
+
         // Constant viscosity prefactor parameters
         Rheology::ConstantViscosityPrefactors<dim>::declare_parameters(prm);
 
@@ -642,6 +661,19 @@ namespace aspect
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
+
+        // Composite rheology parameters
+        use_composite_rheology = prm.get_bool ("Use iterative composite rheology");
+        if (use_composite_rheology == true && use_elasticity == false)
+          {
+            composite_rheology = std_cxx14::make_unique<Rheology::CompositeViscoPlastic<dim>>();
+            composite_rheology->initialize_simulator (this->get_simulator());
+            composite_rheology->parse_parameters(prm);
+          }
+        if (use_elasticity)
+          AssertThrow (use_composite_rheology == false,
+                       ExcMessage("The iterative composite rheology cannot currently "
+                                  "be used when elasticity is enabled."));
 
         // Constant viscosity prefactor parameters
         constant_viscosity_prefactors.initialize_simulator (this->get_simulator());
