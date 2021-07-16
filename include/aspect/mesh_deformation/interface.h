@@ -33,6 +33,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
 #include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 
 
 namespace aspect
@@ -513,6 +514,12 @@ namespace aspect
          * One vector on each multigrid level for the mesh displacement used in the mapping.
          */
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
+
+        /**
+        * Transfer operator for multigrid
+        */
+        MGTransferMatrixFree<dim, double> mg_transfer;
+
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;

@@ -677,6 +677,21 @@ namespace aspect
       distributed_mesh_displacements = mesh_displacements;
       distributed_mesh_displacements.add(this->get_timestep(), velocity_solution);
       mesh_displacements = distributed_mesh_displacements;
+
+      if (sim.stokes_matrix_free)
+        {
+          // update displacements on each level
+
+          dealii::LinearAlgebra::distributed::Vector<double> temp(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                                                  sim.triangulation.get_communicator());
+          dealii::LinearAlgebra::ReadWriteVector<double> rwv;
+          rwv.reinit(mesh_displacements);
+          temp.import(rwv, VectorOperation::insert);
+
+          mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
+                                        level_displacements,
+                                        temp);
+        }
     }
 
 
@@ -923,6 +938,9 @@ namespace aspect
               level_displacements[level],
               level);
           });
+
+          mg_transfer.build(mesh_deformation_dof_handler);
+
         }
 
       this->get_pcout() << "Number of mesh deformation degrees of freedom: "
