@@ -1,0 +1,68 @@
+
+# A simple setup for testing the gravity postprocessor using the
+# sample scheme 'list of points'. The domain is a 2891 km thick
+# shell of constant density, i.e. the Earth mantle.
+# An analytical solution exists for the gravitational acceleration
+# and potential so that values returned by the gravity postprocessor
+# can be benchmarked on a line from the center of the planet to
+# 10,000 km outside.
+# See the corresponding section in the manual for more information.
+
+# General parameters
+set Dimension                              = 3
+set End time                               = 0
+set Output directory                       = output_shellgravity
+set Nonlinear solver scheme                = no Advection, no Stokes
+
+# Model geometry
+subsection Geometry model
+  set Model name = spherical shell
+  subsection Spherical shell
+    set Inner radius = 3480e3
+    set Outer radius = 6371e3
+  end
+end
+
+# Model boundary velocity
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom
+end
+
+# Material model
+subsection Material model
+  set Model name = simple
+  subsection Simple model
+    set Reference density = 3300
+    set Thermal expansion coefficient = 0
+  end
+end
+
+# Model gravity
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# Mesh refinement
+subsection Mesh refinement
+  set Initial global refinement = 4
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = gravity calculation,visualization
+  subsection Visualization
+    set List of output variables = density
+    set Time between graphical output = 0
+    set Interpolate output = false
+  end
+  subsection Gravity calculation
+    set Sampling scheme = list of points
+    set List of radius    = 0,1e6,2e6,3e6,3.5e6,4e6,4.5e6,5e6,5.5e6,6e6,6.371e6,6.5e6,7e6,8e6,9e6,10e6
+    set List of longitude = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+    set List of latitude  = 13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13
+    set Quadrature degree increase = 1
+  end
+end
