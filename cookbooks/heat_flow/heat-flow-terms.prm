@@ -1,7 +1,7 @@
 include $ASPECT_SOURCE_DIR/cookbooks/heat_flow/heat-flow.prm
 
-# This is a copy of the heat-flow cookbook, modified to include 
-# radiogenic heat production and shear heating, and to output 
+# This is a copy of the heat-flow cookbook, modified to include
+# radiogenic heat production and shear heating, and to output
 # the different heating terms in a visualization postprocessor.
 
 set Output directory                       = output-heat-flow-terms
@@ -13,7 +13,7 @@ subsection Material model
     set Thermal conductivity          = 4.7
     set Thermal expansion coefficient = 1e-4
 
-    # Changig the viscosity changes the shear heating. 
+    # Changig the viscosity changes the shear heating.
     set Viscosity                     = 3e21
   end
 end
@@ -22,8 +22,8 @@ end
 subsection Heating model
   set List of model names = function, shear heating
 
-  # Radiogenic heat production. Changing Hcrust changes the 
-  # heat production rate in the crust. 
+  # Radiogenic heat production. Changing Hcrust changes the
+  # heat production rate in the crust.
   subsection Function
     set Variable names = x,y,t
     set Function expression = if(y>93000, Hcrust, Hmantle)
@@ -36,7 +36,3 @@ subsection Postprocess
     set List of output variables = density, heat flux map, vertical heat flux, heating, viscosity
   end
 end
-
-
-
-

@@ -1,5 +1,5 @@
-# A model of a mid-ocean ridge that shows how magnetic lineations 
-# are created on the seafloor as the magnetic field changes its 
+# A model of a mid-ocean ridge that shows how magnetic lineations
+# are created on the seafloor as the magnetic field changes its
 # orientation over time.
 
 
@@ -47,7 +47,7 @@ end
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = box
-  
+
   subsection Box
     set Bottom temperature = 1600
     set Top temperature    = 293
@@ -56,7 +56,7 @@ end
 
 
 # The velocity along the top boundary models a spreading
-# center of a mid-ocean ridge. 
+# center of a mid-ocean ridge.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left x:function, right x:function, top: function
 
@@ -78,8 +78,8 @@ end
 
 
 # We then choose a vertical gravity model and describe the
-# initial temperature as a constant (being equivalent to a 
-# plate age of 0). 
+# initial temperature as a constant (being equivalent to a
+# plate age of 0).
 subsection Gravity model
   set Model name = vertical
   subsection Vertical
@@ -90,7 +90,7 @@ end
 
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function expression = 1600
@@ -104,7 +104,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function expression = 0
@@ -248,5 +248,3 @@ subsection Postprocess
     set List of output variables = density, heat flux map, vertical heat flux
   end
 end
-
-

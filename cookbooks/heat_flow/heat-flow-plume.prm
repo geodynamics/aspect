@@ -28,12 +28,12 @@ end
 
 
 # In order to allow plume material to flow in with the
-# temperature selected in the initial temperature section, 
+# temperature selected in the initial temperature section,
 # we apply the initial temperature as boundary temperature.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = initial temperature
-  
+
   subsection Initial temperature
     set Maximal temperature = 1600
     set Minimal temperature = 293
@@ -68,18 +68,18 @@ end
 
 subsection Initial temperature model
   set List of model names = adiabatic, function
-  
+
   subsection Adiabatic
-    # This is the age in years. 
+    # This is the age in years.
     set Age top boundary layer = 1
   end
 
-  # The constant DeltaT determines the amplitude of the temperature anomaly, 
-  # which is a 2d Gaussian located at the center of the bottom boundary.  
+  # The constant DeltaT determines the amplitude of the temperature anomaly,
+  # which is a 2d Gaussian located at the center of the bottom boundary.
   subsection Function
     set Variable names      = x,z
     set Function constants  = DeltaT=0
-    set Function expression = DeltaT * exp(-((z*z)+(x-200000)*(x-200000))/(5e8))  
+    set Function expression = DeltaT * exp(-((z*z)+(x-200000)*(x-200000))/(5e8))
   end
 end
 
@@ -124,5 +124,3 @@ subsection Postprocess
     end
   end
 end
-
-

@@ -1,8 +1,8 @@
-# This setup is a copy of the 
+# This setup is a copy of the
 # benchmarks/onset-of-convection/convection-box-base.prm
-# contributed by Max Rudolph, with the difference that 
+# contributed by Max Rudolph, with the difference that
 # parameter values are specified explicitly in the input file
-# (rather than through an ipython notebook). 
+# (rather than through an ipython notebook).
 
 set Dimension                              = 2
 
@@ -25,7 +25,7 @@ end
 
 subsection Geometry model
   set Model name = box
-  
+
   subsection Box
     set X extent = 9.424777e6 # pi * 3e6
     set Y extent = 3e6
@@ -99,4 +99,3 @@ subsection Postprocess
     set Time steps between graphical output = 5
   end
 end
-

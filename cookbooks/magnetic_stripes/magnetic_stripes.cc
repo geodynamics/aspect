@@ -21,7 +21,7 @@ namespace aspect
         virtual void parse_parameters (ParameterHandler &prm);
 
       private:
-       std::vector<double> reversal_times;
+        std::vector<double> reversal_times;
     };
 
 
@@ -48,7 +48,7 @@ namespace aspect
 
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             {
-              if (depth < reaction_depth && in.velocity[i][1] > std::abs(in.velocity[i][0])) 
+              if (depth < reaction_depth && in.velocity[i][1] > std::abs(in.velocity[i][0]))
                 out.reaction_terms[i][c] = -in.composition[i][0] + magnetic_orientation;
               else
                 out.reaction_terms[i][c] = 0.0;
@@ -117,4 +117,3 @@ namespace aspect
                                    "'melt simple' model, but has a constant reaction term.")
   }
 }
-
