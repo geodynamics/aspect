@@ -705,12 +705,8 @@ namespace aspect
 
                     in.position = fe_face_values.get_quadrature_points();
 
-                    // since we are not reading the viscosity and the viscosity
-                    // is the only coefficient that depends on the strain rate,
-                    // we need not compute the strain rate. set the corresponding
-                    // array to empty, to prevent accidental use and skip the
-                    // evaluation of the strain rate in evaluate().
-                    in.strain_rate.resize(0);
+                    // Do not request viscosity or reaction rates
+                    in.requested_properties = MaterialModel::MaterialProperties::equation_of_state_properties;
 
                     for (unsigned int i=0; i<fe_face_values.n_quadrature_points; ++i)
                       {
