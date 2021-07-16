@@ -249,8 +249,11 @@ namespace aspect
             const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
 
             // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity and adjust the current_stress accordingly
-            const double current_cohesion = drucker_prager_parameters.cohesions[j] * weakening_factors[0];
-            const double current_friction = drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1];
+            const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
+                                                                      phase_function_values,
+                                                                      n_phases_per_composition);
+            const double current_cohesion = drucker_prager_parameters.cohesion * weakening_factors[0];
+            const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
             viscosity_pre_yield *= weakening_factors[2];
             current_stress *= weakening_factors[2];
 
@@ -648,8 +651,8 @@ namespace aspect
         constant_viscosity_prefactors.parse_parameters(prm);
 
         // Plasticity parameters
-        drucker_prager_parameters = drucker_prager_plasticity.parse_parameters(this->n_compositional_fields()+1,
-                                                                               prm);
+        drucker_prager_plasticity.initialize_simulator (this->get_simulator());
+        drucker_prager_plasticity.parse_parameters(prm, expected_n_phases_per_composition);
 
         // Stress limiter parameter
         exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
@@ -689,7 +692,9 @@ namespace aspect
                            const std::vector<double> &volume_fractions,
                            const bool plastic_yielding,
                            const MaterialModel::MaterialModelInputs<dim> &in,
-                           MaterialModel::MaterialModelOutputs<dim> &out) const
+                           MaterialModel::MaterialModelOutputs<dim> &out,
+                           const std::vector<double> &phase_function_values,
+                           const std::vector<unsigned int> &n_phases_per_composition) const
       {
         PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
 
@@ -704,9 +709,12 @@ namespace aspect
               {
                 // Calculate the strain weakening factors and weakened values
                 const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
-                plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesions[j] * weakening_factors[0]);
+                const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
+                                                                          phase_function_values,
+                                                                          n_phases_per_composition);
+                plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
                 // Also convert radians to degrees
-                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (drucker_prager_parameters.angles_internal_friction[j] * weakening_factors[1]);
+                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (drucker_prager_parameters.angle_internal_friction * weakening_factors[1]);
               }
           }
       }

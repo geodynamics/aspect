@@ -18,6 +18,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   auto n_phases = std::make_unique<std::vector<unsigned int>>(1); // 1 phase per composition
   const unsigned int composition = 0;
   const std::vector<double> volume_fractions = {1.};
+  const std::vector<double> phase_function_values = std::vector<double>();
+  const std::vector<unsigned int> n_phases_per_composition = std::vector<unsigned int>(1);
 
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
@@ -50,11 +52,13 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
   drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+  drucker_prager->initialize_simulator (simulator_access.get_simulator());
   drucker_prager->declare_parameters(prm);
   prm.set("Use plastic damper", "true");
   prm.set("Plastic damper viscosity", "1.e17");
   prm.set("Maximum yield stress", "5e8");
-  Rheology::DruckerPragerParameters p = drucker_prager->parse_parameters(1, prm);
+  drucker_prager->parse_parameters(prm, n_phases);
+  Rheology::DruckerPragerParameters p = drucker_prager->compute_drucker_prager_parameters(composition, phase_function_values, n_phases_per_composition);
 
   // The creep components are arranged in series with each other.
   // This package of components is then arranged in parallel with
@@ -125,8 +129,8 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       prls_stress = 2.*partial_strain_rates[2]*peierls_creep->compute_viscosity(partial_strain_rates[2], pressure, temperature, composition);
       if (partial_strain_rates[3] > 0.)
         {
-          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesions[0],
-                                                                                     p.angles_internal_friction[0],
+          drpr_stress = 2.*partial_strain_rates[3]*drucker_prager->compute_viscosity(p.cohesion,
+                                                                                     p.angle_internal_friction,
                                                                                      pressure,
                                                                                      partial_strain_rates[3],
                                                                                      p.max_yield_stress,
