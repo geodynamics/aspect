@@ -1,23 +1,22 @@
 /*
   Copyright (C) 2017 - 2021 by the authors of the ASPECT code.
 
-   This file is part of ASPECT.
+ This file is part of ASPECT.
 
-   ASPECT is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+ ASPECT is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
 
-   ASPECT is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ ASPECT is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with ASPECT; see the file LICENSE.  If not see
-   <http://www.gnu.org/licenses/>.
-   */
-
+ You should have received a copy of the GNU General Public License
+ along with ASPECT; see the file LICENSE.  If not see
+ <http://www.gnu.org/licenses/>.
+ */
 
 #include <aspect/particle/interpolator/bilinear_least_squares.h>
 #include <aspect/postprocess/particles.h>
@@ -28,7 +27,6 @@
 #include <deal.II/lac/qr.h>
 
 #include <boost/lexical_cast.hpp>
-
 
 namespace aspect
 {
@@ -43,7 +41,6 @@ namespace aspect
                                                                                     const ComponentMask &selected_properties,
                                                                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
-
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
         const unsigned int property_index = selected_properties.first_selected_component(selected_properties.size());
@@ -74,7 +71,7 @@ namespace aspect
           }
         else
           found_cell = cell;
-        // Because of the limiter it becomes neccessary to have the most exact center of the cell as possible
+        // Since we are using a limiter, we want the most accurate center of the cell possible
         Point<dim> midpoint = found_cell->vertex(0);
         midpoint[0] += found_cell->extent_in_direction(0)/2;
         midpoint[1] += found_cell->extent_in_direction(1)/2;
@@ -99,13 +96,12 @@ namespace aspect
                                                             selected_properties,
                                                             found_cell);
 
-        // Notice that the size of matrix A is n_particles x n_matrix_columns
+        // Noticed that the size of matrix A is n_particles x n_matrix_columns
         // which usually is not a square matrix. Therefore, we find the
         // least squares solution of Ac=r by solving the reduced QR factorization
         // Ac = QRc = b -> Q^TQRc = Rc =Q^Tb
         // A is a std::vector of Vectors(which are it's columns) so that we create what the ImplicitQR
         // class needs.
-
         std::vector<Vector<double>> A(n_matrix_columns, Vector<double>(n_particles));
         std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
 
@@ -124,7 +120,7 @@ namespace aspect
                 if (selected_properties[property_index])
                   {
                     b[property_index][positions_index] = particle_property_value[property_index];
-                    if (use_cell_based_limiter)
+                    if (use_linear_least_squares_limiter)
                       {
                         property_bounds[property_index].first = std::min(b[property_index][positions_index], property_bounds[property_index].first);
                         property_bounds[property_index].second = std::max(b[property_index][positions_index], property_bounds[property_index].second);
@@ -136,6 +132,8 @@ namespace aspect
             relative_particle_position[1] /= found_cell->extent_in_direction(1);
             if (dim == 3)
               relative_particle_position[2] /= found_cell->extent_in_direction(2);
+            // A is accessed by A[column][row] here since we will need to append
+            // columns into the qr matrix
             A[0][positions_index] = 1;
             A[1][positions_index] = relative_particle_position[0];
             A[2][positions_index] = relative_particle_position[1];
@@ -143,15 +141,21 @@ namespace aspect
               A[3][positions_index] = relative_particle_position[2];
           }
 
-        dealii::ImplicitQR<Vector<double>>qr;
+        ImplicitQR<Vector<double>>qr;
         for (const auto &column : A)
           qr.append_column(column);
         // If A is rank deficent then qr.append_column will not append
         // the first column that can be written as a linear combination of
-        // other columns. We check that all columns were added through
-        // this one assertion
-        AssertThrow(qr.size() == n_matrix_columns,
-                    ExcMessage("The matrix A was rank deficent during linear least squares interpolation."));
+        // other columns. We check that n_matrix_columns linearly independent
+        // columns were added, or we rely on the fallback_interpolator
+
+        if (qr.size() != n_matrix_columns)
+          return fallback_interpolator.properties_at_points(particle_handler,
+                                                            positions,
+                                                            selected_properties,
+                                                            found_cell);
+
+
         std::vector<Vector<double>> QTb(n_particle_properties, Vector<double>(n_matrix_columns));
         std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
@@ -169,8 +173,9 @@ namespace aspect
           {
             if (selected_properties[property_index])
               {
-                if (use_cell_based_limiter)
+                if (use_linear_least_squares_limiter)
                   {
+                    // Beginning of MJG and EGP's linear least squares limiter
                     c[property_index][0] = std::max(c[property_index][0], property_bounds[property_index].first);
                     c[property_index][0] = std::min(c[property_index][0], property_bounds[property_index].second);
                     if (c[property_index][0] > property_bounds[property_index].second - threshold ||
@@ -178,9 +183,10 @@ namespace aspect
                       {
                         c[property_index][1] = 0;
                         c[property_index][2] = 0;
-                        if (dim == 3) {
-                          c[property_index][3] = 0;
-                        }
+                        if (dim == 3)
+                          {
+                            c[property_index][3] = 0;
+                          }
                       }
                     else
                       {
@@ -270,13 +276,11 @@ namespace aspect
                       {
                         interpolated_value += c[property_index][3] * relative_support_point_location[2];
                       }
-                    
-                    if (use_cell_based_limiter) {
-                      AssertThrow(!(interpolated_value > property_bounds[property_index].second + threshold ||
-                          interpolated_value < property_bounds[property_index].first - threshold), ExcMessage("A particle property has overshot or undershot by more than a given threshold"))// {
-                      interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
-                      interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
-                    }
+                    if (use_linear_least_squares_limiter)
+                      {
+                        interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
+                        interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
+                      }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
 
@@ -299,7 +303,7 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                prm.declare_entry("Use limiter", "false",
+                prm.declare_entry("Use linear least squares limiter", "false",
                                   Patterns::Bool(),
                                   "Limit the interpolation of all particle properties "
                                   "onto the cell so the value of each property is no "
@@ -330,7 +334,7 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                use_cell_based_limiter = prm.get_bool("Use limiter");
+                use_linear_least_squares_limiter = prm.get_bool("Use linear least squares limiter");
               }
               prm.leave_subsection();
             }

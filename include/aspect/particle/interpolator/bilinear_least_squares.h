@@ -75,8 +75,8 @@ namespace aspect
            * max and min on the particles in that cell for each property.
            */
 
-          bool use_cell_based_limiter;
-          
+          bool use_linear_least_squares_limiter;
+
           /**
            * Fallback method if there are too few particles in a cell to
            * perform a bilinear least squares interpolation.
