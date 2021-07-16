@@ -73,9 +73,7 @@ subsection Solver parameters
     set Number of cheap Stokes solver steps = 0
   end
   subsection Newton solver parameters
-    set Max pre-Newton nonlinear iterations      = 100
     set Maximum linear Stokes solver tolerance   = 1e-2
-    set Nonlinear Newton solver switch tolerance = 1e-4
     set Use Eisenstat Walker method for Picard iterations = true
   end
 end
@@ -87,7 +85,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface, top: diffusion
   subsection Free surface
-    set Surface velocity projection = vertical
+    set Surface velocity projection = normal
   end
   subsection Diffusion
     # Diffusivity term. Increasing this value will result
