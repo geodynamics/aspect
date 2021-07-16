@@ -5901,6 +5901,9 @@ Figure \ref{lazy-expression-tempic-zoom} zooms in on the region where the two pl
 Finally, in order to just test whether the initial temperature structure has been properly defined, it is helpful to run the model for a single time-step and without actually waiting for the solvers to converge. In order to do this, the \texttt{End time} can be set to zero. If the model is very large (lots of refinement) or there are large viscosity jumps that take longer to converge in the Stokes solver, it can also be useful to set the solver tolerance parameters to large values as noted below. However, remember that in that case the solution will not be converged -- it is only useful for checking that the initial condition is set correctly.
 \lstinputlisting[language=prmfile]{cookbooks/muparser-temperature-example/doc/check-initial-condition.part.prm.out}
 
+% cookbooks/composition_active/
+\input{cookbooks/phase_diagram/doc/phase_diagram.tex}
+
 \subsection{Geophysical setups}
 \label{sec:cookbooks-geophysical}
 
