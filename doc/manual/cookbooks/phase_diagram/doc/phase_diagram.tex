@@ -1,15 +1,15 @@
 \subsubsection{Phase diagram}
 
 \label{sec:phase-diagram}
-For many models it is useful to see how the material parameters vary as a function of pressure and temperature. In this cookbook, a plot of material values (e.g., density or viscosity) as a function of temperature (x axis) and pressure (y axis) is referred to as a phase diagram. 
+For many models it is useful to see how the material parameters vary as a function of pressure and temperature. In this cookbook, a plot of material properties (e.g., density or viscosity) as a function of temperature (x axis) and pressure (y axis) is referred to as a phase diagram. 
 
 In this phase diagram cookbook, phase diagrams are generated from model runs and visualized with VISIT, but Paraview could also be used to view the same output. % intro
-It is a simple way to check the implementation in a material model with visible outputs.% motivation
-The idea lies in initiating a linear temperature variation along the x-axis in a box geometry, so as to view the two axes, x and y,  as pressure and temperature, respectively. % technique
-Here, I visualize a diagram of the phase transitions implemented in the ViscoPlastic material model, as well as a lookup table in the Steinberg material model% examples
+This is a simple way of using the visualization output to check the correct implementation of phase transitions in a material model. 
+The idea lies in using a model with an initial temperature that increases linearly along the x-axis and a pressure that changes linearly along the y-axis in a box geometry, so that the two axes, x and y, can be used as axes for pressure and temperature in the graphical output. 
+Here, I visualize a diagram of the phase transitions implemented in the visco plastic material model, as well as a lookup table in the Steinberger material model. 
 
 \paragraph{The input file.}
-You can find the input file to run this cookbook example in \url{cookbooks/phase_diagram.prm}
+You can find the input file to run this cookbook example in \url{cookbooks/phase_diagram.prm}. For this first case, phase transitions are prescribed manually in terms of their depth, Clapeyron slope, and other key parameters. 
 
 \par The model domain is  800 km  by 800 km box. % geometry
 Initial temperature increases from 273 K on the left side to 2273 K on the right side. % initial conditions
@@ -22,7 +22,8 @@ With each run, only one composition is assigned to the whole domain in order to 
 
 \par The material model is then set up to mimic mantle phase transitions at 410, 520, and 660 km.% setup of mantle transitions
 Details of phase transitions are taken from \cite{billen2018decoupling}.
-A trick of assigning the values of density to the field of thermal capacity is used here [MIB: How is this done? can you be more explicit]. % trick
+A trick is needed to make this work: I assign the values of the density to the field of thermal capacity in the input file. % trick
+To do this, I used the phase inputs implemented in the ViscoPlastic file.
 This serves the goal of visualizing values of reference densities of phases with the 'real density' assigned with a constant value in the model.
 Inputs for this material model is listed here:
 \lstinputlisting[language=prmfile]{cookbooks/phase_diagram/doc/material_model.prm.out}
@@ -43,13 +44,13 @@ For this to occur, following changes are needed:
 \lstinputlisting[language=prmfile]{cookbooks/phase_diagram/doc/harzburgite.prm.out}
 With this change, we can also visualize the phase diagram of harzburgite in Figure \ref{fig:phase_diagram_ph_density}.
 
-\par Moreover, I tested the a pyrolitic lookup table used in the Steinberg material model (Figure \ref{fig:phase_diagram_steinberg_density}).% steinberg model, todo fix reference
+\par Moreover, I tested the a pyrolitic lookup table used in the Steinberg material model (Figure \ref{fig:phase_diagram_steinberg_density}).% steinberg model
 The same setup of the initial condition is applied as in the previous case. % initial condition
 The densities, however, are not assigned to the heat capacity anymore.
 Thus the vertical axis would deviate from the axis of pressure a little bit.
-This serves the goal of illustrating a more complex and thus more realistic model of phase transitions.
+This second setup serves the goal of illustrating a more complex and thus more realistic model of phase transitions.
 Modification for the material model is listed below:
-\lstinputlisting[language=prmfile]{cookbooks/phase_diagram/doc/steinberg.prm.out}  % todo add 
+\lstinputlisting[language=prmfile]{cookbooks/phase_diagram/doc/steinberg.prm.out}  % add 
 
 
 %%%%% figures %%%%%%
@@ -75,6 +76,6 @@ Modification for the material model is listed below:
 \begin{figure}
 \centering
 \includegraphics[width=0.4\textwidth]{cookbooks/phase_diagram/doc/steinberg.png}
-\caption{\it Density from lookup table of pyrolite from \cite{stixrude2011thermodynamics}} % todo: cite
+\caption{\it Density from lookup table of pyrolite from \cite{stixrude2011thermodynamics}} % cite
 \label{fig:phase_diagram_steinberg_density}
 \end{figure}
