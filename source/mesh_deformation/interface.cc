@@ -19,11 +19,11 @@
  */
 
 
+#include <aspect/global.h>
 #include <aspect/mesh_deformation/interface.h>
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
-#include <aspect/global.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -32,6 +32,7 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/mapping_q1_eulerian.h>
+#include <deal.II/fe/mapping_q_eulerian.h>
 
 #include <deal.II/lac/sparsity_tools.h>
 
@@ -370,6 +371,15 @@ namespace aspect
 
       // After changing the mesh we need to rebuild things
       sim.rebuild_stokes_matrix = sim.rebuild_stokes_preconditioner = true;
+    }
+
+
+
+    template <int dim>
+    const Mapping<dim> &
+    MeshDeformationHandler<dim>::get_mapping_on_level(int level) const
+    {
+      return *level_mappings[level].get();
     }
 
 
@@ -893,6 +903,27 @@ namespace aspect
 
 
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
+
+      if (sim.stokes_matrix_free)
+        {
+          mesh_deformation_dof_handler.distribute_mg_dofs();
+
+          const unsigned int n_levels = sim.triangulation.n_global_levels();
+
+          level_displacements.resize(0, n_levels-1);
+          level_mappings.resize(0, n_levels-1);
+
+          // create the mappings on each level:
+          level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
+          {
+            object = std::make_unique<MappingQEulerian<dim,
+            dealii::LinearAlgebra::distributed::Vector<double>>>(
+              /* degree = */ 1,
+              mesh_deformation_dof_handler,
+              level_displacements[level],
+              level);
+          });
+        }
 
       this->get_pcout() << "Number of mesh deformation degrees of freedom: "
                         << mesh_deformation_dof_handler.n_dofs()
