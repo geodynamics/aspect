@@ -1,0 +1,14 @@
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = plastic_strain, oceanic_crust, mantle_lithosphere
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand_seed(0)*1.0, 0);  \
+                              if(y>=93.e3, 1, 0); \
+                              if(y<93.e3 && y>-100.e3, 1, 0); 
+  end
+end
