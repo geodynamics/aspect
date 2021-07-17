@@ -17,8 +17,9 @@ Number of degrees of freedom: 131,264 (41,974+5,342+20,987+20,987+20,987+20,987)
    Solving Stokes system... 200+13 iterations.
 
    Postprocessing:
-     RMS, max velocity:          0.0204 m/year, 0.051 m/year
-     Compositions max depth [m]: 7.852e+04 // 1.099e+05 // 7.852e+04
+     RMS, max velocity:                                        0.0204 m/year, 0.051 m/year
+     Compositions max depth [m]:                               7.852e+04 // 1.099e+05 // 7.852e+04
+     Viscous dissipation per field and for whole domain (W/m): 3168 // 5850 // 1095 // 1.187e+04
 
 Termination requested by criterion: end time
 
