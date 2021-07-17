@@ -1135,7 +1135,7 @@ namespace aspect
     prm.enter_subsection ("Temperature field");
     {
       prm.declare_entry ("Temperature method", "field",
-                         Patterns::Selection("field|prescribed field"),
+                         Patterns::Selection("field|prescribed field|static"),
                          "A comma separated list denoting the solution method of the "
                          "temperature field. Each entry of the list must be "
                          "one of the currently implemented field types."
@@ -1153,7 +1153,12 @@ namespace aspect
                          "marked with this method, then the value of a specific additional material "
                          "model output, called the `PrescribedTemperatureOutputs' is interpolated "
                          "onto the temperature. This field does not change otherwise, it is not "
-                         "advected with the flow. \n"
+                         "advected with the flow. "
+                         "\n"
+                         "\\item ``static'': If a temperature field is marked "
+                         "this way, then it does not evolve at all. Its values are "
+                         "simply set to the initial conditions, and will then "
+                         "never change."
                          "\\end{itemize}");
     }
     prm.leave_subsection();
@@ -1721,6 +1726,8 @@ namespace aspect
         temperature_method = AdvectionFieldMethod::fem_field;
       else if (x_temperature_method == "prescribed field")
         temperature_method = AdvectionFieldMethod::prescribed_field;
+      else if (x_temperature_method == "static")
+        temperature_method = AdvectionFieldMethod::static_field;
       else
         AssertThrow(false,ExcNotImplemented());
     }

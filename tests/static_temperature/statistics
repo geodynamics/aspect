@@ -1,0 +1,18 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Iterations for temperature solver
+# 8: Iterations for Stokes solver
+# 9: Velocity iterations in Stokes preconditioner
+# 10: Schur complement iterations in Stokes preconditioner
+# 11: RMS velocity (m/year)
+# 12: Max. velocity (m/year)
+# 13: Minimal temperature (K)
+# 14: Average temperature (K)
+# 15: Maximal temperature (K)
+# 16: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 16 187 81 4294967295 11 13 12 3.38912524e-02 1.29769127e-01 0.00000000e+00 1.39027778e+03 1.40000000e+03 output-static_temperature/solution/solution-00000 
+1 2.000000000000e+04 2.000000000000e+04 16 187 81 4294967295  2  4  4 3.38912545e-02 1.29769120e-01 0.00000000e+00 1.39027778e+03 1.40000000e+03 output-static_temperature/solution/solution-00001 

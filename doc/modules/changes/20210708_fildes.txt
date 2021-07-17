@@ -1,0 +1,4 @@
+New: There is now a ‘static’ option for the temperature field that is set-up similarly to the ‘static’ option for compositional fields. This allows the temperature field to be static while advection is on so you can still advect and build up elastic stresses.
+<br>
+(Rebecca Fildes, Magali Billen, 2021/07/08)
+
