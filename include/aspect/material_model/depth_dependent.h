@@ -24,6 +24,8 @@
 #include <deal.II/base/function_lib.h>
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
+#include <aspect/utilities.h>
+
 #include <deal.II/base/parsed_function.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 
@@ -130,7 +132,7 @@ namespace aspect
          * to base model viscosity.
          */
         double
-        calculate_depth_dependent_prefactor(const double &depth) const;
+        calculate_depth_dependent_prefactor(const Point<dim> &position) const;
 
         /**
          * Values of depth specified by the user if using List depth dependence method
@@ -141,7 +143,14 @@ namespace aspect
          * Parsed function that specifies viscosity depth-dependence when using the Function
          * method.
          */
-        Functions::ParsedFunction<1> viscosity_function;
+        Functions::ParsedFunction<dim> viscosity_function;
+	Functions::ParsedFunction<1> viscosity_function1d;
+	
+	/**
+         * The coordinate representation to evaluate the function. Possible
+         * choices are depth, cartesian and spherical.
+         */
+        Utilities::Coordinates::CoordinateSystem coordinate_system;
 
         /**
          * Pointer to the material model used as the base model
