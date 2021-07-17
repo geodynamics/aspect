@@ -1,4 +1,5 @@
-# The prm file is used to fix the mantle-phase case, which run into some unknown problem
+# This prm file is used to generate a phase diagram.
+# This could be useful for densities, viscosities in a material model.
 
 set Dimension                              = 2
 set CFL number                             = 1.0
@@ -7,7 +8,7 @@ set Adiabatic surface temperature          = 1673.0
 set Output directory                       = output
 set Use years in output instead of seconds = true
 
-# Do not solve the Stokes system. 
+# Do not solve the Stokes system.
 subsection Solver parameters
   subsection Stokes solver parameters
     set Number of cheap Stokes solver steps = 0
@@ -102,7 +103,8 @@ subsection Initial composition model
 end
 
 # value for material model
-# change thermal expansivity to 0.0
+# set Densities to a constant value and thermal expansivity to 0.0 to have a constant pressure gradient
+# set Values of Heat capacities to values of reference densities of pyrolitic phases
 subsection Material model
     set Model name = visco plastic
     subsection Visco Plastic
@@ -118,12 +120,9 @@ subsection Material model
     end
 end
 
-
-
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = top, bottom, left, right
 end
-
 
 subsection Postprocess
   set List of postprocessors = visualization
