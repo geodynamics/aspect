@@ -1,0 +1,13 @@
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, bottom, top
+  set Prescribed velocity boundary indicators = right x:function
+
+  subsection Function
+    set Function constants  = cm=100.0
+    set Function expression = if(z<540000.0, (600.0/550.0)/cm, \
+                                 if(z>560000.0, -5.0/cm, \
+                                    ((((-600.0/550.0)-5.0)/-20.0)*((z/1000.0)-560.0)+5.0)*(-1.0/cm))); \
+                              0
+    set Variable names      = x,z
+  end
+end
