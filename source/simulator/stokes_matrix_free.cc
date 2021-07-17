@@ -2425,7 +2425,13 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
+
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ?
+              sim.mesh_deformation->get_mapping_on_level(level)
+              : *sim.mapping;
+
+            mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
@@ -2456,7 +2462,11 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ?
+              sim.mesh_deformation->get_mapping_on_level(level)
+              : *sim.mapping;
+            mg_mf_storage_level->reinit(mapping, dof_handler_p, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 

@@ -679,19 +679,7 @@ namespace aspect
       mesh_displacements = distributed_mesh_displacements;
 
       if (sim.stokes_matrix_free)
-        {
-          // update displacements on each level
-
-          dealii::LinearAlgebra::distributed::Vector<double> temp(mesh_deformation_dof_handler.locally_owned_dofs(),
-                                                                  sim.triangulation.get_communicator());
-          dealii::LinearAlgebra::ReadWriteVector<double> rwv;
-          rwv.reinit(mesh_displacements);
-          temp.import(rwv, VectorOperation::insert);
-
-          mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
-                                        level_displacements,
-                                        temp);
-        }
+        update_multilevel_deformation();
     }
 
 
@@ -791,6 +779,8 @@ namespace aspect
 
       // Update the mesh displacement vector
       mesh_displacements = deformation_solution;
+      if (sim.stokes_matrix_free)
+        update_multilevel_deformation();
     }
 
 
@@ -992,6 +982,22 @@ namespace aspect
     }
 
 
+    template <int dim>
+    void MeshDeformationHandler<dim>::update_multilevel_deformation ()
+    {
+      Assert(sim.stokes_matrix_free, ExcInternalError());
+
+      dealii::LinearAlgebra::distributed::Vector<double> temp(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                                              sim.triangulation.get_communicator());
+      dealii::LinearAlgebra::ReadWriteVector<double> rwv;
+      rwv.reinit(mesh_displacements);
+      temp.import(rwv, VectorOperation::insert);
+
+      mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
+                                    level_displacements,
+                                    temp);
+
+    }
 
     template <int dim>
     const std::map<types::boundary_id, std::vector<std::string>> &

@@ -385,6 +385,11 @@ namespace aspect
         void interpolate_mesh_velocity ();
 
         /**
+         * Update the mesh deformation for the multigrid levels.
+         */
+        void update_multilevel_deformation ();
+
+        /**
          * Reference to the Simulator object to which a MeshDeformationHandler
          * instance belongs.
          */
