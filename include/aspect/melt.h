@@ -362,6 +362,12 @@ namespace aspect
        * be averaged cell-wise.
        */
       bool average_melt_velocity;
+
+      /**
+       * A set of boundary ids on which the boundary_temperature_objects
+       * will be applied.
+       */
+      std::set<types::boundary_id> prescribed_boundary_fluid_pressure_indicators;
     };
   }
 
@@ -400,6 +406,18 @@ namespace aspect
        * matrices, and right hand side vectors.
        */
       void set_assemblers (Assemblers::Manager<dim> &assemblers) const;
+
+
+      /**
+       * Parse additional parameters that are needed in models with
+       * melt transport, and that depend on the model geometry.
+       *
+       * Because the parse_parameters function is called before
+       * edit_finite_element_variables, parameters that depend on the
+       * geometry have to be parsed later, after the geometry model
+       * and simulator access are initialized.
+       */
+      void parse_geometry_dependent_parameters (ParameterHandler &prm);
 
 
       /**
@@ -477,6 +495,13 @@ namespace aspect
        */
       const BoundaryFluidPressure::Interface<dim> &
       get_boundary_fluid_pressure () const;
+
+      /*
+       * Return a set of boundary indicators for which boundary
+       * fluid pressures are prescribed.
+       */
+      const std::set<types::boundary_id> &
+      get_prescribed_fluid_pressure_boundary_indicators() const;
 
       /**
        * The object that stores the run-time parameters that control the how the

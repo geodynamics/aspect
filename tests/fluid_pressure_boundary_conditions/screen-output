@@ -1,0 +1,31 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 640 (on 4 levels)
+Number of degrees of freedom: 22,025 (5,346+2,617+5,346+697+2,673+2,673+2,673)
+
+*** Timestep 0:  t=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Skipping peridotite composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+16 iterations.
+   Solving for u_f in 12 iterations.
+
+   Postprocessing:
+     Topography min/max:        0 m, 0 m
+     RMS, max velocity:         6.93e+11 m/year, 1.28e+12 m/year
+     Writing graphical output:  output-fluid_pressure_boundary_conditions/solution/solution-00000
+     Compositions min/max/mass: 0/0.02/1e+09 // 0/0/0
+
+Termination requested by criterion: end time
+
+
++---------------------------------------------+------------+------------+
++---------------------------------+-----------+------------+------------+
++---------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
