@@ -21,7 +21,7 @@
 
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
-#include <aspect/melt.h>
+#include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -1303,11 +1303,18 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    // This requires: porting the additional stabilization terms and using a
-    // different mapping in the MatrixFree operators:
-    AssertThrow(!sim.parameters.mesh_deformation_enabled, ExcNotImplemented());
+    // We support (prescribed/initial) mesh deformation but not free surface:
+    if (sim.mesh_deformation)
+      {
+        // This requires: porting the additional stabilization terms and using a
+        // different mapping in the MatrixFree operators:
+        AssertThrow(sim.mesh_deformation->get_free_surface_boundary_indicators().empty(),
+                    ExcNotImplemented());
+      }
+
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
+
     // Not very difficult to do, but will require a different mass matrix
     // operator:
     AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
@@ -2210,8 +2217,8 @@ namespace aspect
     // convert melt pressures
     // TODO: We assert in the StokesMatrixFreeHandler constructor that we
     //       are not including melt transport.
-    if (sim.parameters.include_melt_transport)
-      sim.melt_handler->compute_melt_variables(sim.system_matrix,sim.solution,sim.system_rhs);
+    //if (sim.parameters.include_melt_transport)
+    //  sim.melt_handler->compute_melt_variables(sim.system_matrix,sim.solution,sim.system_rhs);
 
 
     return std::pair<double,double>(initial_nonlinear_residual,
@@ -2418,7 +2425,13 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_v, level_constraints,
+
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ?
+              sim.mesh_deformation->get_mapping_on_level(level)
+              : *sim.mapping;
+
+            mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
@@ -2449,7 +2462,11 @@ namespace aspect
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
                                                         mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
-            mg_mf_storage_level->reinit(*sim.mapping, dof_handler_p, level_constraints,
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ?
+              sim.mesh_deformation->get_mapping_on_level(level)
+              : *sim.mapping;
+            mg_mf_storage_level->reinit(mapping, dof_handler_p, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
                                         additional_data);
 
