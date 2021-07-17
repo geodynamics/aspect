@@ -13,8 +13,12 @@ set Additional shared libraries            = ./libinner_core_convection.so
 
 set Dimension                              = 3
 set Use years in output instead of seconds = false
-set End time                               = 1.5e9
+set End time                               = 5000
 set Output directory                       = output-inner_core_traction
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
 
 # The equations are non-dimensionalized, and all of the
 # material properties are constant and set to one, except
