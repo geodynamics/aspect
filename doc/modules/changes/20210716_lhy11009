@@ -1,0 +1,4 @@
+New: There is now a cookbook that visualizes phase diagram from results of model runs.
+This includes examples from ViscoPlastic and steinberger material model
+<br>
+(Haoyuan Li, 2021/07/16)
