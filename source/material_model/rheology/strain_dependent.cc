@@ -321,15 +321,6 @@ namespace aspect
         else
           AssertThrow(false, ExcMessage("Not a valid Strain healing mechanism!"));
 
-        // Currently this functionality only works in field composition
-        if (healing_mechanism != no_healing && this->get_postprocess_manager().template has_matching_postprocessor<Postprocess::Particles<dim>>())
-          {
-            const Postprocess::Particles<dim> &particle_postprocessor = this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::Particles<dim>>();
-            const Particle::Property::Manager<dim> &particle_property_manager = particle_postprocessor.get_particle_world().get_property_manager();
-
-            AssertThrow(particle_property_manager.plugin_name_exists("viscoplastic strain invariants") == false, ExcMessage("This healing mechanism currently does not work if the strain is tracked on particles."));
-          }
-
         // Temperature dependent strain healing requires that adiabatic surface temperature is non zero
         if (healing_mechanism == temperature_dependent)
           {
