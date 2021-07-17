@@ -1770,10 +1770,11 @@ namespace aspect
                     }
                 }
             }
+
+          // symmetrize when the stabilization is symmetric or SPD
           const bool is_symmetric =
-            ((sim.newton_handler->parameters.preconditioner_stabilization
-              & Newton::Parameters::Stabilization::symmetric)
-             != Newton::Parameters::Stabilization::none);
+            (sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
+            != Newton::Parameters::Stabilization::none;
 
           stokes_matrix.fill_Newton_cell_data(active_viscosity_derivative_wrt_pressure_table,
                                               active_strain_rate_table,
