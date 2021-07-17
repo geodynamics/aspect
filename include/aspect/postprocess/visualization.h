@@ -125,6 +125,13 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes.
+           */
+          Interface (const std::string &physical_units);
+
+          /**
            * Destructor. Does nothing but is virtual so that derived classes
            * destructors are also virtual.
            */
@@ -224,6 +231,13 @@ namespace aspect
            */
           virtual
           void load (const std::map<std::string, std::string> &status_strings);
+
+        private:
+          /**
+           * The physical units of the quantity (scalar or
+           * vector-valued) computed by derived classes.
+           */
+          const std::string physical_units;
       };
 
 
