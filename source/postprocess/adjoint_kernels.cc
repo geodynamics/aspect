@@ -74,7 +74,7 @@ namespace aspect
 
       // get the index for the two compositional fields that correspond to the kernels
       const unsigned int density_idx = this->introspection().compositional_index_for_name("density_increment");
-      const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_factor");
+      const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_increment");
 
       // compute the integral quantities by quadrature
       for (; cell!=endc; ++cell)
@@ -193,7 +193,7 @@ namespace aspect
                                   "and are stored in the two compositional fields. Consequently this "
                                   "postprocessor requires at least 2 compositional fields (to store "
                                   "the two kernels) and the fields have to have the names density_increment "
-                                  "and viscosity_factor."
+                                  "and viscosity_increment."
                                   "\n"
                                   "The file format consists of lines with Euclidean coordinates "
                                   "followed by the corresponding density and then viscosity sensitivity "

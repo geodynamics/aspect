@@ -1789,7 +1789,7 @@ namespace aspect
 
       // if we want to solve the adjoint stokes equations make sure that there are at
       // least two compositional fields and that they have the names density_increment and
-      // viscosity_factor
+      // viscosity_increment
       if (nonlinear_solver == NonlinearSolver::no_Advection_adjoint_Stokes)
         {
           Assert(n_compositional_fields >= 2,
@@ -1800,14 +1800,14 @@ namespace aspect
           it = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_increment");
           AssertThrow (it != names_of_compositional_fields.end(),
                        ExcMessage ("The no Advection, adjoint Stokes solver scheme requires specific "
-                                   "names for the two compositional fields, which are density_increment and viscosity_factor. You are "
+                                   "names for the two compositional fields, which are density_increment and viscosity_increment. You are "
                                    "missing the field density_increment."))
 
-          it = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "viscosity_factor");
+          it = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "viscosity_increment");
           AssertThrow (it != names_of_compositional_fields.end(),
                        ExcMessage ("The no Advection, adjoint Stokes solver scheme requires specific "
-                                   "names for the two compositional fields, which are density_increment and viscosity_factor. You are "
-                                   "missing the field viscosity_factor."))
+                                   "names for the two compositional fields, which are density_increment and viscosity_increment. You are "
+                                   "missing the field viscosity_increment."))
         }
 
 

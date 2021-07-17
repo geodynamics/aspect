@@ -2447,9 +2447,9 @@ namespace aspect
 
     // Get the right number for each compositional field so that the name matches the kernel
     // The parameter file has already been checked that there are at least 2 compositional
-    // fields and that two of them have the names 'density_increment' and 'viscosity_factor'
+    // fields and that two of them have the names 'density_increment' and 'viscosity_increment'
     const unsigned int density_idx = introspection.compositional_index_for_name("density_increment");
-    const unsigned int viscosity_idx = introspection.compositional_index_for_name("viscosity_factor");
+    const unsigned int viscosity_idx = introspection.compositional_index_for_name("viscosity_increment");
 
     // Initializing local rhs and mass matrix
     Vector<double> local_rhs(dofs_per_cell);

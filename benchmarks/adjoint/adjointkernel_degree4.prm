@@ -22,7 +22,7 @@ set Max nonlinear iterations               = 1
 
 subsection Material model
   # additive means after each iteration we add the value stored in the
-  # composition field to the existing density / multiply the viscosity
+  # composition field to the existing density and viscosity
   # with the new composition field
   set Model name = additive
 
@@ -49,21 +49,17 @@ end
 
 subsection Compositional fields
   set Number of fields = 2
-  set Names of fields = density_increment, viscosity_factor
+  set Names of fields = density_increment, viscosity_increment
 end
 
 subsection Initial composition model
   set Model name = function
 
   subsection Function
-    # before the iteration the density term should be 0 and the
-    # viscosity prefactor should be 1
-    # this means the addition to density at the first iteration is 0
-    # while the multiplication to viscosity is 1
+    # before the iteration the density and viscosity increment should be 0
     # these scalar values are prescribed everywhere in 3D field
     # during iteration the composition value will reflect the incremental addition
-    # multiplication
-    set Function expression = 0 ; 1
+    set Function expression = 0 ; 0
   end
 end
 

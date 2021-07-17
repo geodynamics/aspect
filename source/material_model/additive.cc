@@ -60,20 +60,20 @@ namespace aspect
     {
 
       const unsigned int density_idx = this->introspection().compositional_index_for_name("density_increment");
-      const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_factor");
+      const unsigned int viscosity_idx = this->introspection().compositional_index_for_name("viscosity_increment");
 
       base_model -> evaluate(in,out);
 
       for (unsigned int i=0; i<in.position.size(); ++i)
         {
-          // add / multiply the values from the compositional field to the density / viscosity to update
+          // add the values from the compositional field to the density / viscosity to update
           // the parameters. This allows material properties to change over several adjoint iterations.
+          // Note that the viscosity is already multiplied with the background viscosity.
           out.densities[i] += in.composition[i][density_idx];
-          out.viscosities[i] *= in.composition[i][viscosity_idx];
+          out.viscosities[i] += in.composition[i][viscosity_idx];
 
         }
-
-    }
+    } 
 
 
 
@@ -160,7 +160,7 @@ namespace aspect
                                    "timestep. The change in parameters is given by the "
                                    "the two compositional fields. This material model "
                                    "therefore needs to be run with at least 2 compositional fields. "
-                                   "with the names 'density_increment' and 'viscosity_factor'. "
+                                   "with the names 'density_increment' and 'viscosity_increment'. "
                                    "The compositional fields are updated to minimize "
                                    "the objective functional in the adjoint equations.")
   }
