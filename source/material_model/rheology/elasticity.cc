@@ -181,26 +181,26 @@ namespace aspect
         else
           AssertThrow(false, ExcNotImplemented());
 
-        // Currently, it only makes sense to use this material model when the nonlinear solver
-        // scheme does a single Advection iteration and at minimum one Stokes iteration. More
-        // than one nonlinear Advection iteration will produce an unrealistic build-up of
-        // viscoelastic stress, which are tracked through compositional fields.
-        AssertThrow((this->get_parameters().nonlinear_solver ==
-                     Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
-                     ||
-                     this->get_parameters().nonlinear_solver ==
-                     Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes
-                     ||
-                     this->get_parameters().nonlinear_solver ==
-                     Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes
-                     ||
-                     this->get_parameters().nonlinear_solver ==
-                     Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes),
-                    ExcMessage("The material model will only work with the nonlinear "
-                               "solver schemes 'single Advection, single Stokes', "
-                               "'single Advection, iterated Stokes', "
-                               "'single Advection, iterated Newton Stokes', and "
-                               "'single Advection, iterated defect correction Stokes' "));
+        // // Currently, it only makes sense to use this material model when the nonlinear solver
+        // // scheme does a single Advection iteration and at minimum one Stokes iteration. More
+        // // than one nonlinear Advection iteration will produce an unrealistic build-up of
+        // // viscoelastic stress, which are tracked through compositional fields.
+        // AssertThrow((this->get_parameters().nonlinear_solver ==
+        //              Parameters<dim>::NonlinearSolver::single_Advection_single_Stokes
+        //              ||
+        //              this->get_parameters().nonlinear_solver ==
+        //              Parameters<dim>::NonlinearSolver::single_Advection_iterated_Stokes
+        //              ||
+        //              this->get_parameters().nonlinear_solver ==
+        //              Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes
+        //              ||
+        //              this->get_parameters().nonlinear_solver ==
+        //              Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes),
+        //             ExcMessage("The material model will only work with the nonlinear "
+        //                        "solver schemes 'single Advection, single Stokes', "
+        //                        "'single Advection, iterated Stokes', "
+        //                        "'single Advection, iterated Newton Stokes', and "
+        //                        "'single Advection, iterated defect correction Stokes' "));
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
         // Consequently, it is only possible to use elasticity with the Material averaging schemes
@@ -279,6 +279,8 @@ namespace aspect
         if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
             // Get old (previous time step) velocity gradients
+            // TODO this seems like it does something similar to the new
+            // evaluate_advection_solution function but for velocity
             std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
@@ -295,6 +297,18 @@ namespace aspect
             fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
                                                                                            old_velocity_gradients);
 
+            // get the elastic stress components from the current linearization point at the
+            // beginning of the timestep
+            std::vector<std::vector<double>> composition(in.n_evaluation_points(), std::vector<double>(SymmetricTensor<2,dim>::n_independent_components));
+
+            for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
+              composition[j] = aspect::Utilities::evaluate_advection_solution(this->get_dof_handler(),
+                                                                              this->get_mapping(),
+                                                                              this->get_initial_linearization_point(),
+                                                                              j,
+                                                                              in.current_cell,
+                                                                              in.position);
+
             const double dte = elastic_timestep();
             const double dt = this->get_timestep();
 
@@ -303,7 +317,7 @@ namespace aspect
                 // Get old stresses from compositional fields
                 SymmetricTensor<2,dim> stress_old;
                 for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = composition[i][j];
 
                 // Calculate the rotated stresses
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
