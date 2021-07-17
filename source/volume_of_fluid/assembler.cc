@@ -109,7 +109,7 @@ namespace aspect
           scratch.volume += scratch.finite_element_values.JxW(q);
         }
 
-      for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (const unsigned int face_no : cell->face_indices())
         {
           // Obtain the normal direction for the face in question
           // Deal.II orders faces as dim*2+(face_direction_is_positive?1:0)
