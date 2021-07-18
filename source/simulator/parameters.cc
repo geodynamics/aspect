@@ -1173,16 +1173,15 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "",
-                         Patterns::List (Patterns::Selection("composition|stress|grain_size|porosity|other")),
+                         Patterns::List (Patterns::Selection("chemical_composition|stress|grain_size|porosity|generic")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
-                         "one of the following field types: "
-                         "composition, stress, grain_size, porosity, other.");
+                         "one of several recognised types.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types."
+                         "one of the currently implemented field methods."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
@@ -1797,6 +1796,14 @@ namespace aspect
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
 
+      // Process the compositional field types
+      // There are three valid cases:
+      // 1) The user doesn't specify types of fields. This choice should be
+      // preserved, because an empty Types vector serves as a quick check on
+      // the validity of the parameter file.
+      // 2) The user specifies just one type of field. In this case, ASPECT
+      // should automatically assume that all fields have the same type.
+      // 3) The user specifies types for every compositional field.
       std::vector<std::string> x_compositional_field_types
         = Utilities::split_string_list
           (prm.get ("Types of fields"));
@@ -1812,16 +1819,13 @@ namespace aspect
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      for (unsigned int i=0; i<n_compositional_fields; ++i)
+      // If field types have been defined, fill the corresponding index vectors
+      if (x_compositional_field_types.size() == n_compositional_fields)
         {
-          if (x_compositional_field_types[i] == "composition")
-            field_type_indices.composition.push_back(i);
-          if (x_compositional_field_types[i] == "stress")
-            field_type_indices.stress.push_back(i);
-          if (x_compositional_field_types[i] == "grain_size")
-            field_type_indices.grain_size.push_back(i);
-          if (x_compositional_field_types[i] == "porosity")
-            field_type_indices.porosity.push_back(i);
+          composition_descriptions.resize(n_compositional_fields);
+
+          for (unsigned int i=0; i<n_compositional_fields; ++i)
+            composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
         }
 
       std::vector<std::string> x_compositional_field_methods
