@@ -353,6 +353,13 @@ namespace aspect
       const std::vector<std::string> &
       get_composition_names () const;
 
+
+      /**
+       * A function that returns the full list of compositional field type indices.
+       */
+      const typename Parameters<dim>::FieldTypeIndices &
+      get_field_type_indices () const;
+
       /**
        * A function that gets the name of a compositional field as an input
        * parameter and returns if the compositional field is used in this
@@ -380,6 +387,8 @@ namespace aspect
        * be used in the simulation.
        */
       std::vector<std::string> composition_names;
+
+      typename Parameters<dim>::FieldTypeIndices field_type_indices;
 
   };
 }

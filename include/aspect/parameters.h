@@ -374,6 +374,18 @@ namespace aspect
     };
 
     /**
+     * A data structure containing vectors of the indices of each
+     * compositional field type.
+     */
+    struct FieldTypeIndices
+    {
+      std::vector<unsigned int> composition;
+      std::vector<unsigned int> stress;
+      std::vector<unsigned int> grain_size;
+      std::vector<unsigned int> porosity;
+    };
+
+    /**
      * Constructor. Fills the values of member functions from the given
      * parameter object.
      *
@@ -662,6 +674,7 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
+    FieldTypeIndices               field_type_indices;
 
     /**
      * A vector that contains the advection field method for every compositional

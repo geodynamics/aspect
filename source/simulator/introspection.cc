@@ -201,7 +201,8 @@ namespace aspect
     component_masks (*this),
     system_dofs_per_block (n_blocks),
     compositional_field_methods(parameters.compositional_field_methods),
-    composition_names(parameters.names_of_compositional_fields)
+    composition_names(parameters.names_of_compositional_fields),
+    field_type_indices(parameters.field_type_indices)
   {}
 
 
@@ -299,6 +300,18 @@ namespace aspect
     // Simply return the full list of composition names
     return composition_names;
   }
+
+
+
+  template <int dim>
+  const typename Parameters<dim>::FieldTypeIndices &
+  Introspection<dim>::get_field_type_indices () const
+  {
+    // Simply return the full vector of compositional field type indices
+    return field_type_indices;
+  }
+
+
 
   template <int dim>
   bool
