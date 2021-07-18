@@ -647,7 +647,10 @@ namespace aspect
                                                 gradients);
         }
     }
-#else
+#endif
+
+
+
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -693,7 +696,7 @@ namespace aspect
                                                 gradients[i]);
         }
     }
-#endif
+
 
 
 
@@ -751,7 +754,10 @@ namespace aspect
                                        velocities,
                                        this->get_timestep());
     }
-#else
+#endif
+
+
+
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -844,7 +850,6 @@ namespace aspect
                                        velocity,
                                        this->get_timestep());
     }
-#endif
 
 
 
@@ -945,13 +950,23 @@ namespace aspect
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
                   {
+#if DEAL_II_VERSION_GTE(9,3,0)
+                    // Only use deal.II FEPointEvaluation if it's fast path is used
+                    const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+                    if (use_fast_path)
+                      local_update_particles(cell,
+                                             particles_in_cell.begin(),
+                                             particles_in_cell.end(),
+                                             evaluators);
+                    else
+                      local_update_particles(cell,
+                                             particles_in_cell.begin(),
+                                             particles_in_cell.end());
+#else
                     local_update_particles(cell,
                                            particles_in_cell.begin(),
-                                           particles_in_cell.end()
-#if DEAL_II_VERSION_GTE(9,3,0)
-                                           , evaluators
+                                           particles_in_cell.end());
 #endif
-                                          );
                   }
 
               }
@@ -1240,13 +1255,25 @@ namespace aspect
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
+#if DEAL_II_VERSION_GTE(9,3,0)
+                  // Only use deal.II FEPointEvaluation if it's fast path is used
+                  const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+                  if (use_fast_path)
+                    local_advect_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end(),
+                                           evaluators);
+                  else
+                    local_advect_particles(cell,
+                                           particles_in_cell.begin(),
+                                           particles_in_cell.end());
+#else
                   local_advect_particles(cell,
                                          particles_in_cell.begin(),
-                                         particles_in_cell.end()
-#if DEAL_II_VERSION_GTE(9,3,0)
-                                         , evaluators
+                                         particles_in_cell.end());
 #endif
-                                        );
+
+
                 }
             }
 
