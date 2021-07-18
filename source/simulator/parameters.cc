@@ -1172,6 +1172,12 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
+      prm.declare_entry ("Types of fields", "",
+                         Patterns::List (Patterns::Selection("composition|stress|grain_size|porosity|other")),
+                         "A type for each of the compositional fields requested. "
+                         "Each entry of the list must be "
+                         "one of the following field types: "
+                         "composition, stress, grain_size, porosity, other.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
@@ -1790,6 +1796,33 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      std::vector<std::string> x_compositional_field_types
+        = Utilities::split_string_list
+          (prm.get ("Types of fields"));
+
+      AssertThrow ((x_compositional_field_types.size() == 0) ||
+                   (x_compositional_field_types.size() == 1) ||
+                   (x_compositional_field_types.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the field types of compositional "
+                               "fields needs to be empty, or have one entry, or have a length equal to "
+                               "the number of compositional fields."));
+
+      // If only one method is specified apply this to all fields
+      if (x_compositional_field_types.size() == 1)
+        x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
+
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        {
+          if (x_compositional_field_types[i] == "composition")
+            field_type_indices.composition.push_back(i);
+          if (x_compositional_field_types[i] == "stress")
+            field_type_indices.stress.push_back(i);
+          if (x_compositional_field_types[i] == "grain_size")
+            field_type_indices.grain_size.push_back(i);
+          if (x_compositional_field_types[i] == "porosity")
+            field_type_indices.porosity.push_back(i);
+        }
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list
