@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-
+#include <aspect/simulator/assemblers/stokes.h>
 #include <aspect/simulator.h>
 #include <aspect/global.h>
 #include <aspect/mesh_deformation/free_surface.h>
@@ -30,6 +30,10 @@
 
 #include <aspect/stokes_matrix_free.h>
 
+#include <aspect/postprocess/dynamic_topography.h>
+#include <aspect/postprocess/global_statistics.h>
+#include <aspect/simulator/assemblers/adjoint.h>
+#include <aspect/material_model/additive.h>
 
 namespace aspect
 {
@@ -1452,6 +1456,149 @@ namespace aspect
     nonlinear_solver_control.check(1,0.0);
     signals.post_nonlinear_solver(nonlinear_solver_control);
   }
+
+
+
+  template <int dim>
+  void Simulator<dim>::solve_stokes_adjoint ()
+  {
+    // This solver scheme requires the use of the additive material model if you iterate to
+    // update material properties
+    Assert(dynamic_cast<const MaterialModel::Additive<dim>*>(material_model.get()) != nullptr ||
+           parameters.max_nonlinear_iterations == 1,
+           ExcMessage("If you're choosing the 'no Advection, adjoint Stokes' solver scheme with more "
+                      "than 1 nonlinear iterations, you need to choose the 'additive' material model "
+                      "so that the material properties can be updated after each iteration."));
+
+    // This calculation requires that the DT postprocessor is selected
+    AssertThrow(postprocess_manager.template has_matching_postprocessor<const Postprocess::DynamicTopography<dim>> (),
+                ExcMessage("The dynamic topography postprocessor has to be active for the current adjoint computations."));
+
+    // determine how often to iterate over the forward & adjoint Stokes equations
+    const unsigned int max_nonlinear_iterations =
+      (pre_refinement_step < parameters.initial_adaptive_refinement)
+      ?
+      std::min(parameters.max_nonlinear_iterations,
+               parameters.max_nonlinear_iterations_in_prerefinement)
+      :
+      parameters.max_nonlinear_iterations;
+
+    SolverControl nonlinear_solver_control(max_nonlinear_iterations,
+                                           parameters.nonlinear_tolerance);
+
+    // follow the standardized format for nonlinear solver loops. We are not currently recomputing
+    // a residual in the iteration, which means that the number of iterations is always given by the
+    // maximum number of iterations.
+    double relative_residual = std::numeric_limits<double>::max();
+
+    // start the iteration.
+    nonlinear_iteration = 0;
+    do
+      {
+        pcout << "      Number of current adjoint iteration: " << nonlinear_iteration+1  << std::endl;
+        pcout << "      Solving the forward problem ... " << std::endl;
+
+        // set the assemblers for the RHS
+        set_assemblers();
+
+        // build the Stokes system
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
+
+        assemble_stokes_system();
+        build_stokes_preconditioner();
+
+        // solve the stokes system and put the solution (x in Ax=b) into 'solution'
+        solve_stokes();
+
+        // save the solution from overwriting during the adjoint problem by
+        // storing it in 'current_linearization_point'
+        current_linearization_point.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_linearization_point.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
+
+        // calculate the dynamic topography based on the forward solution,
+        // which will be needed for the new RHS assembly of the adjoint system
+        Postprocess::DynamicTopography<dim> &dynamic_topography =
+          const_cast<Postprocess::DynamicTopography<dim> &> (postprocess_manager.template get_matching_postprocessor<Postprocess::DynamicTopography<dim> >());
+
+        dynamic_topography.execute(statistics);
+
+
+        // start adjoint calculation
+        pcout << "      Solving the adjoint problem ... " << std::endl;
+
+        // set the pressure rhs compatibility to true for the ajdoint problem.
+        do_pressure_rhs_compatibility_modification = true;
+
+        // clear all RHS assemblers
+        assemblers->stokes_system.clear();
+        assemblers->stokes_system_on_boundary_face.clear();
+
+
+        // assemble the Stokes RHS - this is done on the boundary since it's a surface force
+        assemblers->stokes_system_assembler_on_boundary_face_properties.needed_update_flags =
+          (update_values | update_quadrature_points | update_normal_vectors | update_gradients | update_JxW_values);
+
+        assemblers->stokes_system_assembler_on_boundary_face_properties.need_face_material_model_data = true;
+        assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity = true;
+
+        assemblers->stokes_system_on_boundary_face.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesAdjointRHS<dim> >());
+
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system_on_boundary_face[0].get()))
+          p->initialize_simulator(*this);
+
+
+        // do pressure rhs compatibility
+        assemblers->stokes_system.push_back(
+          std_cxx14::make_unique<aspect::Assemblers::StokesPressureRHSCompatibilityModification<dim> >());
+        pressure_shape_function_integrals.reinit (introspection.index_sets.system_partitioning, mpi_communicator);
+
+
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers->stokes_system[0].get()))
+          p->initialize_simulator(*this);
+
+
+        // No need to reassemble the stokes system because it's the same as for the forward problem
+        rebuild_stokes_matrix = rebuild_stokes_preconditioner = false;
+
+        // Assemble and solve the adjoint stokes system
+        assemble_stokes_system();
+        solve_stokes();
+
+        // save the solution in 'current_adjoint_solution'. This will be accessed during visualization and
+        // to calculate the sensitivity kernels
+        current_adjoint_solution.block(introspection.block_indices.velocities)
+          = solution.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          current_adjoint_solution.block(introspection.block_indices.pressure)
+            = solution.block(introspection.block_indices.pressure);
+
+        // put forward solution back into solution vector so that the forward equation is processed during postprocessing
+        solution.block(introspection.block_indices.velocities) =
+          current_linearization_point.block(introspection.block_indices.velocities);
+        if (introspection.block_indices.velocities != introspection.block_indices.pressure)
+          solution.block(introspection.block_indices.pressure)
+            = current_linearization_point.block(introspection.block_indices.pressure);
+
+
+        // calculate the gradient of the objective function and write it into the compositional fields. The next time
+        // the material model is called it will use these compositional fields to update the density and viscosity.
+        adjoint_update_compositional_fields();
+
+        // postprocess unless this is the last iteration because then it will be postprocessed outside of this solver scheme
+        if (parameters.run_postprocessors_on_nonlinear_iterations)
+          postprocess ();
+
+        ++nonlinear_iteration;
+      }
+    while (nonlinear_solver_control.check(nonlinear_iteration, relative_residual) == SolverControl::iterate);
+
+    signals.post_nonlinear_solver(nonlinear_solver_control);
+  }
+
 }
 
 // explicit instantiation of the functions we implement in this file
@@ -1473,7 +1620,8 @@ namespace aspect
   template void Simulator<dim>::solve_single_advection_iterated_newton_stokes(); \
   template void Simulator<dim>::solve_single_advection_no_stokes(); \
   template void Simulator<dim>::solve_first_timestep_only_single_stokes(); \
-  template void Simulator<dim>::solve_no_advection_no_stokes();
+  template void Simulator<dim>::solve_no_advection_no_stokes(); \
+  template void Simulator<dim>::solve_stokes_adjoint();
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -1,0 +1,4 @@
+New: It is now possible to solve the adjoint Stokes equations with aspect
+through a new solver scheme. 
+<br>
+(Jacky Austermann, 2021/07/16)

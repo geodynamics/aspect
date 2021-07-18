@@ -374,6 +374,8 @@ namespace aspect
       return std::pair<std::string,std::string>("Computing dynamic topography", "");
     }
 
+
+
     /**
      * Return the topography vector as calculated by CBF formulation
      */
@@ -384,6 +386,8 @@ namespace aspect
     {
       return topo_vector;
     }
+
+
 
     /**
      * Return the cellwise topography vector as calculated by CBF formulation
@@ -396,6 +400,8 @@ namespace aspect
       return visualization_values;
     }
 
+
+
     /**
      * Register the other postprocessor that we need: BoundaryPressures
      */
@@ -405,6 +411,20 @@ namespace aspect
     {
       return std::list<std::string> (1, "boundary pressures");
     }
+
+
+
+    /**
+     * Return the density above as provided by the input parameter file
+     */
+    template <int dim>
+    double
+    DynamicTopography<dim>::
+    return_density_above() const
+    {
+      return density_above;
+    }
+
 
 
     /**
@@ -485,6 +505,7 @@ namespace aspect
           AssertThrowMPI(ierr);
         }
     }
+
 
 
     /**

@@ -1,0 +1,132 @@
+# This file calculates the sensitivity kernel for density and viscosity
+# given a degree 4 spherical harmonic perturbation. There exists a solution
+# for the density kernel from spectral codes that require spherically
+# symmetric Earth models.
+# This cookbook is in 2D to run faster but the benchmark is in 3D (spherical shell)
+
+# At the moment, this benchmark only yields the correct solution in the model
+# interior but not at the surface cells.
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 0
+set Output directory                       = output_adjoint_kernel
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# Choose the adjoint solver scheme and set the number of iterations to 1
+# (i.e. don't iterate over the parameters)
+set Nonlinear solver scheme                = no Advection, adjoint Stokes
+set Max nonlinear iterations               = 1
+
+
+subsection Material model
+  # additive means after each iteration we add the value stored in the
+  # composition field to the existing density and viscosity
+  # with the new composition field
+  set Model name = additive
+
+  subsection Additive model
+     set Base model = simple
+  end
+
+  subsection Simple model
+    set Thermal expansion coefficient = 4e-5
+    set Viscosity                     = 1e21
+    set Thermal viscosity exponent    = 3
+    set Reference temperature         = 1600
+  end
+end
+
+# to run sensibly with no Advection, adjoint stokes we require the following parameters:
+# Composition polynomial degree of 0
+# Additive material model
+# At least 2 compositional fields with exactly those names
+subsection Discretization
+  set Composition polynomial degree        = 0
+  set Use discontinuous composition discretization = true
+end
+
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = density_increment, viscosity_increment
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    # before the iteration the density and viscosity increment should be 0
+    # these scalar values are prescribed everywhere in 3D field
+    # during iteration the composition value will reflect the incremental addition
+    set Function expression = 0 ; 0
+  end
+end
+
+
+subsection Geometry model
+  set Model name = spherical shell
+
+  subsection Spherical shell
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
+  end
+end
+
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = inner, outer
+  set Prescribed velocity boundary indicators =
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = inner, outer
+end
+
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
+
+subsection Boundary temperature model
+  set Model name = spherical constant
+  subsection Spherical constant
+    set Inner temperature = 4273
+    set Outer temperature = 973
+  end
+end
+
+
+subsection Initial temperature model
+  set Model name = spherical hexagonal perturbation
+
+  subsection Spherical hexagonal perturbation
+    set Angular mode = 4
+  end
+end
+
+
+subsection Gravity model
+  set Model name = radial constant
+
+  subsection Radial constant
+    set Magnitude = 10
+  end
+
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = adjoint kernels, visualization, dynamic topography
+
+  subsection Visualization
+    set List of output variables      = dynamic topography, viscosity, density
+  end
+end
