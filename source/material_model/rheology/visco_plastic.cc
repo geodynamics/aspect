@@ -609,10 +609,7 @@ namespace aspect
         const bool has_background_field = true;
 
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
-
-        // increment by one for background:
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
+        const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical composition");
 
         strain_rheology.initialize_simulator (this->get_simulator());
         strain_rheology.parse_parameters(prm);
@@ -632,18 +629,26 @@ namespace aspect
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
         minimum_viscosity = Utilities::parse_map_to_double_array (prm.get("Minimum viscosity"),
-                                                                  list_of_composition_names,
+                                                                  chemical_composition_field_names,
                                                                   has_background_field,
                                                                   "Minimum viscosity",
                                                                   true,
                                                                   expected_n_phases_per_composition);
 
         maximum_viscosity = Utilities::parse_map_to_double_array (prm.get("Maximum viscosity"),
-                                                                  list_of_composition_names,
+                                                                  chemical_composition_field_names,
                                                                   has_background_field,
                                                                   "Maximum viscosity",
                                                                   true,
                                                                   expected_n_phases_per_composition);
+
+        // Stress limiter parameter
+        exponents_stress_limiter  = Utilities::parse_map_to_double_array (prm.get("Stress limiter exponents"),
+                                                                          chemical_composition_field_names,
+                                                                          has_background_field,
+                                                                          "Maximum viscosity",
+                                                                          true,
+                                                                          expected_n_phases_per_composition);
 
         Assert(maximum_viscosity.size() == minimum_viscosity.size(),
                ExcMessage("The input parameters 'Maximum viscosity' and 'Minimum viscosity' should have the same number of entries."));
@@ -712,11 +717,6 @@ namespace aspect
         // Plasticity parameters
         drucker_prager_plasticity.initialize_simulator (this->get_simulator());
         drucker_prager_plasticity.parse_parameters(prm, expected_n_phases_per_composition);
-
-        // Stress limiter parameter
-        exponents_stress_limiter  = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Stress limiter exponents"))),
-                                                                            n_fields,
-                                                                            "Stress limiter exponents");
 
         // Include an adiabat temperature gradient in flow laws
         adiabatic_temperature_gradient_for_viscosity = prm.get_double("Adiabat temperature gradient for viscosity");
