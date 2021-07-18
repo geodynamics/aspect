@@ -69,11 +69,11 @@ namespace aspect
           // add the values from the compositional field to the density / viscosity to update
           // the parameters. This allows material properties to change over several adjoint iterations.
           // Note that the viscosity is already multiplied with the background viscosity.
-          out.densities[i] += in.composition[i][density_idx];
-          out.viscosities[i] += in.composition[i][viscosity_idx];
+          out.densities[i] += density_update_factor * in.composition[i][density_idx];
+          out.viscosities[i] += viscosity_update_factor * in.composition[i][viscosity_idx];
 
         }
-    } 
+    }
 
 
 
@@ -92,6 +92,14 @@ namespace aspect
                             "are the names of models that are also valid for the "
                             "``Material models/Model name'' parameter. See the documentation for "
                             "that for more information.");
+          prm.declare_entry("Density update factor", "1.0",
+                            Patterns::Double (),
+                            "A factor by which the density update will be multipled in each "
+                            "adjoint Stokes iteration.");
+          prm.declare_entry("Viscosity update factor", "1.0",
+                            Patterns::Double (),
+                            "A factor by which the viscosity update will be multipled in each "
+                            "adjoint Stokes iteration.");
         }
         prm.leave_subsection();
       }
@@ -116,6 +124,10 @@ namespace aspect
           base_model.reset(create_material_model<dim>(prm.get("Base model")));
           if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
             sim->initialize_simulator (this->get_simulator());
+
+          density_update_factor                = prm.get_double ("Density update factor");
+          viscosity_update_factor              = prm.get_double ("Viscosity update factor");
+
 
         }
         prm.leave_subsection();
