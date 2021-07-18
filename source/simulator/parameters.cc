@@ -1805,16 +1805,20 @@ namespace aspect
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      for (unsigned int i=0; i<n_compositional_fields; ++i)
+      // If field types have been defined, fill the corresponding index vectors
+      if (x_compositional_field_types.size() == n_compositional_fields)
         {
-          if (x_compositional_field_types[i] == "composition")
-            field_type_indices.composition.push_back(i);
-          if (x_compositional_field_types[i] == "stress")
-            field_type_indices.stress.push_back(i);
-          if (x_compositional_field_types[i] == "grain_size")
-            field_type_indices.grain_size.push_back(i);
-          if (x_compositional_field_types[i] == "porosity")
-            field_type_indices.porosity.push_back(i);
+          for (unsigned int i=0; i<n_compositional_fields; ++i)
+            {
+              if (x_compositional_field_types[i] == "composition")
+                field_type_indices.composition.push_back(i);
+              if (x_compositional_field_types[i] == "stress")
+                field_type_indices.stress.push_back(i);
+              if (x_compositional_field_types[i] == "grain_size")
+                field_type_indices.grain_size.push_back(i);
+              if (x_compositional_field_types[i] == "porosity")
+                field_type_indices.porosity.push_back(i);
+            }
         }
 
       std::vector<std::string> x_compositional_field_methods
