@@ -444,6 +444,15 @@ namespace aspect
       map->initialize(triangulation, MappingQGeneric<dim>(4));
 #endif
 
+    // Check that DG limiters are only used with cartesian mapping
+    if ((parameters.use_limiter_for_discontinuous_temperature_solution ||
+         parameters.use_limiter_for_discontinuous_composition_solution) &&
+        geometry_model->natural_coordinate_system() != Utilities::Coordinates::CoordinateSystem::cartesian)
+      AssertThrow(false,
+                  ExcMessage("The limiter for the discontinuous temperature and composition solutions "
+                             "has not been tested in non-cartesian geometries and currently requires "
+                             "the use of a cartesian geometry model."));
+
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
         BoundaryTraction::Interface<dim> *bv
