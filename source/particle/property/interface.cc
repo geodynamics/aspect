@@ -784,7 +784,7 @@ namespace aspect
           }
 
         // lastly store internal integrator properties
-        property_list.emplace_back (std::make_unique<IntegratorProperties<dim>>());
+        property_list.emplace_back (std_cxx14::make_unique<IntegratorProperties<dim>>());
         property_list.back()->parse_parameters (prm);
       }
 

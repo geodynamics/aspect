@@ -1085,18 +1085,18 @@ namespace aspect
             melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
             melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
-            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
-                                                                           simulator_access.get_fe(),
-                                                                           update_flags,
-                                                                           melt_component_indices[0]);
-            fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                         simulator_access.get_fe(),
-                                                                         update_flags,
-                                                                         melt_component_indices[1]);
-            compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                              simulator_access.get_fe(),
-                                                                              update_flags,
-                                                                              melt_component_indices[2]);
+            fluid_velocity = std_cxx14::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+                                                                                 simulator_access.get_fe(),
+                                                                                 update_flags,
+                                                                                 melt_component_indices[0]);
+            fluid_pressure = std_cxx14::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                               simulator_access.get_fe(),
+                                                                               update_flags,
+                                                                               melt_component_indices[1]);
+            compaction_pressure = std_cxx14::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                                    simulator_access.get_fe(),
+                                                                                    update_flags,
+                                                                                    melt_component_indices[2]);
 
           }
       }
