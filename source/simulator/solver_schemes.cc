@@ -163,6 +163,7 @@ namespace aspect
             return current_residual / *initial_residual;
           break;
         }
+
         case Parameters<dim>::AdvectionFieldMethod::prescribed_field:
         {
           const AdvectionField adv_field (AdvectionField::temperature());
@@ -179,6 +180,20 @@ namespace aspect
                                         dummy);
           break;
         }
+
+        case Parameters<dim>::AdvectionFieldMethod::static_field:
+        {
+          const AdvectionField adv_field (AdvectionField::temperature());
+          // Do nothing here, but at least call the signal in case the
+          // user wants to do something with the variable:
+          SolverControl dummy;
+          signals.post_advection_solver(*this,
+                                        adv_field.is_temperature(),
+                                        adv_field.compositional_variable,
+                                        dummy);
+          break;
+        }
+
         default:
           AssertThrow(false,ExcNotImplemented());
       }
