@@ -187,32 +187,6 @@ namespace aspect
           out.thermal_expansion_coefficients[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.thermal_expansion_coefficients, MaterialUtilities::arithmetic);
           out.specific_heat[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.specific_heat_capacities, MaterialUtilities::arithmetic);
 
-          if (define_conductivities == false)
-            {
-              double thermal_diffusivity = 0.0;
-
-              for (unsigned int j=0; j < volume_fractions.size(); ++j)
-                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
-
-              // Thermal conductivity at the given positions. If the temperature equation uses
-              // the reference density profile formulation, use the reference density to
-              // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
-              // conditions are not yet initialized, the real density will still be used.
-              if (this->get_parameters().formulation_temperature_equation ==
-                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
-                  this->get_adiabatic_conditions().is_initialized())
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
-                                                this->get_adiabatic_conditions().density(in.position[i]);
-              else
-                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
-            }
-          else
-            {
-              // Use thermal conductivity values specified in the parameter file, if this
-              // option was selected.
-              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
-            }
-
           out.compressibilities[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.compressibilities, MaterialUtilities::arithmetic);
           out.entropy_derivative_pressure[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_pressure, MaterialUtilities::arithmetic);
           out.entropy_derivative_temperature[i] = MaterialUtilities::average_value (volume_fractions, eos_outputs.entropy_derivative_temperature, MaterialUtilities::arithmetic);
@@ -245,6 +219,38 @@ namespace aspect
               if (MaterialModel::MaterialModelDerivatives<dim> *derivatives =
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
                 rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+            }
+
+          // Compute thermal conductivity or thermal diffusivity
+          if (define_conductivities == false)
+            {
+              double thermal_diffusivity = 0.0;
+
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+                thermal_diffusivity += volume_fractions[j] * thermal_diffusivities[j];
+
+              // Thermal conductivity at the given positions. If the temperature equation uses
+              // the reference density profile formulation, use the reference density to
+              // calculate thermal conductivity. Otherwise, use the real density. If the adiabatic
+              // conditions are not yet initialized, the real density will still be used.
+              if (this->get_parameters().formulation_temperature_equation ==
+                  Parameters<dim>::Formulation::TemperatureEquation::reference_density_profile &&
+                  this->get_adiabatic_conditions().is_initialized())
+                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] *
+                                                this->get_adiabatic_conditions().density(in.position[i]);
+              else
+                out.thermal_conductivities[i] = thermal_diffusivity * out.specific_heat[i] * out.densities[i];
+            }
+          else
+            {
+              // Use thermal conductivity values specified in the parameter file, if this
+              // option was selected.
+              out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
+
+              // Simplified hydrothermal cooling process
+              // Approximate the effects of hydrothermal cooling by increasing thermal conductivity.
+              if (in.temperature[i]<= 873 || this->get_geometry_model().depth(in.position[i])<= 6e3)
+                out.thermal_conductivities[i] = Nusselt_number * out.thermal_conductivities[i];
             }
 
           // Now compute changes in the compositional fields (i.e. the accumulated strain).
@@ -345,6 +351,12 @@ namespace aspect
                              "for a total of N+1 values, where N is the number of compositional fields. "
                              "If only one value is given, then all use the same value. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Nusselt number", "1.0",
+                             Patterns::Double(0),
+                             "Nusselt number is used for increasing the thermal conductivity in the hydrothermal "
+                             "cooling process. It represents the ratio of the total heat transport within a "
+                             "permeable layer to heat transfer by conduction alone. Units: none");
+
         }
         prm.leave_subsection();
       }
@@ -391,6 +403,8 @@ namespace aspect
           thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
                                                                            n_fields,
                                                                            "Thermal conductivities");
+
+          Nusselt_number = prm.get_double("Nusselt number");
 
           rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());

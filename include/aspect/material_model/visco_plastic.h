@@ -258,6 +258,13 @@ namespace aspect
         std::vector<double> thermal_conductivities;
 
         /**
+         * Nusselt number is used for increasing the thermal conductivity in the
+         * hydrothermal cooling process. It represents the ratio of the total heat
+         * transport within a permeable layer to heat transfer by conduction alone.
+         */
+        double Nusselt_number;
+
+        /**
          * Object for computing the equation of state.
          */
         EquationOfState::MulticomponentIncompressible<dim> equation_of_state;
