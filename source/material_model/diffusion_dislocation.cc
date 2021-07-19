@@ -449,11 +449,11 @@ namespace aspect
           // Rheological parameters
           // Diffusion creep parameters
           diffusion_creep.initialize_simulator (this->get_simulator());
-          diffusion_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
+          diffusion_creep.parse_parameters(prm, std_cxx14::make_unique<std::vector<unsigned int>>(n_fields));
 
           // Dislocation creep parameters
           dislocation_creep.initialize_simulator (this->get_simulator());
-          dislocation_creep.parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_fields));
+          dislocation_creep.parse_parameters(prm, std_cxx14::make_unique<std::vector<unsigned int>>(n_fields));
 
 
         }

@@ -253,6 +253,16 @@ namespace aspect
           bool allow_negative_pressures_in_plasticity;
 
           /**
+           * Whether to use the adiabatic pressure instead of the full pressure (default)
+           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
+           * This may be helpful in models where the full pressure has an unusually
+           * large negative value arising from large negative dynamic pressure,
+           * resulting in solver convergence issue and in some cases a viscosity
+           * of zero.
+           */
+          bool use_adiabatic_pressure_in_creep;
+
+          /**
            * List of exponents controlling the behaviour of the stress limiter
            * yielding mechanism.
            */

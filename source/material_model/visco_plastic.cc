@@ -391,7 +391,7 @@ namespace aspect
           // Equation of state parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters (prm,
-                                              std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+                                              std_cxx14::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
 
 
           thermal_diffusivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal diffusivities"))),
@@ -408,7 +408,7 @@ namespace aspect
 
           rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
-          rheology->parse_parameters(prm, std::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
+          rheology->parse_parameters(prm, std_cxx14::make_unique<std::vector<unsigned int>>(n_phase_transitions_for_each_composition));
         }
         prm.leave_subsection();
       }

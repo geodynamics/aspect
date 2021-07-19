@@ -1219,7 +1219,7 @@ namespace aspect
         // Retrieve the list of composition names
         const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
-        n_phase_transitions_per_composition = std::make_unique<std::vector<unsigned int>>();
+        n_phase_transitions_per_composition = std_cxx14::make_unique<std::vector<unsigned int>>();
 
         use_depth_instead_of_pressure = prm.get_bool ("Define transition by depth instead of pressure");
 
