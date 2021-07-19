@@ -791,6 +791,43 @@ namespace aspect
 
 
       std::vector<double>
+      compute_only_composition_fractions(const std::vector<double> &compositional_fields,
+                                         const std::vector<unsigned int> &indices)
+      {
+        std::vector<double> composition_fractions(indices.size()+1);
+
+        // Clip the compositional fields so they are between zero and one,
+        // and sum the compositional fields for normalization purposes.
+        double sum_composition = 0.0;
+        std::vector<double> x_comp (indices.size());
+
+        for (unsigned int i=0; i < x_comp.size(); ++i)
+          {
+            x_comp[i] = std::min(std::max(compositional_fields[indices[i]], 0.0), 1.0);
+            sum_composition += x_comp[i];
+          }
+
+        // Compute background field fraction
+        if (sum_composition >= 1.0)
+          composition_fractions[0] = 0.0;
+        else
+          composition_fractions[0] = 1.0 - sum_composition;
+
+        // Compute and possibly normalize field fractions
+        for (unsigned int i=0; i < x_comp.size(); ++i)
+          {
+            if (sum_composition >= 1.0)
+              composition_fractions[i+1] = x_comp[i]/sum_composition;
+            else
+              composition_fractions[i+1] = x_comp[i];
+          }
+
+        return composition_fractions;
+      }
+
+
+
+      std::vector<double>
       compute_composition_fractions(const std::vector<double> &compositional_fields,
                                     const ComponentMask &field_mask)
       {

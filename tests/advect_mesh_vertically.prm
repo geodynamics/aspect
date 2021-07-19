@@ -99,6 +99,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
+  set Types of fields = composition
 end
 
 subsection Termination criteria

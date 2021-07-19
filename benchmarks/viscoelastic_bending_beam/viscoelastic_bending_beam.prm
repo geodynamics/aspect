@@ -90,10 +90,11 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, top, right
 end
 
-# Number and name of compositional fields
+# Number, name and type of compositional fields
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam
+  set Types of fields  = stress,       stress,       stress,       composition
 end
 
 # Spatial domain of different compositional fields
@@ -138,9 +139,9 @@ subsection Material model
   set Model name = viscoelastic
 
   subsection Viscoelastic
-    set Densities            =  2800,  2800,  2800,  2800,  3300
-    set Viscosities          = 1.e18, 1.e18, 1.e18, 1.e18, 1.e24
-    set Elastic shear moduli = 1.e11, 1.e11, 1.e11, 1.e11, 1.e10
+    set Densities            =  2800,  3300
+    set Viscosities          = 1.e18, 1.e24
+    set Elastic shear moduli = 1.e11, 1.e10
     set Fixed elastic time step     = 1e3
     set Use fixed elastic time step = false
     set Use stress averaging        = false

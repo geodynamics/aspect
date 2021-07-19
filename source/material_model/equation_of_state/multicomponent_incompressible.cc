@@ -107,11 +107,20 @@ namespace aspect
       {
         reference_T = prm.get_double ("Reference temperature");
 
-        // Establish that a background field is required here
+        // Get the number of fields for composition-dependent material properties
+        const std::vector<unsigned int> compositional_field_indices = this->introspection().get_field_type_indices().composition;
         const bool has_background_field = true;
 
-        // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        const std::vector<std::string> list_of_field_names = this->introspection().get_composition_names();
+
+        std::vector<std::string> list_of_composition_names(compositional_field_indices.size());
+        std::transform(compositional_field_indices.begin(),
+                       compositional_field_indices.end(),
+                       list_of_composition_names.begin(),
+                       [list_of_field_names](size_t pos)
+        {
+          return list_of_field_names[pos];
+        });
 
         // Parse multicomponent properties
         densities = Utilities::parse_map_to_double_array (prm.get("Densities"),

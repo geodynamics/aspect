@@ -34,14 +34,7 @@ namespace aspect
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
              MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      EquationOfStateOutputs<dim> eos_outputs (this->n_compositional_fields()+1);
-
-      // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(), true);
-      // assign compositional fields associated with viscoelastic stress a value of 0
-      // assume these fields are listed first
-      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-        composition_mask.set(i,false);
+      EquationOfStateOutputs<dim> eos_outputs (compositional_field_indices.size()+1);
 
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
       std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
@@ -49,7 +42,7 @@ namespace aspect
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           const std::vector<double> composition = in.composition[i];
-          const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(composition, composition_mask);
+          const std::vector<double> volume_fractions = MaterialUtilities::compute_only_composition_fractions(composition, compositional_field_indices);
 
           equation_of_state.evaluate(in, i, eos_outputs);
 
@@ -148,7 +141,19 @@ namespace aspect
     {
 
       // Get the number of fields for composition-dependent material properties
-      const unsigned int n_fields = this->n_compositional_fields() + 1;
+      compositional_field_indices = this->introspection().get_field_type_indices().composition;
+      const bool has_background_field = true;
+
+      const std::vector<std::string> list_of_field_names = this->introspection().get_composition_names();
+
+      std::vector<std::string> list_of_composition_names(compositional_field_indices.size());
+      std::transform(compositional_field_indices.begin(),
+                     compositional_field_indices.end(),
+                     list_of_composition_names.begin(),
+                     [list_of_field_names](size_t pos)
+      {
+        return list_of_field_names[pos];
+      });
 
       AssertThrow(this->get_parameters().enable_elasticity == true,
                   ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
@@ -168,12 +173,19 @@ namespace aspect
                                 prm);
 
           // Parse viscoelastic properties
-          viscosities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Viscosities"))),
-                                                                n_fields,
-                                                                "Viscosities");
-          thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivities"))),
-                                                                           n_fields,
-                                                                           "Thermal conductivities");
+          viscosities = Utilities::parse_map_to_double_array(prm.get("Viscosities"),
+                                                             list_of_composition_names,
+                                                             has_background_field,
+                                                             "Viscosities",
+                                                             true,
+                                                             nullptr);
+
+          thermal_conductivities = Utilities::parse_map_to_double_array(prm.get("Thermal conductivities"),
+                                                                        list_of_composition_names,
+                                                                        has_background_field,
+                                                                        "Thermal conductivities",
+                                                                        true,
+                                                                        nullptr);
         }
         prm.leave_subsection();
       }

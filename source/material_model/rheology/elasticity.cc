@@ -119,11 +119,33 @@ namespace aspect
       Elasticity<dim>::parse_parameters (ParameterHandler &prm)
       {
         // Get the number of fields for composition-dependent material properties
-        const unsigned int n_fields = this->n_compositional_fields() + 1;
+        const bool has_background_field = true;
 
-        elastic_shear_moduli = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Elastic shear moduli"))),
-                                                                       n_fields,
-                                                                       "Elastic shear moduli");
+        stress_field_indices = this->introspection().get_field_type_indices().stress;
+        compositional_field_indices = this->introspection().get_field_type_indices().composition;
+
+        AssertThrow (stress_field_indices.size() == (dim == 2 ? 3 : 5),
+                     ExcMessage("The Compositional fields subsection must contain the parameter "
+                                "Types of fields. Additionally, there must be three or five fields "
+                                "corresponding to stress (for two- or three-dimensional problems respectively)."));
+
+        const std::vector<std::string> list_of_field_names = this->introspection().get_composition_names();
+
+        std::vector<std::string> list_of_composition_names(compositional_field_indices.size());
+        std::transform(compositional_field_indices.begin(),
+                       compositional_field_indices.end(),
+                       list_of_composition_names.begin(),
+                       [list_of_field_names](size_t pos)
+        {
+          return list_of_field_names[pos];
+        });
+
+        elastic_shear_moduli = Utilities::parse_map_to_double_array(prm.get("Elastic shear moduli"),
+                                                                    list_of_composition_names,
+                                                                    has_background_field,
+                                                                    "Elastic shear moduli",
+                                                                    true,
+                                                                    nullptr);
 
         // Stabilize elasticity through a viscous damper
         elastic_damper_viscosity = prm.get_double("Elastic damper viscosity");
@@ -151,32 +173,32 @@ namespace aspect
 
         // Check whether the compositional fields representing the viscoelastic
         // stress tensor are both named correctly and listed in the right order.
-        AssertThrow(this->introspection().compositional_index_for_name("ve_stress_xx") == 0,
+        AssertThrow(list_of_field_names[stress_field_indices[0]] == "ve_stress_xx",
                     ExcMessage("Rheology model Elasticity only works if the first "
-                               "compositional field is called ve_stress_xx."));
-        AssertThrow(this->introspection().compositional_index_for_name("ve_stress_yy") == 1,
+                               "compositional stress field is called ve_stress_xx."));
+        AssertThrow(list_of_field_names[stress_field_indices[1]] == "ve_stress_yy",
                     ExcMessage("Rheology model Elasticity only works if the second "
-                               "compositional field is called ve_stress_yy."));
+                               "compositional stress field is called ve_stress_yy."));
         if (dim == 2)
           {
-            AssertThrow(this->introspection().compositional_index_for_name("ve_stress_xy") == 2,
+            AssertThrow(list_of_field_names[stress_field_indices[2]] == "ve_stress_xy",
                         ExcMessage("Rheology model Elasticity only works if the third "
-                                   "compositional field is called ve_stress_xy."));
+                                   "compositional stress field is called ve_stress_xy."));
           }
         else if (dim == 3)
           {
-            AssertThrow(this->introspection().compositional_index_for_name("ve_stress_zz") == 2,
+            AssertThrow(list_of_field_names[stress_field_indices[2]] == "ve_stress_zz",
                         ExcMessage("Rheology model Elasticity only works if the third "
-                                   "compositional field is called ve_stress_zz."));
-            AssertThrow(this->introspection().compositional_index_for_name("ve_stress_xy") == 3,
+                                   "compositional stress field is called ve_stress_zz."));
+            AssertThrow(list_of_field_names[stress_field_indices[3]] == "ve_stress_xy",
                         ExcMessage("Rheology model Elasticity only works if the fourth "
-                                   "compositional field is called ve_stress_xy."));
-            AssertThrow(this->introspection().compositional_index_for_name("ve_stress_xz") == 4,
+                                   "compositional stress field is called ve_stress_xy."));
+            AssertThrow(list_of_field_names[stress_field_indices[4]] == "ve_stress_xz",
                         ExcMessage("Rheology model Elasticity only works if the fifth "
-                                   "compositional field is called ve_stress_xz."));
-            AssertThrow(this->introspection().compositional_index_for_name("ve_stress_yz") == 5,
+                                   "compositional stress field is called ve_stress_xz."));
+            AssertThrow(list_of_field_names[stress_field_indices[5]] == "ve_stress_yz",
                         ExcMessage("Rheology model Elasticity only works if the sixth "
-                                   "compositional field is called ve_stress_yz."));
+                                   "compositional stress field is called ve_stress_yz."));
           }
         else
           AssertThrow(false, ExcNotImplemented());
@@ -254,7 +276,7 @@ namespace aspect
                 // Get old stresses from compositional fields
                 SymmetricTensor<2,dim> stress_old;
                 for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[j]];
 
                 // Average viscoelastic viscosity
                 const double average_viscoelastic_viscosity = out.viscosities[i];
@@ -303,7 +325,7 @@ namespace aspect
                 // Get old stresses from compositional fields
                 SymmetricTensor<2,dim> stress_old;
                 for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][stress_field_indices[j]];
 
                 // Calculate the rotated stresses
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
@@ -337,8 +359,8 @@ namespace aspect
 
                 // Fill reaction terms
                 for (unsigned int j = 0; j < SymmetricTensor<2,dim>::n_independent_components ; ++j)
-                  out.reaction_terms[i][j] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
-                                             + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
+                  out.reaction_terms[i][stress_field_indices[j]] = -stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)]
+                                                                   + stress_new[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)];
 
               }
           }

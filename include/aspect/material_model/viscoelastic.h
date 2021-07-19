@@ -205,6 +205,12 @@ namespace aspect
 
       private:
         /**
+         * Indices of the "compositional" fields
+         * corresponding to composition
+         */
+        std::vector<unsigned int> compositional_field_indices;
+
+        /**
          * Enumeration for selecting which viscosity averaging scheme to use.
          */
         MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;

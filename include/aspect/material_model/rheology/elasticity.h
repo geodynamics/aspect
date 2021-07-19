@@ -142,6 +142,13 @@ namespace aspect
 
         private:
           /**
+           * Indices of the "compositional" fields
+           * corresponding to composition and stress.
+           */
+          std::vector<unsigned int> stress_field_indices;
+          std::vector<unsigned int> compositional_field_indices;
+
+          /**
            * Viscosity of a damper used to stabilize elasticity.
            * A value of 0 Pas is equivalent to not using a damper.
            */
