@@ -692,6 +692,7 @@ namespace aspect
   }
 
 
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::
@@ -701,12 +702,12 @@ namespace aspect
                          &strain_rate_table,
                          const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
                          &viscosity_derivative_wrt_strain_rate_table,
-                         const bool symmetric_derivatives)
+                         const bool symmetrize_newton_system)
   {
     this->viscosity_derivative_wrt_pressure_table = &viscosity_derivative_wrt_pressure_table;
     this->strain_rate_table = &strain_rate_table;
     this->viscosity_derivative_wrt_strain_rate_table = &viscosity_derivative_wrt_strain_rate_table;
-    is_symmetric = symmetric_derivatives;
+    this->symmetrize_newton_system = symmetrize_newton_system;
   }
 
 
@@ -769,7 +770,7 @@ namespace aspect
             if (strain_rate_table !=nullptr
                 && !(strain_rate_table->empty()))
               {
-                // Note that derivative_scaling_factor is multiplied to viscosity_derivative_wrt_pressure_table
+                // Note that derivative_scaling_factor has already been multiplied to viscosity_derivative_wrt_pressure_table.
                 VectorizedArray<number> newton_pressure_term =
                   pressure_scaling * 2.0
                   * (*viscosity_derivative_wrt_pressure_table)(cell,q)
@@ -794,12 +795,12 @@ namespace aspect
               {
                 SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
 
-                // Note that derivative_scaling_factor * alpha is multiplied to
-                // viscosity_derivative_wrt_strain_rate_table
+                // Note that (derivative_scaling_factor * alpha) has already been multiplied to
+                // viscosity_derivative_wrt_strain_rate_table.
                 sym_grad_u +=  (grads_phi_u_i * (*strain_rate_table)(cell,q))
                                * (*viscosity_derivative_wrt_strain_rate_table)(cell,q);
 
-                if (is_symmetric)
+                if (symmetrize_newton_system)
                   sym_grad_u +=
                     ((*viscosity_derivative_wrt_strain_rate_table)(cell,q)*grads_phi_u_i)
                     * (*strain_rate_table)(cell,q);
@@ -1088,6 +1089,8 @@ namespace aspect
     this->is_compressible = is_compressible;
   }
 
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::
@@ -1097,12 +1100,12 @@ namespace aspect
                          &strain_rate_table,
                          const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
                          &viscosity_derivative_wrt_strain_rate_table,
-                         const bool symmetric_derivatives)
+                         const bool symmetrize_newton_system)
   {
     this->viscosity_derivative_wrt_pressure_table = &viscosity_derivative_wrt_pressure_table;
     this->strain_rate_table = &strain_rate_table;
     this->viscosity_derivative_wrt_strain_rate_table = &viscosity_derivative_wrt_strain_rate_table;
-    is_symmetric = symmetric_derivatives;
+    this->symmetrize_newton_system = symmetrize_newton_system;
   }
 
 
@@ -1670,7 +1673,8 @@ namespace aspect
     {
       // create active mesh tables for derivatives needed in Newton method
       // and the strain rate.
-      if (sim.newton_handler && sim.newton_handler->parameters.newton_derivative_scaling_factor!=0)
+      if (sim.newton_handler != nullptr
+          && sim.newton_handler->parameters.newton_derivative_scaling_factor != 0)
         {
           const double newton_derivative_scaling_factor =
             sim.newton_handler->parameters.newton_derivative_scaling_factor;
@@ -1706,75 +1710,70 @@ namespace aspect
 #endif
               for (unsigned int i=0; i<n_components_filled; ++i)
                 {
-                  typename DoFHandler<dim>::active_cell_iterator FEQ_cell =
+                  typename DoFHandler<dim>::active_cell_iterator matrix_free_cell =
                     stokes_matrix.get_matrix_free()->get_cell_iterator(cell,i);
-                  typename DoFHandler<dim>::active_cell_iterator sim_cell(&(sim.triangulation),
-                                                                          FEQ_cell->level(),
-                                                                          FEQ_cell->index(),
-                                                                          &(sim.dof_handler));
+                  typename DoFHandler<dim>::active_cell_iterator simulator_cell(&(sim.triangulation),
+                                                                                matrix_free_cell->level(),
+                                                                                matrix_free_cell->index(),
+                                                                                &(sim.dof_handler));
 
-                  fe_values.reinit(sim_cell);
-                  in.reinit(fe_values, sim_cell, sim.introspection, sim.current_linearization_point);
+                  fe_values.reinit(simulator_cell);
+                  in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point);
 
-                  sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
                   sim.material_model->evaluate(in, out);
+                  sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
 
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
                     = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
 
+                  Assert(derivatives != nullptr,
+                         ExcMessage ("Error: The Newton method requires the material to "
+                                     "compute derivatives."));
+
                   for (unsigned int q=0; q<n_q_points; ++q)
                     {
-                      const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-
-                      Assert(derivatives != nullptr,
-                             ExcMessage ("Error: The Newton method requires the material to "
-                                         "compute derivatives."));
-
-                      const double viscosity_derivative_wrt_pressure
-                        = derivatives->viscosity_derivative_wrt_pressure[q];
-
-                      const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate
-                        = derivatives->viscosity_derivative_wrt_strain_rate[q];
-
-                      // use the spd factor when the stabilization is PD or SPD
+                      // use the spd factor when the stabilization is PD or SPD.
                       const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
                                              & Newton::Parameters::Stabilization::PD)
                                             != Newton::Parameters::Stabilization::none
                                             ?
-                                            Utilities::compute_spd_factor<dim>(out.viscosities[q], strain_rate, viscosity_derivative_wrt_strain_rate,
+                                            Utilities::compute_spd_factor<dim>(out.viscosities[q],
+                                                                               in.strain_rate[q],
+                                                                               derivatives->viscosity_derivative_wrt_strain_rate[q],
                                                                                sim.newton_handler->parameters.SPD_safety_factor)
                                             :
                                             1.0;
 
                       active_viscosity_derivative_wrt_pressure_table(cell,q)[i]
-                        = viscosity_derivative_wrt_pressure * newton_derivative_scaling_factor;
+                        = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
 
                       for (unsigned int m=0; m<dim; ++m)
                         for (unsigned int n=0; n<dim; ++n)
                           {
                             active_strain_rate_table(cell, q)[m][n][i]
-                              = strain_rate[m][n];
+                              = in.strain_rate[q][m][n];
 
                             active_viscosity_derivative_wrt_strain_rate_table(cell, q)[m][n][i]
-                              = viscosity_derivative_wrt_strain_rate[m][n]
+                              = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
                                 * newton_derivative_scaling_factor * alpha;
                           }
                     }
                 }
             }
 
-          // symmetrize when the stabilization is symmetric or SPD
-          const bool is_symmetric =
+          // symmetrize the Newton_system when the stabilization is symmetric or SPD
+          const bool symmetrize_newton_system =
             (sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
             != Newton::Parameters::Stabilization::none;
 
           stokes_matrix.fill_Newton_cell_data(active_viscosity_derivative_wrt_pressure_table,
                                               active_strain_rate_table,
                                               active_viscosity_derivative_wrt_strain_rate_table,
-                                              is_symmetric);
+                                              symmetrize_newton_system);
         }
       else
         {
+          // Hand over empty tables, because they will not be used.
           active_strain_rate_table.reinit(TableIndices<2>(0,0));
           active_viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
@@ -1782,7 +1781,7 @@ namespace aspect
           stokes_matrix.fill_Newton_cell_data(active_viscosity_derivative_wrt_pressure_table,
                                               active_strain_rate_table,
                                               active_viscosity_derivative_wrt_strain_rate_table,
-                                              false /*Doesn't matter, it's not going to be used*/);
+                                              false);
         }
 
     }
