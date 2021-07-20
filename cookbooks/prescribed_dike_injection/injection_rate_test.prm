@@ -1,0 +1,107 @@
+# This is a test model of 2D dike-injection box to determine that the
+# dilation term is working prepoerly.
+# Material is injected in the left half of the model domain with a rate
+# that corresponds to a velocity divergence of 1e-5 1/yr and can flow
+# out through the right-side boundaries. This corresponds to a linear
+# velocity increase from 0 to 500 m * 1e-5 1/yr = 5e-3 m/yr in the right
+# half of the domain.
+
+set Additional shared libraries            = libprescribed_dike_injection.so
+set Dimension                              = 2
+set Adiabatic surface temperature          = 273
+set Nonlinear solver scheme                = iterated Stokes
+set Output directory                       = output_injection_test
+set End time                               = 1e3
+set Use years in output instead of seconds = true
+
+##################### Prescribed dilation ########################
+
+# We need to enable the assembler that allows us to add terms
+# to the Stokes equation. 
+subsection Formulation
+  set Enable prescribed dilation    = true
+end
+
+subsection Material model
+  set Model name = prescribed dilation
+  subsection Prescribed dilation
+    set Base model = simple
+    subsection Injection function
+      set Function expression       = if(x<=500, 1e-5,0)
+    end
+  end
+end
+
+# In this test, there is no latent heat.
+subsection Heating model
+  set List of model names = latent heat injection
+  subsection Latent heat injection
+    set Latent heat of crystallization = 0
+    set Temperature of injected melt = 273
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 1000
+    set Y extent      = 1000
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+##################### Initial & Boundary Conditions ########################
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left
+end
+
+# We prescribe the lithostatic pressure as a boundary traction on 
+# the right side of the model, so that material can flow in and out 
+# according to the flow induced by the new term.   
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point         = 1000, 1000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Variable names = x,y
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top,bottom
+  set List of model names = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = bottom:273,  top:273
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables      = heating, named additional outputs
+    set Time between graphical output = 0
+  end
+end

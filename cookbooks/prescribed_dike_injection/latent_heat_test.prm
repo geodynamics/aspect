@@ -1,0 +1,116 @@
+# This is a test model of 2D dike-injection box to determine that the
+# latent heating term in the energy equation corresponding to dilation 
+# terms in the Stokes equations is working prepoerly.
+# In the injection area, the latent heat release upon crystallization 
+# (H_crys) and associated with injection melt ((T_inj-T)*rho*Cp, where
+# T_inj the temperature of injected melt, T, rho, Cp are temperature,
+# density and specific heat) is:
+#
+#   (H_crys + (T_inj - T) * rho * Cp) * injection rate
+#   (1e9 + (1273 - 273) * 1000 * 1000) J/m^3 * 1e-5 1/yr 
+#   =  2e4 J/m^3/yr = 0.633e-3 J/m^3/s
+
+set Additional shared libraries            = libprescribed_dike_injection.so
+set Dimension                              = 2
+set Adiabatic surface temperature          = 273
+set Nonlinear solver scheme                = iterated Stokes
+set Output directory                       = output_latent_heat_test
+set End time                               = 1e4
+set Use years in output instead of seconds = true
+
+##################### Prescribed dilation ########################
+
+# We need to enable the assembler that allows us to add terms
+# to the Stokes equation. 
+subsection Formulation
+  set Enable prescribed dilation    = true
+end
+
+subsection Material model
+  set Model name = prescribed dilation
+  subsection Prescribed dilation
+    set Base model = simple
+    subsection Injection function
+      set Function expression  = if(x>=400 && x<=600 && y>=400 && y<=600, 1e-5, 0)
+    end
+  end
+  subsection Simple model
+    set Reference density             = 1000.
+    set Reference specific heat       = 1000.
+    set Thermal expansion coefficient = 0.
+  end
+end
+
+# In this test, there is no latent heat.
+subsection Heating model
+  set List of model names = latent heat injection
+  subsection Latent heat injection
+    set Latent heat of crystallization = 1e9
+    set Temperature of injected melt = 1273
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 1000
+    set Y extent      = 1000
+    set X repetitions = 10
+    set Y repetitions = 10
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+##################### Initial & Boundary Conditions ########################
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom, left
+end
+
+# We prescribe the lithostatic pressure as a boundary traction on 
+# the right side of the model, so that material can flow in and out 
+# according to the flow induced by the new term.   
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point         = 1000, 1000
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+   set Variable names = x,y
+    set Function expression = 273
+  end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top,bottom
+  set List of model names = constant
+  subsection Constant
+    set Boundary indicator to temperature mappings = top:273,  bottom:273
+  end
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables      = heating, named additional outputs
+    set Time between graphical output = 0
+  end
+end

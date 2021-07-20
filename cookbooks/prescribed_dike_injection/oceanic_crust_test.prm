@@ -1,0 +1,128 @@
+# This is a test model of 2D dike-injection box to determine that the
+# prescribed compositional field of the oceanic crust in the injection
+# area is working prepoerly. This can be used for computing generation
+# of the oceanic crust in the dike.
+# The value of compositional field oceanic_crust is fixed to 1 while
+# values of other compositional fields are 0 in the dike.
+
+set Additional shared libraries            = libprescribed_dike_injection.so
+set Dimension                              = 2
+set Adiabatic surface temperature          = 1573
+set Nonlinear solver scheme                = iterated Stokes
+set Output directory                       = output_oceanic_crust_test
+set End time                               = 1e4
+set Use years in output instead of seconds = true
+
+##################### Prescribed dilation ########################
+
+# We need to enable the assembler that allows us to add terms
+# to the Stokes equation. 
+subsection Formulation
+  set Enable prescribed dilation    = true
+end
+
+subsection Material model
+  set Model name = prescribed dilation
+  subsection Prescribed dilation
+    set Base model = simple
+    subsection Injection function
+      set Function expression   = if(x<=6e3 && x>=4e3 && y>=14e3 && y<=18e3, 1e-5,0)
+    end
+  end
+end
+
+# In this test, there is no latent heat.
+subsection Heating model
+  set List of model names = latent heat injection
+  subsection Latent heat injection
+    set Latent heat of crystallization = 1e9
+    set Temperature of injected melt = 1273
+  end
+end
+
+##################### Model geometry ########################
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 10e3
+    set Y extent      = 20e3
+    set X repetitions = 10
+    set Y repetitions = 20
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+end
+
+##################### Initial & Boundary Conditions ########################
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, bottom
+end
+
+# We prescribe the lithostatic pressure as a boundary traction on 
+# both side boundaries, so that material can flow in and out 
+# according to the flow induced by the new term.   
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = right:initial lithostatic pressure, \
+                                                left:initial lithostatic pressure
+  subsection Initial lithostatic pressure
+    set Representative point         = 10e3, 20e3
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+    subsection Function
+      set Variable names = x,y
+      set Function constants = h=20.e3,ts=273,tb=1573
+      set Function expression = ts+(tb-ts)*(h-y)/h
+    end
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+  subsection Box
+    set Top temperature = 273
+    set Bottom temperature = 1573
+  end
+end
+
+subsection Compositional fields
+  set Number of fields      = 2
+  set Names of fields       = oceanic_crust, mantle
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      =x,y
+    set Function expression = if(y>=14e3, 1, 0); if(y<14e3, 1, 0)
+  end
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators          = bottom, top
+  set List of model names                            = initial composition
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables      = heating, named additional outputs
+    set Time between graphical output = 1e6
+    set Number of grouped files             = 1
+  end
+end
