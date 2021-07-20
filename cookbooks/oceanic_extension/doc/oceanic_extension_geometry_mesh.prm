@@ -11,12 +11,12 @@ subsection Geometry model
 end
 
 # Mesh refinement specification
-# First, globally refine the mesh to 128x32 cells (3.125 km resolution). 
-# Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth 
-# and between horizontal positions of 120 and 280 km. 
+# First, globally refine the mesh to 128x32 cells (3.125 km resolution).
+# Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth
+# and between horizontal positions of 120 and 280 km.
 subsection Mesh refinement
   set Initial global refinement          = 5
-  set Initial adaptive refinement        = 1 
+  set Initial adaptive refinement        = 1
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
   subsection Minimum refinement function

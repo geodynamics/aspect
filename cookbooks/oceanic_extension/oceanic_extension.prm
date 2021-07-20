@@ -1,7 +1,7 @@
 ### Oceanic Extension Cookbook
-# A cookbook to illustrate the parameters and processes controlling 
-# non-linear deformation of oceanic lithosphere. This parameter file 
-# is the first in a series of cookbooks that systematically build in complexity, 
+# A cookbook to illustrate the parameters and processes controlling
+# non-linear deformation of oceanic lithosphere. This parameter file
+# is the first in a series of cookbooks that systematically build in complexity,
 # and thus serves as a reference model for the remaining cookbooks.
 
 #  Global parameters
@@ -13,26 +13,26 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Nonlinear solver tolerance             = 1e-5
 
-# We set the number of nonlinear iterations to 100 as the first 1-2 time steps 
+# We set the number of nonlinear iterations to 100 as the first 1-2 time steps
 # often require a large number of iterations to converge.
 # Subsequent time steps should require substantially fewer nonlinear iterations.
 set Max nonlinear iterations               = 100
 
-# Reducing the CFL values and/or maximum time step may improve the convergence behavior 
-# of the Stokes and thermal (advection-diffusion) systems. 
-# However, reducing these values inherently requires more time steps to reach the same end time. 
-# Finding the optimal balance frequently requires testing, although the maximum time step 
-# in lithospheric dynamics simulations with Drucker Prager plasticity is frequently 
-# not set above 20-50 thousand years. 
+# Reducing the CFL values and/or maximum time step may improve the convergence behavior
+# of the Stokes and thermal (advection-diffusion) systems.
+# However, reducing these values inherently requires more time steps to reach the same end time.
+# Finding the optimal balance frequently requires testing, although the maximum time step
+# in lithospheric dynamics simulations with Drucker Prager plasticity is frequently
+# not set above 20-50 thousand years.
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
 set Output directory                       = output_oceanic_extension
 
-# Pressure normalization is turned off because using the free surface implies a surface stress of zero. 
+# Pressure normalization is turned off because using the free surface implies a surface stress of zero.
 set Pressure normalization                 = no
 set Adiabatic surface temperature          = 1600
 
-# Governing equations 
+# Governing equations
 subsection Formulation
   set Formulation          = Boussinesq approximation
 end
@@ -50,12 +50,12 @@ subsection Geometry model
 end
 
 # Mesh refinement specification
-# First, globally refine the mesh to 128x32 cells (3.125 km resolution). 
-# Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth 
-# and between horizontal positions of 120 and 280 km. 
+# First, globally refine the mesh to 128x32 cells (3.125 km resolution).
+# Next, adaptively refine the grid to 1.5625 km resolution above 50 km depth
+# and between horizontal positions of 120 and 280 km.
 subsection Mesh refinement
   set Initial global refinement          = 5
-  set Initial adaptive refinement        = 1 
+  set Initial adaptive refinement        = 1
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
   subsection Minimum refinement function
@@ -68,7 +68,7 @@ end
 # Solver parameters
 subsection Solver parameters
   subsection Stokes solver parameters
-    # Cheap Stokes solver steps are skipped, because the nonlinear rheology 
+    # Cheap Stokes solver steps are skipped, because the nonlinear rheology
     # introduces viscosity contrasts that require the expensive solver.
     set Number of cheap Stokes solver steps = 0
     set Linear solver tolerance = 1e-7
@@ -76,46 +76,46 @@ subsection Solver parameters
 end
 
 # Free surface
-# Here, we use a 'normal' advection scheme where the free surface is advected 
-# both vertically and horizontally. This provide the most realistic approximation for 
-# the evolution of topography, but often leads to convergence issues when solving the 
-# Stokes system. The solver issues can often be dealt with by either (1) using a smoother 
-# viscosity averaging scheme over each cell and between compositional fields, or 
-# (2) diffusing the free surface during each time step. In many cases, both methods are required 
+# Here, we use a 'normal' advection scheme where the free surface is advected
+# both vertically and horizontally. This provide the most realistic approximation for
+# the evolution of topography, but often leads to convergence issues when solving the
+# Stokes system. The solver issues can often be dealt with by either (1) using a smoother
+# viscosity averaging scheme over each cell and between compositional fields, or
+# (2) diffusing the free surface during each time step. In many cases, both methods are required
 # to produce consistently stable convergence behavior. A vertical projection of the surface
-# velocity reduces the distortion of the mesh elements, but does not horizontally 
-# advect the topography properly. 
+# velocity reduces the distortion of the mesh elements, but does not horizontally
+# advect the topography properly.
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface
-  
-  # This parameter allows for movement of the mesh along the side boundaries in accordance 
-  # with the free surface, avoiding too great a distortion of the top corner elements. 
+
+  # This parameter allows for movement of the mesh along the side boundaries in accordance
+  # with the free surface, avoiding too great a distortion of the top corner elements.
   set Additional tangential mesh velocity boundary indicators = right, left
   subsection Free surface
-    set Surface velocity projection = normal 
+    set Surface velocity projection = normal
   end
 end
 
 # Velocity on boundaries
-# The boundary velocities are characterized by a free-slip on the base and outflow 
-# at a rate of 1 cm/year on the model sides. As no inflow is prescribed 
-# to balance the outflow, the average free surface elevation will decrease 
+# The boundary velocities are characterized by a free-slip on the base and outflow
+# at a rate of 1 cm/year on the model sides. As no inflow is prescribed
+# to balance the outflow, the average free surface elevation will decrease
 # over time and the total mass of the system will decrease.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom
-  set Prescribed velocity boundary indicators = left x: function, right x:function 
+  set Prescribed velocity boundary indicators = left x: function, right x:function
   subsection Function
     set Variable names      = x,y
     set Function constants  = cm=0.01, year=1
-    set Function expression = if (x<200e3 , -0.5*cm/year, 0.5*cm/year); 0; 
+    set Function expression = if (x<200e3 , -0.5*cm/year, 0.5*cm/year); 0;
   end
 end
 
 # Number and name of compositional fields
-# Three compositional fields are tracked during the simulation. 
-# The first represents strain accrued during brittle (plastic) deformation. 
-# The initial values of this field are used to localize deformation in the 
-# center of the model away from the boundaries. The remaining two compositional 
+# Three compositional fields are tracked during the simulation.
+# The first represents strain accrued during brittle (plastic) deformation.
+# The initial values of this field are used to localize deformation in the
+# center of the model away from the boundaries. The remaining two compositional
 # fields represent distinct lithologies for the oceanic crust and mantle lithosphere.
 subsection Compositional fields
   set Number of fields = 3
@@ -126,20 +126,20 @@ end
 subsection Initial composition model
   set Model name = function
   subsection Function
-  # The function rand_seed(seed_number) will always produce the same random 
-  # value at each point when the parameter file is run. "seed_number" is an 
-  # integer and changing this value will produce a different (reproducible) random number. 
-  # A distinct random number can be produced each time the simulation is run 
+  # The function rand_seed(seed_number) will always produce the same random
+  # value at each point when the parameter file is run. "seed_number" is an
+  # integer and changing this value will produce a different (reproducible) random number.
+  # A distinct random number can be produced each time the simulation is run
   # by replacing rand_seed(seed_number) with rand().
     set Variable names      = x,y
     set Function expression = if(x>150.e3 && x<250.e3, 0.5 + rand_seed(0)*1.0, 0);  \
-			      if(y>=93.e3, 1, 0); \
-                              if(y<93.e3 && y>-100.e3, 1, 0); 
+            if(y>=93.e3, 1, 0); \
+                              if(y<93.e3 && y>-100.e3, 1, 0);
   end
 end
 
 # Temperature boundary conditions
-# Prescribed temperature at bottom and top boundaries with fixed values of 
+# Prescribed temperature at bottom and top boundaries with fixed values of
 # T=273K at the surface and, at the bottom, the temperature computed at 100 km
 # of depth (height of the box) from the expression of plate cooling model,
 # which is also used to describe the initial temperature field.
@@ -150,15 +150,15 @@ subsection Boundary temperature model
     set Variable names = x,y
     set Function constants = ymax=100e3, ageop=40e6, Tm=1573, Ts=273, kappa=1.0101e-6, sec2yrs=3.1709e-8
     set Function expression = if(y<ymax/2, \
-			        Ts + (Tm-Ts)*(1-erfc((ymax)/(2*sqrt(kappa*ageop/sec2yrs)))), \ 
+              Ts + (Tm-Ts)*(1-erfc((ymax)/(2*sqrt(kappa*ageop/sec2yrs)))), \
                               Ts);
   end
 end
 
 # Initial temperature field
-# The initial temperature field follows the plate cooling model for a lithosphere 
+# The initial temperature field follows the plate cooling model for a lithosphere
 # of age 40 Myr years. Below, "Tm" is the temperature at the base of the plate,
-# "Ts" is the temperature at the surface of the plate, "ageop" is the age of the oceanic plate in years, 
+# "Ts" is the temperature at the surface of the plate, "ageop" is the age of the oceanic plate in years,
 # "ymax" is the maximum depth of the plate, "kappa" is the the thermal diffusivity, and
 # "sec2yrs" is to convert the age from years to seconds.
 subsection Initial temperature model
@@ -174,9 +174,9 @@ end
 subsection Material model
   set Model name = visco plastic
 
-  # The `Material averaging` parameter determines how material properties 
-  # are averaged over each element. Using `harmonic average` will produce 
-  # the smoothest and most stable solution, although this will also act 
+  # The `Material averaging` parameter determines how material properties
+  # are averaged over each element. Using `harmonic average` will produce
+  # the smoothest and most stable solution, although this will also act
   # to reduce sharp variations in material properties at interfaces.
   set Material averaging = harmonic average
 
@@ -187,9 +187,9 @@ subsection Material model
     set Minimum strain rate = 1.e-20
     set Reference strain rate = 1.e-15
     # Respectively, the standard minimum and maximum viscosities used in
-    # geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s. 
-    # Increasing the min/max viscosity contrast will produce more "Earth-like" 
-    # simulations, but this comes at the expense of solver stability and model run times. 
+    # geodynamics models typically range from 1e18-1e20 and 1e24-1e28 Pa s.
+    # Increasing the min/max viscosity contrast will produce more "Earth-like"
+    # simulations, but this comes at the expense of solver stability and model run times.
     set Minimum viscosity = 1e18
     set Maximum viscosity = 1e26
 
@@ -199,21 +199,21 @@ subsection Material model
     set Heat capacities       = 750.
     set Thermal expansivities = 2e-5
 
-    # The `Viscosity averaging scheme` selects how the viscosity is averaged 
-    # between compositional fields at each point. Choosing maximum composition 
-    # will help to preserve material interfaces through time, but come at the 
+    # The `Viscosity averaging scheme` selects how the viscosity is averaged
+    # between compositional fields at each point. Choosing maximum composition
+    # will help to preserve material interfaces through time, but come at the
     # expense of solver stability and speed.
     set Viscosity averaging scheme = maximum composition
 
     set Viscous flow law = composite
 
-    # Flow laws for each compositional field. 
+    # Flow laws for each compositional field.
     # Oceanic crust (3rd column): gabbro from Wilks & Carter (1990)
     # Mantle lithosphere (4th column): dry olivine from Hirth & Kholstedt (2003)
-    # Second column represents the plastic_strain compositional field, which it 
+    # Second column represents the plastic_strain compositional field, which it
     # is not used when computing the viscosity. Setting clearly incorrect values, such
     # as 1e-50,0,0,0 is a way to obtain unrealistic viscosities.
-    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.12e-10, 6.52e-16 
+    set Prefactors for dislocation creep          = 6.52e-16, 1.00e-50, 1.12e-10, 6.52e-16
     set Stress exponents for dislocation creep    =      3.5,       1.,      3.4,      3.5
     set Activation energies for dislocation creep =   530.e3,       0.,   497.e3,   530.e3
     set Activation volumes for dislocation creep  =   18.e-6,       0.,       0.,   18.e-6
@@ -260,4 +260,3 @@ set List of postprocessors = heat flux densities, heat flux statistics, material
     set Output format                 = vtu
   end
 end
-
