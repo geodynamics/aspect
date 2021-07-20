@@ -58,6 +58,18 @@ namespace aspect
 
 
     template <int dim>
+    void
+    Interface<dim>::adjust_positions_for_periodicity (Point<dim> &/*position*/,
+                                                      const ArrayView<Point<dim>> &/*connected_positions*/) const
+    {
+      AssertThrow(false,
+                  ExcMessage("Positions cannot be adjusted for periodicity in the chosen geometry model."));
+      return;
+    }
+
+
+
+    template <int dim>
     bool
     Interface<dim>::has_curved_elements() const
     {

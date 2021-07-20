@@ -22,6 +22,7 @@
 #define _aspect_particle_integrator_euler_h
 
 #include <aspect/particle/integrator/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -38,7 +39,7 @@ namespace aspect
        * @ingroup ParticleIntegrators
        */
       template <int dim>
-      class Euler : public Interface<dim>
+      class Euler : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**

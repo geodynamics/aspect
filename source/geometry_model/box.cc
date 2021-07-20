@@ -194,6 +194,33 @@ namespace aspect
       return periodic_boundaries;
     }
 
+
+
+    template <int dim>
+    void
+    Box<dim>::adjust_positions_for_periodicity (Point<dim> &position,
+                                                const ArrayView<Point<dim>> &connected_positions) const
+    {
+      for (unsigned int i = 0; i < dim; ++i)
+        if (periodic[i])
+          {
+            if (position[i] < box_origin[i])
+              {
+                position[i] += extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] += extents[i];
+              }
+            else if (position[i] > box_origin[i] + extents[i])
+              {
+                position[i] -= extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] -= extents[i];
+              }
+          }
+    }
+
+
+
     template <int dim>
     Point<dim>
     Box<dim>::get_extents () const

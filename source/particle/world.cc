@@ -21,12 +21,8 @@
 #include <aspect/particle/world.h>
 #include <aspect/global.h>
 #include <aspect/utilities.h>
-#include <aspect/compat.h>
-#include <aspect/geometry_model/box.h>
-#include <aspect/geometry_model/two_merged_boxes.h>
-#include <aspect/geometry_model/spherical_shell.h>
-#include <aspect/particle/integrator/euler.h>
 #include <aspect/citation_info.h>
+#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -414,140 +410,7 @@ namespace aspect
       return subdomain_id_to_neighbor_map;
     }
 
-    template <int dim>
-    void
-    World<dim>::move_particles_back_into_mesh()
-    {
-      // TODO: fix this to work with arbitrary meshes. Currently periodic boundaries only work for boxes.
-      // If the geometry is not a box, we simply discard particles that have left the
-      // model domain.
 
-      if (Plugins::plugin_type_matches<const GeometryModel::Box<dim>> (this->get_geometry_model()))
-        {
-          const GeometryModel::Box<dim> &geometry
-            = Plugins::get_plugin_as_type<const GeometryModel::Box<dim>>(this->get_geometry_model());
-
-          const Point<dim> origin = geometry.get_origin();
-          const Point<dim> extent = geometry.get_extents();
-          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries =
-                geometry.get_periodic_boundary_pairs();
-
-          if (periodic_boundaries.size() != 0)
-            {
-              std::vector<bool> periodic(dim,false);
-              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>::const_iterator boundary =
-                    periodic_boundaries.begin();
-              for (; boundary != periodic_boundaries.end(); ++boundary)
-                periodic[boundary->second] = true;
-
-              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
-              for (; particle != particle_handler->end(); ++particle)
-                {
-                  // modify the particle position if it crossed a periodic boundary
-                  Point<dim> particle_position = particle->get_location();
-                  for (unsigned int i = 0; i < dim; ++i)
-                    {
-                      if (periodic[i])
-                        {
-                          if (particle_position[i] < origin[i])
-                            particle_position[i] += extent[i];
-                          else if (particle_position[i] > origin[i] + extent[i])
-                            particle_position[i] -= extent[i];
-                        }
-                    }
-                  particle->set_location(particle_position);
-                }
-            }
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedBoxes<dim>> (this->get_geometry_model()))
-        {
-          const GeometryModel::TwoMergedBoxes<dim> &geometry
-            = Plugins::get_plugin_as_type<const GeometryModel::TwoMergedBoxes<dim>>(this->get_geometry_model());
-
-          const Point<dim> origin = geometry.get_origin();
-          const Point<dim> extent = geometry.get_extents();
-          const std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries =
-                geometry.get_periodic_boundary_pairs();
-
-          if (periodic_boundaries.size() != 0)
-            {
-              std::vector<bool> periodic(dim,false);
-              std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>::const_iterator boundary =
-                    periodic_boundaries.begin();
-              for (; boundary != periodic_boundaries.end(); ++boundary)
-                periodic[boundary->second] = true;
-
-              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
-              for (; particle != particle_handler->end(); ++particle)
-                {
-                  // modify the particle position if it crossed a periodic boundary
-                  Point<dim> particle_position = particle->get_location();
-                  for (unsigned int i = 0; i < dim; ++i)
-                    {
-                      if (periodic[i])
-                        {
-                          if (particle_position[i] < origin[i])
-                            particle_position[i] += extent[i];
-                          else if (particle_position[i] > origin[i] + extent[i])
-                            particle_position[i] -= extent[i];
-                        }
-                    }
-                  particle->set_location(particle_position);
-                }
-            }
-        }
-      else if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
-        {
-          const GeometryModel::SphericalShell<dim> &geometry
-            = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model());
-
-          const auto &periodic_boundaries = geometry.get_periodic_boundary_pairs();
-
-          if (periodic_boundaries.size() != 0)
-            {
-              AssertThrow(dim == 2,
-                          ExcMessage("Periodic boundaries combined with particles currently "
-                                     "only work with 2D spherical shell."));
-              AssertThrow(geometry.opening_angle() == 90,
-                          ExcMessage("Periodic boundaries combined with particles currently "
-                                     "only work with 90 degree opening angle in spherical shell."));
-              AssertThrow(Plugins::plugin_type_matches<Particle::Integrator::Euler<dim>>(*integrator),
-                          ExcMessage("Periodic boundaries combined with particles currently "
-                                     "only work in spherical shells with the forward euler integration scheme."));
-
-              typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
-              for (; particle != particle_handler->end(); ++particle)
-                {
-                  // modify the particle position if it crossed a periodic boundary
-                  Point<dim> particle_position = particle->get_location();
-
-                  if (particle_position[0] < 0.)
-                    {
-                      const double temp = particle_position[0];
-                      particle_position[0] = particle_position[1];
-                      particle_position[1] = -temp;
-                    }
-                  else if (particle_position[1] < 0.)
-                    {
-                      const double temp = particle_position[0];
-                      particle_position[0] = -particle_position[1];
-                      particle_position[1] = temp;
-                    }
-                  else
-                    continue;
-
-                  particle->set_location(particle_position);
-                }
-            }
-
-        }
-      else
-        {
-          AssertThrow(this->get_geometry_model().get_periodic_boundary_pairs().size() == 0,
-                      ExcMessage("Periodic boundaries combined with particles currently "
-                                 "only work with box, two merged boxes, and spherical shell geometry models."));
-        }
-    }
 
     template <int dim>
     void
@@ -1399,12 +1262,6 @@ namespace aspect
 
                 }
             }
-
-        // If particles fell out of the mesh, put them back in if they have crossed
-        // a periodic boundary. If they have left the mesh otherwise, they will be
-        // discarded during the next call to
-        // particle_handler->sort_particles_into_subdomains_and_cells()
-        move_particles_back_into_mesh();
       }
 
       {
