@@ -521,9 +521,11 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
-        AssertThrow(ifs.is_open(),
-                    ExcMessage("Cannot open snapshot resume file."));
+        const std::string restart_data
+          = Utilities::read_and_distribute_file_content (parameters.output_directory + "restart.resume.z",
+                                                         mpi_communicator);
+
+        std::istringstream ifs (restart_data);
 
         uint32_t compression_header[4];
         ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
