@@ -1,5 +1,5 @@
 # This test runs on 1 mpi process and computes 8 timesteps
-# healed_strain = strain_healing_temperature_dependent_recovery_rate * 
+# healed_strain = strain_healing_temperature_dependent_recovery_rate *
 # exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - temperature/reference_temperature)) * this_timestep
 # The returned strain value due to strain healing in the last timestep should be:
 # total_strain: max, 4.435e-04; min, -3.198e-05
