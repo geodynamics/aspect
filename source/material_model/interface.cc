@@ -295,7 +295,7 @@ namespace aspect
           Tensor<2,dim> grad_u;
           for (unsigned int d=0; d<dim; ++d)
             {
-              grad_u[d] = input_data.solution_gradients[q][d];
+              grad_u[d] = input_data.solution_gradients[q][introspection.component_indices.velocities[d]];
               this->velocity[q][d] = input_data.solution_values[q][introspection.component_indices.velocities[d]];
               this->pressure_gradient[q][d] = input_data.solution_gradients[q][introspection.component_indices.pressure][d];
             }
