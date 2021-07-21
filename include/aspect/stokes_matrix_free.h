@@ -85,6 +85,18 @@ namespace aspect
                              const bool is_compressible);
 
         /**
+         * Fills in the tables of derivatives and strain rate for the Newton method,
+         * and symmetrize the Newton system when @p symmetrize_newton_system is true (i.e., the stabilization is symmetric or SPD).
+         */
+        void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
+                                    &viscosity_derivative_wrt_pressure_table,
+                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+                                    &strain_rate_table,
+                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+                                    &viscosity_derivative_wrt_strain_rate_table,
+                                    const bool symmetrize_newton_system);
+
+        /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
@@ -117,6 +129,32 @@ namespace aspect
          * Pressure scaling constant.
          */
         double pressure_scaling;
+
+        /**
+         * Table which stores the product of viscosity derivative with respect to pressure
+         * and newton derivative scaling factor.
+         */
+        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
+
+        /**
+         * Table which stores the strain rate for each cell.
+         */
+        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+        *strain_rate_table;
+
+        /**
+         * Table which stores the product of the following three variables:
+         * viscosity derivative with respect to strain rate,
+         * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
+         * otherwise, it is 1.
+         */
+        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+        *viscosity_derivative_wrt_strain_rate_table;
+
+        /**
+          * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
+          */
+        bool symmetrize_newton_system;
 
         /**
           * Information on the compressibility of the flow.
@@ -225,6 +263,18 @@ namespace aspect
                              const bool is_compressible);
 
         /**
+         * Fills in the tables of derivatives and strain rate for the Newton method,
+         * and symmetrize the Newton system when @p symmetrize_newton_system is true (i.e., the stabilization is symmetric or SPD).
+         */
+        void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
+                                    &viscosity_derivative_wrt_pressure_table,
+                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+                                    &strain_rate_table,
+                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+                                    &viscosity_derivative_wrt_strain_rate_table,
+                                    const bool symmetrize_newton_system);
+
+        /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
          * to matrix elements, we must apply the matrix-free operator to the unit vectors to
          * recover the diagonal.
@@ -267,6 +317,32 @@ namespace aspect
          * Table which stores viscosity values for each cell.
          */
         const Table<2, VectorizedArray<number>> *viscosity;
+
+        /**
+         * Table which stores the product of viscosity derivative with respect to pressure
+         * and newton derivative scaling factor.
+         */
+        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
+
+        /**
+         * Table which stores the strain rate for each cell.
+         */
+        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+        *strain_rate_table;
+
+        /**
+         * Table which stores the product of the following three variables:
+         * viscosity derivative with respect to strain rate,
+         * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
+         * otherwise, it is 1.
+         */
+        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+        *viscosity_derivative_wrt_strain_rate_table;
+
+        /**
+          * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
+          */
+        bool symmetrize_newton_system;
 
         /**
           * Information on the compressibility of the flow.
@@ -542,6 +618,27 @@ namespace aspect
 
       Table<2, VectorizedArray<double>> active_viscosity_table;
       MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> level_viscosity_tables;
+
+
+      /**
+       * Table which stores the product of viscosity derivative with respect to pressure
+       * and newton derivative scaling factor for each active cell.
+       */
+      Table<2, VectorizedArray<double>> active_viscosity_derivative_wrt_pressure_table;
+
+      /**
+       * Table which stores the strain rate for each active cell.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<double>>> active_strain_rate_table;
+
+      /**
+      * Table which stores the product of the following three variables for each active cell:
+      * viscosity derivative with respect to strain rate,
+      * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
+      * otherwise, it is 1.
+      */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<double>>>
+      active_viscosity_derivative_wrt_strain_rate_table;
 
       // This variable is needed only in the setup in both evaluate_material_model()
       // and build_preconditioner(). It will be deleted after the last use.
