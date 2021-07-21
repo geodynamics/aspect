@@ -265,11 +265,18 @@ namespace aspect
        *
        * @param input_data The data used to populate the material model input quantities.
        * @param introspection A reference to the simulator introspection object.
-       * @param use_strain_rate Whether to compute the strain rates.
+       * @param compute_strain_rate If set to `true`, then the object that
+       *   is currently created will also store the strain rates at all evaluation
+       *   points. This is an expensive operation. If set to `false`, then the
+       *   `strain_rate` array is going to be empty, and strain rates are not
+       *   evaluated. As a consequence, strain rates are then also not
+       *   available to functions that take this MaterialModelInputs
+       *   object as input, for example to compute strain rate-dependent
+       *   viscosities.
        */
       MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
                           const Introspection<dim> &introspection,
-                          const bool use_strain_rate = true);
+                          const bool compute_strain_rate = true);
 
 
       /**
@@ -282,13 +289,20 @@ namespace aspect
        * @param cell The currently active cell for the fe_values object.
        * @param introspection A reference to the simulator introspection object.
        * @param solution_vector The finite element vector from which to construct the inputs.
-       * @param use_strain_rates Whether to compute the strain rates.
+       * @param compute_strain_rate If set to `true`, then the object that
+       *   is currently created will also store the strain rates at all evaluation
+       *   points. This is an expensive operation. If set to `false`, then the
+       *   `strain_rate` array is going to be empty, and strain rates are not
+       *   evaluated. As a consequence, strain rates are then also not
+       *   available to functions that take this MaterialModelInputs
+       *   object as input, for example to compute strain rate-dependent
+       *   viscosities.
        */
       MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                           const typename DoFHandler<dim>::active_cell_iterator &cell,
                           const Introspection<dim> &introspection,
                           const LinearAlgebra::BlockVector &solution_vector,
-                          const bool use_strain_rates = true);
+                          const bool compute_strain_rates = true);
 
       /**
        * Copy constructor. This constructor copies all data members of the
@@ -323,13 +337,14 @@ namespace aspect
 
       /**
        * Function to re-initialize and populate the pre-existing arrays
-       * created by the constructor MaterialModelInputs.
+       * created by the constructor MaterialModelInputs. The arguments here
+       * have the same meaning as in the constructor of this class.
        */
-      void reinit(const FEValuesBase<dim,dim> &fe_values,
+      void reinit(const FEValuesBase<dim,dim>                          &fe_values,
                   const typename DoFHandler<dim>::active_cell_iterator &cell,
-                  const Introspection<dim> &introspection,
-                  const LinearAlgebra::BlockVector &solution_vector,
-                  const bool use_strain_rates = true);
+                  const Introspection<dim>                             &introspection,
+                  const LinearAlgebra::BlockVector                     &solution_vector,
+                  const bool                                            compute_strain_rates = true);
 
       /**
        * Function that returns the number of points at which
