@@ -667,7 +667,10 @@ namespace aspect
     inline std::size_t
     OperatorCellData<dim,number>::memory_consumption() const
     {
-      return viscosity.memory_consumption();
+      return viscosity.memory_consumption()
+             + viscosity_derivative_wrt_pressure_table.memory_consumption()
+             + strain_rate_table.memory_consumption()
+             + viscosity_derivative_wrt_strain_rate_table.memory_consumption();
 
     }
 
