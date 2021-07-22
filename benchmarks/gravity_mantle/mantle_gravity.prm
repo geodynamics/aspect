@@ -1,4 +1,4 @@
-# A simple setup for testing the gravity postprocessor using the 
+# A simple setup for testing the gravity postprocessor using the
 # sample scheme 'map'.
 # See the corresponding section in the manual for more information.
 
@@ -46,7 +46,7 @@ set Model name = S40RTS perturbation
     set Initial condition file name       = S40RTS.sph
     set Spline knots depth file name      = Spline_knots.txt
     set Remove degree 0 from perturbation = false
-    set Vs to density scaling             = 0.15 
+    set Vs to density scaling             = 0.15
     set Thermal expansion coefficient in initial temperature scaling = 3e-5
     set Reference temperature             = 0
   end
@@ -71,11 +71,11 @@ subsection Postprocess
   subsection Visualization
     set List of output variables = density, viscosity
     set Time between graphical output = 0
-    set Interpolate output = false 
+    set Interpolate output = false
   end
   subsection Gravity calculation
-    set Sampling scheme = map 
-    set Minimum radius = 6621e3 
+    set Sampling scheme = map
+    set Minimum radius = 6621e3
     set Minimum longitude = -180
     set Maximum longitude = 179
     set Number points longitude = 180
@@ -85,5 +85,3 @@ subsection Postprocess
     set Quadrature degree increase = 01
   end
 end
-
-
