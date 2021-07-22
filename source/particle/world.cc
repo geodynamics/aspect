@@ -25,6 +25,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/particle/integrator/euler.h>
 #include <aspect/citation_info.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -552,6 +553,9 @@ namespace aspect
               AssertThrow(geometry.opening_angle() == 90,
                           ExcMessage("Periodic boundaries combined with particles currently "
                                      "only work with 90 degree opening angle in spherical shell."));
+              AssertThrow(Plugins::plugin_type_matches<Particle::Integrator::Euler<dim>>(*integrator),
+                          ExcMessage("Periodic boundaries combined with particles currently "
+                                     "only work in spherical shells with the forward euler integration scheme."));
 
               typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
               for (; particle != particle_handler->end(); ++particle)
