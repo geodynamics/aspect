@@ -678,8 +678,9 @@ namespace aspect
       enable_newton_derivatives = false;
       // TODO: use Table::clear() once implemented in 10.0.pre
       viscosity.reinit(TableIndices<2>(0,0));
-
-
+      viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+      strain_rate_table.reinit(TableIndices<2>(0,0));
+      viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
     }
 
   }
@@ -1406,8 +1407,6 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
   {
-    active_cell_data.clear();
-
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                sim.triangulation.get_communicator());
 
@@ -1562,7 +1561,6 @@ namespace aspect
 
     const unsigned int n_levels = sim.triangulation.n_global_levels();
     level_cell_data.resize(0,n_levels-1);
-    level_cell_data.clear_elements();
 
     level_viscosity_vector = 0.;
     level_viscosity_vector.resize(0,n_levels-1);
@@ -1750,6 +1748,14 @@ namespace aspect
             (sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
             != Newton::Parameters::Stabilization::none;
           active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
+        }
+      else
+        {
+          // delete data used for Newton derivatives if necessary
+          // TODO: use Table::clear() once implemented in 10.0.pre
+          active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
         }
     }
   }
