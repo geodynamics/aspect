@@ -1664,6 +1664,11 @@ namespace aspect
 
           active_cell_data.enable_newton_derivatives = true;
 
+          // TODO: these are not implemented yet
+          for (unsigned int level=0; level<n_levels; ++level)
+            level_cell_data[level].enable_newton_derivatives = false;
+
+
           FEValues<dim> fe_values (*sim.mapping,
                                    sim.finite_element,
                                    quadrature_formula,
@@ -1756,9 +1761,13 @@ namespace aspect
         {
           // delete data used for Newton derivatives if necessary
           // TODO: use Table::clear() once implemented in 10.0.pre
+          active_cell_data.enable_newton_derivatives = false;
           active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
           active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+
+          for (unsigned int level=0; level<n_levels; ++level)
+            level_cell_data[level].enable_newton_derivatives = false;
         }
     }
   }
