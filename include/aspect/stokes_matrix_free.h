@@ -66,13 +66,13 @@ namespace aspect
     struct OperatorCellData
     {
       /**
-          * Information on the compressibility of the flow.
-          */
+       * Information on the compressibility of the flow.
+       */
       bool is_compressible;
 
       /**
-         * Pressure scaling constant.
-         */
+       * Pressure scaling constant.
+       */
       double pressure_scaling;
 
       /**
@@ -81,40 +81,40 @@ namespace aspect
       bool enable_newton_derivatives;
 
       /**
-      * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
-      */
+       * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
+       */
       bool symmetrize_newton_system;
 
       /**
-         * Table which stores viscosity values for each cell.
-         */
+       * Table which stores viscosity values for each cell.
+       */
       Table<2, VectorizedArray<number>> viscosity;
 
       /**
-         * Table which stores the product of viscosity derivative with respect to pressure
-         * and newton derivative scaling factor.
-         */
+       * Table which stores the product of viscosity derivative with respect to pressure
+       * and newton derivative scaling factor.
+       */
       Table<2, VectorizedArray<number>> viscosity_derivative_wrt_pressure_table;
 
       /**
-         * Table which stores the strain rate for each cell.
-         */
+       * Table which stores the strain rate for each cell.
+       */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       strain_rate_table;
 
       /**
-         * Table which stores the product of the following three variables:
-         * viscosity derivative with respect to strain rate,
-         * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
-         * otherwise, it is 1.
-         */
+       * Table which stores the product of the following three variables:
+       * viscosity derivative with respect to strain rate,
+       * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
+       * otherwise, it is 1.
+       */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       viscosity_derivative_wrt_strain_rate_table;
 
       /**
-      * Determine an estimate for the memory consumption (in bytes) of this
-      * object.
-      */
+       * Determine an estimate for the memory consumption (in bytes) of this
+       * object.
+       */
       inline std::size_t
       memory_consumption() const;
 
