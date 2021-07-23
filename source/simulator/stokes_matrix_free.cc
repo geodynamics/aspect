@@ -674,6 +674,8 @@ namespace aspect
 
     }
 
+
+
     template <int dim, typename number>
     void
     OperatorCellData<dim,number>::clear()
@@ -685,14 +687,10 @@ namespace aspect
       strain_rate_table.reinit(TableIndices<2>(0,0));
       viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
     }
-
   }
 
-  /**
-   * Implementation of the matrix-free operators.
-   *
-   * Stokes operator
-   */
+
+
   template <int dim, int degree_v, typename number>
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::StokesOperator ()
     :
@@ -731,6 +729,8 @@ namespace aspect
     // block and append zeros to the end for the number of pressure DoFs.
     Assert(false, ExcNotImplemented());
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -2813,12 +2813,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const DoFHandler<dim> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_p () const
   {
     return dof_handler_p;
   }
+
 
 
   template <int dim, int velocity_degree>
@@ -2829,12 +2831,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
   {
     return constraints_v;
   }
+
 
 
   template <int dim, int velocity_degree>
@@ -2845,6 +2849,7 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const MGTransferMatrixFree<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
@@ -2853,12 +2858,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const MGTransferMatrixFree<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_S() const
   {
     return mg_transfer_Schur_complement;
   }
+
 
 
   template <int dim, int velocity_degree>

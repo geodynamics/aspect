@@ -561,7 +561,14 @@ namespace aspect
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
 
+      /**
+       * Store the data for the Stokes operator (viscosity, etc.) for the active cells.
+       */
       MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType> active_cell_data;
+
+      /**
+       * Store the data for the Stokes operator (viscosity, etc.) for each multigrid level.
+       */
       MGLevelObject<MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>> level_cell_data;
 
       // This variable is needed only in the setup in both evaluate_material_model()
