@@ -112,6 +112,7 @@ subsection Postprocess
     set Number of particles = 20
     set Time between data output = 5
     set Data output format = vtu
+    set Integration scheme = euler
     set List of particle properties = function, initial composition, initial position
 
   end
