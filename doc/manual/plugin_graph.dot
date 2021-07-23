@@ -384,6 +384,9 @@ SimulatorAccess -> N6aspect14MeshRefinement20CompositionThresholdILi2EEE [style=
 N6aspect14MeshRefinement7DensityILi2EEE [label="density", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement7DensityILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement7DensityILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
+N6aspect14MeshRefinement11IsosurfacesILi2EEE [label="isosurfaces", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
+N6aspect14MeshRefinement11IsosurfacesILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect14MeshRefinement11IsosurfacesILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect14MeshRefinement25MaximumRefinementFunctionILi2EEE [label="maximum\nrefinement\nfunction", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect14MeshRefinement25MaximumRefinementFunctionILi2EEE -> N6aspect14MeshRefinement9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect14MeshRefinement25MaximumRefinementFunctionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
