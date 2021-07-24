@@ -31,6 +31,4 @@
 #cmakedefine ASPECT_WITH_PERPLEX
 #cmakedefine ASPECT_WITH_WORLD_BUILDER
 #cmakedefine ASPECT_USE_FP_EXCEPTIONS
-#cmakedefine ASPECT_USE_PETSC
-
 #endif
