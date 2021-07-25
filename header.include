@@ -41,7 +41,9 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Development<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="../doc/doxygen/index.html">Documentation</a></li>
-                <li><a href="../doc/doxygen/changes_current.html">Changes after v2.2.0</a></li>
+                <li><a href="../doc/doxygen/changes_current.html">Changes after v2.3.0</a></li>
+
+                <li><a href="../doc/doxygen/changes_between_2_82_80_and_2_83_80.html">Changes v2.2&#10142;2.3</a></li>
 
                 <li><a href="../doc/doxygen/changes_between_2_81_80_and_2_82_80.html">Changes v2.1&#10142;2.2</a></li>
 
