@@ -1,0 +1,11 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of nonlinear iterations
+# 8: Average density (kg/m^3)
+# 9: Average viscosity (Pa s)
+# 10: Total mass (kg)
+0 0.000000000000e+00 0.000000000000e+00 7 253 79 0 5.15270530e+03 0.00000000e+00 5.57847694e+24 

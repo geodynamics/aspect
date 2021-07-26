@@ -1,0 +1,55 @@
+# Test case for the branchmark prem density :
+# The test outputs material statistics (average density, mass) 
+# and calculates gravity radially along a profile. 
+
+# Define the number of space dimensions we would like to work in
+set Dimension                              = 3 
+
+# The model is instantaneous so that no stokes or advection  
+# is required. 
+set End time                               = 0
+set Use years in output instead of seconds = true
+set Output directory = output-prem_density
+set Nonlinear solver scheme = no Advection, no Stokes 
+
+# Specify the mesh refinement: with GMR=5, the model ran for 
+# 13min on 1 core. The mesh is first created, then refined 
+# before the initial conditions are set up.
+subsection Mesh refinement
+  set Initial global refinement             = 0
+end
+
+# Here we specify the geometry of the domain, which is 
+# a sphere with a radius of 6371km
+subsection Geometry model
+  set Model name = sphere
+  subsection Sphere
+    set Radius = 6371000
+  end
+end
+
+# Here, we choose a zero average pressure at the surface 
+# of the domain 
+set Pressure normalization                 = surface
+set Surface pressure                       = 0
+
+# A gravity model always have to be specified. This does not
+# affect the gravity calculaton.
+subsection Gravity model
+  set Model name = radial constant
+  subsection Radial constant
+    set Magnitude = 10
+  end
+end
+
+# Call the premDensity material model pluggin written specifically
+# for this benchmark.
+subsection Material model
+  set Model name = premDensity
+end
+
+# We output some statistics.
+subsection Postprocess
+  set List of postprocessors = basic statistics, material statistics
+end
+
