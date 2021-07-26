@@ -9,7 +9,7 @@
 
 import requests
 import re
-from cgi import escape
+from html import escape
 
 bibfile = "manual/manual.bib"
 
@@ -59,7 +59,8 @@ want_groups = {"KHB12": "main",
                "aspect-doi-v2.0.1" : "2.0.1",
                "aspect-doi-v2.1.0" : "2.1.0",
                "aspect-doi-v2.2.0" : "2.2.0",
-               "aspectmanual" : "2.2.0",
+               "aspect-doi-v2.3.0" : "2.3.0",
+               "aspectmanual" : "2.3.0",
                "rose_freesurface" : "fs",
                "dannberg_melt" : "melt",
                "gassmoeller_particles" : "particles",
@@ -91,7 +92,8 @@ bibformated = {
         "aspect-doi-v2.0.1" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2018, June 24. ASPECT v2.0.1. Zenodo. https://doi.org/10.5281/zenodo.1297145",
         "aspect-doi-v2.1.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2019, April 29. ASPECT v2.1.0. Zenodo. https://doi.org/10.5281/zenodo.2653531",
         "aspect-doi-v2.2.0" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, and Timo Heister. 2020. ASPECT v2.2.0. (version v2.2.0). Zenodo. https://doi.org/10.5281/ZENODO.3924604.",
-        "aspectmanual" : "Wolfgang Bangerth, Juliane Dannberg, Rene Gassmoeller, Timo Heister, and others. 2020. ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual. <i>Figshare</i>. https://doi.org/10.6084/m9.figshare.4865333",
+        "aspect-doi-v2.3.0" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, and John Naliboff. 2021. <i>ASPECT v2.3.0</i> (version v2.3.0). Zenodo. https://doi.org/10.5281/ZENODO.5131909.",
+        "aspectmanual" : "Bangerth, Wolfgang, Juliane Dannberg, Menno Fraters, Rene Gassmoeller, Anne Glerum, Timo Heister, and John Naliboff. 2021. “ASPECT: Advanced Solver for Problems in Earth's ConvecTion, User Manual.” <i>Figshare</i>. https://doi.org/10.6084/M9.FIGSHARE.4865333.",
         "clevenger_stokes19" : "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
         "dannberg_melt" : "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
         "fraters_menno_2020_3900603" : "Menno Fraters. 2020. ”The Geodynamic World Builder” (version v0.3.0). Zenodo. https://doi.org/10.5281/ZENODO.3900603",
