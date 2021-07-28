@@ -22,12 +22,7 @@
 #include <aspect/volume_of_fluid/handler.h>
 
 #include <deal.II/lac/affine_constraints.h>
-
-#ifdef ASPECT_USE_PETSC
-#include <deal.II/lac/solver_cg.h>
-#else
 #include <deal.II/lac/trilinos_solver.h>
-#endif
 
 #include <deal.II/fe/fe_values.h>
 
@@ -46,15 +41,9 @@ namespace aspect
 
     SolverControl solver_control (1000, tolerance);
 
-#ifdef ASPECT_USE_PETSC
-    SolverCG<LinearAlgebra::Vector> solver(solver_control);
-    LinearAlgebra::PreconditionJacobi precondition;
-    precondition.initialize(sim.system_matrix.block(block_idx, block_idx));
-#else
     TrilinosWrappers::SolverCG solver(solver_control);
     TrilinosWrappers::PreconditionJacobi precondition;
     precondition.initialize(sim.system_matrix.block(block_idx, block_idx));
-#endif
 
     // Create distributed vector (we need all blocks here even though we only
     // solve for the current block) because only have a AffineConstraints<double>

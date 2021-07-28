@@ -60,17 +60,10 @@ void print_aspect_header(Stream &stream)
   stream << DEAL_II_COMPILER_VECTORIZATION_LEVEL
          << " (" << n_vect_bits << " bits)\n";
 
-#ifdef ASPECT_USE_PETSC
-  stream << "--     . using PETSc "
-         << PETSC_VERSION_MAJOR    << '.'
-         << PETSC_VERSION_MINOR    << '.'
-         << PETSC_VERSION_SUBMINOR << '\n';
-#else
   stream << "--     . using Trilinos "
          << DEAL_II_TRILINOS_VERSION_MAJOR    << '.'
          << DEAL_II_TRILINOS_VERSION_MINOR    << '.'
          << DEAL_II_TRILINOS_VERSION_SUBMINOR << '\n';
-#endif
   stream << "--     . using p4est "
          << DEAL_II_P4EST_VERSION_MAJOR << '.'
          << DEAL_II_P4EST_VERSION_MINOR << '.'

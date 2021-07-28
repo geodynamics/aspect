@@ -654,8 +654,7 @@ int main (int argc, char *argv[])
   // Loop over all command line arguments. Handle a number of special ones
   // starting with a dash, and then take the first non-special one as the
   // name of the input file. We will later check that there are no further
-  // arguments left after that (though there may be with PETSc, see
-  // below).
+  // arguments left after that.
   while (current_argument<argc)
     {
       const std::string arg = argv[current_argument];
@@ -710,7 +709,11 @@ int main (int argc, char *argv[])
       // before, so that the destructor of this instance can react if we are
       // currently unwinding the stack if an unhandled exception is being
       // thrown to avoid MPI deadlocks.
-      Utilities::MPI::MPI_InitFinalize mpi_initialization(n_remaining_arguments, remaining_arguments, use_threads ? numbers::invalid_unsigned_int : 1);
+      Utilities::MPI::MPI_InitFinalize mpi_initialization(n_remaining_arguments,
+                                                          remaining_arguments,
+                                                          (use_threads ?
+                                                           numbers::invalid_unsigned_int :
+                                                           1));
 
       if (run_unittests)
         {
@@ -770,13 +773,8 @@ int main (int argc, char *argv[])
         }
 
       // If no parameter given or somebody gave additional parameters,
-      // show help and exit. However, this does not work with PETSc because for
-      // PETSc, one may pass any number of flags on the command line.
-      if ((prm_name == "")
-#ifndef ASPECT_USE_PETSC
-          || (current_argument < argc)
-#endif
-         )
+      // show help and exit.
+      if ((prm_name == "") || (current_argument < argc))
         {
           if (i_am_proc_0)
             print_help();
