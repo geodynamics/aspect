@@ -2498,8 +2498,9 @@ namespace aspect
             }
         }
 
-      if (dirichlet_boundary.size()>0)
-        mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
+      // Unconditionally call this function, even if the set is empty. Otherwise, the data structure
+      // for boundary indices will not be created (if mesh has no Dirichlet conditions).
+      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
 
       {
         const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
