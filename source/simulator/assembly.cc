@@ -504,9 +504,6 @@ namespace aspect
       {
         // in the case of melt transport we have an AMG preconditioner for the lower right block.
         LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-#ifdef ASPECT_USE_PETSC
-        Amg_data.symmetric_operator = false;
-#else
         std::vector<std::vector<bool>> constant_modes;
         dealii::ComponentMask cm_pressure = introspection.component_masks.pressure;
         if (parameters.include_melt_transport)
@@ -520,7 +517,6 @@ namespace aspect
 
         Amg_data.smoother_sweeps = 2;
         Amg_data.coarse_type = "symmetric Gauss-Seidel";
-#endif
 
         LinearAlgebra::PreconditionAMG *Mp_preconditioner_AMG
           = dynamic_cast<LinearAlgebra::PreconditionAMG *> (Mp_preconditioner.get());

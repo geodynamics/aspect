@@ -217,69 +217,6 @@ namespace aspect
    */
   namespace LinearAlgebra
   {
-#ifdef ASPECT_USE_PETSC
-    /**
-     * Typedef for the vector type used.
-     */
-    using Vector = dealii::PETScWrappers::MPI::Vector;
-
-    /**
-     * Typedef for the type used to describe vectors that consist of multiple
-     * blocks.
-     */
-    using BlockVector = dealii::PETScWrappers::MPI::BlockVector;
-
-    /**
-     * Typedef for the sparse matrix type used.
-     */
-    using SparseMatrix = dealii::PETScWrappers::MPI::SparseMatrix;
-
-    /**
-     * Typedef for the type used to describe sparse matrices that consist of
-     * multiple blocks.
-     */
-    using BlockSparseMatrix = dealii::PETScWrappers::MPI::BlockSparseMatrix;
-
-    /**
-     * Typedef for the base class for all preconditioners.
-     */
-    using PreconditionBase = dealii::PETScWrappers::PreconditionerBase;
-
-    /**
-     * Typedef for the AMG preconditioner type used for the top left block of
-     * the Stokes matrix.
-     */
-    using PreconditionAMG = dealii::PETScWrappers::PreconditionBoomerAMG;
-
-    /**
-     * Typedef for the Incomplete Cholesky preconditioner used for other
-     * blocks of the system matrix.
-     */
-    using PreconditionIC = dealii::PETScWrappers::PreconditionICC;
-
-    /**
-     * Typedef for the Incomplete LU decomposition preconditioner used for
-     * other blocks of the system matrix. Note that PETSc does not support a
-     * communicating ILU, so we use Jacobi here.
-     */
-    using PreconditionILU = dealii::PETScWrappers::PreconditionBlockJacobi;
-
-    /**
-     * Typedef for the Jacobi preconditioner used for free surface velocity
-     * projection.
-     */
-    using PreconditionJacobi = dealii::PETScWrappers::PreconditionJacobi;
-
-    /**
-     * Typedef for the block compressed sparsity pattern type.
-     */
-    using BlockDynamicSparsityPattern = dealii::BlockDynamicSparsityPattern;
-
-    /**
-     * Typedef for the compressed sparsity pattern type.
-     */
-    using DynamicSparsityPattern = dealii::DynamicSparsityPattern;
-#else
     /**
      * Typedef for the vector type used.
      */
@@ -340,7 +277,6 @@ namespace aspect
      * Typedef for the compressed sparsity pattern type.
      */
     using DynamicSparsityPattern = dealii::TrilinosWrappers::SparsityPattern;
-#endif
   }
 }
 
