@@ -78,7 +78,6 @@
 \newcommand{\dealii}{{\textsc{deal.II}}}
 \newcommand{\pfrst}{{\normalfont\textsc{p4est}}}
 \newcommand{\trilinos}{{\textsc{Trilinos}}}
-\newcommand{\petsc}{{\textsc{PETSc}}}
 \newcommand{\aspect}{\textsc{ASPECT}}
 
 \DeclareMathOperator{\erf}{erf}
@@ -3143,8 +3142,8 @@ header files of BLAS, LAPACK and zlib, which is used for compressing
 the output data. To use more than one process for your computations
 you will need to install a MPI library, its headers and the
 necessary executables to run MPI programs. There are some optional packages
-for additional features, like the HDF5 libraries for additional output formats,
-\petsc{} for alternative solvers, and Numdiff for checking \aspect{}'s test
+for additional features, like the HDF5 libraries for additional output formats
+ and Numdiff for checking \aspect{}'s test
 results with reasonable accuracy, but these are not strictly required, and in
 some operating systems they are not available as packages but need to be
 compiled from scratch.
@@ -3181,7 +3180,7 @@ At the time of this writing \texttt{candi} will install \pfrst{} 2.2,
 We strive to keep the development version of \aspect{} compatible with
 the latest release of \dealii{} and the current \dealii{} development
 version at any time, and we usually support several older versions of
-\pfrst{}, \trilinos{}, and \petsc{}.
+\pfrst{} and \trilinos{}.
 
 \begin{enumerate}
 \item \textit{Obtaining candi:} Download \texttt{candi} by running

@@ -85,7 +85,6 @@ pipeline {
         -D ASPECT_TEST_GENERATOR='Ninja' \
         -D ASPECT_PRECOMPILE_HEADERS=ON \
         -D ASPECT_UNITY_BUILD=ON \
-        -D ASPECT_USE_PETSC=OFF \
         -D ASPECT_RUN_ALL_TESTS='ON' \
         ..
         '''
