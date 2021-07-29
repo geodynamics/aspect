@@ -129,7 +129,7 @@ namespace aspect
 
       /**
        * This Postprocessor will generate the output variables of mesh velocity
-       * for when a deforming mesh is used.
+       * for when a deforming mesh is used. 
        */
       template <int dim>
       class MeshDeformationPostprocessor: public DataPostprocessorVector< dim >, public SimulatorAccess<dim>

@@ -34,7 +34,7 @@ namespace aspect
         :
         DataPostprocessorTensor<dim> ("strain_rate_tensor",
                                       update_gradients | update_quadrature_points),
-                                      Interface<dim>("units")
+                                      Interface<dim>("1/s")
       {}
 
 

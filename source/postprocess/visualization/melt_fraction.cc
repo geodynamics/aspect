@@ -37,7 +37,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("melt_fraction",
                                       update_values | update_quadrature_points),
-                                      Interface<dim>("units")
+                                      Interface<dim>("")
       {}
 
 

@@ -36,7 +36,7 @@ namespace aspect
       ParticleCount<dim>::
       ParticleCount ()
         :
-        CellDataVectorCreator<dim>("units")
+        CellDataVectorCreator<dim>("")
       {}
 
 

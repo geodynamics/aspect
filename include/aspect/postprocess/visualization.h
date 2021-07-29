@@ -127,9 +127,9 @@ namespace aspect
           /**
            * Constructor. The constructor takes as argument the physical
            * units of the quantity (scalar or vector-valued) computed by
-           * derived classes.
+           * derived classes.  "" refers to an unknown or nonexistent unit.
            */
-          Interface (const std::string &physical_units);
+          Interface (const std::string &physical_units); // "" refers to an unknown or nonexistent unit.
 
           /**
            * Destructor. Does nothing but is virtual so that derived classes
@@ -263,7 +263,7 @@ namespace aspect
            * units of the quantity (scalar or vector-valued) computed by
            * derived classes.
            */
-          CellDataVectorCreator (const std::string &physical_units);
+          explicit CellDataVectorCreator (const std::string &physical_units);
 
           /**
            * Destructor.

@@ -38,7 +38,7 @@ namespace aspect
         // need to specify any update flags
         DataPostprocessorScalar<dim> ("partition",
                                       update_default),
-                                      Interface<dim>("units")
+                                      Interface<dim>("")
       {}
 
 

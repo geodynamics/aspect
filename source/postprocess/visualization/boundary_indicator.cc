@@ -34,7 +34,7 @@ namespace aspect
       BoundaryIndicator<dim>::
       BoundaryIndicator ()
         :
-        CellDataVectorCreator<dim>("units")
+        CellDataVectorCreator<dim>("")
       {}
 
 

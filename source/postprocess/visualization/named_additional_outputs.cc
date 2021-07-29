@@ -37,7 +37,7 @@ namespace aspect
       NamedAdditionalOutputs ()
         :
         DataPostprocessor<dim> (),
-        Interface<dim>("units")
+        Interface<dim>("")
       {}
 
 

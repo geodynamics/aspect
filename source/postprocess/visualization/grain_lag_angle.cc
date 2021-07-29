@@ -37,7 +37,7 @@ namespace aspect
       GrainLagAngle<dim>::
       GrainLagAngle ()
         :
-        CellDataVectorCreator<dim>("units")
+        CellDataVectorCreator<dim>("")
       {}
 
 

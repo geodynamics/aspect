@@ -39,7 +39,7 @@ namespace aspect
       Heating ()
         :
         DataPostprocessor<dim> (),
-        Interface<dim>("units")
+        Interface<dim>("")
       {}
 
       template <int dim>
