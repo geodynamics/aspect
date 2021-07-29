@@ -136,13 +136,10 @@ namespace aspect
       if (this->get_parameters().run_postprocessors_on_nonlinear_iterations)
         filename.append("." + Utilities::int_to_string (this->get_nonlinear_iteration(), 4));
 
-      const unsigned int max_data_length = Utilities::MPI::max (output_file.str().size()+1,
-                                                                this->get_mpi_communicator());
+      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output_file.str());
 
-      const unsigned int mpi_tag = 777;
-
-      // on processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file
+      // On processor 0, collect all of the data the individual processors sent
+      // and concatenate them into one file:
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
@@ -151,41 +148,8 @@ namespace aspect
                << ((dim==2)? "x y" : "x y z")
                << " topography" << std::endl;
 
-          // first write out the data we have created locally
-          file << output_file.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // then loop through all of the other processors and collect
-          // data, then write it to the file
-          for (unsigned int p=1; p<Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              MPI_Status status;
-              // get the data. note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // output the string. note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. write only this part by outputting it as a
-              // C string object, rather than as a std::string
-              file << tmp.c_str();
-            }
-        }
-      else
-        // on other processors, send the data to processor zero. include the \0
-        // character at the end of the string
-        {
-          output_file << "\0";
-          const int ierr = MPI_Send (&output_file.str()[0], output_file.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          for (const auto &str : data)
+            file << str;
         }
 
       // if output_interval is positive, then update the last supposed output

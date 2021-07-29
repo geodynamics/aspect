@@ -780,53 +780,20 @@ namespace aspect
       const std::string filename = this->get_output_directory() +
                                    "geoid_anomaly." +
                                    dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-      const unsigned int max_data_length = dealii::Utilities::MPI::max (output.str().size()+1,
-                                                                        this->get_mpi_communicator());
-      const unsigned int mpi_tag = 123;
+      const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output.str());
 
-      // On processor 0, collect all of the data the individual processors send
-      // and concatenate them into one file.
-      if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+      // On processor 0, collect all of the data the individual processors sent
+      // and concatenate them into one file:
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
           std::ofstream file (filename.c_str());
+
           file << "# "
                << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
                << " geoid_anomaly" << std::endl;
 
-          // First write out the data we have created locally.
-          file << output.str();
-
-          std::string tmp;
-          tmp.resize (max_data_length, '\0');
-
-          // Then loop through all of the other processors and collect
-          // data, then write it to the file.
-          for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-            {
-              MPI_Status status;
-              // Get the data. Note that MPI says that an MPI_Recv may receive
-              // less data than the length specified here. Since we have already
-              // determined the maximal message length, we use this feature here
-              // rather than trying to find out the exact message length with
-              // a call to MPI_Probe.
-              const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                         this->get_mpi_communicator(), &status);
-              AssertThrowMPI(ierr);
-
-              // Output the string. Note that 'tmp' has length max_data_length,
-              // but we only wrote a certain piece of it in the MPI_Recv, ended
-              // by a \0 character. Write only this part by outputting it as a
-              // C string object, rather than as a std::string.
-              file << tmp.c_str();
-            }
-        }
-      else
-        // On other processors, send the data to processor zero. include the \0
-        // character at the end of the string.
-        {
-          const int ierr = MPI_Send (&output.str()[0], output.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                     this->get_mpi_communicator());
-          AssertThrowMPI(ierr);
+          for (const auto &str : data)
+            file << str;
         }
 
       // Prepare the free-air gravity anomaly output.
@@ -900,50 +867,20 @@ namespace aspect
           const std::string filename = this->get_output_directory() +
                                        "gravity_anomaly." +
                                        dealii::Utilities::int_to_string(this->get_timestep_number(), 5);
-          const unsigned int max_data_length = dealii::Utilities::MPI::max (output_gravity_anomaly.str().size()+1,
-                                                                            this->get_mpi_communicator());
-          const unsigned int mpi_tag = 123;
-          // On processor 0, collect all of the data the individual processors send
-          // and concatenate them into one file.
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          const std::vector<std::string> data = Utilities::MPI::gather(this->get_mpi_communicator(), output_gravity_anomaly.str());
+
+          // On processor 0, collect all of the data the individual processors sent
+          // and concatenate them into one file:
+          if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
               std::ofstream file (filename.c_str());
+
               file << "# "
                    << ((output_in_lat_lon == true)? "longitude latitude" : "x y z")
                    << " gravity_anomaly" << std::endl;
 
-              // First write out the data we have created locally.
-              file << output_gravity_anomaly.str();
-              std::string tmp;
-              tmp.resize (max_data_length, '\0');
-
-              // Then loop through all of the other processors and collect
-              // data, then write it to the file.
-              for (unsigned int p=1; p<dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()); ++p)
-                {
-                  MPI_Status status;
-                  // Get the data. Note that MPI says that an MPI_Recv may receive
-                  // less data than the length specified here. Since we have already
-                  // determined the maximal message length, we use this feature here
-                  // rather than trying to find out the exact message length with
-                  // a call to MPI_Probe.
-                  const int ierr = MPI_Recv (&tmp[0], max_data_length, MPI_CHAR, p, mpi_tag,
-                                             this->get_mpi_communicator(), &status);
-                  AssertThrowMPI(ierr);
-                  // Output the string. Note that 'tmp' has length max_data_length,
-                  // but we only wrote a certain piece of it in the MPI_Recv, ended
-                  // by a \0 character. Write only this part by outputting it as a
-                  // C string object, rather than as a std::string.
-                  file << tmp.c_str();
-                }
-            }
-          else
-            // On other processors, send the data to processor zero. include the \0
-            // character at the end of the string.
-            {
-              const int ierr = MPI_Send (&output_gravity_anomaly.str()[0], output_gravity_anomaly.str().size()+1, MPI_CHAR, 0, mpi_tag,
-                                         this->get_mpi_communicator());
-              AssertThrowMPI(ierr);
+              for (const auto &str : data)
+                file << str;
             }
         }
 
