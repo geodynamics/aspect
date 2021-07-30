@@ -3,9 +3,6 @@
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.0.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_left.1.txt.
-
-
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
    This is either because ASPECT has already read all the files necessary to impose
    the requested boundary condition, or that the last available file has been read.
@@ -15,9 +12,6 @@
 
 
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.0.txt.
-
-
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_right.1.txt.
 
 
    From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
@@ -31,7 +25,7 @@
    Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.0.txt.
 
 
-   Loading Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
+   Also loading next Ascii data boundary file ASPECT_DIR/data/boundary-velocity/ascii-data/test/box_2d_top.1.txt.
 
 Number of active cells: 80 (on 3 levels)
 Number of degrees of freedom: 1,212 (738+105+369)

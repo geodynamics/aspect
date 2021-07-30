@@ -610,10 +610,10 @@ namespace aspect
           else
             {
               const std::string filename (create_filename (next_file_number, boundary_id));
-              this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                                << filename << "." << std::endl << std::endl;
               if (Utilities::fexists(filename))
                 {
+                  this->get_pcout() << std::endl << "   Also loading next Ascii data boundary file "
+                                    << filename << "." << std::endl << std::endl;
                   lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
                   lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
@@ -849,6 +849,8 @@ namespace aspect
         end_time_dependence ();
     }
 
+
+
     template <int dim>
     void
     AsciiDataBoundary<dim>::end_time_dependence ()
@@ -865,6 +867,7 @@ namespace aspect
                         << "   that time-dependence ends at this timestep  (i.e. the boundary condition" << std::endl
                         << "   will continue unchanged from the last known state into the future)." << std::endl << std::endl;
     }
+
 
 
     template <int dim>
