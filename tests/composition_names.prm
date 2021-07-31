@@ -1,17 +1,4 @@
-# LINEAR ALGEBRA: TRILINOS
-
-# Listing of Parameters
-# ---------------------
-# In order to make the problem in the first time step easier to solve, we need
-# a reasonable guess for the temperature and pressure. To obtain it, we use an
-# adiabatic pressure and temperature field. This parameter describes what the
-# `adiabatic' temperature would be at the surface of the domain (i.e. at depth
-# zero). Note that this value need not coincide with the boundary condition
-# posed at this point. Rather, the boundary condition may differ significantly
-# from the adiabatic value, and then typically induce a thermal boundary
-# layer.
-# For more information, see the section in the manual that discusses the
-# general mathematical model.
+# test composition names
 
 set Adiabatic surface temperature          = 1623               # default: 0
 set CFL number                             = 1.0

@@ -1,5 +1,4 @@
 # test that the direct solver works in parallel
-# LINEAR ALGEBRA: PETSC TRILINOS
 # MPI: 3
 
 set Dimension = 2
