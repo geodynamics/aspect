@@ -291,12 +291,6 @@ IF(EXISTS ${CTEST_BINARY_DIRECTORY}/detailed.log)
     SET(CTEST_BUILD_NAME "${_compiler_id}")
   ENDIF()
 
-
-  FILE(STRINGS ${CTEST_BINARY_DIRECTORY}/detailed.log _use_petsc_line
-    REGEX "ASPECT_USE_PETSC:"
-    )
-  STRING(REGEX REPLACE "^.*#.*ASPECT_USE_PETSC: *(.*)$" "\\1" USE_PETSC ${_use_petsc_line})
-
 ENDIF()
 
 #
@@ -349,10 +343,6 @@ EXECUTE_PROCESS(
 
 STRING(REGEX REPLACE "refs/heads/" ""
   _git_WC_BRANCH "${_git_WC_BRANCH}")
-
-IF(USE_PETSC)
-  SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-PETSc")
-ENDIF()
 
 SET(CTEST_BUILD_NAME "${CTEST_BUILD_NAME}-${_git_WC_BRANCH}")
 

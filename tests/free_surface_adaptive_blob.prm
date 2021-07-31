@@ -1,6 +1,5 @@
 # like free_surface_blob.prm with adaptive refinement and in parallel
 # MPI: 3
-# LINEAR ALGEBRA: TRILINOS
 
 set Dimension = 2
 set CFL number                             = 0.5
