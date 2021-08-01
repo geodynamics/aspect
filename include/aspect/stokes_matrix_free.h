@@ -61,6 +61,12 @@ namespace aspect
     /**
      * This struct stores the data for the current linear operator that is requried to perform
      * matrix-vector products.
+     *
+     * The members of type Table<2, VectorizedArray<X>> contain values
+     * of type X, grouped by cell batch using the VectorizedArray. The
+     * table is indexed by the index of the cell batch and quadrature
+     * point index.  In other words, you can access the value by
+     * <tt>table(cell_batch_index, q_index)[cell_index]</tt>
      */
     template <int dim, typename number>
     struct OperatorCellData
@@ -81,41 +87,47 @@ namespace aspect
       bool enable_newton_derivatives;
 
       /**
-       * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
+       * Symmetrize the Newton system when it's true (i.e., the
+       * stabilization is symmetric or SPD).
        */
       bool symmetrize_newton_system;
 
       /**
        * Table which stores viscosity values for each cell.
+       *
+       * If the second dimension is of size 1, the viscosity is
+       * assumed to be constant per cell.
        */
       Table<2, VectorizedArray<number>> viscosity;
 
       /**
-       * Table which stores the product of viscosity derivative with respect to pressure
-       * and newton derivative scaling factor.
+       * Table which stores the strain rate for each cell to be used
+       * for the Newton terms.
        */
-      Table<2, VectorizedArray<number>> viscosity_derivative_wrt_pressure_table;
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
 
       /**
-       * Table which stores the strain rate for each cell.
+       * Table which stores the product of the viscosity derivative
+       * with respect to pressure and the Newton derivative scaling
+       * factor alpha.
        */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-      strain_rate_table;
+      Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
 
       /**
-       * Table which stores the product of the following three variables:
-       * viscosity derivative with respect to strain rate,
-       * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
+       * Table which stores the product of the following three
+       * variables: viscosity derivative with respect to strain rate,
+       * newton derivative scaling factor, and alpha. Here alpha is
+       * the spd factor when the stabilization is PD or SPD,
        * otherwise, it is 1.
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-      viscosity_derivative_wrt_strain_rate_table;
+      newton_factor_wrt_strain_rate_table;
 
       /**
        * Determine an estimate for the memory consumption (in bytes) of this
        * object.
        */
-      inline std::size_t
+      std::size_t
       memory_consumption() const;
 
       /**
@@ -144,7 +156,7 @@ namespace aspect
         void clear () override;
 
         /**
-         * Pass in a refernce to the problem data.
+         * Pass in a reference to the problem data.
          */
         void set_cell_data (const OperatorCellData<dim,number> &data);
 
@@ -198,7 +210,7 @@ namespace aspect
         void clear () override;
 
         /**
-         * Pass in a refernce to the problem data.
+         * Pass in a reference to the problem data.
          */
         void set_cell_data (const OperatorCellData<dim,number> &data);
 
@@ -262,7 +274,7 @@ namespace aspect
         void clear () override;
 
         /**
-         * Pass in a refernce to the problem data.
+         * Pass in a reference to the problem data.
          */
         void set_cell_data (const OperatorCellData<dim,number> &data);
 

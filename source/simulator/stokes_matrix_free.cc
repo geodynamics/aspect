@@ -668,10 +668,9 @@ namespace aspect
     OperatorCellData<dim,number>::memory_consumption() const
     {
       return viscosity.memory_consumption()
-             + viscosity_derivative_wrt_pressure_table.memory_consumption()
+             + newton_factor_wrt_pressure_table.memory_consumption()
              + strain_rate_table.memory_consumption()
-             + viscosity_derivative_wrt_strain_rate_table.memory_consumption();
-
+             + newton_factor_wrt_strain_rate_table.memory_consumption();
     }
 
 
@@ -683,9 +682,9 @@ namespace aspect
       enable_newton_derivatives = false;
       // TODO: use Table::clear() once implemented in 10.0.pre
       viscosity.reinit(TableIndices<2>(0,0));
-      viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+      newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
       strain_rate_table.reinit(TableIndices<2>(0,0));
-      viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+      newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
     }
   }
 
@@ -778,10 +777,10 @@ namespace aspect
 
             if (cell_data->enable_newton_derivatives)
               {
-                // Note that derivative_scaling_factor has already been multiplied to viscosity_derivative_wrt_pressure_table.
+                // Note that derivative_scaling_factor has already been multiplied to newton_factor_wrt_pressure_table.
                 VectorizedArray<number> newton_pressure_term =
                   cell_data->pressure_scaling * 2.0
-                  * cell_data->viscosity_derivative_wrt_pressure_table(cell,q)
+                  * cell_data->newton_factor_wrt_pressure_table(cell,q)
                   * (sym_grad_u * cell_data->strain_rate_table(cell,q));
                 pressure.submit_value(-cell_data->pressure_scaling*div + newton_pressure_term, q);
               }
@@ -802,14 +801,12 @@ namespace aspect
               {
                 SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
 
-                // Note that (derivative_scaling_factor * alpha) has already been multiplied to
-                // viscosity_derivative_wrt_strain_rate_table.
                 sym_grad_u +=  (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
-                               * cell_data->viscosity_derivative_wrt_strain_rate_table(cell,q);
+                               * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
 
                 if (cell_data->symmetrize_newton_system)
                   sym_grad_u +=
-                    (cell_data->viscosity_derivative_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
+                    (cell_data->newton_factor_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
                     * cell_data->strain_rate_table(cell,q);
 
               }
@@ -1688,8 +1685,8 @@ namespace aspect
           const unsigned int n_q_points = quadrature_formula.size();
 
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
-          active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
 
           for (unsigned int cell=0; cell<n_cells; ++cell)
             {
@@ -1734,7 +1731,7 @@ namespace aspect
                                             :
                                             1.0;
 
-                      active_cell_data.viscosity_derivative_wrt_pressure_table(cell,q)[i]
+                      active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
                         = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
 
                       for (unsigned int m=0; m<dim; ++m)
@@ -1743,7 +1740,7 @@ namespace aspect
                             active_cell_data.strain_rate_table(cell, q)[m][n][i]
                               = in.strain_rate[q][m][n];
 
-                            active_cell_data.viscosity_derivative_wrt_strain_rate_table(cell, q)[m][n][i]
+                            active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
                               = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
                                 * newton_derivative_scaling_factor * alpha;
                           }
@@ -1762,9 +1759,9 @@ namespace aspect
           // delete data used for Newton derivatives if necessary
           // TODO: use Table::clear() once implemented in 10.0.pre
           active_cell_data.enable_newton_derivatives = false;
-          active_cell_data.viscosity_derivative_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
-          active_cell_data.viscosity_derivative_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
 
           for (unsigned int level=0; level<n_levels; ++level)
             level_cell_data[level].enable_newton_derivatives = false;
