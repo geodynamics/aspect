@@ -1533,7 +1533,7 @@ Mathematically speaking, the temperature satisfies an advection-diffusion equati
 
 \index[prmindex]{Fixed temperature boundary indicators}
 \index[prmindexfull]{Boundary temperature model!Fixed temperature boundary indicators}
-{\it Value:} 
+{\it Value:} left, right, bottom, top
 
 
 {\it Default:} 
@@ -4137,6 +4137,12 @@ The dimensions of the model are specified by parameters of the following form: C
 
 When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file. 
 
+`chunk with lithosphere boundary indicators': A geometry which can be described as a chunk of a spherical shell, bounded by lines of longitude, latitude and radius. The side boundaries have two boundary indicators, so the user can prescribe different boundary conditions on these boundaries. The minimum and maximum longitude, (latitude) and depth of the chunk are set in the parameter file. The chunk geometry labels its 2*dim+2*(dim-1) sides as follows: ``lower west'' and ``lower east'': minimum and maximum longitude of the lower part of the east and west side boundaries, ``upper west and upper east'': minimum and maximum longitude of the upper part of the east and west side boundaries, ``lower south'' and ``lower north'': minimum and maximum latitude of the lower part of the south and north side boundaries, ``upper south'' and ``upper north'': minimum and maximum latitude of the upper part of the south and north side boundaries, 
+
+The dimensions of the model are specified by parameters of the following form: Chunk (minimum || maximum) (longitude || latitude): edges of geographical quadrangle (in degrees). Chunk (inner || outer || middle boundary) radius: Radii at bottom and top of chunk and the radius at which the lower boundary indicator along a side boundary transitions into the upper boundary indicator. (Longitude || Latitude) repetitions: number of cells in each coordinate direction.(Inner || Outer) chunk radius repetitions: number of cells in the radial coordinate direction for the lower part of the domain (up to the Middle boundary radius) and for the upper part of the domain. 
+
+When used in 2d, this geometry does not imply the use of a spherical coordinate system. Indeed, in 2d the geometry is simply a sector of an annulus in a Cartesian coordinate system and consequently would correspond to a sector of a cross section of the fluid filled space between two infinite cylinders where one has made the assumption that the velocity in direction of the cylinder axes is zero. This is consistent with the definition of what we consider the two-dimension case given in Section~\ref{sec:meaning-of-2d}. It is also possible to add initial topography to the chunk geometry, based on an ascii data file. 
+
 `ellipsoidal chunk': A 3D chunk geometry that accounts for Earth's ellipticity (default assuming the WGS84 ellipsoid definition) which can be defined in non-coordinate directions. In the description of the ellipsoidal chunk, two of the ellipsoidal axes have the same length so that there is only a semi-major axis and a semi-minor axis. The user has two options for creating an ellipsoidal chunk geometry: 1) by defining two opposing points (SW and NE or NW and SE) a coordinate parallel ellipsoidal chunk geometry will be created. 2) by defining three points a non-coordinate parallel ellipsoidal chunk will be created. The points are defined in the input file by longitude:latitude. It is also possible to define additional subdivisions of the mesh in each direction. The boundary of the domain is formed by linear interpolation in longitude-latitude space between adjacent points (i.e. [lon, lat](f) = [lon1*f + lon2*(1-f), lat1*f + lat2*(1-f)], where f is a value between 0 and 1). Faces of the model are defined as 0, west; 1,east; 2, south; 3, north; 4, inner; 5, outer.
 
 This geometry model supports initial topography for deforming the initial mesh.
@@ -4156,7 +4162,7 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as `east', `west' and `south' symbolically in input files.
 
 
-{\it Possible values:} Any one of box, box with lithosphere boundary indicators, chunk, ellipsoidal chunk, sphere, spherical shell, unspecified
+{\it Possible values:} Any one of box, box with lithosphere boundary indicators, chunk, chunk with lithosphere boundary indicators, ellipsoidal chunk, sphere, spherical shell, unspecified
 \end{itemize}
 
 
@@ -4820,6 +4826,199 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 
 
 {\it Description:} Number of cells in radius.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\end{itemize}
+
+\subsection{Parameters in section \tt Geometry model/Chunk with lithosphere boundary indicators}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Chunk inner radius}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk inner radius}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius}
+
+
+\index[prmindex]{Chunk inner radius}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk inner radius}
+{\it Value:} 0.
+
+
+{\it Default:} 0.
+
+
+{\it Description:} Radius at the bottom surface of the chunk. Units: \si{\meter}.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Chunk maximum latitude}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk maximum latitude}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20latitude}
+
+
+\index[prmindex]{Chunk maximum latitude}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk maximum latitude}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Maximum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+
+
+{\it Possible values:} A floating point number $v$ such that $-90 \leq v \leq 90$
+\item {\it Parameter name:} {\tt Chunk maximum longitude}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk maximum longitude}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20maximum_20longitude}
+
+
+\index[prmindex]{Chunk maximum longitude}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk maximum longitude}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Maximum longitude of the chunk. Units: degrees.
+
+
+{\it Possible values:} A floating point number $v$ such that $-180 \leq v \leq 360$
+\item {\it Parameter name:} {\tt Chunk middle boundary radius}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk middle boundary radius}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20middle_20boundary_20radius}
+
+
+\index[prmindex]{Chunk middle boundary radius}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk middle boundary radius}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Radius at the top surface of the lower chunk, where it merges with the upper chunk. Units: \si{\meter}.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Chunk minimum latitude}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk minimum latitude}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20latitude}
+
+
+\index[prmindex]{Chunk minimum latitude}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk minimum latitude}
+{\it Value:} 0.
+
+
+{\it Default:} 0.
+
+
+{\it Description:} Minimum latitude of the chunk. This value is ignored if the simulation is in 2d. Units: degrees.
+
+
+{\it Possible values:} A floating point number $v$ such that $-90 \leq v \leq 90$
+\item {\it Parameter name:} {\tt Chunk minimum longitude}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk minimum longitude}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20minimum_20longitude}
+
+
+\index[prmindex]{Chunk minimum longitude}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk minimum longitude}
+{\it Value:} 0.
+
+
+{\it Default:} 0.
+
+
+{\it Description:} Minimum longitude of the chunk. Units: degrees.
+
+
+{\it Possible values:} A floating point number $v$ such that $-180 \leq v \leq 360$
+\item {\it Parameter name:} {\tt Chunk outer radius}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Chunk outer radius}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20outer_20radius}
+
+
+\index[prmindex]{Chunk outer radius}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Chunk outer radius}
+{\it Value:} 1.
+
+
+{\it Default:} 1.
+
+
+{\it Description:} Radius at the top surface of the chunk. Units: \si{\meter}.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Inner chunk radius repetitions}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Inner chunk radius repetitions}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Inner_20chunk_20radius_20repetitions}
+
+
+\index[prmindex]{Inner chunk radius repetitions}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Inner chunk radius repetitions}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Number of cells in radial direction for the lower chunk.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Latitude repetitions}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Latitude repetitions}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Latitude_20repetitions}
+
+
+\index[prmindex]{Latitude repetitions}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Latitude repetitions}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Number of cells in latitude. This value is ignored if the simulation is in 2d
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Longitude repetitions}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Longitude repetitions}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Longitude_20repetitions}
+
+
+\index[prmindex]{Longitude repetitions}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Longitude repetitions}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Number of cells in longitude.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Outer chunk radius repetitions}
+\phantomsection\label{parameters:Geometry model/Chunk with lithosphere boundary indicators/Outer chunk radius repetitions}
+\label{parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Outer_20chunk_20radius_20repetitions}
+
+
+\index[prmindex]{Outer chunk radius repetitions}
+\index[prmindexfull]{Geometry model!Chunk with lithosphere boundary indicators!Outer chunk radius repetitions}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} Number of cells in radial direction for the upper chunk.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
@@ -6063,7 +6262,7 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
-`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
+`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'. It is possible to use the World Builder only for selected compositional fields by specifying the parameter 'List of relevant compositions'.
 
 
 {\it Possible values:} A comma-separated list of any of adiabatic density, ascii data, ascii data layered, function, porosity, world builder
@@ -6109,7 +6308,7 @@ The following composition models are available:
 
 `porosity': A class that implements initial conditions for the porosity field by computing the equilibrium melt fraction for the given initial condition and reference pressure profile. Note that this plugin only works if there is a compositional field called `porosity', and the used material model implements the 'MeltFractionModel' interface. For all compositional fields except porosity this plugin returns 0.0, and they are therefore not changed as long as the default `add' operator is selected for this plugin.
 
-`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'.
+`world builder': Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter 'World builder file'. It is possible to use the World Builder only for selected compositional fields by specifying the parameter 'List of relevant compositions'.
 
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn't be used. Please use 'List of model names' instead.
 
@@ -6304,6 +6503,29 @@ If the function you are describing represents a vector-valued function with mult
 
 
 {\it Description:} The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
+\end{itemize}
+
+\subsection{Parameters in section \tt Initial composition model/World builder}
+\label{parameters:Initial_20composition_20model/World_20builder}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt List of relevant compositions}
+\phantomsection\label{parameters:Initial composition model/World builder/List of relevant compositions}
+\label{parameters:Initial_20composition_20model/World_20builder/List_20of_20relevant_20compositions}
+
+
+\index[prmindex]{List of relevant compositions}
+\index[prmindexfull]{Initial composition model!World builder!List of relevant compositions}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of names of compositional fields for which to determine the initial composition using the World Builder. As World Builder evaluations can be expensive, this parameter allows to only evaluate the fields that are relevant. This plugin returns 0.0 for all compositions that are not selected in the list. By default the list is empty and the world builder is evaluated for all compositional fields.
 
 
 {\it Possible values:} Any string
@@ -14216,6 +14438,23 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} A directory name
+\item {\it Parameter name:} {\tt Derivatives file names}
+\phantomsection\label{parameters:Material model/Steinberger model/Derivatives file names}
+\label{parameters:Material_20model/Steinberger_20model/Derivatives_20file_20names}
+
+
+\index[prmindex]{Derivatives file names}
+\index[prmindexfull]{Material model!Steinberger model!Derivatives file names}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} The file names of the enthalpy derivatives data. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields).
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
 \item {\it Parameter name:} {\tt Latent heat}
 \phantomsection\label{parameters:Material model/Steinberger model/Latent heat}
 \label{parameters:Material_20model/Steinberger_20model/Latent_20heat}
@@ -14229,7 +14468,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} false
 
 
-{\it Description:} Whether to include latent heat effects in the calculation of thermal expansivity and specific heat. Following the approach of Nakagawa et al. 2009. 
+{\it Description:} Whether to include latent heat effects in the calculation of thermal expansivity and specific heat. If true, ASPECT follows the approach of Nakagawa et al. 2009, using pressure and temperature derivatives of the enthalpy to calculate the thermal expansivity and specific heat. If false, ASPECT uses the thermal expansivity and specific heat values from the material properties table.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -14250,6 +14489,23 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Material file format}
+\phantomsection\label{parameters:Material model/Steinberger model/Material file format}
+\label{parameters:Material_20model/Steinberger_20model/Material_20file_20format}
+
+
+\index[prmindex]{Material file format}
+\index[prmindexfull]{Material model!Steinberger model!Material file format}
+{\it Value:} perplex
+
+
+{\it Default:} perplex
+
+
+{\it Description:} The material file format to be read in the property tables.
+
+
+{\it Possible values:} Any one of perplex, hefesto
 \item {\it Parameter name:} {\tt Material file names}
 \phantomsection\label{parameters:Material model/Steinberger model/Material file names}
 \label{parameters:Material_20model/Steinberger_20model/Material_20file_20names}
@@ -14263,10 +14519,27 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} pyr-ringwood88.txt
 
 
-{\it Description:} The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are three options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a `background composition' that is modified by the compositional fields. If there are exactly as many files as compositional fields, the fields are assumed to represent the mass fractions of different materials and the average property is computed as a sum of the value of the compositional field times the material property of that field.
+{\it Description:} The file names of the material data (material data is assumed to be in order with the ordering of the compositional fields). Note that there are three options on how many files need to be listed here: 1. If only one file is provided, it is used for the whole model domain, and compositional fields are ignored. 2. If there is one more file name than the number of compositional fields, then the first file is assumed to define a `background composition' that is modified by the compositional fields. If there are exactly as many files as compositional fields, the fields are assumed to represent the fractions of different materials and the average property is computed as a sum of the value of the compositional field times the material property of that field.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Maximum latent heat substeps}
+\phantomsection\label{parameters:Material model/Steinberger model/Maximum latent heat substeps}
+\label{parameters:Material_20model/Steinberger_20model/Maximum_20latent_20heat_20substeps}
+
+
+\index[prmindex]{Maximum latent heat substeps}
+\index[prmindexfull]{Material model!Steinberger model!Maximum latent heat substeps}
+{\it Value:} 1
+
+
+{\it Default:} 1
+
+
+{\it Description:} The maximum number of substeps over the temperature pressure range to calculate the averaged enthalpy gradient over a cell.
+
+
+{\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Maximum lateral viscosity variation}
 \phantomsection\label{parameters:Material model/Steinberger model/Maximum lateral viscosity variation}
 \label{parameters:Material_20model/Steinberger_20model/Maximum_20lateral_20viscosity_20variation}
@@ -14565,7 +14838,7 @@ Units: \si{\pascal\second}.
 {\it Description:} List of angles of internal friction, $\phi$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. For a value of zero, in 2D the von Mises criterion is retrieved. Angles higher than 30 degrees are harder to solve numerically. Units: degrees.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Cohesion strain weakening factors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Cohesion strain weakening factors}
 \label{parameters:Material_20model/Visco_20Plastic/Cohesion_20strain_20weakening_20factors}
@@ -14599,7 +14872,7 @@ Units: \si{\pascal\second}.
 {\it Description:} List of cohesions, $C$, for background material and compositional fields, for a total of N+1 values, where N is the number of compositional fields. The extremely large default cohesion value (1e20 Pa) prevents the viscous stress from exceeding the yield stress. Units: \si{\pascal}.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Constant viscosity prefactors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Constant viscosity prefactors}
 \label{parameters:Material_20model/Visco_20Plastic/Constant_20viscosity_20prefactors}
@@ -14617,6 +14890,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Cutoff stresses for Peierls creep}
+\phantomsection\label{parameters:Material model/Visco Plastic/Cutoff stresses for Peierls creep}
+\label{parameters:Material_20model/Visco_20Plastic/Cutoff_20stresses_20for_20Peierls_20creep}
+
+
+\index[prmindex]{Cutoff stresses for Peierls creep}
+\index[prmindexfull]{Material model!Visco Plastic!Cutoff stresses for Peierls creep}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} List of the Stress thresholds below which the strain rate is solved for as a quadratic function of stress to aid with convergence when stress exponent n=0. Units: \si{\pascal}
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Define thermal conductivities}
 \phantomsection\label{parameters:Material model/Visco Plastic/Define thermal conductivities}
 \label{parameters:Material_20model/Visco_20Plastic/Define_20thermal_20conductivities}
@@ -14668,6 +14958,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Elastic damper viscosity}
+\phantomsection\label{parameters:Material model/Visco Plastic/Elastic damper viscosity}
+\label{parameters:Material_20model/Visco_20Plastic/Elastic_20damper_20viscosity}
+
+
+\index[prmindex]{Elastic damper viscosity}
+\index[prmindexfull]{Material model!Visco Plastic!Elastic damper viscosity}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: \si{\pascal\second}
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Elastic shear moduli}
 \phantomsection\label{parameters:Material model/Visco Plastic/Elastic shear moduli}
 \label{parameters:Material_20model/Visco_20Plastic/Elastic_20shear_20moduli}
@@ -15554,6 +15861,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Use adiabatic pressure in creep viscosity}
+\phantomsection\label{parameters:Material model/Visco Plastic/Use adiabatic pressure in creep viscosity}
+\label{parameters:Material_20model/Visco_20Plastic/Use_20adiabatic_20pressure_20in_20creep_20viscosity}
+
+
+\index[prmindex]{Use adiabatic pressure in creep viscosity}
+\index[prmindexfull]{Material model!Visco Plastic!Use adiabatic pressure in creep viscosity}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use the adiabatic pressure instead of the full pressure (default) when calculating creep (diffusion, dislocation, and peierls) viscosity. This may be helpful in models where the full pressure has an unusually large negative value arising from large negative dynamic pressure, resulting in solver convergence issue and in some cases a viscosity of zero.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Use fixed elastic time step}
 \phantomsection\label{parameters:Material model/Visco Plastic/Use fixed elastic time step}
 \label{parameters:Material_20model/Visco_20Plastic/Use_20fixed_20elastic_20time_20step}
@@ -15696,6 +16020,23 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Elastic damper viscosity}
+\phantomsection\label{parameters:Material model/Viscoelastic/Elastic damper viscosity}
+\label{parameters:Material_20model/Viscoelastic/Elastic_20damper_20viscosity}
+
+
+\index[prmindex]{Elastic damper viscosity}
+\index[prmindexfull]{Material model!Viscoelastic!Elastic damper viscosity}
+{\it Value:} 0.0
+
+
+{\it Default:} 0.0
+
+
+{\it Description:} Viscosity of a viscous damper that acts in parallel with the elastic element to stabilize behavior. Units: \si{\pascal\second}
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Elastic shear moduli}
 \phantomsection\label{parameters:Material model/Viscoelastic/Elastic shear moduli}
 \label{parameters:Material_20model/Viscoelastic/Elastic_20shear_20moduli}
@@ -16523,6 +16864,16 @@ On the other hand, for discontinuous finite elements (see the `Use discontinuous
 
 `density': A mesh refinement criterion that computes refinement indicators from a field that describes the spatial variability of the density, $\rho$. Because this quantity may not be a continuous function ($\rho$ and $C_p$ may be discontinuous functions along discontinuities in the medium, for example due to phase changes), we approximate the gradient of this quantity to refine the mesh. The error indicator defined here takes the magnitude of the approximate gradient and scales it by $h_K^{1+d/2}$ where $h_K$ is the diameter of each cell and $d$ is the dimension. This scaling ensures that the error indicators converge to zero as $h_K\rightarrow 0$ even if the energy density is discontinuous, since the gradient of a discontinuous function grows like $1/h_K$.
 
+`isosurfaces': A mesh refinement criterion that computes coarsening and refinement indicators between two isosurfaces of specific field entries (e.g. temperature, composition).
+
+The way these indicators are derived between pairs of isosurfaces is by checking whether the solutions of specific fields are within the ranges of the isosurface values given. If these conditions hold, then coarsening and refinement indicators are set such that the mesh refinement levels lies within the range of levels given. Usage of this plugin allows the user to put a conditional minimum and maximum refinement function onto fields that they are interested in.
+
+For now, only temperature and compositional fields are allowed as field entries. The key words could be 'Temperature' or one of the names of the compositional fields which are either specified by user or set up as C\_0, C\_1, etc.
+
+Usage: A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which again is followed by the minimum and maximum field values separated by a bar (|). An example for two isosurface entries is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. If both isoterm entries are triggered at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags are set, preference is given to refinement. 
+
+The minimum and maximum refinement levels per isosurface can be provided in absolute values relative to the global minimum and maximum refinement. This is done with the 'min' and 'max' key words. For example: 'set Isosurfaces = max-2,  max,    Temperature: 0 | 600 ; min + 1,min+2, Temperature: 1600 | 3000,   C\_2 : 0.0 | 0.5'.
+
 `maximum refinement function': A mesh refinement criterion that ensures a maximum refinement level described by an explicit formula with the depth or position as argument. Which coordinate representation is used is determined by an input parameter. Whatever the coordinate system chosen, the function you provide in the input file will by default depend on variables `x', `y' and `z' (if in 3d). However, the meaning of these symbols depends on the coordinate system. In the Cartesian coordinate system, they simply refer to their natural meaning. If you have selected `depth' for the coordinate system, then `x' refers to the depth variable and `y' and `z' will simply always be zero. If you have selected a spherical coordinate system, then `x' will refer to the radial distance of the point to the origin, `y' to the azimuth angle and `z' to the polar angle measured positive from the north pole. Note that the order of spherical coordinates is r,phi,theta and not r,theta,phi, since this allows for dimension independent expressions. Each coordinate system also includes a final `t' variable which represents the model time, evaluated in years if the 'Use years in output instead of seconds' parameter is set, otherwise evaluated in seconds. After evaluating the function, its values are rounded to the nearest integer.
 
 The format of these functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
@@ -16564,7 +16915,7 @@ For complex equations such as those we solve here, this observation may not be s
 `volume of fluid interface': A class that implements a mesh refinement criterion, which ensures a minimum level of refinement near the volume of fluid interface boundary.
 
 
-{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, maximum refinement function, minimum refinement function, nonadiabatic temperature, particle density, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
+{\it Possible values:} A comma-separated list of any of artificial viscosity, boundary, compaction length, composition, composition approximate gradient, composition gradient, composition threshold, density, isosurfaces, maximum refinement function, minimum refinement function, nonadiabatic temperature, particle density, slope, strain rate, temperature, thermal energy density, topography, velocity, viscosity, volume of fluid interface
 \item {\it Parameter name:} {\tt Time steps between mesh refinement}
 \phantomsection\label{parameters:Mesh refinement/Time steps between mesh refinement}
 \label{parameters:Mesh_20refinement/Time_20steps_20between_20mesh_20refinement}
@@ -16772,6 +17123,31 @@ If the list of scaling factors given in this parameter is empty, then this indic
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
+\end{itemize}
+
+\subsection{Parameters in section \tt Mesh refinement/Isosurfaces}
+\label{parameters:Mesh_20refinement/Isosurfaces}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Isosurfaces}
+\phantomsection\label{parameters:Mesh refinement/Isosurfaces/Isosurfaces}
+\label{parameters:Mesh_20refinement/Isosurfaces/Isosurfaces}
+
+
+\index[prmindex]{Isosurfaces}
+\index[prmindexfull]{Mesh refinement!Isosurfaces!Isosurfaces}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between 300 and 600 and at level 2 when the compositional field C\_1 is between 0.5 and 1. If both happen at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags are set, preference is given to refinement. 
+
+The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
+
+
+{\it Possible values:} Any string
 \end{itemize}
 
 \subsection{Parameters in section \tt Mesh refinement/Maximum refinement function}
@@ -17035,7 +17411,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `entropy viscosity statistics': A postprocessor that computes the maximum and volume averagedentropy viscosity stabilization for the temperature field.
 
-`geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the dynamic topography at the surface and core mantle boundary (CMB). The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
+`geoid': A postprocessor that computes a representation of the geoid based on the density structure in the mantle, as well as the topography at the surface and core mantle boundary (CMB) if desired. The topography is based on the dynamic topography postprocessor in case of no free surface, and based on the real surface from the geometry model in case of a free surface. The geoid is computed from a spherical harmonic expansion, so the geometry of the domain must be a 3D spherical shell.
 
 `global statistics': A postprocessor that outputs all the global statistics information, e.g. the time of the simulation, the timestep number, number of degrees of freedom and solver iterations for each timestep. The postprocessor can output different formats, the first printing one line in the statistics file per nonlinear solver iteration (if a nonlinear solver scheme is selected). The second prints one line per timestep, summing the information about all nonlinear iterations in this line. Note that this postprocessor is always active independent on whether or not it is selected in the parameter file.
 
@@ -17069,6 +17445,8 @@ As stated, this postprocessor computes the \textit{outbound} mass flux. If you a
 
 `matrix statistics': A postprocessor that computes some statistics about the matrices. In particular, it outputs total memory consumption, total non-zero elements, and non-zero elements per block, for system matrix and system preconditioner matrix.
 
+`maximum depth of field': A postprocessor that for each compositional field outputs the largest depth at which a quadrature point is found where the field has a value of 0.5 or larger. For fields that do not represent materials, but for example track a certain quantity like strain, this value of 0.5 does not necessarily make sense. 
+
 `melt statistics': A postprocessor that computes some statistics about the melt (volume) fraction. If the material model does not implement a melt fraction function, the output is set to zero.
 
 `memory statistics': A postprocessor that computes some statistics about the memory consumption. In particular, it computes the memory usage of the system matrix, triangulation, p4est, DoFHandler, current constraints, solution vector, and peak virtual memory usage, all in MB. It also outputs the memory usage of the system matrix to the screen.
@@ -17098,12 +17476,14 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 `velocity statistics': A postprocessor that computes some statistics about the velocity field.
 
+`viscous dissipation statistics': A postprocessor that outputs the viscous rate of dissipation of energy for each compositional field (where the field has a value of 0.5 or more) as well as over the whole domain. When all the fields represent lithologies and there is no background field, the sum of the individual field's dissipation should equal that over the whole domain. The viscous dissipation is computed as: $\int_{V}\left(\sigma' \dot{\epsilon}' \right)$, where $\sigma'$  is the deviatoric stress and $\dot{\epsilon}'$ the deviatoric strain rate.Note then when shear heating is included in the temperature equation, it is better to use the 'heating statistics' postprocessor.
+
 `visualization': A postprocessor that takes the solution and writes it into files that can be read by a graphical visualization program. Additional run time parameters are read from the parameter subsection 'Visualization'.
 
 `volume of fluid statistics': A postprocessor that computes some statistics about the volume-of-fluid fields.
 
 
-{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, boundary velocity residual statistics, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, load balance statistics, mass flux statistics, material statistics, matrix statistics, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, visualization, volume of fluid statistics
+{\it Possible values:} A comma-separated list of any of Stokes residual, basic statistics, boundary densities, boundary pressures, boundary velocity residual statistics, command, composition statistics, core statistics, depth average, dynamic topography, entropy viscosity statistics, geoid, global statistics, gravity calculation, heat flux densities, heat flux map, heat flux statistics, heating statistics, load balance statistics, mass flux statistics, material statistics, matrix statistics, maximum depth of field, melt statistics, memory statistics, particle count statistics, particles, point values, pressure statistics, rotation statistics, spherical velocity statistics, temperature statistics, topography, velocity boundary statistics, velocity statistics, viscous dissipation statistics, visualization, volume of fluid statistics
 \item {\it Parameter name:} {\tt Run postprocessors on nonlinear iterations}
 \phantomsection\label{parameters:Postprocess/Run postprocessors on nonlinear iterations}
 \label{parameters:Postprocess/Run_20postprocessors_20on_20nonlinear_20iterations}
@@ -17308,11 +17688,13 @@ The file format then consists of lines with Euclidean coordinates followed by th
 
 {\it Description:} A comma separated list which specifies which quantities to average in each depth slice. It defaults to averaging all available quantities, but this can be an expensive operation, so you may want to select only a few.
 
+Specifically, the sinking velocity is defined as the scalar product of the velocity and a unit vector in the direction of gravity, if positive (being zero if this product is negative, which would correspond to an upward velocity). The rising velocity is the opposite: the scalar product of the velocity and a unit vector in the direction opposite of gravity, if positive (being zero for downward velocities). 
+
 List of options:
-all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass
+all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic density|adiabatic density derivative|velocity magnitude|sinking velocity|rising velocity|Vs|Vp|viscosity|vertical heat flux|vertical mass flux|composition mass
 
 
-{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, Vs, Vp, viscosity, vertical heat flux, vertical mass flux, composition mass
+{\it Possible values:} A comma-separated list of any of all, temperature, composition, adiabatic temperature, adiabatic pressure, adiabatic density, adiabatic density derivative, velocity magnitude, sinking velocity, rising velocity, Vs, Vp, viscosity, vertical heat flux, vertical mass flux, composition mass
 \item {\it Parameter name:} {\tt Number of zones}
 \phantomsection\label{parameters:Postprocess/Depth average/Number of zones}
 \label{parameters:Postprocess/Depth_20average/Number_20of_20zones}
@@ -17474,16 +17856,9 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Also output the gravity anomaly}
 \index[prmindexfull]{Postprocess!Geoid!Also output the gravity anomaly}
-{\it Value:} false
+This parameter is an alias for the parameter ``\texttt{Output gravity anomaly}''.
 
 
-{\it Default:} false
-
-
-{\it Description:} Option to also output the free-air gravity anomaly up to the maximum degree. The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. 
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
 \phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
 \label{parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20CMB_20dynamic_20topography_20contribution}
@@ -17491,16 +17866,9 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
 \index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of CMB dynamic topography contribution}
-{\it Value:} false
+This parameter is an alias for the parameter ``\texttt{Output CMB topography contribution coefficients}''.
 
 
-{\it Default:} false
-
-
-{\it Description:} Option to also output the spherical harmonic coefficients of the CMB dynamic topography contribution to the maximum degree. The default is false. 
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of density anomaly contribution}
 \phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of density anomaly contribution}
 \label{parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20density_20anomaly_20contribution}
@@ -17508,16 +17876,9 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Also output the spherical harmonic coefficients of density anomaly contribution}
 \index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of density anomaly contribution}
-{\it Value:} false
+This parameter is an alias for the parameter ``\texttt{Output density anomaly contribution coefficients}''.
 
 
-{\it Default:} false
-
-
-{\it Description:} Option to also output the spherical harmonic coefficients of the density anomaly contribution to the maximum degree. The default is false. 
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of geoid anomaly}
 \phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of geoid anomaly}
 \label{parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20geoid_20anomaly}
@@ -17525,16 +17886,9 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Also output the spherical harmonic coefficients of geoid anomaly}
 \index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of geoid anomaly}
-{\it Value:} false
+This parameter is an alias for the parameter ``\texttt{Output geoid anomaly coefficients}''.
 
 
-{\it Default:} false
-
-
-{\it Description:} Option to also output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so postprocess will only output the geoid anomaly in grid format. 
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Also output the spherical harmonic coefficients of surface dynamic topography contribution}
 \phantomsection\label{parameters:Postprocess/Geoid/Also output the spherical harmonic coefficients of surface dynamic topography contribution}
 \label{parameters:Postprocess/Geoid/Also_20output_20the_20spherical_20harmonic_20coefficients_20of_20surface_20dynamic_20topography_20contribution}
@@ -17542,16 +17896,9 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 \index[prmindex]{Also output the spherical harmonic coefficients of surface dynamic topography contribution}
 \index[prmindexfull]{Postprocess!Geoid!Also output the spherical harmonic coefficients of surface dynamic topography contribution}
-{\it Value:} false
+This parameter is an alias for the parameter ``\texttt{Output surface topography contribution coefficients}''.
 
 
-{\it Default:} false
-
-
-{\it Description:} Option to also output the spherical harmonic coefficients of the surface dynamic topography contribution to the maximum degree. The default is false. 
-
-
-{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Density above}
 \phantomsection\label{parameters:Postprocess/Geoid/Density above}
 \label{parameters:Postprocess/Geoid/Density_20above}
@@ -17586,6 +17933,40 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Include CMB topography contribution}
+\phantomsection\label{parameters:Postprocess/Geoid/Include CMB topography contribution}
+\label{parameters:Postprocess/Geoid/Include_20CMB_20topography_20contribution}
+
+
+\index[prmindex]{Include CMB topography contribution}
+\index[prmindexfull]{Postprocess!Geoid!Include CMB topography contribution}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Option to include the contribution from CMB topography on geoid. The default is true.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Include surface topography contribution}
+\phantomsection\label{parameters:Postprocess/Geoid/Include surface topography contribution}
+\label{parameters:Postprocess/Geoid/Include_20surface_20topography_20contribution}
+
+
+\index[prmindex]{Include surface topography contribution}
+\index[prmindexfull]{Postprocess!Geoid!Include surface topography contribution}
+{\it Value:} true
+
+
+{\it Default:} true
+
+
+{\it Description:} Option to include the contribution from surface topography on geoid. The default is true.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Include the contributon from dynamic topography}
 \phantomsection\label{parameters:Postprocess/Geoid/Include the contributon from dynamic topography}
 \label{parameters:Postprocess/Geoid/Include_20the_20contributon_20from_20dynamic_20topography}
@@ -17637,6 +18018,23 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Output CMB topography contribution coefficients}
+\phantomsection\label{parameters:Postprocess/Geoid/Output CMB topography contribution coefficients}
+\label{parameters:Postprocess/Geoid/Output_20CMB_20topography_20contribution_20coefficients}
+
+
+\index[prmindex]{Output CMB topography contribution coefficients}
+\index[prmindexfull]{Postprocess!Geoid!Output CMB topography contribution coefficients}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the spherical harmonic coefficients of the CMB topography contribution to the maximum degree. The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Output data in geographical coordinates}
 \phantomsection\label{parameters:Postprocess/Geoid/Output data in geographical coordinates}
 \label{parameters:Postprocess/Geoid/Output_20data_20in_20geographical_20coordinates}
@@ -17651,6 +18049,74 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 
 {\it Description:} Option to output the geoid anomaly in geographical coordinates (latitude and longitude). The default is false, so postprocess will output the data in geocentric coordinates (x,y,z) as normally.
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Output density anomaly contribution coefficients}
+\phantomsection\label{parameters:Postprocess/Geoid/Output density anomaly contribution coefficients}
+\label{parameters:Postprocess/Geoid/Output_20density_20anomaly_20contribution_20coefficients}
+
+
+\index[prmindex]{Output density anomaly contribution coefficients}
+\index[prmindexfull]{Postprocess!Geoid!Output density anomaly contribution coefficients}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the spherical harmonic coefficients of the density anomaly contribution to the maximum degree. The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Output geoid anomaly coefficients}
+\phantomsection\label{parameters:Postprocess/Geoid/Output geoid anomaly coefficients}
+\label{parameters:Postprocess/Geoid/Output_20geoid_20anomaly_20coefficients}
+
+
+\index[prmindex]{Output geoid anomaly coefficients}
+\index[prmindexfull]{Postprocess!Geoid!Output geoid anomaly coefficients}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the spherical harmonic coefficients of the geoid anomaly up to the maximum degree. The default is false, so postprocess will only output the geoid anomaly in grid format. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Output gravity anomaly}
+\phantomsection\label{parameters:Postprocess/Geoid/Output gravity anomaly}
+\label{parameters:Postprocess/Geoid/Output_20gravity_20anomaly}
+
+
+\index[prmindex]{Output gravity anomaly}
+\index[prmindexfull]{Postprocess!Geoid!Output gravity anomaly}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the free-air gravity anomaly up to the maximum degree. The unit of the output is in SI, hence $m/s^2$ ($1mgal = 10^-5 m/s^2$). The default is false. 
+
+
+{\it Possible values:} A boolean value (true or false)
+\item {\it Parameter name:} {\tt Output surface topography contribution coefficients}
+\phantomsection\label{parameters:Postprocess/Geoid/Output surface topography contribution coefficients}
+\label{parameters:Postprocess/Geoid/Output_20surface_20topography_20contribution_20coefficients}
+
+
+\index[prmindex]{Output surface topography contribution coefficients}
+\index[prmindexfull]{Postprocess!Geoid!Output surface topography contribution coefficients}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Option to output the spherical harmonic coefficients of the surface topography contribution to the maximum degree. The default is false. 
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -17937,7 +18403,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Description:} Quadrature degree increase over the velocity element degree may be required when gravity is calculated near the surface or inside the model. An increase in the quadrature element adds accuracy to the gravity solution from noise due to the model grid.
 
 
-{\it Possible values:} An integer $n$ such that $0\leq n \leq 2147483647$
+{\it Possible values:} An integer $n$ such that $-1\leq n \leq 2147483647$
 \item {\it Parameter name:} {\tt Reference density}
 \phantomsection\label{parameters:Postprocess/Gravity calculation/Reference density}
 \label{parameters:Postprocess/Gravity_20calculation/Reference_20density}
@@ -18048,7 +18514,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} false
 
 
-{\it Description:} By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, in which case the interpolator will return 0 for the cell's properties.
+{\it Description:} By default, every cell needs to contain particles to use this interpolator plugin. If this parameter is set to true, cells are allowed to have no particles, In case both the current cell and its neighbors are empty, the interpolator will return 0 for the current cell's properties.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -18082,7 +18548,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 {\it Default:} 
 
 
-{\it Description:} A comma separated list of strings which exclude all particleproperty fields which contain these strings. If one of the entries is 'all', only a id will be provided for every point.
+{\it Description:} A comma separated list of particle properties that should \textit{not} be output. If this list contains the entry `all', only the id of particles will be provided in graphical output files.
 
 
 {\it Possible values:} Any string
@@ -18103,7 +18569,7 @@ all|temperature|composition|adiabatic temperature|adiabatic pressure|adiabatic d
 
 In practice, the exact velocity $\mathbf u(\mathbf x,t)$ is of course not available, but only a numerical approximation $\mathbf u_h(\mathbf x,t)$. Furthermore, this approximation is only available at discrete time steps, $\mathbf u^n(\mathbf x)=\mathbf u(\mathbf x,t^n)$, and these need to be interpolated between time steps if the integrator for the equation above requires an evaluation at time points between the discrete time steps. If we denote this interpolation in time by $\tilde{\mathbf u}_h(\mathbf x,t)$ where $\tilde{\mathbf u}_h(\mathbf x,t^n)=\mathbf u^n(\mathbf x)$, then the equation the differential equation solver really tries to solve is $\frac{d}{dt}\tilde{\mathbf x}_k(t) =  \tilde{\mathbf u}_h(\mathbf x_k(t),t)$.
 
-As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like $$  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p$$ where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the \textit{exact} velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form $$  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|$$ with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
+As a consequence of these considerations, if you try to assess convergence properties of an ODE integrator -- for example to verify that the RK4 integrator converges with fourth order --, it is important to recall that the integrator may not solve the equation you think it solves. If, for example, we call the numerical solution of the ODE $\tilde{\mathbf x}_{k,h}(t)$, then the error will typically satisfy a relationship like \[  \| \tilde{\mathbf x}_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C(T) \Delta t^p\] where $\Delta t$ is the time step and $p$ the convergence order of the method, and $C(T)$ is a (generally unknown) constant that depends on the end time $T$ at which one compares the solutions. On the other hand, an analytically computed trajectory would likely use the \textit{exact} velocity, and one may be tempted to compute $\| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|$, but this quantity will, in the best case, only satisfy an estimate of the form \[  \| \mathbf x_k(T) - \tilde{\mathbf x}_{k,h}(T) \|  \le  C_1(T) \Delta t^p  + C_2(T) \| \mathbf u-\mathbf u_h \|  + C_3(T) \| \mathbf u_h-\tilde{\mathbf u}_h \|\] with appropriately chosen norms for the second and third term. These second and third terms typically converge to zero at relatively low rates (compared to the order $p$ of the integrator, which can often be chosen relatively high) in the mesh size $h$ and the time step size $\\Delta t$, limiting the overall accuracy of the ODE integrator.
 
 Select one of the following models:
 
@@ -18132,11 +18598,11 @@ Select one of the following models:
 
 `bilinear least squares': Interpolates particle properties onto a vector of points using a bilinear least squares method. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
-`cell average': Return the arithmetic average of all particle properties in the given cell.
+`cell average': Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
-`harmonic average': Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells.
+`harmonic average': Return the harmonic average of all particle properties in the given cell. If the cell contains no particles, return the harmonic average of the properties in the neighboring cells. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
-`nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty.
+`nearest neighbor': Return the properties of the nearest neighboring particle in the current cell, or nearest particle in nearest neighboring cell if current cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
 `quadratic least squares': Interpolates particle properties onto a vector of points using a quadratic least squares method. Note that deal.II must be configured with BLAS/LAPACK.
 
@@ -19257,7 +19723,7 @@ Of course, activating this option also greatly increases the amount of data \asp
 
 The following postprocessors are available:
 
-`ISA rotation timescale': A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (2002, Gcubed) call this quantity $\tau_{ISA}$ and define it as $\tau_{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
+`ISA rotation timescale': A visualization output object that generates output showing the timescale for the rotation of grains toward the infinite strain axis. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\tau_\text{ISA}$ and define it as $\tau_\text{ISA} \approx \frac{1}{\dot{\epsilon}}$ where $\dot{\epsilon}$ is the largest eigenvalue of the strain rate tensor. It can be used, along with the grain lag angle $\Theta$, to calculate the grain orientation lag parameter.
 
 `Vp anomaly': A visualization output object that generates output showing the percentage anomaly in the seismic compressional wave speed $V_p$ as a spatially variable function with one value per cell. This anomaly is either shown as a percentage anomaly relative to the reference profile given by adiabatic conditions (with the compositions given by the current composition, such that the reference could potentially change through time), or as a percentage change relative to the laterally averaged velocity at the depth of the cell. This velocity is calculated by linear interpolation between average values calculated within equally thick depth slices. The number of depth slices in the domain is user-defined. Typically, the best results will be obtained if the number of depth slices is balanced between being large enough to capture step changes in velocities, but small enough to maintain a reasonable number of evaluation points per slice. Bear in mind that lateral averaging subsamples the finite element mesh. Note that this plugin requires a material model that provides seismic velocities.
 
@@ -19295,7 +19761,9 @@ Alternatively, consider using the "surface dynamic topography" visualization pos
 
 `heating': A visualization output object that generates output for all the heating terms used in the energy equation.
 
-`material properties': A visualization output object that generates output for the material properties given by the material model.There are a number of other visualization postprocessors that offer to write individual material properties. However, they all individually have to evaluate the material model. This is inefficient if one wants to output more than just one or two of the fields provided by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point.
+`material properties': A visualization output object that generates output for the material properties given by the material model. The current postprocessor allows to output a (potentially large) subset of all of the information provided by material models at once, with just a single material model evaluation per output point. Although individual properties can still be listed in the ``List of output variables'', this visualization plugin is called internally to avoid duplicated evaluations of the material model. 
+
+In almost all places inside \aspect{}, the program can use ``averaged'' material properties, for example for the assembly of matrices and right hand side vectors. To accurately reflect the material parameters used internally, this visualization postprocessor averages in the same way as is used to do the assembly, and consequently the graphical output will reflect not pointwise properties, but averaged properties.
 
 `maximum horizontal compressive stress': A plugin that computes the direction and magnitude of the maximum horizontal component of the compressive stress as a vector field. The direction of this vector can often be used to visualize the principal mode of deformation (e.g., at normal faults or extensional margins) and can be correlated with seismic anisotropy. Recall that the \textit{compressive} stress is simply the negative stress, $\sigma_c=-\sigma=-\left[     2\eta (\varepsilon(\mathbf u)             - \frac 13 (\nabla \cdot \mathbf u) I)     + pI\right]$.
 
@@ -19351,7 +19819,7 @@ The variable that is outputted this way is computed by taking the pressure at ea
 
 In contrast to the `dynamic topography' visualization postprocessor, this plugin really only evaluates the dynamic topography at faces of cells that are adjacent to `bottom' and `top' boundaries, and only outputs information on the surface of the domain, rather than padding the information with zeros in the interior of the domain.
 
-`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. Note that the convention of positive compressive stress is followed. 
+`surface stress': A visualization output object that generates output on the surface of the domain for the 3 (in 2d) or 6 (in 3d) components of the stress tensor, i.e., for the components of the tensor $-2\eta\varepsilon(\mathbf u)+pI$ in the incompressible case and $-2\eta\left[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I\right]+pI$ in the compressible case. If elasticity is included, its contribution is accounted for. Note that the convention of positive compressive stress is followed. 
 
 `temperature anomaly': A visualization output postprocessor that outputs the temperature minus the depth-average of the temperature.The average temperature is calculated using the lateral averaging function from the ``depth average'' postprocessor and interpolated linearly between the layers specified through ``Number of depth slices''
 
@@ -20068,7 +20536,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} false
 
 
-{\it Description:} Include the internal data for the interface normal on the unit cells
+{\it Description:} Include the internal data for the interface normal on the unit cells.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -20085,7 +20553,7 @@ compaction viscosity|fluid viscosity|permeability|fluid density|fluid density gr
 {\it Default:} false
 
 
-{\it Description:} Include fields defined such that the 0 contour is the fluid interface
+{\it Description:} Include fields defined such that the 0 contour is the fluid interface.
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -20726,6 +21194,29 @@ If the function you are describing represents a vector-valued function with mult
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \end{itemize}
 
+\subsection{Parameters in section \tt Solver parameters/Matrix Free}
+\label{parameters:Solver_20parameters/Matrix_20Free}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Output details}
+\phantomsection\label{parameters:Solver parameters/Matrix Free/Output details}
+\label{parameters:Solver_20parameters/Matrix_20Free/Output_20details}
+
+
+\index[prmindex]{Output details}
+\index[prmindexfull]{Solver parameters!Matrix Free!Output details}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Turns on extra information for the matrix free GMG solver to be printed.
+
+
+{\it Possible values:} A boolean value (true or false)
+\end{itemize}
+
 \subsection{Parameters in section \tt Solver parameters/Newton solver parameters}
 \label{parameters:Solver_20parameters/Newton_20solver_20parameters}
 
@@ -21164,10 +21655,10 @@ The default value should be good for relatively simple models, but in particular
 
 These choices correspond to the following methods by which the temperature field gains its values:\begin{itemize}\item ``field'': If the temperature is marked with this method, then its values are computed in each time step by solving the temperature advection-diffusion equation. In other words, this corresponds to the usual notion of a temperature. 
 \item ``prescribed field'': The value of the temperature is determined in each time step from the material model. If a compositional field is marked with this method, then the value of a specific additional material model output, called the `PrescribedTemperatureOutputs' is interpolated onto the temperature. This field does not change otherwise, it is not advected with the flow. 
-\end{itemize}
+\item ``static'': If a temperature field is marked this way, then it does not evolve at all. Its values are simply set to the initial conditions, and will then never change.\end{itemize}
 
 
-{\it Possible values:} Any one of field, prescribed field
+{\it Possible values:} Any one of field, prescribed field, static
 \end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria}
@@ -21227,6 +21718,8 @@ These choices correspond to the following methods by which the temperature field
 
 `end time': Terminate the simulation once the end time specified in the input file has been reached. Unlike all other termination criteria, this criterion is \textit{always} active, whether it has been explicitly selected or not in the input file (this is done to preserve historical behavior of \aspect{}, but it also likely does not inconvenience anyone since it is what would be selected in most cases anyway).
 
+`steady state heat flux': A criterion that terminates the simulation when the integrated heat flux over a given list of boundaries stays within a certain range for a specified period of time.
+
 `steady state temperature': A criterion that terminates the simulation when the global integral of the temperature field stays within a certain range for a specified period of time.
 
 `steady state velocity': A criterion that terminates the simulation when the RMS of the velocity field stays within a certain range for a specified period of time.
@@ -21236,7 +21729,7 @@ These choices correspond to the following methods by which the temperature field
 `wall time': Terminate the simulation once the wall time limit has reached.
 
 
-{\it Possible values:} A comma-separated list of any of end step, end time, steady state temperature, steady state velocity, user request, wall time
+{\it Possible values:} A comma-separated list of any of end step, end time, steady state heat flux, steady state temperature, steady state velocity, user request, wall time
 \item {\it Parameter name:} {\tt Wall time}
 \phantomsection\label{parameters:Termination criteria/Wall time}
 \label{parameters:Termination_20criteria/Wall_20time}
@@ -21257,6 +21750,65 @@ These choices correspond to the following methods by which the temperature field
 \end{itemize}
 
 
+
+\subsection{Parameters in section \tt Termination criteria/Steady state heat flux}
+\label{parameters:Termination_20criteria/Steady_20state_20heat_20flux}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Boundary indicators}
+\phantomsection\label{parameters:Termination criteria/Steady state heat flux/Boundary indicators}
+\label{parameters:Termination_20criteria/Steady_20state_20heat_20flux/Boundary_20indicators}
+
+
+\index[prmindex]{Boundary indicators}
+\index[prmindexfull]{Termination criteria!Steady state heat flux!Boundary indicators}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} A comma separated list of names denoting those boundaries that should be taken into account for integrating the heat flux. Note that the plugin will compute the integrated heat flux over these boundaries (instead of taking them into account individually).
+
+The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt Maximum relative deviation}
+\phantomsection\label{parameters:Termination criteria/Steady state heat flux/Maximum relative deviation}
+\label{parameters:Termination_20criteria/Steady_20state_20heat_20flux/Maximum_20relative_20deviation}
+
+
+\index[prmindex]{Maximum relative deviation}
+\index[prmindexfull]{Termination criteria!Steady state heat flux!Maximum relative deviation}
+{\it Value:} 0.05
+
+
+{\it Default:} 0.05
+
+
+{\it Description:} The maximum relative deviation of the heat flux in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Time in steady state}
+\phantomsection\label{parameters:Termination criteria/Steady state heat flux/Time in steady state}
+\label{parameters:Termination_20criteria/Steady_20state_20heat_20flux/Time_20in_20steady_20state}
+
+
+\index[prmindex]{Time in steady state}
+\index[prmindexfull]{Termination criteria!Steady state heat flux!Time in steady state}
+{\it Value:} 1e7
+
+
+{\it Default:} 1e7
+
+
+{\it Description:} The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the 'Use years in output instead of seconds' parameter is set; seconds otherwise.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\end{itemize}
 
 \subsection{Parameters in section \tt Termination criteria/Steady state temperature}
 \label{parameters:Termination_20criteria/Steady_20state_20temperature}
