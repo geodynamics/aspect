@@ -57,6 +57,85 @@ namespace aspect
    */
   namespace MatrixFreeStokesOperators
   {
+
+    /**
+     * This struct stores the data for the current linear operator that is requried to perform
+     * matrix-vector products.
+     *
+     * The members of type Table<2, VectorizedArray<X>> contain values
+     * of type X, grouped by cell batch using the VectorizedArray. The
+     * table is indexed by the index of the cell batch and quadrature
+     * point index.  In other words, you can access the value by
+     * <tt>table(cell_batch_index, q_index)[cell_index]</tt>
+     */
+    template <int dim, typename number>
+    struct OperatorCellData
+    {
+      /**
+       * Information on the compressibility of the flow.
+       */
+      bool is_compressible;
+
+      /**
+       * Pressure scaling constant.
+       */
+      double pressure_scaling;
+
+      /**
+       * If true, Newton terms are part of the operator.
+       */
+      bool enable_newton_derivatives;
+
+      /**
+       * Symmetrize the Newton system when it's true (i.e., the
+       * stabilization is symmetric or SPD).
+       */
+      bool symmetrize_newton_system;
+
+      /**
+       * Table which stores viscosity values for each cell.
+       *
+       * If the second dimension is of size 1, the viscosity is
+       * assumed to be constant per cell.
+       */
+      Table<2, VectorizedArray<number>> viscosity;
+
+      /**
+       * Table which stores the strain rate for each cell to be used
+       * for the Newton terms.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>> strain_rate_table;
+
+      /**
+       * Table which stores the product of the viscosity derivative
+       * with respect to pressure and the Newton derivative scaling
+       * factor alpha.
+       */
+      Table<2, VectorizedArray<number>> newton_factor_wrt_pressure_table;
+
+      /**
+       * Table which stores the product of the following three
+       * variables: viscosity derivative with respect to strain rate,
+       * newton derivative scaling factor, and alpha. Here alpha is
+       * the spd factor when the stabilization is PD or SPD,
+       * otherwise, it is 1.
+       */
+      Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
+      newton_factor_wrt_strain_rate_table;
+
+      /**
+       * Determine an estimate for the memory consumption (in bytes) of this
+       * object.
+       */
+      std::size_t
+      memory_consumption() const;
+
+      /**
+       * Reset the object and free all memory
+       */
+      void clear();
+    };
+
     /**
      * Operator for the entire Stokes block.
      */
@@ -77,24 +156,9 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table, sets the value for the pressure scaling constant,
-         * and gives information regarding compressibility.
+         * Pass in a reference to the problem data.
          */
-        void fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                             const double pressure_scaling,
-                             const bool is_compressible);
-
-        /**
-         * Fills in the tables of derivatives and strain rate for the Newton method,
-         * and symmetrize the Newton system when @p symmetrize_newton_system is true (i.e., the stabilization is symmetric or SPD).
-         */
-        void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
-                                    &viscosity_derivative_wrt_pressure_table,
-                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-                                    &strain_rate_table,
-                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-                                    &viscosity_derivative_wrt_strain_rate_table,
-                                    const bool symmetrize_newton_system);
+        void set_cell_data (const OperatorCellData<dim,number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -121,45 +185,9 @@ namespace aspect
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
 
         /**
-         * Table which stores viscosity values for each cell.
+         * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const Table<2, VectorizedArray<number>> *viscosity;
-
-        /**
-         * Pressure scaling constant.
-         */
-        double pressure_scaling;
-
-        /**
-         * Table which stores the product of viscosity derivative with respect to pressure
-         * and newton derivative scaling factor.
-         */
-        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
-
-        /**
-         * Table which stores the strain rate for each cell.
-         */
-        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-        *strain_rate_table;
-
-        /**
-         * Table which stores the product of the following three variables:
-         * viscosity derivative with respect to strain rate,
-         * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
-         * otherwise, it is 1.
-         */
-        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-        *viscosity_derivative_wrt_strain_rate_table;
-
-        /**
-          * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
-          */
-        bool symmetrize_newton_system;
-
-        /**
-          * Information on the compressibility of the flow.
-          */
-        bool is_compressible;
+        const OperatorCellData<dim,number> *cell_data;
     };
 
     /**
@@ -182,13 +210,9 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and sets the value for the pressure scaling constant. The input
-         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
-         * matrix or for the active level matrix.
+         * Pass in a reference to the problem data.
          */
-        void fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                             const double pressure_scaling);
-
+        void set_cell_data (const OperatorCellData<dim,number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -224,14 +248,9 @@ namespace aspect
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
         /**
-         * Table which stores viscosity values for each cell.
+         * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const Table<2, VectorizedArray<number>> *viscosity;
-
-        /**
-         * Pressure scaling constant.
-         */
-        double pressure_scaling;
+        const OperatorCellData<dim,number> *cell_data;
     };
 
     /**
@@ -255,24 +274,9 @@ namespace aspect
         void clear () override;
 
         /**
-         * Fills in the viscosity table and gives information regarding compressibility. The input
-         * @p is_mg_level_data describes whether the viscosity values are defined for a multigrid level
-         * matrix or for the active level matrix.
+         * Pass in a reference to the problem data.
          */
-        void fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                             const bool is_compressible);
-
-        /**
-         * Fills in the tables of derivatives and strain rate for the Newton method,
-         * and symmetrize the Newton system when @p symmetrize_newton_system is true (i.e., the stabilization is symmetric or SPD).
-         */
-        void fill_Newton_cell_data (const Table<2, VectorizedArray<number>>
-                                    &viscosity_derivative_wrt_pressure_table,
-                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-                                    &strain_rate_table,
-                                    const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-                                    &viscosity_derivative_wrt_strain_rate_table,
-                                    const bool symmetrize_newton_system);
+        void set_cell_data (const OperatorCellData<dim,number> &data);
 
         /**
          * Computes the diagonal of the matrix. Since matrix-free operators have not access
@@ -314,41 +318,9 @@ namespace aspect
                                      const std::pair<unsigned int,unsigned int>       &cell_range) const;
 
         /**
-         * Table which stores viscosity values for each cell.
+         * A pointer to the current cell data that contains viscosity and other required parameters per cell.
          */
-        const Table<2, VectorizedArray<number>> *viscosity;
-
-        /**
-         * Table which stores the product of viscosity derivative with respect to pressure
-         * and newton derivative scaling factor.
-         */
-        const Table<2, VectorizedArray<number>> *viscosity_derivative_wrt_pressure_table;
-
-        /**
-         * Table which stores the strain rate for each cell.
-         */
-        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-        *strain_rate_table;
-
-        /**
-         * Table which stores the product of the following three variables:
-         * viscosity derivative with respect to strain rate,
-         * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
-         * otherwise, it is 1.
-         */
-        const Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
-        *viscosity_derivative_wrt_strain_rate_table;
-
-        /**
-          * Symmetrize the Newton system when it's true (i.e., the stabilization is symmetric or SPD).
-          */
-        bool symmetrize_newton_system;
-
-        /**
-          * Information on the compressibility of the flow.
-          */
-        bool is_compressible;
-
+        const OperatorCellData<dim,number> *cell_data;
     };
   }
 
@@ -455,18 +427,10 @@ namespace aspect
       get_mg_transfer_S () const = 0;
 
       /**
-       * Return a pointer to the Table containing the viscosities on
-       * the active level used in the block GMG Stokes solver.
+       * Return the memory consumption in bytes that are used to store
+       * equation data like viscosity to be able to apply the operators.
        */
-      virtual const Table<2, VectorizedArray<double>> &
-                                                   get_active_viscosity_table() const = 0;
-
-      /**
-       * Return a pointer to the Tables containing the viscosities on
-       * the multigrid levels used in the block GMG Stokes solver.
-       */
-      virtual const MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> &
-      get_level_viscosity_tables() const = 0;
+      virtual std::size_t get_cell_data_memory_consumption() const = 0;
   };
 
   /**
@@ -583,19 +547,12 @@ namespace aspect
       const MGTransferMatrixFree<dim,GMGNumberType> &
       get_mg_transfer_S () const override;
 
-      /**
-       * Return a pointer to the Table containing the viscosities on
-       * the active level used in the block GMG Stokes solver.
-       */
-      const Table<2, VectorizedArray<double>> &
-                                           get_active_viscosity_table() const override;
 
       /**
-       * Return a pointer to the Tables containing the viscosities on
-       * the multigrid levels used in the block GMG Stokes solver.
+       * Return the memory consumption in bytes that are used to store
+       * equation data like viscosity to be able to apply the operators.
        */
-      const MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> &
-      get_level_viscosity_tables() const override;
+      std::size_t get_cell_data_memory_consumption() const;
 
     private:
       /**
@@ -616,29 +573,15 @@ namespace aspect
       FESystem<dim> fe_p;
       FESystem<dim> fe_projection;
 
-      Table<2, VectorizedArray<double>> active_viscosity_table;
-      MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> level_viscosity_tables;
-
-
       /**
-       * Table which stores the product of viscosity derivative with respect to pressure
-       * and newton derivative scaling factor for each active cell.
+       * Store the data for the Stokes operator (viscosity, etc.) for the active cells.
        */
-      Table<2, VectorizedArray<double>> active_viscosity_derivative_wrt_pressure_table;
+      MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType> active_cell_data;
 
       /**
-       * Table which stores the strain rate for each active cell.
+       * Store the data for the Stokes operator (viscosity, etc.) for each multigrid level.
        */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<double>>> active_strain_rate_table;
-
-      /**
-      * Table which stores the product of the following three variables for each active cell:
-      * viscosity derivative with respect to strain rate,
-      * newton derivative scaling factor, and alpha. Here alpha is the spd factor when the stabilization is PD or SPD,
-      * otherwise, it is 1.
-      */
-      Table<2, SymmetricTensor<2, dim, VectorizedArray<double>>>
-      active_viscosity_derivative_wrt_strain_rate_table;
+      MGLevelObject<MatrixFreeStokesOperators::OperatorCellData<dim, GMGNumberType>> level_cell_data;
 
       // This variable is needed only in the setup in both evaluate_material_model()
       // and build_preconditioner(). It will be deleted after the last use.
