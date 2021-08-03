@@ -939,7 +939,7 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          prm.declare_entry("Include the contributon from dynamic topography", "true",
+          prm.declare_entry("Include the contribution from dynamic topography", "true",
                             Patterns::Bool(),
                             "Option to include the contribution from dynamic topography on geoid. The default is true.");
           prm.declare_entry("Include surface topography contribution", "true",
@@ -1009,10 +1009,10 @@ namespace aspect
       {
         prm.enter_subsection("Geoid");
         {
-          const bool include_topo_contribution = prm.get_bool ("Include the contributon from dynamic topography");
+          const bool include_topo_contribution = prm.get_bool ("Include the contribution from dynamic topography");
 
           AssertThrow (include_topo_contribution == true,
-                       ExcMessage("The parameter 'Include the contributon from dynamic topography' has been "
+                       ExcMessage("The parameter 'Include the contribution from dynamic topography' has been "
                                   " replaced by the two parameters 'Include surface topography contribution' and "
                                   "'Include CMB topography contribution'. Please use them instead."));
 

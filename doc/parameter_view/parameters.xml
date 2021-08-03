@@ -16882,7 +16882,7 @@ Option to include the contribution from surface topography on geoid. The default
 [Bool]
 </pattern_description>
 </Include_20surface_20topography_20contribution>
-<Include_20the_20contributon_20from_20dynamic_20topography>
+<Include_20the_20contribution_20from_20dynamic_20topography>
 <value>
 true
 </value>
@@ -16898,7 +16898,7 @@ Option to include the contribution from dynamic topography on geoid. The default
 <pattern_description>
 [Bool]
 </pattern_description>
-</Include_20the_20contributon_20from_20dynamic_20topography>
+</Include_20the_20contribution_20from_20dynamic_20topography>
 <Maximum_20degree>
 <value>
 20
