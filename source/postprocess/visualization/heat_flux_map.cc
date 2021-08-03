@@ -39,7 +39,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("heat_flux_map",
                                       update_quadrature_points),
-                                      Interface<dim>("W/m/m")
+        Interface<dim>("W/m/m")
       {}
 
 

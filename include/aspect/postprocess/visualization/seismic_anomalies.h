@@ -43,9 +43,9 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
-        SeismicVsAnomaly();
+          SeismicVsAnomaly();
 
-        
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
@@ -101,8 +101,8 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
-        SeismicVpAnomaly();
-        
+          SeismicVpAnomaly();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */

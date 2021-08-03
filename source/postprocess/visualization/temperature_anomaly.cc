@@ -38,7 +38,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("temperature_anomaly",
                                       update_values | update_quadrature_points ),
-                                      Interface<dim>("K")
+        Interface<dim>("K")
       {
       }
 

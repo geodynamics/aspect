@@ -33,7 +33,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("dynamic_topography",
                                       update_quadrature_points),
-                                      Interface<dim>("m")
+        Interface<dim>("m")
       {}
 
 

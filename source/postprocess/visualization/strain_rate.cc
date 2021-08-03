@@ -35,7 +35,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("strain_rate",
                                       update_gradients | update_quadrature_points),
-                                      Interface<dim>("1/s")
+        Interface<dim>("1/s")
       {}
 
 

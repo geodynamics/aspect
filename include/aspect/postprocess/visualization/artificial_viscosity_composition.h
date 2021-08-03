@@ -42,7 +42,7 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
-        ArtificialViscosityComposition();
+          ArtificialViscosityComposition();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()

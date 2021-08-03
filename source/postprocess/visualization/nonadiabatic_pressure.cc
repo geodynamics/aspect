@@ -35,7 +35,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_pressure",
                                       update_values | update_quadrature_points),
-                                      Interface<dim>("kg/m/s/s")
+        Interface<dim>("kg/m/s/s")
       {}
 
 

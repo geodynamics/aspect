@@ -28,7 +28,7 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
-       template <int dim>
+      template <int dim>
       ErrorIndicator<dim>::
       ErrorIndicator ()
         :

@@ -39,7 +39,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("geoid",
                                       update_quadrature_points),
-                                      Interface<dim>("m")
+        Interface<dim>("m")
       {}
 
       template <int dim>

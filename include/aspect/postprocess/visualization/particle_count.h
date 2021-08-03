@@ -46,7 +46,7 @@ namespace aspect
           public SimulatorAccess<dim>
       {
         public:
-        ParticleCount();
+          ParticleCount();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()

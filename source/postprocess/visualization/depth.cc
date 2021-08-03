@@ -36,7 +36,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("depth",
                                       update_quadrature_points),
-                                      Interface<dim>("m")
+        Interface<dim>("m")
       {}
 
 

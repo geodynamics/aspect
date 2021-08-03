@@ -34,7 +34,7 @@ namespace aspect
         :
         DataPostprocessorVector<dim> ("boundary_velocity_residual",
                                       update_values | update_quadrature_points | update_gradients),
-                                      Interface<dim>("m/s")
+        Interface<dim>("m/s")
       {}
 
 

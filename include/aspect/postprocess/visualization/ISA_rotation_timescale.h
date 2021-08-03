@@ -53,14 +53,14 @@ namespace aspect
       class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
-        /**
-         * Constructor.
-        */          
-        ISARotationTimescale();
+          /**
+           * Constructor.
+          */
+          ISARotationTimescale();
 
 
-           * @copydoc CellDataVectorCreator<dim>::execute()
-           */
+          *@copydoc CellDataVectorCreator<dim>::execute()
+          */
           std::pair<std::string, Vector<float> *>
           execute() const override;
 

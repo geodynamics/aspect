@@ -36,7 +36,7 @@ namespace aspect
       {}
 
 
-      
+
       template <int dim>
       std::pair<std::string, Vector<float> *>
       ArtificialViscosity<dim>::execute() const
