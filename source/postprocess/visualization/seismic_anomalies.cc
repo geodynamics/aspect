@@ -134,8 +134,7 @@ namespace aspect
                     // Get the pressure, temperature and composition in the cell
                     fe_values.reinit (cell);
 
-                    // Repopulate MaterialInputs, set use_strain_rates to false
-                    in.reinit (fe_values, cell, this->introspection(), this->get_solution(), false);
+                    in.reinit (fe_values, cell, this->introspection(), this->get_solution(), /* compute_strain_rate = */ false);
 
                     out.additional_outputs.push_back(
                       std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_q_points));
