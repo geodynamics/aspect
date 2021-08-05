@@ -772,13 +772,13 @@ namespace aspect
 
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
-            VectorizedArray<number> pres = pressure.get_value(q);
-            VectorizedArray<number> div = trace(sym_grad_u);
+            const VectorizedArray<number> pres = pressure.get_value(q);
+            const VectorizedArray<number> div = trace(sym_grad_u);
 
             if (cell_data->enable_newton_derivatives)
               {
                 // Note that derivative_scaling_factor has already been multiplied to newton_factor_wrt_pressure_table.
-                VectorizedArray<number> newton_pressure_term =
+                const VectorizedArray<number> newton_pressure_term =
                   cell_data->pressure_scaling * 2.0
                   * cell_data->newton_factor_wrt_pressure_table(cell,q)
                   * (sym_grad_u * cell_data->strain_rate_table(cell,q));
@@ -799,19 +799,20 @@ namespace aspect
 
             if (cell_data->enable_newton_derivatives)
               {
-                SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
+                const SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
 
-                sym_grad_u +=  (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
-                               * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
+                SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
+                                                              (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
+                                                              * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
 
                 if (cell_data->symmetrize_newton_system)
-                  sym_grad_u +=
+                  newton_velocity_term +=
                     (cell_data->newton_factor_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
                     * cell_data->strain_rate_table(cell,q);
-
+                velocity.submit_symmetric_gradient(sym_grad_u + newton_velocity_term, q);
               }
-
-            velocity.submit_symmetric_gradient(sym_grad_u, q);
+            else
+              velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 
 #if DEAL_II_VERSION_GTE(9,3,0)
@@ -1128,7 +1129,7 @@ namespace aspect
 
             if (cell_data->is_compressible)
               {
-                VectorizedArray<number> div = trace(sym_grad_u);
+                const VectorizedArray<number> div = trace(sym_grad_u);
                 for (unsigned int d=0; d<dim; ++d)
                   sym_grad_u[d][d] -= 1.0/3.0*div;
               }
