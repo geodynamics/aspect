@@ -1774,6 +1774,10 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
+
+    // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
+    // Therefore, we don't need to include Newton terms here.
+
     const bool is_compressible = sim.material_model->is_compressible();
 
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
@@ -1835,9 +1839,9 @@ namespace aspect
 
             SymmetricTensor<2,dim,VectorizedArray<double>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
-            VectorizedArray<double> pres = pressure.get_value(q);
-            VectorizedArray<double> div = trace(sym_grad_u);
-            pressure.submit_value   (sim.pressure_scaling*div, q);
+            const VectorizedArray<double> pres = pressure.get_value(q);
+            const VectorizedArray<double> div = trace(sym_grad_u);
+            pressure.submit_value(sim.pressure_scaling*div, q);
 
             sym_grad_u *= viscosity_x_2;
 
