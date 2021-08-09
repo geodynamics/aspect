@@ -69,13 +69,11 @@ namespace aspect
           declare_parameters (ParameterHandler &prm);
 
           /**
-           * Read the parameters from the parameter file. These parameters might
-           * be modified outside of this class for each call to the functions below,
-           * so the read parameters are returned to the caller instead of stored as members.
-           *
-           * @param [in] n_fields The number of expected values for the angle of friction and
-           * cohesion lists. Generally either the number of compositional fields or this number
-           * plus one (for a background field), depending on how the user handles background fields.
+           * Read the parameters this class declares from the parameter file.
+           * If @p expected_n_phases_per_composition points to a vector of
+           * unsigned integers, this is considered the number of phases
+           * for each compositional field (plus possibly a background field)
+           * and this number will be checked against the parsed parameters.
            *
            * @param [in] prm The ParameterHandler to read from.
            */
