@@ -915,11 +915,10 @@ namespace aspect
       initial_topography.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
       fs_mesh_velocity.reinit(mesh_locally_owned, mesh_locally_relevant, sim.mpi_communicator);
 
-      // if we are just starting, we need to set the initial topography
-      if (sim.time == 0)
-        {
-          set_initial_topography();
-        }
+      // if we are just starting, we need to set the initial topography.
+      if (this->simulator_is_past_initialization() == false ||
+          this->get_timestep_number() == 0)
+        set_initial_topography();
 
       // We would like to make sure that the mesh stays conforming upon
       // redistribution, so we construct mesh_vertex_constraints, which
