@@ -215,6 +215,7 @@ namespace aspect
                                          entropy_derivative_temperature,
         all_properties                 = equation_of_state_properties |
                                          viscosity |
+                                         thermal_conductivity |
                                          reaction_terms
       };
 
