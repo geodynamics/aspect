@@ -49,8 +49,6 @@ namespace aspect
         // Set up material models
         MaterialModel::MaterialModelInputs<dim> in(n_q_points,
                                                    this->n_compositional_fields());
-        MaterialModel::MaterialModelOutputs<dim> out(n_q_points,
-                                                     this->n_compositional_fields());
 
         // Loop over cells and calculate theta in each one
         // Note that we start after timestep 0 because we need the strain rate,
