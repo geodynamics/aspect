@@ -149,11 +149,6 @@ namespace aspect
             MaterialModel::MaterialModelOutputs<dim> out_volume(fe_volume_values.n_quadrature_points, this->n_compositional_fields());
             this->get_material_model().evaluate(in_volume, out_volume);
 
-            // Evaluate the material model on the cell face.
-            MaterialModel::MaterialModelInputs<dim> in_face(fe_face_values, cell, this->introspection(), this->get_solution());
-            MaterialModel::MaterialModelOutputs<dim> out_face(fe_face_values.n_quadrature_points, this->n_compositional_fields());
-            this->get_material_model().evaluate(in_face, out_face);
-
             // Get solution values for the divergence of the velocity, which is not
             // computed by the material model.
             fe_volume_values[this->introspection().extractors.velocities].get_function_divergences (this->get_solution(), div_solution);
