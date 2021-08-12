@@ -510,7 +510,6 @@ namespace aspect
             {
               if (introspection.is_stokes_component(fe.system_to_component_index(i).first))
                 {
-                  scratch.grads_phi_u[i_stokes] = scratch.finite_element_values[introspection.extractors.velocities].symmetric_gradient(i,q);
                   scratch.div_phi_u[i_stokes]   = scratch.finite_element_values[introspection.extractors.velocities].divergence (i, q);
 
                   ++i_stokes;
