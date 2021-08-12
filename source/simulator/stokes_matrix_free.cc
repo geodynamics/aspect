@@ -2700,7 +2700,7 @@ namespace aspect
                                    sim.mpi_communicator);
 
             QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
-            FEValues<dim> fe_values (fe_v, quadrature_formula,
+            FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);
             FEValues<dim> fe_values_projection (*(sim.mapping),
@@ -2792,7 +2792,7 @@ namespace aspect
             diagonal_matrix.compress(VectorOperation::add);
 
             dealii::LinearAlgebra::distributed::Vector<GMGNumberType> diagonal;
-            // This assignment converts from type double to GMGNumberType (float).
+            // This assignment converts from type double to GMGNumberType.
             diagonal = diagonal_matrix.get_vector();
             mg_matrices_A_block[level].set_diagonal(diagonal);
           }
