@@ -258,11 +258,37 @@ namespace aspect
         std::vector<double> thermal_conductivities;
 
         /**
+         * Parameters for hydrothermal circulation
+         */
+      
+        /**
          * Nusselt number is used for increasing the thermal conductivity in the
          * hydrothermal cooling process. It represents the ratio of the total heat
          * transport within a permeable layer to heat transfer by conduction alone.
          */
         double Nusselt_number;
+
+        /**
+         * Reference cutofftemperature for hydrothermal circulation.
+         * Hydrothermal activity occurs when the temperature is lower than it.
+         */
+        double T_cooling;
+
+        /**
+         * Reference cutoff depth for hydrothermal circulation.
+         * Hydrothermal activity occurs when the depth is shallower than it.
+         */
+        double D_cooling;
+
+        /**
+         * Stress smoothing constant
+         */
+        double C_stress;
+
+        /**
+         * Depth smoothing constant
+         */
+        double C_depth;
 
         /**
          * Object for computing the equation of state.

@@ -188,6 +188,12 @@ namespace aspect
           double min_strain_rate;
 
           /**
+           * Reference strain rate for the first non-linear iteration
+           * in the first time step.
+           */
+          double ref_strain_rate;
+
+          /**
            * Enumeration for selecting which viscosity averaging scheme to use.
            */
           MaterialUtilities::CompositionalAveragingOperation viscosity_averaging;
@@ -207,14 +213,17 @@ namespace aspect
            */
           bool use_elasticity;
 
+          /*
+           * Object for computing plastic stresses, viscosities, and additional outputs
+           */
+          Rheology::DruckerPrager<dim> drucker_prager_plasticity;
+
+          /*
+           * Input parameters for the drucker prager plasticity.
+           */
+          Rheology::DruckerPragerParameters drucker_prager_parameters;
 
         private:
-
-          /**
-           * Reference strain rate for the first non-linear iteration
-           * in the first time step.
-           */
-          double ref_strain_rate;
 
           /**
            * Minimum and maximum viscosities used to improve the
@@ -296,16 +305,6 @@ namespace aspect
            * viscoelastic viscosity or plastic viscosity.
            */
           Rheology::ConstantViscosityPrefactors<dim> constant_viscosity_prefactors;
-
-          /*
-           * Object for computing plastic stresses, viscosities, and additional outputs
-           */
-          Rheology::DruckerPrager<dim> drucker_prager_plasticity;
-
-          /*
-           * Input parameters for the drucker prager plasticity.
-           */
-          Rheology::DruckerPragerParameters drucker_prager_parameters;
 
       };
     }

@@ -220,7 +220,7 @@ namespace aspect
                     out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>())
                 rheology->compute_viscosity_derivatives(i, volume_fractions, isostrain_viscosities.composition_viscosities, in, out, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
             }
-
+          
           // Compute thermal conductivity or thermal diffusivity
           if (define_conductivities == false)
             {
@@ -247,12 +247,72 @@ namespace aspect
               // option was selected.
               out.thermal_conductivities[i] = MaterialUtilities::average_value (volume_fractions, thermal_conductivities, MaterialUtilities::arithmetic);
 
-              // Simplified hydrothermal cooling process
-              // Approximate the effects of hydrothermal cooling by increasing thermal conductivity.
-              if (in.temperature[i]<= 873 || this->get_geometry_model().depth(in.position[i])<= 6e3)
-                out.thermal_conductivities[i] = Nusselt_number * out.thermal_conductivities[i];
-            }
+              // Simplified hydrothermal circulation in the lithosphere.
+              // Approximate its effect on T field by increasing thermal conductivity.
+              
+              // Step 1a: calculate the differential stress in the frictional-
+              // brittle part of the lithosphere.
+              // First, we obtain the frictional coefficient and cohesion from
+              // Drucker-Prager yield criterion. If no brittle strain weakening
+              // is applied, the factors are 1.
+              double current_cohesion = 0.0;
+              double current_friction_angle = 0.0;
 
+              for (unsigned int j=0; j < volume_fractions.size(); ++j)
+              {
+                std::array<double, 3> weakening_factors = rheology->strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
+                
+                const Rheology::DruckerPragerParameters drucker_prager_parameters = rheology->drucker_prager_plasticity.compute_drucker_prager_parameters(j, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                current_cohesion += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
+                current_friction_angle += volume_fractions[j] * (drucker_prager_parameters.angle_internal_friction * weakening_factors[1]);
+              }
+              const double current_miu = std::tan(current_friction_angle);
+
+              // the equation to calculate the brittle d_stress is Eq. 9 in Roland et al.,
+              // "Thermal‐mechanical behavior of oceanic transform faults: Implications "
+              // "for the spatial distribution of seismicity", G3, 2010.
+              const double f1 = (std::sqrt(current_miu*current_miu+1) + current_miu)
+                                / (std::sqrt(current_miu*current_miu+1) - current_miu); 
+              const double f2 = 2.0 * current_cohesion /(std::sqrt(current_miu*current_miu+1) - current_miu);
+
+              // Water density is assumed to 1000 kg/m3
+              const double point_depth = this->get_geometry_model().depth(in.position[i]);
+              const double vertical_stress = (out.densities[i] - 1000.0) * gravity_norm * point_depth;
+              const double dstress_brittle = vertical_stress * (f1-1.0)/f1 + f2/f1;
+
+              // Step 1b: calculte the differential stress in the creep part of the lithosphere.  
+              // The first time this function is called (first iteration of first time step)
+              // a specified "reference" strain rate is used as the returned value would
+              // otherwise be zero.
+              const bool use_reference_strainrate = (this->get_timestep_number() == 0) &&
+                                              (in.strain_rate[i].norm() <= std::numeric_limits<double>::min());
+
+              double edot_ii;
+              if (use_reference_strainrate)
+                edot_ii = rheology->ref_strain_rate;
+              else
+              // Calculate the square root of the second moment invariant for the deviatoric strain rate tensor.
+                edot_ii = std::max(std::sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),
+                                   rheology->min_strain_rate);
+
+              // In the case of uniaxial compression experiment... refered to the book of Gerya, 2019
+              // differential stress in creep equals to sqrt(3)* stress_ii
+              double dstress_creep;
+              if (in.requests_property(MaterialProperties::viscosity))
+                dstress_creep = std::sqrt(3.0) * 2.0*out.viscosities[i]*edot_ii;
+              else
+                dstress_creep = std::sqrt(3.0) * 2.0*rheology->ref_visc*edot_ii;
+              
+              // Step 2: calculate the thermal conductivities based on the
+              // brittle-ductile deformation effect
+              const double stress_part = 0.5 * (1 - std::erf(C_stress * std::log(dstress_brittle/dstress_creep)));
+              const double depth_part = std::exp(-1.0 * C_depth * point_depth / D_cooling);
+
+              //TODO: consider the condition of the cutoff tempererature?
+              out.thermal_conductivities[i] = out.thermal_conductivities[i] * (1 + (Nusselt_number - 1.0) * stress_part * depth_part);
+
+            }  
+            
           // Now compute changes in the compositional fields (i.e. the accumulated strain).
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
@@ -356,6 +416,20 @@ namespace aspect
                              "Nusselt number is used for increasing the thermal conductivity in the hydrothermal "
                              "cooling process. It represents the ratio of the total heat transport within a "
                              "permeable layer to heat transfer by conduction alone. Units: none");
+          prm.declare_entry ("Hydrothermal cooling reference temperature", "873",
+                             Patterns::Double(0),
+                             "Refernce cutoff temperature for hydrothermal cooling. Hydrothermal activity occurs "
+                             "when the temperature is lower than it. Units: K");
+          prm.declare_entry ("Hydrothermal cooling reference depth", "6e3",
+                             Patterns::Double(0),
+                             "Refernce cutoff depth for hydrothermal cooling. Hydrothermal activity occurs "
+                             "when the depth is shallower than it. Units: K");
+          prm.declare_entry ("Hydrothermal cooling stress smoothing", "100",
+                             Patterns::Double(0),
+                             "Stress smoothing constant. Units: none");
+          prm.declare_entry ("Hydrothermal cooling depth smoothing", "4",
+                             Patterns::Double(0),
+                             "Depth smoothing constant. Units: none");
 
         }
         prm.leave_subsection();
@@ -405,6 +479,10 @@ namespace aspect
                                                                            "Thermal conductivities");
 
           Nusselt_number = prm.get_double("Nusselt number");
+          T_cooling = prm.get_double("Hydrothermal cooling reference temperature");
+          D_cooling = prm.get_double("Hydrothermal cooling reference depth");
+          C_stress = prm.get_double("Hydrothermal cooling stress smoothing");
+          C_depth = prm.get_double("Hydrothermal cooling depth smoothing"); 
 
           rheology = std_cxx14::make_unique<Rheology::ViscoPlastic<dim>>();
           rheology->initialize_simulator (this->get_simulator());
@@ -419,7 +497,7 @@ namespace aspect
       this->model_dependence.density = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
       this->model_dependence.compressibility = NonlinearDependence::none;
       this->model_dependence.specific_heat = NonlinearDependence::none;
-      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::compositional_fields;
+      this->model_dependence.thermal_conductivity = NonlinearDependence::temperature | NonlinearDependence::pressure | NonlinearDependence::strain_rate | NonlinearDependence::compositional_fields;
     }
 
 
