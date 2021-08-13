@@ -253,7 +253,7 @@ namespace aspect
 
       // choose a point on the center axis of the domain (without topography)
       Point<dim> p = extents/2+box_origin;
-      
+
       // We need a dim-1 point to get the topo value.
       Point<dim-1> surface_point;
       for (unsigned int d=0; d<dim-1; ++d)
