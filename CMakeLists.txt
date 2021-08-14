@@ -602,6 +602,12 @@ ELSE()
   SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
 ENDIF()
 
+IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  # Intel 19.1 produces internal compiler errors inside bundled boost with
+  # precompiled headers, so we deactive it:
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
+ENDIF()
+
 IF (ASPECT_PRECOMPILE_HEADERS)
   IF (CMAKE_VERSION VERSION_LESS 3.9)
     MESSAGE(STATUS "Enabling cotire to precompile external header files.")
