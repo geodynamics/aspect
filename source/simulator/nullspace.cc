@@ -19,11 +19,13 @@
 */
 
 
-#include <aspect/simulator.h>
 #include <aspect/global.h>
+#include <aspect/simulator.h>
+#include <aspect/geometry_model/sphere.h>
+#include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/mesh_deformation/interface.h>
 
 #include <deal.II/lac/solver_gmres.h>
-
 #include <deal.II/lac/trilinos_solver.h>
 
 #include <deal.II/base/tensor_function.h>
@@ -31,10 +33,176 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
 
+
 namespace aspect
 {
   namespace internal
   {
+    /**
+     * Add constraints to @p constraints for the active components
+     * specified by @p mask for the DoFs in the support point given by
+     * @p location assumed on the boundary of the domain. This will set their
+     * value to zero.
+     *
+     * If successful (a support point at the position @p location was found),
+     * this function returns @p true.
+     *
+     * The DoFs are found by iterating over all faces on the boundary
+     * and computing the distance to @p location. We consider all locally relevant
+     * DoFs here, so that the resulting AffineConstraints object is consistent between
+     * processors.
+     */
+    template <int dim, int spacedim=dim>
+    bool
+    constrain_point_on_boundary_to_zero_active(AffineConstraints<double> &constraints,
+                                               const DoFHandler<dim,spacedim> &dof_handler,
+                                               const Mapping<dim> &mapping,
+                                               const Point<dim> &location,
+                                               const ComponentMask &mask)
+    {
+      const auto &fe = dof_handler.get_fe();
+      const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
+      const Quadrature<dim - 1> quadrature(unit_support_points);
+      const unsigned int dofs_per_face = fe.dofs_per_face;
+      std::vector<types::global_dof_index> face_dofs(dofs_per_face);
+
+      FEFaceValues<dim, spacedim> fe_face_values(mapping,
+                                                 fe,
+                                                 quadrature,
+                                                 update_quadrature_points);
+
+      for (const auto &cell : dof_handler.active_cell_iterators())
+        if (cell->at_boundary()
+            &&
+            (cell->is_locally_owned() || cell->is_ghost()))
+          for (unsigned int face_no = 0;
+               face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+            if (cell->at_boundary(face_no))
+              {
+                const typename DoFHandler<dim, spacedim>::face_iterator face = cell->face(face_no);
+                face->get_dof_indices(face_dofs);
+                fe_face_values.reinit(cell, face_no);
+
+                bool found = false;
+                for (unsigned int i = 0; i < face_dofs.size(); ++i)
+                  {
+                    const unsigned int component = fe.face_system_to_component_index(i).first;
+                    if (mask[component])
+                      {
+                        const Point<dim> position = fe_face_values.quadrature_point(i);
+                        if (position.distance(location) < 1e-6*cell->diameter())
+                          {
+                            found = true;
+                            if (!constraints.is_constrained(face_dofs[i]) &&
+                                constraints.can_store_line(face_dofs[i]))
+                              constraints.add_line(face_dofs[i]);
+                          }
+                      }
+                  }
+
+                // Success! No reason to look at any other faces:
+                if (found)
+                  return true;
+              }
+
+      return false;
+    }
+
+    /**
+     * Like above, but on the given multigrid level @p level.
+     */
+    template <int dim, int spacedim=dim>
+    bool
+    constrain_point_on_boundary_to_zero_on_level(AffineConstraints<double> &constraints,
+                                                 const DoFHandler<dim,spacedim> &dof_handler,
+                                                 const Mapping<dim> &mapping,
+                                                 const Point<dim> &location,
+                                                 const ComponentMask &mask,
+                                                 const int level)
+    {
+      const auto &fe = dof_handler.get_fe();
+      const std::vector<Point<dim - 1>> &unit_support_points = fe.get_unit_face_support_points();
+      const Quadrature<dim - 1> quadrature(unit_support_points);
+      const unsigned int dofs_per_face = fe.dofs_per_face;
+      std::vector<types::global_dof_index> face_dofs(dofs_per_face);
+
+      FEFaceValues<dim, spacedim> fe_face_values(mapping,
+                                                 fe,
+                                                 quadrature,
+                                                 update_quadrature_points);
+
+      std::set<types::boundary_id>::iterator b_id;
+
+      for (const auto &cell : dof_handler.cell_iterators_on_level(level))
+        if (
+#if DEAL_II_VERSION_GTE(9,4,0)
+          cell->is_locally_owned_on_level() ||  cell->is_ghost_on_level()
+#else
+          cell->level_subdomain_id() != numbers::artificial_subdomain_id
+#endif
+        )
+          for (unsigned int face_no = 0;
+               face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+            if (cell->at_boundary(face_no))
+              {
+                const typename DoFHandler<dim, spacedim>::level_face_iterator face = cell->face(face_no);
+                face->get_mg_dof_indices(level, face_dofs);
+                fe_face_values.reinit(cell, face_no);
+
+                bool found = false;
+                for (unsigned int i = 0; i < face_dofs.size(); ++i)
+                  {
+                    const unsigned int component = fe.face_system_to_component_index(i).first;
+                    if (mask[component])
+                      {
+                        const Point<dim> position = fe_face_values.quadrature_point(i);
+                        if (position.distance(location) < 1e-6*cell->diameter())
+                          {
+                            found = true;
+                            if (!constraints.is_constrained(face_dofs[i]) &&
+                                constraints.can_store_line(face_dofs[i]))
+                              constraints.add_line(face_dofs[i]);
+                          }
+                      }
+                  }
+                // Success! No reason to look at any other faces:
+                if (found)
+                  return true;
+
+              }
+
+      return false;
+    }
+
+
+
+    /**
+     * Calls either the active or the multilevel version of constrain_point_on_boundary_to_zero() above.
+     */
+    template <int dim, int spacedim=dim>
+    bool
+    constrain_point_on_boundary_to_zero(
+      AffineConstraints<double> &constraints,
+      const DoFHandler<dim,spacedim> &dof_handler,
+      const Mapping<dim> &mapping,
+      const Point<dim> &location,
+      const ComponentMask &mask,
+      const bool multilevel_constraints,
+      const unsigned int level = numbers::invalid_unsigned_int)
+    {
+      if (multilevel_constraints)
+        {
+          Assert(level!=numbers::invalid_unsigned_int, ExcInternalError());
+          return constrain_point_on_boundary_to_zero_on_level(constraints, dof_handler, mapping, location, mask, level);
+        }
+      else
+        {
+          Assert(level==numbers::invalid_unsigned_int, ExcInternalError());
+          return constrain_point_on_boundary_to_zero_active(constraints, dof_handler, mapping, location, mask);
+        }
+    }
+
+
 
     /**
      * A class we use when setting up the data structures for nullspace removal
@@ -103,11 +271,159 @@ namespace aspect
     };
   }
 
+  /**
+   * Add a number of constraints to @p constraints to remove the
+   * rotational nullspace of the problem either for the active DoFs
+   * or on the specified multigrid level @p level.
+   *
+   * This code currently only works for spherical shells and spheres
+   * in 2d and 3d. A spherical object has 1 rotational mode in 2d and
+   * 3 in 3d (rotations around x, y, and z axis). We will fix an
+   * appropriate number of velocity components to get a unique
+   * solution. We will need to identify 1 point in 2d and 2 points in
+   * 3d to do that. Mesh deformation complicates the situation, as we
+   * can not easily identify points on that surface.
+   */
+  template <int dim>
+  void setup_rotational_constraints(AffineConstraints<double> &constraints,
+                                    const GeometryModel::Interface<dim> &geometry_model,
+                                    const MeshDeformation::MeshDeformationHandler<dim> *mesh_deformation,
+                                    const DoFHandler<dim> &dof_handler,
+                                    const Mapping<dim> &mapping,
+                                    const MPI_Comm &mpi_communicator,
+                                    const bool multilevel_constraints,
+                                    const unsigned int level = numbers::invalid_unsigned_int)
+  {
+    // We assert() that we find the DoFs we are trying to fix, but
+    // this only works for active DoFs (level==-1) and not level
+    // DoFs.  When we have adaptive refinement, where the finer
+    // levels do not contain cells touching the chosen point, we
+    // won't be able to find a DoF on these finer levels. This
+    // works okay, though.
 
+    const bool is_spherical_shell = Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>>(geometry_model);
+    const bool is_sphere = Plugins::plugin_type_matches<const GeometryModel::Sphere<dim>>(geometry_model);
+    Assert(is_spherical_shell || is_sphere,
+           ExcNotImplemented("Nullspace constraints for rotation are currently only implemented for the "
+                             "Sphere and SphericalShell geometries."));
+
+    const bool mesh_deformation_enabled = (mesh_deformation != nullptr);
+    bool mesh_deformation_at_top = false;
+    bool mesh_deformation_at_bottom = false;
+    if (mesh_deformation_enabled)
+      {
+        // Check if mesh deformation happens at the top boundary, bottom boundary, of both:
+        const std::set<types::boundary_id> ids = mesh_deformation->get_active_mesh_deformation_boundary_indicators();
+
+        if (ids.find(geometry_model.get_symbolic_boundary_names_map()["top"]) != ids.end())
+          mesh_deformation_at_top = true;
+        if (is_spherical_shell && ids.find(geometry_model.get_symbolic_boundary_names_map()["bottom"]) != ids.end())
+          mesh_deformation_at_bottom = true;
+      }
+
+    if (mesh_deformation_at_top && is_sphere)
+      {
+        // Not sure what to do in this situation. For now, let's not add a constraint and hope that it works.
+        return;
+      }
+    if (mesh_deformation_at_top && mesh_deformation_at_bottom && is_spherical_shell)
+      {
+        // Again, not much we can do here...
+        return;
+      }
+
+    // Use the bottom surface unless we have mesh deformation at the bottom:
+    const double point_depth = ((is_sphere || (is_spherical_shell && mesh_deformation_at_bottom)) ? 0.0 : geometry_model.maximal_depth());
+
+    if (dim==2)
+      {
+        // Pick a point at the desired depth. We assume that the
+        // representative point is in positive y direction, so we can
+        // fix the x component of velocity. This is true for shell and
+        // spherical shell implementations.
+        const Point<dim> location = geometry_model.representative_point(point_depth);
+        Assert(location[0] == 0. && location[1]>0., ExcInternalError());
+
+        ComponentMask x_velocity_mask(dof_handler.get_fe().n_components(), false);
+        x_velocity_mask.set(0, true);
+
+        const bool success = internal::constrain_point_on_boundary_to_zero(constraints,
+                                                                           dof_handler,
+                                                                           mapping,
+                                                                           location,
+                                                                           x_velocity_mask,
+                                                                           multilevel_constraints,
+                                                                           level);
+
+        const bool global_success = (Utilities::MPI::max(success?1:0, mpi_communicator) == 1);
+        AssertThrow(multilevel_constraints || global_success,
+                    ExcInternalError("Could not find the specified support point for adding a nullspace constraint."));
+      }
+    else if (dim==3)
+      {
+        // Pick a point at the desired depth. We assume that the
+        // representative point is on the positive z axis. This is
+        // true for shell and spherical shell implementations. This
+        // way we can fix the tangential components (x and y
+        // velocity).
+        const Point<dim> location1 = geometry_model.representative_point(point_depth);
+        Assert(location1[0] == 0. && location1[1] == 0. && location1[dim-1]>0., ExcInternalError());
+
+        {
+          ComponentMask x_and_y_velocity_mask(dof_handler.get_fe().n_components(), false);
+          x_and_y_velocity_mask.set(0, true);
+          x_and_y_velocity_mask.set(1, true);
+          bool success = internal::constrain_point_on_boundary_to_zero(constraints,
+                                                                       dof_handler,
+                                                                       mapping,
+                                                                       location1,
+                                                                       x_and_y_velocity_mask,
+                                                                       multilevel_constraints,
+                                                                       level);
+          const bool global_success = (Utilities::MPI::max(success?1:0, mpi_communicator) == 1);
+          AssertThrow(multilevel_constraints || global_success,
+                      ExcInternalError("Could not find the specified support point for adding a nullspace constraint."));
+        }
+
+        {
+          // Construct point 2 by rotating location1 so it is on the positive x axis. Then constrain y velocity.
+          Point<dim> location2;
+          location2[0] = location1[dim-1];
+          ComponentMask y_velocity_mask(dof_handler.get_fe().n_components(), false);
+          y_velocity_mask.set(1, true);
+          bool success = internal::constrain_point_on_boundary_to_zero(constraints,
+                                                                       dof_handler,
+                                                                       mapping,
+                                                                       location2,
+                                                                       y_velocity_mask,
+                                                                       multilevel_constraints,
+                                                                       level);
+          const bool global_success = (Utilities::MPI::max(success?1:0, mpi_communicator) == 1);
+          AssertThrow(multilevel_constraints || global_success,
+                      ExcInternalError("Could not find the specified support point for adding a nullspace constraint."));
+        }
+      }
+
+
+  }
 
   template <int dim>
   void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
+
+    if ((parameters.nullspace_removal & Parameters<dim>::NullspaceRemoval::any_rotation)
+        &&
+        parameters.constrain_rotational_nullspace)
+      {
+        setup_rotational_constraints(constraints,
+                                     *geometry_model,
+                                     mesh_deformation.get(),
+                                     dof_handler,
+                                     *mapping,
+                                     mpi_communicator,
+                                     /* multilevel_constraints = */ false);
+      }
+
     if (parameters.nullspace_removal & NullspaceRemoval::any_translation)
       {
         // Note: We want to add a single Dirichlet zero constraint for each
@@ -204,6 +520,31 @@ namespace aspect
             }
       }
   }
+
+
+  template <int dim>
+  void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints,
+                                                   const DoFHandler<dim> &dof_handler,
+                                                   const int level)
+  {
+    if ((parameters.nullspace_removal & Parameters<dim>::NullspaceRemoval::any_rotation)
+        &&
+        parameters.constrain_rotational_nullspace)
+      {
+        const Mapping<dim> &current_mapping =
+          (mesh_deformation) ? mesh_deformation->get_level_mapping(level) : *mapping;
+
+        setup_rotational_constraints(constraints,
+                                     *geometry_model,
+                                     mesh_deformation.get(),
+                                     dof_handler,
+                                     current_mapping,
+                                     mpi_communicator,
+                                     /* multilevel_constraints = */ true,
+                                     level);
+      }
+  }
+
 
 
   template <int dim>
@@ -530,8 +871,9 @@ namespace aspect
 {
 #define INSTANTIATE(dim) \
   template struct RotationProperties<dim>; \
-  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &vector); \
-  template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &);
+  template void Simulator<dim>::remove_nullspace (LinearAlgebra::BlockVector &,LinearAlgebra::BlockVector &); \
+  template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &); \
+  template void Simulator<dim>::setup_nullspace_constraints (AffineConstraints<double> &, const DoFHandler<dim>&, const int);
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

@@ -1,0 +1,4 @@
+New: The option "Remove rotational nullspace in linear solver" can be used to add
+rotational constraints to improve solver convergence.
+<br>
+(Timo Heister, 2022/02/16)

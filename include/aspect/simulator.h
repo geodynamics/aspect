@@ -1437,21 +1437,31 @@ namespace aspect
 
 
       /**
-       * Add constraints to the given @p constraints object that are required
-       * for unique solvability of the velocity block based on the nullspace
-       * removal settings.
+       * Add constraints to the given @p constraints object that are
+       * required for unique solvability of the velocity block based
+       * on the nullspace removal settings.
        *
-       * This method will add a zero Dirichlet constraint for the first
-       * velocity unknown in the domain for each velocity component, which is
-       * later being processed for translational or linear momentum removal.
-       * This avoids breakdowns of the linear solvers that otherwise occurred
-       * in some instances.
+       * For translation, this method will add a zero Dirichlet
+       * constraint for the first velocity unknown in the domain for
+       * each velocity component, which is later being processed for
+       * translational or linear momentum removal.  This avoids
+       * breakdowns of the linear solvers that otherwise occurred in
+       * some instances.
        *
-       * @note: Rotational modes are currently not handled and don't appear to
-       * require constraints so far.
+       * For rotation, we fix velocity components in 1 or 2 points on
+       * the surface of the sphere/spherical shell in 2d and 3d,
+       * respectively.
        */
       void setup_nullspace_constraints(AffineConstraints<double> &constraints);
 
+      /**
+       * Like above, but on a given multigrid level @p level and for the given
+       * DoFHandler. For GMG the DoFHandler is different than the main one in the
+       * simulator, which is the one used in the function above.
+       */
+      void setup_nullspace_constraints(AffineConstraints<double> &constraints,
+                                       const DoFHandler<dim> &dof_handler,
+                                       const int level);
 
       /**
        * Eliminate the nullspace of the velocity in the given vector. Both

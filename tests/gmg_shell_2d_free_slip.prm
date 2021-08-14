@@ -1,0 +1,31 @@
+# 2d shell with free slip boundaries to test GMG with a nullspace
+
+# MPI:2
+
+# This test requires 96 Stokes iterations in timestep 11 without
+# applying a rotational nullspace, but only 46 with.
+
+# based on:
+include $ASPECT_SOURCE_DIR/tests/shell_2d_gmg.prm
+
+set Dimension                              = 2
+set End time                               = 2.86e+6
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = top, inner
+end
+
+subsection Mesh refinement
+  set Time steps between mesh refinement = 5
+end
+
+subsection Solver parameters
+ subsection Stokes solver parameters
+    set Maximum number of expensive Stokes solver steps = 0
+ end
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end

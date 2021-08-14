@@ -771,6 +771,17 @@ namespace aspect
                          "\n\n"
                          "Note that while more than one operation can be selected it only makes sense to "
                          "pick one rotational and one translational operation.");
+
+      prm.declare_entry("Remove rotational nullspace in linear solver", "auto",
+                        Patterns::Selection("auto|false|true"),
+                        "If set to true, the rotational nullspace with be removed for the linear solver "
+                        "by adding constraints to the system. If set to ``auto'', we will try "
+                        "to determine automatically, if removing the constraints is helpful/necessary."
+                        "\n\n"
+                        "Typically, the ``block GMG'' Stokes solver requires this setting to be enabled "
+                        "and the matrix based ``block AMG'' does not need it. There are a few instances "
+                        "where the AMG converges in fewer iterations if enabled, so this is worth "
+                        "experimenting with if you see a high number of linear iterations or no convergence.");
     }
     prm.leave_subsection();
 
@@ -1665,6 +1676,17 @@ namespace aspect
                                                                           NullspaceRemoval::linear_momentum_z : 0) );
           else
             AssertThrow(false, ExcInternalError());
+
+          {
+            const std::string remove_rotational_ns = prm.get("Remove rotational nullspace in linear solver");
+
+            constrain_rotational_nullspace = false;
+
+            // Current logic: if set to auto, only enable for GMG.
+            if (remove_rotational_ns == "true" ||
+                (remove_rotational_ns == "auto" && stokes_solver_type == StokesSolverType::block_gmg))
+              constrain_rotational_nullspace = true;
+          }
         }
     }
     prm.leave_subsection ();

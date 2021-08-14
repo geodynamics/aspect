@@ -1,0 +1,22 @@
+# For testing of nullspace handling. A 2d shell with free slip at the
+# bottom, free surface at the top with GMG.
+
+# MPI: 2
+
+# This test fails with "Remove rotational nullspace in linear solver = false"
+
+set Dimension                              = 2
+
+include $ASPECT_SOURCE_DIR/tests/nullspace-freesurface-amg.prm
+
+subsection Solver parameters
+   subsection Stokes solver parameters
+       set Stokes solver type = block GMG
+    set Number of cheap Stokes solver steps = 1000
+   end
+end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+  set Remove rotational nullspace in linear solver = auto
+end
