@@ -223,6 +223,29 @@ namespace aspect
            */
           Rheology::DruckerPragerParameters drucker_prager_parameters;
 
+          /**
+           * Objects for computing viscous creep viscosities.
+           */
+          Rheology::DiffusionCreep<dim> diffusion_creep;
+          Rheology::DislocationCreep<dim> dislocation_creep;
+          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
+
+          /*
+           * Input parameters for computing creep viscosities.
+           */
+          Rheology::DiffusionCreepParameters diffusion_parameters; 
+          Rheology::DislocationCreepParameters dislocation_parameters;
+
+          /**
+           * Whether to use the adiabatic pressure instead of the full pressure (default)
+           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
+           * This may be helpful in models where the full pressure has an unusually
+           * large negative value arising from large negative dynamic pressure,
+           * resulting in solver convergence issue and in some cases a viscosity
+           * of zero.
+           */
+          bool use_adiabatic_pressure_in_creep;
+          
         private:
 
           /**
@@ -261,15 +284,7 @@ namespace aspect
            */
           bool allow_negative_pressures_in_plasticity;
 
-          /**
-           * Whether to use the adiabatic pressure instead of the full pressure (default)
-           * when calculating creep (diffusion, dislocation, and peierls) viscosity.
-           * This may be helpful in models where the full pressure has an unusually
-           * large negative value arising from large negative dynamic pressure,
-           * resulting in solver convergence issue and in some cases a viscosity
-           * of zero.
-           */
-          bool use_adiabatic_pressure_in_creep;
+
 
           /**
            * List of exponents controlling the behaviour of the stress limiter
@@ -282,12 +297,7 @@ namespace aspect
            */
           double adiabatic_temperature_gradient_for_viscosity;
 
-          /**
-           * Objects for computing viscous creep viscosities.
-           */
-          Rheology::DiffusionCreep<dim> diffusion_creep;
-          Rheology::DislocationCreep<dim> dislocation_creep;
-          std::unique_ptr<Rheology::FrankKamenetskii<dim>> frank_kamenetskii_rheology;
+          
 
           /**
            * Whether to include Peierls creep in the constitutive formulation.
