@@ -292,17 +292,17 @@ namespace aspect
                 const Rheology::DislocationCreepParameters dislocation_parameters = rheology->dislocation_creep.compute_creep_parameters(j, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
                 
                 // We use the harmonic averaging for diffusion and dislocation creeps.
-                creep_disl_para += volume_fractions[j] / (std::pow(2*edot_ii/(std::sqrt(3.0)*dislocation_parameters.prefactor),1/dislocation_parameters.stress_exponent) * std::exp((dislocation_parameters.activation_energy + pressure_for_creep*dislocation_parameters.activation_volume)/(constants::gas_constant*in.temperature[i]*dislocation_parameters.stress_exponent)));
+                creep_disl_para += volume_fractions[j] / (std::sqrt(3.0) * std::pow(edot_ii/dislocation_parameters.prefactor,1/dislocation_parameters.stress_exponent) * std::exp((dislocation_parameters.activation_energy + pressure_for_creep*dislocation_parameters.activation_volume)/(constants::gas_constant*in.temperature[i]*dislocation_parameters.stress_exponent)));
 
-                //const Rheology::DiffusionCreepParameters diffusion_parameters = rheology->diffusion_creep.compute_creep_parameters(j, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
-                //creep_diff_para = 1/diffusion_parameters.prefactor * std::exp((diffusion_parameters.activation_energy + pressure_for_creep*diffusion_parameters.activation_volume)/(constants::gas_constant*in.temperature[i])) * std::pow(grain_size, diffusion_parameters.grain_size_exponent); 
+                const Rheology::DiffusionCreepParameters diffusion_parameters = rheology->diffusion_creep.compute_creep_parameters(j, phase_function_values, phase_function.n_phase_transitions_for_each_composition());
+                //creep_diff_para += volume_fractions[j] / (std::sqrt(3.0) * edot_ii/diffusion_parameters.prefactor * std::exp((diffusion_parameters.activation_energy + pressure_for_creep*diffusion_parameters.activation_volume)/(constants::gas_constant*in.temperature[i])) * std::pow(grain_size, diffusion_parameters.grain_size_exponent)); 
 
               }
               
               // Step 1a: calculte the differential stress in the creep part of the lithosphere.  
               
               // In the case of uniaxial compression experiment... refered to the book of Gerya, 2019
-              // differential stress in creep = (2*sqrt(3)*edot_ii)^1/n A^-1/n * exp((E+PV)/nRT)
+              // differential stress in creep = sqrt(3) * d^m/n * (edot_ii/A)^1/n * exp((E+PV)/nRT)
               // = 1/creep_*_para.
               
               //if (in.requests_property(MaterialProperties::viscosity))
