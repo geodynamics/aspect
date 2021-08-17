@@ -795,7 +795,7 @@ namespace aspect
           }
         else if (property_names[property_index] == "rising_velocity")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageRisingVelocity<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageRisingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));
