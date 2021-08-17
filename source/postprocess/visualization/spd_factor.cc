@@ -59,7 +59,7 @@ namespace aspect
                                                      this->n_compositional_fields());
 
         out.additional_outputs.push_back(
-          std_cxx14::make_unique<MaterialModel::MaterialModelDerivatives<dim>> (n_quadrature_points));
+          std::make_unique<MaterialModel::MaterialModelDerivatives<dim>> (n_quadrature_points));
 
         this->get_material_model().evaluate(in, out);
 

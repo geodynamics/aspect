@@ -348,7 +348,7 @@ namespace aspect
           if ((this->n_compositional_fields() > 0) && (reference_composition == reference_function))
             {
               composition_function
-                = std_cxx14::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
+                = std::make_unique<Functions::ParsedFunction<1>>(this->n_compositional_fields());
               try
                 {
                   composition_function->parse_parameters (prm);

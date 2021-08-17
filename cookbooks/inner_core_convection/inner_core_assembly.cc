@@ -127,7 +127,7 @@ namespace aspect
                  ExcMessage ("The phase boundary assembler can only be used with the "
                              "material model 'inner core material'!"));
 
-    assemblers.stokes_system_on_boundary_face.push_back (std_cxx14::make_unique<PhaseBoundaryAssembler<dim>>());
+    assemblers.stokes_system_on_boundary_face.push_back (std::make_unique<PhaseBoundaryAssembler<dim>>());
   }
 }
 

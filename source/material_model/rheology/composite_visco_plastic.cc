@@ -396,7 +396,7 @@ namespace aspect
         use_diffusion_creep = prm.get_bool ("Include diffusion creep in composite rheology");
         if (use_diffusion_creep)
           {
-            diffusion_creep = std_cxx14::make_unique<Rheology::DiffusionCreep<dim>>();
+            diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
             diffusion_creep->initialize_simulator (this->get_simulator());
             diffusion_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -405,7 +405,7 @@ namespace aspect
         use_dislocation_creep = prm.get_bool ("Include dislocation creep in composite rheology");
         if (use_dislocation_creep)
           {
-            dislocation_creep = std_cxx14::make_unique<Rheology::DislocationCreep<dim>>();
+            dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
             dislocation_creep->initialize_simulator (this->get_simulator());
             dislocation_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -414,7 +414,7 @@ namespace aspect
         use_peierls_creep = prm.get_bool ("Include Peierls creep in composite rheology");
         if (use_peierls_creep)
           {
-            peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+            peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -423,7 +423,7 @@ namespace aspect
         use_drucker_prager = prm.get_bool ("Include Drucker Prager plasticity in composite rheology");
         if (use_drucker_prager)
           {
-            drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+            drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
             drucker_prager->initialize_simulator (this->get_simulator());
             drucker_prager->parse_parameters(prm, expected_n_phases_per_composition);
 

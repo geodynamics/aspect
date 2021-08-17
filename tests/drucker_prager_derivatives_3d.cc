@@ -132,7 +132,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
 
   const_cast<aspect::MaterialModel::Interface<dim> &>(simulator_access.get_material_model()).parse_parameters(prm);
 
-  out_base.additional_outputs.push_back(std_cxx14::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim> > (5));
 
   simulator_access.get_material_model().evaluate(in_base, out_base);
 

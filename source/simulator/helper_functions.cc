@@ -280,7 +280,7 @@ namespace aspect
     // but, as mentioned above, if we could use C++14, we wouldn't have to
     // use a pointer in the first place.)
     std::shared_ptr<TableHandler> statistics_copy_ptr
-      = std_cxx14::make_unique<TableHandler>(statistics);
+      = std::make_unique<TableHandler>(statistics);
     auto write_statistics
       = [statistics_copy_ptr,this]()
     {

@@ -24,7 +24,7 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   // Next, we initialise instances of the composite rheology and
   // individual creep mechanisms.
   std::unique_ptr<Rheology::CompositeViscoPlastic<dim>> composite_creep;
-  composite_creep = std_cxx14::make_unique<Rheology::CompositeViscoPlastic<dim>>();
+  composite_creep = std::make_unique<Rheology::CompositeViscoPlastic<dim>>();
   composite_creep->initialize_simulator (simulator_access.get_simulator());
   composite_creep->declare_parameters(prm);
   prm.set("Use plastic damper", "true");
@@ -33,25 +33,25 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   composite_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DiffusionCreep<dim>> diffusion_creep;
-  diffusion_creep = std_cxx14::make_unique<Rheology::DiffusionCreep<dim>>();
+  diffusion_creep = std::make_unique<Rheology::DiffusionCreep<dim>>();
   diffusion_creep->initialize_simulator (simulator_access.get_simulator());
   diffusion_creep->declare_parameters(prm);
   diffusion_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DislocationCreep<dim>> dislocation_creep;
-  dislocation_creep = std_cxx14::make_unique<Rheology::DislocationCreep<dim>>();
+  dislocation_creep = std::make_unique<Rheology::DislocationCreep<dim>>();
   dislocation_creep->initialize_simulator (simulator_access.get_simulator());
   dislocation_creep->declare_parameters(prm);
   dislocation_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::PeierlsCreep<dim>> peierls_creep;
-  peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+  peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
   peierls_creep->initialize_simulator (simulator_access.get_simulator());
   peierls_creep->declare_parameters(prm);
   peierls_creep->parse_parameters(prm, n_phases);
 
   std::unique_ptr<Rheology::DruckerPrager<dim>> drucker_prager;
-  drucker_prager = std_cxx14::make_unique<Rheology::DruckerPrager<dim>>();
+  drucker_prager = std::make_unique<Rheology::DruckerPrager<dim>>();
   drucker_prager->initialize_simulator (simulator_access.get_simulator());
   drucker_prager->declare_parameters(prm);
   prm.set("Use plastic damper", "true");

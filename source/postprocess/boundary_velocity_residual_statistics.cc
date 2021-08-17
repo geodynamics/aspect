@@ -39,7 +39,7 @@ namespace aspect
       if (use_ascii_data)
         {
           // The input ascii table contains dim data columns (velocity components) in addition to the coordinate columns.
-          data_lookup = std_cxx14::make_unique<Utilities::StructuredDataLookup<dim>>(dim, scale_factor);
+          data_lookup = std::make_unique<Utilities::StructuredDataLookup<dim>>(dim, scale_factor);
           data_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());
         }
       else
@@ -50,7 +50,7 @@ namespace aspect
           Point<2> point_one(numbers::PI/2., 0.);
           Point<2> point_two(numbers::PI/2., numbers::PI/2.);
 
-          gplates_lookup =  std_cxx14::make_unique<BoundaryVelocity::internal::GPlatesLookup<dim>> (
+          gplates_lookup =  std::make_unique<BoundaryVelocity::internal::GPlatesLookup<dim>> (
                               point_one, point_two);
 
           gplates_lookup->load_file(data_directory + data_file_name, this->get_mpi_communicator());

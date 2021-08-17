@@ -254,7 +254,7 @@ namespace aspect
 
         if (viscosity_source == File)
           {
-            depth_dependent_rheology = std_cxx14::make_unique<Rheology::AsciiDepthProfile<dim>>();
+            depth_dependent_rheology = std::make_unique<Rheology::AsciiDepthProfile<dim>>();
             depth_dependent_rheology->initialize_simulator (this->get_simulator());
             depth_dependent_rheology->parse_parameters(prm, "Depth dependent model");
             depth_dependent_rheology->initialize();
