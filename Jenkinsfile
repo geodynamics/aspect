@@ -9,6 +9,7 @@ pipeline {
       // the git repo by setting "advanced clone behaviors". If the
       // directory does not exist, this will be ignored.
       args '-v /repos:/repos:ro'
+      additionalBuildArgs '--pull'
     }
   }
 

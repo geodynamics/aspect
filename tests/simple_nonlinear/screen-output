@@ -1,5 +1,3 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libsimple_nonlinear.so>
 
@@ -252,17 +250,17 @@ strain-rate: component = 2, point = 2, Finite difference = 2.73702e+27, Analytic
 strain-rate: component = 2, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 2, point = 4, Finite difference = -2.048e+21, Analytical derivative = 0
    Error: The derivative of the viscosity to the strain rate is too different from the analytical value.
-strain-rate: component = 3, point = 0, Finite difference = -4.85322e+29, Analytical derivative = -4.85322e+29
+strain-rate: component = 3, point = 0, Finite difference = -4.85323e+29, Analytical derivative = -4.85322e+29
 strain-rate: component = 3, point = 1, Finite difference = 2.34489e+29, Analytical derivative = 2.34489e+29
 strain-rate: component = 3, point = 2, Finite difference = -7.46457e+28, Analytical derivative = -7.46457e+28
 strain-rate: component = 3, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 3, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-strain-rate: component = 4, point = 0, Finite difference = -4.85322e+29, Analytical derivative = -4.85322e+29
+strain-rate: component = 4, point = 0, Finite difference = -4.85323e+29, Analytical derivative = -4.85322e+29
 strain-rate: component = 4, point = 1, Finite difference = 2.18391e+29, Analytical derivative = 2.18391e+29
 strain-rate: component = 4, point = 2, Finite difference = -7.46457e+28, Analytical derivative = -7.46457e+28
 strain-rate: component = 4, point = 3, Finite difference = 0, Analytical derivative = 0
 strain-rate: component = 4, point = 4, Finite difference = -1.0456e+29, Analytical derivative = -1.0456e+29
-strain-rate: component = 5, point = 0, Finite difference = -4.85322e+29, Analytical derivative = -4.85322e+29
+strain-rate: component = 5, point = 0, Finite difference = -4.85323e+29, Analytical derivative = -4.85322e+29
 strain-rate: component = 5, point = 1, Finite difference = 2.10342e+29, Analytical derivative = 2.10342e+29
 strain-rate: component = 5, point = 2, Finite difference = -7.46457e+28, Analytical derivative = -7.46457e+28
 strain-rate: component = 5, point = 3, Finite difference = 0, Analytical derivative = 0

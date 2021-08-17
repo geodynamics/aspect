@@ -19,4 +19,4 @@
 # 19: Outward mass flux through boundary with indicator 2 ("bottom") (kg/s)
 # 20: Outward mass flux through boundary with indicator 3 ("top") (kg/s)
 # 21: Visualization file name
-0 0.000000000000e+00 0.000000000000e+00 4096 37507 16641 10 0 61 81 81 1.14108866e-07 1.56248062e-07 -1.95479144e-06 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -3.47275156e+00 3.47275156e+00 output-nonlinear_channel_flow_tractions_Newton_Stokes_GMG/solution/solution-00000 
+0 0.000000000000e+00 0.000000000000e+00 4096 37507 16641 10 0 60 80 80 1.14108866e-07 1.56248062e-07 -5.42050666e-06 5.00000000e+08 1.00000000e+09 0.00000000e+00 0.00000000e+00 -3.47275156e+00 3.47275156e+00 output-nonlinear_channel_flow_tractions_Newton_Stokes_GMG/solution/solution-00000 

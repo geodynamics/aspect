@@ -4,7 +4,7 @@
 #
 # For a description of the GNUPLOT format see the GNUPLOT manual.
 #
-# <x> <y> <velocity> <velocity> <p> <T> <strain_xx> <strain_xy> <strain_yx> <strain_yy> <strain_rate> <stress_xx> <stress_xy> <stress_yx> <stress_yy> <principal_stress_1> <principal_stress_2> <principal_stress_direction_1> <principal_stress_direction_1> <principal_stress_direction_2> <principal_stress_direction_2> 
+# <x> <y> <velocity> <velocity> <p> <T> <strain_xx> <strain_xy> <strain_yx> <strain_yy> <strain_rate> <stress> <stress> <stress> <stress> <principal_stress_1> <principal_stress_2> <principal_stress_direction_1> <principal_stress_direction_1> <principal_stress_direction_2> <principal_stress_direction_2> 
 0 0 -1 0 10100 0 1 0 0 1 1 9468.75 -200 -200 9468.75 10300 9900 0.707107 -0.707107 -0.707107 -0.707107 
 0.125 0 -1 0 10100 0 1 0 0 1 1 9468.75 -200 -200 9468.75 10300 9900 0.707107 -0.707107 -0.707107 -0.707107 
 
