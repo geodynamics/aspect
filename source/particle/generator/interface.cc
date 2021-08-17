@@ -110,23 +110,7 @@ namespace aspect
         // will be used to generate random particle locations.
         std::uniform_real_distribution<double> uniform_distribution_01(0.0, 1.0);
 
-        Point<dim> max_bounds, min_bounds;
-        // Get the bounds of the cell defined by the vertices
-        for (unsigned int d=0; d<dim; ++d)
-          {
-            min_bounds[d] = std::numeric_limits<double>::max();
-            max_bounds[d] = - std::numeric_limits<double>::max();
-          }
-
-        for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
-          {
-            const Point<dim> vertex_position = cell->vertex(v);
-            for (unsigned int d=0; d<dim; ++d)
-              {
-                min_bounds[d] = std::min(vertex_position[d], min_bounds[d]);
-                max_bounds[d] = std::max(vertex_position[d], max_bounds[d]);
-              }
-          }
+        const BoundingBox<dim> cell_bounding_box = cell->bounding_box();
 
         // Generate random points in these bounds until one is within the cell
         unsigned int iteration = 0;
@@ -134,11 +118,13 @@ namespace aspect
         Point<dim> particle_position;
         while (iteration < maximum_iterations)
           {
+            // First generate a random point in the bounding box...
             for (unsigned int d=0; d<dim; ++d)
-              {
-                particle_position[d] = uniform_distribution_01(random_number_generator) *
-                                       (max_bounds[d]-min_bounds[d]) + min_bounds[d];
-              }
+              particle_position[d] = cell_bounding_box.lower_bound(d)
+                                     + (uniform_distribution_01(random_number_generator) *
+                                        cell_bounding_box.side_length(d));
+
+            // ...then check whether it is actually in the cell:
             try
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
@@ -154,13 +140,13 @@ namespace aspect
               {
                 // The point is not in this cell. Do nothing, just try again.
               }
-            iteration++;
+            ++iteration;
           }
         AssertThrow (iteration < maximum_iterations,
                      ExcMessage ("Couldn't generate particle (unusual cell shape?). "
                                  "The ratio between the bounding box volume in which the particle is "
                                  "generated and the actual cell volume is approximately: " +
-                                 boost::lexical_cast<std::string>(cell->measure() / (max_bounds-min_bounds).norm_square())));
+                                 Utilities::to_string(cell_bounding_box.volume() / cell->measure())));
 
         return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
       }
