@@ -750,19 +750,10 @@ namespace aspect
         VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
 
         velocity.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.gather_evaluate (src.block(0), EvaluationFlags::gradients);
-#else
-        velocity.read_dof_values (src.block(0));
-        velocity.evaluate (false,true,false);
-#endif
+
         pressure.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
-#else
-        pressure.read_dof_values (src.block(1));
-        pressure.evaluate (true,false,false);
-#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
@@ -815,19 +806,8 @@ namespace aspect
               velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (dst.block(0));
-#endif
-
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.integrate_scatter (EvaluationFlags::values, dst.block(1));
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (dst.block(1));
-#endif
       }
   }
 
@@ -883,11 +863,7 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
@@ -896,12 +872,8 @@ namespace aspect
           one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
 
         pressure.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.gather_evaluate (src, EvaluationFlags::values);
-#else
-        pressure.read_dof_values(src);
-        pressure.evaluate (true,false);
-#endif
+
         for (unsigned int q=0; q<pressure.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
@@ -909,11 +881,7 @@ namespace aspect
               {
                 one_over_viscosity = cell_data->viscosity(cell, q);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
                 const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-                const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
                 for (unsigned int c=0; c<n_components_filled; ++c)
                   one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
@@ -922,12 +890,8 @@ namespace aspect
             pressure.submit_value(one_over_viscosity*
                                   pressure.get_value(q),q);
           }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         pressure.integrate_scatter (EvaluationFlags::values, dst);
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (dst);
-#endif
       }
   }
 
@@ -1000,11 +964,7 @@ namespace aspect
       {
         VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
@@ -1019,11 +979,8 @@ namespace aspect
               pressure.begin_dof_values()[j] = VectorizedArray<number>();
             pressure.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
             pressure.evaluate (EvaluationFlags::values);
-#else
-            pressure.evaluate (true,false,false);
-#endif
+
             for (unsigned int q=0; q<pressure.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
@@ -1031,11 +988,7 @@ namespace aspect
                   {
                     one_over_viscosity = cell_data->viscosity(cell, q);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
                     const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-                    const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
                     for (unsigned int c=0; c<n_components_filled; ++c)
                       one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
@@ -1044,11 +997,8 @@ namespace aspect
                 pressure.submit_value(one_over_viscosity*
                                       pressure.get_value(q),q);
               }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
             pressure.integrate (EvaluationFlags::values);
-#else
-            pressure.integrate (true,false);
-#endif
 
             diagonal[i] = pressure.begin_dof_values()[i];
           }
@@ -1111,12 +1061,8 @@ namespace aspect
 
         velocity.reinit (cell);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.gather_evaluate (src, EvaluationFlags::gradients);
-#else
-        velocity.read_dof_values(src);
-        velocity.evaluate (false,true,false);
-#endif
+
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
@@ -1136,12 +1082,8 @@ namespace aspect
 
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         velocity.integrate_scatter (EvaluationFlags::gradients, dst);
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (dst);
-#endif
       }
   }
 
@@ -1216,11 +1158,8 @@ namespace aspect
               velocity.begin_dof_values()[j] = VectorizedArray<number>();
             velocity.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
             velocity.evaluate (EvaluationFlags::gradients);
-#else
-            velocity.evaluate (false,true,false);
-#endif
+
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
@@ -1241,11 +1180,8 @@ namespace aspect
 
                 velocity.submit_symmetric_gradient(sym_grad_u, q);
               }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
             velocity.integrate (EvaluationFlags::gradients);
-#else
-            velocity.integrate (false,true);
-#endif
 
             diagonal[i] = velocity.begin_dof_values()[i];
           }
@@ -1485,11 +1421,8 @@ namespace aspect
 
     // Create active mesh viscosity table.
     {
-#if DEAL_II_VERSION_GTE(9,3,0)
+
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-#else
-      const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
-#endif
 
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -1510,11 +1443,7 @@ namespace aspect
       std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
       for (unsigned int cell=0; cell<n_cells; ++cell)
         {
-#if DEAL_II_VERSION_GTE(9,3,0)
           const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-          const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_components_filled(cell);
-#endif
 
           for (unsigned int i=0; i<n_components_filled; ++i)
             {
@@ -1585,11 +1514,7 @@ namespace aspect
         level_cell_data[level].pressure_scaling = sim.pressure_scaling;
 
         // Create viscosity tables on each level.
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_cell_batches();
-#else
-        const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_macro_cells();
-#endif
 
         const unsigned int n_q_points = quadrature_formula.size();
 
@@ -1608,11 +1533,7 @@ namespace aspect
         std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
         for (unsigned int cell=0; cell<n_cells; ++cell)
           {
-#if DEAL_II_VERSION_GTE(9,3,0)
             const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-            const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_components_filled(cell);
-#endif
 
             for (unsigned int i=0; i<n_components_filled; ++i)
               {
@@ -1678,11 +1599,8 @@ namespace aspect
           MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
           MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
           sim.newton_handler->create_material_model_outputs(out);
-#if DEAL_II_VERSION_GTE(9,3,0)
+
           const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-#else
-          const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
-#endif
           const unsigned int n_q_points = quadrature_formula.size();
 
           active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
@@ -1691,11 +1609,8 @@ namespace aspect
 
           for (unsigned int cell=0; cell<n_cells; ++cell)
             {
-#if DEAL_II_VERSION_GTE(9,3,0)
               const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-              const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_components_filled(cell);
-#endif
+
               for (unsigned int i=0; i<n_components_filled; ++i)
                 {
                   typename DoFHandler<dim>::active_cell_iterator matrix_free_cell =
@@ -1801,11 +1716,7 @@ namespace aspect
     const bool use_viscosity_at_quadrature_points
       = (active_cell_data.viscosity.size(1) == velocity.n_q_points);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-#else
-    const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
-#endif
 
     // Much like the matrix-free apply_add() functions compute a matrix-vector
     // product by looping over cells and applying local matrix operations,
@@ -1818,19 +1729,11 @@ namespace aspect
         // with the zero boundary used by the stokes_matrix operator.
         velocity.reinit (cell);
         velocity.read_dof_values_plain (u0.block(0));
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.evaluate (EvaluationFlags::gradients);
-#else
-        velocity.evaluate (false,true,false);
-#endif
 
         pressure.reinit (cell);
         pressure.read_dof_values_plain (u0.block(1));
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.evaluate (EvaluationFlags::values);
-#else
-        pressure.evaluate (true,false,false);
-#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
@@ -1856,20 +1759,12 @@ namespace aspect
             velocity.submit_symmetric_gradient(-1.0*sym_grad_u, q);
           }
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         velocity.integrate_scatter (EvaluationFlags::gradients,
                                     rhs_correction.block(0));
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (rhs_correction.block(0));
-#endif
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         pressure.integrate_scatter (EvaluationFlags::values,
                                     rhs_correction.block(1));
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (rhs_correction.block(1));
-#endif
       }
     rhs_correction.compress(VectorOperation::add);
 
