@@ -267,22 +267,13 @@ namespace aspect
     if (output_statistics_thread.joinable())
       output_statistics_thread.join();
 
-    // TODO[C++14]: The following code could be made significantly simpler
-    // if we could just copy the statistics table as part of the capture
-    // list of the lambda function. In C++14, this would then simply be
-    // written as
-    //   [statistics_copy = this->statistics, this] () {...}
-    // (It would also be nice if we could use a std::unique_ptr, but since
-    // these can not be copied and since lambda captures don't allow move
-    // syntax for captured values, this also doesn't work. This can be done
-    // in C++14 by writing
-    //   [statistics_copy_ptr = std::move(statistics_copy_ptr), this] () {...}
-    // but, as mentioned above, if we could use C++14, we wouldn't have to
-    // use a pointer in the first place.)
-    std::shared_ptr<TableHandler> statistics_copy_ptr
-      = std::make_unique<TableHandler>(statistics);
-    auto write_statistics
-      = [statistics_copy_ptr,this]()
+    // Write data in the background through a lambda function.
+    // This happening in the background means that we have
+    // to create a copy of the statistics table, since whatever is
+    // running in the foreground may continue to add entries to the
+    // statistics table at the same time.
+    output_statistics_thread = std::thread (
+                                 [statistics_copy_ptr = std::make_unique<TableHandler>(statistics),this]()
     {
       // First write everything into a string in memory
       std::ostringstream stream;
@@ -369,8 +360,7 @@ namespace aspect
       // run hasn't finished).
       statistics_last_write_size = statistics_contents.size();
       statistics_last_hash       = std::hash<std::string>()(statistics_contents);
-    };
-    output_statistics_thread = std::thread (write_statistics);
+    });
   }
 
 
