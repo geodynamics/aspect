@@ -805,7 +805,7 @@ namespace aspect
         for (const auto &cell : dof_handler.active_cell_iterators())
           if (cell->is_locally_owned())
             {
-              for (unsigned int face_no = 0; face_no < GeometryInfo<dim>::faces_per_cell; ++face_no)
+              for (const unsigned int face_no : cell->face_indices())
                 {
                   const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
                   if (face->at_boundary()

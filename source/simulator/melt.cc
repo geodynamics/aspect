@@ -1829,7 +1829,7 @@ namespace aspect
 
     // only apply on free surface faces
     if (cell->at_boundary() && cell->is_locally_owned())
-      for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (const unsigned int face_no : cell->face_indices())
         if (cell->face(face_no)->at_boundary())
           {
             const types::boundary_id boundary_indicator
