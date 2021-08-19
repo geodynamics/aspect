@@ -177,29 +177,15 @@ namespace aspect
       LinearAlgebra::SparseMatrix matrix;
 
       // Sparsity of the matrix
-#ifdef ASPECT_USE_PETSC
-      LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
-
-#else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             this->get_mpi_communicator());
-#endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
 
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 this->get_mpi_communicator(), mesh_locally_relevant);
-
-      sp.compress();
-      mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, this->get_mpi_communicator());
-#else
       sp.compress();
       matrix.reinit (sp);
-#endif
 
       LinearAlgebra::Vector system_rhs, solution;
       system_rhs.reinit(mesh_locally_owned, this->get_mpi_communicator());

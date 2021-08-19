@@ -22,6 +22,6 @@ SRC_PATH=`cd $SRC_PATH/../..;pwd`
 
 mkdir -p ${SRC_PATH}/tester-build
 cd ${SRC_PATH}/tester-build
-cmake -G "Ninja" -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_USE_PETSC=OFF -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON $SRC_PATH
+cmake -G "Ninja" -D ASPECT_TEST_GENERATOR=Ninja -D ASPECT_RUN_ALL_TESTS=ON -D ASPECT_PRECOMPILE_HEADERS=ON $SRC_PATH
 ninja
 ASPECT_TESTS_VERBOSE=1 bash ${SRC_PATH}/cmake/generate_reference_output.sh

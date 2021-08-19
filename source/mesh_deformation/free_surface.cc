@@ -77,7 +77,7 @@ namespace aspect
 
       // only apply on free surface faces
       if (cell->at_boundary() && cell->is_locally_owned())
-        for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+        for (const unsigned int face_no : cell->face_indices())
           if (cell->face(face_no)->at_boundary())
             {
               const types::boundary_id boundary_indicator
@@ -246,28 +246,14 @@ namespace aspect
 
       // set up the matrix
       LinearAlgebra::SparseMatrix mass_matrix;
-#ifdef ASPECT_USE_PETSC
-      LinearAlgebra::DynamicSparsityPattern sp(mesh_locally_relevant);
-
-#else
       TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
                                             mesh_locally_owned,
                                             mesh_locally_relevant,
                                             this->get_mpi_communicator());
-#endif
       DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler, sp, mass_matrix_constraints, false,
                                        Utilities::MPI::this_mpi_process(this->get_mpi_communicator()));
-#ifdef ASPECT_USE_PETSC
-      SparsityTools::distribute_sparsity_pattern(sp,
-                                                 mesh_deformation_dof_handler.n_locally_owned_dofs_per_processor(),
-                                                 this->get_mpi_communicator(), mesh_locally_relevant);
-
-      sp.compress();
-      mass_matrix.reinit (mesh_locally_owned, mesh_locally_owned, sp, this->get_mpi_communicator());
-#else
       sp.compress();
       mass_matrix.reinit (sp);
-#endif
 
       FEValuesExtractors::Vector extract_vel(0);
 
@@ -287,7 +273,7 @@ namespace aspect
 
       for (; cell!=endc; ++cell, ++fscell)
         if (cell->at_boundary() && cell->is_locally_owned())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          for (const unsigned int face_no : cell->face_indices())
             if (cell->face(face_no)->at_boundary())
               {
                 const types::boundary_id boundary_indicator

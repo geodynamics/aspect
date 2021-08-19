@@ -16,6 +16,8 @@ An error occurred in file <structured_data.cc> in function
 The violated condition was: 
     Utilities::fexists(filename) || filename_is_url(filename)
 Additional information: 
-    Ascii data file <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt> not found!
+    Ascii data file
+    <ASPECT_DIR/data/boundary-velocity/ascii-data/test/fail_4.txt>
+    not found!
 
 Aborting!

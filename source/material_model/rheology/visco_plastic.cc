@@ -648,7 +648,7 @@ namespace aspect
         // Frank Kamenetskii viscosity parameters
         if (viscous_flow_law == frank_kamenetskii)
           {
-            frank_kamenetskii_rheology = std_cxx14::make_unique<Rheology::FrankKamenetskii<dim>>();
+            frank_kamenetskii_rheology = std::make_unique<Rheology::FrankKamenetskii<dim>>();
             frank_kamenetskii_rheology->initialize_simulator (this->get_simulator());
             frank_kamenetskii_rheology->parse_parameters(prm);
           }
@@ -657,7 +657,7 @@ namespace aspect
         use_peierls_creep = prm.get_bool ("Include Peierls creep");
         if (use_peierls_creep)
           {
-            peierls_creep = std_cxx14::make_unique<Rheology::PeierlsCreep<dim>>();
+            peierls_creep = std::make_unique<Rheology::PeierlsCreep<dim>>();
             peierls_creep->initialize_simulator (this->get_simulator());
             peierls_creep->parse_parameters(prm, expected_n_phases_per_composition);
           }
@@ -695,7 +695,7 @@ namespace aspect
           {
             const unsigned int n_points = out.n_evaluation_points();
             out.additional_outputs.push_back(
-              std_cxx14::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
+              std::make_unique<PlasticAdditionalOutputs<dim>> (n_points));
           }
       }
 

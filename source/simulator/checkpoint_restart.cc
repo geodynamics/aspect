@@ -289,7 +289,7 @@ namespace aspect
       if (parameters.mesh_deformation_enabled)
         {
           mesh_deformation_trans
-            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+            = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
 
           x_fs_system[0] = &mesh_deformation->mesh_displacements;
@@ -521,9 +521,11 @@ namespace aspect
     try
       {
 #ifdef DEAL_II_WITH_ZLIB
-        std::ifstream ifs ((parameters.output_directory + "restart.resume.z").c_str());
-        AssertThrow(ifs.is_open(),
-                    ExcMessage("Cannot open snapshot resume file."));
+        const std::string restart_data
+          = Utilities::read_and_distribute_file_content (parameters.output_directory + "restart.resume.z",
+                                                         mpi_communicator);
+
+        std::istringstream ifs (restart_data);
 
         uint32_t compression_header[4];
         ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));

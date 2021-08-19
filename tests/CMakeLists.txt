@@ -27,7 +27,7 @@ SET(ASPECT_BINARY "${ASPECT_BINARY}" CACHE STRING "" FORCE)
 SET(Aspect_DIR "${Aspect_DIR}" CACHE STRING "" FORCE)
 SET(ASPECT_COMPARE_TEST_RESULTS "${ASPECT_COMPARE_TEST_RESULTS}" CACHE BOOL "" FORCE)
 
-FIND_PACKAGE(Aspect 2.2.0 QUIET HINTS ${Aspect_DIR})
+FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR})
 DEAL_II_INITIALIZE_CACHED_VARIABLES()
 
 FIND_PACKAGE(Perl)
@@ -96,34 +96,9 @@ ENDFUNCTION()
 
 # Analyze the .prm to decide if this test should be run or not. We are
 # checking for the following strings in the .prm:
-# 1. "LINEAR ALGEBRA: PETSC" - only run with PETSc, "LINEAR ALGEBRA: PETSC
-# TRILINOS" - run with PETSc and Trilinos. If neither is present we only run
-# using Trilinos.
-# 2. "WORLD BUILDER" - only run with World Builder.
-# 3. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
+# 1. "WORLD BUILDER" - only run with World Builder.
+# 2. "QUICK_TEST" - enable the test even if RUN_ALL_TESTS is false
 FUNCTION(SHOULD_ENABLE_TEST _filename)
-
-  FILE(STRINGS ${_filename} _input_lines
-       REGEX "LINEAR ALGEBRA:")
-  IF("${_input_lines}" STREQUAL "")
-    # file doesn't contain LINEAR ALGEBRA command, so
-    # treat the test as TRILINOS.
-    IF(ASPECT_USE_PETSC)
-      SET(_use_test OFF PARENT_SCOPE)
-    ENDIF()
-
-  ELSE()
-    # merge multiple lines:
-    STRING (REPLACE ";" "" _input_lines "${_input_lines}")
-
-    IF (NOT ${_input_lines} MATCHES "PETSC" AND ASPECT_USE_PETSC)
-      SET(_use_test OFF PARENT_SCOPE)
-    ENDIF()
-
-    IF (NOT ${_input_lines} MATCHES "TRILINOS" AND NOT ASPECT_USE_PETSC)
-      SET(_use_test OFF PARENT_SCOPE)
-    ENDIF()
-  ENDIF()
 
   FILE(STRINGS ${_filename} _input_lines
   REGEX "WORLD BUILDER")

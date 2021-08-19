@@ -322,7 +322,7 @@ namespace aspect
         material_model
           = dynamic_cast<const MyMaterial<dim> *>(&this->get_material_model());
 
-        ref_func = std_cxx14::make_unique<AnalyticSolutions::Exact<dim>>(material_model->get_eta());
+        ref_func = std::make_unique<AnalyticSolutions::Exact<dim>>(material_model->get_eta());
       }
 
       const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities+2);

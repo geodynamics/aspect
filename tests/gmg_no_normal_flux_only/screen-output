@@ -1,0 +1,25 @@
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 768 (on 2 levels)
+Number of degrees of freedom: 28,690 (20,790+970+6,930)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving Stokes system... 36+0 iterations.
+
+Number of active cells: 2,112 (on 3 levels)
+Number of degrees of freedom: 89,938 (65,142+3,082+21,714)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+     Writing graphical output:           output-gmg_no_normal_flux_only/solution/solution-00000
+     RMS, max velocity:                  0.00887 m/year, 0.0592 m/year
+     Temperature min/avg/max:            973 K, 1462 K, 1973 K
+     Heat fluxes through boundary parts: -5.218e+12 W, 5.859e+12 W
+     Writing depth average:              output-gmg_no_normal_flux_only/depth_average
+
+Termination requested by criterion: end time
+
+
+

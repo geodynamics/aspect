@@ -22,6 +22,7 @@
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
 #include <aspect/melt.h>
+#include <aspect/newton.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -659,36 +660,63 @@ namespace aspect
     }
   }
 
-  /**
-   * Implementation of the matrix-free operators.
-   *
-   * Stokes operator
-   */
+
+  namespace MatrixFreeStokesOperators
+  {
+    template <int dim, typename number>
+    inline std::size_t
+    OperatorCellData<dim,number>::memory_consumption() const
+    {
+      return viscosity.memory_consumption()
+             + newton_factor_wrt_pressure_table.memory_consumption()
+             + strain_rate_table.memory_consumption()
+             + newton_factor_wrt_strain_rate_table.memory_consumption();
+    }
+
+
+
+    template <int dim, typename number>
+    void
+    OperatorCellData<dim,number>::clear()
+    {
+      enable_newton_derivatives = false;
+      // TODO: use Table::clear() once implemented in 10.0.pre
+      viscosity.reinit(TableIndices<2>(0,0));
+      newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+      strain_rate_table.reinit(TableIndices<2>(0,0));
+      newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+    }
+  }
+
+
+
   template <int dim, int degree_v, typename number>
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::StokesOperator ()
     :
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>()
   {}
 
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::clear ()
   {
-    viscosity = nullptr;
+    this->cell_data = nullptr;
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::BlockVector<number>>::clear();
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>::
-  fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                  const double pressure_scaling,
-                  const bool is_compressible)
+  set_cell_data (const OperatorCellData<dim,number> &data)
   {
-    viscosity = &viscosity_table;
-    this->pressure_scaling = pressure_scaling;
-    this->is_compressible = is_compressible;
+    this->cell_data = &data;
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -700,6 +728,8 @@ namespace aspect
     // block and append zeros to the end for the number of pressure DoFs.
     Assert(false, ExcNotImplemented());
   }
+
+
 
   template <int dim, int degree_v, typename number>
   void
@@ -713,64 +743,71 @@ namespace aspect
     FEEvaluation<dim,degree_v-1,  degree_v+1,1,  number> pressure (data, 1);
 
     const bool use_viscosity_at_quadrature_points
-      = (viscosity->size(1) == velocity.n_q_points);
+      = (cell_data->viscosity.size(1) == velocity.n_q_points);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
+        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
 
         velocity.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.gather_evaluate (src.block(0), EvaluationFlags::gradients);
-#else
-        velocity.read_dof_values (src.block(0));
-        velocity.evaluate (false,true,false);
-#endif
+
         pressure.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.gather_evaluate (src.block(1), EvaluationFlags::values);
-#else
-        pressure.read_dof_values (src.block(1));
-        pressure.evaluate (true,false,false);
-#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
-              viscosity_x_2 = 2.0*(*viscosity)(cell, q);
+              viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
-            VectorizedArray<number> pres = pressure.get_value(q);
-            VectorizedArray<number> div = trace(sym_grad_u);
-            pressure.submit_value(-pressure_scaling*div, q);
+            const VectorizedArray<number> pres = pressure.get_value(q);
+            const VectorizedArray<number> div = trace(sym_grad_u);
+
+            if (cell_data->enable_newton_derivatives)
+              {
+                // Note that derivative_scaling_factor has already been multiplied to newton_factor_wrt_pressure_table.
+                const VectorizedArray<number> newton_pressure_term =
+                  cell_data->pressure_scaling * 2.0
+                  * cell_data->newton_factor_wrt_pressure_table(cell,q)
+                  * (sym_grad_u * cell_data->strain_rate_table(cell,q));
+                pressure.submit_value(-cell_data->pressure_scaling*div + newton_pressure_term, q);
+              }
+            else
+              pressure.submit_value(-cell_data->pressure_scaling*div, q);
+
 
             sym_grad_u *= viscosity_x_2;
 
             for (unsigned int d=0; d<dim; ++d)
-              sym_grad_u[d][d] -= pressure_scaling*pres;
+              sym_grad_u[d][d] -= cell_data->pressure_scaling*pres;
 
-            if (is_compressible)
+            if (cell_data->is_compressible)
               for (unsigned int d=0; d<dim; ++d)
                 sym_grad_u[d][d] -= viscosity_x_2/3.0*div;
 
-            velocity.submit_symmetric_gradient(sym_grad_u, q);
+            if (cell_data->enable_newton_derivatives)
+              {
+                const SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
+
+                SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
+                                                              (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
+                                                              * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
+
+                if (cell_data->symmetrize_newton_system)
+                  newton_velocity_term +=
+                    (cell_data->newton_factor_wrt_strain_rate_table(cell,q)*grads_phi_u_i)
+                    * cell_data->strain_rate_table(cell,q);
+                velocity.submit_symmetric_gradient(sym_grad_u + newton_velocity_term, q);
+              }
+            else
+              velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.integrate_scatter (EvaluationFlags::gradients, dst.block(0));
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (dst.block(0));
-#endif
-
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.integrate_scatter (EvaluationFlags::values, dst.block(1));
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (dst.block(1));
-#endif
       }
   }
 
@@ -797,18 +834,16 @@ namespace aspect
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::clear ()
   {
-    viscosity = nullptr;
+    this->cell_data = nullptr;
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
-  fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                  const double pressure_scaling)
+  set_cell_data (const OperatorCellData<dim,number> &data)
   {
-    viscosity = &viscosity_table;
-    this->pressure_scaling = pressure_scaling;
+    this->cell_data = &data;
   }
 
   template <int dim, int degree_p, typename number>
@@ -822,57 +857,41 @@ namespace aspect
     FEEvaluation<dim,degree_p,degree_p+2,1,number> pressure (data);
 
     const bool use_viscosity_at_quadrature_points
-      = (viscosity->size(1) == pressure.n_q_points);
+      = (cell_data->viscosity.size(1) == pressure.n_q_points);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
+        VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
         for (unsigned int c=0; c<n_components_filled; ++c)
-          one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
+          one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
 
         pressure.reinit (cell);
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.gather_evaluate (src, EvaluationFlags::values);
-#else
-        pressure.read_dof_values(src);
-        pressure.evaluate (true,false);
-#endif
+
         for (unsigned int q=0; q<pressure.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
               {
-                one_over_viscosity = (*viscosity)(cell, q);
+                one_over_viscosity = cell_data->viscosity(cell, q);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
                 const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-                const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
                 for (unsigned int c=0; c<n_components_filled; ++c)
-                  one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
+                  one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
               }
 
             pressure.submit_value(one_over_viscosity*
                                   pressure.get_value(q),q);
           }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         pressure.integrate_scatter (EvaluationFlags::values, dst);
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (dst);
-#endif
       }
   }
 
@@ -939,23 +958,19 @@ namespace aspect
     AlignedVector<VectorizedArray<number>> diagonal(pressure.dofs_per_cell);
 
     const bool use_viscosity_at_quadrature_points
-      = (viscosity->size(1) == pressure.n_q_points);
+      = (cell_data->viscosity.size(1) == pressure.n_q_points);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> one_over_viscosity = (*viscosity)(cell, 0);
+        VectorizedArray<number> one_over_viscosity = cell_data->viscosity(cell, 0);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-        const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
         // The /= operator for VectorizedArray results in a floating point operation
         // (divide by 0) since the (*viscosity)(cell) array is not completely filled.
         // Therefore, we need to divide each entry manually.
         for (unsigned int c=0; c<n_components_filled; ++c)
-          one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
+          one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
 
         pressure.reinit (cell);
         for (unsigned int i=0; i<pressure.dofs_per_cell; ++i)
@@ -964,36 +979,26 @@ namespace aspect
               pressure.begin_dof_values()[j] = VectorizedArray<number>();
             pressure.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
             pressure.evaluate (EvaluationFlags::values);
-#else
-            pressure.evaluate (true,false,false);
-#endif
+
             for (unsigned int q=0; q<pressure.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
                 if (use_viscosity_at_quadrature_points)
                   {
-                    one_over_viscosity = (*viscosity)(cell, q);
+                    one_over_viscosity = cell_data->viscosity(cell, q);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
                     const unsigned int n_components_filled = this->get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-                    const unsigned int n_components_filled = this->get_matrix_free()->n_components_filled(cell);
-#endif
 
                     for (unsigned int c=0; c<n_components_filled; ++c)
-                      one_over_viscosity[c] = pressure_scaling*pressure_scaling/one_over_viscosity[c];
+                      one_over_viscosity[c] = cell_data->pressure_scaling*cell_data->pressure_scaling/one_over_viscosity[c];
                   }
 
                 pressure.submit_value(one_over_viscosity*
                                       pressure.get_value(q),q);
               }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
             pressure.integrate (EvaluationFlags::values);
-#else
-            pressure.integrate (true,false);
-#endif
 
             diagonal[i] = pressure.begin_dof_values()[i];
           }
@@ -1021,7 +1026,7 @@ namespace aspect
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::clear ()
   {
-    viscosity = nullptr;
+    this->cell_data = nullptr;
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
@@ -1030,11 +1035,9 @@ namespace aspect
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::ABlockOperator<dim,degree_v,number>::
-  fill_cell_data (const Table<2, VectorizedArray<number>> &viscosity_table,
-                  const bool is_compressible)
+  set_cell_data (const OperatorCellData<dim,number> &data)
   {
-    viscosity = &viscosity_table;
-    this->is_compressible = is_compressible;
+    this->cell_data = &data;
   }
 
 
@@ -1050,45 +1053,37 @@ namespace aspect
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data,0);
 
     const bool use_viscosity_at_quadrature_points
-      = (viscosity->size(1) == velocity.n_q_points);
+      = (cell_data->viscosity.size(1) == velocity.n_q_points);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
+        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
 
         velocity.reinit (cell);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.gather_evaluate (src, EvaluationFlags::gradients);
-#else
-        velocity.read_dof_values(src);
-        velocity.evaluate (false,true,false);
-#endif
+
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
-              viscosity_x_2 = 2.0*(*viscosity)(cell, q);
+              viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
             sym_grad_u *= viscosity_x_2;
 
-            if (is_compressible)
+            if (cell_data->is_compressible)
               {
-                VectorizedArray<number> div = trace(sym_grad_u);
+                const VectorizedArray<number> div = trace(sym_grad_u);
                 for (unsigned int d=0; d<dim; ++d)
                   sym_grad_u[d][d] -= 1.0/3.0*div;
               }
+
             velocity.submit_symmetric_gradient(sym_grad_u, q);
           }
-#if DEAL_II_VERSION_GTE(9,3,0)
-        velocity.integrate_scatter (EvaluationFlags::gradients, dst);
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (dst);
-#endif
 
+        velocity.integrate_scatter (EvaluationFlags::gradients, dst);
       }
   }
 
@@ -1148,13 +1143,13 @@ namespace aspect
     FEEvaluation<dim,degree_v,degree_v+1,dim,number> velocity (data, 0);
 
     const bool use_viscosity_at_quadrature_points
-      = (viscosity->size(1) == velocity.n_q_points);
+      = (cell_data->viscosity.size(1) == velocity.n_q_points);
 
     AlignedVector<VectorizedArray<number>> diagonal(velocity.dofs_per_cell);
 
     for (unsigned int cell=cell_range.first; cell<cell_range.second; ++cell)
       {
-        VectorizedArray<number> viscosity_x_2 = 2.0*(*viscosity)(cell, 0);
+        VectorizedArray<number> viscosity_x_2 = 2.0*cell_data->viscosity(cell, 0);
 
         velocity.reinit (cell);
         for (unsigned int i=0; i<velocity.dofs_per_cell; ++i)
@@ -1163,23 +1158,20 @@ namespace aspect
               velocity.begin_dof_values()[j] = VectorizedArray<number>();
             velocity.begin_dof_values()[i] = make_vectorized_array<number> (1.);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
             velocity.evaluate (EvaluationFlags::gradients);
-#else
-            velocity.evaluate (false,true,false);
-#endif
+
             for (unsigned int q=0; q<velocity.n_q_points; ++q)
               {
                 // Only update the viscosity if a Q1 projection is used.
                 if (use_viscosity_at_quadrature_points)
-                  viscosity_x_2 = 2.0*(*viscosity)(cell, q);
+                  viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
                 SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
                                                               velocity.get_symmetric_gradient (q);
 
                 sym_grad_u *= viscosity_x_2;
 
-                if (is_compressible)
+                if (cell_data->is_compressible)
                   {
                     VectorizedArray<number> div = trace(sym_grad_u);
                     for (unsigned int d=0; d<dim; ++d)
@@ -1188,11 +1180,8 @@ namespace aspect
 
                 velocity.submit_symmetric_gradient(sym_grad_u, q);
               }
-#if DEAL_II_VERSION_GTE(9,3,0)
+
             velocity.integrate (EvaluationFlags::gradients);
-#else
-            velocity.integrate (false,true);
-#endif
 
             diagonal[i] = velocity.begin_dof_values()[i];
           }
@@ -1432,11 +1421,8 @@ namespace aspect
 
     // Create active mesh viscosity table.
     {
-#if DEAL_II_VERSION_GTE(9,3,0)
+
       const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-#else
-      const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
-#endif
 
       const unsigned int n_q_points = quadrature_formula.size();
 
@@ -1445,11 +1431,11 @@ namespace aspect
       // One value per cell is required for DGQ0 projection and n_q_points
       // values per cell for DGQ1.
       if (dof_handler_projection.get_fe().degree == 0)
-        active_viscosity_table.reinit(TableIndices<2>(n_cells, 1));
+        active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, 1));
       else if (dof_handler_projection.get_fe().degree == 1)
         {
           values_on_quad.resize(n_q_points);
-          active_viscosity_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.viscosity.reinit(TableIndices<2>(n_cells, n_q_points));
         }
       else
         Assert(false, ExcInternalError());
@@ -1457,11 +1443,7 @@ namespace aspect
       std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
       for (unsigned int cell=0; cell<n_cells; ++cell)
         {
-#if DEAL_II_VERSION_GTE(9,3,0)
           const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-          const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_components_filled(cell);
-#endif
 
           for (unsigned int i=0; i<n_components_filled; ++i)
             {
@@ -1477,7 +1459,7 @@ namespace aspect
               // support point of the element. For DGQ1, we must project
               // back to quadrature point values.
               if (dof_handler_projection.get_fe().degree == 0)
-                active_viscosity_table(cell, 0)[i] = active_viscosity_vector(local_dof_indices[0]);
+                active_cell_data.viscosity(cell, 0)[i] = active_viscosity_vector(local_dof_indices[0]);
               else
                 {
                   fe_values_projection.reinit(DG_cell);
@@ -1488,29 +1470,28 @@ namespace aspect
                   // Do not allow viscosity to be greater than or less than the limits
                   // of the evaluated viscosity on the active level.
                   for (unsigned int q=0; q<n_q_points; ++q)
-                    active_viscosity_table(cell, q)[i]
+                    active_cell_data.viscosity(cell, q)[i]
                       = std::min(std::max(values_on_quad[q], min_el), max_el);
                 }
             }
         }
     }
 
-    const bool is_compressible = sim.material_model->is_compressible();
+    active_cell_data.is_compressible = sim.material_model->is_compressible();
+    active_cell_data.pressure_scaling = sim.pressure_scaling;
 
     // Store viscosity tables and other data into the active level matrix-free objects.
-    stokes_matrix.fill_cell_data(active_viscosity_table,
-                                 sim.pressure_scaling,
-                                 is_compressible);
+    stokes_matrix.set_cell_data(active_cell_data);
 
     if (sim.parameters.n_expensive_stokes_solver_steps > 0)
       {
-        A_block_matrix.fill_cell_data(active_viscosity_table,
-                                      is_compressible);
-        Schur_complement_block_matrix.fill_cell_data(active_viscosity_table,
-                                                     sim.pressure_scaling);
+        A_block_matrix.set_cell_data(active_cell_data);
+        Schur_complement_block_matrix.set_cell_data(active_cell_data);
       }
 
     const unsigned int n_levels = sim.triangulation.n_global_levels();
+    level_cell_data.resize(0,n_levels-1);
+
     level_viscosity_vector = 0.;
     level_viscosity_vector.resize(0,n_levels-1);
 
@@ -1527,15 +1508,13 @@ namespace aspect
                                                 level_viscosity_vector,
                                                 active_viscosity_vector);
 
-    level_viscosity_tables.resize(0,n_levels-1);
     for (unsigned int level=0; level<n_levels; ++level)
       {
+        level_cell_data[level].is_compressible = sim.material_model->is_compressible();
+        level_cell_data[level].pressure_scaling = sim.pressure_scaling;
+
         // Create viscosity tables on each level.
-#if DEAL_II_VERSION_GTE(9,3,0)
         const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_cell_batches();
-#else
-        const unsigned int n_cells = mg_matrices_A_block[level].get_matrix_free()->n_macro_cells();
-#endif
 
         const unsigned int n_q_points = quadrature_formula.size();
 
@@ -1544,21 +1523,17 @@ namespace aspect
         // One value per cell is required for DGQ0 projection and n_q_points
         // values per cell for DGQ1.
         if (dof_handler_projection.get_fe().degree == 0)
-          level_viscosity_tables[level].reinit(TableIndices<2>(n_cells, 1));
+          level_cell_data[level].viscosity.reinit(TableIndices<2>(n_cells, 1));
         else
           {
             values_on_quad.resize(n_q_points);
-            level_viscosity_tables[level].reinit(TableIndices<2>(n_cells, n_q_points));
+            level_cell_data[level].viscosity.reinit(TableIndices<2>(n_cells, n_q_points));
           }
 
         std::vector<types::global_dof_index> local_dof_indices(fe_projection.dofs_per_cell);
         for (unsigned int cell=0; cell<n_cells; ++cell)
           {
-#if DEAL_II_VERSION_GTE(9,3,0)
             const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_active_entries_per_cell_batch(cell);
-#else
-            const unsigned int n_components_filled = mg_matrices_A_block[level].get_matrix_free()->n_components_filled(cell);
-#endif
 
             for (unsigned int i=0; i<n_components_filled; ++i)
               {
@@ -1574,7 +1549,7 @@ namespace aspect
                 // support point of the element. For DGQ1, we must project
                 // back to quadrature point values.
                 if (dof_handler_projection.get_fe().degree == 0)
-                  level_viscosity_tables[level](cell, 0)[i] = level_viscosity_vector[level](local_dof_indices[0]);
+                  level_cell_data[level].viscosity(cell, 0)[i] = level_viscosity_vector[level](local_dof_indices[0]);
                 else
                   {
                     fe_values_projection.reinit(DG_cell);
@@ -1585,7 +1560,7 @@ namespace aspect
                     // Do not allow viscosity to be greater than or less than the limits
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
-                      level_viscosity_tables[level](cell,q)[i]
+                      level_cell_data[level].viscosity(cell,q)[i]
                         = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(min_el)),
                                    static_cast<GMGNumberType>(max_el));
                   }
@@ -1593,11 +1568,121 @@ namespace aspect
           }
 
         // Store viscosity tables and other data into the multigrid level matrix-free objects.
-        mg_matrices_A_block[level].fill_cell_data (level_viscosity_tables[level],
-                                                   is_compressible);
-        mg_matrices_Schur_complement[level].fill_cell_data (level_viscosity_tables[level],
-                                                            sim.pressure_scaling);
+        mg_matrices_A_block[level].set_cell_data (level_cell_data[level]);
+        mg_matrices_Schur_complement[level].set_cell_data (level_cell_data[level]);
       }
+
+    {
+      // create active mesh tables for derivatives needed in Newton method
+      // and the strain rate.
+      if (sim.newton_handler != nullptr
+          && sim.newton_handler->parameters.newton_derivative_scaling_factor != 0)
+        {
+          const double newton_derivative_scaling_factor =
+            sim.newton_handler->parameters.newton_derivative_scaling_factor;
+
+          active_cell_data.enable_newton_derivatives = true;
+
+          // TODO: these are not implemented yet
+          for (unsigned int level=0; level<n_levels; ++level)
+            level_cell_data[level].enable_newton_derivatives = false;
+
+
+          FEValues<dim> fe_values (*sim.mapping,
+                                   sim.finite_element,
+                                   quadrature_formula,
+                                   update_values   |
+                                   update_gradients |
+                                   update_quadrature_points |
+                                   update_JxW_values);
+
+          MaterialModel::MaterialModelInputs<dim> in(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> out(fe_values.n_quadrature_points, sim.introspection.n_compositional_fields);
+          sim.newton_handler->create_material_model_outputs(out);
+
+          const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
+          const unsigned int n_q_points = quadrature_formula.size();
+
+          active_cell_data.strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(n_cells, n_q_points));
+          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(n_cells, n_q_points));
+
+          for (unsigned int cell=0; cell<n_cells; ++cell)
+            {
+              const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_cell_batch(cell);
+
+              for (unsigned int i=0; i<n_components_filled; ++i)
+                {
+                  typename DoFHandler<dim>::active_cell_iterator matrix_free_cell =
+                    stokes_matrix.get_matrix_free()->get_cell_iterator(cell,i);
+                  typename DoFHandler<dim>::active_cell_iterator simulator_cell(&(sim.triangulation),
+                                                                                matrix_free_cell->level(),
+                                                                                matrix_free_cell->index(),
+                                                                                &(sim.dof_handler));
+
+                  fe_values.reinit(simulator_cell);
+                  in.reinit(fe_values, simulator_cell, sim.introspection, sim.current_linearization_point);
+
+                  sim.material_model->evaluate(in, out);
+                  sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
+
+                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives
+                    = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+
+                  Assert(derivatives != nullptr,
+                         ExcMessage ("Error: The Newton method requires the material to "
+                                     "compute derivatives."));
+
+                  for (unsigned int q=0; q<n_q_points; ++q)
+                    {
+                      // use the spd factor when the stabilization is PD or SPD.
+                      const double alpha =  (sim.newton_handler->parameters.velocity_block_stabilization
+                                             & Newton::Parameters::Stabilization::PD)
+                                            != Newton::Parameters::Stabilization::none
+                                            ?
+                                            Utilities::compute_spd_factor<dim>(out.viscosities[q],
+                                                                               in.strain_rate[q],
+                                                                               derivatives->viscosity_derivative_wrt_strain_rate[q],
+                                                                               sim.newton_handler->parameters.SPD_safety_factor)
+                                            :
+                                            1.0;
+
+                      active_cell_data.newton_factor_wrt_pressure_table(cell,q)[i]
+                        = derivatives->viscosity_derivative_wrt_pressure[q] * newton_derivative_scaling_factor;
+
+                      for (unsigned int m=0; m<dim; ++m)
+                        for (unsigned int n=0; n<dim; ++n)
+                          {
+                            active_cell_data.strain_rate_table(cell, q)[m][n][i]
+                              = in.strain_rate[q][m][n];
+
+                            active_cell_data.newton_factor_wrt_strain_rate_table(cell, q)[m][n][i]
+                              = derivatives->viscosity_derivative_wrt_strain_rate[q][m][n]
+                                * newton_derivative_scaling_factor * alpha;
+                          }
+                    }
+                }
+            }
+
+          // symmetrize the Newton_system when the stabilization is symmetric or SPD
+          const bool symmetrize_newton_system =
+            (sim.newton_handler->parameters.velocity_block_stabilization & Newton::Parameters::Stabilization::symmetric)
+            != Newton::Parameters::Stabilization::none;
+          active_cell_data.symmetrize_newton_system = symmetrize_newton_system;
+        }
+      else
+        {
+          // delete data used for Newton derivatives if necessary
+          // TODO: use Table::clear() once implemented in 10.0.pre
+          active_cell_data.enable_newton_derivatives = false;
+          active_cell_data.newton_factor_wrt_pressure_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.strain_rate_table.reinit(TableIndices<2>(0,0));
+          active_cell_data.newton_factor_wrt_strain_rate_table.reinit(TableIndices<2>(0,0));
+
+          for (unsigned int level=0; level<n_levels; ++level)
+            level_cell_data[level].enable_newton_derivatives = false;
+        }
+    }
   }
 
 
@@ -1605,6 +1690,10 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
+
+    // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
+    // Therefore, we don't need to include Newton terms here.
+
     const bool is_compressible = sim.material_model->is_compressible();
 
     dealii::LinearAlgebra::distributed::BlockVector<double> rhs_correction(2);
@@ -1625,50 +1714,38 @@ namespace aspect
     pressure (*stokes_matrix.get_matrix_free(), 1);
 
     const bool use_viscosity_at_quadrature_points
-      = (active_viscosity_table.size(1) == velocity.n_q_points);
+      = (active_cell_data.viscosity.size(1) == velocity.n_q_points);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_cell_batches();
-#else
-    const unsigned int n_cells = stokes_matrix.get_matrix_free()->n_macro_cells();
-#endif
 
     // Much like the matrix-free apply_add() functions compute a matrix-vector
     // product by looping over cells and applying local matrix operations,
     // here we apply the negative of the stokes_matrix operator to u0.
     for (unsigned int cell=0; cell<n_cells; ++cell)
       {
-        VectorizedArray<double> viscosity_x_2 = 2.0*active_viscosity_table(cell, 0);
+        VectorizedArray<double> viscosity_x_2 = 2.0*active_cell_data.viscosity(cell, 0);
 
         // We must use read_dof_values_plain() as to not overwrite boundary information
         // with the zero boundary used by the stokes_matrix operator.
         velocity.reinit (cell);
         velocity.read_dof_values_plain (u0.block(0));
-#if DEAL_II_VERSION_GTE(9,3,0)
         velocity.evaluate (EvaluationFlags::gradients);
-#else
-        velocity.evaluate (false,true,false);
-#endif
 
         pressure.reinit (cell);
         pressure.read_dof_values_plain (u0.block(1));
-#if DEAL_II_VERSION_GTE(9,3,0)
         pressure.evaluate (EvaluationFlags::values);
-#else
-        pressure.evaluate (true,false,false);
-#endif
 
         for (unsigned int q=0; q<velocity.n_q_points; ++q)
           {
             // Only update the viscosity if a Q1 projection is used.
             if (use_viscosity_at_quadrature_points)
-              viscosity_x_2 = 2.0*active_viscosity_table(cell, q);
+              viscosity_x_2 = 2.0*active_cell_data.viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<double>> sym_grad_u =
                                                           velocity.get_symmetric_gradient (q);
-            VectorizedArray<double> pres = pressure.get_value(q);
-            VectorizedArray<double> div = trace(sym_grad_u);
-            pressure.submit_value   (sim.pressure_scaling*div, q);
+            const VectorizedArray<double> pres = pressure.get_value(q);
+            const VectorizedArray<double> div = trace(sym_grad_u);
+            pressure.submit_value(sim.pressure_scaling*div, q);
 
             sym_grad_u *= viscosity_x_2;
 
@@ -1682,20 +1759,12 @@ namespace aspect
             velocity.submit_symmetric_gradient(-1.0*sym_grad_u, q);
           }
 
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         velocity.integrate_scatter (EvaluationFlags::gradients,
                                     rhs_correction.block(0));
-#else
-        velocity.integrate (false,true);
-        velocity.distribute_local_to_global (rhs_correction.block(0));
-#endif
-#if DEAL_II_VERSION_GTE(9,3,0)
+
         pressure.integrate_scatter (EvaluationFlags::values,
                                     rhs_correction.block(1));
-#else
-        pressure.integrate (true,false);
-        pressure.distribute_local_to_global (rhs_correction.block(1));
-#endif
       }
     rhs_correction.compress(VectorOperation::add);
 
@@ -2311,8 +2380,9 @@ namespace aspect
             }
         }
 
-      if (dirichlet_boundary.size()>0)
-        mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
+      // Unconditionally call this function, even if the set is empty. Otherwise, the data structure
+      // for boundary indices will not be created (if mesh has no Dirichlet conditions).
+      mg_constrained_dofs_A_block.make_zero_boundary_constraints(dof_handler_v, dirichlet_boundary);
 
       {
         const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
@@ -2525,7 +2595,7 @@ namespace aspect
                                    sim.mpi_communicator);
 
             QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
-            FEValues<dim> fe_values (fe_v, quadrature_formula,
+            FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);
             FEValues<dim> fe_values_projection (*(sim.mapping),
@@ -2617,7 +2687,7 @@ namespace aspect
             diagonal_matrix.compress(VectorOperation::add);
 
             dealii::LinearAlgebra::distributed::Vector<GMGNumberType> diagonal;
-            // This assignment converts from type double to GMGNumberType (float).
+            // This assignment converts from type double to GMGNumberType.
             diagonal = diagonal_matrix.get_vector();
             mg_matrices_A_block[level].set_diagonal(diagonal);
           }
@@ -2641,12 +2711,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const DoFHandler<dim> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_dof_handler_p () const
   {
     return dof_handler_p;
   }
+
 
 
   template <int dim, int velocity_degree>
@@ -2657,12 +2729,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const AffineConstraints<double> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_constraints_v() const
   {
     return constraints_v;
   }
+
 
 
   template <int dim, int velocity_degree>
@@ -2673,12 +2747,14 @@ namespace aspect
   }
 
 
+
   template <int dim, int velocity_degree>
   const MGTransferMatrixFree<dim,GMGNumberType> &
   StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_mg_transfer_A() const
   {
     return mg_transfer_A_block;
   }
+
 
 
   template <int dim, int velocity_degree>
@@ -2689,21 +2765,18 @@ namespace aspect
   }
 
 
-  template <int dim, int velocity_degree>
-  const Table<2, VectorizedArray<double>> &
-                                       StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_active_viscosity_table() const
-  {
-    return active_viscosity_table;
-  }
-
 
   template <int dim, int velocity_degree>
-  const MGLevelObject<Table<2, VectorizedArray<GMGNumberType>>> &
-  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::get_level_viscosity_tables() const
+  std::size_t
+  StokesMatrixFreeHandlerImplementation<dim, velocity_degree>:: get_cell_data_memory_consumption() const
   {
-    return level_viscosity_tables;
-  }
+    std::size_t total = active_cell_data.memory_consumption();
 
+    for (unsigned int level=0; level<level_cell_data.max_level(); ++level)
+      total += level_cell_data[level].memory_consumption();
+
+    return total;
+  }
 
 
 

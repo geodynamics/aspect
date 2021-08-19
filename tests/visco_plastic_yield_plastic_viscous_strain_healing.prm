@@ -1,7 +1,15 @@
+# This test runs on 1 mpi process for 8 timesteps
+# healed_strain = strain_healing_temperature_dependent_recovery_rate *
+# exp(-strain_healing_temperature_dependent_prefactor * 0.5 * (1.0 - temperature/reference_temperature)) * this_timestep
+# The returned strain values due to strain healing should be:
+# plastic_strain: max, 4.435e-04; min, -3.198e-05
+# viscous_strain: max, 3.187e-01: min, -2.083e-01
+# Analytical value of total healed strain = 4.999e-08
+
 # Global parameters
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 0
+set End time                               = 5e7
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Max nonlinear iterations               = 1
@@ -130,6 +138,7 @@ subsection Postprocess
     set Interpolate output = false
     set List of output variables = viscosity, strain rate, named additional outputs
     set Output format            = gnuplot
+    set Time between graphical output = 5e7
   end
 end
 

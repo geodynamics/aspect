@@ -1,0 +1,102 @@
+# A simple setup for a plume in a 2D chunk based on Kellogg \& King, EPSL 148 (1997).
+
+set Dimension                              = 2
+set Use years in output instead of seconds = true
+set End time                               = 200e9
+set Output directory                       = output_plume2D
+set Maximum time step                      = 5e7
+set Nonlinear solver scheme                = iterated Advection and Stokes
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+
+    # Reference temperature and viscosity
+    set Reference temperature = 273
+    set Reference viscosity = 1e23
+
+    # Limit the viscosity with maximum=1000*eta0
+    set Minimum viscosity = 1.25e23
+    set Maximum viscosity = 1.25e26
+
+    # Thermal diffusivity is adjusted to match thermal conductivities
+    # assumed in assigning the initial geotherm
+    set Thermal diffusivities =  5.5e-7
+    set Heat capacities       =  1250.
+    set Densities             =  3250
+    set Thermal expansivities =  3e-5
+
+    set Viscous flow law      = diffusion
+    set Activation volumes for diffusion creep  = 0
+    set Grain size = 1
+
+    # isoviscous
+    set Prefactors for diffusion creep          = 4e-24
+    set Activation energies for diffusion creep = 0
+
+    # Plasticity parameters - irrelevant
+    # set to very high value so that it is not used
+    set Cohesions = 1e15
+
+  end
+end
+
+subsection Geometry model
+  set Model name = chunk
+  subsection Chunk
+    set Chunk inner radius = 3480000
+    set Chunk outer radius = 6371000
+    set Chunk minimum longitude = 67.5
+    set Chunk maximum longitude = 90
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = 0,1,2,3
+end
+
+# temperature is set to 273K at the top, i.e. for r>4e6
+# where 4e6 is an arbitrary radius value falling between
+# the CMB and the surface. If r<4e6 then we wish to prescribe
+# a temperature on the bottom surface: since phi=0 at the
+# equator (i.e. x-axis) then the patch is defined by 7pi/16<phi<pi/2.
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set Model name = function
+  subsection Function
+    set Coordinate system = spherical
+    set Variable names = r, phi
+    set Function constants = pi=3.1415926536
+    set Function expression = if (r>4e6,273,if(phi>7*pi/16,3273,2773))
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 1023
+  end
+end
+
+subsection Gravity model
+  set Model name = radial constant
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 5
+  set Initial adaptive refinement        = 0
+  set Time steps between mesh refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, temperature statistics
+  subsection Visualization
+    set List of output variables = density, viscosity, vertical heat flux
+    set Output format                 = vtu
+    set Time between graphical output = 10e7
+    set Number of grouped files       = 0
+  end
+end

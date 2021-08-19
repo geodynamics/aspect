@@ -107,11 +107,11 @@ namespace aspect
                                                  const InitialTopographyModel::Interface<dim> &initial_topography_model)
     {
       if (geometry_model.has_curved_elements())
-        return std_cxx14::make_unique<MappingQCache<dim>>(4);
+        return std::make_unique<MappingQCache<dim>>(4);
       if (Plugins::plugin_type_matches<const InitialTopographyModel::ZeroTopography<dim>>(initial_topography_model))
-        return std_cxx14::make_unique<MappingCartesian<dim>>();
+        return std::make_unique<MappingCartesian<dim>>();
 
-      return std_cxx14::make_unique<MappingQ1<dim>>();
+      return std::make_unique<MappingQ1<dim>>();
     }
   }
 
@@ -138,19 +138,19 @@ namespace aspect
                              ParameterHandler &prm)
     :
     simulator_is_past_initialization (false),
-    assemblers (std_cxx14::make_unique<Assemblers::Manager<dim>>()),
+    assemblers (std::make_unique<Assemblers::Manager<dim>>()),
     parameters (prm, mpi_communicator_),
     melt_handler (parameters.include_melt_transport ?
-                  std_cxx14::make_unique<MeltHandler<dim>>(prm) :
+                  std::make_unique<MeltHandler<dim>>(prm) :
                   nullptr),
     newton_handler (Parameters<dim>::is_defect_correction(parameters.nonlinear_solver) ?
-                    std_cxx14::make_unique<NewtonHandler<dim>>() :
+                    std::make_unique<NewtonHandler<dim>>() :
                     nullptr),
     post_signal_creation(
       std::bind (&internals::SimulatorSignals::call_connector_functions<dim>,
                  std::ref(signals))),
     volume_of_fluid_handler (parameters.volume_of_fluid_tracking_enabled ?
-                             std_cxx14::make_unique<VolumeOfFluidHandler<dim>> (*this, prm) :
+                             std::make_unique<VolumeOfFluidHandler<dim>> (*this, prm) :
                              nullptr),
     introspection (construct_variables<dim>(parameters, signals, melt_handler), parameters),
     mpi_communicator (Utilities::MPI::duplicate_communicator (mpi_communicator_)),
@@ -183,7 +183,7 @@ namespace aspect
     adiabatic_conditions (AdiabaticConditions::create_adiabatic_conditions<dim>(prm)),
 #ifdef ASPECT_WITH_WORLD_BUILDER
     world_builder (parameters.world_builder_file != "" ?
-                   std_cxx14::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
+                   std::make_unique<WorldBuilder::World>(parameters.world_builder_file) :
                    nullptr),
 #endif
     boundary_heat_flux (BoundaryHeatFlux::create_boundary_heat_flux<dim>(prm)),
@@ -363,7 +363,7 @@ namespace aspect
         parameters.use_full_A_block_preconditioner = true;
 
         // Allocate the MeshDeformationHandler object
-        mesh_deformation = std_cxx14::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
+        mesh_deformation = std::make_unique<MeshDeformation::MeshDeformationHandler<dim>>(*this);
         mesh_deformation->initialize_simulator(*this);
         mesh_deformation->parse_parameters(prm);
         mesh_deformation->initialize();
@@ -394,10 +394,10 @@ namespace aspect
         switch (parameters.stokes_velocity_degree)
           {
             case 2:
-              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, prm);
+              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,2>>(*this, prm);
               break;
             case 3:
-              stokes_matrix_free = std_cxx14::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, prm);
+              stokes_matrix_free = std::make_unique<StokesMatrixFreeHandlerImplementation<dim,3>>(*this, prm);
               break;
             default:
               AssertThrow(false, ExcMessage("The finite element degree for the Stokes system you selected is not supported yet."));
@@ -443,6 +443,14 @@ namespace aspect
 #else
       map->initialize(triangulation, MappingQGeneric<dim>(4));
 #endif
+
+    // Check that DG limiters are only used with cartesian mapping
+    if (parameters.use_limiter_for_discontinuous_temperature_solution ||
+        parameters.use_limiter_for_discontinuous_composition_solution)
+      AssertThrow(geometry_model->natural_coordinate_system() == Utilities::Coordinates::CoordinateSystem::cartesian,
+                  ExcMessage("The limiter for the discontinuous temperature and composition solutions "
+                             "has not been tested in non-Cartesian geometries and currently requires "
+                             "the use of a Cartesian geometry model."));
 
     for (const auto &p : parameters.prescribed_traction_boundary_indicators)
       {
@@ -1588,7 +1596,7 @@ namespace aspect
           x_fs_system[1] = &mesh_deformation->old_mesh_displacements;
           x_fs_system[2] = &mesh_deformation->initial_topography;
           mesh_deformation_trans
-            = std_cxx14::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
+            = std::make_unique<parallel::distributed::SolutionTransfer<dim,LinearAlgebra::Vector>>
               (mesh_deformation->mesh_deformation_dof_handler);
         }
 

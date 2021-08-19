@@ -23,9 +23,6 @@
 #include <aspect/simulator.h>
 #include <aspect/stokes_matrix_free.h>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-
 
 namespace aspect
 {
@@ -61,13 +58,12 @@ namespace aspect
 
       if (this->is_stokes_matrix_free())
         {
-          double mg_transfer_mem = this->get_stokes_matrix_free().get_mg_transfer_A().memory_consumption()
-                                   + this->get_stokes_matrix_free().get_mg_transfer_S().memory_consumption();
+          const double mg_transfer_mem = this->get_stokes_matrix_free().get_mg_transfer_A().memory_consumption()
+                                         + this->get_stokes_matrix_free().get_mg_transfer_S().memory_consumption();
           statistics.add_value ("MGTransfer memory consumption (MB) ", mg_transfer_mem/mb);
 
-          double visc_table_mem = this->get_stokes_matrix_free().get_active_viscosity_table().memory_consumption()
-                                  + this->get_stokes_matrix_free().get_level_viscosity_tables().memory_consumption();
-          statistics.add_value ("Matrix-free viscosity tables memory consumption (MB) ", visc_table_mem/mb);
+          const double cell_data_mem = this->get_stokes_matrix_free().get_cell_data_memory_consumption();
+          statistics.add_value ("Matrix-free cell data memory consumption (MB) ", cell_data_mem/mb);
         }
 
       if (output_vmpeak)

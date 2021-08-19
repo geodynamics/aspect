@@ -1,7 +1,7 @@
 ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 ===========================================================
 [![License GPL2+:](https://img.shields.io/badge/License-GPL%202%2B-red)](https://github.com/geodynamics/aspect/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3924604.svg)](https://doi.org/10.5281/zenodo.3924604)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5131909.svg)](https://doi.org/10.5281/zenodo.5131909)
 [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
 
 About
@@ -29,7 +29,7 @@ on the mailing list.
 In short, ASPECT is configured using CMake and has the following requirements:
 - CMake 2.8.12
 - GCC, Clang, or Intel compiler with C++11 support
-- [deal.II](https://github.com/dealii/dealii) 9.2 or newer configured with:
+- [deal.II](https://github.com/dealii/dealii) 9.3 or newer configured with:
   - MPI, Trilinos, p4est (required)
   - BLAS/LAPACK, zlib (strongly recommended)
   - HDF5 (optional)

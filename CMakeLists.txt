@@ -76,7 +76,7 @@ LIST(APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake/modules
   )
 
-FIND_PACKAGE(deal.II 9.2.0 QUIET
+FIND_PACKAGE(deal.II 9.3.0 QUIET
   HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
@@ -95,22 +95,7 @@ IF(NOT DEAL_II_WITH_CXX11)
     "DEAL_II_WITH_CXX11 in deal.II.")
 ENDIF()
 
-
-SET(ASPECT_USE_PETSC OFF CACHE BOOL "Use PETSc instead of Trilinos if set to 'on'.")
-IF(ASPECT_USE_PETSC)
-    MESSAGE(FATAL_ERROR "Using PETSc by setting ASPECT_USE_PETSC to ON is currently not supported, see https://github.com/geodynamics/aspect/issues/3338 for details.")
-ENDIF()
-
-MESSAGE(STATUS "Using ASPECT_USE_PETSC = '${ASPECT_USE_PETSC}'")
-
 SET(_DEALII_GOOD ON)
-
-IF(ASPECT_USE_PETSC AND NOT DEAL_II_WITH_PETSC)
-    MESSAGE(SEND_ERROR
-      "\n-- deal.II was built without support for PETSc!\n"
-      )
-    SET(_DEALII_GOOD OFF)
-ENDIF()
 
 IF(NOT DEAL_II_WITH_P4EST)
     MESSAGE(SEND_ERROR
@@ -119,7 +104,7 @@ IF(NOT DEAL_II_WITH_P4EST)
     SET(_DEALII_GOOD OFF)
 ENDIF()
 
-IF(NOT ASPECT_USE_PETSC AND NOT DEAL_II_WITH_TRILINOS)
+IF(NOT DEAL_II_WITH_TRILINOS)
     MESSAGE(SEND_ERROR
       "\n-- deal.II was built without support for Trilinos!\n"
       )
@@ -128,7 +113,7 @@ ENDIF()
 
 IF (NOT _DEALII_GOOD)
   MESSAGE(FATAL_ERROR
-    "\nASPECT requires a deal.II installation built with support for Trilinos/PETSc and p4est but one or both of these appears to be missing!\n"
+    "\nASPECT requires a deal.II installation built with support for Trilinos and p4est but one or both of these appears to be missing!\n"
     )
 ENDIF()
 
@@ -615,6 +600,12 @@ ELSEIF(NOT CMAKE_VERSION VERSION_LESS 3.16)
 ELSE()
   SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "Precompile external header files to speedup compile time. Currently only supported for cmake 3.8 and older versions or 3.16 and newer versions." FORCE)
   SET(ASPECT_UNITY_BUILD OFF CACHE BOOL "Combine source files into less compile targets to speedup compile time. Currently only supported for cmake 3.16 and newer versions." FORCE)
+ENDIF()
+
+IF (ASPECT_PRECOMPILE_HEADERS AND CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+  # Intel 19.1 produces internal compiler errors inside bundled boost with
+  # precompiled headers, so we deactive it:
+  SET(ASPECT_PRECOMPILE_HEADERS OFF CACHE BOOL "" FORCE)
 ENDIF()
 
 IF (ASPECT_PRECOMPILE_HEADERS)

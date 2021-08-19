@@ -34,7 +34,6 @@ _detailed(
 #
 #        DEAL_II_DIR:               ${deal.II_DIR}
 #        DEAL_II VERSION:           ${DEAL_II_PACKAGE_VERSION}
-#        ASPECT_USE_PETSC:          ${ASPECT_USE_PETSC}
 #        ASPECT_USE_FP_EXCEPTIONS:  ${ASPECT_USE_FP_EXCEPTIONS}
 #        ASPECT_RUN_ALL_TESTS:      ${ASPECT_RUN_ALL_TESTS}
 #        ASPECT_USE_SHARED_LIBS:    ${ASPECT_USE_SHARED_LIBS}

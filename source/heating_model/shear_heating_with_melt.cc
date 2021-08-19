@@ -102,7 +102,7 @@ namespace aspect
         return;
 
       inputs.additional_inputs.push_back(
-        std_cxx14::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
+        std::make_unique<MaterialModel::MeltInputs<dim>> (inputs.position.size()));
     }
   }
 }

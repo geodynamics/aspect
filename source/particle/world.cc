@@ -25,6 +25,7 @@
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
 #include <aspect/geometry_model/spherical_shell.h>
+#include <aspect/particle/integrator/euler.h>
 #include <aspect/citation_info.h>
 
 #include <deal.II/base/quadrature_lib.h>
@@ -68,9 +69,9 @@ namespace aspect
       // Create a particle handler that stores the future particles.
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
-      particle_handler = std_cxx14::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
-                                                                      this->get_mapping(),
-                                                                      property_manager->get_n_property_components());
+      particle_handler = std::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
+                                                                this->get_mapping(),
+                                                                property_manager->get_n_property_components());
 
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
@@ -552,6 +553,9 @@ namespace aspect
               AssertThrow(geometry.opening_angle() == 90,
                           ExcMessage("Periodic boundaries combined with particles currently "
                                      "only work with 90 degree opening angle in spherical shell."));
+              AssertThrow(Plugins::plugin_type_matches<Particle::Integrator::Euler<dim>>(*integrator),
+                          ExcMessage("Periodic boundaries combined with particles currently "
+                                     "only work in spherical shells with the forward euler integration scheme."));
 
               typename ParticleHandler<dim>::particle_iterator particle = particle_handler->begin();
               for (; particle != particle_handler->end(); ++particle)
@@ -1085,18 +1089,18 @@ namespace aspect
             melt_component_indices[1] = simulator_access.introspection().variable("fluid pressure").first_component_index;
             melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
-            fluid_velocity = std_cxx14::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
-                                                                                 simulator_access.get_fe(),
-                                                                                 update_flags,
-                                                                                 melt_component_indices[0]);
-            fluid_pressure = std_cxx14::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                               simulator_access.get_fe(),
-                                                                               update_flags,
-                                                                               melt_component_indices[1]);
-            compaction_pressure = std_cxx14::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                                    simulator_access.get_fe(),
-                                                                                    update_flags,
-                                                                                    melt_component_indices[2]);
+            fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
+                                                                           simulator_access.get_fe(),
+                                                                           update_flags,
+                                                                           melt_component_indices[0]);
+            fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                         simulator_access.get_fe(),
+                                                                         update_flags,
+                                                                         melt_component_indices[1]);
+            compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
+                                                                              simulator_access.get_fe(),
+                                                                              update_flags,
+                                                                              melt_component_indices[2]);
 
           }
       }
@@ -1494,7 +1498,7 @@ namespace aspect
       generator->initialize();
 
       // Create a property_manager object and initialize its properties
-      property_manager = std_cxx14::make_unique<Property::Manager<dim>> ();
+      property_manager = std::make_unique<Property::Manager<dim>> ();
       SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(property_manager.get());
       sim->initialize_simulator (this->get_simulator());
       property_manager->parse_parameters(prm);

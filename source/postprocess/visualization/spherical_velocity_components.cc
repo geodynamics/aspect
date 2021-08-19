@@ -34,7 +34,7 @@ namespace aspect
       SphericalVelocityComponents ()
         :
         DataPostprocessorVector<dim> ("spherical_velocity_components",
-                                      update_quadrature_points)
+                                      update_values | update_quadrature_points)
       {}
 
 

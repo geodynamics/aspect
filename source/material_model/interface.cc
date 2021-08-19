@@ -271,10 +271,12 @@ namespace aspect
       requested_properties(MaterialProperties::all_properties)
     {}
 
+
+
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const DataPostprocessorInputs::Vector<dim> &input_data,
                                                   const Introspection<dim> &introspection,
-                                                  const bool use_strain_rate)
+                                                  const bool compute_strain_rate)
       :
       position(input_data.evaluation_points),
       temperature(input_data.solution_values.size(), numbers::signaling_nan<double>()),
@@ -290,20 +292,21 @@ namespace aspect
 #endif
       requested_properties(MaterialProperties::all_properties)
     {
+      if (compute_strain_rate == false)
+        this->strain_rate.resize(0);
+
       for (unsigned int q=0; q<input_data.solution_values.size(); ++q)
         {
           Tensor<2,dim> grad_u;
           for (unsigned int d=0; d<dim; ++d)
             {
-              grad_u[d] = input_data.solution_gradients[q][d];
+              grad_u[d] = input_data.solution_gradients[q][introspection.component_indices.velocities[d]];
               this->velocity[q][d] = input_data.solution_values[q][introspection.component_indices.velocities[d]];
               this->pressure_gradient[q][d] = input_data.solution_gradients[q][introspection.component_indices.pressure][d];
             }
 
-          if (use_strain_rate)
+          if (compute_strain_rate)
             this->strain_rate[q] = symmetrize (grad_u);
-          else
-            this->strain_rate.resize(0);
 
           this->pressure[q] = input_data.solution_values[q][introspection.component_indices.pressure];
           this->temperature[q] = input_data.solution_values[q][introspection.component_indices.temperature];
@@ -313,12 +316,14 @@ namespace aspect
         }
     }
 
+
+
     template <int dim>
     MaterialModelInputs<dim>::MaterialModelInputs(const FEValuesBase<dim,dim> &fe_values,
                                                   const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                                   const Introspection<dim> &introspection,
                                                   const LinearAlgebra::BlockVector &solution_vector,
-                                                  const bool use_strain_rate)
+                                                  const bool compute_strain_rate)
       :
       position(fe_values.get_quadrature_points()),
       temperature(fe_values.n_quadrature_points, numbers::signaling_nan<double>()),
@@ -331,7 +336,7 @@ namespace aspect
       requested_properties(MaterialProperties::all_properties)
     {
       // Call the function reinit to populate the new arrays.
-      this->reinit(fe_values, current_cell, introspection, solution_vector, use_strain_rate);
+      this->reinit(fe_values, current_cell, introspection, solution_vector, compute_strain_rate);
     }
 
 
@@ -362,14 +367,14 @@ namespace aspect
                                      const typename DoFHandler<dim>::active_cell_iterator &cell_x,
                                      const Introspection<dim> &introspection,
                                      const LinearAlgebra::BlockVector &solution_vector,
-                                     const bool use_strain_rate)
+                                     const bool compute_strain_rate)
     {
       // Populate the newly allocated arrays
       fe_values[introspection.extractors.temperature].get_function_values (solution_vector, this->temperature);
       fe_values[introspection.extractors.velocities].get_function_values (solution_vector, this->velocity);
       fe_values[introspection.extractors.pressure].get_function_values (solution_vector, this->pressure);
       fe_values[introspection.extractors.pressure].get_function_gradients (solution_vector, this->pressure_gradient);
-      if (use_strain_rate)
+      if (compute_strain_rate)
         fe_values[introspection.extractors.velocities].get_function_symmetric_gradients (solution_vector,this->strain_rate);
       else
         this->strain_rate.resize(0);

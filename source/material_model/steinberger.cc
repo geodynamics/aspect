@@ -136,11 +136,11 @@ namespace aspect
       equation_of_state.initialize();
 
       lateral_viscosity_lookup
-        = std_cxx14::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
-                                                                   this->get_mpi_communicator());
+        = std::make_unique<internal::LateralViscosityLookup>(data_directory+lateral_viscosity_file_name,
+                                                             this->get_mpi_communicator());
       radial_viscosity_lookup
-        = std_cxx14::make_unique<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
-                                                                  this->get_mpi_communicator());
+        = std::make_unique<internal::RadialViscosityLookup>(data_directory+radial_viscosity_file_name,
+                                                            this->get_mpi_communicator());
       average_temperature.resize(n_lateral_slices);
     }
 
@@ -392,7 +392,7 @@ namespace aspect
           has_background_field = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
 
           // All compositional fields are assumed to represent mass fractions.
-          composition_mask = std_cxx14::make_unique<ComponentMask> (this->n_compositional_fields(), true);
+          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), true);
 
           prm.leave_subsection();
         }

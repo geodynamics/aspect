@@ -230,7 +230,7 @@ namespace aspect
                                                   MaterialModel::MaterialModelOutputs<dim> &outputs) const override
         {
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::SeismicAdditionalOutputs<dim>> (n_points));
         }
 
         void operator()(const MaterialModel::MaterialModelInputs<dim> &,
@@ -526,10 +526,10 @@ namespace aspect
 
     std::unique_ptr<Quadrature<dim>> quadrature_formula;
     if (geometry_unique_depth_direction != numbers::invalid_unsigned_int)
-      quadrature_formula = std_cxx14::make_unique<Quadrature<dim>>(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
-                                                                   geometry_unique_depth_direction));
+      quadrature_formula = std::make_unique<Quadrature<dim>>(internal::get_quadrature_formula<dim>(lateral_quadrature_degree,
+                                                             geometry_unique_depth_direction));
     else
-      quadrature_formula = std_cxx14::make_unique<Quadrature<dim>>(QIterated<dim>(QMidpoint<1>(),10));
+      quadrature_formula = std::make_unique<Quadrature<dim>>(QIterated<dim>(QMidpoint<1>(),10));
 
     const unsigned int n_q_points = quadrature_formula->size();
 
@@ -769,7 +769,7 @@ namespace aspect
       {
         if (property_names[property_index] == "temperature")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageField<dim>>
                                (this->introspection().extractors.temperature));
           }
         else if (this->introspection().compositional_name_exists(property_names[property_index]))
@@ -777,51 +777,51 @@ namespace aspect
             const unsigned int c =
               this->introspection().compositional_index_for_name(property_names[property_index]);
 
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageField<dim>> (
+            functors.push_back(std::make_unique<FunctorDepthAverageField<dim>> (
                                  this->introspection().extractors.compositional_fields[c]));
           }
         else if (property_names[property_index] == "velocity_magnitude")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVelocityMagnitude<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageVelocityMagnitude<dim>>
                                (this->introspection().extractors.velocities,
                                 this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "sinking_velocity")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageSinkingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "rising_velocity")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageRisingVelocity<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageRisingVelocity<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model(),
                                 this->convert_output_to_years()));
           }
         else if (property_names[property_index] == "Vs")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (true /* Vs */));
+            functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (true /* Vs */));
           }
         else if (property_names[property_index] == "Vp")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
+            functors.push_back(std::make_unique<FunctorDepthAverageVsVp<dim>> (false /* Vp */));
           }
         else if (property_names[property_index] == "viscosity")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageViscosity<dim>>());
+            functors.push_back(std::make_unique<FunctorDepthAverageViscosity<dim>>());
           }
         else if (property_names[property_index] == "vertical_heat_flux")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageVerticalHeatFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 this->introspection().extractors.temperature,
                                 &this->get_gravity_model()));
           }
         else if (property_names[property_index] == "vertical_mass_flux")
           {
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageVerticalMassFlux<dim>>
+            functors.push_back(std::make_unique<FunctorDepthAverageVerticalMassFlux<dim>>
                                (this->introspection().extractors.velocities,
                                 &this->get_gravity_model()));
           }
@@ -831,7 +831,7 @@ namespace aspect
             const unsigned int c =
               this->introspection().compositional_index_for_name(property_names[property_index].substr(0, property_names[property_index].size()-5));
 
-            functors.push_back(std_cxx14::make_unique<FunctorDepthAverageFieldMass<dim>> (
+            functors.push_back(std::make_unique<FunctorDepthAverageFieldMass<dim>> (
                                  this->introspection().extractors.compositional_fields[c]));
           }
         else
