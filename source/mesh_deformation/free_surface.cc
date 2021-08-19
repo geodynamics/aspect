@@ -365,18 +365,10 @@ namespace aspect
                                      mesh_locally_relevant, boundary_velocity);
 
       // now insert the relevant part of the solution into the mesh constraints
-#if DEAL_II_VERSION_GTE(9,3,0)
       const IndexSet constrained_dofs =
         DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
                                         ComponentMask(dim, true),
                                         boundary_id);
-#else
-      IndexSet constrained_dofs;
-      DoFTools::extract_boundary_dofs(mesh_deformation_dof_handler,
-                                      ComponentMask(dim, true),
-                                      constrained_dofs,
-                                      boundary_id);
-#endif
 
       for (unsigned int i = 0; i < constrained_dofs.n_elements();  ++i)
         {

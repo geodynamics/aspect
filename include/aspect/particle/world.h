@@ -421,7 +421,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         /**
          * Update the particle properties of one cell.
          *
@@ -435,7 +434,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
-#endif
 
         /**
          * Advect the particles of one cell. Performs only one step for
@@ -450,7 +448,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         /**
          * Advect the particles of one cell. Performs only one step for
          * multi-step integrators. Needs to be called until integrator->continue()
@@ -469,7 +466,6 @@ namespace aspect
                                const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                internal::SolutionEvaluators<dim> &evaluators);
-#endif
 
         /**
          * This function registers the necessary functions to the

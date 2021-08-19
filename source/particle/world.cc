@@ -32,9 +32,7 @@
 #include <deal.II/fe/fe_values.h>
 #include <deal.II/grid/grid_tools.h>
 
-#if DEAL_II_VERSION_GTE(9,3,0)
 #include <deal.II/matrix_free/fe_point_evaluation.h>
-#endif
 
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
@@ -115,49 +113,8 @@ namespace aspect
       {
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Copy");
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         to_particle_handler.copy_from(from_particle_handler);
-#else
-        // initialize to_particle_handler
-        const unsigned int n_properties = property_manager->get_n_property_components();
-        to_particle_handler.clear();
-        to_particle_handler.initialize(this->get_triangulation(),
-                                       this->get_mapping(),
-                                       n_properties);
-
-        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
-
-        for (const auto &particle : from_particle_handler)
-          {
-            Particles::Particle<dim> new_particle (particle.get_location(),
-                                                   particle.get_reference_location(),
-                                                   particle.get_id());
-
-            new_particle.set_property_pool(to_particle_handler.get_property_pool());
-            new_particle.set_properties(particle.get_properties());
-
-#ifdef DEAL_II_WITH_CXX14
-            new_particles.emplace_hint(new_particles.end(),
-                                       particle.get_surrounding_cell(this->get_triangulation()),
-                                       std::move(new_particle));
-#else
-            new_particles.insert(new_particles.end(),
-                                 std::make_pair(particle.get_surrounding_cell(this->get_triangulation()),
-                                                std::move(new_particle)));
-#endif
-          }
-        to_particle_handler.insert_particles(new_particles);
-#endif
       }
-
-#if !DEAL_II_VERSION_GTE(9,3,0)
-      if (update_ghost_particles &&
-          dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
-        {
-          TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Exchange ghosts");
-          to_particle_handler.exchange_ghost_particles();
-        }
-#endif
     }
 
 
@@ -602,7 +559,6 @@ namespace aspect
 
 
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     template <int dim>
     void
     World<dim>::local_update_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -651,7 +607,6 @@ namespace aspect
                                                 gradients);
         }
     }
-#endif
 
 
 
@@ -704,7 +659,6 @@ namespace aspect
 
 
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     template <int dim>
     void
     World<dim>::local_advect_particles(const typename DoFHandler<dim>::active_cell_iterator &cell,
@@ -758,7 +712,6 @@ namespace aspect
                                        velocities,
                                        this->get_timestep());
     }
-#endif
 
 
 
@@ -939,10 +892,8 @@ namespace aspect
         {
           TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Update properties");
 
-#if DEAL_II_VERSION_GTE(9,3,0)
           const UpdateFlags update_flags = property_manager->get_needed_update_flags();
           internal::SolutionEvaluators<dim> evaluators(*this, update_flags);
-#endif
 
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -954,7 +905,6 @@ namespace aspect
                 // Only update particles, if there are any in this cell
                 if (particles_in_cell.begin() != particles_in_cell.end())
                   {
-#if DEAL_II_VERSION_GTE(9,3,0)
                     // Only use deal.II FEPointEvaluation if it's fast path is used
                     const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
                     if (use_fast_path)
@@ -966,11 +916,6 @@ namespace aspect
                       local_update_particles(cell,
                                              particles_in_cell.begin(),
                                              particles_in_cell.end());
-#else
-                    local_update_particles(cell,
-                                           particles_in_cell.begin(),
-                                           particles_in_cell.end());
-#endif
                   }
 
               }
@@ -979,7 +924,6 @@ namespace aspect
 
 
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     namespace internal
     {
       // This class evaluates the solution vector at arbitrary positions inside a cell.
@@ -1233,7 +1177,6 @@ namespace aspect
         return gradients_at_point;
       }
     }
-#endif
 
 
 
@@ -1245,9 +1188,7 @@ namespace aspect
         // TODO: Change this loop over all cells to use the WorkStream interface
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
-#if DEAL_II_VERSION_GTE(9,3,0)
         internal::SolutionEvaluators<dim> evaluators(*this, update_values);
-#endif
 
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -1259,7 +1200,6 @@ namespace aspect
               // Only advect particles, if there are any in this cell
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
-#if DEAL_II_VERSION_GTE(9,3,0)
                   // Only use deal.II FEPointEvaluation if it's fast path is used
                   const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
                   if (use_fast_path)
@@ -1271,11 +1211,6 @@ namespace aspect
                     local_advect_particles(cell,
                                            particles_in_cell.begin(),
                                            particles_in_cell.end());
-#else
-                  local_advect_particles(cell,
-                                         particles_in_cell.begin(),
-                                         particles_in_cell.end());
-#endif
 
 
                 }

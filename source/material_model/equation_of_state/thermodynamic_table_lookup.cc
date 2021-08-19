@@ -281,11 +281,7 @@ namespace aspect
         std::array<std::pair<double, unsigned int>,2> derivative;
 
         // get the pressures and temperatures at the vertices of the cell
-#if DEAL_II_VERSION_GTE(9,3,0)
         const QTrapezoid<dim> quadrature_formula;
-#else
-        const QTrapez<dim> quadrature_formula;
-#endif
 
         const unsigned int n_q_points = quadrature_formula.size();
         FEValues<dim> fe_values (this->get_mapping(),

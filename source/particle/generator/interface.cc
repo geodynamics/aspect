@@ -61,7 +61,6 @@ namespace aspect
         // Try to find the cell of the given position. If the position is not
         // in the domain on the local process, throw a ExcParticlePointNotInDomain
         // exception.
-#if DEAL_II_VERSION_GTE(9,3,0)
         std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
             Point<dim>> it =
               GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
@@ -74,27 +73,6 @@ namespace aspect
         const Particles::internal::LevelInd cell(it.first->level(), it.first->index());
         return std::make_pair(cell,particle);
 
-# else
-        try
-          {
-            std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
-                Point<dim>> it =
-                  GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
-
-            // Only try to add the point if the cell it is in, is on this processor
-            AssertThrow(it.first->is_locally_owned(),
-                        ExcParticlePointNotInDomain());
-
-            const Particle<dim> particle(position, it.second, id);
-            const Particles::internal::LevelInd cell(it.first->level(), it.first->index());
-            return std::make_pair(cell,particle);
-          }
-        catch (GridTools::ExcPointNotFound<dim> &)
-          {
-            AssertThrow(false,
-                        ExcParticlePointNotInDomain());
-          }
-# endif
         // Avoid warnings about missing return
         return std::pair<Particles::internal::LevelInd,Particle<dim>>();
       }

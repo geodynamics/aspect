@@ -537,19 +537,11 @@ namespace aspect
                                             /*direction*/ 1, matched_pairs,
                                             Tensor<1, dim>(), rotation_matrix);
 
-#if DEAL_II_VERSION_GTE(9,3,0)
           DoFTools::make_periodicity_constraints<dim,dim,double>(matched_pairs,
                                                                  constraints,
                                                                  ComponentMask(),
           {0},
           1.);
-#else
-          DoFTools::make_periodicity_constraints<DoFHandler<dim>,double>(matched_pairs,
-                                                                         constraints,
-                                                                         ComponentMask(),
-          {0},
-          1.);
-#endif
         }
     }
 

@@ -132,11 +132,7 @@ namespace aspect
             &&
             this->get_parameters().material_averaging != MaterialModel::MaterialAveraging::AveragingOperation::project_to_Q1_only_viscosity)
           MaterialModel::MaterialAveraging::average (this->get_parameters().material_averaging,
-#if DEAL_II_VERSION_GTE(9,3,0)
                                                      input_data.template get_cell<dim>(),
-#else
-                                                     input_data.template get_cell<DoFHandler<dim>>(),
-#endif
                                                      Quadrature<dim>(),
                                                      this->get_mapping(),
                                                      out);
