@@ -27,7 +27,7 @@ problems or specific instructions for MacOS users, before asking your question
 on the mailing list.
 
 In short, ASPECT is configured using CMake and has the following requirements:
-- CMake 2.8.12
+- CMake 3.1.0
 - GCC, Clang, or Intel compiler with C++11 support
 - [deal.II](https://github.com/dealii/dealii) 9.3 or newer configured with:
   - MPI, Trilinos, p4est (required)
