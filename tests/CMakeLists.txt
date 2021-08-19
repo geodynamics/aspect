@@ -17,7 +17,7 @@
 # <http://www.gnu.org/licenses/>.
 
 ################### top matter ################
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
 IF (CMP0058)
  cmake_policy(CMP0058 NEW)
