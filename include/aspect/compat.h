@@ -28,12 +28,4 @@
 #include <functional>
 #include <memory>
 
-// for std::make_unique:
-// avoid deprecated std_cxx14 inside deal.II
-namespace std_cxx14
-{
-  using std::make_unique;
-}
-
-
 #endif
