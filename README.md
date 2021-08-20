@@ -28,7 +28,7 @@ on the mailing list.
 
 In short, ASPECT is configured using CMake and has the following requirements:
 - CMake 3.1.0
-- GCC, Clang, or Intel compiler with C++11 support
+- GCC, Clang, or Intel compiler with C++14 support
 - [deal.II](https://github.com/dealii/dealii) 9.3 or newer configured with:
   - MPI, Trilinos, p4est (required)
   - BLAS/LAPACK, zlib (strongly recommended)
