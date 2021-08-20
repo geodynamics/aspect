@@ -32,9 +32,6 @@
 // after). This file doesn't actually need qprojector.h, so the include can be
 // removed when we require 9.3.. For more info see
 // https://github.com/geodynamics/aspect/issues/3728
-#if !DEAL_II_VERSION_GTE(9,3,0)
-#include <deal.II/base/qprojector.h>
-#endif
 #include <deal.II/base/quadrature.h>
 
 #include <deal.II/base/symmetric_tensor.h>

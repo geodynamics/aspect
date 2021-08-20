@@ -45,11 +45,7 @@ namespace aspect
                             std::vector<Vector<double>> &computed_quantities) const
       {
         Assert ((computed_quantities[0].size() == dim), ExcInternalError());
-#if DEAL_II_VERSION_GTE(9,3,0)
         auto cell = input_data.template get_cell<dim>();
-#else
-        auto cell = input_data.template get_cell<DoFHandler<dim>>();
-#endif
 
         for (unsigned int q=0; q<computed_quantities.size(); ++q)
           for (unsigned int d = 0; d < dim; ++d)

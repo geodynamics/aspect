@@ -1464,11 +1464,7 @@ namespace aspect
   {
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 
-#if DEAL_II_VERSION_GTE(9,3,0)
     const QTrapezoid<dim> quadrature_formula;
-#else
-    const QTrapez<dim> quadrature_formula;
-#endif
     const UpdateFlags cell_update_flags = update_quadrature_points | update_values | update_gradients;
     const FiniteElement<dim> &fe = this->get_fe();
 
