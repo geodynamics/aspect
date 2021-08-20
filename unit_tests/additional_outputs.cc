@@ -78,7 +78,7 @@ TEST_CASE("AdditionalOutputs works")
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() == NULL);
 
-  out.additional_outputs.push_back(std_cxx14::make_unique<AdditionalOutputs1<dim> > (1, 1));
+  out.additional_outputs.push_back(std::make_unique<AdditionalOutputs1<dim> > (1, 1));
 
   REQUIRE(out.get_additional_output<AdditionalOutputs1<dim> >() != NULL);
 
