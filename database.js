@@ -62,9 +62,9 @@ bibtexkey: "aspectmanual",
 bibtex: '@misc{aspectmanual,\n  title         = {{\\textsc{ASPECT}: Advanced Solver for Problems in Earth&#x27;s ConvecTion, User Manual}},\n  author        = {Bangerth, Wolfgang and Dannberg, Juliane and Fraters, Menno and Gassmoeller, Rene and Glerum, Anne and Heister, Timo and Naliboff, John},\n  year          = {2021},\n  month         = {July},\n  DOI           = {10.6084/m9.figshare.4865333},\n  note          = {doi:10.6084/m9.figshare.4865333},\n  URL           = {https://doi.org/10.6084/m9.figshare.4865333}\n}',
 group: '2.3.0'},
 entry13:{
-text: "Thomas C. Clevenger, and Timo Heister. 2019. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on Adaptive Meshes with Variable Viscosity.“ arXiv:1907.06696.",
+text: "Thomas C. Clevenger, and Timo Heister. 2021. “Comparison Between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem on an Adaptive Mesh with Variable Viscosity.“ Numerical Linear Algebra with Applications, Wiley.",
 bibtexkey: "clevenger_stokes19",
-bibtex: '@Article{clevenger_stokes19,\n  Title                    = {Comparison between Algebraic and Matrix-free Geometric Multigrid for a Stokes Problem},\n  Author                   = {Thomas C. Clevenger and Timo Heister},\n  Journal                  = {arXiv preprint arXiv:1907.06696},\n  Year                     = {2019},\n  Url                      = {https://arxiv.org/abs/1907.06696}\n}',
+bibtex: '@Article{clevenger_stokes19,\n  Title                    = {Comparison Between Algebraic and Matrix-free Geometric Multigrid for a {S}tokes Problem on an Adaptive Mesh with Variable Viscosity},\n  Author                   = {Thomas C. Clevenger and Timo Heister},\n  Journal                  = {Numerical Linear Algebra with Applications},\n  Year                     = {2021},\n  Month                    = mar,\n  Doi                      = {10.1002/nla.2375},\n  Publisher                = {Wiley},\n  Url                      = {https://arxiv.org/abs/1907.06696}\n}',
 group: 'mf'},
 entry14:{
 text: "Juliane Dannberg, and Timo Heister. 2016. “Compressible Magma/mantle Dynamics: 3-D, Adaptive Simulations in ASPECT.” Geophysical Journal International 207 (3) (September 4): 1343–1366. doi:10.1093/gji/ggw329. http://dx.doi.org/10.1093/gji/ggw329.",
