@@ -34,6 +34,23 @@ namespace aspect
   {
     namespace Interpolator
     {
+
+      bool string_to_bool(const std::string &s)
+      {
+        return (s == "true");
+      }
+
+      ComponentMask string_to_bool(const std::vector<std::string> &list)
+      {
+        std::vector<bool> results(list.size(), false);
+        for (std::size_t i = 0; i < list.size(); i++)
+          {
+            results[i] = string_to_bool(list[i]);
+          }
+        return ComponentMask(results);
+      }
+
+
       template <int dim>
       std::vector<std::vector<double>>
                                     BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
@@ -71,12 +88,7 @@ namespace aspect
           }
         else
           found_cell = cell;
-        // Since we are using a limiter, we want the most accurate center of the cell possible
-        Point<dim> midpoint = found_cell->vertex(0);
-        midpoint[0] += found_cell->extent_in_direction(0)/2;
-        midpoint[1] += found_cell->extent_in_direction(1)/2;
-        if (dim == 3)
-          midpoint[2] += found_cell->extent_in_direction(2)/2;
+
         const typename ParticleHandler<dim>::particle_iterator_range particle_range =
           particle_handler.particles_in_cell(found_cell);
 
@@ -109,7 +121,8 @@ namespace aspect
                     ExcMessage("At least one cell contained no particles. The 'bilinear'"
                                "interpolation scheme does not support this case. "));
         unsigned int positions_index = 0;
-
+        const auto &mapping = this->get_mapping();
+        const double unit_offset = 0.5; // The unit cell of deal.II is [0,1]^dim. The limiter needs a 'unit' cell of [-.5,.5]^dim.
         std::vector<std::pair<double, double>> property_bounds(n_particle_properties, std::pair<double, double>(std::numeric_limits<double>::max(), std::numeric_limits<double>::min())); // {min, max}
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
              particle != particle_range.end(); ++particle, ++positions_index)
@@ -120,18 +133,18 @@ namespace aspect
                 if (selected_properties[property_index])
                   {
                     b[property_index][positions_index] = particle_property_value[property_index];
-                    if (use_linear_least_squares_limiter)
+                    if (use_linear_least_squares_limiter[property_index])
                       {
                         property_bounds[property_index].first = std::min(b[property_index][positions_index], property_bounds[property_index].first);
                         property_bounds[property_index].second = std::max(b[property_index][positions_index], property_bounds[property_index].second);
                       }
                   }
               }
-            Tensor<1, dim, double> relative_particle_position = particle->get_location() - midpoint;
-            relative_particle_position[0] /= found_cell->extent_in_direction(0);
-            relative_particle_position[1] /= found_cell->extent_in_direction(1);
+            Point<dim> relative_particle_position = mapping.transform_real_to_unit_cell(cell, particle->get_location());
+            relative_particle_position[0] -= unit_offset;
+            relative_particle_position[1] -= unit_offset;
             if (dim == 3)
-              relative_particle_position[2] /= found_cell->extent_in_direction(2);
+              relative_particle_position[2] -= unit_offset;
             // A is accessed by A[column][row] here since we will need to append
             // columns into the qr matrix
             A[0][positions_index] = 1;
@@ -173,7 +186,7 @@ namespace aspect
           {
             if (selected_properties[property_index])
               {
-                if (use_linear_least_squares_limiter)
+                if (use_linear_least_squares_limiter[property_index])
                   {
                     // Beginning of MJG and EGP's linear least squares limiter
                     c[property_index][0] = std::max(c[property_index][0], property_bounds[property_index].first);
@@ -262,12 +275,12 @@ namespace aspect
                 std::size_t positions_index = 0;
                 for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
-                    Tensor<1, dim, double> relative_support_point_location = *itr - midpoint;
-                    relative_support_point_location[0] /= found_cell->extent_in_direction(0);
-                    relative_support_point_location[1] /= found_cell->extent_in_direction(1);
+                    Point<dim> relative_support_point_location = mapping.transform_real_to_unit_cell(found_cell, *itr);
+                    relative_support_point_location[0] -= unit_offset;
+                    relative_support_point_location[1] -= unit_offset;
                     if (dim == 3)
                       {
-                        relative_support_point_location[2] /= found_cell->extent_in_direction(2);
+                        relative_support_point_location[2] -= unit_offset;
                       }
                     double interpolated_value = c[property_index][0] +
                                                 c[property_index][1] * relative_support_point_location[0] +
@@ -276,7 +289,7 @@ namespace aspect
                       {
                         interpolated_value += c[property_index][3] * relative_support_point_location[2];
                       }
-                    if (use_linear_least_squares_limiter)
+                    if (use_linear_least_squares_limiter[property_index])
                       {
                         interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
                         interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
@@ -304,12 +317,13 @@ namespace aspect
               prm.enter_subsection("Bilinear least squares");
               {
                 prm.declare_entry("Use linear least squares limiter", "false",
-                                  Patterns::Bool(),
+                                  Patterns::List(Patterns::Bool()),
                                   "Limit the interpolation of all particle properties "
                                   "onto the cell so the value of each property is no "
                                   "smaller than its minimum and no larger than its "
                                   "maximum on the particles in each cell. Currently "
                                   "doesn't work on spherical grids.");
+
               }
               prm.leave_subsection();
             }
@@ -334,7 +348,24 @@ namespace aspect
             {
               prm.enter_subsection("Bilinear least squares");
               {
-                use_linear_least_squares_limiter = prm.get_bool("Use linear least squares limiter");
+                const Postprocess::Particles<dim> &particle_postprocessor =
+                  this->get_postprocess_manager().template get_matching_postprocessor<const Postprocess::Particles<dim>>();
+                const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
+                const unsigned int n_property_components = particle_property_information.n_components();
+                const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
+                std::vector<std::string> split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
+                if (split.size() == 1)
+                  {
+                    use_linear_least_squares_limiter = ComponentMask(n_property_components - n_internal_components, string_to_bool(split[0]));
+                  }
+                else if (split.size() == n_property_components - n_internal_components)
+                  {
+                    use_linear_least_squares_limiter = string_to_bool(split);
+                  }
+                else
+                  {
+                    AssertThrow(false, ExcMessage("The size of 'Use linear least squares limiter' should either be 1 or the number of particle properties"));
+                  }
               }
               prm.leave_subsection();
             }

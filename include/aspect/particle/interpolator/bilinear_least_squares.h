@@ -75,7 +75,7 @@ namespace aspect
            * max and min on the particles in that cell for each property.
            */
 
-          bool use_linear_least_squares_limiter;
+          ComponentMask use_linear_least_squares_limiter;
 
           /**
            * Fallback method if there are too few particles in a cell to
