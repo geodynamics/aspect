@@ -521,7 +521,7 @@ namespace aspect
         MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
 
         /**
-        * Transfer operator for multigrid
+        * Multigrid transfer operator for the displacements
         */
         MGTransferMatrixFree<dim, double> mg_transfer;
 

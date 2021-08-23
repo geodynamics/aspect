@@ -987,16 +987,18 @@ namespace aspect
     {
       Assert(sim.stokes_matrix_free, ExcInternalError());
 
-      dealii::LinearAlgebra::distributed::Vector<double> temp(mesh_deformation_dof_handler.locally_owned_dofs(),
-                                                              sim.triangulation.get_communicator());
+      // Convert the mesh_displacements to a d:Vector that we can use
+      // to transfer to the MG levels below. The conversion is done by
+      // going through a ReadWriteVector.
+      dealii::LinearAlgebra::distributed::Vector<double> displacements(mesh_deformation_dof_handler.locally_owned_dofs(),
+                                                                       this->get_triangulation().get_communicator());
       dealii::LinearAlgebra::ReadWriteVector<double> rwv;
       rwv.reinit(mesh_displacements);
-      temp.import(rwv, VectorOperation::insert);
+      displacements.import(rwv, VectorOperation::insert);
 
       mg_transfer.interpolate_to_mg(mesh_deformation_dof_handler,
                                     level_displacements,
-                                    temp);
-
+                                    displacements);
     }
 
     template <int dim>
