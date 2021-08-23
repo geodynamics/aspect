@@ -1882,6 +1882,7 @@ namespace aspect
     if (print_details)
       {
         sim.pcout << "\n    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << '\n';
+        sim.pcout << "    GMG n_levels: " << sim.triangulation.n_global_levels() << '\n';
         const double imbalance = MGTools::workload_imbalance(sim.triangulation);
         sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl;
       }
