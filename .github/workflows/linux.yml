@@ -131,7 +131,7 @@ jobs:
         ctest \
         --no-compress-output \
         --test-action Test \
-        --output-on-failure
+        --output-on-failure || touch test_run_failed
     - name: write test results
       continue-on-error: true
       run: |
@@ -145,7 +145,7 @@ jobs:
         path: build/changes-test-results.diff
     - name: check test results
       run: |
-        if [ -s build/changes-test-results.diff ]; then
+        if [ -f build/test_run_failed ] || [ -s build/changes-test-results.diff ]; then
           exit 1
         else
           exit 0
