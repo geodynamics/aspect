@@ -350,24 +350,18 @@ namespace aspect
       virtual void setup_dofs()=0;
 
       /**
-       * Evaluate the MaterialModel to query for the viscosity on the active cells,
-       * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage. Also sets pressure scaling and information regarding the
-       * compressiblity of the flow.
+       * Perform various tasks to update the linear system to solve
+       * for. Note that we are not assembling a matrix (as this is a
+       * matrix-free algorithm), but we are evaluating the material
+       * model and storing the information necessary for a later call
+       * to solve().
        */
-      virtual void evaluate_material_model()=0;
+      virtual void assemble()=0;
 
       /**
-       * Add correction to system RHS for non-zero boundary condition. For more information
-       * on exactly what this correction is and why it is computed, see the deal.II tutorial
-       * step 50 section "LaplaceProblem::assemble_rhs()":
-       * https://www.dealii.org/developer/doxygen/deal.II/step_50.html#LaplaceProblemassemble_rhs
-       */
-      virtual void correct_stokes_rhs()=0;
-
-      /**
-       * Computes and sets the diagonal for both the mass matrix operator and the A-block
-       * operators on each level for the purpose of smoothing inside the multigrid v-cycle.
+       * Computes and sets the diagonal for both the mass matrix
+       * operator and the A-block operators on each level for the
+       * purpose of smoothing inside the multigrid v-cycle.
        */
       virtual void build_preconditioner()=0;
 
@@ -473,18 +467,13 @@ namespace aspect
       void setup_dofs() override;
 
       /**
-       * Evaluate the MaterialModel to query for the viscosity on the active cells,
-       * project this viscosity to the multigrid hierarchy, and cache the information
-       * for later usage. Also sets pressure scaling and information regarding the
-       * compressibility of the flow.
+       * Perform various tasks to update the linear system to solve
+       * for. Note that we are not assembling a matrix (as this is a
+       * matrix-free algorithm), but we are evaluating the material
+       * model and storing the information necessary for a later call
+       * to solve().
        */
-      void evaluate_material_model() override;
-
-      /**
-       * Add correction to system RHS for non-zero boundary condition. See description in
-       * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
-       */
-      void correct_stokes_rhs() override;
+      virtual void assemble() override;
 
       /**
        * Computes and sets the diagonal for both the mass matrix operator and the A-block
@@ -556,9 +545,22 @@ namespace aspect
 
     private:
       /**
-       * Parse parameters. (No actual parameters at the moment).
+       * Parse parameters.
        */
       void parse_parameters (ParameterHandler &prm);
+
+      /**
+       * Evaluate the MaterialModel to query information like the viscosity and
+       * project this viscosity to the multigrid hierarchy. Also queries
+       * other parameters like pressure scaling.
+       */
+      void evaluate_material_model();
+
+      /**
+       * Add correction to system RHS for non-zero boundary condition. See description in
+       * StokesMatrixFreeHandler::correct_stokes_rhs() for more information.
+       */
+      void correct_stokes_rhs();
 
 
       Simulator<dim> &sim;
