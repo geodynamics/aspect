@@ -175,7 +175,7 @@ namespace aspect
         prm.enter_subsection("Topography");
         {
           prm.declare_entry ("Output to file", "false",
-                             Patterns::List(Patterns::Bool()),
+                             Patterns::Bool(),
                              "Whether or not to write topography to a text file named named "
                              "'topography.NNNNN' in the output directory");
 
