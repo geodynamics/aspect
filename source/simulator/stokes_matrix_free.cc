@@ -1341,6 +1341,16 @@ namespace aspect
   }
 
 
+
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::assemble ()
+  {
+    evaluate_material_model();
+    correct_stokes_rhs();
+  }
+
+
+
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
   {

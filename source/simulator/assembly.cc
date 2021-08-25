@@ -811,10 +811,7 @@ namespace aspect
 
     // If we change the system_rhs, matrix-free Stokes must update
     if (stokes_matrix_free)
-      {
-        stokes_matrix_free->evaluate_material_model();
-        stokes_matrix_free->correct_stokes_rhs();
-      }
+      stokes_matrix_free->assemble();
 
     // if the model is compressible then we need to adjust the right hand
     // side of the equation to make it compatible with the matrix on the
