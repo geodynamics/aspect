@@ -173,7 +173,7 @@ namespace aspect
                                       const MPI_Comm &mpi_communicator,
                                       const unsigned int root_process)
     {
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const bool supports_shared_data = true;
 #else
       const bool supports_shared_data = false;
@@ -235,7 +235,7 @@ namespace aspect
           &&
           (root_process != numbers::invalid_unsigned_int))
         {
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
           coordinate_values                 = Utilities::MPI::broadcast (mpi_communicator,
                                                                          coordinate_values,
                                                                          root_process);
@@ -329,7 +329,7 @@ namespace aspect
     StructuredDataLookup<dim>::load_file(const std::string &filename,
                                          const MPI_Comm &comm)
     {
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const bool supports_shared_data = true;
       const unsigned int root_process = 0;
 #else
@@ -549,7 +549,7 @@ namespace aspect
       // contains only empty tables.
       if (supports_shared_data == true)
         {
-#if DEAL_II_VERSION_GTE(9,3,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
           components = Utilities::MPI::broadcast (comm,
                                                   components,
                                                   root_process);
