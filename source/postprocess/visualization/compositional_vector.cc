@@ -31,7 +31,7 @@ namespace aspect
       CompositionalVector ()
         :
         DataPostprocessor<dim> (),
-        Interface<dim>("unitless")
+        Interface<dim>("")
       {}
 
 

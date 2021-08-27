@@ -46,6 +46,9 @@ namespace aspect
           public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           BoundaryIndicator();
 
           /**

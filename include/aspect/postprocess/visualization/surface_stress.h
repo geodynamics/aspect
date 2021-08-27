@@ -57,6 +57,9 @@ namespace aspect
           public SurfaceOnlyVisualization<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           SurfaceStress();
 
           void

@@ -41,7 +41,11 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           ErrorIndicator();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */

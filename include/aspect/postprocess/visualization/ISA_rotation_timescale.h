@@ -55,12 +55,12 @@ namespace aspect
         public:
           /**
            * Constructor.
-          */
+           */
           ISARotationTimescale();
 
-
-          *@copydoc CellDataVectorCreator<dim>::execute()
-          */
+          /**
+           *@copydoc CellDataVectorCreator<dim>::execute()
+           */
           std::pair<std::string, Vector<float> *>
           execute() const override;
 

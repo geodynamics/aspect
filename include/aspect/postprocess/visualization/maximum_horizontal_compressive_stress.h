@@ -50,6 +50,9 @@ namespace aspect
           public Interface<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
           MaximumHorizontalCompressiveStress();
 
           void

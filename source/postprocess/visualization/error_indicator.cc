@@ -32,7 +32,7 @@ namespace aspect
       ErrorIndicator<dim>::
       ErrorIndicator ()
         :
-        CellDataVectorCreator<dim>("unitless")
+        CellDataVectorCreator<dim>("")
       {}
 
 
