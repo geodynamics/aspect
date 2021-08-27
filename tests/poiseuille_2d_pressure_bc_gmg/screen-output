@@ -9,9 +9,9 @@ Number of degrees of freedom: 3,556 (2,178+289+1,089)
     GMG coarse size A: 18, coarse size S: 4
     GMG n_levels: 5
     GMG workload imbalance: 1
-    Schur iterations: 15+0
-    A iterations: 15+0
-    Stokes: 14+0 iterations.
+    Stokes solver: 14+0 iterations.
+    Schur complement preconditioner: 15+0 iterations.
+    A block preconditioner: 15+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.193 m/s, 0.27 m/s

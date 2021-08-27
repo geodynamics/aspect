@@ -10,9 +10,9 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
     GMG coarse size A: 81, coarse size S: 8
     GMG n_levels: 3
     GMG workload imbalance: 1
-    Schur iterations: 25+0
-    A iterations: 25+0
-    Stokes: 9+0 iterations.
+    Stokes solver: 9+0 iterations.
+    Schur complement preconditioner: 25+0 iterations.
+    A block preconditioner: 25+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.999954
 
 
