@@ -2197,9 +2197,12 @@ namespace aspect
                     f << "\n";
                   }
 
-
-                for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
-                  f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
+                // Only request the solver history if a history has actually been created
+                if (sim.parameters.n_expensive_stokes_solver_steps > 0)
+                  {
+                    for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
+                      f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
+                  }
 
                 f.close();
 
