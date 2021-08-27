@@ -504,7 +504,10 @@ namespace aspect
     if (pre_refinement_step < parameters.initial_adaptive_refinement)
       {
         if (parameters.timing_output_frequency ==0)
-          computing_timer.print_summary ();
+          {
+            computing_timer.print_summary ();
+            pcout << "-- Total wallclock time elapsed including restarts:" << round(walltime.wall_time()+total_walltime_until_last_snapshot) << "s" << std::endl;
+          }
 
         output_statistics();
 
@@ -581,7 +584,10 @@ namespace aspect
 
     // if requested output a summary of the current timing information
     if (write_timing_output)
-      computing_timer.print_summary ();
+      {
+        computing_timer.print_summary ();
+        pcout << "-- Total wallclock time elapsed including restarts:" << round(walltime.wall_time()+total_walltime_until_last_snapshot) << "s" << std::endl;
+      }
   }
 
 

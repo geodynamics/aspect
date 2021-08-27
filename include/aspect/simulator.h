@@ -1879,6 +1879,16 @@ namespace aspect
       mutable TimerOutput                 computing_timer;
 
       /**
+       * A timer that we use to sum up the wall time between restarts.
+       */
+      Timer walltime;
+
+      /**
+       * The total wall time that has elapsed up to the last snapshot
+       * that was created.
+       */
+      double total_walltime_until_last_snapshot;
+      /**
        * In output_statistics(), where we output the statistics object above,
        * we do the actual writing on a separate thread. This variable is the
        * handle we get for this thread so that we can wait for it to finish,

@@ -168,6 +168,7 @@ namespace aspect
                      pcout,
                      TimerOutput::never,
                      TimerOutput::wall_times),
+    total_walltime_until_last_snapshot(0.),
     initial_topography_model(InitialTopographyModel::create_initial_topography_model<dim>(prm)),
     geometry_model (GeometryModel::create_geometry_model<dim>(prm)),
     // make sure the parameters object gets a chance to
@@ -237,6 +238,7 @@ namespace aspect
                                    false),
     rebuild_stokes_preconditioner (true)
   {
+    walltime.start();
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         // only open the log file on processor 0, the other processors won't be
@@ -2019,6 +2021,8 @@ namespace aspect
     // we disable automatic summary printing so that it won't happen when
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
+
+    pcout << "-- Total wallclock time elapsed including restarts:" << round(walltime.wall_time()+total_walltime_until_last_snapshot) << "s" << std::endl;
 
     CitationInfo::print_info_block (pcout);
 
