@@ -350,6 +350,13 @@ namespace aspect
         (boundary_velocity_manager.get_active_boundary_velocity_conditions().size() > 0))
       rebuild_stokes_matrix = rebuild_stokes_preconditioner = true;
 
+    // Re-compute the pressure scaling factor.
+    // The call to this function must precede the one to the computation
+    // of constraints because some kinds of constraints require scaling
+    // pressure degrees of freedom to a size adjusted by the pressure_scaling
+    // factor.
+    pressure_scaling = compute_pressure_scaling_factor();
+
     // set constraints for p_c if porosity is below a threshold
     if (nonlinear_iteration == 0 && parameters.include_melt_transport)
       {
