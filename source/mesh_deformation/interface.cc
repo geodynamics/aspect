@@ -678,7 +678,7 @@ namespace aspect
       distributed_mesh_displacements.add(this->get_timestep(), velocity_solution);
       mesh_displacements = distributed_mesh_displacements;
 
-      if (sim.stokes_matrix_free)
+      if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
     }
 
@@ -904,14 +904,13 @@ namespace aspect
                            sim.introspection.index_sets.system_relevant_partitioning,
                            sim.mpi_communicator);
 
-
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
-      if (sim.stokes_matrix_free)
+      if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
 
-          const unsigned int n_levels = sim.triangulation.n_global_levels();
+          const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
           level_displacements.resize(0, n_levels-1);
           level_mappings.resize(0, n_levels-1);
@@ -977,7 +976,7 @@ namespace aspect
           this->get_timestep_number() == 0)
         deform_initial_mesh();
 
-      if (sim.stokes_matrix_free)
+      if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
     }
 
@@ -985,7 +984,7 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::update_multilevel_deformation ()
     {
-      Assert(sim.stokes_matrix_free, ExcInternalError());
+      Assert(this->is_stokes_matrix_free(), ExcInternalError());
 
       // Convert the mesh_displacements to a d:Vector that we can use
       // to transfer to the MG levels below. The conversion is done by
