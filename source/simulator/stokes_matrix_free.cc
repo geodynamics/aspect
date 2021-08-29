@@ -1349,15 +1349,6 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::assemble ()
   {
-    evaluate_material_model();
-    correct_stokes_rhs();
-  }
-
-
-
-  template <int dim, int velocity_degree>
-  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
-  {
     if (sim.mesh_deformation)
       {
         // Update the geometry information stored in the MatrixFree
@@ -1367,6 +1358,17 @@ namespace aspect
         for (auto &obj : matrix_free_objects)
           obj->update_mapping(*obj->get_mapping_info().mapping);
       }
+
+    evaluate_material_model();
+
+    correct_stokes_rhs();
+  }
+
+
+
+  template <int dim, int velocity_degree>
+  void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::evaluate_material_model ()
+  {
 
 
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
@@ -1715,7 +1717,6 @@ namespace aspect
   template <int dim, int velocity_degree>
   void StokesMatrixFreeHandlerImplementation<dim, velocity_degree>::correct_stokes_rhs()
   {
-
     // We never include Newton terms in step 0 and after that we solve with zero boundary conditions.
     // Therefore, we don't need to include Newton terms here.
 
