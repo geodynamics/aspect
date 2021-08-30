@@ -96,7 +96,7 @@ namespace aspect
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
         mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
-        mesh_deformation_dof_handler (sim.triangulation),
+        mesh_deformation_dof_handler (this->get_triangulation()),
         include_initial_topography(false)
     {
       // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
