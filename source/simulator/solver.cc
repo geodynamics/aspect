@@ -299,16 +299,11 @@ namespace aspect
             // processors
             catch (const std::exception &exc)
               {
-                if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                  AssertThrow (false,
-                               ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurPreconditioner::vmult "
-                                                       "did not converge to a tolerance of "
-                                                       + Utilities::to_string(solver_control.tolerance()) +
-                                                       ". It reported the following error:\n\n")
-                                           +
-                                           exc.what()))
-                  else
-                    throw QuietException();
+                Utilities::linear_solver_failed("iterative (bottom right) solver",
+                                                "BlockSchurPreconditioner::vmult",
+                                                std::vector<SolverControl> {solver_control},
+                                                exc,
+                                                src.block(0).get_mpi_communicator());
               }
           }
 
@@ -341,16 +336,11 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                AssertThrow (false,
-                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurPreconditioner::vmult "
-                                                     "did not converge to a tolerance of "
-                                                     + Utilities::to_string(solver_control.tolerance()) +
-                                                     ". It reported the following error:\n\n")
-                                         +
-                                         exc.what()))
-                else
-                  throw QuietException();
+              Utilities::linear_solver_failed("iterative (top left) solver",
+                                              "BlockSchurPreconditioner::vmult",
+                                              std::vector<SolverControl> {solver_control},
+                                              exc,
+                                              src.block(0).get_mpi_communicator());
             }
         }
       else
@@ -362,38 +352,7 @@ namespace aspect
 
   }
 
-  namespace
-  {
-    void linear_solver_failed(const std::string &solver_name,
-                              const std::string &output_filename,
-                              const std::vector<SolverControl> &solver_controls,
-                              const std::exception &exc)
-    {
-      // output solver history
-      std::ofstream f((output_filename).c_str());
 
-      for (unsigned int i=0; i<solver_controls.size(); ++i)
-        {
-          if (i>0)
-            f << "\n";
-
-          // Only request the solver history if a history has actually been created
-          for (unsigned int j=0; j<solver_controls[i].get_history_data().size(); ++j)
-            f << j << " " << solver_controls[i].get_history_data()[j] << "\n";
-        }
-
-      f.close();
-
-      AssertThrow (false,
-                   ExcMessage ("The " + solver_name
-                               + " did not converge. It reported the following error:\n\n"
-                               +
-                               exc.what()
-                               + "\n The required residual for convergence is: " + std::to_string(solver_controls.front().tolerance())
-                               + ".\n See " + output_filename
-                               + " for convergence history."));
-    }
-  }
 
   template <int dim>
   double Simulator<dim>::solve_advection (const AdvectionField &advection_field)
@@ -520,15 +479,13 @@ namespace aspect
                                       advection_field.compositional_variable,
                                       solver_control);
 
-        if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-          {
-            linear_solver_failed("iterative advection solver",
-                                 parameters.output_directory+"solver_history.txt",
-                                 std::vector<SolverControl> {solver_control},
-                                 exc);
-          }
-        else
-          throw QuietException();
+
+        Utilities::linear_solver_failed("iterative advection solver",
+                                        "Simulator::solve_advection",
+                                        std::vector<SolverControl> {solver_control},
+                                        exc,
+                                        mpi_communicator,
+                                        parameters.output_directory+"solver_history.txt");
       }
 
     // signal successful solver
@@ -850,7 +807,7 @@ namespace aspect
         // step 1b: take the stronger solver in case
         // the simple solver failed and attempt solving
         // it in n_expensive_stokes_solver_steps steps or less.
-        catch (const SolverControl::NoConvergence &)
+        catch (const SolverControl::NoConvergence &exc)
           {
             // The cheap solver failed or never ran.
             // Print the number of cheap iterations to screen to indicate we
@@ -858,6 +815,10 @@ namespace aspect
             pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
                       solver_control_cheap.last_step():
                       0) << '+' << std::flush;
+
+            // if no expensive steps allowed, we have failed, rethrow exception
+            if (parameters.n_expensive_stokes_solver_steps == 0)
+              throw exc;
 
             // use the value defined by the user
             // OR
@@ -873,10 +834,6 @@ namespace aspect
 
             try
               {
-                AssertThrow (parameters.n_expensive_stokes_solver_steps>0,
-                             ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and "
-                                         "you requested 0 for ``Maximum number of expensive Stokes solver steps''. Aborting."));
-
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
@@ -901,19 +858,18 @@ namespace aspect
                                            solver_control_cheap,
                                            solver_control_expensive);
 
-                if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
-                  {
-                    linear_solver_failed("iterative Stokes solver",
-                                         parameters.output_directory+"solver_history.txt",
-                                         parameters.n_cheap_stokes_solver_steps > 0 ?
-                                         std::vector<SolverControl> {solver_control_cheap, solver_control_expensive} :
-                                         std::vector<SolverControl> {solver_control_expensive},
-                                         exc);
-                  }
-                else
-                  {
-                    throw QuietException();
-                  }
+                std::vector<SolverControl> solver_controls;
+                if (parameters.n_cheap_stokes_solver_steps > 0)
+                  solver_controls.push_back(solver_control_cheap);
+                if (parameters.n_expensive_stokes_solver_steps > 0)
+                  solver_controls.push_back(solver_control_expensive);
+
+                Utilities::linear_solver_failed("iterative Stokes solver",
+                                                "Simulator::solve_stokes",
+                                                solver_controls,
+                                                exc,
+                                                mpi_communicator,
+                                                parameters.output_directory+"solver_history.txt");
               }
           }
 

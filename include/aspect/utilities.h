@@ -813,6 +813,32 @@ namespace aspect
                      VectorType                                                &vec_result);
 
     /**
+     * Throw an exception that a linear solver failed with some helpful information for the user.
+     * This function is needed because we have multiple solvers that all require similar treatment
+     * and we would like to keep the output consistent. If the optional parameter
+     * @p output_filename is given, the solver history is additionally written to this file.
+     *
+     * @p solver_name A name that identifies the solver and appears in the error message.
+     * @p function_name The name of the function that used the solver (to identify where in the code
+     *   a solver failed).
+     * @p solver_controls One or more solver controls that describe the history of the solver(s)
+     *   that failed. The reason the function takes multiple controls is we sometimes use
+     *   multi-stage solvers, e.g. we try a cheap solver first, and use an expensive solver if the
+     *   cheap solver fails.
+     * @p exc The exception that was thrown by the solver when it failed, containing additional
+     *   information about what happened.
+     * @p mpi_communicator The MPI Communicator of the problem.
+     * @p output_filename An optional file name into which (if present) the solver history will
+     *   be written.
+     */
+    void linear_solver_failed(const std::string &solver_name,
+                              const std::string &function_name,
+                              const std::vector<SolverControl> &solver_controls,
+                              const std::exception &exc,
+                              const MPI_Comm &mpi_communicator,
+                              const std::string &output_filename = "");
+
+    /**
     * Conversion object where one can provide a function that returns
     * a tensor for the velocity at a given point and it returns something
     * that matches the dealii::Function interface with a number of output
