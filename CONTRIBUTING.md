@@ -126,11 +126,12 @@ ways in which your contribution will be acknowledged by the ASPECT community:
 - Our biweekly mailing list newsletter mentions all raised issues and proposed
   and merged pull requests, including an acknowledgment of the author of the
   issue/pull request.
-- The most significant entries of our
+- For every release the most significant entries of our
   [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html)
-  are selected to generate our release notes, and all entries remain available
-  for all previous releases of ASPECT, which documents that functionality that
-  you contributed to ASPECT.
+  are selected to generate our release announcements. Additionally, all entries
+  remain available for all previous releases of ASPECT inside the
+  [repository](doc/modules/) and on our website (under "Development"), which
+  documents the functionality that you contributed to ASPECT.
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
