@@ -837,6 +837,13 @@ namespace aspect
                           distributed_stokes_rhs,
                           preconditioner_cheap);
 
+            // Success. Print all iterations to screen (0 expensive iterations).
+            pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0)
+                  << "+0"
+                  << " iterations." << std::endl;
+
             final_linear_residual = solver_control_cheap.last_value();
           }
 
@@ -845,6 +852,13 @@ namespace aspect
         // it in n_expensive_stokes_solver_steps steps or less.
         catch (const SolverControl::NoConvergence &)
           {
+            // The cheap solver failed or never ran.
+            // Print the number of cheap iterations to screen to indicate we
+            // try the expensive solver next.
+            pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0) << '+' << std::flush;
+
             // use the value defined by the user
             // OR
             // at least a restart length of 100 for melt models
@@ -867,6 +881,12 @@ namespace aspect
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
                              preconditioner_expensive);
+
+                // Success. Print expensive iterations to screen.
+                pcout << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
+                          solver_control_expensive.last_step():
+                          0)
+                      << " iterations." << std::endl;
 
                 final_linear_residual = solver_control_expensive.last_value();
               }
@@ -915,17 +935,6 @@ namespace aspect
         // into the ghosted one with all solution components
         solution.block(block_vel) = distributed_stokes_solution.block(block_vel);
         solution.block(block_p) = distributed_stokes_solution.block(block_p);
-
-        // print the number of iterations to screen
-        pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_cheap.last_step():
-                  0)
-              << '+'
-              << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_expensive.last_step():
-                  0)
-              << " iterations.";
-        pcout << std::endl;
       }
 
 

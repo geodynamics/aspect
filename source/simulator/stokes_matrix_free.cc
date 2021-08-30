@@ -1905,10 +1905,13 @@ namespace aspect
 
     if (print_details)
       {
-        sim.pcout << "\n    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << '\n';
-        sim.pcout << "    GMG n_levels: " << sim.triangulation.n_global_levels() << '\n';
+        sim.pcout << std::endl
+                  << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
+                  << "    GMG n_levels: " << sim.triangulation.n_global_levels() << std::endl;
+
         const double imbalance = MGTools::workload_imbalance(sim.triangulation);
-        sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl;
+        sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl
+                  << "    Stokes solver: " << std::flush;
       }
 
     // Interface matrices
@@ -2164,6 +2167,13 @@ namespace aspect
         else
           Assert(false,ExcNotImplemented());
 
+        // Success. Print all iterations to screen (0 expensive iterations).
+        sim.pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0)
+                  << "+0"
+                  << " iterations." << std::endl;
+
         final_linear_residual = solver_control_cheap.last_value();
       }
     // step 1b: take the stronger solver in case
@@ -2171,6 +2181,13 @@ namespace aspect
     // it in n_expensive_stokes_solver_steps steps or less.
     catch (const SolverControl::NoConvergence &)
       {
+        // The cheap solver failed or never ran.
+        // Print the number of cheap iterations to screen to indicate we
+        // try the expensive solver next.
+        sim.pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
+                      solver_control_cheap.last_step():
+                      0) << '+' << std::flush;
+
         // use the value defined by the user
         // OR
         // at least a restart length of 100 for melt models
@@ -2193,6 +2210,12 @@ namespace aspect
                          solution_copy,
                          rhs_copy,
                          preconditioner_expensive);
+
+            // Success. Print expensive iterations to screen.
+            sim.pcout << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
+                          solver_control_expensive.last_step():
+                          0)
+                      << " iterations." << std::endl;
 
             final_linear_residual = solver_control_expensive.last_value();
           }
@@ -2268,27 +2291,15 @@ namespace aspect
 
     if (print_details)
       {
-        sim.pcout << "    Schur iterations: " << preconditioner_cheap.n_iterations_Schur_complement()
+        sim.pcout << "    Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
                   << "+"
                   << preconditioner_expensive.n_iterations_Schur_complement()
-                  << '\n';
-        sim.pcout << "    A iterations: " << preconditioner_cheap.n_iterations_A_block()
+                  << " iterations." << std::endl;
+        sim.pcout << "    A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
                   << "+"
                   << preconditioner_expensive.n_iterations_A_block()
-                  << '\n';
-        sim.pcout <<"    Stokes: " << std::flush;
+                  << " iterations." << std::endl;
       }
-
-    // print the number of iterations to screen
-    sim.pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_cheap.last_step():
-                  0)
-              << '+'
-              << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
-                  solver_control_expensive.last_step():
-                  0)
-              << " iterations.";
-    sim.pcout << std::endl;
 
     // do some cleanup now that we have the solution
     sim.remove_nullspace(sim.solution, distributed_stokes_solution);
