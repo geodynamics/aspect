@@ -31,6 +31,9 @@
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/lac/affine_constraints.h>
 #include <deal.II/base/index_set.h>
+#include <deal.II/base/mg_level_object.h>
+#include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_transfer_matrix_free.h>
 
 
 namespace aspect
@@ -290,6 +293,15 @@ namespace aspect
         const MeshDeformationType &
         get_matching_mesh_deformation_object () const;
 
+
+        /**
+         * If multilevel solvers are used, we need a mapping on each multigrid level. These
+         * are automatically updated by this handler class and can be accessed with this
+         * method.
+         */
+        const Mapping<dim> &
+        get_level_mapping(const unsigned int level) const;
+
         /**
          * For the current plugin subsystem, write a connection graph of all of the
          * plugins we know about, in the format that the
@@ -371,6 +383,11 @@ namespace aspect
          * Calculate the velocity of the mesh for ALE corrections.
          */
         void interpolate_mesh_velocity ();
+
+        /**
+         * Update the mesh deformation for the multigrid levels.
+         */
+        void update_multilevel_deformation ();
 
         /**
          * Reference to the Simulator object to which a MeshDeformationHandler
@@ -492,6 +509,22 @@ namespace aspect
         std::set<types::boundary_id> free_surface_boundary_indicators;
 
         bool include_initial_topography;
+
+        /**
+         * If required, store a mapping for each multigrid level.
+         */
+        MGLevelObject<std::unique_ptr<Mapping<dim>>> level_mappings;
+
+        /**
+         * One vector on each multigrid level for the mesh displacement used in the mapping.
+         */
+        MGLevelObject<dealii::LinearAlgebra::distributed::Vector<double>> level_displacements;
+
+        /**
+        * Multigrid transfer operator for the displacements
+        */
+        MGTransferMatrixFree<dim, double> mg_transfer;
+
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;
