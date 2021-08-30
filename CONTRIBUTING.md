@@ -107,7 +107,7 @@ you would like to contribute some code.
 If your new pull request creates a change that is noticeable to ASPECT users,
 please add an entry to our
 [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html). To
-add such an entry, make a copy of on of the files in the
+add such an entry, make a copy of one of the files in the
 [doc/modules/changes/](doc/modules/changes/) folder and modify it to explain
 your change. The name of the file consists of the date of the change
 (approximately) and the name of the author. Start the file with a tag
