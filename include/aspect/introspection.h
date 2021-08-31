@@ -355,10 +355,10 @@ namespace aspect
 
 
       /**
-       * A function that returns the full list of compositional field type indices.
+       * A function that returns the full vector of field descriptions.
        */
-      const typename Parameters<dim>::FieldTypeIndices &
-      get_field_type_indices () const;
+      const std::vector<typename Parameters<dim>::FieldDescription> &
+      get_field_descriptions () const;
 
       /**
        * A function that gets the name of a compositional field as an input
@@ -388,7 +388,11 @@ namespace aspect
        */
       std::vector<std::string> composition_names;
 
-      typename Parameters<dim>::FieldTypeIndices field_type_indices;
+      /**
+       * A vector that stores descriptions of each field, including its type
+       * (i.e. whether the field corresponds to a composition, porosity etc.).
+       */
+      std::vector<typename Parameters<dim>::FieldDescription> field_descriptions;
 
   };
 }

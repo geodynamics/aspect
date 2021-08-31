@@ -374,15 +374,47 @@ namespace aspect
     };
 
     /**
-     * A data structure containing vectors of the indices of each
-     * compositional field type.
+     * A data structure containing a description of each field.
+     * At present, this structure only includes the field type
+     * (i.e., whether the field corresponds to a composition, porosity, etc.).
      */
-    struct FieldTypeIndices
+    struct FieldDescription
     {
-      std::vector<unsigned int> composition;
-      std::vector<unsigned int> stress;
-      std::vector<unsigned int> grain_size;
-      std::vector<unsigned int> porosity;
+      /**
+       * This enum lists available field types.
+       */
+      enum Kind
+      {
+        composition,
+        stress,
+        grain_size,
+        porosity,
+        generic
+      } type;
+
+      /**
+       * This function translates an input string into the
+       * available enum options for the type of field.
+       */
+      static
+      Kind
+      parse_type(const std::string &input)
+      {
+        if (input == "composition")
+          return FieldDescription::composition;
+        else if (input == "stress")
+          return FieldDescription::stress;
+        else if (input == "grain_size")
+          return FieldDescription::grain_size;
+        else if (input == "porosity")
+          return FieldDescription::porosity;
+        else if (input == "generic")
+          return FieldDescription::generic;
+        else
+          AssertThrow(false, ExcNotImplemented());
+
+        return FieldDescription::Kind();
+      }
     };
 
     /**
@@ -674,7 +706,7 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
-    FieldTypeIndices               field_type_indices;
+    std::vector<FieldDescription>  field_descriptions;
 
     /**
      * A vector that contains the advection field method for every compositional

@@ -1,9 +1,0 @@
-New: The "Compositional fields" subsection in ASPECT has a new parameter called
-"Types of fields" that is used to specify the types of all the "compositional" fields.
-The parameter is used to fill a new FieldTypeIndices structure,
-that itself contains a series of std::vector<unsigned int>
-objects containing the indices of the fields corresponding to each type.
-This structure can be called from within material models
-via this->introspection().get_field_type_indices().
-<br>
-(Bob Myhill, 2021/07/18)

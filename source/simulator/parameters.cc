@@ -1168,11 +1168,11 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "",
-                         Patterns::List (Patterns::Selection("composition|stress|grain_size|porosity|other")),
+                         Patterns::List (Patterns::Selection("composition|stress|grain_size|porosity|generic")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
                          "one of the following field types: "
-                         "composition, stress, grain_size, porosity, other.");
+                         "composition, stress, grain_size, porosity, generic.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
@@ -1808,17 +1808,10 @@ namespace aspect
       // If field types have been defined, fill the corresponding index vectors
       if (x_compositional_field_types.size() == n_compositional_fields)
         {
+          field_descriptions.resize(n_compositional_fields);
+
           for (unsigned int i=0; i<n_compositional_fields; ++i)
-            {
-              if (x_compositional_field_types[i] == "composition")
-                field_type_indices.composition.push_back(i);
-              if (x_compositional_field_types[i] == "stress")
-                field_type_indices.stress.push_back(i);
-              if (x_compositional_field_types[i] == "grain_size")
-                field_type_indices.grain_size.push_back(i);
-              if (x_compositional_field_types[i] == "porosity")
-                field_type_indices.porosity.push_back(i);
-            }
+            field_descriptions[i].type = FieldDescription::parse_type(x_compositional_field_types[i]);
         }
 
       std::vector<std::string> x_compositional_field_methods
