@@ -327,6 +327,38 @@ namespace aspect
 
 
   template <int dim>
+  const std::vector<unsigned int>
+  Introspection<dim>::get_indices_for_fields_of_type (const std::string &type_name) const
+  {
+    std::vector<unsigned int> indices;
+    typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (field_descriptions[i].type == type)
+        indices.push_back(i);
+
+    return indices;
+  }
+
+
+
+  template <int dim>
+  const std::vector<std::string>
+  Introspection<dim>::get_names_for_fields_of_type (const std::string &type_name) const
+  {
+    std::vector<std::string> names;
+    typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (field_descriptions[i].type == type)
+        names.push_back(composition_names[i]);
+
+    return names;
+  }
+
+
+
+  template <int dim>
   bool
   Introspection<dim>::is_stokes_component (const unsigned int component_index) const
   {

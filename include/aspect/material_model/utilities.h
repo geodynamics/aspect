@@ -261,7 +261,6 @@ namespace aspect
         };
       }
 
-
       /**
        * For multicomponent material models: Given a vector of compositional
        * field values of length N, of which M indices correspond to mass or

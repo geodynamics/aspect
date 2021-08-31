@@ -121,24 +121,16 @@ namespace aspect
         // Get the number of fields for composition-dependent material properties
         const bool has_background_field = true;
 
-        stress_field_indices = this->introspection().get_field_type_indices().stress;
-        compositional_field_indices = this->introspection().get_field_type_indices().composition;
+        stress_field_indices = this->introspection().get_indices_for_fields_of_type("stress");
+        compositional_field_indices = this->introspection().get_indices_for_fields_of_type("composition");
 
         AssertThrow (stress_field_indices.size() == (dim == 2 ? 3 : 5),
                      ExcMessage("The Compositional fields subsection must contain the parameter "
                                 "Types of fields. Additionally, there must be three or five fields "
                                 "corresponding to stress (for two- or three-dimensional problems respectively)."));
 
-        const std::vector<std::string> list_of_field_names = this->introspection().get_composition_names();
-
-        std::vector<std::string> list_of_composition_names(compositional_field_indices.size());
-        std::transform(compositional_field_indices.begin(),
-                       compositional_field_indices.end(),
-                       list_of_composition_names.begin(),
-                       [list_of_field_names](size_t pos)
-        {
-          return list_of_field_names[pos];
-        });
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("composition");
+        const std::vector<std::string> list_of_stress_names = this->introspection().get_names_for_fields_of_type("stress");
 
         elastic_shear_moduli = Utilities::parse_map_to_double_array(prm.get("Elastic shear moduli"),
                                                                     list_of_composition_names,
@@ -173,30 +165,30 @@ namespace aspect
 
         // Check whether the compositional fields representing the viscoelastic
         // stress tensor are both named correctly and listed in the right order.
-        AssertThrow(list_of_field_names[stress_field_indices[0]] == "ve_stress_xx",
+        AssertThrow(list_of_stress_names[0] == "ve_stress_xx",
                     ExcMessage("Rheology model Elasticity only works if the first "
                                "compositional stress field is called ve_stress_xx."));
-        AssertThrow(list_of_field_names[stress_field_indices[1]] == "ve_stress_yy",
+        AssertThrow(list_of_stress_names[1] == "ve_stress_yy",
                     ExcMessage("Rheology model Elasticity only works if the second "
                                "compositional stress field is called ve_stress_yy."));
         if (dim == 2)
           {
-            AssertThrow(list_of_field_names[stress_field_indices[2]] == "ve_stress_xy",
+            AssertThrow(list_of_stress_names[2] == "ve_stress_xy",
                         ExcMessage("Rheology model Elasticity only works if the third "
                                    "compositional stress field is called ve_stress_xy."));
           }
         else if (dim == 3)
           {
-            AssertThrow(list_of_field_names[stress_field_indices[2]] == "ve_stress_zz",
+            AssertThrow(list_of_stress_names[2] == "ve_stress_zz",
                         ExcMessage("Rheology model Elasticity only works if the third "
                                    "compositional stress field is called ve_stress_zz."));
-            AssertThrow(list_of_field_names[stress_field_indices[3]] == "ve_stress_xy",
+            AssertThrow(list_of_stress_names[3] == "ve_stress_xy",
                         ExcMessage("Rheology model Elasticity only works if the fourth "
                                    "compositional stress field is called ve_stress_xy."));
-            AssertThrow(list_of_field_names[stress_field_indices[4]] == "ve_stress_xz",
+            AssertThrow(list_of_stress_names[4] == "ve_stress_xz",
                         ExcMessage("Rheology model Elasticity only works if the fifth "
                                    "compositional stress field is called ve_stress_xz."));
-            AssertThrow(list_of_field_names[stress_field_indices[5]] == "ve_stress_yz",
+            AssertThrow(list_of_stress_names[5] == "ve_stress_yz",
                         ExcMessage("Rheology model Elasticity only works if the sixth "
                                    "compositional stress field is called ve_stress_yz."));
           }

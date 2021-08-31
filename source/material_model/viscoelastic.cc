@@ -141,19 +141,10 @@ namespace aspect
     {
 
       // Get the number of fields for composition-dependent material properties
-      compositional_field_indices = this->introspection().get_field_type_indices().composition;
+      compositional_field_indices = this->introspection().get_indices_for_fields_of_type("composition");
       const bool has_background_field = true;
 
-      const std::vector<std::string> list_of_field_names = this->introspection().get_composition_names();
-
-      std::vector<std::string> list_of_composition_names(compositional_field_indices.size());
-      std::transform(compositional_field_indices.begin(),
-                     compositional_field_indices.end(),
-                     list_of_composition_names.begin(),
-                     [list_of_field_names](size_t pos)
-      {
-        return list_of_field_names[pos];
-      });
+      const std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("composition");
 
       AssertThrow(this->get_parameters().enable_elasticity == true,
                   ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
