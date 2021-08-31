@@ -33,7 +33,7 @@ Additional information:
     
     --------------------------------------------------------
     An error occurred in line <2413> of file
-    <ASPECT_DIR/source/utilities.cc> in function
+(line in output replaced by default.sh script)
     void aspect::Utilities::linear_solver_failed(const string&, const
     string&, const std::vector<dealii::SolverControl>&, const
     std::exception&, ompi_communicator_t* const&, const string&)
@@ -49,7 +49,7 @@ Additional information:
     
     --------------------------------------------------------
     An error occurred in line <502> of file
-    </opt/tmp/unpack/deal.II-v9.3.1/source/lac/trilinos_solver.cc> in
+(line in output replaced by default.sh script)
     function
     void dealii::TrilinosWrappers::SolverBase::do_solve(const
     Preconditioner&) [with Preconditioner =
