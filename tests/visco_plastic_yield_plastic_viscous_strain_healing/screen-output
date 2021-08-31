@@ -22,7 +22,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 1:  t=7.07107e+06 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 13 iterations.
-   Solving viscous_strain system ... 11 iterations.
+   Solving viscous_strain system ... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+5 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00175
@@ -38,7 +38,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 2:  t=1.41421e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+6 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00172554
@@ -54,7 +54,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 3:  t=2.12132e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 12 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000186166
@@ -70,7 +70,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 4:  t=2.82843e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 15 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000155043
@@ -86,7 +86,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 5:  t=3.53553e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.90691e-05
@@ -102,7 +102,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 6:  t=4.24264e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.52819e-05
@@ -118,7 +118,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 7:  t=4.94975e+07 years, dt=7.07107e+06 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 14 iterations.
-   Solving viscous_strain system ... 13 iterations.
+   Solving viscous_strain system ... 14 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.15924e-05
@@ -134,7 +134,7 @@ Number of degrees of freedom: 2,326 (882+121+441+441+441)
 *** Timestep 8:  t=5e+07 years, dt=502525 years
    Solving temperature system... 0 iterations.
    Solving plastic_strain system ... 12 iterations.
-   Solving viscous_strain system ... 9 iterations.
+   Solving viscous_strain system ... 13 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 5.38881e-05
