@@ -161,7 +161,7 @@ namespace aspect
         anelastic_liquid_approximation,
         isentropic_compression,
         custom
-      };
+      } kind;
 
       /**
        * This function translates an input string into the
