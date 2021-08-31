@@ -1,0 +1,274 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.4.0-pre (update_strain_rheology, cb9838dfc)
+--     . using deal.II 9.3.0
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 13.0.0
+--     . using p4est 2.2.0
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&sha=cb9838dfc&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 25 (on 1 levels)
+Number of degrees of freedom: 520 (242+36+121+121)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 20+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.2/0.2/2e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 7.77e-14 m/year, 2.03e-13 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00000
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.535s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         1 |   0.00863s |       1.6% |
+| Assemble composition system      |         1 |    0.0119s |       2.2% |
+| Assemble temperature system      |         1 |    0.0102s |       1.9% |
+| Build Stokes preconditioner      |         1 |    0.0085s |       1.6% |
+| Build composition preconditioner |         1 |  0.000164s |         0% |
+| Build temperature preconditioner |         1 |  0.000312s |         0% |
+| Initialization                   |         1 |      0.45s |        84% |
+| Postprocessing                   |         1 |    0.0107s |         2% |
+| Setup dof systems                |         1 |   0.00554s |         1% |
+| Setup initial conditions         |         1 |    0.0102s |       1.9% |
+| Setup matrices                   |         1 |   0.00353s |      0.66% |
+| Solve Stokes system              |         1 |   0.00542s |         1% |
+| Solve composition system         |         1 |  0.000329s |         0% |
+| Solve temperature system         |         1 |  0.000518s |         0% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 1:  t=2e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.17964
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.1622/0.1622/1.622e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 5.946e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.8e-18 m/year, 4.17e-18 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00001
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.653s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         2 |     0.023s |       3.5% |
+| Assemble composition system      |         2 |    0.0362s |       5.5% |
+| Assemble temperature system      |         2 |    0.0283s |       4.3% |
+| Build Stokes preconditioner      |         2 |    0.0225s |       3.4% |
+| Build composition preconditioner |         2 |  0.000335s |         0% |
+| Build temperature preconditioner |         2 |  0.000461s |         0% |
+| Initialization                   |         1 |      0.45s |        69% |
+| Postprocessing                   |         2 |    0.0371s |       5.7% |
+| Setup dof systems                |         1 |   0.00554s |      0.85% |
+| Setup initial conditions         |         1 |    0.0102s |       1.6% |
+| Setup matrices                   |         1 |   0.00353s |      0.54% |
+| Solve Stokes system              |         2 |   0.00973s |       1.5% |
+| Solve composition system         |         2 |  0.000779s |      0.12% |
+| Solve temperature system         |         2 |  0.000811s |      0.12% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 2:  t=4e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 19+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.47134
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.1243/0.1243/1.243e+09
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 6.891e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.2e-18 m/year, 3.56e-18 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00002
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.768s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         3 |    0.0368s |       4.8% |
+| Assemble composition system      |         3 |    0.0604s |       7.9% |
+| Assemble temperature system      |         3 |    0.0466s |       6.1% |
+| Build Stokes preconditioner      |         3 |    0.0359s |       4.7% |
+| Build composition preconditioner |         3 |  0.000511s |         0% |
+| Build temperature preconditioner |         3 |  0.000603s |         0% |
+| Initialization                   |         1 |      0.45s |        59% |
+| Postprocessing                   |         3 |    0.0645s |       8.4% |
+| Setup dof systems                |         1 |   0.00554s |      0.72% |
+| Setup initial conditions         |         1 |    0.0102s |       1.3% |
+| Setup matrices                   |         1 |   0.00353s |      0.46% |
+| Solve Stokes system              |         3 |    0.0139s |       1.8% |
+| Solve composition system         |         3 |   0.00105s |      0.14% |
+| Solve temperature system         |         3 |   0.00108s |      0.14% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 3:  t=6e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.2447
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.08652/0.08652/8.652e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 7.837e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 1.32e-18 m/year, 3.31e-18 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00003
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |     0.887s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         4 |     0.051s |       5.7% |
+| Assemble composition system      |         4 |    0.0855s |       9.6% |
+| Assemble temperature system      |         4 |    0.0643s |       7.2% |
+| Build Stokes preconditioner      |         4 |    0.0497s |       5.6% |
+| Build composition preconditioner |         4 |  0.000713s |         0% |
+| Build temperature preconditioner |         4 |  0.000743s |         0% |
+| Initialization                   |         1 |      0.45s |        51% |
+| Postprocessing                   |         4 |    0.0925s |        10% |
+| Setup dof systems                |         1 |   0.00554s |      0.62% |
+| Setup initial conditions         |         1 |    0.0102s |       1.2% |
+| Setup matrices                   |         1 |   0.00353s |       0.4% |
+| Solve Stokes system              |         4 |    0.0202s |       2.3% |
+| Solve composition system         |         4 |   0.00147s |      0.17% |
+| Solve temperature system         |         4 |   0.00134s |      0.15% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 4:  t=8e+06 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 1 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 23+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.2046
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.0487/0.0487/4.87e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 8.783e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 2.29e-18 m/year, 4.53e-18 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00004
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |         1s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         5 |    0.0647s |       6.4% |
+| Assemble composition system      |         5 |     0.109s |        11% |
+| Assemble temperature system      |         5 |     0.083s |       8.3% |
+| Build Stokes preconditioner      |         5 |    0.0635s |       6.3% |
+| Build composition preconditioner |         5 |  0.000892s |         0% |
+| Build temperature preconditioner |         5 |  0.000893s |         0% |
+| Initialization                   |         1 |      0.45s |        45% |
+| Postprocessing                   |         5 |      0.12s |        12% |
+| Setup dof systems                |         1 |   0.00554s |      0.55% |
+| Setup initial conditions         |         1 |    0.0102s |         1% |
+| Setup matrices                   |         1 |   0.00353s |      0.35% |
+| Solve Stokes system              |         5 |    0.0265s |       2.6% |
+| Solve composition system         |         5 |   0.00177s |      0.18% |
+| Solve temperature system         |         5 |   0.00169s |      0.17% |
++----------------------------------+-----------+------------+------------+
+
+*** Timestep 5:  t=1e+07 years, dt=2e+06 years
+   Solving temperature system... 0 iterations.
+   Solving total_strain system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 24+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1.20218
+
+
+   Postprocessing:
+     Compositions min/max/mass:                         0.02884/0.02884/2.884e+08
+     Average density / Average viscosity / Total mass:  3302 kg/m^3, 9.279e+21 Pa s, 3.302e+13 kg
+     Temperature min/avg/max:                           273 K, 273 K, 273 K
+     RMS, max velocity:                                 5.75e-19 m/year, 1.5e-18 m/year
+     Writing graphical output:                          visco_plastic_total_strain_healing_temperature_dependent/solution/solution-00005
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.12s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         6 |    0.0793s |       7.1% |
+| Assemble composition system      |         6 |     0.134s |        12% |
+| Assemble temperature system      |         6 |     0.101s |         9% |
+| Build Stokes preconditioner      |         6 |    0.0774s |       6.9% |
+| Build composition preconditioner |         6 |   0.00107s |         0% |
+| Build temperature preconditioner |         6 |   0.00104s |         0% |
+| Initialization                   |         1 |      0.45s |        40% |
+| Postprocessing                   |         6 |     0.146s |        13% |
+| Setup dof systems                |         1 |   0.00554s |      0.49% |
+| Setup initial conditions         |         1 |    0.0102s |      0.91% |
+| Setup matrices                   |         1 |   0.00353s |      0.31% |
+| Solve Stokes system              |         6 |    0.0333s |         3% |
+| Solve composition system         |         6 |   0.00239s |      0.21% |
+| Solve temperature system         |         6 |   0.00198s |      0.18% |
++----------------------------------+-----------+------------+------------+
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      1.13s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system           |         6 |    0.0793s |       7.1% |
+| Assemble composition system      |         6 |     0.134s |        12% |
+| Assemble temperature system      |         6 |     0.101s |         9% |
+| Build Stokes preconditioner      |         6 |    0.0774s |       6.9% |
+| Build composition preconditioner |         6 |   0.00107s |         0% |
+| Build temperature preconditioner |         6 |   0.00104s |         0% |
+| Initialization                   |         1 |      0.45s |        40% |
+| Postprocessing                   |         6 |     0.146s |        13% |
+| Setup dof systems                |         1 |   0.00554s |      0.49% |
+| Setup initial conditions         |         1 |    0.0102s |      0.91% |
+| Setup matrices                   |         1 |   0.00353s |      0.31% |
+| Solve Stokes system              |         6 |    0.0333s |         3% |
+| Solve composition system         |         6 |   0.00239s |      0.21% |
+| Solve temperature system         |         6 |   0.00198s |      0.18% |
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&sha=cb9838dfc&src=code
+-----------------------------------------------------------------------------
