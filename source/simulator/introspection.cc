@@ -307,7 +307,7 @@ namespace aspect
   const std::vector<typename Parameters<dim>::FieldDescription> &
   Introspection<dim>::get_field_descriptions () const
   {
-    // Simply return the full vector of compositional field type indices
+    // Return the full vector of FieldDescription objects
     return field_descriptions;
   }
 
