@@ -2353,6 +2353,72 @@ namespace aspect
 
 
 
+    void linear_solver_failed(const std::string &solver_name,
+                              const std::string &function_name,
+                              const std::vector<SolverControl> &solver_controls,
+                              const std::exception &exc,
+                              const MPI_Comm &mpi_communicator,
+                              const std::string &output_filename)
+    {
+      if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
+        {
+          std::ostringstream exception_message;
+          exception_message << std::scientific
+                            << "The " + solver_name
+                            << " in " + function_name
+                            << " did not converge. " << std::endl << std::endl;
+
+          if (solver_controls.front().last_step() != numbers::invalid_unsigned_int)
+            exception_message << "The initial residual was: "
+                              << solver_controls.front().initial_value() << std::endl;
+
+          if (solver_controls.back().last_step() != numbers::invalid_unsigned_int)
+            exception_message << "The final residual is: "
+                              << solver_controls.back().last_value() << std::endl;
+
+          exception_message << "The required residual for convergence is: "
+                            << solver_controls.front().tolerance() << std::endl;
+
+          if (output_filename != "")
+            {
+              // output solver history
+              std::ofstream f((output_filename).c_str());
+
+              for (const auto &solver_control: solver_controls)
+                {
+                  // Skip the output if no iterations were run for this solver
+                  if (solver_control.last_step() == numbers::invalid_unsigned_int)
+                    continue;
+
+                  // Add an empty line between solvers
+                  if (&solver_control != &(solver_controls.front()))
+                    f << std::endl;
+
+                  unsigned int j=0;
+                  for (const auto &residual: solver_control.get_history_data())
+                    f << j++ << " " << residual << std::endl;
+                }
+
+              f.close();
+
+              exception_message << "See " << output_filename
+                                << " for the full convergence history." << std::endl;
+            }
+
+          exception_message << std::endl
+                            << "The solver reported the following error:"
+                            << std::endl;
+          exception_message << exc.what();
+
+          AssertThrow (false,
+                       ExcMessage (exception_message.str()));
+        }
+      else
+        throw QuietException();
+    }
+
+
+
 // Explicit instantiations
 
 #define INSTANTIATE(dim) \

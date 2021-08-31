@@ -592,16 +592,11 @@ namespace aspect
               // processors
               catch (const std::exception &exc)
                 {
-                  if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                    AssertThrow (false,
-                                 ExcMessage (std::string("The iterative (bottom right) solver in BlockSchurGMGPreconditioner::vmult "
-                                                         "did not converge to a tolerance of "
-                                                         + Utilities::to_string(solver_control.tolerance()) +
-                                                         ". It reported the following error:\n\n")
-                                             +
-                                             exc.what()))
-                    else
-                      throw QuietException();
+                  Utilities::linear_solver_failed("iterative (bottom right) solver",
+                                                  "BlockSchurGMGPreconditioner::vmult",
+                                                  std::vector<SolverControl> {solver_control},
+                                                  exc,
+                                                  src.block(0).get_mpi_communicator());
                 }
             }
         }
@@ -640,18 +635,12 @@ namespace aspect
           // processors
           catch (const std::exception &exc)
             {
-              if (Utilities::MPI::this_mpi_process(src.block(0).get_mpi_communicator()) == 0)
-                AssertThrow (false,
-                             ExcMessage (std::string("The iterative (top left) solver in BlockSchurGMGPreconditioner::vmult "
-                                                     "did not converge to a tolerance of "
-                                                     + Utilities::to_string(solver_control.tolerance()) +
-                                                     ". It reported the following error:\n\n")
-                                         +
-                                         exc.what()))
-                else
-                  throw QuietException();
+              Utilities::linear_solver_failed("iterative (top left) solver",
+                                              "BlockSchurGMGPreconditioner::vmult",
+                                              std::vector<SolverControl> {solver_control},
+                                              exc,
+                                              src.block(0).get_mpi_communicator());
             }
-
         }
       else
         {
@@ -2179,7 +2168,7 @@ namespace aspect
     // step 1b: take the stronger solver in case
     // the simple solver failed and attempt solving
     // it in n_expensive_stokes_solver_steps steps or less.
-    catch (const SolverControl::NoConvergence &)
+    catch (const SolverControl::NoConvergence &exc)
       {
         // The cheap solver failed or never ran.
         // Print the number of cheap iterations to screen to indicate we
@@ -2187,6 +2176,10 @@ namespace aspect
         sim.pcout << (solver_control_cheap.last_step() != numbers::invalid_unsigned_int ?
                       solver_control_cheap.last_step():
                       0) << '+' << std::flush;
+
+        // if no expensive steps allowed, we have failed, rethrow exception
+        if (sim.parameters.n_expensive_stokes_solver_steps == 0)
+          throw exc;
 
         // use the value defined by the user
         // OR
@@ -2202,10 +2195,6 @@ namespace aspect
 
         try
           {
-            AssertThrow (sim.parameters.n_expensive_stokes_solver_steps>0,
-                         ExcMessage ("The Stokes solver did not converge in the number of requested cheap iterations and "
-                                     "you requested 0 for ``Maximum number of expensive Stokes solver steps''. Aborting."));
-
             solver.solve(stokes_matrix,
                          solution_copy,
                          rhs_copy,
@@ -2219,9 +2208,7 @@ namespace aspect
 
             final_linear_residual = solver_control_expensive.last_value();
           }
-        // if the solver fails, report the error from processor 0 with some additional
-        // information about its location, and throw a quiet exception on all other
-        // processors
+        // if the solver fails trigger the post stokes solver signal and throw an exception
         catch (const std::exception &exc)
           {
             sim.signals.post_stokes_solver(sim,
@@ -2230,41 +2217,18 @@ namespace aspect
                                            solver_control_cheap,
                                            solver_control_expensive);
 
-            if (Utilities::MPI::this_mpi_process(sim.mpi_communicator) == 0)
-              {
-                // output solver history
-                std::ofstream f((sim.parameters.output_directory+"solver_history.txt").c_str());
+            std::vector<SolverControl> solver_controls;
+            if (sim.parameters.n_cheap_stokes_solver_steps > 0)
+              solver_controls.push_back(solver_control_cheap);
+            if (sim.parameters.n_expensive_stokes_solver_steps > 0)
+              solver_controls.push_back(solver_control_expensive);
 
-                // Only request the solver history if a history has actually been created
-                if (sim.parameters.n_cheap_stokes_solver_steps > 0)
-                  {
-                    for (unsigned int i=0; i<solver_control_cheap.get_history_data().size(); ++i)
-                      f << i << " " << solver_control_cheap.get_history_data()[i] << "\n";
-
-                    f << "\n";
-                  }
-
-                // Only request the solver history if a history has actually been created
-                if (sim.parameters.n_expensive_stokes_solver_steps > 0)
-                  {
-                    for (unsigned int i=0; i<solver_control_expensive.get_history_data().size(); ++i)
-                      f << i << " " << solver_control_expensive.get_history_data()[i] << "\n";
-                  }
-
-                f.close();
-
-                AssertThrow (false,
-                             ExcMessage (std::string("The iterative Stokes solver "
-                                                     "did not converge. It reported the following error:\n\n")
-                                         +
-                                         exc.what()
-                                         + "\n See " + sim.parameters.output_directory+"solver_history.txt"
-                                         + " for convergence history."));
-              }
-            else
-              {
-                throw QuietException();
-              }
+            Utilities::linear_solver_failed("iterative Stokes solver",
+                                            "StokesMatrixFreeHandlerImplementation::solve",
+                                            solver_controls,
+                                            exc,
+                                            sim.mpi_communicator,
+                                            sim.parameters.output_directory+"solver_history.txt");
           }
       }
 

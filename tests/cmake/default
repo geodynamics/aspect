@@ -26,7 +26,7 @@ while ( <STDIN> )
 	next;
     }
 
-    if ($_ =~ m/^An error occurred in/)
+    if ($_ =~ m/^\s*An error occurred in/)
     {
 	$skip=1;
     }

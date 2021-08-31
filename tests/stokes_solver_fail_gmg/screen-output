@@ -1,9 +1,11 @@
 
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 4 levels)
 Number of degrees of freedom: 2,724 (1,666+225+833)
 
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving temperature system... retrying linear solve with different preconditioner...
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 200+---------------------------------------------------------
 TimerOutput objects finalize timed values printed to the
 screen by communicating over MPI in their destructors.
 Since an exception is currently uncaught, this
@@ -18,30 +20,38 @@ An error occurred in file <utilities.cc> in function
 The violated condition was: 
     false
 Additional information: 
-    The iterative advection solver in Simulator::solve_advection did not
-    converge.
+    The iterative Stokes solver in
+    StokesMatrixFreeHandlerImplementation::solve did not converge.
     
-    The initial residual was: 5.840930e+05
-    The final residual is: 8.640202e-11
-    The required residual for convergence is: 5.533280e-14
-    See output-advection_solver_fail/solver_history.txt for the full
+    The initial residual was: 1.169088e+14
+    The final residual is: 1.375952e-01
+    The required residual for convergence is: 1.169088e-21
+    See output-stokes_solver_fail_gmg/solver_history.txt for the full
     convergence history.
     
     The solver reported the following error:
     
     --------------------------------------------------------
-    An error occurred in line <1074> of file
+    An error occurred in line <1285> of file
 (line in output replaced by default.sh script)
-    void dealii::SolverGMRES<VectorType>::solve(const MatrixType&,
+    void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
-    MatrixType = dealii::TrilinosWrappers::SparseMatrix;
-    PreconditionerType = dealii::TrilinosWrappers::PreconditionILU;
-    VectorType = dealii::TrilinosWrappers::MPI::Vector]
+    MatrixType = aspect::MatrixFreeStokesOperators::StokesOperator<2, 2,
+    double>; PreconditionerType =
+    aspect::internal::BlockSchurGMGPreconditioner<aspect::MatrixFreeStokesOperators::StokesOperator<2,
+    2, double>, aspect::MatrixFreeStokesOperators::ABlockOperator<2, 2,
+    double>, aspect::MatrixFreeStokesOperators::MassMatrixOperator<2, 1,
+    double>, dealii::PreconditionMG<2,
+    dealii::LinearAlgebra::distributed::Vector<double>,
+    dealii::MGTransferMatrixFree<2, double> >, dealii::PreconditionMG<2,
+    dealii::LinearAlgebra::distributed::Vector<double>,
+    dealii::MGTransferMatrixFree<2, double> > >; VectorType =
+    dealii::LinearAlgebra::distributed::BlockVector<double>]
     The violated condition was:
-    iteration_state == SolverControl::success
+    false
     Additional information:
     Iterative method reported convergence failure in step 1000. The
-    residual in the last step was 8.6402e-11.
+    residual in the last step was 0.137595.
     
     This error message can indicate that you have simply not allowed a
     sufficiently large number of iterations for your iterative solver to
