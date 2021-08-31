@@ -57,6 +57,8 @@ your idea with one of the maintainers. This allows us to give you early
 feedback and prevents you from spending much time on a project that might already be
 planned, or that conflicts with other plans.
 
+### Opening pull requests
+
 To make a change to ASPECT you should:
 - Create a
 [fork](https://guides.github.com/activities/forking/#fork) (through GitHub) of
@@ -82,8 +84,10 @@ coordinate changes to the code (and there are usually several people making
 changes to the code at once). This process is described at length in the
 deal.II video [lecture
 32.8](http://www.math.colostate.edu/~bangerth/videos.676.32.8.html).  Please do
-not hesitate to ask questions about the workflow on the mailing list if you are
+not hesitate to ask questions about the workflow on the forum if you are
 not sure what to do.
+
+### Coding conventions
 
 Since ASPECT is a fairly large project with lots of contributors we
 use a set of [coding
@@ -98,6 +102,18 @@ are new to the project then we will work with you to ensure your contributions
 are formatted with this style, so please do not think of it as a road block if
 you would like to contribute some code.
 
+### Changelog entries
+
+If your new pull request creates a change that is noticeable to ASPECT users,
+please add an entry to our
+[changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html). To
+add such an entry, make a copy of one of the files in the
+[doc/modules/changes/](doc/modules/changes/) folder and modify it to explain
+your change. The name of the file consists of the date of the change
+(approximately) and the name of the author. Start the file with a tag
+(added/changed/fixed/removed) that explains the nature of your change and
+include your name and date in the file in exactly the format of the other
+files, this ensures you will get credit for your work.
 
 ## Acknowledgment of contributions
 
@@ -110,19 +126,18 @@ ways in which your contribution will be acknowledged by the ASPECT community:
 - Our biweekly mailing list newsletter mentions all raised issues and proposed
   and merged pull requests, including an acknowledgment of the author of the
   issue/pull request.
-- If you contributed significant functionality to the source code we will ask
-  you to provide an entry into our
+- For every release the most significant entries of our
   [changelog](http://aspect.geodynamics.org/doc/doxygen/changes_current.html)
-  that shows your name. To add such an entry, place
-  a file into the [doc/modules/changes/](doc/modules/changes/) folder.
-  This changelog is used to generate our release notes, and remains available
-  for all previous releases of ASPECT.
+  are selected to generate our release announcements. Additionally, all entries
+  remain available for all previous releases of ASPECT inside the
+  [repository](doc/modules/) and on our website (under "Development"), which
+  documents the functionality that you contributed to ASPECT.
 - If you contributed a significant part of the manual (such as a new cookbook,
   benchmark, or subsection), you will be listed as one of the contributing
   authors of the manual.
 - The Principal Developers of ASPECT come together on a regular basis and discuss
   whether others should be invited to join the
-  group of Principal Developers. Criteria that *Principal Developers*
+  group of *Principal Developers*. Criteria
   for this decision include:
 
   - A profound understanding of ASPECT's structure and vision;
