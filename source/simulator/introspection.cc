@@ -334,7 +334,7 @@ namespace aspect
     typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
 
     for (unsigned int i=0; i<n_compositional_fields; ++i)
-      if (field_descriptions[i].type == type)
+      if (composition_descriptions[i].type == type)
         indices.push_back(i);
 
     return indices;
@@ -350,7 +350,7 @@ namespace aspect
     typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
 
     for (unsigned int i=0; i<n_compositional_fields; ++i)
-      if (field_descriptions[i].type == type)
+      if (composition_descriptions[i].type == type)
         names.push_back(composition_names[i]);
 
     return names;

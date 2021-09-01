@@ -122,14 +122,14 @@ namespace aspect
         const bool has_background_field = true;
 
         stress_field_indices = this->introspection().get_indices_for_fields_of_type("stress");
-        compositional_field_indices = this->introspection().get_indices_for_fields_of_type("composition");
+        compositional_field_indices = this->introspection().get_indices_for_fields_of_type("chemical_composition");
 
         AssertThrow (stress_field_indices.size() == (dim == 2 ? 3 : 5),
                      ExcMessage("The Compositional fields subsection must contain the parameter "
                                 "Types of fields. Additionally, there must be three or five fields "
                                 "corresponding to stress (for two- or three-dimensional problems respectively)."));
 
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("composition");
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
         const std::vector<std::string> list_of_stress_names = this->introspection().get_names_for_fields_of_type("stress");
 
         elastic_shear_moduli = Utilities::parse_map_to_double_array(prm.get("Elastic shear moduli"),

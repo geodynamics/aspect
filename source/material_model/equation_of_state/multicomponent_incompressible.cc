@@ -110,7 +110,7 @@ namespace aspect
         // Get the number of fields for composition-dependent material properties
         const bool has_background_field = true;
 
-        std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("composition");
+        std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
 
         // Parse multicomponent properties
         densities = Utilities::parse_map_to_double_array (prm.get("Densities"),

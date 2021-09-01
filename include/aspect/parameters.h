@@ -411,7 +411,10 @@ namespace aspect
         else if (input == "generic")
           return CompositionalFieldDescription::generic;
         else
-          AssertThrow(false, ExcNotImplemented());
+          AssertThrow(false, ExcMessage("Compositional field type " + input +
+                                        " not recognised. Must be one of "
+                                        "chemical_composition, stress, "
+                                        "grain_size, porosity or generic."));
 
         return CompositionalFieldDescription::Kind();
       }
