@@ -110,25 +110,25 @@ namespace aspect
         // Get the number of fields for composition-dependent material properties
         const bool has_background_field = true;
 
-        std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
+        const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
 
         // Parse multicomponent properties
         densities = Utilities::parse_map_to_double_array (prm.get("Densities"),
-                                                          list_of_composition_names,
+                                                          chemical_composition_field_names,
                                                           has_background_field,
                                                           "Densities",
                                                           true,
                                                           expected_n_phases_per_composition);
 
         thermal_expansivities = Utilities::parse_map_to_double_array (prm.get("Thermal expansivities"),
-                                                                      list_of_composition_names,
+                                                                      chemical_composition_field_names,
                                                                       has_background_field,
                                                                       "Thermal expansivities",
                                                                       true,
                                                                       expected_n_phases_per_composition);
 
         specific_heats = Utilities::parse_map_to_double_array (prm.get("Heat capacities"),
-                                                               list_of_composition_names,
+                                                               chemical_composition_field_names,
                                                                has_background_field,
                                                                "Specific heats",
                                                                true,

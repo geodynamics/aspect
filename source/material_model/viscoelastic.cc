@@ -144,7 +144,7 @@ namespace aspect
       compositional_field_indices = this->introspection().get_indices_for_fields_of_type("chemical_composition");
       const bool has_background_field = true;
 
-      const std::vector<std::string> list_of_composition_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
+      const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
 
       AssertThrow(this->get_parameters().enable_elasticity == true,
                   ExcMessage ("Material model Viscoelastic only works if 'Enable elasticity' is set to true"));
@@ -165,14 +165,14 @@ namespace aspect
 
           // Parse viscoelastic properties
           viscosities = Utilities::parse_map_to_double_array(prm.get("Viscosities"),
-                                                             list_of_composition_names,
+                                                             chemical_composition_field_names,
                                                              has_background_field,
                                                              "Viscosities",
                                                              true,
                                                              nullptr);
 
           thermal_conductivities = Utilities::parse_map_to_double_array(prm.get("Thermal conductivities"),
-                                                                        list_of_composition_names,
+                                                                        chemical_composition_field_names,
                                                                         has_background_field,
                                                                         "Thermal conductivities",
                                                                         true,
