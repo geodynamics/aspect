@@ -44,6 +44,7 @@ end
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields = upper_crust, lower_crust, lithospheric_mantle, seed
+  set Types of fields = chemical_composition
 end
 
 

@@ -66,6 +66,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 1
+  set Types of fields = chemical_composition
 end
 
 subsection Gravity model

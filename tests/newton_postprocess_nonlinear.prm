@@ -142,7 +142,7 @@ subsection Material model
     set Maximum viscosity           = 1.e23
     set Minimum viscosity           = 1.e17
 
-    set Prefactors for dislocation creep          = 5e-24, 1e-50, 1e-50, 1e-50, 5e-24, 5.e-18, 5e-18
+    set Prefactors for dislocation creep          = 5e-24, 5e-24, 5.e-18, 5e-18
     set Stress exponents for dislocation creep    = 1.0
     set Activation energies for dislocation creep = 0.
     set Activation volumes for dislocation creep  = 0.
@@ -156,7 +156,7 @@ subsection Material model
     set Viscosity averaging scheme  = harmonic
 
     set Angles of internal friction = 37., 0., 0., 0., 37., 0., 0.
-    set Cohesions                   = 100.e6, 1.e50, 1.e50, 1.e50, 100.e6, 10.e6, 10.e6
+    set Cohesions                   = 100.e6, 100.e6, 10.e6, 10.e6
 
   end
 

@@ -100,6 +100,7 @@ end
 
 subsection Compositional fields
   set Number of fields = 3
+  set Types of fields = chemical_composition
 end
 
 subsection Initial composition model
