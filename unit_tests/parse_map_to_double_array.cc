@@ -266,7 +266,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
     aspect::Utilities::parse_map_to_double_array ("C1:100, C1:200, C3:300, C4;400, C5:500, bg:3",
   {"C1","C2","C3","C4","C5"},
   true,
-  "TestField"), Contains("The required format for property"));
+  "TestField"), Contains("does not have the expected format"));
 
 
   INFO("check fail 4: ");
@@ -305,7 +305,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   {"C1","C2","C3","C4","C5"},
   false,
   "TestField",
-  true), Contains("The required format for property"));
+  true), Contains("does not have the expected format"));
 
   // No subentries
   INFO("check fail 9: ");
@@ -314,7 +314,7 @@ TEST_CASE("Utilities::parse_map_to_double_array FAIL ON PURPOSE")
   {"C1","C2","C3","C4","C5"},
   false,
   "TestField",
-  true), Contains("The required format for property"));
+  true), Contains("does not have the expected format"));
 
   // Wrong input structure
   {
