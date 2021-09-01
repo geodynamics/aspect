@@ -374,18 +374,18 @@ namespace aspect
     };
 
     /**
-     * A data structure containing a description of each field.
+     * A data structure containing a description of each compositional field.
      * At present, this structure only includes the field type
-     * (i.e., whether the field corresponds to a composition, porosity, etc.).
+     * (i.e., whether it is of type chemical_composition, porosity, etc.).
      */
-    struct FieldDescription
+    struct CompositionalFieldDescription
     {
       /**
-       * This enum lists available field types.
+       * This enum lists available compositional field types.
        */
       enum Kind
       {
-        composition,
+        chemical_composition,
         stress,
         grain_size,
         porosity,
@@ -394,26 +394,26 @@ namespace aspect
 
       /**
        * This function translates an input string into the
-       * available enum options for the type of field.
+       * available enum options for the type of compositional field.
        */
       static
       Kind
       parse_type(const std::string &input)
       {
-        if (input == "composition")
-          return FieldDescription::composition;
+        if (input == "chemical_composition")
+          return CompositionalFieldDescription::chemical_composition;
         else if (input == "stress")
-          return FieldDescription::stress;
+          return CompositionalFieldDescription::stress;
         else if (input == "grain_size")
-          return FieldDescription::grain_size;
+          return CompositionalFieldDescription::grain_size;
         else if (input == "porosity")
-          return FieldDescription::porosity;
+          return CompositionalFieldDescription::porosity;
         else if (input == "generic")
-          return FieldDescription::generic;
+          return CompositionalFieldDescription::generic;
         else
           AssertThrow(false, ExcNotImplemented());
 
-        return FieldDescription::Kind();
+        return CompositionalFieldDescription::Kind();
       }
     };
 
@@ -706,7 +706,7 @@ namespace aspect
      */
     unsigned int                   n_compositional_fields;
     std::vector<std::string>       names_of_compositional_fields;
-    std::vector<FieldDescription>  field_descriptions;
+    std::vector<CompositionalFieldDescription>  composition_descriptions;
 
     /**
      * A vector that contains the advection field method for every compositional

@@ -355,10 +355,11 @@ namespace aspect
 
 
       /**
-       * A function that returns the full vector of field descriptions.
+       * A function that returns the full vector of compositional
+       * field descriptions.
        */
-      const std::vector<typename Parameters<dim>::FieldDescription> &
-      get_field_descriptions () const;
+      const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+      get_composition_descriptions () const;
 
       /**
        * A function that gets the name of a compositional field as an input
@@ -389,10 +390,11 @@ namespace aspect
       std::vector<std::string> composition_names;
 
       /**
-       * A vector that stores descriptions of each field, including its type
-       * (i.e. whether the field corresponds to a composition, porosity etc.).
+       * A vector that stores descriptions of each compositional field,
+       * including its type (i.e. whether the compositional field corresponds
+       * to chemical composition, porosity etc.).
        */
-      std::vector<typename Parameters<dim>::FieldDescription> field_descriptions;
+      std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions;
 
   };
 }

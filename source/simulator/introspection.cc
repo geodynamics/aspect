@@ -202,7 +202,7 @@ namespace aspect
     system_dofs_per_block (n_blocks),
     compositional_field_methods(parameters.compositional_field_methods),
     composition_names(parameters.names_of_compositional_fields),
-    field_descriptions(parameters.field_descriptions)
+    composition_descriptions(parameters.composition_descriptions)
   {}
 
 
@@ -304,11 +304,11 @@ namespace aspect
 
 
   template <int dim>
-  const std::vector<typename Parameters<dim>::FieldDescription> &
-  Introspection<dim>::get_field_descriptions () const
+  const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+  Introspection<dim>::get_composition_descriptions () const
   {
-    // Return the full vector of FieldDescription objects
-    return field_descriptions;
+    // Return the full vector of CompositionalFieldDescription objects
+    return composition_descriptions;
   }
 
 

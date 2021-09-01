@@ -1,7 +1,7 @@
 New: The "Compositional fields" subsection in ASPECT has a new parameter called
 "Types of fields" that is used to specify the types of all the
 "compositional" fields. Supported types are currently
-"composition", "stress", "grain_size", "porosity", or "generic".
+"chemical_composition", "stress", "grain_size", "porosity", or "generic".
 The parameter is used to fill a vector of FieldDescription objects
 that store metadata about each field.
 This vector can be called from within material models

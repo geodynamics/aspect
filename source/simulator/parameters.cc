@@ -1167,17 +1167,16 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
-      prm.declare_entry ("Types of fields", "",
-                         Patterns::List (Patterns::Selection("composition|stress|grain_size|porosity|generic")),
+      prm.declare_entry ("Types of fields", "generic",
+                         Patterns::List (Patterns::Selection("chemical_composition|stress|grain_size|porosity|generic")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
-                         "one of the following field types: "
-                         "composition, stress, grain_size, porosity, generic.");
+                         "one of several recognised types.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types."
+                         "one of the currently implemented field methods."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
@@ -1794,11 +1793,10 @@ namespace aspect
         = Utilities::split_string_list
           (prm.get ("Types of fields"));
 
-      AssertThrow ((x_compositional_field_types.size() == 0) ||
-                   (x_compositional_field_types.size() == 1) ||
+      AssertThrow ((x_compositional_field_types.size() == 1) ||
                    (x_compositional_field_types.size() == n_compositional_fields),
                    ExcMessage ("The length of the list of names for the field types of compositional "
-                               "fields needs to be empty, or have one entry, or have a length equal to "
+                               "fields needs to have one entry or have a length equal to "
                                "the number of compositional fields."));
 
       // If only one method is specified apply this to all fields
@@ -1808,10 +1806,10 @@ namespace aspect
       // If field types have been defined, fill the corresponding index vectors
       if (x_compositional_field_types.size() == n_compositional_fields)
         {
-          field_descriptions.resize(n_compositional_fields);
+          composition_descriptions.resize(n_compositional_fields);
 
           for (unsigned int i=0; i<n_compositional_fields; ++i)
-            field_descriptions[i].type = FieldDescription::parse_type(x_compositional_field_types[i]);
+            composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
         }
 
       std::vector<std::string> x_compositional_field_methods
