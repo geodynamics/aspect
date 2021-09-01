@@ -37,10 +37,27 @@ namespace aspect
     Interface<dim>::~Interface ()
     {}
 
+
     template <int dim>
     void
     Interface<dim>::initialize ()
     {}
+
+
+    template <int dim>
+    double
+    Interface<dim>::fluid_pressure (const types::boundary_id,
+                                    const Point<dim> &) const
+    {
+      return numbers::signaling_nan<double>();
+    }
+
+
+    template <int dim>
+    void
+    Interface<dim>::update ()
+    {}
+
 
     template <int dim>
     void

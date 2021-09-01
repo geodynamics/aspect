@@ -377,6 +377,7 @@ namespace aspect
         parameters.use_full_A_block_preconditioner = true;
 
         melt_handler->initialize_simulator (*this);
+        melt_handler->parse_geometry_dependent_parameters (prm);
         melt_handler->initialize();
       }
 

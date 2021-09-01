@@ -90,6 +90,28 @@ namespace aspect
           std::vector<double> &fluid_pressure_gradient_outputs
         ) const = 0;
 
+
+        virtual
+        double fluid_pressure (const types::boundary_id boundary_indicator,
+                               const Point<dim> &position) const;
+
+
+        /**
+         * A function that is called at the beginning of each time step. The
+         * default implementation of the function does nothing, but derived
+         * classes that need more elaborate setups for a given time step may
+         * overload the function.
+         *
+         * The point of this function is to allow complex boundary fluid pressure
+         * models to do an initialization step once at the beginning of each
+         * time step. An example would be a model that needs to call an
+         * external program to compute temperature change at bottom.
+         */
+        virtual
+        void
+        update ();
+
+
         /**
          * Declare the parameters this class takes through input files. The
          * default implementation of this function does not describe any
@@ -110,6 +132,7 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
     };
+
 
 
     /**

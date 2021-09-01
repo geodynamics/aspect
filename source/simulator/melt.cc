@@ -41,6 +41,7 @@
 #include <deal.II/grid/tria_iterator.h>
 #include <deal.II/grid/filtered_iterator.h>
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/numerics/vector_tools.h>
 
 namespace aspect
 {
@@ -1462,6 +1463,33 @@ namespace aspect
   MeltHandler<dim>::
   add_current_constraints(AffineConstraints<double> &constraints)
   {
+    // add constraints for the boundary fluid pressure
+    boundary_fluid_pressure->update();
+
+    for (std::set<types::boundary_id>::const_iterator
+         p = melt_parameters.prescribed_boundary_fluid_pressure_indicators.begin();
+         p != melt_parameters.prescribed_boundary_fluid_pressure_indicators.end();
+         ++p)
+      {
+        auto lambda = [&] (const Point<dim> &x) -> double
+        {
+          return boundary_fluid_pressure->fluid_pressure(*p, x);
+        };
+
+        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          lambda,
+          this->introspection().variable("fluid pressure").component_mask.first_selected_component(),
+          this->introspection().n_components);
+
+        VectorTools::interpolate_boundary_values (this->get_mapping(),
+                                                  this->get_dof_handler(),
+                                                  *p,
+                                                  vector_function_object,
+                                                  constraints,
+                                                  this->introspection().variable("fluid pressure").component_mask);
+      }
+
+    // In a second step, add constraints for the melt cells
     IndexSet nonzero_pc_dofs(this->introspection().index_sets.system_relevant_set.size());
 
     const QTrapezoid<dim> quadrature_formula;
@@ -1587,6 +1615,17 @@ namespace aspect
   {
     return *boundary_fluid_pressure.get();
   }
+
+
+
+  template <int dim>
+  const std::set<types::boundary_id> &
+  MeltHandler<dim>::
+  get_prescribed_fluid_pressure_boundary_indicators () const
+  {
+    return melt_parameters.prescribed_boundary_fluid_pressure_indicators;
+  }
+
 
 
   template <int dim>
@@ -1732,7 +1771,17 @@ namespace aspect
       prm.leave_subsection();
 
       BoundaryFluidPressure::declare_parameters<dim> (prm);
+
+      prm.enter_subsection ("Boundary fluid pressure model");
+      {
+        prm.declare_entry ("Prescribed fluid pressure boundary indicators", "",
+                           Patterns::List (Patterns::Anything()),
+                           "A comma separated list denoting those boundaries "
+                           "on which the fluid pressure is prescribed.");
+      }
+      prm.leave_subsection();
     }
+
 
     template <int dim>
     void
@@ -1750,6 +1799,7 @@ namespace aspect
     }
   }
 
+
   template <int dim>
   MeltHandler<dim>::MeltHandler (ParameterHandler &prm)
     :
@@ -1758,6 +1808,35 @@ namespace aspect
     CitationInfo::add("melt");
     melt_parameters.parse_parameters(prm);
     boundary_fluid_pressure->parse_parameters(prm);
+  }
+
+
+
+  template <int dim>
+  void
+  MeltHandler<dim>::
+  parse_geometry_dependent_parameters (ParameterHandler &prm)
+  {
+    prm.enter_subsection ("Boundary fluid pressure model");
+    {
+      try
+        {
+          const std::vector<types::boundary_id> x_prescribed_fluid_pressure_boundary_indicators
+            = this->get_geometry_model().translate_symbolic_boundary_names_to_ids(Utilities::split_string_list
+                                                                                  (prm.get ("Prescribed fluid pressure boundary indicators")));
+          melt_parameters.prescribed_boundary_fluid_pressure_indicators
+            = std::set<types::boundary_id> (x_prescribed_fluid_pressure_boundary_indicators.begin(),
+                                            x_prescribed_fluid_pressure_boundary_indicators.end());
+        }
+      catch (const std::string &error)
+        {
+          AssertThrow (false, ExcMessage ("While parsing the entry <Model settings/Boundary fluid pressure model "
+                                          "boundary indicators>, there was an error. Specifically, "
+                                          "the conversion function complained as follows: "
+                                          + error));
+        }
+    }
+    prm.leave_subsection();
   }
 
 
@@ -1779,6 +1858,7 @@ namespace aspect
     AssertThrow(!this->get_parameters().use_locally_conservative_discretization,
                 ExcMessage ("Discontinuous elements for the fluid pressure "
                             "are not supported in models with melt transport."));
+
   }
 
 
