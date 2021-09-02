@@ -19,8 +19,6 @@ while ( <STDIN> )
   next if $_ =~ m/^-- /;
   next if $_ =~ m/^\|/;
 
-  $line = $_;
-
   if ($skip>0)
   {
     print "(line in output replaced by default.sh script)\n";
@@ -30,20 +28,34 @@ while ( <STDIN> )
 
   if ($_ =~ m/^\s*An error occurred in/)
   {
+    if ($_ =~ /function/)
+    {
+      # These lines have the structure:
+      # "An error occurred in file <...> in function"
+      # The file name is unlikely to change frequently, so we keep this line
+      print "$_";
+    }
+    else
+    {
+      # These lines have the structure:
+      # "An error occurred in line <...> of file"
+      # The line number is likely to change frequently, so we replace this line
+      print "(line in output replaced by default.sh script)\n";
+    }
+    # In both of the above cases, we want to replace the next line
+    # In the first case, the function arguments are formatted differently
+    # when run with a different compiler version.
+    # In the second case, the full file paths are printed.
     $skip=1;
-  }
-
-  if ($_ =~ m/^\s*An error occurred in line/)
-  {
-    $line = "(line in output replaced by default.sh script)\n";
+    next
   }
 
   if ($_ =~ m/^Stacktrace:/)
   {
-    print "$line";
+    print "$_";
     print "(rest of the output replaced by default.sh script)\n";
     last;
   }
 
-  print "$line";
+  print "$_";
 }

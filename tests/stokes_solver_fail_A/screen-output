@@ -13,24 +13,24 @@ synchronization (and subsequent output) will be skipped
 to avoid a possible deadlock.
 
 
-Exception 'ExcMessage (exception_message.str())' on rank 0 on processing:
+Exception 'ExcMessage (exception_message.str())' on rank 0 on processing: 
 
 An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was:
+The violated condition was: 
     false
-Additional information:
+Additional information: 
     The iterative Stokes solver in Simulator::solve_stokes did not
     converge.
-
+    
     The initial residual was: 1.169088e+14
     The final residual is: 1.169088e+14
     The required residual for convergence is: 1.169088e+07
     See output-stokes_solver_fail_A/solver_history.txt for the full
     convergence history.
-
+    
     The solver reported the following error:
-
+    
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
@@ -42,11 +42,11 @@ Additional information:
     Additional information:
     The iterative (top left) solver in BlockSchurPreconditioner::vmult did
     not converge.
-
+    
     The required residual for convergence is: 1.000000e-35
-
+    
     The solver reported the following error:
-
+    
     --------------------------------------------------------
 (line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
@@ -59,8 +59,8 @@ Additional information:
     Additional information:
     AztecOO::Iterate error code -3: loss of precision
     --------------------------------------------------------
-
+    
     --------------------------------------------------------
-
+    
 
 Aborting!
