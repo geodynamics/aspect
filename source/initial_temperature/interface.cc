@@ -33,11 +33,6 @@ namespace aspect
   namespace InitialTemperature
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}

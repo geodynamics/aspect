@@ -32,11 +32,6 @@ namespace aspect
   namespace InitialTopographyModel
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}

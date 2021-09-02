@@ -1370,8 +1370,7 @@ namespace aspect
         material_model_outputs(scratch.material_model_outputs)
       {}
 
-      virtual ~PcConstraintsAssembleData ()
-      {}
+      virtual ~PcConstraintsAssembleData () = default;
 
       FEValues<dim>                            finite_element_values;
 

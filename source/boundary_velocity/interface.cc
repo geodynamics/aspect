@@ -34,11 +34,6 @@ namespace aspect
   namespace BoundaryVelocity
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
     void
     Interface<dim>::initialize ()
     {}

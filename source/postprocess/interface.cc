@@ -31,11 +31,6 @@ namespace aspect
   {
 // ------------------------------ Interface -----------------------------
 
-    template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
 
     template <int dim>
     void

@@ -768,8 +768,7 @@ namespace aspect
     class AdditionalMaterialInputs
     {
       public:
-        virtual ~AdditionalMaterialInputs()
-        {}
+        virtual ~AdditionalMaterialInputs() = default;
 
         /**
          * Fill the additional inputs. Each additional input
@@ -1216,7 +1215,7 @@ namespace aspect
          * Destructor. Made virtual to enforce that derived classes also have
          * virtual destructors.
          */
-        virtual ~Interface();
+        virtual ~Interface() = default;
 
         /**
          * Initialization function. This function is called once at the

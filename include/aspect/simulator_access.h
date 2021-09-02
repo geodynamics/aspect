@@ -185,8 +185,7 @@ namespace aspect
        * Destructor. Does nothing but is virtual so that derived classes
        * destructors are also virtual.
        */
-      virtual
-      ~SimulatorAccess ();
+      virtual ~SimulatorAccess () = default;
 
       /**
        * Initialize this class for a given simulator. This function is marked

@@ -76,7 +76,7 @@ namespace aspect
            * Destructor. Made virtual so that derived classes can be created
            * and destroyed through pointers to the base class.
            */
-          ~Interface () override;
+          ~Interface () override = default;
 
           /**
            * Initialization function. This function is called once at the
