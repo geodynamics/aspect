@@ -186,11 +186,19 @@ namespace aspect
           {
             // No Patterns matches were found!
             AssertThrow (false,
-                         ExcMessage ("The required format for property <"
+                         ExcMessage ("The string for property <"
                                      + property_name
-                                     + "> was not found. Specify a comma separated "
-                                     + "list of `<double>' or `<key1> : <double>|<double>|..., "
-                                     + "<key2> : <double>|... , ... '."));
+                                     + "> does not have the expected format. "
+                                     + "Check that the string is either a "
+                                     + "comma separated list of `<double>' or "
+                                     + "`<key1> : <double>|<double>|..., "
+                                     + "<key2> : <double>|... , ... '. "
+                                     + "If the string looks correct, "
+                                     + "it is likely that the length of the "
+                                     + "list of keys passed to "
+                                     + "parse_map_to_double_array does not "
+                                     + "match the length of the "
+                                     + "comma separated property list."));
           }
 
         return parsed_map;
