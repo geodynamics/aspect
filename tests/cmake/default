@@ -19,6 +19,8 @@ while ( <STDIN> )
     next if $_ =~ m/^-- /;
     next if $_ =~ m/^\|/;
 
+    $line = $_;
+
     if ($skip>0)
     {
 	print "(line in output replaced by default.sh script)\n";
@@ -31,12 +33,17 @@ while ( <STDIN> )
 	$skip=1;
     }
 
+    if ($_ =~ m/^\s*An error occurred in line/)
+    {
+  $line = "(line in output replaced by default.sh script)\n";
+    }
+
     if ($_ =~ m/^Stacktrace:/)
     {
-	print "$_";
+	print "$line";
 	print "(rest of the output replaced by default.sh script)\n";
 	last;
     }
 
-    print "$_";
+    print "$line";
 }

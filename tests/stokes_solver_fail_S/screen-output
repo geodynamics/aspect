@@ -13,26 +13,26 @@ synchronization (and subsequent output) will be skipped
 to avoid a possible deadlock.
 
 
-Exception 'ExcMessage (exception_message.str())' on rank 0 on processing: 
+Exception 'ExcMessage (exception_message.str())' on rank 0 on processing:
 
 An error occurred in file <utilities.cc> in function
 (line in output replaced by default.sh script)
-The violated condition was: 
+The violated condition was:
     false
-Additional information: 
+Additional information:
     The iterative Stokes solver in Simulator::solve_stokes did not
     converge.
-    
+
     The initial residual was: 1.169088e+14
     The final residual is: 1.169088e+14
     The required residual for convergence is: 1.169088e+07
     See output-stokes_solver_fail_S/solver_history.txt for the full
     convergence history.
-    
+
     The solver reported the following error:
-    
+
     --------------------------------------------------------
-    An error occurred in line <2421> of file
+(line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
     void aspect::Utilities::linear_solver_failed(const string&, const
     string&, const std::vector<dealii::SolverControl>&, const
@@ -42,13 +42,13 @@ Additional information:
     Additional information:
     The iterative (bottom right) solver in BlockSchurPreconditioner::vmult
     did not converge.
-    
+
     The required residual for convergence is: 1.000000e-35
-    
+
     The solver reported the following error:
-    
+
     --------------------------------------------------------
-    An error occurred in line <502> of file
+(line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
     function
     void dealii::TrilinosWrappers::SolverBase::do_solve(const
@@ -59,8 +59,8 @@ Additional information:
     Additional information:
     AztecOO::Iterate error code -3: loss of precision
     --------------------------------------------------------
-    
+
     --------------------------------------------------------
-    
+
 
 Aborting!
