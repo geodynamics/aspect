@@ -151,89 +151,49 @@ namespace aspect
 
       // now add the computed max, min, and rms velocities to the statistics object
       // and create a single string that can be output to the screen
+      const std::string units = (this->convert_output_to_years() == true) ? " (m/yr)" : " (m/s)";
+      const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
       std::ostringstream screen_text;
       unsigned int index = 0;
+
       for (std::map<types::boundary_id, double>::const_iterator
            p = global_max_vel.begin(), a = global_min_vel.begin(), rms = global_rms_vel.begin();
            p != global_max_vel.end() && a != global_min_vel.end() && rms != global_rms_vel.end();
            ++p, ++a, ++rms, ++index)
         {
-          if (this->convert_output_to_years() == true)
-            {
-              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(p->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (p->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_max, p->second*year_in_seconds);
-              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(a->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (a->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_min, a->second*year_in_seconds);
-              const std::string name_rms = "RMS velocity on boundary with indicator "
-                                           + Utilities::int_to_string(rms->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (rms->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_rms, rms->second*year_in_seconds);
-              // also make sure that the other columns filled by this object
-              // all show up with sufficient accuracy and in scientific notation
-              statistics.set_precision (name_max, 8);
-              statistics.set_scientific (name_max, true);
-              statistics.set_precision (name_min, 8);
-              statistics.set_scientific (name_min, true);
-              statistics.set_precision (name_rms, 8);
-              statistics.set_scientific (name_rms, true);
-            }
-          else
-            {
-              const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(p->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (p->first))
-                                           + " (m/s)";
-              statistics.add_value (name_max, p->second);
-              const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(a->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (a->first))
-                                           + " (m/s)";
-              statistics.add_value (name_min, a->second);
-              const std::string name_rms = "RMS velocity on boundary with indicator "
-                                           + Utilities::int_to_string(rms->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (rms->first))
-                                           + " (m/s)";
-              statistics.add_value (name_rms, rms->second);
-              // also make sure that the other columns filled by this object
-              // all show up with sufficient accuracy and in scientific notation
-              statistics.set_precision (name_max, 8);
-              statistics.set_scientific (name_max, true);
-              statistics.set_precision (name_min, 8);
-              statistics.set_scientific (name_min, true);
-              statistics.set_precision (name_rms, 8);
-              statistics.set_scientific (name_rms, true);
-            }
+          const std::string name_max = "Maximum velocity magnitude on boundary with indicator "
+                                       + Utilities::int_to_string(p->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (p->first))
+                                       + units;
+          statistics.add_value (name_max, p->second*unit_scale_factor);
+          const std::string name_min = "Minimum velocity magnitude on boundary with indicator "
+                                       + Utilities::int_to_string(a->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (a->first))
+                                       + units;
+          statistics.add_value (name_min, a->second*unit_scale_factor);
+          const std::string name_rms = "RMS velocity on boundary with indicator "
+                                       + Utilities::int_to_string(rms->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (rms->first))
+                                       + units;
+          statistics.add_value (name_rms, rms->second*unit_scale_factor);
+          // also make sure that the other columns filled by this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision (name_max, 8);
+          statistics.set_scientific (name_max, true);
+          statistics.set_precision (name_min, 8);
+          statistics.set_scientific (name_min, true);
+          statistics.set_precision (name_rms, 8);
+          statistics.set_scientific (name_rms, true);
 
           // finally have something for the screen
           screen_text.precision(4);
-          if (this->convert_output_to_years() == true)
-            {
-              screen_text << p->second *year_in_seconds << " m/yr, "
-                          << a->second *year_in_seconds << " m/yr, "
-                          << rms->second *year_in_seconds << " m/yr"
-                          << (index == global_max_vel.size()-1 ? "" : ", ");
-            }
-          else
-            {
-              screen_text << p->second << " m/s, "
-                          << a->second << " m/s, "
-                          << rms->second << " m/s"
-                          << (index == global_max_vel.size()-1 ? "" : ", ");
-            }
-
+          screen_text << p->second *unit_scale_factor << " " << units << ", "
+                      << a->second *unit_scale_factor << " " << units << ", "
+                      << rms->second *unit_scale_factor << " " << units
+                      << (index == global_max_vel.size()-1 ? "" : ", ");
         }
 
       return std::pair<std::string, std::string> ("Max, min, and rms velocity along boundary parts:",

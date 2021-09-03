@@ -116,6 +116,11 @@ namespace aspect
       std::set<types::boundary_id> boundary_indicators;
       boundary_indicators.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
 
+      AssertThrow (boundary_indicators.size() == 1,
+                   ExcMessage("The <boundary velocity residual statistics> plugin is only tested "
+                              "to work correctly for a single boundary indicator, "
+                              "but more than one was specified."));
+
       for (const auto p : boundary_indicators)
         {
           local_max_vel[p] = std::numeric_limits<double>::lowest();
@@ -126,54 +131,52 @@ namespace aspect
       // and that is owned by this processor,
       // compute the maximum, minimum, and squared*area velocity residual
       // magnitude and the face area.
-
-      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
-
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == top_boundary_id)
-              {
-                fe_face_values.reinit (cell, f);
+            for (const auto current_boundary_id : boundary_indicators)
+              if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == current_boundary_id)
+                {
+                  fe_face_values.reinit (cell, f);
 
-                fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
-                    velocities);
+                  fe_face_values[this->introspection().extractors.velocities].get_function_values (this->get_solution(),
+                      velocities);
 
-                // determine the max, min, and squared velocity residual on the face
-                // also determine the face area
-                double local_max = std::numeric_limits<double>::lowest();
-                double local_min = std::numeric_limits<double>::max();
-                double local_sqvel = 0.0;
-                double local_fe_face_area = 0.0;
-                for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
-                  {
-                    const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
-                    // Extract data velocity.
-                    Tensor<1,dim> data_velocity = get_data_velocity(point_at_surface);
+                  // determine the max, min, and squared velocity residual on the face
+                  // also determine the face area
+                  double local_max = std::numeric_limits<double>::lowest();
+                  double local_min = std::numeric_limits<double>::max();
+                  double local_sqvel = 0.0;
+                  double local_fe_face_area = 0.0;
+                  for (unsigned int q=0; q<fe_face_values.n_quadrature_points; ++q)
+                    {
+                      const Point<dim> point_at_surface = fe_face_values.quadrature_point(q);
+                      // Extract data velocity.
+                      Tensor<1,dim> data_velocity = get_data_velocity(point_at_surface);
 
-                    if (this->convert_output_to_years() == true)
-                      data_velocity = data_velocity/year_in_seconds;
+                      if (this->convert_output_to_years() == true)
+                        data_velocity = data_velocity/year_in_seconds;
 
-                    // The velocity residual is calculated here.
-                    const double vel_residual_mag = (velocities[q] - data_velocity).norm();
+                      // The velocity residual is calculated here.
+                      const double vel_residual_mag = (velocities[q] - data_velocity).norm();
 
-                    local_max = std::max(vel_residual_mag,
-                                         local_max);
-                    local_min = std::min(vel_residual_mag,
-                                         local_min);
-                    local_sqvel += ((vel_residual_mag * vel_residual_mag) * fe_face_values.JxW(q));
-                    local_fe_face_area += fe_face_values.JxW(q);
-                  }
+                      local_max = std::max(vel_residual_mag,
+                                           local_max);
+                      local_min = std::min(vel_residual_mag,
+                                           local_min);
+                      local_sqvel += ((vel_residual_mag * vel_residual_mag) * fe_face_values.JxW(q));
+                      local_fe_face_area += fe_face_values.JxW(q);
+                    }
 
-                // then merge them with the min/max/squared velocities
-                // and face areas we found for other faces with the same boundary indicator
-                local_max_vel[top_boundary_id] = std::max(local_max,
-                                                          local_max_vel[top_boundary_id]);
-                local_min_vel[top_boundary_id] = std::min(local_min,
-                                                          local_min_vel[top_boundary_id]);
-                local_velocity_square_integral[top_boundary_id] += local_sqvel;
-                local_boundary_area[top_boundary_id] += local_fe_face_area;
-              }
+                  // then merge them with the min/max/squared velocities
+                  // and face areas we found for other faces with the same boundary indicator
+                  local_max_vel[current_boundary_id] = std::max(local_max,
+                                                                local_max_vel[current_boundary_id]);
+                  local_min_vel[current_boundary_id] = std::min(local_min,
+                                                                local_min_vel[current_boundary_id]);
+                  local_velocity_square_integral[current_boundary_id] += local_sqvel;
+                  local_boundary_area[current_boundary_id] += local_fe_face_area;
+                }
 
       // now communicate to get the global values
       std::map<types::boundary_id, double> global_max_vel;
@@ -195,6 +198,7 @@ namespace aspect
             local_velocity_square_integral_values.push_back (local_velocity_square_integral[p]);
             local_boundary_area_values.push_back (local_boundary_area[p]);
           }
+
         // then collect contributions from all processors
         std::vector<double> global_max_values (local_max_values.size());
         Utilities::MPI::max (local_max_values, this->get_mpi_communicator(), global_max_values);
@@ -221,89 +225,49 @@ namespace aspect
 
       // now add the computed max, min, and rms velocities to the statistics object
       // and create a single string that can be output to the screen
+      const std::string units = (this->convert_output_to_years() == true) ? " (m/yr)" : " (m/s)";
+      const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
       std::ostringstream screen_text;
       unsigned int index = 0;
+
       for (std::map<types::boundary_id, double>::const_iterator
            p = global_max_vel.begin(), a = global_min_vel.begin(), rms = global_rms_vel.begin();
            p != global_max_vel.end() && a != global_min_vel.end() && rms != global_rms_vel.end();
            ++p, ++a, ++rms, ++index)
         {
-          if (this->convert_output_to_years() == true)
-            {
-              const std::string name_max = "Maximum velocity residual magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(p->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (p->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_max, p->second*year_in_seconds);
-              const std::string name_min = "Minimum velocity residual magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(a->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (a->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_min, a->second*year_in_seconds);
-              const std::string name_rms = "RMS velocity residual on boundary with indicator "
-                                           + Utilities::int_to_string(rms->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (rms->first))
-                                           + " (m/yr)";
-              statistics.add_value (name_rms, rms->second*year_in_seconds);
-              // also make sure that the other columns filled by this object
-              // all show up with sufficient accuracy and in scientific notation
-              statistics.set_precision (name_max, 8);
-              statistics.set_scientific (name_max, true);
-              statistics.set_precision (name_min, 8);
-              statistics.set_scientific (name_min, true);
-              statistics.set_precision (name_rms, 8);
-              statistics.set_scientific (name_rms, true);
-            }
-          else
-            {
-              const std::string name_max = "Maximum velocity residual magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(p->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (p->first))
-                                           + " (m/s)";
-              statistics.add_value (name_max, p->second);
-              const std::string name_min = "Minimum velocity residual magnitude on boundary with indicator "
-                                           + Utilities::int_to_string(a->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (a->first))
-                                           + " (m/s)";
-              statistics.add_value (name_min, a->second);
-              const std::string name_rms = "RMS velocity residual on boundary with indicator "
-                                           + Utilities::int_to_string(rms->first)
-                                           + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
-                                                                                         .translate_id_to_symbol_name (rms->first))
-                                           + " (m/s)";
-              statistics.add_value (name_rms, rms->second);
-              // also make sure that the other columns filled by this object
-              // all show up with sufficient accuracy and in scientific notation
-              statistics.set_precision (name_max, 8);
-              statistics.set_scientific (name_max, true);
-              statistics.set_precision (name_min, 8);
-              statistics.set_scientific (name_min, true);
-              statistics.set_precision (name_rms, 8);
-              statistics.set_scientific (name_rms, true);
-            }
+          const std::string name_max = "Maximum velocity residual magnitude on boundary with indicator "
+                                       + Utilities::int_to_string(p->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (p->first))
+                                       + units;
+          statistics.add_value (name_max, p->second*unit_scale_factor);
+          const std::string name_min = "Minimum velocity residual magnitude on boundary with indicator "
+                                       + Utilities::int_to_string(a->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (a->first))
+                                       + units;
+          statistics.add_value (name_min, a->second*unit_scale_factor);
+          const std::string name_rms = "RMS velocity residual on boundary with indicator "
+                                       + Utilities::int_to_string(rms->first)
+                                       + aspect::Utilities::parenthesize_if_nonempty(this->get_geometry_model()
+                                                                                     .translate_id_to_symbol_name (rms->first))
+                                       + units;
+          statistics.add_value (name_rms, rms->second*unit_scale_factor);
+          // also make sure that the other columns filled by this object
+          // all show up with sufficient accuracy and in scientific notation
+          statistics.set_precision (name_max, 8);
+          statistics.set_scientific (name_max, true);
+          statistics.set_precision (name_min, 8);
+          statistics.set_scientific (name_min, true);
+          statistics.set_precision (name_rms, 8);
+          statistics.set_scientific (name_rms, true);
 
           // finally have something for the screen
           screen_text.precision(4);
-          if (this->convert_output_to_years() == true)
-            {
-              screen_text << p->second *year_in_seconds << " m/yr, "
-                          << a->second *year_in_seconds << " m/yr, "
-                          << rms->second *year_in_seconds << " m/yr"
-                          << (index == global_max_vel.size()-1 ? "" : ", ");
-            }
-          else
-            {
-              screen_text << p->second << " m/s, "
-                          << a->second << " m/s, "
-                          << rms->second << " m/s"
-                          << (index == global_max_vel.size()-1 ? "" : ", ");
-            }
-
+          screen_text << p->second * unit_scale_factor << " " << units << ", "
+                      << a->second * unit_scale_factor << " " << units << ", "
+                      << rms->second * unit_scale_factor << " " << units
+                      << (index == global_max_vel.size()-1 ? "" : ", ");
         }
 
       return std::pair<std::string, std::string> ("Max, min, and RMS residual velocity along boundary parts:",
