@@ -353,7 +353,6 @@ namespace aspect
       const std::vector<std::string> &
       get_composition_names () const;
 
-
       /**
        * A function that returns the full vector of compositional
        * field descriptions.

@@ -1172,11 +1172,11 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
-      prm.declare_entry ("Types of fields", "",
-                         Patterns::List (Patterns::Selection("chemical_composition|stress|grain_size|porosity|generic")),
+      prm.declare_entry ("Types of fields", "unspecified",
+                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|generic|unspecified")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
-                         "one of several recognised types.");
+                         "one of several recognized types.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
@@ -1798,9 +1798,9 @@ namespace aspect
 
       // Process the compositional field types
       // There are three valid cases:
-      // 1) The user doesn't specify types of fields. This choice should be
-      // preserved, because an empty Types vector serves as a quick check on
-      // the validity of the parameter file.
+      // 1) The user doesn't specify types of fields. This choice should
+      // result in the default type being used for all fields.
+      // The default type is "unspecified".
       // 2) The user specifies just one type of field. In this case, ASPECT
       // should automatically assume that all fields have the same type.
       // 3) The user specifies types for every compositional field.
@@ -1808,25 +1808,20 @@ namespace aspect
         = Utilities::split_string_list
           (prm.get ("Types of fields"));
 
-      AssertThrow ((x_compositional_field_types.size() == 0) ||
-                   (x_compositional_field_types.size() == 1) ||
+      AssertThrow ((x_compositional_field_types.size() == 1) ||
                    (x_compositional_field_types.size() == n_compositional_fields),
                    ExcMessage ("The length of the list of names for the field types of compositional "
-                               "fields needs to be empty, or have one entry, or have a length equal to "
+                               "fields needs to either have one entry or have a length equal to "
                                "the number of compositional fields."));
 
       // If only one method is specified apply this to all fields
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
 
-      // If field types have been defined, fill the corresponding index vectors
-      if (x_compositional_field_types.size() == n_compositional_fields)
-        {
-          composition_descriptions.resize(n_compositional_fields);
+      composition_descriptions.resize(n_compositional_fields);
 
-          for (unsigned int i=0; i<n_compositional_fields; ++i)
-            composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
-        }
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list

@@ -376,7 +376,7 @@ namespace aspect
     /**
      * A data structure containing a description of each compositional field.
      * At present, this structure only includes the field type
-     * (i.e., whether it is of type chemical_composition, porosity, etc.).
+     * (i.e., whether it is of type chemical composition, porosity, etc.).
      */
     struct CompositionalFieldDescription
     {
@@ -389,7 +389,8 @@ namespace aspect
         stress,
         grain_size,
         porosity,
-        generic
+        generic,
+        unspecified
       } type;
 
       /**
@@ -400,16 +401,18 @@ namespace aspect
       Type
       parse_type(const std::string &input)
       {
-        if (input == "chemical_composition")
+        if (input == "chemical composition")
           return CompositionalFieldDescription::chemical_composition;
         else if (input == "stress")
           return CompositionalFieldDescription::stress;
-        else if (input == "grain_size")
+        else if (input == "grain size")
           return CompositionalFieldDescription::grain_size;
         else if (input == "porosity")
           return CompositionalFieldDescription::porosity;
         else if (input == "generic")
           return CompositionalFieldDescription::generic;
+        else if (input == "unspecified")
+          return CompositionalFieldDescription::unspecified;
         else
           AssertThrow(false, ExcNotImplemented());
 

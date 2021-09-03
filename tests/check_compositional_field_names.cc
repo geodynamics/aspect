@@ -18,15 +18,17 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
   for (unsigned int i=0; i<simulator_access.introspection().n_compositional_fields; ++i)
     {
       if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::chemical_composition)
-        std::cout << c_names[i] << " is of type chemical_composition" << std::endl;
+        std::cout << c_names[i] << " is of type chemical composition" << std::endl;
       if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::grain_size)
-        std::cout << c_names[i] << " is of type grain_size" << std::endl;
+        std::cout << c_names[i] << " is of type grain size" << std::endl;
       if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::porosity)
         std::cout << c_names[i] << " is of type porosity" << std::endl;
       if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::generic)
         std::cout << c_names[i] << " is of type generic" << std::endl;
       if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::stress)
         std::cout << c_names[i] << " is of type stress" << std::endl;
+      if (descriptions[i].type == aspect::Parameters<dim>::CompositionalFieldDescription::unspecified)
+        std::cout << c_names[i] << " is of type unspecified" << std::endl;
     }
 
   exit(0);
