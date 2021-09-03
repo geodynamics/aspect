@@ -73,57 +73,31 @@ namespace aspect
       const double vrms = std::sqrt(global_velocity_square_integral) /
                           std::sqrt(this->get_volume());
 
-      if (this->convert_output_to_years() == true)
-        {
-          statistics.add_value ("RMS velocity (m/year)",
-                                vrms * year_in_seconds);
-          statistics.add_value ("Max. velocity (m/year)",
-                                global_max_velocity * year_in_seconds);
+      const std::string units = (this->convert_output_to_years() == true) ? " (m/yr)" : " (m/s)";
+      const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
+      const std::vector<std::string> column_names = {"RMS velocity " + units,
+                                                     "Max. velocity " + units
+                                                    };
 
-          // also make sure that the other columns filled by this object
-          // all show up with sufficient accuracy and in scientific notation
-          {
-            const char *columns[] = { "RMS velocity (m/year)",
-                                      "Max. velocity (m/year)"
-                                    };
-            for (auto &column : columns)
-              {
-                statistics.set_precision (column, 8);
-                statistics.set_scientific (column, true);
-              }
-          }
-        }
-      else
-        {
-          statistics.add_value ("RMS velocity (m/s)", vrms);
-          statistics.add_value ("Max. velocity (m/s)", global_max_velocity);
+      statistics.add_value (column_names[0],
+                            vrms * unit_scale_factor);
+      statistics.add_value (column_names[1],
+                            global_max_velocity * unit_scale_factor);
 
-          // also make sure that the other columns filled by this object
-          // all show up with sufficient accuracy and in scientific notation
-          {
-            const char *columns[] = { "RMS velocity (m/s)",
-                                      "Max. velocity (m/s)"
-                                    };
-            for (auto &column : columns)
-              {
-                statistics.set_precision (column, 8);
-                statistics.set_scientific (column, true);
-              }
-          }
+      // also make sure that the other columns filled by this object
+      // all show up with sufficient accuracy and in scientific notation
+      for (auto &column : column_names)
+        {
+          statistics.set_precision (column, 8);
+          statistics.set_scientific (column, true);
         }
 
       std::ostringstream output;
       output.precision(3);
-      if (this->convert_output_to_years() == true)
-        output << vrms *year_in_seconds
-               << " m/year, "
-               << global_max_velocity *year_in_seconds
-               << " m/year";
-      else
-        output << vrms
-               << " m/s, "
-               << global_max_velocity
-               << " m/s";
+      output << vrms * unit_scale_factor
+             << " " << units << ", "
+             << global_max_velocity * year_in_seconds
+             << " " << units;
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());
