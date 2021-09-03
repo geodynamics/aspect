@@ -495,12 +495,6 @@ namespace aspect
   namespace Assemblers
   {
     template <int dim>
-    Interface<dim>::~Interface()
-    {}
-
-
-
-    template <int dim>
     void
     Interface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const
     {}

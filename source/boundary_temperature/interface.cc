@@ -37,11 +37,6 @@ namespace aspect
   namespace BoundaryTemperature
   {
     template <int dim>
-    Interface<dim>::~Interface ()
-    {}
-
-
-    template <int dim>
     void
     Interface<dim>::update ()
     {}

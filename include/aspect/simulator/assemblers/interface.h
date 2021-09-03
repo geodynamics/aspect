@@ -494,7 +494,10 @@ namespace aspect
     class Interface
     {
       public:
-        virtual ~Interface ();
+        /**
+         * Destructor
+         */
+        virtual ~Interface () = default;
 
         /**
          * Execute this assembler object. This function performs the primary work

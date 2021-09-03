@@ -78,8 +78,7 @@ namespace aspect
          * Destructor. Does nothing but is virtual so that derived classes
          * destructors are also virtual.
          */
-        virtual
-        ~Interface ();
+        virtual ~Interface () = default;
 
         /**
          * Initialization function. This function is called once at the

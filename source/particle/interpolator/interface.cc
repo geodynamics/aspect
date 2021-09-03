@@ -28,12 +28,6 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      Interface<dim>::~Interface ()
-      {}
-
-
-
-      template <int dim>
       std::vector<std::vector<double>>
                                     Interface<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
                                                                          const std::vector<Point<dim>> &positions,
