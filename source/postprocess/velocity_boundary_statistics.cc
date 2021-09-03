@@ -190,9 +190,9 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second * unit_scale_factor << " " << units << ", "
-                      << a->second * unit_scale_factor << " " << units << ", "
-                      << rms->second * unit_scale_factor << " " << units
+          screen_text << p->second *unit_scale_factor << " " << units << ", "
+                      << a->second *unit_scale_factor << " " << units << ", "
+                      << rms->second *unit_scale_factor << " " << units
                       << (index == global_max_vel.size()-1 ? "" : ", ");
         }
 
