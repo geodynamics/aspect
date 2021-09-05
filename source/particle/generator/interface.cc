@@ -114,6 +114,24 @@ namespace aspect
               }
             ++iteration;
           }
+        // If the maximum iterations are reached, retry generating particles
+        // within the reference cell
+        if (iteration == maximum_iterations)
+          {
+            iteration = 0;
+
+            // Generate a random point in the reference cell
+            for (unsigned int d=0; d<dim; ++d)
+              particle_position[d] = uniform_distribution_01(random_number_generator);
+
+            const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell,particle_position);
+
+            // Add the generated particle to the set
+            const Particle<dim> new_particle(p_real, particle_position, id);
+            const Particles::internal::LevelInd cellid(cell->level(), cell->index());
+            return std::make_pair(cellid,new_particle);
+          }
+
         AssertThrow (iteration < maximum_iterations,
                      ExcMessage ("Couldn't generate particle (unusual cell shape?). "
                                  "The ratio between the bounding box volume in which the particle is "
