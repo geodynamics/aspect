@@ -73,10 +73,10 @@ namespace aspect
       const double vrms = std::sqrt(global_velocity_square_integral) /
                           std::sqrt(this->get_volume());
 
-      const std::string units = (this->convert_output_to_years() == true) ? " (m/yr)" : " (m/s)";
+      const std::string units = (this->convert_output_to_years() == true) ? "m/year" : "m/s";
       const double unit_scale_factor = (this->convert_output_to_years() == true) ? year_in_seconds : 1.0;
-      const std::vector<std::string> column_names = {"RMS velocity " + units,
-                                                     "Max. velocity " + units
+      const std::vector<std::string> column_names = {"RMS velocity (" + units + ")",
+                                                     "Max. velocity (" + units + ")"
                                                     };
 
       statistics.add_value (column_names[0],
@@ -96,7 +96,7 @@ namespace aspect
       output.precision(3);
       output << vrms *unit_scale_factor
              << " " << units << ", "
-             << global_max_velocity *year_in_seconds
+             << global_max_velocity *unit_scale_factor
              << " " << units;
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",
