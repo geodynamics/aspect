@@ -18,9 +18,9 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/simulator.h>
-#include <aspect/postprocess/boundary_velocity_residual_statistics.h>
 #include <aspect/postprocess/visualization/boundary_velocity_residual.h>
+#include <aspect/postprocess/boundary_velocity_residual_statistics.h>
+#include <aspect/simulator.h>
 
 namespace aspect
 {
