@@ -209,15 +209,20 @@ namespace aspect
       // the change would then lead to a jump in pressure from one time step
       // to the next when we, for example, change from requiring the *surface*
       // average to be zero, to requiring the *domain* average to be zero.
-      // That's unlikely what the user really wanted.
+      // That's unlikely what the user really wanted. However, we do allow
+      // disabling the pressure normalization in case the user wants to enable
+      // a free surface boundary.
       std::string pressure_normalization;
       ia >> pressure_normalization;
-      AssertThrow (pressure_normalization == parameters.pressure_normalization,
+      AssertThrow (pressure_normalization == parameters.pressure_normalization ||
+                   parameters.pressure_normalization == "no",
                    ExcMessage ("The pressure normalization method that was stored "
                                "in the checkpoint file is not the same as the one "
-                               "you currently set in your input file. "
-                               "These need to be the same during restarting "
-                               "from a checkpoint."));
+                               "you currently set in your input file and your new "
+                               "pressure normalization method is not 'no'. "
+                               "The only allowed change for the pressure "
+                               "normalization method during a restart is to "
+                               "disable normalization."));
 
       unsigned int n_compositional_fields;
       ia >> n_compositional_fields;
@@ -449,6 +454,58 @@ namespace aspect
 
     pcout << "*** Resuming from snapshot!" << std::endl << std::endl;
 
+    // read resume.z to set up the state of the model
+    try
+      {
+#ifdef DEAL_II_WITH_ZLIB
+        const std::string restart_data
+          = Utilities::read_and_distribute_file_content (parameters.output_directory + "restart.resume.z",
+                                                         mpi_communicator);
+
+        std::istringstream ifs (restart_data);
+
+        uint32_t compression_header[4];
+        ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
+        Assert(compression_header[0]==1, ExcInternalError());
+
+        std::vector<char> compressed(compression_header[3]);
+        std::vector<char> uncompressed(compression_header[1]);
+        ifs.read(&compressed[0],compression_header[3]);
+        uLongf uncompressed_size = compression_header[1];
+
+        const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size,
+                                   (Bytef *)&compressed[0], compression_header[3]);
+        AssertThrow (err == Z_OK,
+                     ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
+                                 +
+                                 Utilities::int_to_string(err)));
+
+        {
+          std::istringstream ss;
+          ss.str(std::string (&uncompressed[0], uncompressed_size));
+
+          aspect::iarchive ia (ss);
+          load_and_check_critical_parameters(this->parameters, ia);
+          ia >> (*this);
+        }
+#else
+        AssertThrow (false,
+                     ExcMessage ("You need to have deal.II configured with the `libz' "
+                                 "option to support checkpoint/restart, but deal.II "
+                                 "did not detect its presence when you called `cmake'."));
+#endif
+      }
+    catch (std::exception &e)
+      {
+        AssertThrow (false,
+                     ExcMessage (std::string("Cannot seem to deserialize the data previously stored!\n")
+                                 +
+                                 "Some part of the machinery generated an exception that says:\n"
+                                 +
+                                 e.what()));
+      }
+
+    // now that we have resumed from the snapshot load the mesh and solution vectors
     try
       {
         triangulation.load ((parameters.output_directory + "restart.mesh").c_str());
@@ -513,59 +570,7 @@ namespace aspect
         mesh_deformation->initial_topography = distributed_initial_topography;
       }
 
-    // read zlib compressed resume.z
-    try
-      {
-#ifdef DEAL_II_WITH_ZLIB
-        const std::string restart_data
-          = Utilities::read_and_distribute_file_content (parameters.output_directory + "restart.resume.z",
-                                                         mpi_communicator);
-
-        std::istringstream ifs (restart_data);
-
-        uint32_t compression_header[4];
-        ifs.read((char *)compression_header, 4 * sizeof(compression_header[0]));
-        Assert(compression_header[0]==1, ExcInternalError());
-
-        std::vector<char> compressed(compression_header[3]);
-        std::vector<char> uncompressed(compression_header[1]);
-        ifs.read(&compressed[0],compression_header[3]);
-        uLongf uncompressed_size = compression_header[1];
-
-        const int err = uncompress((Bytef *)&uncompressed[0], &uncompressed_size,
-                                   (Bytef *)&compressed[0], compression_header[3]);
-        AssertThrow (err == Z_OK,
-                     ExcMessage (std::string("Uncompressing the data buffer resulted in an error with code <")
-                                 +
-                                 Utilities::int_to_string(err)));
-
-        {
-          std::istringstream ss;
-          ss.str(std::string (&uncompressed[0], uncompressed_size));
-
-          aspect::iarchive ia (ss);
-          load_and_check_critical_parameters(this->parameters, ia);
-          ia >> (*this);
-        }
-#else
-        AssertThrow (false,
-                     ExcMessage ("You need to have deal.II configured with the `libz' "
-                                 "option to support checkpoint/restart, but deal.II "
-                                 "did not detect its presence when you called `cmake'."));
-#endif
-        signals.post_resume_load_user_data(triangulation);
-      }
-    catch (std::exception &e)
-      {
-        AssertThrow (false,
-                     ExcMessage (std::string("Cannot seem to deserialize the data previously stored!\n")
-                                 +
-                                 "Some part of the machinery generated an exception that says <"
-                                 +
-                                 e.what()
-                                 +
-                                 ">"));
-      }
+    signals.post_resume_load_user_data(triangulation);
 
     // Overwrite the existing statistics file with the one that would have
     // been current at the time of the snapshot we just read back in. We
