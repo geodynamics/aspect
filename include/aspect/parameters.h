@@ -110,10 +110,12 @@ namespace aspect
         linear_momentum_x = 0x8,
         linear_momentum_y = 0x10,
         linear_momentum_z = 0x20,
-        linear_momentum   = 0x8+0x10+0x20,
+        linear_momentum   = linear_momentum_x+linear_momentum_y+linear_momentum_z,
         net_rotation      = 0x40,
         angular_momentum  = 0x80,
-        net_surface_rotation = 0x100
+        net_surface_rotation = 0x100,
+        any_translation = net_translation+linear_momentum,
+        any_rotation = net_rotation+angular_momentum+net_surface_rotation,
       };
     };
 

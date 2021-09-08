@@ -108,102 +108,101 @@ namespace aspect
   template <int dim>
   void Simulator<dim>::setup_nullspace_constraints(AffineConstraints<double> &constraints)
   {
-    if (!(parameters.nullspace_removal & (NullspaceRemoval::linear_momentum
-                                          | NullspaceRemoval::net_translation)))
-      return;
+    if (parameters.nullspace_removal & NullspaceRemoval::any_translation)
+      {
+        // Note: We want to add a single Dirichlet zero constraint for each
+        // translation direction. This is complicated by the fact that we need to
+        // find a DoF that is not already constrained. In parallel the constraint
+        // needs to be added on all processors where it is locally_relevant and
+        // all processors need to agree on the index.
 
-    // Note: We want to add a single Dirichlet zero constraint for each
-    // translation direction. This is complicated by the fact that we need to
-    // find a DoF that is not already constrained. In parallel the constraint
-    // needs to be added on all processors where it is locally_relevant and
-    // all processors need to agree on the index.
+        // First find candidates for DoF indices to constrain for each velocity component.
+        types::global_dof_index vel_idx[dim];
+        {
+          for (unsigned int d=0; d<dim; ++d)
+            vel_idx[d] = numbers::invalid_dof_index;
 
-    // First find candidates for DoF indices to constrain for each velocity component.
-    types::global_dof_index vel_idx[dim];
-    {
-      for (unsigned int d=0; d<dim; ++d)
-        vel_idx[d] = numbers::invalid_dof_index;
+          unsigned int n_left_to_find = dim;
 
-      unsigned int n_left_to_find = dim;
-
-      std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
-      typename DoFHandler<dim>::active_cell_iterator cell;
-      for (const auto &cell : dof_handler.active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            cell->get_dof_indices (local_dof_indices);
-
-            for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
+          std::vector<types::global_dof_index> local_dof_indices (finite_element.dofs_per_cell);
+          typename DoFHandler<dim>::active_cell_iterator cell;
+          for (const auto &cell : dof_handler.active_cell_iterators())
+            if (cell->is_locally_owned())
               {
-                const unsigned int component = finite_element.system_to_component_index(i).first;
+                cell->get_dof_indices (local_dof_indices);
 
-                if (component < introspection.component_indices.velocities[0]
-                    || component > introspection.component_indices.velocities[dim-1])
-                  continue; // only look at velocity
-
-                const unsigned int velocity_component = component - introspection.component_indices.velocities[0];
-
-                if (vel_idx[velocity_component] != numbers::invalid_dof_index)
-                  continue; // already found one
-
-                const types::global_dof_index idx = local_dof_indices[i];
-
-                if (constraints.can_store_line(idx) && !constraints.is_constrained(idx))
+                for (unsigned int i=0; i<finite_element.dofs_per_cell; ++i)
                   {
-                    vel_idx[velocity_component] = idx;
-                    --n_left_to_find;
+                    const unsigned int component = finite_element.system_to_component_index(i).first;
+
+                    if (component < introspection.component_indices.velocities[0]
+                        || component > introspection.component_indices.velocities[dim-1])
+                      continue; // only look at velocity
+
+                    const unsigned int velocity_component = component - introspection.component_indices.velocities[0];
+
+                    if (vel_idx[velocity_component] != numbers::invalid_dof_index)
+                      continue; // already found one
+
+                    const types::global_dof_index idx = local_dof_indices[i];
+
+                    if (constraints.can_store_line(idx) && !constraints.is_constrained(idx))
+                      {
+                        vel_idx[velocity_component] = idx;
+                        --n_left_to_find;
+                      }
+
+                    // are we done searching?
+                    if (n_left_to_find == 0)
+                      break; // exit inner loop
                   }
 
-                // are we done searching?
                 if (n_left_to_find == 0)
-                  break; // exit inner loop
+                  break; // exit outer loop
               }
 
-            if (n_left_to_find == 0)
-              break; // exit outer loop
-          }
-
-    }
-
-
-    const unsigned int flags[] = {(NullspaceRemoval::linear_momentum_x
-                                   |NullspaceRemoval::net_translation_x),
-                                  (NullspaceRemoval::linear_momentum_y
-                                   |NullspaceRemoval::net_translation_y),
-                                  (NullspaceRemoval::linear_momentum_z
-                                   |NullspaceRemoval::net_translation_z)
-                                 };
-
-    for (unsigned int d=0; d<dim; ++d)
-      if (parameters.nullspace_removal & flags[d])
-        {
-          // Make a reduction to find the smallest index (processors that
-          // found a larger candidate just happened to not be able to store
-          // that index with the minimum value). Note that it is possible that
-          // some processors might not be able to find a potential DoF, for
-          // example because they don't own any DoFs. On those processors we
-          // will use dof_handler.n_dofs() when building the minimum (larger
-          // than any valid DoF index).
-          const types::global_dof_index global_idx = dealii::Utilities::MPI::min(
-                                                       (vel_idx[d] != numbers::invalid_dof_index)
-                                                       ?
-                                                       vel_idx[d]
-                                                       :
-                                                       dof_handler.n_dofs(),
-                                                       mpi_communicator);
-
-          Assert(global_idx < dof_handler.n_dofs(),
-                 ExcMessage("Error, couldn't find a velocity DoF to constrain."));
-
-          // Finally set this DoF to zero (if the current MPI process
-          // cares about it):
-          if (constraints.can_store_line(global_idx))
-            {
-              Assert(!constraints.is_constrained((global_idx)),
-                     ExcInternalError());
-              constraints.add_line(global_idx);
-            }
         }
+
+
+        const unsigned int flags[] = {(NullspaceRemoval::linear_momentum_x
+                                       |NullspaceRemoval::net_translation_x),
+                                      (NullspaceRemoval::linear_momentum_y
+                                       |NullspaceRemoval::net_translation_y),
+                                      (NullspaceRemoval::linear_momentum_z
+                                       |NullspaceRemoval::net_translation_z)
+                                     };
+
+        for (unsigned int d=0; d<dim; ++d)
+          if (parameters.nullspace_removal & flags[d])
+            {
+              // Make a reduction to find the smallest index (processors that
+              // found a larger candidate just happened to not be able to store
+              // that index with the minimum value). Note that it is possible that
+              // some processors might not be able to find a potential DoF, for
+              // example because they don't own any DoFs. On those processors we
+              // will use dof_handler.n_dofs() when building the minimum (larger
+              // than any valid DoF index).
+              const types::global_dof_index global_idx = dealii::Utilities::MPI::min(
+                                                           (vel_idx[d] != numbers::invalid_dof_index)
+                                                           ?
+                                                           vel_idx[d]
+                                                           :
+                                                           dof_handler.n_dofs(),
+                                                           mpi_communicator);
+
+              Assert(global_idx < dof_handler.n_dofs(),
+                     ExcMessage("Error, couldn't find a velocity DoF to constrain."));
+
+              // Finally set this DoF to zero (if the current MPI process
+              // cares about it):
+              if (constraints.can_store_line(global_idx))
+                {
+                  Assert(!constraints.is_constrained((global_idx)),
+                         ExcInternalError());
+                  constraints.add_line(global_idx);
+                }
+            }
+      }
   }
 
 
@@ -213,29 +212,35 @@ namespace aspect
   {
     if (parameters.nullspace_removal & NullspaceRemoval::angular_momentum)
       {
-        // use_constant_density = false, remove net angular momentum
-        remove_net_angular_momentum( false, relevant_dst, tmp_distributed_stokes);
-      }
-    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
-      {
-        // use_constant_density = false, remove net momentum
-        remove_net_linear_momentum( false, relevant_dst, tmp_distributed_stokes);
+        remove_net_angular_momentum( /* use_constant_density = */ false, // remove net momentum
+                                                                  relevant_dst,
+                                                                  tmp_distributed_stokes);
       }
     if (parameters.nullspace_removal & NullspaceRemoval::net_rotation)
       {
-        // use_constant_density = true, remove net rotation
-        remove_net_angular_momentum( true, relevant_dst, tmp_distributed_stokes);
+        remove_net_angular_momentum( /* use_constant_density = */ true, // remove net rotation
+                                                                  relevant_dst,
+                                                                  tmp_distributed_stokes);
       }
     if (parameters.nullspace_removal & NullspaceRemoval::net_surface_rotation)
       {
-        // use_constant_density = true, remove net rotation
-        // limit_to_top_faces = true, to limit to surface motions
-        remove_net_angular_momentum( true, relevant_dst, tmp_distributed_stokes, true);
+        remove_net_angular_momentum( /* use_constant_density = */ true, // remove net rotation
+                                                                  relevant_dst,
+                                                                  tmp_distributed_stokes,
+                                                                  /* limit_to_top_faces = */ true);
+      }
+
+    if (parameters.nullspace_removal & NullspaceRemoval::linear_momentum)
+      {
+        remove_net_linear_momentum( /* use_constant_density = */ false, // remove net momentum
+                                                                 relevant_dst,
+                                                                 tmp_distributed_stokes);
       }
     if (parameters.nullspace_removal & NullspaceRemoval::net_translation)
       {
-        // use_constant_density = true, remove net translation
-        remove_net_linear_momentum( true, relevant_dst, tmp_distributed_stokes);
+        remove_net_linear_momentum( /* use_constant_density = */ true, // remove net translation
+                                                                 relevant_dst,
+                                                                 tmp_distributed_stokes);
       }
   }
 
