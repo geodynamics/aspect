@@ -34,11 +34,41 @@
 #include <deal.II/lac/la_parallel_vector.h>
 #include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 
 namespace aspect
 {
   using namespace dealii;
+
+  namespace Assemblers
+  {
+    /**
+     * Apply stabilization to a cell of the system matrix. The
+     * stabilization is only added to cells on a free surface. The
+     * scheme is based on that of Kaus et. al., 2010. Called during
+     * assembly of the system matrix.
+     */
+    template <int dim>
+    class ApplyStabilization: public Assemblers::Interface<dim>,
+      public SimulatorAccess<dim>
+    {
+      public:
+        ApplyStabilization(const double stabilization_theta);
+
+        void
+        execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch,
+                 internal::Assembly::CopyData::CopyDataBase<dim> &data) const override;
+
+      private:
+        /**
+         * Stabilization parameter for the free surface. Should be between
+         * zero and one. A value of zero means no stabilization. See Kaus
+         * et. al. 2010 for more details.
+         */
+        const double free_surface_theta;
+    };
+  }
 
   template <int dim> class Simulator;
 
@@ -83,6 +113,13 @@ namespace aspect
          * The default implementation of this function does nothing.
          */
         virtual void update();
+
+
+        /**
+         * A function that will be called to check whether stabilization is needed.
+         */
+        virtual bool needs_surface_stabilization() const;
+
 
         /**
          * A function that returns the initial deformation of points on the
@@ -162,6 +199,13 @@ namespace aspect
         void initialize();
 
         /**
+         * Called by Simulator::set_assemblers() to allow the FreeSurface plugin
+         * to register its assembler.
+         */
+        void set_assemblers(const SimulatorAccess<dim> &simulator_access,
+                            aspect::Assemblers::Manager<dim> &assemblers) const;
+
+        /**
          * Update function of the MeshDeformationHandler. This function
          * allows the individual mesh deformation objects to update.
          */
@@ -238,6 +282,13 @@ namespace aspect
          */
         const std::set<types::boundary_id> &
         get_active_mesh_deformation_boundary_indicators () const;
+
+        /**
+         * Return a set of all the indicators of boundaries that
+         * require surface stabilization.
+         */
+        const std::set<types::boundary_id> &
+        get_boundary_indicators_requiring_stabilization () const;
 
         /**
          * Return the boundary id of the surface that has a free surface
@@ -506,7 +557,20 @@ namespace aspect
          */
         std::set<types::boundary_id> free_surface_boundary_indicators;
 
+        /**
+         * The set of boundary indicators for which the mesh deformation
+         * objects need surface stabilization.
+         */
+        std::set<types::boundary_id> boundary_indicators_requiring_stabilization;
+
         bool include_initial_topography;
+
+        /**
+         * Stabilization parameter for the free surface. Should be between
+         * zero and one. A value of zero means no stabilization.  See Kaus
+         * et. al. 2010 for more details.
+         */
+        double surface_theta;
 
         /**
          * If required, store a mapping for each multigrid level.
@@ -522,6 +586,7 @@ namespace aspect
         * Multigrid transfer operator for the displacements
         */
         MGTransferMatrixFree<dim, double> mg_transfer;
+
 
         /**
         * Multigrid level constraints for the displacements

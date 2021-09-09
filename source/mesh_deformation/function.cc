@@ -73,6 +73,16 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    BoundaryFunction<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
+    }
+
+
+
+    template <int dim>
     void BoundaryFunction<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection ("Mesh deformation");

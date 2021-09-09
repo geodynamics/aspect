@@ -76,6 +76,16 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    AsciiData<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
+    }
+
+
+
+    template <int dim>
     void
     AsciiData<dim>::declare_parameters (ParameterHandler &prm)
     {

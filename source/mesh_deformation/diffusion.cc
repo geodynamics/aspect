@@ -477,6 +477,16 @@ namespace aspect
 
 
     template <int dim>
+    bool
+    Diffusion<dim>::
+    needs_surface_stabilization () const
+    {
+      return false;
+    }
+
+
+
+    template <int dim>
     void Diffusion<dim>::declare_parameters(ParameterHandler &prm)
     {
       prm.enter_subsection("Mesh deformation");
