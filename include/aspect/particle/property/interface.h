@@ -538,7 +538,7 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &prm) override;
 
         private:
           /**
