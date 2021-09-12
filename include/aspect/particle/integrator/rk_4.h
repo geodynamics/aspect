@@ -48,7 +48,7 @@ namespace aspect
           */
           virtual
           void
-          initialize ();
+          initialize () override;
 
           /**
            * Perform an integration step of moving the particles of one cell

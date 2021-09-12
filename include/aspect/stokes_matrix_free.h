@@ -541,7 +541,7 @@ namespace aspect
        * Return the memory consumption in bytes that are used to store
        * equation data like viscosity to be able to apply the operators.
        */
-      std::size_t get_cell_data_memory_consumption() const;
+      std::size_t get_cell_data_memory_consumption() const override;
 
     private:
       /**
