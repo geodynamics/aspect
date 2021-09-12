@@ -42,8 +42,8 @@ namespace aspect
      * The viscosity is computed according to the Drucker Prager frictional
      * plasticity criterion based on a user-defined internal angle of friction $\phi$
      * and cohesion $C$. In 3D:
-     * $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt(3) (3+\sin(\phi))} +
-     * \frac{2 P \sin(\phi)}{\sqrt(3) (3+\sin(\phi))}$,
+     * $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt{3} (3+\sin(\phi))} +
+     * \frac{6 P \sin(\phi)}{\sqrt{3} (3+\sin(\phi))}$,
      * where $P$ is the pressure.
      * See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975),
      * G&eacute;otechnique 25, No. 4, 671-689.
