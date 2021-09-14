@@ -17,7 +17,7 @@ Number of mesh deformation degrees of freedom: 5346
      Temperature contrast across model domain (K):  0
      Reference depth (m):                           0
      Reference temperature (K):                     0
-     Reference pressure (Pa):                       1.65e+06
+     Reference pressure (Pa):                       0
      Reference gravity (m/s^2):                     10
      Reference density (kg/m^3):                    3300
      Reference thermal expansion coefficient (1/K): 4e-05

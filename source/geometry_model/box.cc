@@ -253,7 +253,14 @@ namespace aspect
 
       // choose a point on the center axis of the domain (without topography)
       Point<dim> p = extents/2+box_origin;
-      p[dim-1] = extents[dim-1]+box_origin[dim-1]-depth;
+
+      // We need a dim-1 point to get the topo value.
+      Point<dim-1> surface_point;
+      for (unsigned int d=0; d<dim-1; ++d)
+        surface_point[d] = p[d];
+
+      const double topo = topo_model->value(surface_point);
+      p[dim-1] = extents[dim-1]+box_origin[dim-1]-depth+topo;
 
       return p;
     }
