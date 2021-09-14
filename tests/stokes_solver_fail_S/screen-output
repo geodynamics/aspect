@@ -32,7 +32,7 @@ Additional information:
     The solver reported the following error:
     
     --------------------------------------------------------
-    An error occurred in line <2421> of file
+(line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
     void aspect::Utilities::linear_solver_failed(const string&, const
     string&, const std::vector<dealii::SolverControl>&, const
@@ -48,7 +48,7 @@ Additional information:
     The solver reported the following error:
     
     --------------------------------------------------------
-    An error occurred in line <502> of file
+(line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
     function
     void dealii::TrilinosWrappers::SolverBase::do_solve(const

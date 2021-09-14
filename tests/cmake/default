@@ -12,31 +12,50 @@ $skip = 0;
 
 while ( <STDIN> )
 {
-    # this is not strictly necessary because we are going to remove the
-    # following lines inside the cmake script, but this makes it easier
-    # to generate screen-output files from scratch because the useless
-    # lines are already removed.
-    next if $_ =~ m/^-- /;
-    next if $_ =~ m/^\|/;
+  # this is not strictly necessary because we are going to remove the
+  # following lines inside the cmake script, but this makes it easier
+  # to generate screen-output files from scratch because the useless
+  # lines are already removed.
+  next if $_ =~ m/^-- /;
+  next if $_ =~ m/^\|/;
 
-    if ($skip>0)
+  if ($skip>0)
+  {
+    print "(line in output replaced by default.sh script)\n";
+	  $skip=$skip-1;
+	  next;
+  }
+
+  if ($_ =~ m/^\s*An error occurred in/)
+  {
+    if ($_ =~ /function/)
     {
-	print "(line in output replaced by default.sh script)\n";
-	$skip=$skip-1;
-	next;
+      # These lines have the structure:
+      # "An error occurred in file <...> in function"
+      # The file name is unlikely to change frequently, so we keep this line
+      print "$_";
     }
-
-    if ($_ =~ m/^\s*An error occurred in/)
+    else
     {
-	$skip=1;
+      # These lines have the structure:
+      # "An error occurred in line <...> of file"
+      # The line number is likely to change frequently, so we replace this line
+      print "(line in output replaced by default.sh script)\n";
     }
+    # In both of the above cases, we want to replace the next line
+    # In the first case, the function arguments are formatted differently
+    # when run with a different compiler version.
+    # In the second case, the full file paths are printed.
+    $skip=1;
+    next
+  }
 
-    if ($_ =~ m/^Stacktrace:/)
-    {
-	print "$_";
-	print "(rest of the output replaced by default.sh script)\n";
-	last;
-    }
-
+  if ($_ =~ m/^Stacktrace:/)
+  {
     print "$_";
+    print "(rest of the output replaced by default.sh script)\n";
+    last;
+  }
+
+  print "$_";
 }

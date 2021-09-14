@@ -32,7 +32,7 @@ Additional information:
     The solver reported the following error:
     
     --------------------------------------------------------
-    An error occurred in line <1285> of file
+(line in output replaced by default.sh script)
 (line in output replaced by default.sh script)
     void dealii::SolverFGMRES<VectorType>::solve(const MatrixType&,
     VectorType&, const VectorType&, const PreconditionerType&) [with
