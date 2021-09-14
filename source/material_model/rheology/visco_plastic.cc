@@ -221,7 +221,14 @@ namespace aspect
             // Step 1e: multiply the viscosity by a constant (default value is 1)
             viscosity_pre_yield = constant_viscosity_prefactors.compute_viscosity(viscosity_pre_yield, j);
 
-            // Step 2: calculate the viscous stress magnitude
+            // Step 2: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
+            // If no strain weakening is applied, the factors are 1.
+            const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
+            // Apply strain weakening to the viscous viscosity.
+            viscosity_pre_yield *= weakening_factors[2];
+
+
+            // Step 3: calculate the viscous stress magnitude
             // and strain rate. If requested compute visco-elastic contributions.
             double current_edot_ii = edot_ii;
 
@@ -241,30 +248,22 @@ namespace aspect
                                                min_strain_rate);
                   }
 
-                // Step 2a: calculate viscoelastic (effective) viscosity
+                // Step 3a: calculate viscoelastic (effective) viscosity
                 viscosity_pre_yield = elastic_rheology.calculate_viscoelastic_viscosity(viscosity_pre_yield,
                                                                                         elastic_shear_moduli[j]);
               }
 
-            // Step 2b: calculate current (viscous or viscous + elastic) stress magnitude
+            // Step 3b: calculate current (viscous or viscous + elastic) stress magnitude
             double current_stress = 2. * viscosity_pre_yield * current_edot_ii;
 
-            // Step 3: strain weakening
-
-            // Step 3a: calculate strain weakening factors for the cohesion, friction, and pre-yield viscosity
-            // If no brittle and/or viscous strain weakening is applied, the factors are 1.
-            const std::array<double, 3> weakening_factors = strain_rheology.compute_strain_weakening_factors(j, in.composition[i]);
-
-            // Step 3b: calculate weakened friction, cohesion, and pre-yield viscosity and adjust the current_stress accordingly
+            // Step 4: calculate strain-weakened friction, cohesion
             const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
                                                                       phase_function_values,
                                                                       n_phases_per_composition);
             const double current_cohesion = drucker_prager_parameters.cohesion * weakening_factors[0];
             const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
-            viscosity_pre_yield *= weakening_factors[2];
-            current_stress *= weakening_factors[2];
 
-            // Step 4: plastic yielding
+            // Step 5: plastic yielding
 
             // Determine if the pressure used in Drucker Prager plasticity will be capped at 0 (default).
             // This may be necessary in models without gravity and the dynamic stresses are much higher
@@ -274,19 +273,19 @@ namespace aspect
             if (allow_negative_pressures_in_plasticity == false)
               pressure_for_plasticity = std::max(in.pressure[i],0.0);
 
-            // Step 4a: calculate Drucker-Prager yield stress
+            // Step 5a: calculate Drucker-Prager yield stress
             const double yield_stress = drucker_prager_plasticity.compute_yield_stress(current_cohesion,
                                                                                        current_friction,
                                                                                        pressure_for_plasticity,
                                                                                        drucker_prager_parameters.max_yield_stress);
 
-            // Step 4b: select if yield viscosity is based on Drucker Prager or stress limiter rheology
+            // Step 5b: select if yield viscosity is based on Drucker Prager or stress limiter rheology
             double viscosity_yield = viscosity_pre_yield;
             switch (yield_mechanism)
               {
                 case stress_limiter:
                 {
-                  //Step 4b-1: always rescale the viscosity back to the yield surface
+                  //Step 5b-1: always rescale the viscosity back to the yield surface
                   const double viscosity_limiter = yield_stress / (2.0 * ref_strain_rate)
                                                    * std::pow((edot_ii/ref_strain_rate),
                                                               1./exponents_stress_limiter[j] - 1.0);
@@ -295,7 +294,7 @@ namespace aspect
                 }
                 case drucker_prager:
                 {
-                  // Step 4b-2: if the current stress is greater than the yield stress,
+                  // Step 5b-2: if the current stress is greater than the yield stress,
                   // rescale the viscosity back to yield surface
                   if (current_stress >= yield_stress)
                     {
@@ -316,7 +315,7 @@ namespace aspect
                 }
               }
 
-            // Step 5: limit the viscosity with specified minimum and maximum bounds
+            // Step 6: limit the viscosity with specified minimum and maximum bounds
             output_parameters.composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
           }
         return output_parameters;
