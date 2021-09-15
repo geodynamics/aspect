@@ -246,7 +246,7 @@ namespace aspect
         if (force_out == nullptr)
           return;
 
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
+        if (in.current_cell.state() == IteratorState::valid && in.requests_property(MaterialProperties::reaction_terms))
           {
 
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
