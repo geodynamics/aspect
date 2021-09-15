@@ -98,7 +98,7 @@ namespace aspect
                            "between the fixed elastic time step and numerical time step. ");
         prm.declare_entry ("Stabilization time scale factor", "1.",
                            Patterns::Double (1.),
-                           "A stabilization factor for the elastic stresses that influence how fast "
+                           "A stabilization factor for the elastic stresses that influences how fast "
                            "elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization "
                            "and may lead to oscillatory motion. Setting the factor to 2 "
                            "avoids oscillations, but still enables an immediate elastic response. "
