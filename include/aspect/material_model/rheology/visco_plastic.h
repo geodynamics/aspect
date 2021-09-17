@@ -25,6 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
+#include <aspect/material_model/rheology/friction_options.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
@@ -90,6 +91,11 @@ namespace aspect
        * The composition yielding.
        */
       std::vector<bool> composition_yielding;
+
+      /**
+       * The current friction angle.
+       */
+      std::vector<double> current_friction_angles;
     };
 
     namespace Rheology
@@ -196,6 +202,11 @@ namespace aspect
            * Object for computing the strain dependence of the rheology model.
            */
           Rheology::StrainDependent<dim> strain_rheology;
+
+          /**
+           * Object for computing the friction dependence of the rheology model.
+           */
+          Rheology::FrictionOptions<dim> friction_options;
 
           /**
            * Object for computing viscoelastic viscosities and stresses.

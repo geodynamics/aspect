@@ -84,7 +84,7 @@ namespace aspect
            */
           FrictionDependenceMechanism
           get_friction_dependence_mechanism () const;
-          
+
         private:
           /**
            * Select the mechanism to be used for the friction dependence.
