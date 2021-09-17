@@ -32,7 +32,6 @@ subsection Material model
     set Fixed elastic time step     = 1e3
     set Elastic damper viscosity    = 1e14
     set Use fixed elastic time step = false
-    set Use stress averaging        = false
     set Viscosity averaging scheme  = maximum composition
   end
 
