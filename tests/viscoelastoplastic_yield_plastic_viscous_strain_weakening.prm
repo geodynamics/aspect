@@ -1,0 +1,77 @@
+include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_plastic_viscous_strain_weakening.prm
+
+# Global parameters
+set Dimension                              = 2
+set End time                               = 1000
+set Max nonlinear iterations               = 2
+set Output directory                       = viscoelastoplastic_yield_plastic_viscous_strain_weakening
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 5
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plastic_strain, viscous_strain
+end
+
+# We prescribe some initial strain at the center of the domain
+# plastic_strain, viscous_strain
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; 0; 0; \
+                              if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0); \
+                              if(x>=35e3&x<=65e3&y>=35.e3&y<=65.e3,0.8,0)
+  end
+end
+
+# Boundary composition specification
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Material model (values for background material)
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Reference strain rate = 1.e-16
+    set Viscous flow law = dislocation
+    set Prefactors for dislocation creep = 5.e-23
+    set Stress exponents for dislocation creep = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep = 0.
+    set Yield mechanism = drucker
+    set Angles of internal friction = 0.
+    set Cohesions = 1.e6
+    set Strain weakening mechanism = plastic weakening with plastic strain and viscous weakening with viscous strain
+    set Start prefactor strain weakening intervals = 0.
+    set End prefactor strain weakening intervals = 1.0
+    set Prefactor strain weakening factors = 0.5
+    set Start plasticity strain weakening intervals = 0.
+    set End plasticity strain weakening intervals = 1.0
+    set Cohesion strain weakening factors = 0.5
+    set Friction strain weakening factors = 0.5
+
+    set Include viscoelasticity     = true
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 1e3
+    set Use stress averaging        = false
+  end
+end
+
+
+# Post processing
+# named additional outputs includes the weakened cohesions and friction angles
+subsection Postprocess
+  set List of postprocessors = velocity statistics, mass flux statistics, visualization
+  subsection Visualization
+    set Interpolate output = false
+    set List of output variables = viscosity, strain rate, named additional outputs
+    set Time between graphical output = 1000
+  end
+end
