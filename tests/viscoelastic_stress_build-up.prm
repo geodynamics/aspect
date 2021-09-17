@@ -35,7 +35,7 @@
 # in the compositional fields tracking viscoelastic stresses.
 #
 # For the current test, we prescribe initial values to the compositional fields
-# that track the viscoelastic stresses that are equal to the eventual 
+# that track the viscoelastic stresses that are equal to the eventual
 # analytical solution for the viscoelastic stress.
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
