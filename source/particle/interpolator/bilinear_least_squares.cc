@@ -40,17 +40,6 @@ namespace aspect
         return (s == "true");
       }
 
-      ComponentMask string_to_bool(const std::vector<std::string> &list)
-      {
-        std::vector<bool> results(list.size(), false);
-        for (std::size_t i = 0; i < list.size(); i++)
-          {
-            results[i] = string_to_bool(list[i]);
-          }
-        return ComponentMask(results);
-      }
-
-
       template <int dim>
       std::vector<std::vector<double>>
                                     BilinearLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
@@ -130,28 +119,25 @@ namespace aspect
             const auto &particle_property_value = particle->get_properties();
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
-                if (selected_properties[property_index])
+                if (selected_properties[property_index] == true)
                   {
                     b[property_index][positions_index] = particle_property_value[property_index];
-                    if (use_linear_least_squares_limiter[property_index])
+                    if (use_linear_least_squares_limiter[property_index] == true)
                       {
                         property_bounds[property_index].first = std::min(b[property_index][positions_index], property_bounds[property_index].first);
                         property_bounds[property_index].second = std::max(b[property_index][positions_index], property_bounds[property_index].second);
                       }
                   }
               }
-            Point<dim> relative_particle_position = mapping.transform_real_to_unit_cell(cell, particle->get_location());
-            relative_particle_position[0] -= unit_offset;
-            relative_particle_position[1] -= unit_offset;
-            if (dim == 3)
-              relative_particle_position[2] -= unit_offset;
+            Point<dim> relative_particle_position = particle->get_reference_location();
+            
             // A is accessed by A[column][row] here since we will need to append
             // columns into the qr matrix
             A[0][positions_index] = 1;
-            A[1][positions_index] = relative_particle_position[0];
-            A[2][positions_index] = relative_particle_position[1];
-            if (dim == 3)
-              A[3][positions_index] = relative_particle_position[2];
+            for (unsigned int i = 1; i < n_matrix_columns; ++i) {
+              relative_particle_position[i - 1] -= unit_offset;
+              A[i][positions_index] = relative_particle_position[i - 1];
+            }
           }
 
         ImplicitQR<Vector<double>>qr;
@@ -173,7 +159,7 @@ namespace aspect
         std::vector<Vector<double>> c(n_particle_properties, Vector<double>(n_matrix_columns));
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
-            if (selected_properties[property_index])
+            if (selected_properties[property_index] == true)
               {
                 qr.multiply_with_QT(QTb[property_index], b[property_index]);
                 qr.solve(c[property_index], QTb[property_index]);
@@ -181,118 +167,103 @@ namespace aspect
           }
 
         const double half_h = .5;
-        const double threshold = 1e-12;
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
-            if (selected_properties[property_index])
+            if (selected_properties[property_index] == true)
               {
-                if (use_linear_least_squares_limiter[property_index])
+                if (use_linear_least_squares_limiter[property_index] == true)
                   {
-                    // Beginning of MJG and EGP's linear least squares limiter
                     c[property_index][0] = std::max(c[property_index][0], property_bounds[property_index].first);
                     c[property_index][0] = std::min(c[property_index][0], property_bounds[property_index].second);
-                    if (c[property_index][0] > property_bounds[property_index].second - threshold ||
-                        c[property_index][0] < property_bounds[property_index].first + threshold)
+
+                    double max_total_slope = std::min(c[property_index][0] - property_bounds[property_index].first,
+                        property_bounds[property_index].second - c[property_index][0]);
+                    double current_total_slope = 0.0;
+                    for (unsigned int i = 1; i < n_matrix_columns; ++i)
+                    {
+                      // The slope in any one direction should not overshoot/undershoot on its own.
+                      c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]) * 2, max_total_slope), c[property_index][1]);
+                      current_total_slope += std::abs(c[property_index][i]);
+                    }
+                    current_total_slope *= half_h;
+                    if (current_total_slope > max_total_slope)
+                    {
+                      current_total_slope = 0;
+                      for (unsigned int i = 1; i < n_matrix_columns; ++i) {
+                        c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]), max_total_slope / half_h), c[property_index][i]);
+                        current_total_slope += std::abs(c[property_index][i]);
+                      }
+                      current_total_slope *= half_h;
+                      if (current_total_slope > max_total_slope)
                       {
-                        c[property_index][1] = 0;
-                        c[property_index][2] = 0;
-                        if (dim == 3)
+                        double change_in_slope = (current_total_slope - max_total_slope)/(dim * half_h);
+                        dealii::Vector<double> c_i(n_matrix_columns);
+                        c_i[0] = c[property_index][0];
+                        for (unsigned int i = 1; i < n_matrix_columns; ++i) {
+                          c_i[i] = std::copysign(std::abs(c[property_index][i]) - change_in_slope,c[property_index][i]);
+                        }
+                        if (dim == 2)
+                        {
+                          c[property_index] = c_i;
+                        }
+                        else
+                        {
+                          // In two dimensions half the neccessary change can be safely removed from each slope component
+                          // however in three dimensions this additional check is neccessary to ensure that a third of the neccesary slope can be removed from each component.
+                          // An example where this could happen is if c is [.5, 1, .04, .01]' with boundaries of [0, 1].
+                          // Without these checks, c_3 would become negative, and would result in a different corner of the cell over(under)shooting.
+                          if (c[property_index][1] * c_i[1] <= 0)
                           {
+                            c[property_index][2] = std::copysign(std::abs(c_i[2]) - std::abs(c_i[1]/2), c[property_index][2]);
+                            c[property_index][3] = std::copysign(std::abs(c_i[3]) - std::abs(c_i[1]/2), c[property_index][3]);
+                            c[property_index][1] = 0;
+                          }
+                          else if (c[property_index][2] * c_i[2] <= 0)
+                          {
+                            c[property_index][1] = std::copysign(std::abs(c_i[1]) - std::abs(c_i[2]/2), c[property_index][1]);
+                            c[property_index][3] = std::copysign(std::abs(c_i[3]) - std::abs(c_i[2]/2), c[property_index][3]);
+                            c[property_index][2] = 0;
+
+                          }
+                          else if (c[property_index][3] * c_i[3] <= 0)
+                          {
+                            c[property_index][1] = std::copysign(std::abs(c_i[1]) - std::abs(c_i[3]/2), c[property_index][1]);
+                            c[property_index][2] = std::copysign(std::abs(c_i[2]) - std::abs(c_i[3]/2), c[property_index][2]);
                             c[property_index][3] = 0;
                           }
-                      }
-                    else
-                      {
-                        double upper_bound = std::min(c[property_index][0] - property_bounds[property_index].first,
-                                                      property_bounds[property_index].second - c[property_index][0]);
-                        double lower_bound = std::abs(c[property_index][1]) + std::abs(c[property_index][2]);
-                        if (dim == 3)
+                          else
                           {
-                            lower_bound += std::abs(c[property_index][3]);
+                            c[property_index] = c_i;
                           }
-                        lower_bound *= half_h;
-                        if (lower_bound > upper_bound)
-                          {
-                            c[property_index][1] = std::copysign(1, c[property_index][1]) * std::min(std::abs(c[property_index][1]), upper_bound / half_h);
-                            c[property_index][2] = std::copysign(1, c[property_index][2]) * std::min(std::abs(c[property_index][2]), upper_bound / half_h);
-                            if (dim == 3)
-                              {
-                                c[property_index][3] = std::copysign(1, c[property_index][3]) * std::min(std::abs(c[property_index][3]), upper_bound / half_h);
-                              }
-
-                            lower_bound = std::abs(c[property_index][1]) + std::abs(c[property_index][2]);
-                            if (dim == 3)
-                              {
-                                lower_bound += std::abs(c[property_index][3]);
-                              }
-                            lower_bound *= half_h;
-                            if (lower_bound > upper_bound)
-                              {
-                                if (dim == 2)
-                                  {
-                                    double change_in_slope = (lower_bound-upper_bound)/(half_h * 2);
-                                    c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c[property_index][1]) - change_in_slope);
-                                    c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c[property_index][2]) - change_in_slope);
-                                  }
-                                else
-                                  {
-                                    // dim == 3
-                                    double change_in_slope = (lower_bound-upper_bound)/(3*half_h);
-                                    double c_1 = std::copysign(1, c[property_index][1]) * (std::abs(c[property_index][1]) - change_in_slope);
-                                    double c_2 = std::copysign(1, c[property_index][2]) * (std::abs(c[property_index][2]) - change_in_slope);
-                                    double c_3 = std::copysign(1, c[property_index][3]) * (std::abs(c[property_index][3]) - change_in_slope);
-                                    // Stage 3 Checks and corrections
-                                    if (c[property_index][1] * c_1 <= 0)
-                                      {
-                                        c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c_2) - std::abs(c_1/2));
-                                        c[property_index][3] = std::copysign(1, c[property_index][3]) * (std::abs(c_3) - std::abs(c_1/2));
-                                        c[property_index][1] = 0;
-                                      }
-                                    else if (c[property_index][2] * c_2 <= 0)
-                                      {
-                                        c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c_1) - std::abs(c_2/2));
-                                        c[property_index][3] = std::copysign(1, c[property_index][3]) * (std::abs(c_3) - std::abs(c_2/2));
-                                        c[property_index][2] = 0;
-
-                                      }
-                                    else if (c[property_index][3] * c_3 <= 0)
-                                      {
-                                        c[property_index][1] = std::copysign(1, c[property_index][1]) * (std::abs(c_1) - std::abs(c_3/2));
-                                        c[property_index][2] = std::copysign(1, c[property_index][2]) * (std::abs(c_2) - std::abs(c_3/2));
-                                        c[property_index][3] = 0;
-                                      }
-                                    else
-                                      {
-                                        c[property_index][1] = c_1;
-                                        c[property_index][2] = c_2;
-                                        c[property_index][3] = c_3;
-                                      }
-                                  }
-                              }
-                          }
+                        }
+                        
                       }
+                    }
+
                   }
                 std::size_t positions_index = 0;
                 for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
                     Point<dim> relative_support_point_location = mapping.transform_real_to_unit_cell(found_cell, *itr);
-                    relative_support_point_location[0] -= unit_offset;
-                    relative_support_point_location[1] -= unit_offset;
-                    if (dim == 3)
+                    double interpolated_value = c[property_index][0];
+                    for (unsigned int i = 1; i < n_matrix_columns; ++i)
+                    {
+                      relative_support_point_location[i - 1] -= unit_offset;
+                      interpolated_value += c[property_index][i] * relative_support_point_location[i - 1];
+                    }
+                    if (use_linear_least_squares_limiter[property_index] == true)
                       {
-                        relative_support_point_location[2] -= unit_offset;
-                      }
-                    double interpolated_value = c[property_index][0] +
-                                                c[property_index][1] * relative_support_point_location[0] +
-                                                c[property_index][2] * relative_support_point_location[1];
-                    if (dim == 3)
-                      {
-                        interpolated_value += c[property_index][3] * relative_support_point_location[2];
-                      }
-                    if (use_linear_least_squares_limiter[property_index])
-                      {
+                        double init = interpolated_value;
                         interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
                         interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
+                        // Due to floating point inaccuracies init and interpolated_value can differ resulting in 
+                        // an overshoot or undershoot of around 1e-16. We resolve these small overshoot/undershoots by chopping
+                        // and ensuring that we chopped no more than a 1e-14th of the value. 
+                        if (std::abs(init - interpolated_value) > 1e-14 * std::abs(init)) {
+                          std::cout.precision(17);
+                          std::cout << std::fixed << "init: " << init << " inter: " << interpolated_value << " " << std::abs(init-interpolated_value) << std::endl;
+                        }
+                        Assert(std::abs(init - interpolated_value) <= 1e-14 * std::abs(init), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
@@ -356,11 +327,14 @@ namespace aspect
                 std::vector<std::string> split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
                 if (split.size() == 1)
                   {
-                    use_linear_least_squares_limiter = ComponentMask(n_property_components - n_internal_components, string_to_bool(split[0]));
+                    use_linear_least_squares_limiter = ComponentMask(n_property_components, string_to_bool(split[0]));
                   }
                 else if (split.size() == n_property_components - n_internal_components)
                   {
-                    use_linear_least_squares_limiter = string_to_bool(split);
+                    std::vector<bool> parsed(n_property_components, false);
+                    for (unsigned int i = 0; i < split.size(); i++)
+                      parsed[i] = string_to_bool(split[i]);
+                    use_linear_least_squares_limiter = ComponentMask(parsed);
                   }
                 else
                   {
@@ -390,7 +364,7 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_INTERPOLATOR(BilinearLeastSquares,
                                             "bilinear least squares",
-                                            "Uses linear least squares to obtain the slopes and center of a 2 or "
+                                            "Uses linear least squares to obtain the slopes and center of a 2D or "
                                             "3D plane from the particle positions and a particular property value "
                                             "on those particles. "
                                             "Interpolate this property onto the support points or to initiate the "

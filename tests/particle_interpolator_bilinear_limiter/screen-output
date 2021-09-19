@@ -1,21 +1,23 @@
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
-Loading shared library <./libparticle_interpolator_bilinear_add_particles.so>
-
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 1,024 (on 6 levels)
-Number of degrees of freedom: 32,196 (8,450+1,089+4,225+9,216+9,216)
+Number of active cells: 256 (on 5 levels)
+Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 
-*** Timestep 0:  t=0 years, dt=0 years
+*** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 49+0 iterations.
+   Solving Stokes system... 153+0 iterations.
 
    Postprocessing:
-     Writing particle output:       output-particle_interpolator_bilinear_add_particles/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2: 1.850306e-07, 9.158887e-04, 3.013561e-07, 1.931438e-03
+     Writing graphical output:                          output-particle_interpolator_bilinear_limiter/solution/solution-00000
+     RMS, max velocity:                                 0.00236 m/s, 0.00415 m/s
+     Compositions min/max/mass:                         0/1/0.04905 // 0/1/0.2604
+     Pressure min/avg/max:                              -6.243e-05 Pa, 0.3009 Pa, 0.7911 Pa
+     Average density / Average viscosity / Total mass:  0.7872 kg/m^3, 32.7 Pa s, 0.7872 kg
+     Number of advected particles:                      2304
 
 Termination requested by criterion: end time
 

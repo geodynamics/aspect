@@ -1,6 +1,10 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 Loading shared library <./librigid_shear_time_dependent.so>
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 2,100 (578+81+289+576+576)
 
@@ -12,26 +16,31 @@ Number of degrees of freedom: 2,100 (578+81+289+576+576)
    Postprocessing:
      Writing graphical output:              output-rigid_shear_time_dependent/solution/solution-00000
      Writing particle output:               output-rigid_shear_time_dependent/particles/particles-00000
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.371782e-04, 1.860197e-02, 3.469862e-04, 2.600713e-02, 4.055665e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.440898e-04, 1.855279e-02, 3.553205e-04, 2.600436e-02, 7.556693e-03
 
-*** Timestep 1:  t=0.0624734 seconds, dt=0.0624734 seconds
+*** Timestep 1:  t=0.0624852 seconds, dt=0.0624852 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 10+0 iterations.
 
    Postprocessing:
      Number of advected particles:          5184
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.388439e-04, 1.860765e-02, 3.480267e-04, 2.600906e-02, 4.101861e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.946780e-04, 1.849705e-02, 4.072666e-04, 2.602893e-02, 7.630332e-03
 
-*** Timestep 2:  t=0.1 seconds, dt=0.0375266 seconds
+*** Timestep 2:  t=0.1 seconds, dt=0.0375148 seconds
    Skipping temperature solve because RHS is zero.
-   Solving Stokes system... 9+0 iterations.
+   Solving Stokes system... 11+0 iterations.
 
    Postprocessing:
      Writing graphical output:              output-rigid_shear_time_dependent/solution/solution-00001
      Writing particle output:               output-rigid_shear_time_dependent/particles/particles-00001
-     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.364958e-04, 1.859500e-02, 3.465772e-04, 2.600819e-02, 4.091277e-03
+     Errors u_L1, p_L1, u_L2, p_L2, rho_L2: 4.843507e-04, 1.855597e-02, 3.962951e-04, 2.604284e-02, 7.597128e-03
 
 Termination requested by criterion: end time
 
 
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
