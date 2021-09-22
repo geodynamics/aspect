@@ -71,7 +71,7 @@ subsection Initial composition model
 end
 
 subsection Material model
-  set Model name = simpler 
+  set Model name = simpler
 end
 
 subsection Mesh refinement

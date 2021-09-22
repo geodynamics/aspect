@@ -1184,6 +1184,58 @@ namespace aspect
 
         return velocity;
       }
+
+      // A function to create a pointer to a SolutionEvaluators object.
+      template <int dim>
+      std::unique_ptr<internal::SolutionEvaluators<dim>>
+                                                      construct_solution_evaluators ( const SimulatorAccess<dim> &simulator_access,
+                                                                                      const unsigned int n_compositional_fields,
+                                                                                      const UpdateFlags update_flags)
+      {
+        AssertThrow(n_compositional_fields <= 10, ExcInternalError());
+
+        std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
+        switch (simulator_access.n_compositional_fields())
+          {
+            case 0:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,0>>(simulator_access,  update_flags);
+              break;
+            case 1:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,1>>(simulator_access,  update_flags);
+              break;
+            case 2:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,2>>(simulator_access,  update_flags);
+              break;
+            case 3:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,3>>(simulator_access,  update_flags);
+              break;
+            case 4:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,4>>(simulator_access,  update_flags);
+              break;
+            case 5:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,5>>(simulator_access,  update_flags);
+              break;
+            case 6:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,6>>(simulator_access,  update_flags);
+              break;
+            case 7:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,7>>(simulator_access,  update_flags);
+              break;
+            case 8:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,8>>(simulator_access,  update_flags);
+              break;
+            case 9:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,9>>(simulator_access,  update_flags);
+              break;
+            case 10:
+              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,10>>(simulator_access,  update_flags);
+              break;
+            default:
+              AssertThrow(false, ExcInternalError());
+          }
+
+        return evaluators;
+      }
     }
 
 
@@ -1200,28 +1252,17 @@ namespace aspect
 
           const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
+          // Only use deal.II FEPointEvaluation if it's fast path is used
+          bool use_fast_path = (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr) &&
+                               (this->n_compositional_fields() <= 10);
+
           std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
 
-          // Only use deal.II FEPointEvaluation if it's fast path is used
-          bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+          if (use_fast_path == true)
+            evaluators = internal::construct_solution_evaluators(*this,
+                                                                 this->n_compositional_fields(),
+                                                                 update_flags);
 
-          switch (this->n_compositional_fields())
-            {
-              case 0:
-                evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 0>>(*this,  update_flags);
-                break;
-              case 1:
-                evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 1>>(*this,  update_flags);
-                break;
-              case 2:
-                evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 2>>(*this,  update_flags);
-                break;
-              case 3:
-                evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 3>>(*this,  update_flags);
-                break;
-              default:
-                use_fast_path = false;
-            }
 
           // Loop over all cells and update the particles cell-wise
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
