@@ -65,7 +65,7 @@ end
 
 subsection Boundary composition model
   set Fixed composition boundary indicators = left, bottom
-  set Model name = box
+  set List of model names = box
 
   subsection Box
     set Left composition = -1.0

@@ -370,7 +370,7 @@ namespace aspect
     melt_fractions (const MaterialModel::MaterialModelInputs<dim> &in,
                     std::vector<double> &melt_fractions) const
     {
-      for (unsigned int q=0; q<in.temperature.size(); ++q)
+      for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = melt_fraction(in.temperature[q],
                                           std::max(0.0, in.pressure[q]));
       return;
@@ -382,7 +382,7 @@ namespace aspect
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
       // 1) Initial viscosities and other material properties
-      for (unsigned int i=0; i<in.position.size(); ++i)
+      for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
         {
           const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
           out.viscosities[i] = MaterialUtilities::average_value(volume_fractions, linear_viscosities, viscosity_averaging);
@@ -402,9 +402,9 @@ namespace aspect
       const std::vector<double> intrinsic_viscosities = out.viscosities;
 
       // 2) Retrieve fluid pressure and volumetric strain rate
-      std::vector<double> fluid_pressures(in.position.size());
-      std::vector<double> volumetric_strain_rates(in.position.size());
-      std::vector<double> volumetric_yield_strength(in.position.size());
+      std::vector<double> fluid_pressures(in.n_evaluation_points());
+      std::vector<double> volumetric_strain_rates(in.n_evaluation_points());
+      std::vector<double> volumetric_yield_strength(in.n_evaluation_points());
 
       ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
 
@@ -412,9 +412,9 @@ namespace aspect
         {
           if (in.current_cell.state() == IteratorState::valid)
             {
-              std::vector<Point<dim> > quadrature_positions(in.position.size());
+              std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
 
-              for (unsigned int i=0; i < in.position.size(); ++i)
+              for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
                 quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
               // FEValues requires a quadrature and we provide the default quadrature
@@ -440,7 +440,7 @@ namespace aspect
           const double time_scale = this->convert_output_to_years() ? year_in_seconds : 1.0;
 
           // 3) Get porosity, melt density and update melt reaction terms
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // get peridotite and porosity field indices
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
@@ -503,7 +503,7 @@ namespace aspect
       if (in.strain_rate.size() )
         {
           // 5) Compute plastic weakening of the viscosity
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               // Compute volume fractions
               const std::vector<double> volume_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i]);
@@ -601,7 +601,7 @@ namespace aspect
 
       if (melt_out != NULL)
         {
-          for (unsigned int i=0; i<in.position.size(); ++i)
+          for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
             {
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
               double porosity = std::min(1.0, std::max(in.composition[i][porosity_idx],0.0));
