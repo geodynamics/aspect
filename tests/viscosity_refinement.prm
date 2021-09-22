@@ -1,5 +1,5 @@
 # Test the viscosity refinement criterion
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set Dimension                              = 2
 
 set End time                               = 0
@@ -16,7 +16,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 500000
@@ -27,7 +27,7 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default:
+  set Model name = vertical
 
   subsection Vertical
     set Magnitude = 10.0
@@ -37,7 +37,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -48,7 +48,7 @@ end
 
 subsection Material model
 
-  set Model name = simple # default:
+  set Model name = simple
   subsection Simple model
     set Thermal viscosity exponent = 5.0
     set Reference temperature = 1750
@@ -60,8 +60,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.3
 
-  set Initial adaptive refinement              = 3                    # default: 2
-  set Initial global refinement                = 2                    # default: 2
+  set Initial adaptive refinement              = 3
+  set Initial global refinement                = 2
 
   set Strategy                                 = viscosity
 end
@@ -72,7 +72,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default:
+  set Fixed temperature boundary indicators   = 0,3
 end
 
 subsection Boundary velocity model
@@ -80,7 +80,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default:
+  set Zero velocity boundary indicators       =
 end
 
 

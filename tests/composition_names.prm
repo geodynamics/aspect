@@ -1,6 +1,6 @@
 # test composition names
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 
 # The number of space dimensions you want to run this program in.
@@ -28,10 +28,10 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773 # default: 6000
+    set Maximal temperature = 3773
 
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Minimal temperature = 273  # default: 0
+    set Minimal temperature = 273
   end
 
 end
@@ -42,7 +42,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 500000
@@ -53,20 +53,20 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default:
+  set Model name = vertical
 
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
-    set Magnitude = 10.0 # default: 30
+    set Magnitude = 10.0
   end
 
 end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(x < l, 1873, 1623)
@@ -75,7 +75,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function expression = 0;0
     set Variable names      = x,y
@@ -85,7 +85,7 @@ end
 
 subsection Material model
 
-  set Model name = simple # default:
+  set Model name = simple
 
 end
 
@@ -94,8 +94,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.05
   set Refinement fraction                      = 0.3
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 0                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 0
 end
 
 
@@ -104,7 +104,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,3        # default:
+  set Fixed temperature boundary indicators   = 0,3
 end
 
 subsection Boundary velocity model
@@ -112,7 +112,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default:
+  set Zero velocity boundary indicators       =
 end
 
 
@@ -139,7 +139,7 @@ subsection Postprocess
     # value of zero indicates that output should be generated in each time
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
   end
 
 end

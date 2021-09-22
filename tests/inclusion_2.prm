@@ -22,7 +22,7 @@ set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 1
 
 
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 
 
 subsection Boundary temperature model
@@ -43,7 +43,7 @@ subsection Discretization
 
     set beta  = 0.078
 
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end
@@ -80,8 +80,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 2                       # default: 2
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
 
   set Strategy                           = thermal energy density
 end
@@ -113,7 +113,7 @@ subsection Postprocess
 
     set Output format                 = gnuplot
 
-    set Time between graphical output = 0   # default: 1e8
+    set Time between graphical output = 0
   end
 end
 

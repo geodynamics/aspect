@@ -84,7 +84,7 @@ end
 
 
 subsection Material model
-  set Model name = melt global # default:
+  set Model name = melt global
 
   subsection Melt global
     set Reference solid density       = 1

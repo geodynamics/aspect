@@ -6,7 +6,7 @@
 
 set Additional shared libraries            = ./libshear_bands.so
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 0.5
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 4
@@ -49,7 +49,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 0.004
@@ -62,19 +62,19 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default:
+  set Model name = vertical
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
-    set Magnitude = 0.0 # default: 30
+    set Magnitude = 0.0
   end
 
 end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=64000
     set Function expression = 0.0
@@ -98,8 +98,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 4                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -132,7 +132,7 @@ subsection Postprocess
 
     set Number of grouped files       = 0
     set Output format                 = vtu
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
   end
 
 end

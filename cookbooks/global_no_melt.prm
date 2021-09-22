@@ -82,8 +82,8 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 
   subsection Initial temperature
-    set Minimal temperature = 293 # default: 6000
-    set Maximal temperature = 3700  # default: 0
+    set Minimal temperature = 293
+    set Maximal temperature = 3700
   end
 end
 

@@ -45,10 +45,10 @@ subsection Material model
   subsection Simple model
     set Reference density             = 3300
     set Reference specific heat       = 1250
-    set Reference temperature         = 1613 # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 1613
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 2e-5
-    set Viscosity                     = 1e22    # default: 5e24
+    set Viscosity                     = 1e22
   end
 end
 

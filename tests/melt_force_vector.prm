@@ -22,7 +22,7 @@ subsection Mesh refinement
 end
 
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 
 # The number of space dimensions you want to run this program in.
@@ -53,10 +53,10 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773 # default: 6000
+    set Maximal temperature = 3773
 
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Minimal temperature = 273  # default: 0
+    set Minimal temperature = 273
   end
 
 end
@@ -67,7 +67,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 2
@@ -104,7 +104,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants = pi=3.14159265359
 #    set Function expression = if(abs(x)==1 || abs(z)==1, 0.1000000000e-1 + 0.1000000000e0 * exp(-0.40e1 * ((x + 0.20e1 * z)^ 0.2e1)), 0)
@@ -130,7 +130,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3        # default:
+  set Fixed temperature boundary indicators   = 2,3
 end
 
 subsection Boundary composition model
@@ -142,7 +142,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default:
+  set Zero velocity boundary indicators       =
 end
 
 subsection Melt settings
@@ -182,7 +182,7 @@ subsection Postprocess
     # value of zero indicates that output should be generated in each time
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
-    set Time between graphical output = 0                                                                                # default: 1e8
+    set Time between graphical output = 0
   end
 
 end
