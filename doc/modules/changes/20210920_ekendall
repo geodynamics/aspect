@@ -1,0 +1,3 @@
+New: Added a print statement into log file which tells the user the total wallclock time including restarts.
+<br>
+(Elodie Kendall, Timo Heister and Rene Gassmoeller, 2021/09/20)
