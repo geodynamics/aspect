@@ -29,7 +29,7 @@ subsection Discretization
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 end
 
@@ -79,7 +79,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 3                      # default: 2
+  set Initial global refinement          = 3
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.00
   set Strategy                           = temperature

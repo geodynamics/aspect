@@ -13,7 +13,7 @@ set End time                               = 0
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = single Advection, single Stokes
 
 
@@ -62,10 +62,10 @@ subsection Material model
   set Model name = simple
 
   subsection Simple model
-    set Reference density             = 1    # default: 3300
+    set Reference density             = 1
     set Reference specific heat       = 1250
-    set Reference temperature         = 1    # default: 293
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Reference temperature         = 1
+    set Thermal conductivity          = 1e-6
     set Thermal expansion coefficient = 2e-5
     set Viscosity                     = 42
   end

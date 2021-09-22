@@ -20,7 +20,7 @@ set Adiabatic surface temperature          = 0
 
 set Surface pressure                       = 0
 
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 
 set Nonlinear solver scheme                = single Advection, single Stokes
 
@@ -42,7 +42,7 @@ subsection Discretization
 
     set beta  = 0.078
 
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end

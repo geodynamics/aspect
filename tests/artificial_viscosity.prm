@@ -2,7 +2,7 @@
 # In particular, it checks that the results for
 # temperature and compositional fields are the same.
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 0.1
 set Nonlinear solver scheme                = single Advection, single Stokes
 
@@ -41,7 +41,7 @@ subsection Boundary velocity model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 1.0
@@ -53,19 +53,19 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default:
+  set Model name = vertical
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
-    set Magnitude = 0.0 # default: 30
+    set Magnitude = 0.0
   end
 
 end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=64000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
@@ -74,7 +74,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=64000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
@@ -95,8 +95,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

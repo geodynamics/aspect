@@ -3,7 +3,7 @@
 # Both the calculation of the residuum and the convergence
 # with prescribed boundary conditions are tested.
 
-set Adiabatic surface temperature          = 0               # default: 0
+set Adiabatic surface temperature          = 0
 set CFL number                             = 0.5
 set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
 set Max nonlinear iterations               = 10
@@ -42,8 +42,8 @@ subsection Boundary temperature model
   set List of model names = box
 
   subsection Box
-    set Top temperature = 0 # default: 6000
-    set Bottom temperature = 1  # default: 0
+    set Top temperature = 0
+    set Bottom temperature = 1
   end
 end
 
@@ -52,7 +52,7 @@ subsection Boundary composition model
 end
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 150000
@@ -108,8 +108,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.0
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 4                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 4
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end

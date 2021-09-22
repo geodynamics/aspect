@@ -27,7 +27,7 @@ subsection Discretization
   subsection Stabilization parameters
     set alpha = 2
     set beta  = 0.078
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 end
 
@@ -74,12 +74,12 @@ end
 
 subsection Mesh refinement
   set Additional refinement times        =
-  set Initial adaptive refinement        = 1                       # default: 2
-  set Initial global refinement          = 5                       # default: 2
+  set Initial adaptive refinement        = 1
+  set Initial global refinement          = 5
   set Refinement fraction                = 0.3
   set Coarsening fraction                = 0.05
   set Strategy                           = thermal energy density
-  set Time steps between mesh refinement = 10                       # default: 10
+  set Time steps between mesh refinement = 10
 end
 
 

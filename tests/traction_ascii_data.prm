@@ -5,7 +5,7 @@
 # model.
 
 
-set Adiabatic surface temperature          = 1600               # default: 0
+set Adiabatic surface temperature          = 1600
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 3
@@ -29,8 +29,8 @@ subsection Boundary temperature model
   set List of model names = initial temperature
 
   subsection Initial temperature
-    set Minimal temperature = 293 # default: 6000
-    set Maximal temperature = 1600  # default: 0
+    set Minimal temperature = 293
+    set Maximal temperature = 1600
   end
 end
 

@@ -29,7 +29,7 @@ set Resume computation                     = false
 set Start time                             = 0
 set Adiabatic surface temperature          = 0
 set Surface pressure                       = 0
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 set Nonlinear solver scheme                = no Advection, iterated Stokes
 
 subsection Boundary temperature model
@@ -49,7 +49,7 @@ subsection Discretization
 
     set beta  = 0.078
 
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end
@@ -81,8 +81,8 @@ end
 
 
 subsection Mesh refinement
-  set Initial adaptive refinement        = 0                       # default: 2
-  set Initial global refinement          = 2                       # default: 2
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 2
 
   set Strategy                           = density, temperature
 end

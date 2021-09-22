@@ -11,7 +11,7 @@
 # runs through the model and we use it to demonstrate the effectiveness
 # of adaptive mesh refinement.
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 10
@@ -44,10 +44,10 @@ subsection Boundary temperature model
 
   subsection Initial temperature
     # Temperature at the inner boundary (core mantle boundary). Units: K.
-    set Maximal temperature = 3773 # default: 6000
+    set Maximal temperature = 3773
 
     # Temperature at the outer boundary (lithosphere water/air). Units: K.
-    set Minimal temperature = 273  # default: 0
+    set Minimal temperature = 273
   end
 
 end
@@ -58,7 +58,7 @@ end
 
 
 subsection Geometry model
-  set Model name = box # default:
+  set Model name = box
 
   subsection Box
     set X extent  = 20
@@ -90,7 +90,7 @@ end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function expression = 0
     set Variable names      = x,z
@@ -98,7 +98,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants = pi=3.14159265359
     set Function expression = 0.1-0.05*atan((x+2.0*z)*(x+2.0*z))
@@ -119,8 +119,8 @@ subsection Mesh refinement
   set Coarsening fraction                      = 0.0
   set Refinement fraction                      = 0.95
 
-  set Initial adaptive refinement              = 0                    # default: 2
-  set Initial global refinement                = 5                    # default: 2
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 5
   set Strategy                                 = composition
   set Time steps between mesh refinement       = 0
 end
@@ -131,7 +131,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 2,3        # default:
+  set Fixed temperature boundary indicators   = 2,3
 end
 
 subsection Boundary composition model
@@ -143,7 +143,7 @@ subsection Boundary velocity model
 end
 
 subsection Boundary velocity model
-  set Zero velocity boundary indicators       =           # default:
+  set Zero velocity boundary indicators       =
 end
 
 subsection Melt settings

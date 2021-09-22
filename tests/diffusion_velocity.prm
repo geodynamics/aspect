@@ -88,7 +88,7 @@ set Surface pressure                       = 0
 # one wants results in their natural unit system as used inside the code. If
 # this flag is set to 'true' conversion to years happens; if it is 'false', no
 # such conversion happens.
-set Use years in output instead of seconds = false  # default: true
+set Use years in output instead of seconds = false
 
 subsection Boundary temperature model
   # Select one of the following models:
@@ -131,7 +131,7 @@ subsection Discretization
     set beta  = 0.078
 
     # The $c_R$ factor in the entropy viscosity stabilization. Units: None.
-    set cR    = 0.5   # default: 0.11
+    set cR    = 0.5
   end
 
 end
@@ -150,7 +150,7 @@ subsection Geometry model
 
   subsection Box
     # Extent of the box in x-direction. Units: \\si{\\meter}.
-    set X extent = 1 # default: 1
+    set X extent = 1
 
     # Extent of the box in y-direction. Units: \\si{\\meter}.
     set Y extent = 1
@@ -211,22 +211,22 @@ subsection Material model
 
   subsection Simple model
     # Reference density $\rho_0$. Units: \\si{\\kilogram\\per\\meter\\cubed}.
-    set Reference density             = 1    # default: 3300
+    set Reference density             = 1
 
     # The value of the specific heat $cp$. Units: \\si{\\joule\\per\\kelvin\\per\\kilogram}.
     set Reference specific heat       = 1250
 
     # The reference temperature $T_0$. Units: \\si{\\kelvin}.
-    set Reference temperature         = 0    # default: 293
+    set Reference temperature         = 0
 
     # The value of the thermal conductivity $k$. Units: \\si{\\watt\\per\\meter\\per\\kelvin}.
-    set Thermal conductivity          = 1e-6 # default: 4.7
+    set Thermal conductivity          = 1e-6
 
     # The value of the thermal expansion coefficient $\beta$. Units: \\si{\\per\\kelvin}.
     set Thermal expansion coefficient = 2e-5
 
     # The value of the constant viscosity. Units: \\si{\\pascal\\second}.
-    set Viscosity                     = 1    # default: 5e24
+    set Viscosity                     = 1
   end
 
 end
@@ -244,11 +244,11 @@ subsection Mesh refinement
 
   # The number of adaptive refinement steps performed after initial global
   # refinement but while still within the first time step.
-  set Initial adaptive refinement        = 0                       # default: 2
+  set Initial adaptive refinement        = 0
 
   # The number of global refinement steps performed on the initial coarse
   # mesh, before the problem is first solved there.
-  set Initial global refinement          = 5                       # default: 2
+  set Initial global refinement          = 5
 
   # The fraction of cells with the largest error that should be flagged for
   # refinement.
@@ -263,7 +263,7 @@ subsection Mesh refinement
 
   # The number of time steps after which the mesh is to be adapted again based
   # on computed error indicators.
-  set Time steps between mesh refinement = 5                       # default: 10
+  set Time steps between mesh refinement = 5
 end
 
 
@@ -356,6 +356,6 @@ subsection Postprocess
     # value of zero indicates that output should be generated in each time
     # step. Units: years if the 'Use years in output instead of seconds'
     # parameter is set; seconds otherwise.
-    set Time between graphical output = 0   # default: 1e8
+    set Time between graphical output = 0
   end
 end

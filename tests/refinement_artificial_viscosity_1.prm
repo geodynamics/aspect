@@ -1,6 +1,6 @@
 # Test MeshRefinement::ArtificialViscosity
 
-set Adiabatic surface temperature          = 1623               # default: 0
+set Adiabatic surface temperature          = 1623
 set CFL number                             = 1.0
 
 # The number of space dimensions you want to run this program in.
@@ -48,20 +48,20 @@ end
 
 
 subsection Gravity model
-  set Model name = vertical # default:
+  set Model name = vertical
 
 
   subsection Vertical
     # Magnitude of the gravity vector in $m/s^2$. The direction is always
     # radially outward from the center of the earth.
-    set Magnitude = 0.0 # default: 30
+    set Magnitude = 0.0
   end
 
 end
 
 
 subsection Initial temperature model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function constants  = l=250000
     set Function expression = if(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))<0.25,0.5,0.1)
@@ -70,7 +70,7 @@ subsection Initial temperature model
 end
 
 subsection Initial composition model
-  set Model name = function # default:
+  set Model name = function
   subsection Function
     set Function expression = if(x+y<0.4,1.0,0.1);if((1-x)^2+y^2<0.25,0.0,100.0)
     set Variable names      = x,y
@@ -80,7 +80,7 @@ end
 
 subsection Material model
 
-  set Model name = simple # default:
+  set Model name = simple
 end
 
 
@@ -105,7 +105,7 @@ end
 # safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = 0,1,2,3        # default:
+  set Fixed temperature boundary indicators   = 0,1,2,3
 end
 
 
