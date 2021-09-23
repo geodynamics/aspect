@@ -238,7 +238,8 @@ namespace aspect
                                    false),
     rebuild_stokes_preconditioner (true)
   {
-    walltime.start();
+    wall_timer.start();
+
     if (Utilities::MPI::this_mpi_process(mpi_communicator) == 0)
       {
         // only open the log file on processor 0, the other processors won't be
@@ -2022,7 +2023,9 @@ namespace aspect
     // throwing an exception. Therefore, we have to do this manually here:
     computing_timer.print_summary ();
 
-    pcout << "-- Total wallclock time elapsed including restarts:" << round(walltime.wall_time()+total_walltime_until_last_snapshot) << "s" << std::endl;
+    pcout << "-- Total wallclock time elapsed including restarts:"
+          << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
+          << "s" << std::endl;
 
     CitationInfo::print_info_block (pcout);
 
