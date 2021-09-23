@@ -37,24 +37,29 @@ end
 subsection Material model
   set Model name = visco plastic
   subsection Visco Plastic
-    set Densities         = 2800
+    set Densities                  = 2800
+    set Thermal expansivities      = 4e-5
     set Viscosity averaging scheme = harmonic
-    set Minimum viscosity = 1e19
-    set Maximum viscosity = 1e25
-    set Reference strain rate = 1e-15
+    set Minimum viscosity          = 1e19
+    set Maximum viscosity          = 1e25
+    set Reference viscosity        = 1e20
+    set Reference strain rate      = 1e-15
+    set Minimum strain rate        = 1.e-50
+    set Reference temperature      = 293
 
     # Dislocation creep parameters for
-    set Prefactors for dislocation creep          =      1e-20, 1e-25
+    set Prefactors for dislocation creep          =      5e-21, 5e-26
     set Stress exponents for dislocation creep    =      1.0
     set Activation energies for dislocation creep =      0.0
     set Activation volumes for dislocation creep  =      0.0
 
-  # Plasticity parameters
-  set Friction dependence mechanism       = dynamic friction
-  set Dynamic characteristic strain rate  = 1e-15
-    set Angles of internal friction         = 29, 26.6
-    set Dynamic angles of internal friction = 31, 26.6
-    set Cohesions = 20e6
+    # Plasticity parameters
+    set Friction mechanism                  = dynamic friction
+    set Dynamic characteristic strain rate  = 1e-15
+    set Angles of internal friction         = 29.0171320271063, 26.565051177078
+    set Dynamic angles of internal friction = 30.9637565320735, 26.565051177078
+    set Cohesions                           = 20e6
+    set Maximum yield stress                = 1e50
   end
 end
 
@@ -96,7 +101,7 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 273
+    set Function expression = 1
   end
 end
 

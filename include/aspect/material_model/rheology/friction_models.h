@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_rheology_friction_options_h
-#define _aspect_material_model_rheology_friction_options_h
+#ifndef _aspect_material_model_rheology_friction_models_h
+#define _aspect_material_model_rheology_friction_models_h
 
 #include <aspect/global.h>
 #include <aspect/material_model/interface.h>
@@ -40,19 +40,19 @@ namespace aspect
       /**
        * Enumeration for selecting which type of friction dependence to use.
        *
-       * For the type 'independent', the user-supplied internal angle of friction is used.
+       * For the type 'static friction', the user-supplied internal angle of friction is used.
        *
        * For the type 'dynamic friction', the friction angle is rate dependent following
        * Equation 13 from \\cite{van_dinther_seismic_2013}.
        */
-      enum FrictionDependenceMechanism
+      enum FrictionMechanism
       {
-        independent,
-        dynamic_friction,
+        static_friction,
+        dynamic_friction
       };
 
       template <int dim>
-      class FrictionOptions : public ::aspect::SimulatorAccess<dim>
+      class FrictionModels : public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
@@ -69,31 +69,27 @@ namespace aspect
           parse_parameters (ParameterHandler &prm);
 
           /**
-           * A function that computes the new friction angle when rate and/or state
-           * dependence is taken into account. Given a volume fraction with
-           * the index j and a vector of all compositional fields, it returns
-           * the newly calculated friction angle.
+           * A function that computes the new friction angle when it is not independent.
+           * Given a volume fraction with the index and a vector of all compositional
+           * fields, it returns the newly calculated friction angle.
            */
           double
-          compute_dependent_friction_angle(const double current_edot_ii,
-                                           const unsigned int j,
-                                           double current_friction) const;
+          compute_friction_angle(const double current_edot_ii,
+                                 const unsigned int volume_fraction_index,
+                                 const double static_friction_angle) const;
 
           /**
            * A function that returns the selected type of friction dependence.
            */
-          FrictionDependenceMechanism
-          get_friction_dependence_mechanism () const;
+          FrictionMechanism
+          get_friction_mechanism () const;
 
         private:
           /**
            * Select the mechanism to be used for the friction dependence.
-           * Possible options: none | dynamic friction | rate and state dependent friction
-           * | rate and state dependent friction plus linear slip weakening | slip rate
-           * dependent rate and state dependent friction | regularized rate and state
-           * dependent friction
+           * Possible options: static friction | dynamic friction
            */
-          FrictionDependenceMechanism friction_dependence_mechanism;
+          FrictionMechanism friction_mechanism;
 
           /**
            * Dynamic friction input parameters

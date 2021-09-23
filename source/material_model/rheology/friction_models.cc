@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#include <aspect/material_model/rheology/friction_options.h>
+#include <aspect/material_model/rheology/friction_models.h>
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
@@ -36,74 +36,79 @@ namespace aspect
     {
       template <int dim>
       double
-      FrictionOptions<dim>::
-      compute_dependent_friction_angle(const double current_edot_ii,
-                                       const unsigned int j,  // j is from a for-loop over volume_fractions.size()
-                                       double current_friction) const
+      FrictionModels<dim>::
+      compute_friction_angle(const double current_edot_ii,
+                             const unsigned int volume_fraction_index,
+                             const double static_friction_angle) const
       {
 
-        switch (friction_dependence_mechanism)
+        switch (friction_mechanism)
           {
-            case independent:
+            case static_friction:
             {
-              break;
+              return static_friction_angle;
             }
             case dynamic_friction:
             {
               // Calculate effective steady-state friction coefficient.
               // This is based on the former material model dynamic friction.
-              // The formula below is equivalent to the equation 13 in van Dinther et al., (2013, JGR).
+              // The formula below is equivalent to the equation 13 in \cite{van_dinther_seismic_2013}.
               // Although here the dynamic friction coefficient is directly specified. In addition,
               // we also use a reference strain rate in place of a characteristic
               // velocity divided by local element size. This reference strain rate is called
-              // the dynamic characteristic strain rate and is used to see what value between
+              // the dynamic characteristic strain rate and is used to compute what value between
               // dynamic and static angle of internal friction should be used.
               // Furthermore a smoothness exponent X is added, which determines whether the
               // friction vs strain rate curve is rather step-like or more gradual.
               // mu  = mu_d + (mu_s - mu_d) / ( (1 + strain_rate_dev_inv2/dynamic_characteristic_strain_rate)^X );
               // Angles of friction are used in radians within ASPECT. The coefficient
               // of friction (mu) is the tangent of the internal angle of friction, hence convergence is needed.
-              const double mu = (std::tan(dynamic_angles_of_internal_friction[j])
-                                 + (std::tan(current_friction) - std::tan(dynamic_angles_of_internal_friction[j]))
+              // The incoming variable static_friction_angle holds the static friction angle. It's value is
+              // then updated with the strain rate dependent friction angle which is returned by the function.
+              const double mu = (std::tan(dynamic_angles_of_internal_friction[volume_fraction_index])
+                                 + (std::tan(static_friction_angle) - std::tan(dynamic_angles_of_internal_friction[volume_fraction_index]))
                                  / (1. + std::pow((current_edot_ii / dynamic_characteristic_strain_rate),
                                                   dynamic_friction_smoothness_exponent)));
-              current_friction = std::atan (mu);
-              Assert((mu < 1) && (0 < current_friction) && (current_friction <= 1.6), ExcMessage(
-                       "Something is wrong with the tan/atan conversion of friction coefficient to friction angle in RAD."));
-              break;
+              const double dynamic_friction_angle = std::atan (mu);
+              Assert((mu < 1) && (0 < dynamic_friction_angle) && (dynamic_friction_angle <= 1.6), ExcMessage(
+                       "The friction coefficient should be larger than zero and smaller than 1. "
+                       "The friction angle should be smaller than 1.6 rad."));
+              return dynamic_friction_angle;
             }
           }
-        return current_friction;
+        // we should never get here, return something anyway, so the compiler does not complain...
+        AssertThrow (false, ExcMessage("Unknown friction model."));
+        return static_friction_angle;
       }
 
 
 
       template <int dim>
-      FrictionDependenceMechanism
-      FrictionOptions<dim>::
-      get_friction_dependence_mechanism() const
+      FrictionMechanism
+      FrictionModels<dim>::
+      get_friction_mechanism() const
       {
-        return friction_dependence_mechanism;
+        return friction_mechanism;
       }
 
 
 
       template <int dim>
       void
-      FrictionOptions<dim>::declare_parameters (ParameterHandler &prm)
+      FrictionModels<dim>::declare_parameters (ParameterHandler &prm)
       {
-        prm.declare_entry ("Friction dependence mechanism", "none",
+        prm.declare_entry ("Friction mechanism", "none",
                            Patterns::Selection("none|dynamic friction"),
-                           "Whether to make the friction angle dependent of strain rate. This rheology "
+                           "Whether to make the friction angle dependent on strain rate or not. This rheology "
                            "is intended to be used together with the visco-plastic rheology model."
                            "\n\n"
                            "\\item ``none'': No dependence of the friction angle is applied. "
                            "\n\n"
                            "\\item ``dynamic friction'': The friction angle is rate dependent."
-                           "When dynamic angles of friction are specified, "
+                           "When 'dynamic angles of internal friction' are specified, "
                            "the friction angle will be weakened for high strain rates with: "
-                           "$\\mu = \\mu_d + \\frac(\\mu_s-\\mu_d)(1+(\\frac(\\dot{\\epsilon}_{ii})(\\dot{\\epsilon}_C)))^x$  "
-                           "where $\\mu_s$ and $\\mu_d$ are the friction angle at low and high strain rates, "
+                           "$\\mu = \\mu_d + \\frac{\\mu_s-\\mu_d}{1+\\frac{\\dot{\\epsilon}_{ii}}{\\dot{\\epsilon}_C}}^x$  "
+                           "where $\\mu_s$ and $\\mu_d$ are the friction angles at low and high strain rates, "
                            "respectively. $\\dot{\\epsilon}_{ii}$ is the second invariant of the strain rate and "
                            "$\\dot{\\epsilon}_C$ is the 'dynamic characteristic strain rate' where $\\mu = (\\mu_s+\\mu_d)/2$. "
                            "The 'dynamic friction smoothness exponent' x controls how "
@@ -117,28 +122,28 @@ namespace aspect
         // Dynamic friction paramters
         prm.declare_entry ("Dynamic characteristic strain rate", "1e-12",
                            Patterns::Double (0),
-                           "The characteristic strain rate value, where the angle of friction takes the middle "
-                           "between the dynamic and the static angle of friction. When the effective strain rate "
-                           "in a cell is very high, the dynamic angle of friction is taken, when it is very low "
-                           "the static angle of internal friction is chosen. Around the dynamic characteristic "
-                           "strain rate, there is a smooth gradient from the static to the dynamic friction "
-                           "angle. "
+                           "The characteristic strain rate value at which the angle of friction is "
+                           "equal to $\\mu = (\\mu_s+\\mu_d)/2$. When the effective strain rate "
+                           "is very high, the dynamic angle of friction is taken, when it is very low, "
+                           "the static angle of internal friction is used. Around the dynamic characteristic "
+                           "strain rate, there is a smooth gradient from the static to the dynamic angle "
+                           "of internal friction. "
                            "Units: \\si{\\per\\second}.");
 
         prm.declare_entry ("Dynamic angles of internal friction", "2",
                            Patterns::List(Patterns::Double(0)),
                            "List of dynamic angles of internal friction, $\\phi$, for background material and compositional "
-                           "fields, for a total of N+1 values, where N is the number of compositional fields. "
+                           "fields, for a total of N$+$1 values, where N is the number of compositional fields. "
                            "Dynamic angles of friction are used as the current friction angle when the effective "
-                           "strain rate in a cell is well above the characteristic strain rate. "
+                           "strain rate is well above the 'dynamic characteristic strain rate'. "
                            "Units: \\si{\\degree}.");
 
         prm.declare_entry ("Dynamic friction smoothness exponent", "1",
                            Patterns::Double (0),
-                           "An exponential factor in the equation for the calculation of the friction angle "
-                           "when a static and a dynamic friction angle are specified. A factor of 1 returns the equation "
+                           "An exponential factor in the equation for the calculation of the friction angle when a "
+                           "static and a dynamic angle of internal friction are specified. A factor of 1 returns the equation "
                            "to Equation (13) in \\cite{van_dinther_seismic_2013}. A factor between 0 and 1 makes the "
-                           "curve of the friction angle vs. the strain rate more smooth, while a factor $>$ 1 makes "
+                           "curve of the friction angle vs. the strain rate smoother, while a factor $>$ 1 makes "
                            "the change between static and dynamic friction angle more steplike. "
                            "Units: none.");
       }
@@ -147,19 +152,19 @@ namespace aspect
 
       template <int dim>
       void
-      FrictionOptions<dim>::parse_parameters (ParameterHandler &prm)
+      FrictionModels<dim>::parse_parameters (ParameterHandler &prm)
       {
         // Get the number of fields for composition-dependent material properties
         // including the background field.
         const unsigned int n_fields = this->n_compositional_fields() + 1;
 
         // Friction dependence parameters
-        if (prm.get ("Friction dependence mechanism") == "none")
-          friction_dependence_mechanism = independent;
-        else if (prm.get ("Friction dependence mechanism") == "dynamic friction")
-          friction_dependence_mechanism = dynamic_friction;
+        if (prm.get ("Friction mechanism") == "none")
+          friction_mechanism = static_friction;
+        else if (prm.get ("Friction mechanism") == "dynamic friction")
+          friction_mechanism = dynamic_friction;
         else
-          AssertThrow(false, ExcMessage("Not a valid friction dependence option!"));
+          AssertThrow(false, ExcMessage("Not a valid friction mechanism option!"));
 
         // Dynamic friction parameters
         dynamic_characteristic_strain_rate = prm.get_double("Dynamic characteristic strain rate");
@@ -190,7 +195,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   namespace Rheology \
   { \
-    template class FrictionOptions<dim>; \
+    template class FrictionModels<dim>; \
   }
 
     ASPECT_INSTANTIATE(INSTANTIATE)

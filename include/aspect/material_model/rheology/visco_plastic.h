@@ -25,7 +25,7 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/material_model/utilities.h>
 #include <aspect/material_model/rheology/strain_dependent.h>
-#include <aspect/material_model/rheology/friction_options.h>
+#include <aspect/material_model/rheology/friction_models.h>
 #include <aspect/material_model/rheology/diffusion_creep.h>
 #include <aspect/material_model/rheology/dislocation_creep.h>
 #include <aspect/material_model/rheology/frank_kamenetskii.h>
@@ -206,7 +206,7 @@ namespace aspect
           /**
            * Object for computing the friction dependence of the rheology model.
            */
-          Rheology::FrictionOptions<dim> friction_options;
+          Rheology::FrictionModels<dim> friction_models;
 
           /**
            * Object for computing viscoelastic viscosities and stresses.
