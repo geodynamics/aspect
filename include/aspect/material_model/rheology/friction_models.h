@@ -48,7 +48,8 @@ namespace aspect
       enum FrictionMechanism
       {
         static_friction,
-        dynamic_friction
+        dynamic_friction,
+        function
       };
 
       template <int dim>
@@ -76,7 +77,8 @@ namespace aspect
           double
           compute_friction_angle(const double current_edot_ii,
                                  const unsigned int volume_fraction_index,
-                                 const double static_friction_angle) const;
+                                 const double static_friction_angle,
+                                 const Point<dim> &position) const;
 
           /**
            * A function that returns the selected type of friction dependence.
@@ -87,7 +89,7 @@ namespace aspect
         private:
           /**
            * Select the mechanism to be used for the friction dependence.
-           * Possible options: static friction | dynamic friction
+           * Possible options: static friction | dynamic friction | function
            */
           FrictionMechanism friction_mechanism;
 
@@ -114,6 +116,18 @@ namespace aspect
            * more step-like.
            */
           double dynamic_friction_smoothness_exponent;
+
+          /**
+           * Parsed functions that specify the friction angle which must be
+           * given in the input file using the function method.
+           */
+          std::unique_ptr<Functions::ParsedFunction<dim> > friction_function;
+
+          /**
+           * The coordinate representation to evaluate the function for the friction angle.
+           * Possible choices are depth, cartesian and spherical.
+           */
+          Utilities::Coordinates::CoordinateSystem coordinate_system_friction_function;
       };
     }
   }
