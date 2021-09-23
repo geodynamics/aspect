@@ -268,9 +268,11 @@ namespace aspect
   void Simulator<dim>::create_snapshot()
   {
     TimerOutput::Scope timer (computing_timer, "Create snapshot");
-    // add the current wall time to the total wall clock time and reset timer
-    total_walltime_until_last_snapshot += walltime.wall_time();
-    walltime.restart();
+
+    // Take elapsed time from timer so that we can serialize it:
+    total_walltime_until_last_snapshot += wall_timer.wall_time();
+    wall_timer.restart();
+
     const unsigned int my_id = Utilities::MPI::this_mpi_process (mpi_communicator);
 
     // save Triangulation and Solution vectors:
