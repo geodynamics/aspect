@@ -62,7 +62,7 @@ end
 # equator (i.e. x-axis) then the patch is defined by 7pi/16<phi<pi/2.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = top, bottom
-  set Model name = function
+  set List of model names = function
   subsection Function
     set Coordinate system = spherical
     set Variable names = r, phi
