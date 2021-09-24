@@ -5,7 +5,7 @@ set Use years in output instead of seconds = false
 # significant changes in model height
 set End time                               = 3.15576e9 # 100 yr
 set Maximum time step                      = 3.15576e7 # 1 yr
-set Output directory                       = 2_sine_constant_h
+set Output directory                       = output-2_sine_constant_h
 set Nonlinear solver scheme = no Advection, no Stokes
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
