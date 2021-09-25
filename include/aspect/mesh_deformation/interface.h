@@ -538,7 +538,7 @@ namespace aspect
     bool
     MeshDeformationHandler<dim>::has_matching_mesh_deformation_object () const
     {
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::const_iterator boundary_id
            = mesh_deformation_objects.begin();
            boundary_id != mesh_deformation_objects.end(); ++boundary_id)
         for (const auto &p : boundary_id->second)
@@ -562,20 +562,17 @@ namespace aspect
                              "that could not be found in the current model. Activate this "
                              "mesh deformation in the input file."));
 
-      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::iterator boundary_id
+      for (typename std::map<types::boundary_id, std::vector<std::unique_ptr<Interface<dim>>>>::const_iterator boundary_id
            = mesh_deformation_objects.begin();
            boundary_id != mesh_deformation_objects.end(); ++boundary_id)
-        {
-          typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
-          for (const auto &p : boundary_id->second)
-            {
-              if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
-                return Plugins::get_plugin_as_type<MeshDeformationType>(*p);
-              else
-                // We will never get here, because we had the Assert above. Just to avoid warnings.
-                return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
-            }
-        }
+        for (const auto &p : boundary_id->second)
+          if (Plugins::plugin_type_matches<MeshDeformationType>(*p))
+            return Plugins::get_plugin_as_type<MeshDeformationType>(*p);
+
+      typename std::vector<std::unique_ptr<Interface<dim>>>::const_iterator mesh_def;
+      // We will never get here, because we had the Assert above. Just to avoid warnings.
+      return Plugins::get_plugin_as_type<MeshDeformationType>(*(*mesh_def));
+
     }
 
 
