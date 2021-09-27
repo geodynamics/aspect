@@ -1,0 +1,5 @@
+Changed: The right-hand-side force term in the momentum
+equation is now also computed in the first timestep (t0),
+such that nonzero initial viscoelastic stresses can be set.
+<br>
+(Anne Glerum, 2021/09/27)
