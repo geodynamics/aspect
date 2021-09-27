@@ -58,20 +58,20 @@ namespace aspect
                                                                                         velocity_values);
 
             for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
-            {
-              fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
-                                                                                                      compositional_values);
-
-              for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                if (compositional_values[q] >= 0.5)
-                {
-                  local_velocity_square_integral[c] += ((velocity_values[q] * velocity_values[q]) *
-                                                        fe_values.JxW(q));
-                  local_area_integral[c] += fe_values.JxW(q);
-                }
+                fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
+                    compositional_values);
+
+                for (unsigned int q = 0; q < n_q_points; ++q)
+                  {
+                    if (compositional_values[q] >= 0.5)
+                      {
+                        local_velocity_square_integral[c] += ((velocity_values[q] * velocity_values[q]) *
+                                                              fe_values.JxW(q));
+                        local_area_integral[c] += fe_values.JxW(q);
+                      }
+                  }
               }
-            }
           }
 
       std::vector<double> global_velocity_square_integral(local_velocity_square_integral.size());
@@ -81,37 +81,37 @@ namespace aspect
 
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
-      {
-      if (this->convert_output_to_years())
-          statistics.add_value("RMS velocity (m/year) " + this->introspection().name_for_compositional_index(c),
-                               year_in_seconds * global_velocity_square_integral[c] / global_area_integral[c]);
-        else
-          statistics.add_value("RMS velocity (m/s) " + this->introspection().name_for_compositional_index(c),
-                               global_velocity_square_integral[c] / global_area_integral[c]);
+        {
+          if (this->convert_output_to_years())
+            statistics.add_value("RMS velocity (m/year) " + this->introspection().name_for_compositional_index(c),
+                                 year_in_seconds * global_velocity_square_integral[c] / global_area_integral[c]);
+          else
+            statistics.add_value("RMS velocity (m/s) " + this->introspection().name_for_compositional_index(c),
+                                 global_velocity_square_integral[c] / global_area_integral[c]);
 
-        // also make sure that the other columns filled by this object
-        // all show up with sufficient accuracy and in scientific notation
-        const std::string column = {"RMS velocity for composition " + this->introspection().name_for_compositional_index(c)};
+          // also make sure that the other columns filled by this object
+          // all show up with sufficient accuracy and in scientific notation
+          const std::string column = {"RMS velocity for composition " + this->introspection().name_for_compositional_index(c)};
 
-        statistics.set_precision(column, 8);
-        statistics.set_scientific(column, true);
-      }
+          statistics.set_precision(column, 8);
+          statistics.set_scientific(column, true);
+        }
 
       std::ostringstream output;
       output.precision(4);
 
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
-      {
-        if (this->convert_output_to_years())
-          output << year_in_seconds * global_velocity_square_integral[c] / global_area_integral[c]
-                 << " m/year";
-        else
-          output << global_velocity_square_integral[c] / global_area_integral[c]
-                 << " m/s";
+        {
+          if (this->convert_output_to_years())
+            output << year_in_seconds *global_velocity_square_integral[c] / global_area_integral[c]
+                   << " m/year";
+          else
+            output << global_velocity_square_integral[c] / global_area_integral[c]
+                   << " m/s";
 
-        if (c + 1 != this->n_compositional_fields())
-          output << " // ";
-      }
+          if (c + 1 != this->n_compositional_fields())
+            output << " // ";
+        }
 
       return std::pair<std::string, std::string> ("RMS velocity for compositions:",
                                                   output.str());
