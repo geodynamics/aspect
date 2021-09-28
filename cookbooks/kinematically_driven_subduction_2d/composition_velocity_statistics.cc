@@ -20,6 +20,8 @@
 
 
 #include "composition_velocity_statistics.h"
+#include <aspect/global.h>
+#include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
@@ -79,23 +81,60 @@ namespace aspect
       std::vector<double> global_area_integral(local_area_integral.size());
       Utilities::MPI::sum(local_area_integral, this->get_mpi_communicator(), global_area_integral);
 
+      // compute the RMS velocity for each compositional field and for the slab
+      std::vector<double> vrms_per_composition(local_area_integral.size());
+      double velocity_square_integral_slab = 0., area_integral_slab = 0.;
+      for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
+        {
+          vrms_per_composition[c] = std::sqrt(global_velocity_square_integral[c]) /
+                                    std::sqrt(global_area_integral[c]);
+
+          const std::vector<std::string>::iterator slab_it = std::find(slab_compositions.begin(), slab_compositions.end(), this->introspection().name_for_compositional_index(c));
+          if (slab_it != slab_compositions.end())
+            {
+              std::cout << "slab compo " << *slab_it << std::endl;
+              velocity_square_integral_slab += global_velocity_square_integral[c];
+              area_integral_slab += global_area_integral[c];
+            }
+        }
+
+      const double vrms_slab = std::sqrt(velocity_square_integral_slab) / std::sqrt(area_integral_slab);
+
+      std::string unit = (this->convert_output_to_years()) ? "m/year" : "m/s";
+
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           if (this->convert_output_to_years())
-            statistics.add_value("RMS velocity (m/year) " + this->introspection().name_for_compositional_index(c),
-                                 year_in_seconds * global_velocity_square_integral[c] / global_area_integral[c]);
+            statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
+                                 year_in_seconds * vrms_per_composition[c]);
           else
-            statistics.add_value("RMS velocity (m/s) " + this->introspection().name_for_compositional_index(c),
-                                 global_velocity_square_integral[c] / global_area_integral[c]);
+            statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
+                                 vrms_per_composition[c]);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          const std::string column = {"RMS velocity for composition " + this->introspection().name_for_compositional_index(c)};
+          const std::string columns[] = {"RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c)};
 
-          statistics.set_precision(column, 8);
-          statistics.set_scientific(column, true);
+          for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
+            {
+              statistics.set_precision(columns[i], 8);
+              statistics.set_scientific(columns[i], true);
+            }
         }
+
+      // Also output the slab vrms
+      if (this->convert_output_to_years())
+        statistics.add_value("RMS velocity (" + unit + ") for slab ",
+                             year_in_seconds * vrms_slab);
+      else
+        statistics.add_value("RMS velocity (" + unit + ") for slab ",
+                             vrms_slab);
+
+      const std::string column = {"RMS velocity (" + unit + ") for slab "};
+
+      statistics.set_precision(column, 8);
+      statistics.set_scientific(column, true);
 
       std::ostringstream output;
       output.precision(4);
@@ -103,18 +142,64 @@ namespace aspect
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           if (this->convert_output_to_years())
-            output << year_in_seconds *global_velocity_square_integral[c] / global_area_integral[c]
-                   << " m/year";
+            output << year_in_seconds *vrms_per_composition[c]
+                   << " " << unit;
           else
-            output << global_velocity_square_integral[c] / global_area_integral[c]
-                   << " m/s";
+            output << vrms_per_composition[c]
+                   << " " << unit;
 
-          if (c + 1 != this->n_compositional_fields())
-            output << " // ";
+          output << " // ";
         }
+      if (this->convert_output_to_years())
+        output << year_in_seconds *vrms_slab;
+      else
+        output << vrms_slab;
 
-      return std::pair<std::string, std::string> ("RMS velocity for compositions:",
-                                                  output.str());
+      return std::pair<std::string, std::string>("RMS velocity for compositions and slab:",
+                                                 output.str());
+    }
+
+
+
+    template <int dim>
+    void
+    CompositionVelocityStatistics<dim>::declare_parameters(ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Composition velocity statistics");
+        {
+          prm.declare_entry("Names of slab compositional fields", "",
+                            Patterns::List(Patterns::Anything()),
+                            "A list of names for each of the compositional fields that. "
+                            "makes up the subduction plate.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+
+    template <int dim>
+    void
+    CompositionVelocityStatistics<dim>::parse_parameters(ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Composition velocity statistics");
+        {
+          slab_compositions = Utilities::split_string_list(prm.get("Names of slab compositional fields"));
+
+          AssertThrow((slab_compositions.size() > 0) &&
+                      (slab_compositions.size() <= this->n_compositional_fields()),
+                      ExcMessage("The length of the list of names for the compositional "
+                                 "fields that make up the slabs much be larger than zero "
+                                 "and smaller or equal to the number of compositional fields."));
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
     }
   }
 }

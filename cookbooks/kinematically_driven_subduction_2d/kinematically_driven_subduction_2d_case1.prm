@@ -7,12 +7,12 @@
 # High resolution is required to a.o. resolve the weak zone
 # between the subducting and overriding plate, so about
 # 100 MPI processes are required.
-set Additional shared libraries            = /scratch/usr/bbpanneg/software/aspect/QQ_subduction_cookbook/shared_libs/build_debug/lib2d_driven_subduction_box.so
+set Additional shared libraries            = librms_velocity_composition.so
 # 2D
 set Dimension                              = 2
 # Run for 15 My
 set Start time                             = 0
-set End time                               = 15.01e6
+set End time                               = 0 #15.01e6
 set CFL number                             = 0.5
 set Use years in output instead of seconds = true
 # Linear solver
@@ -136,8 +136,8 @@ subsection Initial temperature model
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 2
-  set Initial global refinement                = 8
+  set Initial adaptive refinement              = 1 #2
+  set Initial global refinement                = 6 #8
   set Minimum refinement level                 = 6 #7
   set Normalize individual refinement criteria = true
   set Refinement criteria merge operation      = plus #max
@@ -153,6 +153,7 @@ subsection Mesh refinement
     set Coordinate system = depth
     set Variable names = x,z,t
     set Function constants = vel=150e3, L=100e3, crust=10e3
+    #set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
     set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
   end
 
@@ -169,12 +170,15 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, heating statistics, slab tip depth QQCase1, velocity statistics QQCase2a, viscous dissipation statistics QQCase2a
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
 
 
   subsection Visualization
     set List of output variables      = density, viscosity, strain rate, error indicator
     set Time between graphical output = 5e5
+  end
+  subsection Composition velocity statistics
+    set Names of slab compositional fields = ML_SP, crust_SP
   end
 
 end

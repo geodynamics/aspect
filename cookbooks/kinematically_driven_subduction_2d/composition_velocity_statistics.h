@@ -45,6 +45,28 @@ namespace aspect
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
+
+        /**
+         * @name Functions used in dealing with run-time parameters
+         * @{
+         */
+        /**
+         * Declare the parameters this class takes through input files.
+         */
+        static void
+        declare_parameters(ParameterHandler &prm);
+
+        /**
+         * Read the parameters this class declares from the parameter file.
+         */
+        void
+        parse_parameters(ParameterHandler &prm) override;
+        /**
+         * @}
+         */
+
+      private:
+        std::vector<std::string> slab_compositions;
     };
   }
 }
