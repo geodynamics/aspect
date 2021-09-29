@@ -1,7 +1,6 @@
-# This test is to check that the layered ascii data initial temperature
-# plugin works in a 2D box with temperature defined as linear
-# between isotherms and constant below and above the
-# first and last isotherm (with a value taken from that isotherm).
+# This test is to check that the layered ascii data initial composition
+# plugin works in a 2D box with composition defined as piecewise constant
+# between layers. 
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
