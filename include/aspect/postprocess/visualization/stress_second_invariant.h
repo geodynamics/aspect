@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2021 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -19,6 +19,7 @@
 */
 
 
+
 #ifndef _aspect_postprocess_visualization_stress_second_invariant_h
 #define _aspect_postprocess_visualization_stress_second_invariant_h
 
@@ -26,6 +27,7 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/numerics/data_postprocessor.h>
+
 
 
 namespace aspect
@@ -36,8 +38,8 @@ namespace aspect
     {
       /**
        * A class derived from DataPostprocessor that takes an output vector
-       * and computes a variable that represents the difference between the
-       * second moment invariant of the deviatoric stress and the yield stress.
+       * and computes a variable that represents the second moment invariant
+       * of the deviatoric stress.
        *
        * The member functions are all implementations of those declared in the
        * base class. See there for their meaning.

@@ -19,7 +19,10 @@
 */
 
 
+
 #include <aspect/postprocess/visualization/stress_second_invariant.h>
+
+
 
 namespace aspect
 {
@@ -49,14 +52,17 @@ namespace aspect
         Assert(input_data.solution_values[0].size() == this->introspection().n_components, ExcInternalError());
         Assert(input_data.solution_gradients[0].size() == this->introspection().n_components, ExcInternalError());
 
+        // Create the material model inputs and outputs to
+        // retrieve the current viscosity.
         MaterialModel::MaterialModelInputs<dim> in(input_data,
-                                                   this->introspection());
+                                                   this->introspection(),
+                                                   /*compute_strain_rate = */ true);
+
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        this->get_material_model().create_additional_named_outputs(out);
-
-        // Get the viscosity
         this->get_material_model().evaluate(in, out);
 
         for (unsigned int q = 0; q < n_quadrature_points; ++q)
@@ -68,13 +74,11 @@ namespace aspect
 
             const double eta = out.viscosities[q];
 
-            // Compressive stress is positive in geoscience applications
-            // TODO what sign to use here? In the material model we don't add
-            // the minus sign for the comparison with the yield stress.
+            // Compressive stress is positive in geoscience applications.
             SymmetricTensor<2, dim> stress = -2. * eta * deviatoric_strain_rate +
                                              in.pressure[q] * unit_symmetric_tensor<dim>();
 
-            // Add elastic stresses if existent
+            // Add elastic stresses if existent.
             if (this->get_parameters().enable_elasticity == true)
               {
                 stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
@@ -89,15 +93,16 @@ namespace aspect
                   }
               }
 
-            // Compute the deviatoric stress after adding the elastic stresses that might have added
-            // diagonal components
+            // Compute the deviatoric stress tensor after elastic stresses were added.
             const SymmetricTensor<2, dim> deviatoric_stress = deviator(stress);
 
             // Compute the second moment invariant of the deviatoric stress
+            // in the same way as the second moment invariant of the deviatoric
+            // strain rate is computed in the viscoplastic material model.
+            // TODO check that this is valid for the compressible case.
             const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
 
-            // Output the second stress invariant
-            computed_quantities[q](0) = stress_invariant; 
+            computed_quantities[q](0) = stress_invariant;
           }
 
         // average the values if requested
@@ -110,6 +115,7 @@ namespace aspect
 }
 
 
+
 // explicit instantiations
 namespace aspect
 {
@@ -119,9 +125,8 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(StressSecondInvariant,
                                                   "stress second invariant",
-                                                  "A visualization output object that generates output "
-                                                  "the second moment invariant "
-                                                  "of the deviatoric stress tensor.")
+                                                  "A visualization output object that outputs "
+                                                  "the second moment invariant of the deviatoric stress tensor.")
     }
   }
 }
