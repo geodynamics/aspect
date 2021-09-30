@@ -2085,6 +2085,7 @@ namespace aspect
       LinearAlgebra::BlockVector                                solution;
       LinearAlgebra::BlockVector                                old_solution;
       LinearAlgebra::BlockVector                                old_old_solution;
+      LinearAlgebra::BlockVector                                unlimited_solution;
       LinearAlgebra::BlockVector                                system_rhs;
 
       LinearAlgebra::BlockVector                                current_linearization_point;

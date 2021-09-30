@@ -255,6 +255,13 @@ namespace aspect
           } viscous_flow_law;
 
           /**
+           * Whether to take the minimum of the diffusion and dislocation
+           * creep viscosities (if true), or to compute a composite (if false)
+           * as (viscosity_diffusion * viscosity_dislocation) / (viscosity_diffusion + viscosity_dislocation).
+           */
+          bool use_minimum_creep_viscosity;
+
+          /**
            * Enumeration for selecting which type of yield mechanism to use.
            * Select between Drucker Prager and stress limiter.
            */

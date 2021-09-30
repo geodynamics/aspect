@@ -1,0 +1,168 @@
+# This setup models the relaxation of elastic stresses in the absence
+# of drivers.
+# The analytical solution is:
+#     \tau_{xx} = \tau_{xx_{t0}} \exp(-t \frac{\mu}{\eta_{viscous}}),
+# where \tau_{xx} is the first component of the stored stress tensor,
+# \mu is the shear modulus and \eta_{viscous} the viscous viscosity.
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 250e3
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-6
+set Max nonlinear iterations               = 20
+set CFL number                             = 0.5
+set Maximum time step                      = 125
+set Pressure normalization                 = surface
+set Surface pressure                       = 0.
+set Output directory                       = ve_relaxation_dt125yr_dh10km
+
+# New elasticity settings
+set Use operator splitting                 = true
+
+# Solver settings
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                 = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set X extent      = 100e3
+    set Y extent      = 100e3
+  end
+end
+
+# Mesh refinement specifications
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 0
+  set Time steps between mesh refinement = 0
+end
+
+# Element types
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, left, right, bottom
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress, stress, stress, stress, stress, stress
+end
+
+# Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 20e6; -20e6; 0; 20e6; -20e6; 0
+  end
+end
+
+# Composition boundary conditions
+# We specify that no boundaries have a fixed composition
+# in order to prevent boundary effects from developing
+# in the compositional fields tracking viscoelastic stresses.
+subsection Boundary composition model
+  set Fixed composition boundary indicators =
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 293
+    set Left temperature   = 293
+    set Right temperature  = 293
+    set Top temperature    = 293
+  end
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10.
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = composition statistics, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, named additional outputs, stress
+
+    subsection Material properties
+      set List of material properties = viscosity
+    end
+
+    set Time between graphical output = 500
+    set Interpolate output = true
+    set Write higher order output = true
+  end
+
+end
+
+
+# Material model
+subsection Material model
+
+  set Model name = visco plastic
+
+  subsection Visco Plastic
+
+    # Uniform viscous viscosity of 1e22 Pas
+    set Viscous flow law                          = dislocation
+    set Prefactors for dislocation creep          = 5e-23
+    set Minimum strain rate                       = 1e-30
+    set Stress exponents for dislocation creep    = 1.0
+    set Activation energies for dislocation creep = 0.
+    set Activation volumes for dislocation creep  = 0.
+
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    # Elastic time step for t0 should match the computational timestep
+    set Fixed elastic time step     = 125
+
+    # Very high cohesions so that plasticity does not play a role
+    set Angles of internal friction = 0.
+    set Cohesions                   = 1e20
+    set Maximum yield stress        = 1e20
+
+    set Densities                   = 2800
+
+  end
+
+end

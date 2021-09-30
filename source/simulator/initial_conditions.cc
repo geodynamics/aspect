@@ -242,6 +242,7 @@ namespace aspect
         const unsigned int blockidx = advf.block_index(introspection);
 
         solution.block(blockidx) = initial_solution.block(blockidx);
+        unlimited_solution.block(blockidx) = initial_solution.block(blockidx);
         old_solution.block(blockidx) = initial_solution.block(blockidx);
         old_old_solution.block(blockidx) = initial_solution.block(blockidx);
         current_linearization_point.block(blockidx) = initial_solution.block(blockidx);
