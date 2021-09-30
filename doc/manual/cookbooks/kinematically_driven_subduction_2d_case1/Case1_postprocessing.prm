@@ -1,5 +1,5 @@
 subsection Postprocess
-  set List of postprocessors = visualization, velocity statistics, heating statistics, slab tip depth QQCase1, velocity statistics QQCase2a, viscous dissipation statistics QQCase2a
+  set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
 
   subsection Visualization
     set List of output variables      = density, viscosity, strain rate, error indicator
