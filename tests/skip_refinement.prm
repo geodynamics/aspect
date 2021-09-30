@@ -8,10 +8,22 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 100
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set CFL number                             = 0.5
 set Maximum time step                      = 50
 set Pressure normalization                 = no
+
+# To update the elastic stresses,
+# we do 1 operator splitting step.
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 # Solver parameters
 subsection Solver parameters
@@ -54,6 +66,7 @@ subsection Discretization
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2
   set Temperature polynomial degree     = 1
+  set Use discontinuous composition discretization = true
 end
 
 # Formulation classification
@@ -88,8 +101,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 7
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, LM, TZ, UM, Lith
+  set Number of fields = 10
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, LM, TZ, UM, Lith
+  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress, chemical composition, chemical composition, chemical composition, chemical composition
 end
 
 # Spatial domain of different compositional fields
@@ -99,7 +113,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0; if(y<=2221e3,1,0); if(y<=2471e3 && y>2221e3,1,0); if(y<=2821e3 && y>2471e3,1,0); if(y>2821e3,1,0);
+    set Function expression = 0; 0; 0; 0; 0; 0; if(y<=2221e3,1,0); if(y<=2471e3 && y>2221e3,1,0); if(y<=2821e3 && y>2471e3,1,0); if(y>2821e3,1,0);
   end
 end
 
@@ -130,11 +144,11 @@ subsection Material model
   set Material averaging = harmonic average only viscosity
 
   subsection Viscoelastic
-    set Densities                   = 4978, 4978, 4978, 4978, 4978, 3871, 3438, 3037
-    set Viscosities                 = 2.e21, 2.e21, 2.e21, 2.e21, 2.e21, 1.e21, 1.e21, 1.e40
-    set Elastic shear moduli        = 2.28340e11, 2.28340e11, 2.28340e11, 2.28340e11, 2.28340e11, 1.05490e11, 0.70363e11, 0.50605e11
+    set Densities                   = 4978, 4978, 3871, 3438, 3037
+    set Viscosities                 = 2.e21, 2.e21, 1.e21, 1.e21, 1.e40
+    set Elastic shear moduli        = 2.28340e11, 2.28340e11, 1.05490e11, 0.70363e11, 0.50605e11
     set Use fixed elastic time step = false
-    set Fixed elastic time step     = 2.5
+    set Fixed elastic time step     = 50
     set Viscosity averaging scheme  = harmonic
   end
 end

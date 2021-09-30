@@ -110,12 +110,32 @@ namespace aspect
         output_parameters.current_friction_angles.resize(volume_fractions.size(), numbers::signaling_nan<double>());
         output_parameters.current_cohesions.resize(volume_fractions.size(), numbers::signaling_nan<double>());
 
-        // Assemble stress tensor if elastic behavior is enabled
-        SymmetricTensor<2,dim> stress_old = numbers::signaling_nan<SymmetricTensor<2,dim>>();
+        // Assemble current and old stress tensor if elastic behavior is enabled
+        SymmetricTensor<2, dim> stress_0_advected = numbers::signaling_nan<SymmetricTensor<2, dim>>();
+        SymmetricTensor<2, dim> stress_old = numbers::signaling_nan<SymmetricTensor<2, dim>>();
+        double elastic_shear_modulus = numbers::signaling_nan<double>();
         if (this->get_parameters().enable_elasticity)
           {
-            for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-              stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+            // The first set of stresses in in.composition holds $\tau^{0adv}$
+            // after the first advection nonlinear iteration,
+            // which is when the viscosity matters for the Stokes system.
+            const std::vector<unsigned int> &stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+            stress_0_advected = (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[0]],
+                                                                              &in.composition[i][stress_field_indices[0]]+SymmetricTensor<2, dim>::n_independent_components));
+
+            // The old stresses are only changed in the operator splitting step and have been advected into
+            // the current timestep. They are stored in the second set of n_independent_components.
+            stress_old = (Utilities::Tensors::to_symmetric_tensor<dim>(&in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components]],
+                                                                       &in.composition[i][stress_field_indices[SymmetricTensor<2, dim>::n_independent_components]]+SymmetricTensor<2, dim>::n_independent_components));
+
+
+            // Average the compositional contributions to elastic_shear_moduli here and use
+            // a volume-averaged shear modulus in the loop over the compositions below.
+            // Otherwise it is implied that each material is acting independently
+            // (different rotations, different stress changes), but this is inconsistent with storing only one stress tensor.
+            // The averaging used is the same as for the viscosity.
+            const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
+            elastic_shear_modulus = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
           }
 
         // Use a specified "reference" strain rate if the strain rate is not yet available
@@ -188,7 +208,7 @@ namespace aspect
                    :
                    numbers::signaling_nan<double>());
 
-              // Step 1c: select which form of viscosity to use (diffusion, dislocation, fk, or composite), and apply
+              // Step 1c: select which form of viscosity to use (diffusion, dislocation, their minimum or composite, or fk), and apply
               // pre-exponential weakening, if required.
               switch (viscous_flow_law)
                 {
@@ -220,6 +240,16 @@ namespace aspect
                                                                 CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
                     non_yielding_viscosity = (scaled_viscosity_diffusion * scaled_viscosity_dislocation)/
                                              (scaled_viscosity_diffusion + scaled_viscosity_dislocation);
+                    break;
+                  }
+                  case minimum_diffusion_dislocation:
+                  {
+                    const double scaled_viscosity_diffusion = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_diffusion, j, i, \
+                                                              CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::diffusion);
+                    const double scaled_viscosity_dislocation = compositional_viscosity_prefactors.compute_viscosity(in, viscosity_dislocation, j, i, \
+                                                                CompositionalViscosityPrefactors<dim>::ModifiedFlowLaws::dislocation);
+
+                    non_yielding_viscosity = std::min(scaled_viscosity_diffusion, scaled_viscosity_dislocation);
                     break;
                   }
                   default:
@@ -260,7 +290,8 @@ namespace aspect
 
             if (this->get_parameters().enable_elasticity)
               {
-                const std::vector<double> &elastic_shear_moduli = elastic_rheology.get_elastic_shear_moduli();
+                // Step 3a: calculate viscoelastic (effective) viscosity
+                non_yielding_viscosity = elastic_rheology.calculate_viscoelastic_viscosity(non_yielding_viscosity, elastic_shear_modulus);
 
                 if (use_reference_strainrate == false)
                   {
@@ -273,22 +304,20 @@ namespace aspect
                     Assert(std::isfinite(in.strain_rate[i].norm()),
                            ExcMessage("Invalid strain_rate in the MaterialModelInputs. This is likely because it was "
                                       "not filled by the caller."));
-                    const SymmetricTensor<2,dim> effective_strain_rate =
-                      elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
+
+                    const SymmetricTensor<2, dim> effective_strain_rate = elastic_rheology.calculate_viscoelastic_strain_rate(in.strain_rate[i],
+                                                                          stress_0_advected,
                                                                           stress_old,
-                                                                          elastic_shear_moduli[j]);
+                                                                          non_yielding_viscosity,
+                                                                          elastic_shear_modulus);
 
                     effective_edot_ii = std::max(std::sqrt(std::max(-second_invariant(effective_strain_rate), 0.)),
                                                  min_strain_rate);
                   }
-
-                // Step 3a: calculate the viscoelastic (effective) viscosity
-                non_yielding_viscosity = elastic_rheology.calculate_viscoelastic_viscosity(non_yielding_viscosity,
-                                                                                           elastic_shear_moduli[j]);
               }
 
             // Step 3b: calculate non yielding (viscous or viscous + elastic) stress magnitude
-            double non_yielding_stress = 2. * non_yielding_viscosity * effective_edot_ii;
+            const double non_yielding_stress = 2. * non_yielding_viscosity * effective_edot_ii;
 
             // Step 4a: calculate the strain-weakened friction and cohesion
             const DruckerPragerParameters drucker_prager_parameters = drucker_prager_plasticity.compute_drucker_prager_parameters(j,
@@ -351,7 +380,9 @@ namespace aspect
                       // The following uses the effective_edot_ii
                       // (which has been modified for elastic effects, above),
                       // and calculates the effective viscosity over all active rheological elements
-                      // assuming that the non-yielding viscosity is not strain rate dependent
+                      // assuming that the non-yielding viscosity is not strain rate dependent.
+                      // TODO When dislocation creep or nonlinear plastic strain weakening
+                      // is used, we need to iterate on the yield stress.
                       effective_viscosity = drucker_prager_plasticity.compute_viscosity(current_cohesion,
                                                                                         current_friction,
                                                                                         pressure_for_plasticity,
@@ -386,6 +417,7 @@ namespace aspect
                                                              );
             output_parameters.composition_viscosities[j] = std::min(std::max(effective_viscosity, minimum_viscosity_for_composition), maximum_viscosity_for_composition);
           }
+
         return output_parameters;
       }
 
@@ -517,8 +549,11 @@ namespace aspect
 
         if (this->get_parameters().enable_elasticity)
           {
-            for (unsigned int i = 0; i < SymmetricTensor<2,dim>::n_independent_components ; ++i)
-              composition_mask.set(i,false);
+            // Set a mask (false) for the 2*n_independent_components fields representing the viscoelastic
+            // stress tensor components so that they are excluded from the volume fraction computation.
+            const std::vector<unsigned int> &stress_field_indices = this->introspection().get_indices_for_fields_of_type(CompositionalFieldDescription::stress);
+            for (unsigned int field_index: stress_field_indices)
+              composition_mask.set(field_index, false);
           }
 
         return composition_mask;
@@ -560,10 +595,15 @@ namespace aspect
                            "viscosity at that point.  Select a weighted harmonic, arithmetic, "
                            "geometric, or maximum composition.");
         prm.declare_entry ("Viscous flow law", "composite",
-                           Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite"),
-                           "Select what type of viscosity law to use between diffusion, "
-                           "dislocation, frank kamenetskii, and composite options. Soon there will be an option "
-                           "to select a specific flow law for each assigned composition ");
+                           Patterns::Selection("diffusion|dislocation|frank kamenetskii|composite|minimum diffusion dislocation"),
+                           "Select what type of viscosity law to use between the options diffusion, "
+                           "dislocation, frank kamenetskii, composite and the minimum of diffusion and dislocation. "
+                           "Soon there will be an option "
+                           "to select a specific flow law for each assigned composition, "
+                           "When the full strain rate is used to compute each viscosity "
+                           "instead of the properly partitioned diffusion and dislocation creep "
+                           "strain rates, it is recommended to take the minimum of the creep "
+                           "viscosities instead of their composite.");
         prm.declare_entry ("Yield mechanism", "drucker",
                            Patterns::Selection("drucker|limiter"),
                            "Select what type of yield mechanism to use between Drucker Prager "
@@ -711,10 +751,12 @@ namespace aspect
           viscous_flow_law = dislocation;
         else if (prm.get ("Viscous flow law") == "frank kamenetskii")
           viscous_flow_law = frank_kamenetskii;
+        else if (prm.get ("Viscous flow law") == "minimum diffusion dislocation")
+          viscous_flow_law = minimum_diffusion_dislocation;
         else
           AssertThrow(false, ExcMessage("Not a valid viscous flow law"));
 
-        if (prm.get ("Yield mechanism") == "drucker")
+        if (prm.get("Yield mechanism") == "drucker")
           yield_mechanism = drucker_prager;
         else if (prm.get ("Yield mechanism") == "limiter")
           yield_mechanism = stress_limiter;
@@ -836,14 +878,13 @@ namespace aspect
             // average over the volume volume fractions
             for (unsigned int j = 0; j < volume_fractions.size(); ++j)
               {
-                plastic_out->cohesions[i]   += volume_fractions[j] * cohesions[j];
+                plastic_out->cohesions[i] += volume_fractions[j] * cohesions[j];
                 // Also convert radians to degrees
                 plastic_out->friction_angles[i] += constants::radians_to_degree * volume_fractions[j] * friction_angles_RAD[j];
                 plastic_out->yield_stresses[i] += volume_fractions[j] * drucker_prager_plasticity.compute_yield_stress(cohesions[j],
                                                   friction_angles_RAD[j],
                                                   pressure_for_plasticity,
                                                   max_yield_stress);
-
               }
           }
       }

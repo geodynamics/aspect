@@ -22,7 +22,7 @@
 
 #include <aspect/postprocess/visualization/stress_second_invariant.h>
 
-
+#include <aspect/material_model/rheology/elasticity.h>
 
 namespace aspect
 {
@@ -58,10 +58,12 @@ namespace aspect
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
 
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
 
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
+
+        this->get_material_model().create_additional_named_outputs(out);
 
         this->get_material_model().evaluate(in, out);
 
@@ -72,6 +74,9 @@ namespace aspect
             // internally by ASPECT.
             // Here, we change the sign of the stress to match the
             // sign convention used by the geoscience community.
+            // TODO Instead of first assembling the total stress
+            // and then taking the deviator, we could only assemble
+            // the deviatoric stress.
             SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
             // If elasticity is enabled, the deviatoric stress is stored
@@ -79,16 +84,12 @@ namespace aspect
             // can be obtained from the viscosity and strain rate.
             if (this->get_parameters().enable_elasticity == true)
               {
-                stress[0][0] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress[1][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress[0][1] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                // Get the total deviatoric stress from the material model.
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                if (dim == 3)
-                  {
-                    stress[2][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress[0][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress[1][2] -= in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-                  }
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'principal stress' postprocessor, but they have not been created."));
+
+                stress -= elastic_additional_out->deviatoric_stress[q];
               }
             else
               {
@@ -106,6 +107,7 @@ namespace aspect
 
             // Compute the deviatoric stress tensor after elastic stresses were added.
             const SymmetricTensor<2, dim> deviatoric_stress = deviator(stress);
+
 
             // Compute the second moment invariant of the deviatoric stress
             // in the same way as the second moment invariant of the deviatoric

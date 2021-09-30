@@ -980,9 +980,10 @@ namespace aspect
       }
 
 #ifdef DEBUG
-    // make sure that if the model does not use operator splitting,
+    // make sure that if the model does not use operator splitting on fields or particles,
     // the material model outputs do not fill the reaction_rates (because the reaction_terms are used instead)
-    if (!parameters.use_operator_splitting)
+    if (!parameters.use_operator_splitting &&
+        !(introspection.compositional_name_exists("ve_stress_xx") && parameters.mapped_particle_properties.count(introspection.compositional_index_for_name("ve_stress_xx"))))
       {
         material_model->create_additional_named_outputs(scratch.material_model_outputs);
         MaterialModel::ReactionRateOutputs<dim> *reaction_rate_outputs

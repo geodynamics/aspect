@@ -17,10 +17,8 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
-set Nonlinear solver scheme                = single Advection, iterated Stokes
-set Nonlinear solver tolerance             = 1e-5
-set Max nonlinear iterations               = 100
 set End time  = 100e3
+
 
 # Material model
 subsection Material model
@@ -39,5 +37,12 @@ subsection Material model
     set Angles of internal friction = 0.
     set Cohesions                   = 100.e6
     set Densities                   = 2800
+  end
+end
+
+# Post processing
+subsection Postprocess
+  subsection Visualization
+    set List of output variables = material properties, strain rate, named additional outputs, stress
   end
 end

@@ -6,14 +6,27 @@ include $ASPECT_SOURCE_DIR/tests/visco_plastic_yield_plastic_viscous_strain_weak
 # Global parameters
 set Dimension                              = 2
 set End time                               = 1000
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 2
 set Output directory                       = vep_chemical_compositions
 
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+# Solver settings
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
+
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 6
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, plastic_strain, viscous_strain, test
-  set Types of fields  = stress, stress, stress, strain, strain, chemical composition
+  set Number of fields = 9
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old, plastic_strain, viscous_strain, test
+  set Types of fields  = stress, stress, stress, stress, stress, stress, strain, strain, chemical composition
 end
 
 # We prescribe some initial strain at the center of the domain
@@ -23,7 +36,7 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function expression = 0; 0; 0; \
+    set Function expression = 0; 0; 0; 0; 0; 0; \
                               if(x>=45e3&x<=55e3&y>=45.3e3&y<=55.e3,0.2,0); \
                               if(x>=35e3&x<=65e3&y>=35.e3&y<=65.e3,0.8,0); 1
   end
@@ -39,6 +52,11 @@ subsection Formulation
   set Enable elasticity = true
 end
 
+# Element types
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
 # Material model (values for background material)
 subsection Material model
   set Model name = visco plastic
@@ -50,19 +68,19 @@ subsection Material model
   subsection Visco Plastic
     set Reference strain rate = 1.e-16
     set Viscous flow law = dislocation
-    set Prefactors for dislocation creep = 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23
-    set Stress exponents for dislocation creep = 1, 0, 0, 0, 0, 0, 1
+    set Prefactors for dislocation creep = 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23, 5e-23
+    set Stress exponents for dislocation creep = 1, 0, 0, 0, 0, 0, 0, 0, 0, 1
     set Activation energies for dislocation creep = 0, 0
     set Activation volumes for dislocation creep = 0
     set Yield mechanism = drucker
-    set Angles of internal friction = 0,10,10,10,5,5,0
-    set Cohesions = 1.e6,0,0,0,0,0,1e6
+    set Angles of internal friction = 0,10,10,10,10,10,10,5,5,0
+    set Cohesions = 1.e6,0,0,0,0,0,0,0,0,1e6
     set Strain weakening mechanism = plastic weakening with plastic strain and viscous weakening with viscous strain
     set Start prefactor strain weakening intervals = 0,0
-    set End prefactor strain weakening intervals = 1,1,1,1,1,1,1
+    set End prefactor strain weakening intervals = 1,1,1,1,1,1,1,1,1,1
     set Prefactor strain weakening factors = 0.5,0.5
     set Start plasticity strain weakening intervals = 0.,0
-    set End plasticity strain weakening intervals = 1,1,1,1,1,1,1
+    set End plasticity strain weakening intervals = 1,1,1,1,1,1,1,1,1,1
     set Cohesion strain weakening factors = 0.5,0.5
     set Friction strain weakening factors = 0.5
     set Elastic shear moduli        = 1e10,1e10

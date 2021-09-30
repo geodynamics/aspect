@@ -19,13 +19,16 @@
 
 include $ASPECT_SOURCE_DIR/benchmarks/viscoelastic_stress_build-up/viscoelastic_stress_build-up.prm
 
-set Nonlinear solver scheme                = single Advection, iterated Stokes
 set Nonlinear solver tolerance             = 1e-5
 set Max nonlinear iterations               = 2
 set Output directory                       = visco_plastic_vep_stress_build-up_yield_particles
 
 #  Global parameters
 set End time                               = 2e3
+
+# For particles, the operator splitting step
+# is handled by the particle property elastic stress.
+set Use operator splitting                 = false
 
 # Model geometry (100x100 km, 5 km spacing)
 subsection Geometry model
@@ -41,8 +44,9 @@ end
 
 # Track compositional fields with active particles
 subsection Compositional fields
-  set Compositional field methods = particles, particles, particles
-  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy
+  set Compositional field methods = particles, particles, particles, particles, particles, particles
+  set Mapped particle properties  = ve_stress_xx:ve_stress_xx, ve_stress_yy:ve_stress_yy, ve_stress_xy:ve_stress_xy, \
+                                    ve_stress_xx_old:ve_stress_xx_old, ve_stress_yy_old:ve_stress_yy_old, ve_stress_xy_old:ve_stress_xy_old
 end
 
 # Material model

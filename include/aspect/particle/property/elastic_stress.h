@@ -51,6 +51,15 @@ namespace aspect
           void initialize () override;
 
           /**
+           * Function to update particles after they have been restored
+           * to their position and values from the beginning of the timestep.
+           * This restoring happens at the beginning of nonlinear iterations
+           * of iterative Advection solver schemes.
+           */
+          void
+          update_particles (typename Particle::Manager<dim> &particle_manager) const;
+
+          /**
            * @copydoc aspect::Particle::Property::Interface::initialize_one_particle_property()
            */
           void
@@ -94,6 +103,18 @@ namespace aspect
            */
           mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
           mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
+
+          /**
+           * The indices of the compositional fields that represent components of the
+           * viscoelastic stress tensors.
+           */
+          std::vector<unsigned int> stress_field_indices;
+
+          /**
+          * The indices of the compositional fields that do not represent components of the
+          * viscoelastic stress tensors.
+          */
+          std::vector<unsigned int> non_stress_field_indices;
       };
     }
   }

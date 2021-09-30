@@ -69,6 +69,10 @@ subsection Boundary velocity model
 end
 
 # Number and name of compositional fields
+# Note that although compositional fields are set with names corresponding to the
+# stress tensor, elasticity is not actually enabled. Since no field types are
+# specified, the type will be deduced from the field names as 'stress' and therefore
+# these fields do not contribute to material properties.
 subsection Compositional fields
   set Number of fields = 4
   set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, beam

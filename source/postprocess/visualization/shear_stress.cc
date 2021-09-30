@@ -20,8 +20,7 @@
 
 
 #include <aspect/postprocess/visualization/shear_stress.h>
-
-
+#include <aspect/material_model/rheology/elasticity.h>
 
 namespace aspect
 {
@@ -58,13 +57,15 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
-        // We do not need to compute anything but the viscosity
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        // We do not need to compute anything but the viscosity and ElasticAdditionalOutputs
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
 
-        // Compute the viscosity...
+        this->get_material_model().create_additional_named_outputs(out);
+
+        // Compute the viscosity and additional outputs
         this->get_material_model().evaluate(in, out);
 
-        // ...and use it to compute the stresses
+        // ...and use them to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             // Compressive stress is negative by the sign convention
@@ -74,33 +75,27 @@ namespace aspect
             // sign convention used by the geoscience community.
             SymmetricTensor<2,dim> shear_stress;
 
-            // If elasticity is enabled, the deviatoric stress is stored
+            const double eta = out.viscosities[q];
+
+            const SymmetricTensor<2, dim> strain_rate = in.strain_rate[q];
+            const SymmetricTensor<2, dim> deviatoric_strain_rate = (this->get_material_model().is_compressible()
+                                                                    ? strain_rate - 1. / 3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                                                                    : strain_rate);
+
+            // If elasticity is enabled, the visco-elastic stress is stored
             // in compositional fields, otherwise the deviatoric stress
-            // can be obtained from the viscosity and strain rate.
+            // can be obtained from the viscosity and strain rate only.
             if (this->get_parameters().enable_elasticity == true)
               {
-                shear_stress[0][0] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                shear_stress[1][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                shear_stress[0][1] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                // Get the total deviatoric stress from the material model.
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
 
-                if (dim == 3)
-                  {
-                    shear_stress[2][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    shear_stress[0][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    shear_stress[1][2] = -in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
-                  }
+                Assert(elastic_additional_out != nullptr, ExcMessage("Elastic Additional Outputs are needed for the 'shear stress' postprocessor, but they have not been created."));
+
+                shear_stress = -(elastic_additional_out->deviatoric_stress[q]);
               }
             else
               {
-                const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-                const SymmetricTensor<2,dim> deviatoric_strain_rate
-                  = (this->get_material_model().is_compressible()
-                     ?
-                     strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                     :
-                     strain_rate);
-
-                const double eta = out.viscosities[q];
                 shear_stress = -2. * eta * deviatoric_strain_rate;
               }
 

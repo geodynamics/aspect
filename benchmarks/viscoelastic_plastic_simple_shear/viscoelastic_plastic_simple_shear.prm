@@ -29,16 +29,33 @@ set Maximum time step                          = 0.01
 set Output directory                           = output-viscoelastic_plastic_simple_shear
 set Pressure normalization                     = surface
 set Surface pressure                           = 0.
-set Nonlinear solver scheme                    = single Advection, iterated Stokes
+set Nonlinear solver scheme                    = iterated Advection and Stokes
 set Max nonlinear iterations                   = 30
 set Nonlinear solver tolerance                 = 1e-5
 set Max nonlinear iterations in pre-refinement = 0
+
+# To update the elastic stresses,
+# we do 1 operator splitting step.
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 # Solver settings
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance             = 1e-9
   end
+end
+
+subsection Discretization
+  # DG for viscoelastic stresses
+  set Use discontinuous composition discretization = true
 end
 
 subsection Geometry model
@@ -80,8 +97,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress, stress, stress, stress, stress, stress
 end
 
 # Composition boundary conditions
@@ -95,7 +113,7 @@ subsection Initial composition model
   set Model name = function
 
   subsection Function
-    set Function expression = 0.0;0.0;0.0
+    set Function expression = 0.0;0.0;0.0;0.0;0.0;0.0
   end
 end
 
