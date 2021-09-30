@@ -6,6 +6,8 @@
 # the stress is then simply this tensor times -2*eta plus the pressure and we set
 # eta=42 below. compared to the visualization_shear_stress test, the test
 # also includes a nonzero gravity so that we get a nonconstant pressure
+#
+# the second invariant of the deviatoric stress will be 42.
 
 set Dimension = 2
 set CFL number                             = 1.0
@@ -104,6 +106,6 @@ subsection Postprocess
     set Interpolate output = false
     set Point-wise stress and strain = true
     set Output format = gnuplot
-    set List of output variables = stress
+    set List of output variables = stress, stress second invariant
   end
 end
