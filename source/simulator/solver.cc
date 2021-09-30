@@ -673,10 +673,47 @@ namespace aspect
 
     // Compute the residual before we solve and return this at the end.
     // This is used in the nonlinear solver.
-    const double initial_residual = system_matrix.block(block_idx,block_idx).residual
-                                    (temp,
-                                     distributed_solution.block(block_idx),
-                                     system_rhs.block(block_idx));
+    double initial_residual = system_matrix.block(block_idx,block_idx).residual
+                              (temp,
+                               distributed_solution.block(block_idx),
+                               system_rhs.block(block_idx));
+
+    // If a limiter is used for a Discontinuous Galerkin field,
+    // use the unlimited solution to compute the residual.
+    // Only do this after the first nonlinear iteration,
+    // because unlike the current_linearization_point,
+    // the unlimited solution is not extrapolated from the two
+    // previous timesteps. After solving once within a timestep,
+    // we have an unlimited solution we can use.
+    if (((advection_field.is_temperature()
+          && parameters.use_discontinuous_temperature_discretization
+          && parameters.use_limiter_for_discontinuous_temperature_solution)
+         ||
+         (!advection_field.is_temperature()
+          && parameters.use_discontinuous_composition_discretization
+          && parameters.use_limiter_for_discontinuous_composition_solution))
+        && nonlinear_iteration > 0)
+      {
+        LinearAlgebra::BlockVector distributed_unlimited_solution (
+          introspection.index_sets.system_partitioning,
+          mpi_communicator);
+
+        distributed_unlimited_solution.block(block_idx) = unlimited_solution.block (block_idx);
+
+        // Temporary vector to hold the residual, we don't need a BlockVector here.
+        LinearAlgebra::Vector temp2 (
+          introspection.index_sets.system_partitioning[block_idx],
+          mpi_communicator);
+
+        current_constraints.set_zero(distributed_unlimited_solution);
+
+        const double unlimited_initial_residual = system_matrix.block(block_idx,block_idx).residual
+                                                  (temp2,
+                                                   distributed_unlimited_solution.block(block_idx),
+                                                   system_rhs.block(block_idx));
+
+        initial_residual = unlimited_initial_residual;
+      }
 
     // solve the linear system:
     try

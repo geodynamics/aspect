@@ -20,8 +20,8 @@
 
 
 #include <aspect/postprocess/visualization/surface_stress.h>
-
-
+#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/viscoelastic.h>
 
 namespace aspect
 {
@@ -58,8 +58,10 @@ namespace aspect
         MaterialModel::MaterialModelOutputs<dim> out(n_quadrature_points,
                                                      this->n_compositional_fields());
 
+        this->get_material_model().create_additional_named_outputs(out);
+
         // We do not need to compute anything but the viscosity
-        in.requested_properties = MaterialModel::MaterialProperties::viscosity;
+        in.requested_properties = MaterialModel::MaterialProperties::viscosity | MaterialModel::MaterialProperties::additional_outputs;
 
         // Compute the viscosity...
         this->get_material_model().evaluate(in, out);
@@ -84,16 +86,53 @@ namespace aspect
             // Add elastic stresses if existent
             if (this->get_parameters().enable_elasticity == true)
               {
-                stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
-                stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
-                stress[0][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+                SymmetricTensor<2, dim> stress_0, stress_old;
+
+                stress_0[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
+                stress_0[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
+                stress_0[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy")];
+
+                stress_old[0][0] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx_old")];
+                stress_old[1][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy_old")];
+                stress_old[0][1] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xy_old")];
 
                 if (dim == 3)
                   {
-                    stress[2][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
-                    stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
-                    stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+                    stress_0[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz")];
+                    stress_0[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
+                    stress_0[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
+
+                    stress_old[2][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_zz_old")];
+                    stress_old[0][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz_old")];
+                    stress_old[1][2] = in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz_old")];
                   }
+
+                const MaterialModel::ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<MaterialModel::ElasticAdditionalOutputs<dim>>();
+
+                const double shear_modulus = elastic_out->elastic_shear_moduli[q];
+
+                // Retrieve the timestep ratio dtc/dte and the elastic viscosity,
+                // only two material models support elasticity.
+                double timestep_ratio = 0.;
+                double elastic_viscosity = 0.;
+                if (Plugins::plugin_type_matches<MaterialModel::ViscoPlastic<dim>>(this->get_material_model()))
+                  {
+                    const MaterialModel::ViscoPlastic<dim> &vp = Plugins::get_plugin_as_type<const MaterialModel::ViscoPlastic<dim>>(this->get_material_model());
+                    elastic_viscosity = vp.get_elastic_viscosity(shear_modulus);
+                    timestep_ratio = vp.get_timestep_ratio();
+                  }
+                else if (Plugins::plugin_type_matches<MaterialModel::Viscoelastic<dim>>(this->get_material_model()))
+                  {
+                    const MaterialModel::Viscoelastic<dim> &ve = Plugins::get_plugin_as_type<const MaterialModel::Viscoelastic<dim>>(this->get_material_model());
+                    elastic_viscosity = ve.get_elastic_viscosity(shear_modulus);
+                    timestep_ratio = ve.get_timestep_ratio();
+                  }
+                else
+                  AssertThrow(false, ExcMessage("The stress component statistics postprocessor cannot be used with elasticity for material models other than ViscoPlastic and Viscoelastic."));
+
+                // The total stress of timestep t.
+                // Both eta and the elastic viscosity have been scaled with the timestep ratio.
+                stress = in.pressure[q] * unit_symmetric_tensor<dim>() - (2. * eta * deviatoric_strain_rate + eta / elastic_viscosity * stress_0 + (1. - timestep_ratio) * (1. - eta / elastic_viscosity) * stress_old);
               }
 
             for (unsigned int d=0; d<dim; ++d)

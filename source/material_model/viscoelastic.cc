@@ -36,13 +36,6 @@ namespace aspect
     {
       EquationOfStateOutputs<dim> eos_outputs (this->introspection().get_number_of_fields_of_type(CompositionalFieldDescription::chemical_composition)+1);
 
-      // Store which components to exclude during volume fraction computation.
-      ComponentMask composition_mask(this->n_compositional_fields(), true);
-      // assign compositional fields associated with viscoelastic stress a value of 0
-      // assume these fields are listed first
-      for (unsigned int i=0; i < SymmetricTensor<2,dim>::n_independent_components; ++i)
-        composition_mask.set(i,false);
-
       std::vector<double> average_elastic_shear_moduli (in.n_evaluation_points());
       std::vector<double> elastic_shear_moduli(elastic_rheology.get_elastic_shear_moduli());
 
@@ -73,25 +66,68 @@ namespace aspect
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
-          // Average viscosity and shear modulus
+          // Average the viscous viscosity and the shear modulus over the compositions
           const double average_viscosity = MaterialUtilities::average_value(volume_fractions, viscosities, viscosity_averaging);
           average_elastic_shear_moduli[i] = MaterialUtilities::average_value(volume_fractions, elastic_shear_moduli, viscosity_averaging);
 
-          // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.)
+          // Average viscoelastic (e.g., effective) viscosity (equation 28 in Moresi et al., 2003, J. Comp. Phys.).
+          // This viscosity is scaled with the timestep ratio $\frac{\Delta t_c}{\Delta t_{el}}$ in the
+          // calculate_viscoelastic_viscosity function.
           out.viscosities[i] = elastic_rheology.calculate_viscoelastic_viscosity(average_viscosity,
                                                                                  average_elastic_shear_moduli[i]);
 
           // Fill the material properties that are part of the elastic additional outputs
-          if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
+          if (ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
             {
-              elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+              elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
             }
         }
 
+      // Fill the body force term, viscoelastic strain rate and viscous dissipation.
       elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
+      // Fill the reaction terms to apply the rotation of the stresses into the current timestep.
       elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
-
+      // Fill the reaction_rates that during operator splitting apply the stress update of the previous
+      // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0adv}$)
+      // to obtain $\tau^{t}$.
+      if (this->get_parameters().use_operator_splitting ||
+          ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
+        elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
     }
+
+
+
+    template <int dim>
+    double
+    Viscoelastic<dim>::
+    get_elastic_viscosity(const double shear_modulus) const
+    {
+      // This viscosity has already been scaled with the timestep ratio
+      // $\frac{\Delta t_c}{\Delta t_{el}}$.
+      return elastic_rheology.calculate_elastic_viscosity(shear_modulus);
+    }
+
+
+
+    template <int dim>
+    double
+    Viscoelastic<dim>::
+    get_elastic_timestep() const
+    {
+      return elastic_rheology.elastic_timestep();
+    }
+
+
+
+    template <int dim>
+    double
+    Viscoelastic<dim>::
+    get_timestep_ratio() const
+    {
+      return elastic_rheology.calculate_timestep_ratio();
+    }
+
+
 
     template <int dim>
     bool
@@ -100,6 +136,8 @@ namespace aspect
     {
       return equation_of_state.is_compressible();
     }
+
+
 
     template <int dim>
     void
@@ -214,10 +252,13 @@ namespace aspect
                                    "compositional fields representing these components must be named "
                                    "and listed in a very specific format, which is designed to minimize "
                                    "mislabeling stress tensor components as distinct 'compositional "
-                                   "rock types' (or vice versa). For 2d models, the first three "
-                                   "compositional fields must be labeled 'stress\\_xx', 'stress\\_yy' and 'stress\\_xy'. "
-                                   "In 3d, the first six compositional fields must be labeled 'stress\\_xx', "
-                                   "'stress\\_yy', 'stress\\_zz', 'stress\\_xy', 'stress\\_xz', 'stress\\_yz'. "
+                                   "rock types' (or vice versa). For 2d models, the first six "
+                                   "compositional fields must be labeled 'stress\\_xx', 'stress\\_yy' and 'stress\\_xy', "
+                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old' and 'stress\\_xy\\_old', "
+                                   "In 3d, the first twelve compositional fields must be labeled 'stress\\_xx', "
+                                   "'stress\\_yy', 'stress\\_zz', 'stress\\_xy', 'stress\\_xz', 'stress\\_yz', "
+                                   "'stress\\_xx\\_old', 'stress\\_yy\\_old', 'stress\\_zz\\_old', "
+                                   "'stress\\_xy\\_old', 'stress\\_xz\\_old', 'stress\\_yz\\_old'. "
                                    "\n\n "
                                    "Expanding the model to include non-linear viscous flow (e.g., "
                                    "diffusion/dislocation creep) and plasticity would produce a "
@@ -263,8 +304,8 @@ namespace aspect
                                    "W^{t}\\tau^{t} + \\tau^{t}W^{t}$. "
                                    "In this material model, the size of the time step above ($\\Delta t^{e}$) "
                                    "can be specified as the numerical time step size or an independent fixed time "
-                                   "step. If the latter case is selected, the user has an option to apply a "
-                                   "stress averaging scheme to account for the differences between the numerical "
+                                   "step. If the latter case is selected, a linear interpolation will be applied"
+                                   "to account for the differences between the numerical "
                                    "and fixed elastic time step (eqn. 32). If one selects to use a fixed elastic time "
                                    "step throughout the model run, this can still be achieved by using CFL and "
                                    "maximum time step values that restrict the numerical time step to a specific time."

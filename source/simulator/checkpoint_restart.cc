@@ -278,7 +278,7 @@ namespace aspect
     // save Triangulation and Solution vectors:
     {
       std::vector<const LinearAlgebra::BlockVector *> x_system
-        = { &solution, &old_solution, &old_old_solution };
+        = { &solution, &old_solution, &old_old_solution, &unlimited_solution };
 
       // If we are using a deforming mesh, include the mesh velocity, which uses the system dof handler
       if (parameters.mesh_deformation_enabled)
@@ -540,10 +540,11 @@ namespace aspect
     LinearAlgebra::BlockVector distributed_system (system_rhs);
     LinearAlgebra::BlockVector old_distributed_system (system_rhs);
     LinearAlgebra::BlockVector old_old_distributed_system (system_rhs);
+    LinearAlgebra::BlockVector unlimited_distributed_system (system_rhs);
     LinearAlgebra::BlockVector distributed_mesh_velocity (system_rhs);
 
     std::vector<LinearAlgebra::BlockVector *> x_system
-      = { &distributed_system, &old_distributed_system, &old_old_distributed_system };
+      = { &distributed_system, &old_distributed_system, &old_old_distributed_system, &unlimited_distributed_system };
 
     // If necessary, also include the mesh velocity for deserialization
     // with the system dof handler
@@ -558,6 +559,7 @@ namespace aspect
     solution = distributed_system;
     old_solution = old_distributed_system;
     old_old_solution = old_old_distributed_system;
+    unlimited_solution = unlimited_distributed_system;
 
     if (parameters.mesh_deformation_enabled)
       {

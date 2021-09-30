@@ -7,12 +7,23 @@ set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 2
 set Use years in output instead of seconds = true
-set Nonlinear solver scheme                = single Advection, single Stokes
+set Nonlinear solver scheme                = iterated Advection and Stokes
 set CFL number                             = 0.001
 set Maximum time step                      = 1
 set Output directory                       = output_free_surface_VE_cylinder_2D_loading-repeat
 set Timing output frequency                = 10
 set Pressure normalization                 = no
+
+# One operator splitting step to update the stresses
+set Use operator splitting                 = true
+
+subsection Solver parameters
+  # Make sure to do only 1 splitting step
+  subsection Operator splitting parameters
+    set Reaction time step                     = 5000 # larger than maximum Stokes time step
+    set Reaction time steps per advection step = 1
+  end
+end
 
 subsection Time stepping
   set List of model names = convection time step, repeat on cutback
@@ -50,6 +61,8 @@ subsection Discretization
   set Composition polynomial degree     = 2
   set Stokes velocity polynomial degree = 2
   set Temperature polynomial degree     = 1
+  # DG for viscoelastic stresses
+  set Use discontinuous composition discretization = true
 end
 
 # Formulation classification
@@ -91,8 +104,9 @@ end
 
 # Number and name of compositional fields
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy
+  set Number of fields = 6
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, ve_stress_xx_old, ve_stress_yy_old, ve_stress_xy_old
+  set Types of fields  = stress,       stress,       stress,       stress,           stress,           stress
 end
 
 # Spatial domain of different compositional fields
@@ -102,7 +116,7 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  =
-    set Function expression = 0; 0; 0;
+    set Function expression = 0; 0; 0; 0; 0; 0;
   end
 end
 
@@ -136,7 +150,7 @@ subsection Material model
     set Viscosities                 = 3.e20
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = false
-    set Fixed elastic time step     = 3
+    set Fixed elastic time step     = 1
     set Viscosity averaging scheme  = harmonic
   end
 end

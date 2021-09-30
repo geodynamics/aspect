@@ -270,7 +270,7 @@ namespace aspect
                 }
             }
 
-          // Now compute changes in the compositional fields (i.e. the accumulated strain).
+          // Now compute changes in the compositional fields (e.g., the accumulated strain).
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
 
@@ -292,9 +292,10 @@ namespace aspect
                                                                                  rheology->viscosity_averaging);
 
               // Fill the material properties that are part of the elastic additional outputs
-              if (ElasticAdditionalOutputs<dim> *elastic_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
+              if (ElasticAdditionalOutputs<dim> *elastic_additional_out = out.template get_additional_output<ElasticAdditionalOutputs<dim>>())
                 {
-                  elastic_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+                  elastic_additional_out->elastic_shear_moduli[i] = average_elastic_shear_moduli[i];
+
                 }
             }
         }
@@ -304,8 +305,71 @@ namespace aspect
 
       if (this->get_parameters().enable_elasticity)
         {
+          // Fill the elastic outputs with the body force term for the RHS, the viscoelastic strain rate
+          // and the viscous dissipation.
           rheology->elastic_rheology.fill_elastic_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the reaction terms that account for the rotation of the stresses.
           rheology->elastic_rheology.fill_reaction_outputs(in, average_elastic_shear_moduli, out);
+          // Fill the reaction_rates that apply the stress update of the previous
+          // timestep to the advected and rotated stress computed in the previous timestep ($\tau^{0}$)
+          // to obtain $\tau^{t}$.
+          // Only fill them if operator splitting is used for fields or when the particles track
+          // the visco-elastic stresses.
+          if (this->get_parameters().use_operator_splitting ||
+              ((this->get_parameters().mapped_particle_properties).count(this->introspection().compositional_index_for_name("ve_stress_xx"))))
+            rheology->elastic_rheology.fill_reaction_rates(in, average_elastic_shear_moduli, out);
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    ViscoPlastic<dim>::
+    get_elastic_viscosity(const double shear_modulus) const
+    {
+      if (this->get_parameters().enable_elasticity)
+        {
+          // This viscosity has already been scaled with the timestep ratio.
+          return rheology->elastic_rheology.calculate_elastic_viscosity(shear_modulus);
+        }
+      else
+        {
+          AssertThrow(false, ExcMessage("The material model is asked for the elastic viscosity, but elasticity is not enabled."));
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    ViscoPlastic<dim>::
+    get_elastic_timestep() const
+    {
+      if (this->get_parameters().enable_elasticity)
+        {
+          return rheology->elastic_rheology.elastic_timestep();
+        }
+      else
+        {
+          AssertThrow(false, ExcMessage("The material model is asked for the elastic time step, but elasticity is not enabled."));
+        }
+    }
+
+
+
+    template <int dim>
+    double
+    ViscoPlastic<dim>::
+    get_timestep_ratio() const
+    {
+      if (this->get_parameters().enable_elasticity)
+        {
+          return rheology->elastic_rheology.calculate_timestep_ratio();
+        }
+      else
+        {
+          AssertThrow(false, ExcMessage("The material model is asked for the ratio of the computational over the elastic time step, but elasticity is not enabled."));
         }
     }
 

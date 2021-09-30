@@ -51,6 +51,7 @@ namespace aspect
                 ExcInternalError());
         Assert (input_data.solution_values[0].size() == this->introspection().n_components,   ExcInternalError());
         Assert (input_data.solution_gradients[0].size() == this->introspection().n_components,  ExcInternalError());
+        AssertThrow (this->get_parameters().enable_elasticity == false, ExcMessage("The maximum horizontal compressive stress plugin currently does not work with elasticity."));
 
         MaterialModel::MaterialModelInputs<dim> in(input_data,
                                                    this->introspection());
@@ -359,8 +360,10 @@ namespace aspect
                                                   "  \\label{fig:max-horizontal-compressive-stress}"
                                                   "\\end{figure}"
                                                   "\n\n"
-                                                  "Physical units: \\si{\\pascal}."
-                                                 )
+                                                  "Note that this plugin does not take into account elastic stresses "
+                                                  "and therefore cannot be used when elasticity is switched on. "
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

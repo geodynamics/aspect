@@ -20,6 +20,8 @@
 
 
 #include <aspect/heating_model/shear_heating.h>
+#include <aspect/material_model/visco_plastic.h>
+#include <aspect/material_model/viscoelastic.h>
 
 
 namespace aspect
@@ -71,6 +73,17 @@ namespace aspect
             }
 
           heating_model_outputs.heating_source_terms[q] = stress * deviatoric_strain_rate;
+
+          // If elasticity is used, the stress should include the elastic stresses
+          // and only the visco-plastic (non-elastic) strain rate should contribute.
+          // Directly ask the material model for the dissipation.
+          if (this->get_parameters().enable_elasticity == true)
+            {
+              const MaterialModel::ElasticOutputs<dim> *elastic_out = material_model_outputs.template get_additional_output<MaterialModel::ElasticOutputs<dim>>();
+              AssertThrow(elastic_out != nullptr, ExcMessage("ElasticOutputs are requested, but have not been computed."));
+
+              heating_model_outputs.heating_source_terms[q] =  elastic_out->viscous_dissipation[q];
+            }
 
           // If shear heating work fractions are provided, reduce the
           // overall heating by this amount (which is assumed to be converted into other forms of energy)
