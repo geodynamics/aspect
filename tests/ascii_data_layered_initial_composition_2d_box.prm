@@ -1,6 +1,6 @@
 # This test is to check that the layered ascii data initial composition
 # plugin works in a 2D box with composition defined as piecewise constant
-# between layers. 
+# between layers.
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
