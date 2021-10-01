@@ -816,10 +816,6 @@ namespace aspect
                       solver_control_cheap.last_step():
                       0) << '+' << std::flush;
 
-            // if no expensive steps allowed, we have failed, rethrow exception
-            if (parameters.n_expensive_stokes_solver_steps == 0)
-              throw exc;
-
             // use the value defined by the user
             // OR
             // at least a restart length of 100 for melt models
@@ -834,15 +830,20 @@ namespace aspect
 
             try
               {
+                // if no expensive steps allowed, we have failed, rethrow exception
+                if (parameters.n_expensive_stokes_solver_steps == 0)
+                  {
+                    pcout << "0 iterations." << std::endl;
+                    throw exc;
+                  }
+
                 solver.solve(stokes_block,
                              distributed_stokes_solution,
                              distributed_stokes_rhs,
                              preconditioner_expensive);
 
                 // Success. Print expensive iterations to screen.
-                pcout << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
-                          solver_control_expensive.last_step():
-                          0)
+                pcout << solver_control_expensive.last_step()
                       << " iterations." << std::endl;
 
                 final_linear_residual = solver_control_expensive.last_value();
