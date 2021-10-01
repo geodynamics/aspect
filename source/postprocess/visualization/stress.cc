@@ -67,22 +67,13 @@ namespace aspect
         // ...and use it to compute the stresses
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
-            const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
-            const SymmetricTensor<2,dim> deviatoric_strain_rate
-              = (this->get_material_model().is_compressible()
-                 ?
-                 strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
-                 :
-                 strain_rate);
-
-            const double eta = out.viscosities[q];
-
             // Compressive stress is positive in geoscience applications
-            SymmetricTensor<2,dim> stress = -2.*eta*deviatoric_strain_rate +
-                                            in.pressure[q] * unit_symmetric_tensor<dim>();
+            SymmetricTensor<2,dim> stress = in.pressure[q] * unit_symmetric_tensor<dim>();
 
-            // Add elastic stresses if existent
-            if (this->get_parameters().enable_elasticity == true)
+            // If elasticity is enabled, the deviatoric stress is stored
+            // in compositional fields, otherwise the deviatoric stress
+            // can be obtained from the viscosity and strain rate.
+            if (this->get_parameters().enable_elasticity)
               {
                 stress[0][0] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xx")];
                 stress[1][1] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yy")];
@@ -94,6 +85,19 @@ namespace aspect
                     stress[0][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_xz")];
                     stress[1][2] += in.composition[q][this->introspection().compositional_index_for_name("ve_stress_yz")];
                   }
+              }
+            else
+              {
+                const SymmetricTensor<2,dim> strain_rate = in.strain_rate[q];
+                const SymmetricTensor<2,dim> deviatoric_strain_rate
+                  = (this->get_material_model().is_compressible()
+                     ?
+                     strain_rate - 1./3 * trace(strain_rate) * unit_symmetric_tensor<dim>()
+                     :
+                     strain_rate);
+
+                const double eta = out.viscosities[q];
+                stress += -2.*eta*deviatoric_strain_rate;
               }
 
             for (unsigned int d=0; d<dim; ++d)
