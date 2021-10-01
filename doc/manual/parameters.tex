@@ -8465,7 +8465,7 @@ The ratio of diffusion to dislocation strain rate is found by Newton's method, i
 
 `drucker prager': A material model that has constant values for all coefficients but the density and viscosity. The defaults for all coefficients are chosen to be similar to what is believed to be correct for Earth's mantle. All of the values that define this model are read from a section ``Material model/Drucker Prager'' in the input file, see Section~\ref{parameters:Material_20model/Drucker_20Prager}. Note that the model does not take into account any dependencies of material properties on compositional fields. 
 
-The viscosity is computed according to the Drucker Prager frictional plasticity criterion (non-associative) based on a user-defined internal friction angle $\phi$ and cohesion $C$. In 3D:  $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt(3) (3+\sin(\phi))} + \frac{2 P \sin(\phi)}{\sqrt(3) (3+\sin(\phi))}$, where $P$ is the pressure. See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), G\'{e}otechnique 25, No. 4, 671-689. With this formulation we circumscribe instead of inscribe the Mohr Coulomb yield surface. In 2D the Drucker Prager yield surface is the same as the Mohr Coulomb surface:  $\sigma_y = P \sin(\phi) + C \cos(\phi)$. Note that in 2D for $\phi=0$, these criteria revert to the von Mises criterion (no pressure dependence). See for example Thieulot, C. (2011), PEPI 188, 47-68. 
+The viscosity is computed according to the Drucker Prager frictional plasticity criterion (non-associative) based on a user-defined internal friction angle $\phi$ and cohesion $C$. In 3D:  $\sigma_y = \frac{6 C \cos(\phi)}{\sqrt{3} (3+\sin(\phi))} + \frac{6 P \sin(\phi)}{\sqrt{3} (3+\sin(\phi))}$, where $P$ is the pressure. See for example Zienkiewicz, O. C., Humpheson, C. and Lewis, R. W. (1975), G\'{e}otechnique 25, No. 4, 671-689. With this formulation we circumscribe instead of inscribe the Mohr Coulomb yield surface. In 2D the Drucker Prager yield surface is the same as the Mohr Coulomb surface:  $\sigma_y = P \sin(\phi) + C \cos(\phi)$. Note that in 2D for $\phi=0$, these criteria revert to the von Mises criterion (no pressure dependence). See for example Thieulot, C. (2011), PEPI 188, 47-68. 
 
 Note that we enforce the pressure to be positive to prevent negative yield strengths and viscosities. 
 
@@ -15614,7 +15614,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.
 
 
-{\it Description:} A stabilization factor for the elastic stresses that influence how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
+{\it Description:} A stabilization factor for the elastic stresses that influences how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
 
 
 {\it Possible values:} A floating point number $v$ such that $1 \leq v \leq \text{MAX\_DOUBLE}$
@@ -16128,7 +16128,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 {\it Default:} 1.
 
 
-{\it Description:} A stabilization factor for the elastic stresses that influence how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
+{\it Description:} A stabilization factor for the elastic stresses that influences how fast elastic stresses adjust to deformation. 1.0 is equivalent to no stabilization and may lead to oscillatory motion. Setting the factor to 2 avoids oscillations, but still enables an immediate elastic response. However, in complex models this can lead to problems of convergence, in which case the factor needs to be increased slightly. Setting the factor to infinity is equivalent to not applying elastic stresses at all. The factor is multiplied with the computational time step to create a time scale. 
 
 
 {\it Possible values:} A floating point number $v$ such that $1 \leq v \leq \text{MAX\_DOUBLE}$
@@ -17556,7 +17556,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 {\it Default:} 1.
 
 
-{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
+{\it Description:} Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/year set this factor to 0.01.
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
@@ -19642,7 +19642,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} Whether or not to write topography to a text file named named 'topography.NNNNN' in the output directory
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A boolean value (true or false)]
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Time between text output}
 \phantomsection\label{parameters:Postprocess/Topography/Time between text output}
 \label{parameters:Postprocess/Topography/Time_20between_20text_20output}
@@ -19753,7 +19753,7 @@ Alternatively, consider using the "surface dynamic topography" visualization pos
 
 `geoid': Visualization for the geoid solution. The geoid is given by the equivalent water column height due to a gravity perturbation. Units: \si{\meter}.
 
-`grain lag angle': A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (2002, Gcubed) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the 'left stretch' tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
+`grain lag angle': A visualization output object that generates output showing the angle between the ~infinite strain axis and the flow velocity. Kaminski and Ribe (see \cite{Kaminski2002}) call this quantity $\Theta$ and define it as $\Theta = \cos^{-1}(\hat{u}\cdot\hat{e})$  where $\hat{u}=\vec{u}/|{u}|$, $\vec{u}$ is the local flow velocity, and $\hat{e}$ is the local infinite strain axis, which we calculate as the first eigenvector of the 'left stretch' tensor. $\Theta$ can be used to calculate the grain orientation lag parameter.
 
 `gravity': A visualization output object that outputs the gravity vector.
 
