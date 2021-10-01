@@ -526,7 +526,7 @@ namespace aspect
           NS_subdiv = prm.get_integer("North-South subdivisions");
           depth_subdiv = prm.get_integer("Depth subdivisions");
 
-          // Check whether the corners of the rectangle are really place correctly
+          // Check whether the corners of the rectangle are really placed correctly
           if (present[0] == true && present[1] == true)
             {
               AssertThrow (corners[0][0] >= corners[1][0],
