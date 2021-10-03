@@ -201,7 +201,8 @@ namespace aspect
     component_masks (*this),
     system_dofs_per_block (n_blocks),
     compositional_field_methods(parameters.compositional_field_methods),
-    composition_names(parameters.names_of_compositional_fields)
+    composition_names(parameters.names_of_compositional_fields),
+    composition_descriptions(parameters.composition_descriptions)
   {}
 
 
@@ -300,6 +301,18 @@ namespace aspect
     return composition_names;
   }
 
+
+
+  template <int dim>
+  const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+  Introspection<dim>::get_composition_descriptions () const
+  {
+    // Return the full vector of CompositionalFieldDescription objects
+    return composition_descriptions;
+  }
+
+
+
   template <int dim>
   bool
   Introspection<dim>::compositional_name_exists (const std::string &name) const
@@ -309,6 +322,38 @@ namespace aspect
             true
             :
             false);
+  }
+
+
+
+  template <int dim>
+  const std::vector<unsigned int>
+  Introspection<dim>::get_indices_for_fields_of_type (const std::string &type_name) const
+  {
+    std::vector<unsigned int> indices;
+    typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (composition_descriptions[i].type == type)
+        indices.push_back(i);
+
+    return indices;
+  }
+
+
+
+  template <int dim>
+  const std::vector<std::string>
+  Introspection<dim>::get_names_for_fields_of_type (const std::string &type_name) const
+  {
+    std::vector<std::string> names;
+    typename Parameters<dim>::CompositionalFieldDescription::Kind type = Parameters<dim>::CompositionalFieldDescription::parse_type(type_name);
+
+    for (unsigned int i=0; i<n_compositional_fields; ++i)
+      if (composition_descriptions[i].type == type)
+        names.push_back(composition_names[i]);
+
+    return names;
   }
 
 

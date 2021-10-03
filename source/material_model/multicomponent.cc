@@ -140,15 +140,15 @@ namespace aspect
           const bool has_background_field = true;
 
           // Retrieve the list of composition names
-          const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+          const std::vector<std::string> chemical_composition_field_names = this->introspection().get_names_for_fields_of_type("chemical_composition");
 
           viscosities = Utilities::parse_map_to_double_array (prm.get("Viscosities"),
-                                                              list_of_composition_names,
+                                                              chemical_composition_field_names,
                                                               has_background_field,
                                                               "Viscosities");
 
           thermal_conductivities = Utilities::parse_map_to_double_array (prm.get("Thermal conductivities"),
-                                                                         list_of_composition_names,
+                                                                         chemical_composition_field_names,
                                                                          has_background_field,
                                                                          "Thermal conductivities");
         }

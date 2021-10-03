@@ -354,6 +354,13 @@ namespace aspect
       get_composition_names () const;
 
       /**
+       * A function that returns the full vector of compositional
+       * field descriptions.
+       */
+      const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+      get_composition_descriptions () const;
+
+      /**
        * A function that gets the name of a compositional field as an input
        * parameter and returns if the compositional field is used in this
        * simulation.
@@ -363,6 +370,20 @@ namespace aspect
        */
       bool
       compositional_name_exists (const std::string &name) const;
+
+      /**
+       * Get the indices of the compositional fields which are of a
+       * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<unsigned int>
+      get_indices_for_fields_of_type (const std::string &type_name) const;
+
+      /**
+      * Get the names of the compositional fields which are of a
+      * particular type (chemical composition, porosity, etc.).
+       */
+      const std::vector<std::string>
+      get_names_for_fields_of_type (const std::string &type_name) const;
 
       /**
        * A function that gets a component index as an input
@@ -380,6 +401,13 @@ namespace aspect
        * be used in the simulation.
        */
       std::vector<std::string> composition_names;
+
+      /**
+       * A vector that stores descriptions of each compositional field,
+       * including its type (i.e. whether the compositional field corresponds
+       * to chemical composition, porosity etc.).
+       */
+      std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions;
 
   };
 }
