@@ -4,13 +4,31 @@
 # 4: Number of mesh cells
 # 5: Number of Stokes degrees of freedom
 # 6: Number of temperature degrees of freedom
-# 7: Iterations for temperature solver
-# 8: Iterations for Stokes solver
-# 9: Velocity iterations in Stokes preconditioner
-# 10: Schur complement iterations in Stokes preconditioner
-# 11: Visualization file name
-# 12: RMS velocity (m/year)
-# 13: Max. velocity (m/year)
-# 14: Minimum topography (m)
-# 15: Maximum topography (m)
-0 0.000000000000e+00 0.000000000000e+00 36 1497 471 0 13 15 15 output-gmg_mesh_deform/solution/solution-00000 4.73519596e-01 1.44934450e+00 2.00000000e+04 5.50000000e+04 
+# 7: Number of degrees of freedom for all compositions
+# 8: Iterations for temperature solver
+# 9: Iterations for composition solver 1
+# 10: Iterations for composition solver 2
+# 11: Iterations for composition solver 3
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Minimal value for composition ve_stress_xx
+# 16: Maximal value for composition ve_stress_xx
+# 17: Global mass for composition ve_stress_xx
+# 18: Minimal value for composition ve_stress_yy
+# 19: Maximal value for composition ve_stress_yy
+# 20: Global mass for composition ve_stress_yy
+# 21: Minimal value for composition ve_stress_xy
+# 22: Maximal value for composition ve_stress_xy
+# 23: Global mass for composition ve_stress_xy
+# 24: Minimal temperature (K)
+# 25: Average temperature (K)
+# 26: Maximal temperature (K)
+# 27: Average nondimensional temperature (K)
+# 28: Minimum topography (m)
+# 29: Maximum topography (m)
+# 30: RMS velocity (m/year)
+# 31: Max. velocity (m/year)
+# 32: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 544 5256 604 6978 0  0  0  0 40 42 42  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00  0.00000000e+00 0.00000000e+00 0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02  0.00000000e+00  0.00000000e+00 0.00000000e+00 1.42218003e-01 4.48332498e-01 output-gmg_mesh_deform_ghost_entries/solution/solution-00000 
+1 1.000000000000e+01 1.000000000000e+01 517 5028 578 6675 0 18 18 18 33 35 35 -1.53313360e+05 2.68748187e+05 -2.45294677e+10 -2.68748187e+05 1.53313360e+05 2.45294677e+10 -6.33263297e+04 3.27739165e+05 1.17849460e+16 2.93000000e+02 2.92999991e+02 2.93000000e+02 -2.32966316e-09 -3.99991786e-02 9.99979465e-03 1.42243686e-01 4.48390419e-01                                                           "" 
