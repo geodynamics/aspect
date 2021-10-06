@@ -913,9 +913,23 @@ namespace aspect
           const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
           level_displacements.resize(0, n_levels-1);
-          level_mappings.resize(0, n_levels-1);
+          // Important! Preallocate level vectors with all needed ghost
+          // entries. While interpolate_to_mg can create these vectors
+          // automatically, they will not contain all ghost values that we
+          // need to evaluate the mapping later.
+          for (unsigned int level = 0; level < n_levels; ++level)
+            {
+              IndexSet relevant_mg_dofs;
+              DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
+                                                            level,
+                                                            relevant_mg_dofs);
+              level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
+                                                relevant_mg_dofs,
+                                                sim.mpi_communicator);
+            }
 
           // create the mappings on each level:
+          level_mappings.resize(0, n_levels-1);
           level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
           {
             object = std::make_unique<MappingQEulerian<dim,
