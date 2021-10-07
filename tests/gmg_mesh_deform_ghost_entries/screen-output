@@ -1,0 +1,65 @@
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 400 (on 2 levels)
+Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
+
+Number of mesh deformation degrees of freedom: 882
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving Stokes system... 30+0 iterations.
+
+Number of active cells: 544 (on 3 levels)
+Number of degrees of freedom: 12,838 (4,652+604+604+2,326+2,326+2,326)
+
+Number of mesh deformation degrees of freedom: 1208
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving Stokes system... 41+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        0 m, 0 m
+     RMS, max velocity:         0.142 m/year, 0.448 m/year
+     Writing graphical output:  output-gmg_mesh_deform_ghost_entries/solution/solution-00000
+
+Number of active cells: 517 (on 3 levels)
+Number of degrees of freedom: 12,281 (4,450+578+578+2,225+2,225+2,225)
+
+Number of mesh deformation degrees of freedom: 1156
+
+
+
+*** Timestep 1:  t=10 years, dt=10 years
+   Solving mesh velocity system... 1 iterations.
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 18 iterations.
+   Solving ve_stress_yy system ... 18 iterations.
+   Solving ve_stress_xy system ... 18 iterations.
+   Solving Stokes system... 34+0 iterations.
+
+   Postprocessing:
+     Compositions min/max/mass: -1.533e+05/2.687e+05/-2.453e+10 // -2.687e+05/1.533e+05/2.453e+10 // -6.333e+04/3.277e+05/1.178e+16
+     Temperature min/avg/max:   293 K, 293 K, 293 K
+     Topography min/max:        -0.04 m, 0.01 m
+     RMS, max velocity:         0.142 m/year, 0.448 m/year
+
+Number of active cells: 505 (on 3 levels)
+Number of degrees of freedom: 12,017 (4,354+566+566+2,177+2,177+2,177)
+
+Number of mesh deformation degrees of freedom: 1132
+
+
+
+Termination requested by criterion: end time
+
+
+
