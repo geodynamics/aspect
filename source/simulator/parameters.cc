@@ -1172,11 +1172,24 @@ namespace aspect
       prm.declare_entry ("Names of fields", "",
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
+      prm.declare_entry ("Types of fields", "unspecified",
+                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|generic|unspecified")),
+                         "A type for each of the compositional fields requested. "
+                         "Each entry of the list must be "
+                         "one of several recognized types: chemical composition, "
+                         "stress, grain size, porosity, general and unspecified. "
+                         "The generic type is intended to be a placeholder type "
+                         "that has no effect on the running of any material model, "
+                         "while the unspecified type is intended to tell ASPECT "
+                         "that the user has not explicitly indicated the type of "
+                         "field (facilitating parameter file checking). "
+                         "If a plugin such as a material model uses these types, "
+                         "the choice of type will affect how that module functions.");
       prm.declare_entry ("Compositional field methods", "",
                          Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
-                         "one of the currently implemented field types."
+                         "one of the currently implemented field methods."
                          "\n\n"
                          "These choices correspond to the following methods by which "
                          "compositional fields gain their values:"
@@ -1790,6 +1803,33 @@ namespace aspect
 
       AssertThrow (normalized_fields.size() <= n_compositional_fields,
                    ExcMessage("Invalid input parameter file: Too many entries in List of normalized fields"));
+
+      // Process the compositional field types
+      // There are three valid cases:
+      // 1) The user doesn't specify types of fields. This choice should
+      // result in the default type being used for all fields.
+      // The default type is "unspecified".
+      // 2) The user specifies just one type of field. In this case, ASPECT
+      // should automatically assume that all fields have the same type.
+      // 3) The user specifies types for every compositional field.
+      std::vector<std::string> x_compositional_field_types
+        = Utilities::split_string_list
+          (prm.get ("Types of fields"));
+
+      AssertThrow ((x_compositional_field_types.size() == 1) ||
+                   (x_compositional_field_types.size() == n_compositional_fields),
+                   ExcMessage ("The length of the list of names for the field types of compositional "
+                               "fields needs to either have one entry or have a length equal to "
+                               "the number of compositional fields."));
+
+      // If only one method is specified apply this to all fields
+      if (x_compositional_field_types.size() == 1)
+        x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
+
+      composition_descriptions.resize(n_compositional_fields);
+
+      for (unsigned int i=0; i<n_compositional_fields; ++i)
+        composition_descriptions[i].type = CompositionalFieldDescription::parse_type(x_compositional_field_types[i]);
 
       std::vector<std::string> x_compositional_field_methods
         = Utilities::split_string_list

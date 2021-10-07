@@ -201,7 +201,8 @@ namespace aspect
     component_masks (*this),
     system_dofs_per_block (n_blocks),
     compositional_field_methods(parameters.compositional_field_methods),
-    composition_names(parameters.names_of_compositional_fields)
+    composition_names(parameters.names_of_compositional_fields),
+    composition_descriptions(parameters.composition_descriptions)
   {}
 
 
@@ -299,6 +300,17 @@ namespace aspect
     // Simply return the full list of composition names
     return composition_names;
   }
+
+
+
+  template <int dim>
+  const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
+  Introspection<dim>::get_composition_descriptions () const
+  {
+    return composition_descriptions;
+  }
+
+
 
   template <int dim>
   bool
