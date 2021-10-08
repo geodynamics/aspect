@@ -114,31 +114,21 @@ namespace aspect
               }
             ++iteration;
           }
-        // If the maximum iterations are reached, retry generating particles
-        // within the reference cell
-        if (iteration == maximum_iterations)
-          {
-            iteration = 0;
 
-            // Generate a random point in the reference cell
-            for (unsigned int d=0; d<dim; ++d)
-              particle_position[d] = uniform_distribution_01(random_number_generator);
+        // If the above algorithm has not worked (e.g. because of badly
+        // deformed cells), retry generating particles
+        // randomly within the reference cell. This is not generating a
+        // uniform distribution in real space, but will always succeed.
+        for (unsigned int d=0; d<dim; ++d)
+          particle_position[d] = uniform_distribution_01(random_number_generator);
 
-            const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell,particle_position);
+        const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell,particle_position);
 
-            // Add the generated particle to the set
-            const Particle<dim> new_particle(p_real, particle_position, id);
-            const Particles::internal::LevelInd cellid(cell->level(), cell->index());
-            return std::make_pair(cellid,new_particle);
-          }
+        // Add the generated particle to the set
+        const Particle<dim> new_particle(p_real, particle_position, id);
+        const Particles::internal::LevelInd cellid(cell->level(), cell->index());
 
-        AssertThrow (iteration < maximum_iterations,
-                     ExcMessage ("Couldn't generate particle (unusual cell shape?). "
-                                 "The ratio between the bounding box volume in which the particle is "
-                                 "generated and the actual cell volume is approximately: " +
-                                 Utilities::to_string(cell_bounding_box.volume() / cell->measure())));
-
-        return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
+        return std::make_pair(cellid,new_particle);
       }
 
 
