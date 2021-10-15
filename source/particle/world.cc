@@ -980,7 +980,11 @@ namespace aspect
           FEPointEvaluation<dim, dim> velocity;
           FEPointEvaluation<1, dim> pressure;
           FEPointEvaluation<1, dim> temperature;
+
+          // If instantiated evaluate multiple compositions at once, if
+          // not fall back to evaluating them individually.
           FEPointEvaluation<n_compositional_fields, dim> compositions;
+          std::vector<FEPointEvaluation<1, dim>> dynamic_compositions;
 
           // Pointers to FEPointEvaluation objects for all melt
           // components of ASPECT's finite element solution, which only
@@ -1026,6 +1030,16 @@ namespace aspect
         melt_component_indices(),
         simulator_access(simulator)
       {
+        // Create the evaluators for all compositional fields beyond the ones this class was
+        // instantiated for
+        const unsigned int n_total_compositional_fields = simulator_access.n_compositional_fields();
+        const auto &component_indices = simulator_access.introspection().component_indices.compositional_fields;
+        for (unsigned int composition = n_compositional_fields; composition < n_total_compositional_fields; ++composition)
+          dynamic_compositions.emplace_back(FEPointEvaluation<1, dim>(simulator_access.get_mapping(),
+                                                                      simulator_access.get_fe(),
+                                                                      update_flags,
+                                                                      component_indices[composition]));
+
         // Create the melt evaluators, but only if we use melt transport in the model
         if (simulator_access.include_melt_transport())
           {
@@ -1082,6 +1096,9 @@ namespace aspect
         temperature.reinit (cell, positions);
         compositions.reinit (cell, positions);
 
+        for (auto &evaluator_composition: dynamic_compositions)
+          evaluator_composition.reinit (cell, positions);
+
         if (simulator_access.include_melt_transport())
           {
             fluid_velocity->reinit (cell, positions);
@@ -1093,6 +1110,9 @@ namespace aspect
         pressure.evaluate (solution_values, evaluation_flags);
         temperature.evaluate (solution_values, evaluation_flags);
         compositions.evaluate (solution_values, evaluation_flags);
+
+        for (auto &evaluator_composition: dynamic_compositions)
+          evaluator_composition.evaluate (solution_values, evaluation_flags);
 
         if (simulator_access.include_melt_transport())
           {
@@ -1124,6 +1144,10 @@ namespace aspect
         const typename FEPointEvaluation<n_compositional_fields, dim>::value_type composition_values = compositions.get_value(evaluation_point);
         for (unsigned int j=0; j<n_compositional_fields; ++j)
           values_at_point[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
+
+        const unsigned int n_dynamic_compositions = dynamic_compositions.size();
+        for (unsigned int j=0; j<n_dynamic_compositions; ++j)
+          values_at_point[component_indices.compositional_fields[n_compositional_fields+j]] = dynamic_compositions[j].get_value(evaluation_point);
 
         if (simulator_access.include_melt_transport())
           {
@@ -1161,6 +1185,10 @@ namespace aspect
         for (unsigned int j=0; j<n_compositional_fields; ++j)
           gradients_at_point[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_gradients,j);
 
+        const unsigned int n_dynamic_compositions = dynamic_compositions.size();
+        for (unsigned int j=0; j<n_dynamic_compositions; ++j)
+          gradients_at_point[component_indices.compositional_fields[n_compositional_fields+j]] = dynamic_compositions[j].get_gradient(evaluation_point);
+
         if (simulator_access.include_melt_transport())
           {
             const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(evaluation_point);
@@ -1188,53 +1216,79 @@ namespace aspect
       // A function to create a pointer to a SolutionEvaluators object.
       template <int dim>
       std::unique_ptr<internal::SolutionEvaluators<dim>>
-                                                      construct_solution_evaluators ( const SimulatorAccess<dim> &simulator_access,
-                                                                                      const unsigned int n_compositional_fields,
-                                                                                      const UpdateFlags update_flags)
+                                                      construct_solution_evaluators (const SimulatorAccess<dim> &simulator_access,
+                                                                                     const UpdateFlags update_flags)
       {
-        AssertThrow(n_compositional_fields <= 10, ExcInternalError());
-
-        std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
         switch (simulator_access.n_compositional_fields())
           {
             case 0:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,0>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,0>>(simulator_access, update_flags);
               break;
             case 1:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,1>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,1>>(simulator_access, update_flags);
               break;
             case 2:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,2>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,2>>(simulator_access, update_flags);
               break;
             case 3:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,3>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,3>>(simulator_access, update_flags);
               break;
             case 4:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,4>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,4>>(simulator_access, update_flags);
               break;
             case 5:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,5>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,5>>(simulator_access, update_flags);
               break;
             case 6:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,6>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,6>>(simulator_access, update_flags);
               break;
             case 7:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,7>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,7>>(simulator_access, update_flags);
               break;
             case 8:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,8>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,8>>(simulator_access, update_flags);
               break;
             case 9:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,9>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,9>>(simulator_access, update_flags);
               break;
             case 10:
-              evaluators = std::make_unique<internal::SolutionEvaluatorsImplementation<dim,10>>(simulator_access,  update_flags);
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,10>>(simulator_access, update_flags);
               break;
+            case 11:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,11>>(simulator_access, update_flags);
+              break;
+            case 12:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,12>>(simulator_access, update_flags);
+              break;
+            case 13:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,13>>(simulator_access, update_flags);
+              break;
+            case 14:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,14>>(simulator_access, update_flags);
+              break;
+            case 15:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,15>>(simulator_access, update_flags);
+              break;
+            case 16:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,16>>(simulator_access, update_flags);
+              break;
+            case 17:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,17>>(simulator_access, update_flags);
+              break;
+            case 18:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,18>>(simulator_access, update_flags);
+              break;
+            case 19:
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,19>>(simulator_access, update_flags);
+              break;
+            // Return the maximally instantiated object. The class will handle additional compositional fields
+            // by dynamically allocating additional scalar evaluators.
             default:
-              AssertThrow(false, ExcInternalError());
+              return std::make_unique<SolutionEvaluatorsImplementation<dim,20>>(simulator_access, update_flags);
+              break;
           }
 
-        return evaluators;
+        return std::make_unique<internal::SolutionEvaluatorsImplementation<dim,0>>(simulator_access, update_flags);
       }
     }
 
@@ -1260,7 +1314,6 @@ namespace aspect
 
           if (use_fast_path == true)
             evaluators = internal::construct_solution_evaluators(*this,
-                                                                 this->n_compositional_fields(),
                                                                  update_flags);
 
 
