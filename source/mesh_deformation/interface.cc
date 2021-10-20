@@ -95,13 +95,10 @@ namespace aspect
     template <int dim>
     MeshDeformationHandler<dim>::MeshDeformationHandler (Simulator<dim> &simulator)
       : sim(simulator),  // reference to the simulator that owns the MeshDeformationHandler
-        mesh_deformation_fe (FE_Q<dim>(1),dim), // Q1 elements which describe the mesh geometry
+        mesh_deformation_fe (FE_Q<dim>(sim.parameters.stokes_velocity_degree),dim),
         mesh_deformation_dof_handler (sim.triangulation),
         include_initial_topography(false)
     {
-      // Now reset the mapping of the simulator to be something that captures mesh deformation in time.
-      sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
-                                                                            mesh_displacements));
     }
 
 
@@ -906,6 +903,19 @@ namespace aspect
 
       mesh_deformation_dof_handler.distribute_dofs(mesh_deformation_fe);
 
+      static bool first_time=true;
+      if (first_time)
+        {
+          first_time = false;
+          // Now reset the mapping of the simulator to be something
+          // that captures mesh deformation in time. This has to
+          // happen after we distribute the mesh_deformation DoFs
+          // above.
+          sim.mapping.reset (new MappingQEulerian<dim, LinearAlgebra::Vector> (mesh_deformation_fe.degree,
+                                                                               mesh_deformation_dof_handler,
+                                                                               mesh_displacements));
+        }
+
       if (this->is_stokes_matrix_free())
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
@@ -934,7 +944,7 @@ namespace aspect
           {
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
-              /* degree = */ 1,
+              mesh_deformation_fe.degree,
               mesh_deformation_dof_handler,
               level_displacements[level],
               level);
