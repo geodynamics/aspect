@@ -1306,10 +1306,20 @@ namespace aspect
 
           const UpdateFlags update_flags = property_manager->get_needed_update_flags();
 
-          // Only use deal.II FEPointEvaluation if it's fast path is used
-          bool use_fast_path = (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr) &&
-                               (this->n_compositional_fields() <= 10);
-
+          // Only use deal.II FEPointEvaluation if its fast path is used. Prior to deal.II 10.0
+          // FEPointEvaluation did not support MappingCartesian for box geometries, and there was
+          // a bug for dynamically allocating scalar evaluators for individual components of a
+          // base element with multiplicity (see https://github.com/dealii/dealii/pull/12786).
+          bool use_fast_path = false;
+#if DEAL_II_VERSION_GTE(10,0,0)
+          if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
+              dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
+            use_fast_path = true;
+#else
+          if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr &&
+              this->n_compositional_fields() <= 20)
+            use_fast_path = true;
+#endif
           std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators;
 
           if (use_fast_path == true)

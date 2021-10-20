@@ -15,6 +15,7 @@ set Use years in output instead of seconds = true
 
 subsection Compositional fields
   set Number of fields = 21
+  set Compositional field methods = static
 end
 
 subsection Boundary temperature model

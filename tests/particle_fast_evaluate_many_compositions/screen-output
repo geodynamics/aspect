@@ -6,56 +6,14 @@ Number of mesh deformation degrees of freedom: 1610
 *** Timestep 0:  t=0 years, dt=0 years
    Solving mesh velocity system... 0 iterations.
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   Solving C_2 system ... 0 iterations.
-   Solving C_3 system ... 0 iterations.
-   Solving C_4 system ... 0 iterations.
-   Solving C_5 system ... 0 iterations.
-   Solving C_6 system ... 0 iterations.
-   Solving C_7 system ... 0 iterations.
-   Solving C_8 system ... 0 iterations.
-   Solving C_9 system ... 0 iterations.
-   Solving C_10 system ... 0 iterations.
-   Solving C_11 system ... 0 iterations.
-   Solving C_12 system ... 0 iterations.
-   Solving C_13 system ... 0 iterations.
-   Solving C_14 system ... 0 iterations.
-   Solving C_15 system ... 0 iterations.
-   Solving C_16 system ... 0 iterations.
-   Solving C_17 system ... 0 iterations.
-   Solving C_18 system ... 0 iterations.
-   Solving C_19 system ... 0 iterations.
-   Solving C_20 system ... 0 iterations.
-   Solving C_21 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 33+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.48706e-16, 1.81565e-16, 1.48706e-16, 1.3735e-16, 1.81565e-16, 1.48715e-16, 1.48706e-16, 1.63074e-16, 1.3735e-16, 1.19804e-16, 1.81565e-16, 1.46168e-16, 1.48715e-16, 1.98815e-16, 1.48706e-16, 1.68046e-16, 1.63074e-16, 1.43387e-16, 1.3735e-16, 1.35199e-16, 1
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
       Relative nonlinear residual (total system) after nonlinear iteration 1: 1
 
    Skipping temperature solve because RHS is zero.
-   Solving C_1 system ... 0 iterations.
-   Solving C_2 system ... 0 iterations.
-   Solving C_3 system ... 0 iterations.
-   Solving C_4 system ... 0 iterations.
-   Solving C_5 system ... 0 iterations.
-   Solving C_6 system ... 0 iterations.
-   Solving C_7 system ... 0 iterations.
-   Solving C_8 system ... 0 iterations.
-   Solving C_9 system ... 0 iterations.
-   Solving C_10 system ... 0 iterations.
-   Solving C_11 system ... 0 iterations.
-   Solving C_12 system ... 0 iterations.
-   Solving C_13 system ... 0 iterations.
-   Solving C_14 system ... 0 iterations.
-   Solving C_15 system ... 0 iterations.
-   Solving C_16 system ... 0 iterations.
-   Solving C_17 system ... 0 iterations.
-   Solving C_18 system ... 0 iterations.
-   Solving C_19 system ... 0 iterations.
-   Solving C_20 system ... 0 iterations.
-   Solving C_21 system ... 0 iterations.
    Solving Stokes system... 28+0 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.48706e-16, 1.81565e-16, 1.48706e-16, 1.3735e-16, 1.81565e-16, 1.48715e-16, 1.48706e-16, 1.63074e-16, 1.3735e-16, 1.19804e-16, 1.81565e-16, 1.46168e-16, 1.48715e-16, 1.98815e-16, 1.48706e-16, 1.68046e-16, 1.63074e-16, 1.43387e-16, 1.3735e-16, 1.35199e-16, 7.29825e-08
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7.29825e-08
       Relative nonlinear residual (total system) after nonlinear iteration 2: 7.29825e-08
 
 
