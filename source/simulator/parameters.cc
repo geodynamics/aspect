@@ -1007,10 +1007,10 @@ namespace aspect
                            "method implemented is 'entropy viscosity' as described in \\cite {KHB12}. "
                            "SUPG is currently experimental.");
 
-        prm.declare_entry ("Disable boundary entropy viscosity for compositional fields", "",
+        prm.declare_entry ("List of compositional fields with disabled boundary entropy viscosity", "",
                            Patterns::List(Patterns::Anything()),
-                           "Select whether to skip the entropy viscosity stabilization for "
-                           "certain compositional fields at dirichlet boundaries. This is "
+                           "Select for which compositional fields to skip the entropy viscosity "
+                           "stabilization at dirichlet boundaries. This is "
                            "only advisable for compositional fields"
                            "that have intrinsic physical diffusion terms, otherwise "
                            "oscillations may develop. The parameter should contain a list of "
@@ -1702,8 +1702,8 @@ namespace aspect
                                                                                       (Utilities::split_string_list(prm.get ("Global composition minimum"))),
                                                                                       n_compositional_fields,
                                                                                       "Global composition minimum");
-        disable_boundary_entropy_viscosity_for_compositions =
-          Utilities::split_string_list(prm.get("Disable boundary entropy viscosity for compositional fields"));
+        compositional_fields_with_disabled_boundary_entropy_viscosity =
+          Utilities::split_string_list(prm.get("List of compositional fields with disabled boundary entropy viscosity"));
 
       }
       prm.leave_subsection ();
@@ -1998,17 +1998,18 @@ namespace aspect
                                                            std::make_pair(particle_property,atoi(component.c_str()))));
         }
 
-      // Check that the names inside disable_boundary_entropy_viscosity_for_compositions
+      // Check that the names inside compositional_fields_with_disabled_boundary_entropy_viscosity
       // are actually fields. We parse and store this value above, but only here do we know the
       // names of the present fields.
-      for (const std::string &field_name: disable_boundary_entropy_viscosity_for_compositions)
+      for (const std::string &field_name: compositional_fields_with_disabled_boundary_entropy_viscosity)
         {
           AssertThrow(std::find(names_of_compositional_fields.begin(),
                                 names_of_compositional_fields.end(),
                                 field_name)
                       != names_of_compositional_fields.end(),
-                      ExcMessage("The entry '" + field_name + "' in the parameter <Disable boundary entropy viscosity "
-                                 "for compositional fields> is not a valid name of a compositional field "
+                      ExcMessage("The entry '" + field_name + "' in the parameter "
+                                 "<List of compositional fields with disabled boundary entropy viscosity> "
+                                 "is not a valid name of a compositional field "
                                  "as specified in the <Compositional fields/Names of fields> parameter."));
         }
     }

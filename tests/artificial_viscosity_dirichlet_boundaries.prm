@@ -18,7 +18,7 @@ end
 
 subsection Discretization
   subsection Stabilization parameters
-    set Disable boundary entropy viscosity for compositional fields = porosity
+    set List of compositional fields with disabled boundary entropy viscosity = porosity
   end
 end
 

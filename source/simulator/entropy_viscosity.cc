@@ -255,11 +255,11 @@ namespace aspect
     else
       {
         const std::string field_name = introspection.name_for_compositional_index(advection_field.compositional_variable);
-        if (std::find(parameters.disable_boundary_entropy_viscosity_for_compositions.begin(),
-                      parameters.disable_boundary_entropy_viscosity_for_compositions.end(),
+        if (std::find(parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.begin(),
+                      parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end(),
                       field_name)
             !=
-            parameters.disable_boundary_entropy_viscosity_for_compositions.end())
+            parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end())
           skip_EV_dirichlet_boundary_cells = true;
       }
 
