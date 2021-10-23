@@ -181,7 +181,7 @@ namespace aspect
                              Patterns::Double (0., 1.),
                              "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
                              "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
-                             "Because this value can become larger then one, we limit this value by this parameter.");
+                             "Because this value can become larger than one, we limit this value by this parameter.");
 
           prm.declare_entry ("Stabilization preconditioner", "SPD",
                              Patterns::Selection ("SPD|PD|symmetric|none"),
