@@ -335,15 +335,6 @@ namespace aspect
         AffineConstraints<double> make_initial_constraints ();
 
         /**
-         * Deform the initial mesh by solving a Laplace equation
-         * for the interior mesh vertices. The boundary deformation
-         * is prescribed as given by the
-         * compute_initial_deformation_on_boundary() function of
-         * the individual mesh deformation plugins.
-         */
-        void deform_initial_mesh ();
-
-        /**
          * Set the boundary conditions for the solution of the elliptic
          * problem, which computes the displacements of the internal
          * vertices so that the mesh does not become too distorted due to
@@ -358,7 +349,8 @@ namespace aspect
         void make_constraints ();
 
         /**
-         * Solve vector Laplacian equation for internal mesh displacements.
+         * Solve vector Laplacian equation for internal mesh displacements and update
+         * the current displacement vector based on the solution.
          */
         void compute_mesh_displacements ();
 

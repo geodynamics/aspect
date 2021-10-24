@@ -86,10 +86,12 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void
     Interface<dim>::parse_parameters (ParameterHandler &)
     {}
+
 
 
     template <int dim>
@@ -103,6 +105,7 @@ namespace aspect
       sim.mapping.reset (new MappingQ1Eulerian<dim, LinearAlgebra::Vector> (mesh_deformation_dof_handler,
                                                                             mesh_displacements));
     }
+
 
 
     template <int dim>
@@ -125,6 +128,7 @@ namespace aspect
       aspect::internal::Plugins::PluginList<Interface<2>>,
       aspect::internal::Plugins::PluginList<Interface<3>>> registered_plugins;
     }
+
 
 
     template <int dim>
@@ -616,9 +620,9 @@ namespace aspect
       // carry out the solution
       FEValuesExtractors::Vector extract_vel(0);
 
-      LinearAlgebra::Vector rhs, velocity_solution;
+      LinearAlgebra::Vector rhs, solution;
       rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
-      velocity_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
+      solution.reinit(mesh_locally_owned, sim.mpi_communicator);
 
       typename DoFHandler<dim>::active_cell_iterator cell = mesh_deformation_dof_handler.begin_active(),
                                                      endc= mesh_deformation_dof_handler.end();
@@ -661,124 +665,39 @@ namespace aspect
       Amg_data.aggregation_threshold = 0.02;
       preconditioner_stiffness.initialize(mesh_matrix);
 
-      SolverControl solver_control(5*rhs.size(), sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
+      // we solve with higher accuracy in the initial timestep:
+      const double tolerance
+        = sim.parameters.linear_stokes_solver_tolerance
+          * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
+
+      SolverControl solver_control(5*rhs.size(), tolerance * rhs.l2_norm());
       SolverCG<LinearAlgebra::Vector> cg(solver_control);
 
-      cg.solve (mesh_matrix, velocity_solution, rhs, preconditioner_stiffness);
-      this->get_pcout() << "   Solving mesh velocity system... " << solver_control.last_step() <<" iterations."<< std::endl;
+      cg.solve (mesh_matrix, solution, rhs, preconditioner_stiffness);
+      this->get_pcout() << "   Solving mesh displacement system... " << solver_control.last_step() <<" iterations."<< std::endl;
 
-      mesh_velocity_constraints.distribute (velocity_solution);
+      mesh_velocity_constraints.distribute (solution);
 
       // Update the mesh velocity vector
-      fs_mesh_velocity = velocity_solution;
+      fs_mesh_velocity = solution;
 
       // Update the mesh displacement vector
-      LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
-      distributed_mesh_displacements = mesh_displacements;
-      distributed_mesh_displacements.add(this->get_timestep(), velocity_solution);
-      mesh_displacements = distributed_mesh_displacements;
+      if (this->simulator_is_past_initialization())
+        {
+          // during the simulation, we add dt*solution
+          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
+          distributed_mesh_displacements = mesh_displacements;
+          distributed_mesh_displacements.add(this->get_timestep(), solution);
+          mesh_displacements = distributed_mesh_displacements;
+        }
+      else
+        {
+          // In the initial step we apply 100% of the initial displacement
+          mesh_displacements = solution;
+        }
 
       if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
-    }
-
-
-
-    template <int dim>
-    void MeshDeformationHandler<dim>::deform_initial_mesh()
-    {
-      TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
-
-      const AffineConstraints<double> initial_deformation_constraints = make_initial_constraints();
-
-      QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
-      UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
-      FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
-
-      const unsigned int dofs_per_cell = fe_values.dofs_per_cell,
-                         dofs_per_face = sim.finite_element.dofs_per_face,
-                         n_q_points    = fe_values.n_quadrature_points;
-
-      std::vector<types::global_dof_index> cell_dof_indices (dofs_per_cell);
-      std::vector<unsigned int> face_dof_indices (dofs_per_face);
-      Vector<double> cell_vector (dofs_per_cell);
-      FullMatrix<double> cell_matrix (dofs_per_cell, dofs_per_cell);
-
-      // We are just solving a Laplacian in each spatial direction, so
-      // the degrees of freedom for different dimensions do not couple.
-      Table<2,DoFTools::Coupling> coupling (dim, dim);
-      coupling.fill(DoFTools::none);
-
-      for (unsigned int c=0; c<dim; ++c)
-        coupling[c][c] = DoFTools::always;
-
-      LinearAlgebra::SparseMatrix mesh_matrix;
-      TrilinosWrappers::SparsityPattern sp (mesh_locally_owned,
-                                            mesh_locally_owned,
-                                            mesh_locally_relevant,
-                                            sim.mpi_communicator);
-      DoFTools::make_sparsity_pattern (mesh_deformation_dof_handler,
-                                       coupling, sp,
-                                       initial_deformation_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(sim.mpi_communicator));
-      sp.compress();
-      mesh_matrix.reinit (sp);
-
-      // carry out the solution
-      FEValuesExtractors::Vector extract_vel(0);
-
-      LinearAlgebra::Vector rhs, deformation_solution;
-      rhs.reinit(mesh_locally_owned, sim.mpi_communicator);
-      deformation_solution.reinit(mesh_locally_owned, sim.mpi_communicator);
-
-      for (const auto &cell : mesh_deformation_dof_handler.active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            cell->get_dof_indices (cell_dof_indices);
-            fe_values.reinit (cell);
-
-            cell_vector = 0;
-            cell_matrix = 0;
-            for (unsigned int point=0; point<n_q_points; ++point)
-              for (unsigned int i=0; i<dofs_per_cell; ++i)
-                {
-                  for (unsigned int j=0; j<dofs_per_cell; ++j)
-                    cell_matrix(i,j) += scalar_product( fe_values[extract_vel].gradient(i,point),
-                                                        fe_values[extract_vel].gradient(j,point) ) *
-                                        fe_values.JxW(point);
-                }
-
-            initial_deformation_constraints.distribute_local_to_global (cell_matrix, cell_vector,
-                                                                        cell_dof_indices, mesh_matrix, rhs, false);
-          }
-
-      rhs.compress (VectorOperation::add);
-      mesh_matrix.compress (VectorOperation::add);
-
-      // Make the AMG preconditioner
-      std::vector<std::vector<bool>> constant_modes;
-      DoFTools::extract_constant_modes (mesh_deformation_dof_handler,
-                                        ComponentMask(dim, true),
-                                        constant_modes);
-      // TODO: think about keeping object between time steps
-      LinearAlgebra::PreconditionAMG preconditioner_stiffness;
-      LinearAlgebra::PreconditionAMG::AdditionalData Amg_data;
-      Amg_data.constant_modes = constant_modes;
-      Amg_data.elliptic = true;
-      Amg_data.higher_order_elements = false;
-      Amg_data.smoother_sweeps = 2;
-      Amg_data.aggregation_threshold = 0.02;
-      preconditioner_stiffness.initialize(mesh_matrix);
-
-      SolverControl solver_control(5*rhs.size(), 1e-5*sim.parameters.linear_stokes_solver_tolerance*rhs.l2_norm());
-      SolverCG<LinearAlgebra::Vector> cg(solver_control);
-
-      cg.solve (mesh_matrix, deformation_solution, rhs, preconditioner_stiffness);
-      initial_deformation_constraints.distribute (deformation_solution);
-
-      // Update the mesh displacement vector
-      mesh_displacements = deformation_solution;
     }
 
 
@@ -985,14 +904,20 @@ namespace aspect
       // We can safely close this now
       mesh_vertex_constraints.close();
 
-      // if we are just starting, we need to initialize the mesh displacement vector.
+      // if we are just starting, we need to prescribe the initial deformation
       if (this->simulator_is_past_initialization() == false ||
           this->get_timestep_number() == 0)
-        deform_initial_mesh();
+        {
+          TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
+
+          mesh_velocity_constraints = make_initial_constraints();
+          compute_mesh_displacements();
+        }
 
       if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
     }
+
 
 
     template <int dim>
@@ -1013,6 +938,8 @@ namespace aspect
                                     level_displacements,
                                     displacements);
     }
+
+
 
     template <int dim>
     const std::map<types::boundary_id, std::vector<std::string>> &
@@ -1056,6 +983,7 @@ namespace aspect
     {
       return mesh_displacements;
     }
+
 
 
     template <int dim>
