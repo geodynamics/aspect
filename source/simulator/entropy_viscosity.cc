@@ -248,6 +248,21 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return;
 
+    bool skip_EV_dirichlet_boundary_cells = false;
+
+    if (advection_field.is_temperature())
+      skip_EV_dirichlet_boundary_cells = true;
+    else
+      {
+        const std::string field_name = introspection.name_for_compositional_index(advection_field.compositional_variable);
+        if (std::find(parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.begin(),
+                      parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end(),
+                      field_name)
+            !=
+            parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end())
+          skip_EV_dirichlet_boundary_cells = true;
+      }
+
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
     const double global_entropy_variation = get_entropy_variation ((global_field_range.first +
@@ -340,13 +355,19 @@ namespace aspect
         // we need the stabilization, because the boundary cells can
         // be advection dominated. Hence, only disable artificial
         // viscosity if flow through the boundary is slow, or
-        // tangential.
+        // tangential. Also disable artificial viscosity for compositions
+        // for which this is requested (e.g. compositions with
+        // physical diffusion).
         if (parameters.advection_stabilization_method
             == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity
-            && advection_field.is_temperature())
+            && skip_EV_dirichlet_boundary_cells == true)
           {
-            const std::set<types::boundary_id> &fixed_temperature_boundaries =
-              boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+            const std::set<types::boundary_id> &dirichlet_boundaries =
+              (advection_field.is_temperature() == true)
+              ?
+              boundary_temperature_manager.get_fixed_temperature_boundary_indicators()
+              :
+              boundary_composition_manager.get_fixed_composition_boundary_indicators();
             const std::set<types::boundary_id> &tangential_velocity_boundaries =
               boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
             const std::set<types::boundary_id> &zero_velocity_boundaries =
@@ -355,7 +376,7 @@ namespace aspect
             bool cell_at_conduction_dominated_dirichlet_boundary = false;
             for (const unsigned int face_no : cell->face_indices())
               if (cell->at_boundary(face_no) == true &&
-                  fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
+                  dirichlet_boundaries.find(cell->face(face_no)->boundary_id()) != dirichlet_boundaries.end())
                 {
                   // If the velocity is tangential or zero we can always disable stabilization, except if there is another
                   // face at a different boundary. Therefore continue with the next face rather than break the loop.
