@@ -514,6 +514,44 @@ namespace aspect
     }
 
 
+
+    template <int dim>
+    AdvectionStabilizationInterface<dim>::~AdvectionStabilizationInterface()
+    {}
+
+
+
+    template <int dim>
+    std::vector<double>
+    AdvectionStabilizationInterface<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 1.0);
+
+      if (scratch.advection_field->is_temperature())
+        for (unsigned int i=0; i<prefactors.size(); ++i)
+          prefactors[i] = scratch.material_model_outputs.densities[i] * scratch.material_model_outputs.specific_heat[i];
+
+      return prefactors;
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    AdvectionStabilizationInterface<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      if (scratch.advection_field->is_temperature())
+        return scratch.material_model_outputs.thermal_conductivities;
+
+      return std::vector<double> (scratch.material_model_inputs.n_evaluation_points(), 0.0);
+    }
+
+
+
     template <int dim>
     void Manager<dim>::reset ()
     {
@@ -557,6 +595,7 @@ namespace aspect
   } \
   namespace Assemblers { \
     template class Interface<dim>; \
+    template class AdvectionStabilizationInterface<dim>; \
     template class Manager<dim>; \
   }
   ASPECT_INSTANTIATE(INSTANTIATE)

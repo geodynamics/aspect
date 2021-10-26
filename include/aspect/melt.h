@@ -260,7 +260,7 @@ namespace aspect
      * the case of melt migration on a single cell.
      */
     template <int dim>
-    class MeltAdvectionSystem : public MeltInterface<dim>
+    class MeltAdvectionSystem : public MeltInterface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>
     {
       public:
         void
