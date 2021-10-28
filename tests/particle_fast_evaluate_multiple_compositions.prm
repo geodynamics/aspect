@@ -1,0 +1,118 @@
+# A test based on Issue 4356: https://github.com/geodynamics/aspect/issues/4356
+# It tests that in models with multiple compositions the compositions
+# are correctly evaluated at the particle locations, even when using the
+# deal.II class FEPointEvaluation.
+
+set Adiabatic surface temperature          = 1623
+set Nonlinear solver scheme                = iterated Advection and Stokes
+set Nonlinear solver tolerance             = 1e-5
+
+set Dimension                              = 2
+set End time                               = 0
+
+set Pressure normalization                 = no
+set Use years in output instead of seconds = true
+
+subsection Compositional fields
+  set Number of fields = 3
+  set Names of fields = porosity,peridotite, 3
+end
+
+subsection Boundary temperature model
+  set List of model names = initial temperature
+
+  subsection Initial temperature
+    set Maximal temperature = 3773
+    set Minimal temperature = 273
+  end
+end
+
+subsection Boundary composition model
+  set List of model names = initial composition
+end
+
+subsection Boundary velocity model
+  subsection Function
+    set Function expression = 0;-1.65673998e-4
+  end
+end
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X extent  = 10
+    set Y extent  = 400
+    set Y repetitions = 40
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 10.0
+  end
+
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 0
+  end
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Function expression = 2;5;8
+  end
+end
+
+subsection Material model
+  set Model name = simpler
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.0
+  set Refinement fraction                      = 0.0
+
+  set Initial adaptive refinement              = 0
+  set Initial global refinement                = 2
+  set Strategy                                 = composition
+  set Time steps between mesh refinement       = 0
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators   = bottom, top
+end
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators   = bottom, top
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = bottom, left, right
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+end
+
+subsection Postprocess
+  set List of postprocessors = particles,visualization,composition statistics,velocity statistics
+
+  subsection Particles
+    set List of particle properties   = composition
+    set Time between data output      = 0
+    set Number of particles           = 10
+    set Data output format            = gnuplot
+  end
+
+  subsection Visualization
+    set Interpolate output = false
+    set Number of grouped files       = 0
+    set Time between graphical output = 5e5
+  end
+end

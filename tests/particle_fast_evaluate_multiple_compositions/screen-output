@@ -1,0 +1,35 @@
+
+Number of active cells: 640 (on 3 levels)
+Number of degrees of freedom: 18,139 (5,778+805+2,889+2,889+2,889+2,889)
+
+Number of mesh deformation degrees of freedom: 1610
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh velocity system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving 3 system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 33+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.3735e-16, 1.48706e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Skipping temperature solve because RHS is zero.
+   Solving porosity system ... 0 iterations.
+   Solving peridotite system ... 0 iterations.
+   Solving 3 system ... 0 iterations.
+   Solving Stokes system... 28+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.48706e-16, 1.3735e-16, 1.48706e-16, 7.29825e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.29825e-08
+
+
+   Postprocessing:
+     Writing particle output:   output-particle_fast_evaluate_multiple_compositions/particles/particles-00000
+     Writing graphical output:  output-particle_fast_evaluate_multiple_compositions/solution/solution-00000
+     Compositions min/max/mass: 2/2/8000 // 5/5/2e+04 // 8/8/3.2e+04
+     RMS, max velocity:         1.42e-26 m/year, 6.56e-26 m/year
+
+Termination requested by criterion: end time
+
+
+
