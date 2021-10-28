@@ -142,3 +142,7 @@ subsection Postprocess
     set Also output the gravity anomaly  = true
   end
 end
+
+subsection Nullspace removal
+  set Remove nullspace = net rotation
+end
