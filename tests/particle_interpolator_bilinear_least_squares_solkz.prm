@@ -84,7 +84,7 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = particles, SolKzPostprocessor
+  set List of postprocessors = particles, SolKzPostprocessor, composition statistics
 
   subsection Particles
     set Number of particles = 16384
