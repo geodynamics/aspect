@@ -121,7 +121,11 @@ namespace aspect
           {
             patches[i].vertices[0] = particle->get_location();
             patches[i].patch_index = i;
+
+#if !DEAL_II_VERSION_GTE(10,0,0)
             patches[i].n_subdivisions = 1;
+#endif
+
             patches[i].data.reinit(dataset_names.size(),1);
 
             patches[i].data(0,0) = particle->get_id();
