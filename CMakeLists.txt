@@ -487,20 +487,14 @@ IF (NOT CMAKE_BUILD_TYPE MATCHES Debug)
     ADD_DEFINITIONS("-DNDEBUG")
 ENDIF()
 
-
-FIND_PATH(ZLIB_INCLUDE_DIR
-        NAMES zlib.h
-        HINTS $ENV{ZLIB_INCLUDE} $ENV{ZLIB_DIR}/include/
-        )
-
-FIND_LIBRARY(ZLIB_LIBRARY
-        NAMES libz.so libz.dylib
-        HINTS $ENV{ZLIB_LIBPATH} $ENV{ZLIB_DIR}/lib
-        )
-
+# find zlib if it is installed in a non-standard location
+SET(ZLIB_DIR "" CACHE PATH "An optional hint to a ZLIB installation")
+IF("${ZLIB_DIR}" STREQUAL "")
+  SET(ZLIB_DIR "$ENV{ZLIB_DIR}" CACHE PATH "An optional hint to a ZLIB installation" FORCE)
+ENDIF()
+FIND_PACKAGE(ZLIB)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
 TARGET_LINK_LIBRARIES(${TARGET} ${ZLIB_LIBRARY})
-
 
 FIND_PACKAGE(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})
