@@ -4,8 +4,9 @@ Number of active cells: 400 (on 2 levels)
 Number of degrees of freedom: 9,287 (3,362+441+441+1,681+1,681+1,681)
 
 Number of mesh deformation degrees of freedom: 882
+   Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving mesh velocity system... 1 iterations.
+   Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
@@ -16,8 +17,9 @@ Number of active cells: 544 (on 3 levels)
 Number of degrees of freedom: 12,838 (4,652+604+604+2,326+2,326+2,326)
 
 Number of mesh deformation degrees of freedom: 1208
+   Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving mesh velocity system... 1 iterations.
+   Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
@@ -35,11 +37,12 @@ Number of active cells: 517 (on 3 levels)
 Number of degrees of freedom: 12,281 (4,450+578+578+2,225+2,225+2,225)
 
 Number of mesh deformation degrees of freedom: 1156
+   Solving mesh displacement system... 0 iterations.
 
 
 
 *** Timestep 1:  t=10 years, dt=10 years
-   Solving mesh velocity system... 1 iterations.
+   Solving mesh displacement system... 1 iterations.
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 18 iterations.
    Solving ve_stress_yy system ... 18 iterations.

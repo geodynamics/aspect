@@ -6,8 +6,9 @@ Number of active cells: 64 (on 4 levels)
 Number of degrees of freedom: 948 (578+81+289)
 
 Number of mesh deformation degrees of freedom: 162
+   Solving mesh displacement system... 1 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving mesh velocity system... 0 iterations.
+   Solving mesh displacement system... 0 iterations.
    Solving temperature system... 0 iterations.
    Solving Stokes system... 17+0 iterations.
 

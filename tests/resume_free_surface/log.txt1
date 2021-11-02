@@ -5,10 +5,11 @@ Number of active cells: 2,560 (on 5 levels)
 Number of degrees of freedom: 34,068 (20,930+2,673+10,465)
 
 Number of mesh deformation degrees of freedom: 5346
+   Solving mesh displacement system... 0 iterations.
    Added initial topography to grid
 
 *** Timestep 2:  t=9133.17 years, dt=5362.65 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
@@ -19,7 +20,7 @@ Number of mesh deformation degrees of freedom: 5346
      Writing graphical output: output1.tmp/solution/solution-00002
 
 *** Timestep 3:  t=20021.1 years, dt=10887.9 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.
@@ -32,7 +33,7 @@ Number of mesh deformation degrees of freedom: 5346
 *** Snapshot created!
 
 *** Timestep 4:  t=30009.6 years, dt=9988.49 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Solving temperature system... 10 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 44+0 iterations.

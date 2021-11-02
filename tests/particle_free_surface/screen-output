@@ -3,8 +3,9 @@ Number of active cells: 256 (on 5 levels)
 Number of degrees of freedom: 4,645 (2,178+289+1,089+1,089)
 
 Number of mesh deformation degrees of freedom: 578
+   Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving mesh velocity system... 0 iterations.
+   Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 0 iterations.
    Rebuilding Stokes preconditioner...
@@ -16,7 +17,7 @@ Number of mesh deformation degrees of freedom: 578
      Writing particle output:   output-particle_free_surface/particles/particles-00000
 
 *** Timestep 1:  t=62.9935 seconds, dt=62.9935 seconds
-   Solving mesh velocity system... 1 iterations.
+   Solving mesh displacement system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 14 iterations.
    Rebuilding Stokes preconditioner...
@@ -28,7 +29,7 @@ Number of mesh deformation degrees of freedom: 578
      Number of advected particles: 9
 
 *** Timestep 2:  t=70 seconds, dt=7.00652 seconds
-   Solving mesh velocity system... 1 iterations.
+   Solving mesh displacement system... 1 iterations.
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 10 iterations.
    Rebuilding Stokes preconditioner...
