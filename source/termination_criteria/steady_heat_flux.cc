@@ -221,6 +221,13 @@ namespace aspect
                                           "steady state heat flux",
                                           "A criterion that terminates the simulation when the integrated "
                                           "heat flux over a given list of boundaries stays within a certain "
-                                          "range for a specified period of time.")
+                                          "range for a specified period of time."
+                                          "\n\n"
+                                          "The criterion considers the total heat flux over all boundaries "
+                                          "listed by their boundary indicators, rather than each boundary "
+                                          "separately. As a consequence, if the \\textit{sum} of heat fluxes "
+                                          "over individual parts of the boundary no longer changes, then this "
+                                          "criterion recommends termination, even if the heat flux over "
+                                          "individual parts of the boundary continues to change.")
   }
 }
