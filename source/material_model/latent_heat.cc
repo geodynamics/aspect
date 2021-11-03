@@ -196,11 +196,11 @@ namespace aspect
               for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
                   const double depth = this->get_geometry_model().depth(in.position[i]);
-                  const double pressure_depth_derivative = (this->get_adiabatic_conditions().pressure(position) > 0)
+                  const double pressure_depth_derivative = (depth > 0.0)
                                                            ?
-                                                           depth / this->get_adiabatic_conditions().pressure(position)
+                                                           this->get_adiabatic_conditions().pressure(position) / depth
                                                            :
-                                                           this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
+                                                           this->get_gravity_model().gravity_vector(position).norm() * reference_rho;
 
                   const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
                                                                              pressure,
