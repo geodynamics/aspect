@@ -480,14 +480,20 @@ namespace aspect
 
 
     template <int dim>
-    AffineConstraints<double> MeshDeformationHandler<dim>::make_initial_constraints()
+    void MeshDeformationHandler<dim>::make_initial_constraints()
     {
       AssertThrow(this->get_parameters().mesh_deformation_enabled, ExcInternalError());
 
-      // initial_deformation_constraints can use the same hanging node
+      // This might look incorrect at first glance, but it is okay to
+      // overwrite the velocity constraints with our displacements
+      // because this object is used for updating the displacement in
+      // compute_mesh_displacements().
+      mesh_velocity_constraints.clear();
+      mesh_velocity_constraints.reinit(mesh_locally_relevant);
+
+      // mesh_velocity_constraints can use the same hanging node
       // information that was used for mesh_vertex constraints.
-      AffineConstraints<double> initial_deformation_constraints(mesh_locally_relevant);
-      initial_deformation_constraints.merge(mesh_vertex_constraints);
+      mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
       std::set< types::boundary_id > periodic_boundaries;
@@ -502,7 +508,7 @@ namespace aspect
                                                  p.first.first,
                                                  p.first.second,
                                                  p.second,
-                                                 initial_deformation_constraints);
+                                                 mesh_velocity_constraints);
         }
 
       // Zero out the displacement for the fixed boundaries
@@ -512,7 +518,7 @@ namespace aspect
                                                     mesh_deformation_dof_handler,
                                                     boundary_id,
                                                     Functions::ZeroFunction<dim>(dim),
-                                                    initial_deformation_constraints);
+                                                    mesh_velocity_constraints);
         }
 
       // Make tangential deformation constraints for tangential boundaries
@@ -521,7 +527,7 @@ namespace aspect
                                                        /* first_vector_component= */
                                                        0,
                                                        tangential_mesh_deformation_boundary_indicators,
-                                                       initial_deformation_constraints,
+                                                       mesh_velocity_constraints,
                                                        this->get_mapping());
       this->get_signals().post_compute_no_normal_flux_constraints(sim.triangulation);
 
@@ -571,11 +577,9 @@ namespace aspect
             }
         }
 
-      initial_deformation_constraints.merge(plugin_constraints,
-                                            AffineConstraints<double>::left_object_wins);
-      initial_deformation_constraints.close();
-
-      return initial_deformation_constraints;
+      mesh_velocity_constraints.merge(plugin_constraints,
+                                      AffineConstraints<double>::left_object_wins);
+      mesh_velocity_constraints.close();
     }
 
 
@@ -583,6 +587,22 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements()
     {
+      // This functions updates the mesh displacement of the whole
+      // domain (stored in the vector mesh_displacements) based on
+      // information on the boundary.
+      //
+      // Each step, we get the velocity specified on the free surface
+      // boundary (stored in mesh_velocity_constraints) and solve for
+      // the velocity in the interior by solving a vector Laplace
+      // problem. This velocity is then used to update the
+      // displacement vector.
+      //
+      // This is different in timestep 0. Here, the information on the
+      // boundary is actually a displacement (given initial
+      // topography), which is used to set the initial
+      // displacement. The process in this function is otherwise
+      // identical.
+
       QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
       FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
@@ -910,7 +930,7 @@ namespace aspect
         {
           TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
 
-          mesh_velocity_constraints = make_initial_constraints();
+          make_initial_constraints();
           compute_mesh_displacements();
         }
 
