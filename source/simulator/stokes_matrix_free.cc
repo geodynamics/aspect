@@ -2188,34 +2188,35 @@ namespace aspect
 
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
-          time_this("Stokes_solve_cheap", 1,
-                    [&]
+          time_this("Stokes_solve_cheap_idr", 1,
+          [&]
           {
-            if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::gmres)
-              {
-                SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
-                solver(solver_control_cheap, mem,
-                SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
-                AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
-                true));
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.idr_s_parameter));
 
-                solver.solve (stokes_matrix,
-                tmp_dst,
-                tmp_src,
-                preconditioner_cheap);
-              }
-            else if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s)
-              {
-                SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
-                solver(solver_control_cheap, mem,
-                SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
-                AdditionalData(sim.parameters.idr_s_parameter));
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
+          },
+          [&] {tmp_dst = solution_copy;}
+                   );
 
-                solver.solve (stokes_matrix,
-                tmp_dst,
-                tmp_src,
-                preconditioner_cheap);
-              }
+          time_this("Stokes_solve_cheap_gmres", 1,
+          [&]
+          {
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+            true));
+
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
           },
           [&] {tmp_dst = solution_copy;}
                    );
