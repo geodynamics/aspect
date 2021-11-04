@@ -566,6 +566,7 @@ namespace aspect
       Simulator<dim> &sim;
 
       bool print_details;
+      bool do_timings;
 
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
