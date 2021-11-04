@@ -326,39 +326,31 @@ namespace aspect
 
       private:
         /**
-         * Set the boundary conditions for the solution of the elliptic
-         * problem, which computes the initial displacements of the internal
-         * vertices so that the mesh does not become too distorted due to
-         * motion of the surface. Displacements of vertices on the deforming
-         * surface are fixed according to the selected deformation plugins.
+         * Compute the initial constraints for the mesh displacement
+         * on the boundaries of the domain.  This is used on the mesh
+         * deformation boundaries to describe a displacement (initial
+         * topography) to be used during the simulation. The
+         * displacement is given by the active deformation plugins.
          */
-        AffineConstraints<double> make_initial_constraints ();
+        void make_initial_constraints ();
 
         /**
-         * Deform the initial mesh by solving a Laplace equation
-         * for the interior mesh vertices. The boundary deformation
-         * is prescribed as given by the
-         * compute_initial_deformation_on_boundary() function of
-         * the individual mesh deformation plugins.
-         */
-        void deform_initial_mesh ();
-
-        /**
-         * Set the boundary conditions for the solution of the elliptic
-         * problem, which computes the displacements of the internal
-         * vertices so that the mesh does not become too distorted due to
-         * motion of the surface. Velocities of vertices on the
-         * deforming surface are fixed according to the selected deformation
-         * plugins. Velocities of vertices on free-slip boundaries are
-         * constrained to be tangential to those boundaries. Velocities of
-         * vertices on no-slip boundaries are set to be zero. If a no-slip
-         * boundary is marked as additional tangential, then vertex velocities
-         * are constrained as tangential.
+         * Compute the constraints for the mesh velocity on the
+         * boundaries of the domain.  On the mesh deformation
+         * boundaries, the velocity is given by the active deformation
+         * plugins.
+         *
+         * Velocities on free-slip boundaries are constrained to be
+         * tangential to those boundaries. Velocities on no-slip
+         * boundaries are set to be zero. If a no-slip boundary is
+         * marked as additional tangential, then velocities are
+         * constrained as tangential.
          */
         void make_constraints ();
 
         /**
-         * Solve vector Laplacian equation for internal mesh displacements.
+         * Solve vector Laplacian equation for internal mesh displacements and update
+         * the current displacement vector based on the solution.
          */
         void compute_mesh_displacements ();
 

@@ -5,8 +5,9 @@ Number of active cells: 1,000 (on 1 levels)
 Number of degrees of freedom: 13,494 (8,282+1,071+4,141)
 
 Number of mesh deformation degrees of freedom: 2142
+   Solving mesh displacement system... 0 iterations.
 *** Timestep 0:  t=0 years, dt=0 years
-   Solving mesh velocity system... 0 iterations.
+   Solving mesh displacement system... 0 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+11 iterations.
@@ -31,7 +32,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0623 m/year, 0.201 m/year
 
 *** Timestep 1:  t=245.098 years, dt=245.098 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+8 iterations.
@@ -41,7 +42,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.062 m/year, 0.2 m/year
 
 *** Timestep 2:  t=491.282 years, dt=246.185 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+7 iterations.
@@ -51,7 +52,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0618 m/year, 0.199 m/year
 
 *** Timestep 3:  t=738.163 years, dt=246.88 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -61,7 +62,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0616 m/year, 0.198 m/year
 
 *** Timestep 4:  t=985.743 years, dt=247.58 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -71,7 +72,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0614 m/year, 0.198 m/year
 
 *** Timestep 5:  t=1234.03 years, dt=248.284 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -84,7 +85,7 @@ Number of mesh deformation degrees of freedom: 2142
 
 
 *** Timestep 6:  t=1483.02 years, dt=248.993 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -94,7 +95,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.061 m/year, 0.196 m/year
 
 *** Timestep 7:  t=1732.73 years, dt=249.706 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -104,7 +105,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0608 m/year, 0.196 m/year
 
 *** Timestep 8:  t=1983.15 years, dt=250.424 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -114,7 +115,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0606 m/year, 0.195 m/year
 
 *** Timestep 9:  t=2234.3 years, dt=251.147 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
@@ -124,7 +125,7 @@ Number of mesh deformation degrees of freedom: 2142
      RMS, max velocity:  0.0604 m/year, 0.194 m/year
 
 *** Timestep 10:  t=2486.17 years, dt=251.874 years
-   Solving mesh velocity system... 7 iterations.
+   Solving mesh displacement system... 7 iterations.
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+4 iterations.
