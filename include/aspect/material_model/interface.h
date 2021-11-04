@@ -300,7 +300,7 @@ namespace aspect
                           const typename DoFHandler<dim>::active_cell_iterator &cell,
                           const Introspection<dim> &introspection,
                           const LinearAlgebra::BlockVector &solution_vector,
-                          const bool compute_strain_rates = true);
+                          const bool compute_strain_rate = true);
 
       /**
        * Copy constructor. This constructor copies all data members of the
@@ -342,7 +342,7 @@ namespace aspect
                   const typename DoFHandler<dim>::active_cell_iterator &cell,
                   const Introspection<dim>                             &introspection,
                   const LinearAlgebra::BlockVector                     &solution_vector,
-                  const bool                                            compute_strain_rates = true);
+                  const bool                                            compute_strain_rate = true);
 
       /**
        * Function that returns the number of points at which
