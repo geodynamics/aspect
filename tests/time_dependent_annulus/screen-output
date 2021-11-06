@@ -10,24 +10,24 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
    Solving Stokes system... 28+0 iterations.
 
    Postprocessing:
-     Errors u_L2, p_L2, rho_L2 3.465904e+00, 4.697649e+00, 1.134196e+02
+     Errors u_L2, p_L2, rho_L2 3.539470e+00, 4.542985e+00, 1.202942e+02
      Writing particle output:  output-time_dependent_annulus/particles/particles-00000
      Writing graphical output: output-time_dependent_annulus/solution/solution-00000
 
 *** Timestep 1:  t=0.0015296 seconds, dt=0.0015296 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 24+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Errors u_L2, p_L2, rho_L2 3.562150e+00, 4.577358e+00, 1.161094e+02
+     Errors u_L2, p_L2, rho_L2 3.551582e+00, 4.540108e+00, 1.227548e+02
      Writing particle output:  output-time_dependent_annulus/particles/particles-00001
      Writing graphical output: output-time_dependent_annulus/solution/solution-00001
 
 *** Timestep 2:  t=0.003 seconds, dt=0.0014704 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 25+0 iterations.
+   Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
      Errors u_L2, p_L2, rho_L2 3.443892e+00, 5.000342e+00, 1.197495e+02
