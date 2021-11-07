@@ -2125,9 +2125,12 @@ namespace aspect
 
         auto time_this = [&](const char *name, int repeats, std::function<void()> body, std::function<void()> prepare)
         {
-          sim.pcout << "Timing " << name << ':' << std::endl;
+          sim.pcout << "Timing " << name << ' ' << n_timings << " time(s) and repeat "
+                    << repeats << " time(s) within each timing:" << std::endl;
 
           body(); // warm up
+
+          double average_time = 0.;
 
           for (int i=0; i<n_timings; ++i)
             {
@@ -2140,8 +2143,13 @@ namespace aspect
 
               timer.stop();
               double time = timer.wall_time();
-              sim.pcout << time/repeats << std::endl;
+              const double average_time_per_timing = time/repeats;
+              sim.pcout << average_time_per_timing << std::endl;
+              average_time += average_time_per_timing;
             }
+
+          sim.pcout << "\taverage wall time of all: "<< average_time/n_timings << " seconds" << std::endl;
+
         };
 
         // stokes vmult
@@ -2189,7 +2197,7 @@ namespace aspect
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
           dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
           time_this("Stokes_solve_cheap_idr", 1,
-          [&]
+                    [&]
           {
             SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
             solver(solver_control_cheap, mem,
@@ -2205,7 +2213,7 @@ namespace aspect
                    );
 
           time_this("Stokes_solve_cheap_gmres", 1,
-          [&]
+                    [&]
           {
             SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
             solver(solver_control_cheap, mem,
