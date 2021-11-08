@@ -30,7 +30,7 @@ Number of degrees of freedom: 1,224 (480+72+240+432)
    Solving Stokes system... 21+0 iterations.
 
    Postprocessing:
-     Errors u_L2, p_L2, rho_L2 3.443892e+00, 5.000342e+00, 1.197495e+02
+     Errors u_L2, p_L2, rho_L2 3.570604e+00, 4.539442e+00, 1.209691e+02     
      Writing particle output:  output-time_dependent_annulus/particles/particles-00002
      Writing graphical output: output-time_dependent_annulus/solution/solution-00002
 
