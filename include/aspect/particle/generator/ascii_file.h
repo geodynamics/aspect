@@ -49,6 +49,9 @@ namespace aspect
           void
           generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
 
+          // avoid -Woverloaded-virtual:
+          using Generator::Interface<dim>::generate_particles;
+
           /**
            * Declare the parameters this class takes through input files.
            */

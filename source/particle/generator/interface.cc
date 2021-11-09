@@ -48,6 +48,35 @@ namespace aspect
 
 
       template <int dim>
+      void
+      Interface<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &/*particles*/)
+      {
+        AssertThrow(false,ExcInternalError());
+      }
+
+
+
+      template <int dim>
+      void
+      Interface<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
+      {
+        std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
+        generate_particles(particles);
+
+        std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
+
+        for (const auto &particle : particles)
+          new_particles.insert(new_particles.end(),
+                               std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
+                                              particle.first.first, particle.first.second),
+                                              particle.second));
+
+        particle_handler.insert_particles(new_particles);
+      }
+
+
+
+      template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
                                                           Interface<dim>::generate_particle(const Point<dim> &position,
                                                               const types::particle_index id) const

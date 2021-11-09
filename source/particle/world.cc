@@ -711,19 +711,7 @@ namespace aspect
     World<dim>::generate_particles()
     {
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Generate");
-
-      std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
-      generator->generate_particles(particles);
-
-      std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
-
-      for (const auto &particle : particles)
-        new_particles.insert(new_particles.end(),
-                             std::make_pair(typename Triangulation<dim>::active_cell_iterator(&this->get_triangulation(),
-                                            particle.first.first, particle.first.second),
-                                            particle.second));
-
-      particle_handler->insert_particles(new_particles);
+      generator->generate_particles(*particle_handler);
     }
 
 
