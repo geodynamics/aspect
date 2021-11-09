@@ -336,11 +336,23 @@ namespace aspect
 
       statistics.add_value("Number of advected particles",world.n_global_particles());
 
-      // If it's not time to generate an output file or we do not write output
+      // If it's not time to generate an output file
       // return early with the number of particles that were advected
       if (this->get_time() < last_output_time + output_interval)
         return std::make_pair("Number of advected particles:",
                               Utilities::int_to_string(world.n_global_particles()));
+
+      // If we do not write output
+      // return early with the number of particles that were advected
+      if (output_formats.size() == 0 || output_formats[0] == "none")
+        {
+          // Up the next time we need output. This is relevant to correctly
+          // write output after a restart if the format is changed.
+          set_last_output_time (this->get_time());
+
+          return std::make_pair("Number of advected particles:",
+                                Utilities::int_to_string(world.n_global_particles()));
+        }
 
       if (output_file_number == numbers::invalid_unsigned_int)
         output_file_number = 0;
@@ -364,13 +376,10 @@ namespace aspect
 
       for (const auto &output_format : output_formats)
         {
-          if (output_format == "none")
-            {
-              // If we do not write output return early with the number of advected particles
-              return std::make_pair("Number of advected particles:",
-                                    Utilities::int_to_string(world.n_global_particles()));
-            }
-          else if (output_format=="hdf5")
+          // this case was handled above
+          Assert(output_format != "none", ExcInternalError());
+
+          if (output_format == "hdf5")
             {
               const std::string particle_file_name = "particles/" + particle_file_prefix + ".h5";
               const std::string xdmf_filename = "particles.xdmf";
