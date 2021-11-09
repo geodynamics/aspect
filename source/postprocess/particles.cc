@@ -376,12 +376,10 @@ namespace aspect
 
       for (const auto &output_format : output_formats)
         {
-          if (output_format == "none")
-            {
-              // this case was handled above
-              AssertThrow(false, ExcInternalError());
-            }
-          else if (output_format=="hdf5")
+          // this case was handled above
+          Assert(output_format != "none", ExcInternalError());
+
+          if (output_format == "hdf5")
             {
               const std::string particle_file_name = "particles/" + particle_file_prefix + ".h5";
               const std::string xdmf_filename = "particles.xdmf";
