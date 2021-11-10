@@ -35,7 +35,7 @@ namespace aspect
        * @ingroup ParticleGenerators
        */
       template <int dim>
-      class RandomUniform : public ProbabilityDensityFunction<dim>
+      class RandomUniform : public Interface<dim>
       {
         public:
           /**
