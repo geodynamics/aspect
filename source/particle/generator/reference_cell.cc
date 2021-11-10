@@ -127,10 +127,10 @@ namespace aspect
               prm.enter_subsection("Reference cell");
               {
                 const auto n_particles_per_direction = Utilities::possibly_extend_from_1_to_N (
-                                        Utilities::string_to_int(
-                                          Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
-                                        dim,
-                                        "Number of particles per cell per direction");
+                                                         Utilities::string_to_int(
+                                                           Utilities::split_string_list(prm.get("Number of particles per cell per direction"))),
+                                                         dim,
+                                                         "Number of particles per cell per direction");
 
                 for (const auto &n_particle_direction: n_particles_per_direction)
                   number_of_particles.push_back(static_cast<unsigned int> (n_particle_direction));

@@ -31,7 +31,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+      UniformRadial<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
         // Create the array of shell to deal with
         const double radial_spacing = (P_max[0] - P_min[0]) / fmax(radial_layers-1,1);
@@ -80,16 +80,8 @@ namespace aspect
                   {
                     spherical_coordinates[1] = P_min[1] + j * phi_spacing;
                     const Point<dim> particle_position = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-
-                    // Try to add the particle. If it is not in this domain, do not
-                    // worry about it and move on to next point.
-                    try
-                      {
-                        particles.insert(this->generate_particle(particle_position,particle_index));
-                      }
-                    catch (ExcParticlePointNotInDomain &)
-                      {}
-                    particle_index++;
+                    this->insert_particle_at_position(particle_position, particle_index, particle_handler);
+                    ++particle_index;
                   }
               }
             else if (dim == 3)
@@ -114,22 +106,14 @@ namespace aspect
                       {
                         spherical_coordinates[1] = P_min[1] + k * phi_spacing;
                         const Point<dim> particle_position = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(spherical_coordinates) + P_center;
-
-                        // Try to add the particle. If it is not in this domain, do not
-                        // worry about it and move on to next point.
-                        try
-                          {
-                            particles.insert(this->generate_particle(particle_position,particle_index));
-                          }
-                        catch (ExcParticlePointNotInDomain &)
-                          {}
-                        particle_index++;
+                        this->insert_particle_at_position(particle_position, particle_index, particle_handler);
+                        ++particle_index;
                       }
                   }
               }
-            else
-              ExcNotImplemented();
           }
+
+        particle_handler.update_cached_numbers();
       }
 
 

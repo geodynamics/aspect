@@ -43,11 +43,11 @@ namespace aspect
            * Reads in a file and generate a set of particles at the prescribed
            * positions.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
 
           // avoid -Woverloaded-virtual:
           using Generator::Interface<dim>::generate_particles;

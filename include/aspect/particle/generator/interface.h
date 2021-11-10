@@ -25,8 +25,10 @@
 #include <aspect/simulator_access.h>
 
 #include <deal.II/particles/particle.h>
+#include <deal.II/particles/generators.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
+#include <deal.II/grid/tria.h>
 
 #include <random>
 
@@ -101,6 +103,7 @@ namespace aspect
            * @param [in,out] particles A multimap between cells and their
            * particles. This map will be filled in this function.
            */
+          DEAL_II_DEPRECATED
           virtual
           void
           generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles);
@@ -110,14 +113,11 @@ namespace aspect
            * has to decide on the method and number of particles to generate,
            * for example using input parameters declared in their
            * declare_parameters and parse_parameters functions. This function
-           * should generate the particles and associate them to their according
-           * cells by inserting them into a multimap between cell and particle.
-           * This map becomes very large if the particle count per process
-           * is large, so we hand it over by reference instead of returning
-           * the multimap.
+           * should generate the particles and insert them into @p particle_handler
+           * by calling its respective functions.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           virtual
           void
@@ -162,10 +162,38 @@ namespace aspect
            * In case the position is not in the local domain this function
            * throws an exception of type ExcParticlePointNotInDomain, which
            * can be caught in the calling plugin.
+           *
+           * @deprecated: This function uses an return type and is deprecated.
+           * Use the generate_particle_at_position() function below instead.
            */
+          DEAL_II_DEPRECATED
           std::pair<Particles::internal::LevelInd,Particle<dim>>
                                                               generate_particle(const Point<dim> &position,
                                                                                 const types::particle_index id) const;
+
+          /**
+           * Generate a particle at the specified position and with the
+           * specified id. Many derived classes use this functionality,
+           * therefore it is implemented here to avoid duplication.
+           * In case the position is not in the local domain this function
+           * throws an exception of type ExcParticlePointNotInDomain, which
+           * can be caught in the calling plugin. Note that since the cell
+           * in which the particle is generated is not known, it has to be
+           * found, which is an expensive operation.
+           *
+           * @p position Position of the particle.
+           * @p id The id of the particle.
+           * @p particle_handler The particle handler into which the particle
+           * should be inserted.
+           *
+           * @return An iterator to the inserted particle. If the position was
+           * not in the local domain, an iterator to particle_handler.end() is
+           * returned.
+           */
+          Particles::ParticleIterator<dim>
+          insert_particle_at_position(const Point<dim> &position,
+                                      const types::particle_index id,
+                                      Particles::ParticleHandler<dim> &particle_handler) const;
 
           /**
            * Random number generator. For reproducibility of tests it is

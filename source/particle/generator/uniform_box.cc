@@ -34,7 +34,7 @@ namespace aspect
     {
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+      UniformBox<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
         const Tensor<1,dim> P_diff = P_max - P_min;
 
@@ -61,36 +61,21 @@ namespace aspect
                 if (dim == 2)
                   {
                     const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]);
-
-                    // Try to add the particle. If it is not in this domain, do not
-                    // worry about it and move on to next point.
-                    try
-                      {
-                        particles.insert(this->generate_particle(particle_position,particle_index));
-                      }
-                    catch (ExcParticlePointNotInDomain &)
-                      {}
-                    particle_index++;
+                    this->insert_particle_at_position(particle_position, particle_index, particle_handler);
+                    ++particle_index;
                   }
                 else if (dim == 3)
                   for (unsigned int k = 0; k < n_particles_per_direction[2]; ++k)
                     {
                       const Point<dim> particle_position = Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]);
-
-                      // Try to add the particle. If it is not in this domain, do not
-                      // worry about it and move on to next point.
-                      try
-                        {
-                          particles.insert(this->generate_particle(particle_position,particle_index));
-                        }
-                      catch (ExcParticlePointNotInDomain &)
-                        {}
-                      particle_index++;
+                      this->insert_particle_at_position(particle_position, particle_index, particle_handler);
+                      ++particle_index;
                     }
-                else
-                  ExcNotImplemented();
+
               }
           }
+
+        particle_handler.update_cached_numbers();
       }
 
 

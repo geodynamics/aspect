@@ -61,7 +61,10 @@ namespace aspect
       Interface<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
         std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
+
+        DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
         generate_particles(particles);
+        DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
 
         std::multimap<typename Triangulation<dim>::active_cell_iterator, Particles::Particle<dim>> new_particles;
 
@@ -98,6 +101,25 @@ namespace aspect
 
         // Avoid warnings about missing return
         return std::pair<Particles::internal::LevelInd,Particle<dim>>();
+      }
+
+
+
+      template <int dim>
+      Particles::ParticleIterator<dim>
+      Interface<dim>::insert_particle_at_position(const Point<dim> &position,
+                                                  const types::particle_index id,
+                                                  Particles::ParticleHandler<dim> &particle_handler) const
+      {
+        // Try to find the cell of the given position.
+        std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+            Point<dim>> it =
+              GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
+
+        if (it.first.state() != IteratorState::valid || it.first->is_locally_owned() == false)
+          return particle_handler.end();
+
+        return particle_handler.insert_particle(Particle<dim>(position, it.second, id), it.first);
       }
 
 

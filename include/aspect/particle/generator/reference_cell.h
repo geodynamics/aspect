@@ -47,8 +47,8 @@ namespace aspect
            * Uniform here means the particles will be generated with
            * an equal spacing in each spatial dimension.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
           generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
