@@ -22,8 +22,6 @@
 
 #include <aspect/utilities.h>
 
-#include <deal.II/particles/generators.h>
-
 namespace aspect
 {
   namespace Particle

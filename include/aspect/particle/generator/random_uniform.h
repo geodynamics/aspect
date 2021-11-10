@@ -39,12 +39,9 @@ namespace aspect
       {
         public:
           /**
-           * Generate a set of particles in the current
-           * particle world. The particle density is set by an analytically
-           * prescribed density function that is set as an input parameter.
-           * This function builds a list of probabilities for all local cells
-           * and then calls generate_particles_in_subdomain() to generate
-           * the local particles.
+           * Generate a set of particles in the given
+           * particle handler. The particles are generated
+           * with a uniform density in the whole domain.
            *
            * @param [in,out] particle_handler The particle handler into which
            * the generated particles should be inserted.

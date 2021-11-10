@@ -28,7 +28,6 @@
 #include <deal.II/particles/generators.h>
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/exceptions.h>
-#include <deal.II/grid/tria.h>
 
 #include <random>
 
@@ -163,8 +162,8 @@ namespace aspect
            * throws an exception of type ExcParticlePointNotInDomain, which
            * can be caught in the calling plugin.
            *
-           * @deprecated: This function uses an return type and is deprecated.
-           * Use the generate_particle_at_position() function below instead.
+           * @deprecated: This function uses an old return type and is deprecated.
+           * Use the insert_particle_at_position() function below instead.
            */
           DEAL_II_DEPRECATED
           std::pair<Particles::internal::LevelInd,Particle<dim>>
@@ -173,7 +172,8 @@ namespace aspect
 
           /**
            * Generate a particle at the specified position and with the
-           * specified id. Many derived classes use this functionality,
+           * specified id and insert it into the @p particle_handler.
+           * Many derived classes use this functionality,
            * therefore it is implemented here to avoid duplication.
            * In case the position is not in the local domain this function
            * throws an exception of type ExcParticlePointNotInDomain, which
