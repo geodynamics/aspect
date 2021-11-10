@@ -89,12 +89,6 @@ namespace aspect
            * particle generation.
            */
           unsigned int random_number_seed;
-
-          /**
-           * A function object representing the particle location probability
-           * density.
-           */
-          Functions::ParsedFunction<dim> function;
       };
 
     }

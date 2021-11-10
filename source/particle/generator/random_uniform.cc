@@ -60,8 +60,6 @@ namespace aspect
             {
               prm.enter_subsection("Probability density function");
               {
-                Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
-
                 prm.declare_entry ("Random cell selection", "true",
                                    Patterns::Bool(),
                                    "If true, particle numbers per cell are calculated randomly "
@@ -110,19 +108,6 @@ namespace aspect
               {
                 random_cell_selection = prm.get_bool("Random cell selection");
                 random_number_seed = prm.get_integer("Random number seed");
-
-                try
-                  {
-                    function.parse_parameters (prm);
-                  }
-                catch (...)
-                  {
-                    std::cerr << "ERROR: FunctionParser failed to parse\n"
-                              << "\t'Particle.Generator.Probability density function'\n"
-                              << "with expression\n"
-                              << "\t'" << prm.get("Function expression") << "'";
-                    throw;
-                  }
               }
               prm.leave_subsection();
             }
