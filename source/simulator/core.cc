@@ -1046,14 +1046,65 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
+
+        if (solver_scheme_solves_advection_equations(parameters)
+            &&
+            compositional_fields_need_matrix_block(introspection))
+          {
+            // If we solve for more than one compositional field make sure we keep constrained entries
+            // to allow different boundary conditions for different fields.
+            Table<2,DoFTools::Coupling> composition_coupling(introspection.n_components,
+                                                             introspection.n_components);
+            composition_coupling.fill (DoFTools::none);
+
+            const unsigned int component = introspection.component_indices.compositional_fields[0];
+            composition_coupling[component][component] = coupling[component][component];
+
+            const unsigned int block = introspection.get_components_to_blocks()[component];
+            sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
+                                         sp.block(block,block).locally_owned_domain_indices());
+
+            DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                  sp,
+                                                  current_constraints, true,
+                                                  composition_coupling,
+                                                  face_coupling,
+                                                  Utilities::MPI::
+                                                  this_mpi_process(mpi_communicator));
+          }
       }
     else
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       current_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+      {
+        DoFTools::make_sparsity_pattern (dof_handler,
+                                         coupling, sp,
+                                         current_constraints, false,
+                                         Utilities::MPI::
+                                         this_mpi_process(mpi_communicator));
 
+        // If we solve for more than one compositional field make sure we keep constrained entries
+        // to allow different boundary conditions for different fields.
+        if (solver_scheme_solves_advection_equations(parameters)
+            &&
+            compositional_fields_need_matrix_block(introspection))
+          {
+            Table<2,DoFTools::Coupling> composition_coupling(introspection.n_components,
+                                                             introspection.n_components);
+            composition_coupling.fill (DoFTools::none);
+
+            const unsigned int component = introspection.component_indices.compositional_fields[0];
+            composition_coupling[component][component] = coupling[component][component];
+
+            const unsigned int block = introspection.get_components_to_blocks()[component];
+            sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
+                                         sp.block(block,block).locally_owned_domain_indices());
+
+            DoFTools::make_sparsity_pattern (dof_handler,
+                                             composition_coupling, sp,
+                                             current_constraints, true,
+                                             Utilities::MPI::
+                                             this_mpi_process(mpi_communicator));
+          }
+      }
 
     sp.compress();
 
