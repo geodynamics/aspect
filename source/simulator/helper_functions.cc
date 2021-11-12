@@ -794,6 +794,8 @@ namespace aspect
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
       {
+        const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
+
         QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
@@ -808,10 +810,7 @@ namespace aspect
               for (const unsigned int face_no : cell->face_indices())
                 {
                   const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                  if (face->at_boundary()
-                      &&
-                      (geometry_model->depth (face->center()) <
-                       (face->diameter() / std::sqrt(1.*dim-1) / 3)))
+                  if (face->at_boundary() && face->boundary_id() == top_boundary_id)
                     {
                       fe_face_values.reinit (cell, face_no);
                       fe_face_values[extractor_pressure].get_function_values(vector,
@@ -819,9 +818,10 @@ namespace aspect
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {
+                          const double JxW = fe_face_values.JxW(q);
                           my_pressure += pressure_values[q]
-                                         * fe_face_values.JxW (q);
-                          my_area += fe_face_values.JxW (q);
+                                         * JxW;
+                          my_area += JxW;
                         }
                     }
                 }

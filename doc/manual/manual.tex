@@ -10966,7 +10966,7 @@ boundary indicators as follows:
        ++cell)
     for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
       if (cell->face(f)->at_boundary())
-        if (cell->face(f)->center()[0] == -1)
+        if (cell->face(f)->center(true)[0] == -1)
           cell->face(f)->set_boundary_indicator (42);
   \end{lstlisting}
   This calls functions \texttt{TriaAccessor::set\_boundary\_indicator}. In 3d, it may

@@ -73,7 +73,7 @@ namespace aspect
          cell = this->get_triangulation().begin_active();
          cell != this->get_triangulation().end(); ++cell)
       {
-        if (cell->is_locally_owned() && cell->center()[0]<0.5)
+        if (cell->is_locally_owned() && cell->center(true)[0]<0.5)
           cell->clear_refine_flag ();
       }
   }
