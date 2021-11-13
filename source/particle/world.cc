@@ -1357,7 +1357,16 @@ namespace aspect
               if (particles_in_cell.begin() != particles_in_cell.end())
                 {
                   // Only use deal.II FEPointEvaluation if it's fast path is used
-                  const bool use_fast_path = dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr;
+                  bool use_fast_path = false;
+#if DEAL_II_VERSION_GTE(10,0,0)
+                  if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
+                      dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
+                    use_fast_path = true;
+#else
+                  if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr)
+                    use_fast_path = true;
+#endif
+
                   if (use_fast_path)
                     local_advect_particles(cell,
                                            particles_in_cell.begin(),
