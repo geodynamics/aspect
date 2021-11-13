@@ -38,7 +38,7 @@ namespace aspect
         {
           const double temperature = in.temperature[i];
           const double pressure = in.pressure[i];
-          const std::vector<double> composition = in.composition[i];
+          const std::vector<double> &composition = in.composition[i];
           const Point<dim> position = in.position[i];
 
           // Assign constant material properties
@@ -80,6 +80,20 @@ namespace aspect
               out.viscosities[i] = visc_composition_dependence * visc_temperature_dependence * eta;
           }
 
+          // Prepare some values for phase dependent properties
+          const double depth = this->get_geometry_model().depth(in.position[i]);
+          const double adiabatic_pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
+          const double pressure_depth_derivative = (depth > 0.0 && adiabatic_pressure > 0.0)
+                                                   ?
+                                                   adiabatic_pressure / depth
+                                                   :
+                                                   this->get_gravity_model().gravity_vector(in.position[i]).norm() * reference_rho;
+          MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
+                                                               pressure,
+                                                               depth,
+                                                               pressure_depth_derivative,
+                                                               0);
+
           // Calculate density
           // and phase dependence of viscosity
           {
@@ -90,7 +104,7 @@ namespace aspect
 
             // second, calculate composition dependence of density
             // constant density difference between peridotite and eclogite
-            const double density_composition_dependence = composition.size()>0
+            const double density_composition_dependence = composition.size() > 0
                                                           ?
                                                           compositional_delta_rho * composition[0]
                                                           :
@@ -110,31 +124,19 @@ namespace aspect
             // Loop through phase transitions
             for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
               {
-                const double depth = this->get_geometry_model().depth(position);
-                const double pressure_depth_derivative = (depth > 0.0)
-                                                         ?
-                                                         this->get_adiabatic_conditions().pressure(position) / depth
-                                                         :
-                                                         this->get_gravity_model().gravity_vector(position).norm() * reference_rho;
-
-                const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
-                                                                           pressure,
-                                                                           depth,
-                                                                           pressure_depth_derivative,
-                                                                           phase);
-
+                phase_in.phase_index = phase;
                 const double phaseFunction = phase_function.compute_value(phase_in);
 
                 // Note that for the densities we have a list of jumps, so the index used
                 // in the loop corresponds to the index of the phase transition. For the
                 // viscosities we have a list of prefactors, which has one more entry
                 // for the first layer, so we have to use phase+1 as the index.
-                if (composition.size()==0)
+                if (composition.size() == 0)
                   {
                     phase_dependence += phaseFunction * density_jumps[phase];
                     viscosity_phase_dependence *= 1. + phaseFunction * (phase_prefactors[phase+1]-1.);
                   }
-                else if (composition.size()>0)
+                else if (composition.size() > 0)
                   {
                     if (transition_phases[phase] == 0)     // 1st compositional field
                       phase_dependence += phaseFunction * density_jumps[phase] * (1.0 - composition[0]);
@@ -176,24 +178,12 @@ namespace aspect
             if (this->get_adiabatic_conditions().is_initialized() && this->include_latent_heat())
               for (unsigned int phase=0; phase<phase_function.n_phase_transitions(); ++phase)
                 {
-                  const double depth = this->get_geometry_model().depth(in.position[i]);
-                  const double pressure_depth_derivative = (depth > 0.0)
-                                                           ?
-                                                           this->get_adiabatic_conditions().pressure(position) / depth
-                                                           :
-                                                           this->get_gravity_model().gravity_vector(position).norm() * reference_rho;
-
-                  const MaterialUtilities::PhaseFunctionInputs<dim> phase_in(temperature,
-                                                                             pressure,
-                                                                             depth,
-                                                                             pressure_depth_derivative,
-                                                                             phase);
-
+                  phase_in.phase_index = phase;
                   const double PhaseFunctionDerivative = phase_function.compute_derivative(phase_in);
                   const double clapeyron_slope = phase_function.get_transition_slope(phase);
 
                   double entropy_change = 0.0;
-                  if (composition.size()==0)      // only one compositional field
+                  if (composition.size() == 0)      // only one compositional field
                     entropy_change = clapeyron_slope * density_jumps[phase] / (rho * rho);
                   else
                     {
