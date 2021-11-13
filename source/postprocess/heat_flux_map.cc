@@ -449,15 +449,19 @@ namespace aspect
       std::vector<std::pair<Point<dim>,double>> stored_values;
 
       // loop over all of the surface cells and evaluate the heat flux
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
             if (cell->at_boundary(f) &&
-                (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-                 this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                (cell->face(f)->boundary_id() == top_boundary_id ||
+                 cell->face(f)->boundary_id() == bottom_boundary_id))
               {
                 // evaluate position of heat flow to write into output file
-                const Point<dim> midpoint_at_surface = cell->face(f)->center();
+                const bool respect_manifold = true;
+                const Point<dim> midpoint_at_surface = cell->face(f)->center(respect_manifold);
 
                 const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first /
                                             heat_flux_and_area[cell->active_cell_index()][f].second;
