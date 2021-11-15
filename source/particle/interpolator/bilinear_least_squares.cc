@@ -106,9 +106,6 @@ namespace aspect
         std::vector<Vector<double>> A(n_matrix_columns, Vector<double>(n_particles));
         std::vector<Vector<double>> b(n_particle_properties, Vector<double>(n_particles));
 
-        AssertThrow(n_particles >= n_matrix_columns,
-                    ExcMessage("At least one cell contained no particles. The 'bilinear'"
-                               "interpolation scheme does not support this case. "));
         unsigned int positions_index = 0;
         const auto &mapping = this->get_mapping();
         const double unit_offset = 0.5; // The unit cell of deal.II is [0,1]^dim. The limiter needs a 'unit' cell of [-.5,.5]^dim.
@@ -141,7 +138,7 @@ namespace aspect
               }
           }
 
-        ImplicitQR<Vector<double>>qr;
+        ImplicitQR <Vector<double>> qr;
         for (const auto &column : A)
           qr.append_column(column);
         // If A is rank deficent then qr.append_column will not append
@@ -166,7 +163,6 @@ namespace aspect
                 qr.solve(c[property_index], QTb[property_index]);
               }
           }
-
         const double half_h = .5;
         for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
           {
@@ -183,7 +179,7 @@ namespace aspect
                     for (unsigned int i = 1; i < n_matrix_columns; ++i)
                       {
                         // The slope in any one direction should not overshoot/undershoot on its own.
-                        c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]) * 2, max_total_slope), c[property_index][1]);
+                        c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]) * 2, max_total_slope), c[property_index][i]);
                         current_total_slope += std::abs(c[property_index][i]);
                       }
                     current_total_slope *= half_h;
@@ -203,7 +199,7 @@ namespace aspect
                             c_i[0] = c[property_index][0];
                             for (unsigned int i = 1; i < n_matrix_columns; ++i)
                               {
-                                c_i[i] = std::copysign(std::abs(c[property_index][i]) - change_in_slope,c[property_index][i]);
+                                c_i[i] = std::copysign(std::abs(c[property_index][i]) - change_in_slope, c[property_index][i]);
                               }
                             if (dim == 2)
                               {
@@ -242,8 +238,7 @@ namespace aspect
 
                           }
                       }
-
-                  }
+                }
                 std::size_t positions_index = 0;
                 for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
@@ -262,11 +257,6 @@ namespace aspect
                         // Due to floating point inaccuracies init and interpolated_value can differ resulting in
                         // an overshoot or undershoot of around 1e-16. We resolve these small overshoot/undershoots by chopping
                         // and ensuring that we chopped no more than a 1e-14th of the value.
-                        if (std::abs(init - interpolated_value) > 1e-14 * std::abs(init))
-                          {
-                            std::cout.precision(17);
-                            std::cout << std::fixed << "init: " << init << " inter: " << interpolated_value << " " << std::abs(init-interpolated_value) << std::endl;
-                          }
                         Assert(std::abs(init - interpolated_value) <= 1e-14 * std::abs(init), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
@@ -293,11 +283,12 @@ namespace aspect
               {
                 prm.declare_entry("Use linear least squares limiter", "false",
                                   Patterns::List(Patterns::Bool()),
-                                  "Limit the interpolation of all particle properties "
+                                  "Limit the interpolation of particle properties "
                                   "onto the cell so the value of each property is no "
                                   "smaller than its minimum and no larger than its "
                                   "maximum on the particles in each cell. Currently "
-                                  "doesn't work on spherical grids.");
+                                  "doesn't work on spherical grids. If more than one "
+                                  "value is specified, they will be treated as a list.");
 
               }
               prm.leave_subsection();
@@ -374,7 +365,9 @@ namespace aspect
                                             "Interpolate this property onto the support points or to initiate the "
                                             "property value on a new particle. If the limiter is enabled then it "
                                             "will ensure the interpolated properties do not exceed the "
-                                            "range of the minimum and maximum of the values of the property on the particles.")
+                                            "range of the minimum and maximum of the values of the property on the "
+                                            "particles. Note that deal.II must be configured with BLAS and LAPACK to "
+                                            "support this operation.")
     }
   }
 }
