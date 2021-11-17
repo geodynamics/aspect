@@ -33,6 +33,7 @@
 #include <deal.II/grid/grid_tools.h>
 
 #include <deal.II/matrix_free/fe_point_evaluation.h>
+#include <deal.II/fe/mapping_cartesian.h>
 
 #include <boost/serialization/map.hpp>
 #include <boost/archive/text_oarchive.hpp>
