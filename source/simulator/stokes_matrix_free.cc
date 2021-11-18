@@ -1234,9 +1234,9 @@ namespace aspect
                          "Turns on extra information for the matrix free GMG solver to be printed.");
       prm.declare_entry ("Execute solver timings", "false",
                          Patterns::Bool(),
-                         "Executes different parts of the Stokes solver repeatedly and print timing information."
-                         "This is for internal benchmarking purposes, it's useful if you want to see how the solver"
-                         "performs. Otherwise, you don't want to enable this, since it adds additional computatinal costs"
+                         "Executes different parts of the Stokes solver repeatedly and print timing information. "
+                         "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
+                         "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
                          "to get the timing information.");
     }
     prm.leave_subsection ();
