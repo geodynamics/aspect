@@ -1234,7 +1234,10 @@ namespace aspect
                          "Turns on extra information for the matrix free GMG solver to be printed.");
       prm.declare_entry ("Execute solver timings", "false",
                          Patterns::Bool(),
-                         "Executes different parts of the Stokes solver repeatedly and print timing information.");
+                         "Executes different parts of the Stokes solver repeatedly and print timing information."
+                         "This is for internal benchmarking purposes, it's useful if you want to see how the solver"
+                         "performs. Otherwise, you don't want to enable this, since it adds additional computatinal costs"
+                         "to get the timing information.");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -2117,7 +2120,9 @@ namespace aspect
 
     PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double>> mem;
 
-
+    // Time vmult of different matrix-free operators, solver IDR with the cheap preconditioner, and
+    // solver GMRES with the cheap preconditioner. Each timing is repeated 10 times, and the
+    // function may be called a couple of times within each timing, depending on the argument repeats.
     if (do_timings)
       {
         const int n_timings = 10;

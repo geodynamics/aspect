@@ -566,6 +566,11 @@ namespace aspect
       Simulator<dim> &sim;
 
       bool print_details;
+
+      /**
+       * If true, it will time the key components of this matrix-free implementation, such as
+       * vmult of different matrices, solver IDR with the cheap preconditioner, etc.
+       */
       bool do_timings;
 
       DoFHandler<dim> dof_handler_v;
