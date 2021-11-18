@@ -195,6 +195,40 @@ namespace aspect
         }
       return residuals;
     }
+
+
+
+    template <int dim>
+    std::vector<double>
+    EntropyAdvectionSystem<dim>::advection_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
+
+      for (unsigned int i=0; i<prefactors.size(); ++i)
+        prefactors[i] = scratch.material_model_outputs.densities[i] * scratch.material_model_inputs.temperature[i];
+
+      return prefactors;
+    }
+
+
+
+    template <int dim>
+    std::vector<double>
+    EntropyAdvectionSystem<dim>::diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const
+    {
+      internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
+
+      std::vector<double> prefactors(scratch.material_model_inputs.n_evaluation_points(), 0.0);
+
+      for (unsigned int i=0; i<prefactors.size(); ++i)
+        prefactors[i] = scratch.material_model_outputs.thermal_conductivities[i] *
+                        scratch.material_model_inputs.temperature[i] /
+                        scratch.material_model_outputs.specific_heat[i];
+
+      return prefactors;
+    }
   }
 
 // The function below replaces the normal temperature advection assembler with the entropy advection assembler of this file
