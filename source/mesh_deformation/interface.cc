@@ -871,6 +871,7 @@ namespace aspect
           level_mappings.resize(0, n_levels-1);
           level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
           {
+            level_displacements[level].update_ghost_values();
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
               /* degree = */ 1,
