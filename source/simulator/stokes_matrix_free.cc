@@ -1232,6 +1232,12 @@ namespace aspect
       prm.declare_entry ("Output details", "false",
                          Patterns::Bool(),
                          "Turns on extra information for the matrix free GMG solver to be printed.");
+      prm.declare_entry ("Execute solver timings", "false",
+                         Patterns::Bool(),
+                         "Executes different parts of the Stokes solver repeatedly and print timing information. "
+                         "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
+                         "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
+                         "to get the timing information.");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -1247,6 +1253,7 @@ namespace aspect
     prm.enter_subsection ("Matrix Free");
     {
       print_details = prm.get_bool ("Output details");
+      do_timings = prm.get_bool ("Execute solver timings");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -2112,6 +2119,122 @@ namespace aspect
                               sim.parameters.linear_solver_S_block_tolerance);
 
     PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double>> mem;
+
+    // Time vmult of different matrix-free operators, solver IDR with the cheap preconditioner, and
+    // solver GMRES with the cheap preconditioner. Each timing is repeated 10 times, and the
+    // function may be called a couple of times within each timing, depending on the argument repeats.
+    if (do_timings)
+      {
+        const int n_timings = 10;
+        Timer timer(sim.mpi_communicator);
+
+        auto time_this = [&](const char *name, int repeats, std::function<void()> body, std::function<void()> prepare)
+        {
+          sim.pcout << "Timing " << name << ' ' << n_timings << " time(s) and repeat "
+                    << repeats << " time(s) within each timing:" << std::endl;
+
+          body(); // warm up
+
+          double average_time = 0.;
+
+          for (int i=0; i<n_timings; ++i)
+            {
+              prepare();
+              sim.pcout << "\t... " << std::flush;
+              timer.restart();
+
+              for (int r=0; r<repeats; ++r)
+                body();
+
+              timer.stop();
+              double time = timer.wall_time();
+              const double average_time_per_timing = time/repeats;
+              sim.pcout << average_time_per_timing << std::endl;
+              average_time += average_time_per_timing;
+            }
+
+          sim.pcout << "\taverage wall time of all: "<< average_time/n_timings << " seconds" << std::endl;
+
+        };
+
+        // stokes vmult
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("stokes_vmult", 10,
+                    [&] {stokes_matrix.vmult(tmp_dst, tmp_src);},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+
+        // stokes preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("stokes_preconditioner", 1,
+                    [&] {preconditioner_cheap.vmult(tmp_dst, tmp_src);},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // A preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("A_preconditioner", 1,
+                    [&] {prec_A.vmult(tmp_dst.block(0), tmp_src.block(0));},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // S preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("S_preconditioner", 5,
+                    [&] {prec_Schur.vmult(tmp_dst.block(1), tmp_src.block(1));},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // Solve
+        {
+          // hard-code the number of iterations here to always do cheap iterations
+          SolverControl solver_control_cheap (1000, solver_tolerance, true);
+
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("Stokes_solve_cheap_idr", 1,
+                    [&]
+          {
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.idr_s_parameter));
+
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
+          },
+          [&] {tmp_dst = solution_copy;}
+                   );
+
+          time_this("Stokes_solve_cheap_gmres", 1,
+                    [&]
+          {
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+            true));
+
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
+          },
+          [&] {tmp_dst = solution_copy;}
+                   );
+        }
+      }
 
     // step 1a: try if the simple and fast solver
     // succeeds in n_cheap_stokes_solver_steps steps or less.
