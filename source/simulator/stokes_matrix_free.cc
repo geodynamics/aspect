@@ -332,8 +332,9 @@ namespace aspect
                 Tensor<1, dim, double> unit_vec;
                 unit_vec[d] = 1.0;
 
-                Tensor<1, dim> normal_vec =
-                  face->get_manifold().normal_vector(face, face->center());
+                const bool respect_manifold = true;
+                const Tensor<1, dim> normal_vec =
+                  face->get_manifold().normal_vector(face, face->center(respect_manifold));
 
                 if (std::abs(std::abs(unit_vec * normal_vec) - 1.0) < 1e-10)
                   comp_mask.set(d + first_vector_component, true);

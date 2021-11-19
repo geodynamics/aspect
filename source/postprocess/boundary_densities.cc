@@ -54,6 +54,9 @@ namespace aspect
       typename MaterialModel::Interface<dim>::MaterialModelOutputs out(fe_face_values.n_quadrature_points, this->n_compositional_fields());
       std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (fe_face_values.n_quadrature_points));
 
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
       // loop over all of the surface cells and if one less than h/3 away from
       // the top or bottom surface, evaluate the density on that face
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -64,14 +67,12 @@ namespace aspect
               bool cell_at_bottom = false;
 
               // Test for top or bottom surface cell faces
-              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                  < cell->face(f)->minimum_vertex_distance()/3.)
+              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                 cell_at_top = true;
-              if (cell->at_boundary(f) && this->get_geometry_model().depth (cell->face(f)->center())
-                  > (this->get_geometry_model().maximal_depth() - cell->face(f)->minimum_vertex_distance()/3.))
+              if (cell->at_boundary(f) && cell->face(f)->boundary_id() == bottom_boundary_id)
                 cell_at_bottom = true;
 
-              if ( cell_at_top || cell_at_bottom )
+              if (cell_at_top || cell_at_bottom)
                 {
                   // handle surface cells
                   fe_face_values.reinit (cell, f);
