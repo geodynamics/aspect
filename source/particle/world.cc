@@ -567,7 +567,11 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
+#if DEAL_II_VERSION_GTE(10,0,0)
+      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+#else
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+#endif
 
       std::vector<Point<dim> > positions;
       positions.reserve(n_particles_in_cell);
@@ -586,22 +590,24 @@ namespace aspect
       if (update_flags & (update_values | update_gradients))
         evaluators.reinit(cell, positions, {solution_values.data(), solution_values.size()}, update_flags);
 
+      Vector<double> solution;
+      if (update_flags & update_values)
+        solution.reinit(this->introspection().n_components);
+
+      std::vector<Tensor<1,dim>> gradients;
+      if (update_flags & update_gradients)
+        gradients.resize(this->introspection().n_components);
+
       auto particle = begin_particle;
       for (unsigned int i = 0; particle!=end_particle; ++particle,++i)
         {
           // Evaluate the solution, but only if it is requested in the update_flags
-          const Vector<double> solution = (update_flags & update_values)
-                                          ?
-                                          evaluators.get_solution(i)
-                                          :
-                                          Vector<double>();
+          if (update_flags & update_values)
+            evaluators.get_solution(i, solution);
 
           // Evaluate the gradients, but only if they are requested in the update_flags
-          const std::vector<Tensor<1,dim>> gradients = (update_flags & update_gradients)
-                                                       ?
-                                                       evaluators.get_gradients(i)
-                                                       :
-                                                       std::vector<Tensor<1,dim>>();
+          if (update_flags & update_gradients)
+            evaluators.get_gradients(i, gradients);
 
           property_manager->update_one_particle(particle,
                                                 solution,
@@ -617,15 +623,19 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
+#if DEAL_II_VERSION_GTE(10,0,0)
+      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+#else
+      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+#endif
       const unsigned int solution_components = this->introspection().n_components;
 
       Vector<double>              value (solution_components);
       std::vector<Tensor<1,dim>> gradient (solution_components,Tensor<1,dim>());
 
-      std::vector<Vector<double>>              values(particles_in_cell,value);
-      std::vector<std::vector<Tensor<1,dim>>> gradients(particles_in_cell,gradient);
-      std::vector<Point<dim>>                  positions(particles_in_cell);
+      std::vector<Vector<double>>              values(n_particles_in_cell,value);
+      std::vector<std::vector<Tensor<1,dim>>> gradients(n_particles_in_cell,gradient);
+      std::vector<Point<dim>>                  positions(n_particles_in_cell);
 
       typename ParticleHandler<dim>::particle_iterator it = begin_particle;
       for (unsigned int i = 0; it!=end_particle; ++it,++i)
@@ -667,7 +677,11 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-      const unsigned int n_particles_in_cell = std::distance(begin_particle, end_particle);
+#if DEAL_II_VERSION_GTE(10,0,0)
+      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+#else
+      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+#endif
 
       boost::container::small_vector<Point<dim>, 100>   positions;
       positions.reserve(n_particles_in_cell);
@@ -722,10 +736,14 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-      const unsigned int particles_in_cell = std::distance(begin_particle,end_particle);
+#if DEAL_II_VERSION_GTE(10,0,0)
+      const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+#else
+      const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
+#endif
 
-      std::vector<Tensor<1,dim>>  velocity(particles_in_cell);
-      std::vector<Tensor<1,dim>>  old_velocity(particles_in_cell);
+      std::vector<Tensor<1,dim>>  velocity(n_particles_in_cell);
+      std::vector<Tensor<1,dim>>  old_velocity(n_particles_in_cell);
 
       // Below we manually evaluate the solution at all support points of the
       // current cell, and then use the shape functions to interpolate the
@@ -751,7 +769,7 @@ namespace aspect
 
       // In regions without melt, the fluid velocity equals the solid velocity, so we can use it for all particles.
       std::vector<bool> use_fluid_velocity((compute_fluid_velocity ?
-                                            particles_in_cell
+                                            n_particles_in_cell
                                             :
                                             0), compute_fluid_velocity);
 
@@ -906,19 +924,21 @@ namespace aspect
                  const ArrayView<double> &solution_values,
                  const UpdateFlags update_flags) = 0;
 
-          // Return the value of all solution components at the given evaluation point. Note
+          // Fill @p solution with all solution components at the given @p evaluation_point. Note
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
           virtual
-          Vector<double> get_solution(const unsigned int evaluation_point) = 0;
+          void get_solution(const unsigned int evaluation_point,
+                            Vector<double> &solution) = 0;
 
-          // Return the value of all solution gradients at the given evaluation point. Note
+          // Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
           virtual
-          std::vector<Tensor<1,dim>> get_gradients(const unsigned int evaluation_point) = 0;
+          void get_gradients(const unsigned int evaluation_point,
+                             std::vector<Tensor<1,dim>> &gradients) = 0;
 
           // Return the evaluator for velocity or fluid velocity. This is the only
           // information necessary for advecting particles.
@@ -961,13 +981,15 @@ namespace aspect
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
-          Vector<double> get_solution(const unsigned int evaluation_point) override;
+          void get_solution(const unsigned int evaluation_point,
+                            Vector<double> &solution) override;
 
           // Return the value of all solution gradients at the given evaluation point. Note
           // that this function only works after a successful call to reinit(),
           // because this function only returns the results of the computation that
           // happened in reinit().
-          std::vector<Tensor<1,dim>> get_gradients(const unsigned int evaluation_point) override;
+          void get_gradients(const unsigned int evaluation_point,
+                             std::vector<Tensor<1,dim>> &gradients) override;
 
           // Return the evaluator for velocity or fluid velocity. This is the only
           // information necessary for advecting particles.
@@ -1126,81 +1148,77 @@ namespace aspect
 
 
       template <int dim, int n_compositional_fields>
-      Vector<double>
-      SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_solution(const unsigned int evaluation_point)
+      void
+      SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_solution(const unsigned int evaluation_point,
+                                                                                  Vector<double> &solution)
       {
-        const unsigned int n_components = simulator_access.introspection().n_components;
-        const auto &component_indices = simulator_access.introspection().component_indices;
+        Assert(solution.size() == simulator_access.introspection().n_components,
+               ExcDimensionMismatch(solution.size(), simulator_access.introspection().n_components));
 
-        // Copy all evaluated solutions into values_at_point and return it.
-        Vector<double> values_at_point(n_components);
+        const auto &component_indices = simulator_access.introspection().component_indices;
 
         const Tensor<1,dim> velocity_value = velocity.get_value(evaluation_point);
         for (unsigned int j=0; j<dim; ++j)
-          values_at_point[component_indices.velocities[j]] = velocity_value[j];
+          solution[component_indices.velocities[j]] = velocity_value[j];
 
-        values_at_point[component_indices.pressure] = pressure.get_value(evaluation_point);
-        values_at_point[component_indices.temperature] = temperature.get_value(evaluation_point);
+        solution[component_indices.pressure] = pressure.get_value(evaluation_point);
+        solution[component_indices.temperature] = temperature.get_value(evaluation_point);
 
         const typename FEPointEvaluation<n_compositional_fields, dim>::value_type composition_values = compositions.get_value(evaluation_point);
         for (unsigned int j=0; j<n_compositional_fields; ++j)
-          values_at_point[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
+          solution[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_values,j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
-          values_at_point[component_indices.compositional_fields[n_compositional_fields+j]] = additional_compositions[j].get_value(evaluation_point);
+          solution[component_indices.compositional_fields[n_compositional_fields+j]] = additional_compositions[j].get_value(evaluation_point);
 
         if (simulator_access.include_melt_transport())
           {
             const Tensor<1,dim> fluid_velocity_value = velocity.get_value(evaluation_point);
             for (unsigned int j=0; j<dim; ++j)
-              values_at_point[melt_component_indices[0]+j] = fluid_velocity_value[j];
+              solution[melt_component_indices[0]+j] = fluid_velocity_value[j];
 
-            values_at_point[melt_component_indices[1]] = fluid_pressure->get_value(evaluation_point);
-            values_at_point[melt_component_indices[2]] = compaction_pressure->get_value(evaluation_point);
+            solution[melt_component_indices[1]] = fluid_pressure->get_value(evaluation_point);
+            solution[melt_component_indices[2]] = compaction_pressure->get_value(evaluation_point);
           }
-
-        return values_at_point;
       }
 
 
 
       template <int dim, int n_compositional_fields>
-      std::vector<Tensor<1,dim>>
-                              SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_gradients(const unsigned int evaluation_point)
+      void
+      SolutionEvaluatorsImplementation<dim, n_compositional_fields>::get_gradients(const unsigned int evaluation_point,
+                                                                                   std::vector<Tensor<1,dim>> &gradients)
       {
-        const unsigned int n_components = simulator_access.introspection().n_components;
-        const auto &component_indices = simulator_access.introspection().component_indices;
+        Assert(gradients.size() == simulator_access.introspection().n_components,
+               ExcDimensionMismatch(gradients.size(), simulator_access.introspection().n_components));
 
-        // Copy all evaluated solutions into values_at_point and return it.
-        std::vector<Tensor<1,dim>> gradients_at_point(n_components);
+        const auto &component_indices = simulator_access.introspection().component_indices;
 
         const Tensor<2,dim> velocity_gradient = velocity.get_gradient(evaluation_point);
         for (unsigned int j=0; j<dim; ++j)
-          gradients_at_point[component_indices.velocities[j]] = velocity_gradient[j];
+          gradients[component_indices.velocities[j]] = velocity_gradient[j];
 
-        gradients_at_point[component_indices.pressure] = pressure.get_gradient(evaluation_point);
-        gradients_at_point[component_indices.temperature] = temperature.get_gradient(evaluation_point);
+        gradients[component_indices.pressure] = pressure.get_gradient(evaluation_point);
+        gradients[component_indices.temperature] = temperature.get_gradient(evaluation_point);
 
         const typename FEPointEvaluation<n_compositional_fields, dim>::gradient_type composition_gradients = compositions.get_gradient(evaluation_point);
         for (unsigned int j=0; j<n_compositional_fields; ++j)
-          gradients_at_point[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_gradients,j);
+          gradients[component_indices.compositional_fields[j]] = dealii::internal::FEPointEvaluation::EvaluatorTypeTraits<dim, n_compositional_fields, double>::access(composition_gradients,j);
 
         const unsigned int n_additional_compositions = additional_compositions.size();
         for (unsigned int j=0; j<n_additional_compositions; ++j)
-          gradients_at_point[component_indices.compositional_fields[n_compositional_fields+j]] = additional_compositions[j].get_gradient(evaluation_point);
+          gradients[component_indices.compositional_fields[n_compositional_fields+j]] = additional_compositions[j].get_gradient(evaluation_point);
 
         if (simulator_access.include_melt_transport())
           {
             const Tensor<2,dim> fluid_velocity_gradient = velocity.get_gradient(evaluation_point);
             for (unsigned int j=0; j<dim; ++j)
-              gradients_at_point[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
+              gradients[melt_component_indices[0]+j] = fluid_velocity_gradient[j];
 
-            gradients_at_point[melt_component_indices[1]] = fluid_pressure->get_gradient(evaluation_point);
-            gradients_at_point[melt_component_indices[2]] = compaction_pressure->get_gradient(evaluation_point);
+            gradients[melt_component_indices[1]] = fluid_pressure->get_gradient(evaluation_point);
+            gradients[melt_component_indices[2]] = compaction_pressure->get_gradient(evaluation_point);
           }
-
-        return gradients_at_point;
       }
 
 
