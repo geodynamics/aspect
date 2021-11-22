@@ -25,7 +25,6 @@
 #include <deal.II/base/parameter_handler.h>
 #include <aspect/utilities.h>
 
-#include <deal.II/fe/fe_values.h>
 #include <deal.II/base/quadrature_lib.h>
 
 
@@ -214,6 +213,12 @@ namespace aspect
                                "averaging schemes 'none', 'harmonic average only viscosity', and "
                                "project to Q1 only viscosity'. This parameter ('Material averaging') "
                                "is located within the 'Material model' subsection."));
+
+        // Initialize the evaluator for the old velocity gradients
+        evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
+                                                                 this->get_fe(),
+                                                                 update_gradients,
+                                                                 this->introspection().component_indices.velocities[0]);
       }
 
 
@@ -283,17 +288,14 @@ namespace aspect
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
-            // FEValues requires a quadrature and we provide the default quadrature
-            // as we only need to evaluate the solution and gradients.
-            FEValues<dim> fe_values (this->get_mapping(),
-                                     this->get_fe(),
-                                     Quadrature<dim>(quadrature_positions),
-                                     update_gradients);
+            std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_old_solution(),
+                                            solution_values.begin(),
+                                            solution_values.end());
 
-            fe_values.reinit (in.current_cell);
-            std::vector<Tensor<2,dim>> old_velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
-            fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_old_solution(),
-                                                                                           old_velocity_gradients);
+            evaluator->reinit(in.current_cell, quadrature_positions);
+            evaluator->evaluate(solution_values,
+                                EvaluationFlags::gradients);
 
             const double dte = elastic_timestep();
             const double dt = this->get_timestep();
@@ -307,7 +309,7 @@ namespace aspect
 
                 // Calculate the rotated stresses
                 // Rotation (vorticity) tensor (equation 25 in Moresi et al., 2003, J. Comp. Phys.)
-                const Tensor<2,dim> rotation = 0.5 * ( old_velocity_gradients[i] - transpose(old_velocity_gradients[i]) );
+                const Tensor<2,dim> rotation = 0.5 * (evaluator->get_gradient(i) - transpose(evaluator->get_gradient(i)));
 
                 // Average viscoelastic viscosity
                 const double average_viscoelastic_viscosity = out.viscosities[i];
