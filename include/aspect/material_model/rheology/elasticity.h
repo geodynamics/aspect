@@ -192,7 +192,7 @@ namespace aspect
            * By caching the evaluator, we can avoid recreating it every time we
            * need it.
            */
-          std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
+          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
       };
     }
   }

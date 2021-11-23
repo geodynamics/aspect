@@ -213,12 +213,6 @@ namespace aspect
                                "averaging schemes 'none', 'harmonic average only viscosity', and "
                                "project to Q1 only viscosity'. This parameter ('Material averaging') "
                                "is located within the 'Material model' subsection."));
-
-        // Initialize the evaluator for the old velocity gradients
-        evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
-                                                                 this->get_fe(),
-                                                                 update_gradients,
-                                                                 this->introspection().component_indices.velocities[0]);
       }
 
 
@@ -293,6 +287,14 @@ namespace aspect
                                             solution_values.begin(),
                                             solution_values.end());
 
+            // Only create the evaluator the first time we get here
+            if (!evaluator)
+              evaluator.reset(new FEPointEvaluation<dim,dim>(this->get_mapping(),
+                                                             this->get_fe(),
+                                                             update_gradients,
+                                                             this->introspection().component_indices.velocities[0]));
+
+            // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);
             evaluator->evaluate(solution_values,
                                 EvaluationFlags::gradients);
