@@ -242,7 +242,7 @@ namespace aspect
       {
         /**
          * Never update the initially set properties. This is the default
-         * behaviour, which is sufficient for particle properties that are
+         * behavior, which is sufficient for particle properties that are
          * set at the beginning of the model and constant for the whole
          * simulation time.
          */
@@ -254,7 +254,7 @@ namespace aspect
          */
         update_output_step,
         /**
-         * Update the particle properties every timestep. This is only necessary
+         * Update the particle properties every nonlinear iteration. This is only necessary
          * if the properties at the output time depend on some sort of time
          * integration of solution properties or time varying particle
          * properties are used while solving the model problem.
