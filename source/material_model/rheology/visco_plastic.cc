@@ -266,7 +266,7 @@ namespace aspect
             // Step 5: plastic yielding
 
             // Determine if the pressure used in Drucker Prager plasticity will be capped at 0 (default).
-            // This may be necessary in models without gravity and the dynamic stresses are much higher
+            // This may be necessary in models without gravity and when the dynamic stresses are much higher
             // than the lithostatic pressure.
 
             double pressure_for_plasticity = in.pressure[i];

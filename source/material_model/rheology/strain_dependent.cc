@@ -565,7 +565,7 @@ namespace aspect
             for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
               {
                 if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
-                    && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
+                    && this->get_timestep_number() > 0)
 
                   {
                     // Convert the compositional fields into the tensor quantity they represent.
