@@ -373,6 +373,47 @@ namespace aspect
 
 
     template <int dim>
+    void
+    SphericalShell<dim>::adjust_positions_for_periodicity (Point<dim> &position,
+                                                           const ArrayView<Point<dim>> &connected_positions) const
+    {
+      AssertThrow(dim == 2,
+                  ExcMessage("Periodic boundaries currently "
+                             "only work with 2D spherical shell."));
+      AssertThrow(phi == 90,
+                  ExcMessage("Periodic boundaries currently "
+                             "only work with 90 degree opening angle in spherical shell."));
+
+      if (periodic)
+        {
+          // define a rotation matrix for the new position depending on the boundary
+          Tensor<2,dim> rotation_matrix;
+
+          if (position[0] < 0.)
+            {
+              rotation_matrix[0][1] = 1.;
+              rotation_matrix[1][0] = -1.;
+            }
+          else if (position[1] < 0.)
+            {
+              rotation_matrix[0][1] = -1.;
+              rotation_matrix[1][0] = 1.;
+            }
+          else
+            return;
+
+          position = rotation_matrix * position;
+
+          for (auto &connected_position: connected_positions)
+            connected_position = rotation_matrix * connected_position;
+        }
+
+      return;
+    }
+
+
+
+    template <int dim>
     double
     SphericalShell<dim>::
     length_scale () const

@@ -21,6 +21,7 @@
 #include <aspect/particle/integrator/rk_4.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/particle/world.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -68,9 +69,12 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
+        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
+
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
+        std::array<Point<dim>,5> k;
         for (typename ParticleHandler<dim>::particle_iterator it = begin_particle;
              it != end_particle; ++it, ++velocity, ++old_velocity)
           {
@@ -78,57 +82,105 @@ namespace aspect
 
             if (integrator_substep == 0)
               {
-                const Tensor<1,dim> k1 = dt * (*old_velocity);
-                const Point<dim> loc0 = it->get_location();
+                k[0] = it->get_location();
+                k[1] = dt * (*old_velocity);
+
+                Point<dim> new_location = k[0] + 0.5 * k[1];
+
+                // Check if we crossed a periodic boundary and if necessary adjust positions
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                              ArrayView<Point<dim>>(&k[0],2));
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    properties[property_index_k[0] + i] = loc0[i];
-                    properties[property_index_k[1] + i] = k1[i];
+                    properties[property_index_k[0] + i] = k[0][i];
+                    properties[property_index_k[1] + i] = k[1][i];
                   }
 
-                it->set_location(loc0 + 0.5 * k1);
+                it->set_location(new_location);
               }
             else if (integrator_substep == 1)
               {
-                const Tensor<1,dim> k2 = dt * ((*old_velocity) + (*velocity)) / 2.0;
-                Point<dim> loc0;
-
+                k[2] = dt * ((*old_velocity) + (*velocity)) / 2.0;
                 for (unsigned int i=0; i<dim; ++i)
+                  k[0][i] = properties[property_index_k[0] + i];
+
+                Point<dim> new_location = k[0] + 0.5 * k[2];
+
+                if (geometry_has_periodic_boundary)
                   {
-                    loc0[i] = properties[property_index_k[0] + i];
-                    properties[property_index_k[2] + i] = k2[i];
+                    for (unsigned int i=0; i<dim; ++i)
+                      k[1][i] = properties[property_index_k[1] + i];
+
+                    this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                                ArrayView<Point<dim>>(&k[0],3));
+
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        properties[property_index_k[0] + i] = k[0][i];
+                        properties[property_index_k[1] + i] = k[1][i];
+                      }
                   }
 
-                it->set_location(loc0 + 0.5 * k2);
+                for (unsigned int i=0; i<dim; ++i)
+                  properties[property_index_k[2] + i] = k[2][i];
+
+                it->set_location(new_location);
               }
             else if (integrator_substep == 2)
               {
-                const Tensor<1,dim> k3 = dt * (*old_velocity + *velocity) / 2.0;
-                Point<dim> loc0;
+                k[3] = dt * (*old_velocity + *velocity) / 2.0;
+                for (unsigned int i=0; i<dim; ++i)
+                  k[0][i] = properties[property_index_k[0] + i];
+
+                Point<dim> new_location = k[0] + k[3];
+
+                if (geometry_has_periodic_boundary)
+                  {
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        k[1][i] = properties[property_index_k[1] + i];
+                        k[2][i] = properties[property_index_k[2] + i];
+                      }
+
+                    this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                                ArrayView<Point<dim>>(&k[0],4));
+
+                    for (unsigned int i=0; i<dim; ++i)
+                      {
+                        properties[property_index_k[0] + i] = k[0][i];
+                        properties[property_index_k[1] + i] = k[1][i];
+                        properties[property_index_k[2] + i] = k[2][i];
+                      }
+                  }
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    loc0[i] = properties[property_index_k[0] + i];
-                    properties[property_index_k[3] + i] = k3[i];
+                    properties[property_index_k[3] + i] = k[3][i];
                   }
 
-                it->set_location(loc0 + k3);
+                it->set_location(new_location);
               }
             else if (integrator_substep == 3)
               {
-                const Tensor<1,dim> k4 = dt * (*velocity);
-                Point<dim> loc0, k1, k2, k3;
+                k[4] = dt * (*velocity);
 
                 for (unsigned int i=0; i<dim; ++i)
                   {
-                    loc0[i] = properties[property_index_k[0] + i];
-                    k1[i] = properties[property_index_k[1] + i];
-                    k2[i] = properties[property_index_k[2] + i];
-                    k3[i] = properties[property_index_k[3] + i];
+                    k[0][i] = properties[property_index_k[0] + i];
+                    k[1][i] = properties[property_index_k[1] + i];
+                    k[2][i] = properties[property_index_k[2] + i];
+                    k[3][i] = properties[property_index_k[3] + i];
                   }
 
-                it->set_location(loc0 + (k1 + 2.0*k2 + 2.0*k3 + k4)/6.0);
+                Point<dim> new_location = k[0] + (k[1] + 2.0*k[2] + 2.0*k[3] + k[4])/6.0;
+
+                // No need to fix intermediate values, this is the last integrator step
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+
+                it->set_location(new_location);
               }
             else
               {
