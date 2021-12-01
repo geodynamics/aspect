@@ -22,7 +22,6 @@
 #include <aspect/global.h>
 #include <aspect/utilities.h>
 #include <aspect/citation_info.h>
-#include <aspect/geometry_model/interface.h>
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
