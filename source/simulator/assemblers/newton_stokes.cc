@@ -549,11 +549,6 @@ namespace aspect
       internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
 
-      if (!scratch.rebuild_stokes_matrix)
-        return;
-
-
-
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
@@ -578,42 +573,49 @@ namespace aspect
           // Viscosity scalar
           const double two_thirds = 2.0 / 3.0;
           const double eta_two_thirds = scratch.material_model_outputs.viscosities[q] * two_thirds;
-          const double velocity_divergence = trace(scratch.grads_phi_u[q]);
+          const double velocity_divergence = scratch.velocity_divergence[q];
 
           const double JxW = scratch.finite_element_values.JxW(q);
 
-
-          if (derivative_scaling_factor == 0)
+          for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
             {
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                  {
-                    data.local_matrix(i,j) += (- eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) * JxW;
-                  }
-            }
-          else
-            {
-              const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
-
-              // This one is only available in debug mode, because normally
-              // the AssertThrow in the preconditioner should already have
-              // caught the problem.
-              Assert(derivatives != nullptr, ExcMessage ("Error: The newton method requires the derivatives"));
-
-              const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
-              const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
-
-              for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
-                for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
-                  {
-                    data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
-                                               - derivative_scaling_factor * two_thirds * scratch.div_phi_u[i] * ( (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * velocity_divergence)
-                                               - derivative_scaling_factor * two_thirds * (scratch.div_phi_u[i] * viscosity_derivative_wrt_pressure * scratch.phi_p[j]) * velocity_divergence
-                                              )
-                                              * JxW;
-                  }
+              data.local_rhs(i) -= (- eta_two_thirds * (scratch.div_phi_u[i]*velocity_divergence)) * JxW;
             }
 
+          if (scratch.rebuild_stokes_matrix)
+            {
+              if (derivative_scaling_factor == 0)
+                {
+                  if (scratch.rebuild_newton_stokes_matrix)
+                    for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                      for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                        {
+                          data.local_matrix(i,j) += (- eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])) * JxW;
+                        }
+                }
+              else
+                {
+                  const MaterialModel::MaterialModelDerivatives<dim> *derivatives = scratch.material_model_outputs.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
+
+                  // This one is only available in debug mode, because normally
+                  // the AssertThrow in the preconditioner should already have
+                  // caught the problem.
+                  Assert(derivatives != nullptr, ExcMessage ("Error: The newton method requires the derivatives"));
+
+                  const SymmetricTensor<2,dim> viscosity_derivative_wrt_strain_rate = derivatives->viscosity_derivative_wrt_strain_rate[q];
+                  const double viscosity_derivative_wrt_pressure = derivatives->viscosity_derivative_wrt_pressure[q];
+
+                  for (unsigned int i=0; i<stokes_dofs_per_cell; ++i)
+                    for (unsigned int j=0; j<stokes_dofs_per_cell; ++j)
+                      {
+                        data.local_matrix(i,j) += (-eta_two_thirds * (scratch.div_phi_u[i] * scratch.div_phi_u[j])
+                                                   - derivative_scaling_factor * two_thirds * scratch.div_phi_u[i] * ( (viscosity_derivative_wrt_strain_rate * scratch.grads_phi_u[j]) * velocity_divergence)
+                                                   - derivative_scaling_factor * two_thirds * (scratch.div_phi_u[i] * viscosity_derivative_wrt_pressure * scratch.phi_p[j]) * velocity_divergence
+                                                  )
+                                                  * JxW;
+                      }
+                }
+            }
         }
     }
 
