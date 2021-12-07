@@ -43,7 +43,7 @@ namespace aspect
         {
 
           // first set the default boundary indicators
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
               cell->face(f)->set_boundary_id (f);
 

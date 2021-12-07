@@ -69,7 +69,7 @@ namespace aspect
         if (output_point_wise_heat_flux)
           {
             bool cell_at_top_or_bottom_boundary = false;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) &&
                   (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
                    this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
@@ -101,7 +101,7 @@ namespace aspect
           {
             double heat_flux = 0.0;
 
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) &&
                   (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
                    this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))

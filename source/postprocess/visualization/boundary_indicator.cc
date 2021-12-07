@@ -51,7 +51,7 @@ namespace aspect
               if (cell->at_boundary())
                 {
                   types::boundary_id boundary_id = largest_boundary_id_plus_one;
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  for (const unsigned int f : cell->face_indices())
                     {
                       if (cell->face(f)->at_boundary())
                         {

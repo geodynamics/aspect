@@ -1008,7 +1008,7 @@ namespace aspect
                                                                  &this->get_dof_handler());
 
       unsigned int face_no = numbers::invalid_unsigned_int;
-      for (face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+      for (face_no=0; face_no<cell->n_faces(); ++face_no)
         if (scratch.face_finite_element_values.get_face_index() == cell->face_index(face_no))
           break;
       Assert(face_no != numbers::invalid_unsigned_int,ExcInternalError());

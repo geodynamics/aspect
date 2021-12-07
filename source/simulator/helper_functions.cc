@@ -2037,9 +2037,9 @@ namespace aspect
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
             if (face->at_boundary())
               {
                 Assert(face->boundary_id() <= offset,
@@ -2074,9 +2074,9 @@ namespace aspect
     // Loop over all of the boundary faces...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
             if (face->at_boundary())
               {
                 // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.

@@ -68,7 +68,7 @@ namespace aspect
       // and the face area.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
               {
                 fe_face_values.reinit (cell, f);
