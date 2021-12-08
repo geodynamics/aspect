@@ -60,7 +60,7 @@ namespace aspect
               for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
                 {
                   const Point<dim> vertex = cell->vertex(v);
-                  Utilities::NaturalCoordinate<dim> point =
+                  const Utilities::NaturalCoordinate<dim> point =
                     this->get_geometry_model().cartesian_to_other_coordinates(vertex, coordinate_system);
 
                   const double maximum_refinement_level = max_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
