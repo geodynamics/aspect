@@ -119,7 +119,7 @@ namespace aspect
           {
             // see if the cell is at the *top* or *bottom* boundary, not just any boundary
             unsigned int face_idx = numbers::invalid_unsigned_int;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
                 if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {
@@ -241,7 +241,7 @@ namespace aspect
             // is true and will be changed to false if it's at the lower boundary. If the
             // cell is at neither boundary the loop will continue to the next cell.
             bool at_upper_surface = true;
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               {
                 if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                   {

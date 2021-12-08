@@ -60,7 +60,7 @@ namespace aspect
         // We only want the output at the top boundary, so only compute it if the current cell
         // has a face at the top boundary.
         bool cell_at_top_boundary = false;
-        for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+        for (const unsigned int f : cell->face_indices())
           if (cell->at_boundary(f) &&
               (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
             cell_at_top_boundary = true;

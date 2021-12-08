@@ -613,7 +613,7 @@ namespace aspect
       {
         // then also work on possible face terms. if necessary, initialize
         // the material model data on faces
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           if (cell->at_boundary(face_number) && !cell->has_periodic_neighbor(face_number))
             {
               scratch.reinit(cell, face_number);
@@ -999,9 +999,9 @@ namespace aspect
           }
       }
 
-    for (scratch.face_number=0; scratch.face_number<GeometryInfo<dim>::faces_per_cell; ++scratch.face_number)
+    for (scratch.face_number=0; scratch.face_number<cell->n_faces(); ++scratch.face_number)
       {
-        typename DoFHandler<dim>::face_iterator face = cell->face (scratch.face_number);
+        const typename DoFHandler<dim>::face_iterator face = cell->face (scratch.face_number);
 
         if ((has_boundary_face_assemblers && face->at_boundary()) ||
             (has_interior_face_assemblers && !face->at_boundary()))

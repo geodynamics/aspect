@@ -61,7 +61,7 @@ namespace aspect
       // the top or bottom surface, evaluate the density on that face
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned() && cell->at_boundary())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             {
               bool cell_at_top = false;
               bool cell_at_bottom = false;

@@ -111,7 +111,7 @@ namespace aspect
 
                 if (!refine_current_cell)
                   {
-                    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    for (const unsigned int f : cell->face_indices())
                       {
                         const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor(f);
                         const typename DoFHandler<dim>::face_iterator face = cell->face(f);
@@ -255,7 +255,7 @@ namespace aspect
             }
 
           // Check for periodic neighbors, and refine if existing
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : mcell->face_indices())
             {
               if (mcell->has_periodic_neighbor(f))
                 {

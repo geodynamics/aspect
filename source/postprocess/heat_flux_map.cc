@@ -224,7 +224,7 @@ namespace aspect
                     }
                 }
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 {
                   if (!cell->at_boundary(f))
                     continue;
@@ -357,7 +357,7 @@ namespace aspect
         for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned() && cell->at_boundary())
             {
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 if (cell->at_boundary(f))
                   {
                     // Determine the type of boundary
@@ -454,7 +454,7 @@ namespace aspect
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f) &&
                 (cell->face(f)->boundary_id() == top_boundary_id ||
                  cell->face(f)->boundary_id() == bottom_boundary_id))

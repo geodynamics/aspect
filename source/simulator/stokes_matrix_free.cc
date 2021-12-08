@@ -258,9 +258,7 @@ namespace aspect
           if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
               &&
               cell->level_subdomain_id() != numbers::invalid_subdomain_id)
-            for (unsigned int face_no = 0;
-                 face_no < GeometryInfo<dim>::faces_per_cell;
-                 ++face_no)
+            for (const unsigned int face_no : cell->face_indices())
               if ((b_id = boundary_ids.find(cell->face(face_no)->boundary_id())) !=
                   boundary_ids.end())
                 {
