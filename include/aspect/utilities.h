@@ -757,6 +757,12 @@ namespace aspect
         std::array<double,dim> &get_coordinates();
 
         /**
+         * Returns the coordinates in the given coordinate system, which may
+         * not be Cartesian.
+         */
+        const std::array<double,dim> &get_coordinates() const;
+
+        /**
          * The coordinate that represents the 'surface' directions in the
          * chosen coordinate system.
          */

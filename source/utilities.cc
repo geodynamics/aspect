@@ -2157,6 +2157,16 @@ namespace aspect
       return coordinates;
     }
 
+
+
+    template <int dim>
+    const std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates() const
+    {
+      return coordinates;
+    }
+
+
+
     template <>
     std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
     {
