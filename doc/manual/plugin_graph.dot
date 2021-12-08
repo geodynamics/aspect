@@ -455,6 +455,7 @@ N6aspect8Particle9Generator9InterfaceILi2EEE -> Simulator [len=15, weight=50];
 N6aspect8Particle10Integrator9InterfaceILi2EEE [label="Particle integrator interface", height=.8,width=.8,shape="rect",fillcolor="green"]
 N6aspect8Particle10Integrator5EulerILi2EEE [label="euler", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle10Integrator5EulerILi2EEE -> N6aspect8Particle10Integrator9InterfaceILi2EEE [len=3, weight=50];
+SimulatorAccess -> N6aspect8Particle10Integrator5EulerILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect8Particle10Integrator3RK2ILi2EEE [label="rk2", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect8Particle10Integrator3RK2ILi2EEE -> N6aspect8Particle10Integrator9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect8Particle10Integrator3RK2ILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];

@@ -21234,6 +21234,23 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Solver_20parameters/Matrix_20Free}
 
 \begin{itemize}
+\item {\it Parameter name:} {\tt Execute solver timings}
+\phantomsection\label{parameters:Solver parameters/Matrix Free/Execute solver timings}
+\label{parameters:Solver_20parameters/Matrix_20Free/Execute_20solver_20timings}
+
+
+\index[prmindex]{Execute solver timings}
+\index[prmindexfull]{Solver parameters!Matrix Free!Execute solver timings}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Executes different parts of the Stokes solver repeatedly and print timing information. This is for internal benchmarking purposes: It is useful if you want to see how the solver performs. Otherwise, you don't want to enable this, since it adds additional computational cost to get the timing information.
+
+
+{\it Possible values:} A boolean value (true or false)
 \item {\it Parameter name:} {\tt Output details}
 \phantomsection\label{parameters:Solver parameters/Matrix Free/Output details}
 \label{parameters:Solver_20parameters/Matrix_20Free/Output_20details}
@@ -21304,7 +21321,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Default:} 0.9
 
 
-{\it Description:} The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. Because this value can become larger then one, we limit this value by this parameter.
+{\it Description:} The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based on the Eisenstat Walker (1994) paper (https://doi.org/10.1137/0917003), equation 2.2. Because this value can become larger than one, we limit this value by this parameter.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq 1$
