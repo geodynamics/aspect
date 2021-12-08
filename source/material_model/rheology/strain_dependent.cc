@@ -547,16 +547,22 @@ namespace aspect
             for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
-            FEValues<dim> fe_values (this->get_mapping(),
-                                     this->get_fe(),
-                                     Quadrature<dim>(quadrature_positions),
-                                     update_gradients);
+            std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+            in.current_cell->get_dof_values(this->get_solution(),
+                                            solution_values.begin(),
+                                            solution_values.end());
 
-            std::vector<Tensor<2,dim>> velocity_gradients (quadrature_positions.size(), Tensor<2,dim>());
+            // Only create the evaluator the first time we get here
+            if (!evaluator)
+              evaluator.reset(new FEPointEvaluation<dim,dim>(this->get_mapping(),
+                                                             this->get_fe(),
+                                                             update_gradients,
+                                                             this->introspection().component_indices.velocities[0]));
 
-            fe_values.reinit (in.current_cell);
-            fe_values[this->introspection().extractors.velocities].get_function_gradients (this->get_solution(),
-                                                                                           velocity_gradients);
+            // Initialize the evaluator for the old velocity gradients
+            evaluator->reinit(in.current_cell, quadrature_positions);
+            evaluator->evaluate(solution_values,
+                                EvaluationFlags::gradients);
 
             // Assign the strain components to the compositional fields reaction terms.
             // If there are too many fields, we simply fill only the first fields with the
@@ -577,7 +583,7 @@ namespace aspect
                       }
 
                     // Compute the strain accumulated in this timestep.
-                    const Tensor<2,dim> strain_increment = this->get_timestep() * (velocity_gradients[q] * strain);
+                    const Tensor<2,dim> strain_increment = this->get_timestep() * (evaluator->get_gradient(q) * strain);
 
                     // Output the strain increment component-wise to its respective compositional field's reaction terms.
                     for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
