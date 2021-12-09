@@ -203,16 +203,16 @@ namespace aspect
              max_conductivity / geometry_model->length_scale() *
              cell_diameter;
 
-    const double max_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
-                                 max_advection_prefactor *
-                                 max_velocity * cell_diameter;
+    const double maximum_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
+                                     max_advection_prefactor *
+                                     max_velocity * cell_diameter;
 
     if (timestep_number <= 1
         || std::abs(global_entropy_variation) < 1e-50
         || std::abs(global_field_variation) < 1e-50)
       // we don't have sensible time-steps during the first two iterations
       // and we can not divide by the entropy_variation if it is zero
-      return max_viscosity;
+      return maximum_viscosity;
     else
       {
         Assert (old_time_step > 0, ExcInternalError());
@@ -230,7 +230,7 @@ namespace aspect
                                (global_u_infty * global_field_variation));
 
 
-        return std::min (max_viscosity, entropy_viscosity);
+        return std::min (maximum_viscosity, entropy_viscosity);
       }
   }
 

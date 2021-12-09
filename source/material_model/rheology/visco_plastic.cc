@@ -316,7 +316,21 @@ namespace aspect
               }
 
             // Step 6: limit the viscosity with specified minimum and maximum bounds
-            output_parameters.composition_viscosities[j] = std::min(std::max(viscosity_yield, min_visc), max_visc);
+            const double maximum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
+                                                               phase_function_values,
+                                                               n_phases_per_composition,
+                                                               maximum_viscosity,
+                                                               j,
+                                                               MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
+                                                             );
+            const double minimum_viscosity_for_composition = MaterialModel::MaterialUtilities::phase_average_value(
+                                                               phase_function_values,
+                                                               n_phases_per_composition,
+                                                               minimum_viscosity,
+                                                               j,
+                                                               MaterialModel::MaterialUtilities::PhaseUtilities::logarithmic
+                                                             );
+            output_parameters.composition_viscosities[j] = std::min(std::max(viscosity_yield, minimum_viscosity_for_composition), maximum_viscosity_for_composition);
           }
         return output_parameters;
       }
@@ -471,10 +485,16 @@ namespace aspect
                            "Stabilizes strain dependent viscosity. Units: \\si{\\per\\second}.");
         prm.declare_entry ("Reference strain rate","1.0e-15",Patterns::Double (0.),
                            "Reference strain rate for first time step. Units: \\si{\\per\\second}.");
-        prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Double (0.),
-                           "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}.");
-        prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Double (0.),
-                           "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}.");
+        prm.declare_entry ("Minimum viscosity", "1e17", Patterns::Anything(),
+                           "Lower cutoff for effective viscosity. Units: \\si{\\pascal\\second}."
+                           "List with as many components as active "
+                           "compositional fields (material data is assumed to "
+                           "be in order with the ordering of the fields). ");
+        prm.declare_entry ("Maximum viscosity", "1e28", Patterns::Anything(),
+                           "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}."
+                           "List with as many components as active "
+                           "compositional fields (material data is assumed to "
+                           "be in order with the ordering of the fields). ");
         prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double (0.),
                            "Reference viscosity for nondimensionalization. "
                            "To understand how pressure scaling works, take a look at "
@@ -583,6 +603,11 @@ namespace aspect
       ViscoPlastic<dim>::parse_parameters (ParameterHandler &prm,
                                            const std::unique_ptr<std::vector<unsigned int>> &expected_n_phases_per_composition)
       {
+        // Establish that a background field is required here
+        const bool has_background_field = true;
+
+        // Retrieve the list of composition names
+        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
 
         // increment by one for background:
         const unsigned int n_fields = this->n_compositional_fields() + 1;
@@ -601,11 +626,26 @@ namespace aspect
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
-        min_visc = prm.get_double ("Minimum viscosity");
-        max_visc = prm.get_double ("Maximum viscosity");
         ref_visc = prm.get_double ("Reference viscosity");
+        minimum_viscosity = Utilities::parse_map_to_double_array (prm.get("Minimum viscosity"),
+                                                                  list_of_composition_names,
+                                                                  has_background_field,
+                                                                  "Minimum viscosity",
+                                                                  true,
+                                                                  expected_n_phases_per_composition);
 
-        AssertThrow(max_visc >= min_visc, ExcMessage("Maximum viscosity should be larger or equal to the minimum viscosity. "));
+        maximum_viscosity = Utilities::parse_map_to_double_array (prm.get("Maximum viscosity"),
+                                                                  list_of_composition_names,
+                                                                  has_background_field,
+                                                                  "Maximum viscosity",
+                                                                  true,
+                                                                  expected_n_phases_per_composition);
+
+        Assert(maximum_viscosity.size() == minimum_viscosity.size(),
+               ExcMessage("The input parameters 'Maximum viscosity' and 'Minimum viscosity' should have the same number of entries."));
+        for (auto p1 = maximum_viscosity.begin(), p2 = minimum_viscosity.begin();
+             p1 != maximum_viscosity.end(); ++p1, ++p2)
+          AssertThrow(*p1 >= *p2, ExcMessage("Maximum viscosity should be larger or equal to the minimum viscosity."));
 
         viscosity_averaging = MaterialUtilities::parse_compositional_averaging_operation ("Viscosity averaging scheme",
                               prm);

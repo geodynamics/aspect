@@ -219,9 +219,10 @@ namespace aspect
           /**
            * Minimum and maximum viscosities used to improve the
            * stability of the rheology model.
+           * These parameters contain one value per composition and phase (potentially the same value).
            */
-          double min_visc;
-          double max_visc;
+          std::vector<double> minimum_viscosity;
+          std::vector<double> maximum_viscosity;
 
           /**
            * Enumeration for selecting which type of viscous flow law to use.
