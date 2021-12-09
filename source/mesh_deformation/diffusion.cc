@@ -248,7 +248,7 @@ namespace aspect
       // Iterate over all cells to find those at the mesh deformation boundary
       for (; fscell!=fsendc; ++fscell)
         if (fscell->at_boundary() && fscell->is_locally_owned())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          for (const unsigned int face_no : fscell->face_indices())
             if (fscell->face(face_no)->at_boundary())
               {
                 // Boundary indicator of current cell face
@@ -400,7 +400,7 @@ namespace aspect
 
       for (const auto &fscell : mesh_deformation_dof_handler.active_cell_iterators())
         if (fscell->at_boundary() && fscell->is_locally_owned())
-          for (unsigned int face_no=0; face_no<GeometryInfo<dim>::faces_per_cell; ++face_no)
+          for (const unsigned int face_no : fscell->face_indices())
             if (fscell->face(face_no)->at_boundary())
               {
                 // Get the boundary indicator of current cell face
