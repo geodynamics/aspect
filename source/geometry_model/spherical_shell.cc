@@ -153,13 +153,11 @@ namespace aspect
                   for (unsigned int cell_layer = 0; cell_layer < R_values.size() - 1; ++cell_layer)
                     {
                       CellData<dim> this_cell;
-                      for (unsigned int vertex_n = 0;
-                           vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                           ++vertex_n)
+                      for (const unsigned int vertex_n : cell->vertex_indices())
                         {
                           this_cell.vertices[vertex_n] =
                             cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
-                          this_cell.vertices[vertex_n + GeometryInfo<dim-1>::vertices_per_cell] =
+                          this_cell.vertices[vertex_n + cell->n_vertices()] =
                             cell->vertex_index(vertex_n) +
                             (cell_layer + 1) * sphere_mesh.n_vertices();
                         }
@@ -176,9 +174,7 @@ namespace aspect
                       if (cell_layer == 0)
                         {
                           CellData<dim-1> face;
-                          for (unsigned int vertex_n = 0;
-                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                               ++vertex_n)
+                          for (const unsigned int vertex_n : cell->vertex_indices())
                             face.vertices[vertex_n] =
                               cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                           face.boundary_id = 0;
@@ -191,9 +187,7 @@ namespace aspect
                       if (cell_layer == R_values.size()-2)
                         {
                           CellData<dim-1> face;
-                          for (unsigned int vertex_n = 0;
-                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                               ++vertex_n)
+                          for (const unsigned int vertex_n : cell->vertex_indices())
                             face.vertices[vertex_n] =
                               cell->vertex_index(vertex_n) +
                               (cell_layer + 1) * sphere_mesh.n_vertices();
