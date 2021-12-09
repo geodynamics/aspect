@@ -237,7 +237,7 @@ namespace aspect
       for (; mcells != endmc; ++mcells)
         {
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator mcell = *mcells;
-          for (unsigned int vertex_index=0; vertex_index<GeometryInfo<dim>::vertices_per_cell; ++vertex_index)
+          for (const unsigned int vertex_index : mcell->vertex_indices())
             {
               std::set<typename Triangulation<dim>::active_cell_iterator> neighbor_cells = vertex_to_cells[mcell->vertex_index(vertex_index)];
               typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin(),

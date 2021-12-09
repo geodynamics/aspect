@@ -57,7 +57,7 @@ namespace aspect
               bool coarsen = false;
               bool clear_refine = false;
 
-              for ( unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell;  ++v)
+              for (const unsigned int v : cell->vertex_indices())
                 {
                   const Point<dim> vertex = cell->vertex(v);
                   const Utilities::NaturalCoordinate<dim> point =
