@@ -162,8 +162,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("right lithosphere",5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -181,8 +181,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("back lithosphere",  9)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 

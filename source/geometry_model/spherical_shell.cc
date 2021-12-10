@@ -273,20 +273,17 @@ namespace aspect
       if (phi == 360)
         {
           const types::boundary_id s[] = { 0, 1 };
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else if (phi == 90 && dim == 3)
         {
           const types::boundary_id s[] = { 0, 1, 2, 3, 4};
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else
         {
           const types::boundary_id s[] = { 0, 1, 2, 3 };
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
     }
 
@@ -308,11 +305,11 @@ namespace aspect
                 };
 
             if (phi == 360)
-              return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                               &mapping[2]);
+              return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                               std::begin(mapping)+2);
             else
-              return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                               &mapping[4]);
+              return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                               std::begin(mapping)+4);
           }
 
           case 3:
@@ -324,8 +321,8 @@ namespace aspect
                       std::pair<std::string,types::boundary_id>("top",    1)
                     };
 
-                return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                                 &mapping[2]);
+                return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                                 std::end(mapping));
               }
             else if (phi == 90)
               {
@@ -337,8 +334,8 @@ namespace aspect
                       std::pair<std::string,types::boundary_id>("south",  4)
                     };
 
-                return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                                 &mapping[5]);
+                return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                                 std::end(mapping));
               }
             else
               Assert (false, ExcNotImplemented());

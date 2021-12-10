@@ -2275,11 +2275,9 @@ namespace aspect
       {
         // next make sure that all listed indicators are actually used by
         // this geometry
-        for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          for (std::set<types::boundary_id>::const_iterator
-               p = boundary_indicator_lists[i].begin();
-               p != boundary_indicator_lists[i].end(); ++p)
-            AssertThrow (all_boundary_indicators.find (*p)
+        for (const auto &list : boundary_indicator_lists)
+          for (const auto &p : list)
+            AssertThrow (all_boundary_indicators.find (p)
                          != all_boundary_indicators.end(),
                          ExcMessage ("One of the boundary indicators listed in the input file "
                                      "is not used by the geometry model."));
@@ -2287,8 +2285,8 @@ namespace aspect
     else
       {
         // next make sure that there are no listed indicators
-        for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          AssertThrow (boundary_indicator_lists[i].empty(),
+        for (const auto &list : boundary_indicator_lists)
+          AssertThrow (list.empty(),
                        ExcMessage ("With the solver scheme `single Advection, no Stokes', "
                                    "one cannot set boundary conditions for velocity."));
       }

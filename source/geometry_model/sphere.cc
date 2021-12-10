@@ -57,8 +57,7 @@ namespace aspect
     get_used_boundary_indicators () const
     {
       const types::boundary_id s[] = { 0 };
-      return std::set<types::boundary_id>(&s[0],
-                                          &s[sizeof(s)/sizeof(s[0])]);
+      return std::set<types::boundary_id>(std::begin(s), std::end(s));
     }
 
 
