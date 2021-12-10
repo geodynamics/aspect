@@ -150,12 +150,12 @@ namespace aspect
             {
               // Set the upper part of the southern boundary to indicator 2*dim+2.
               if (cell->face(4)->at_boundary())
-                if ((cell->vertex(GeometryInfo<dim-1>::vertices_per_cell-1).norm() + cell->vertex(0).norm()) / 2.0 > point3[0])
+                if ((cell->vertex(cell->face(4)->n_vertices()-1).norm() + cell->vertex(0).norm()) / 2.0 > point3[0])
                   cell->face(4)->set_boundary_id (2*dim+2);
 
               // Set the upper part of the northern boundary to indicator 2*dim+3.
               if (cell->face(5)->at_boundary())
-                if ((cell->vertex((GeometryInfo<dim-1>::vertices_per_cell-1)/2).norm()  + cell->vertex(0).norm()) / 2.0 > point3[0])
+                if ((cell->vertex((cell->face(5)->n_vertices()-1)/2).norm()  + cell->vertex(0).norm()) / 2.0 > point3[0])
                   cell->face(5)->set_boundary_id (2*dim+3);
             }
 
