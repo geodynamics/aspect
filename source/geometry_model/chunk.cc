@@ -284,7 +284,7 @@ namespace aspect
                               distances_to_center.begin()+face->n_vertices());
         const auto min_distance_to_first_vertex =
           std::min_element(distances_to_first_vertex.begin(),
-                           distances_to_first_vertex.begin()+face->n_vertices());
+                           distances_to_first_vertex.begin()+face->n_vertices()-1);
 
         // So, if this is a "horizontal" face, then just compute the normal
         // vector as the one from the center to the point 'p', adequately
