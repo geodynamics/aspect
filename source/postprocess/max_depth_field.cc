@@ -91,10 +91,10 @@ namespace aspect
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           const std::string columns[] = {"Max depth [m] for composition " + this->introspection().name_for_compositional_index(c)};
-          for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
+          for (const auto &col: columns)
             {
-              statistics.set_precision(columns[i], 8);
-              statistics.set_scientific(columns[i], true);
+              statistics.set_precision(col, 8);
+              statistics.set_scientific(col, true);
             }
         }
 

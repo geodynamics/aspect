@@ -44,9 +44,8 @@ namespace aspect
 
 
         const std::map<std::string, MaterialProperty>
-        property_map (&property_map_pairs[0],
-                      &property_map_pairs[0] +
-                      sizeof(property_map_pairs)/sizeof(property_map_pairs[0]));
+        property_map (std::begin(property_map_pairs),
+                      std::end(property_map_pairs));
       }
     }
 
