@@ -66,8 +66,9 @@ namespace aspect
       std::vector<Tensor<1,dim>> surface_velocity_values (n_q_points_face);
 
       double local_velocity_square_integral = 0;
-      double local_velocity_square_integral_top_boundary;
-      double local_top_boundary_area;
+      double local_velocity_square_integral_top_boundary = 0;
+      double local_top_boundary_area = 0;
+
       const std::set<types::boundary_id>
       boundary_indicators
         = this->get_geometry_model().get_used_boundary_indicators ();
@@ -82,10 +83,11 @@ namespace aspect
                                                                                         velocity_values);
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_velocity_square_integral += ((velocity_values[q] * velocity_values[q]) *
-                                                   fe_values.JxW(q));
+                local_velocity_square_integral += velocity_values[q].norm_square() *
+                                                  fe_values.JxW(q);
               }
-            //now for the surface cells only
+
+            // now for the surface cells only
             for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
               if (cell->face(f)->boundary_id() == top_boundary_id)
                 {
@@ -95,16 +97,12 @@ namespace aspect
                       surface_velocity_values);
 
                   // determine the squared velocity on the face
-                  double local_sqvel = 0.0;
-                  double local_fe_face_area = 0.0;
                   for (unsigned int q = 0; q < n_q_points_face; ++q)
                     {
                       const double JxW = fe_face_values.JxW(q);
-                      local_sqvel += surface_velocity_values[q].norm_square() * JxW;
-                      local_fe_face_area += JxW;
+                      local_velocity_square_integral_top_boundary += surface_velocity_values[q].norm_square() * JxW;
+                      local_top_boundary_area += JxW;
                     }
-                  local_velocity_square_integral_top_boundary += local_sqvel;
-                  local_top_boundary_area += local_fe_face_area;
                 }
           }
 
@@ -123,7 +121,7 @@ namespace aspect
 
       // now add the computed rms velocities to the statistics object
       // and create a single string that can be output to the screen
-      const double mobility  = global_top_rms_vel/global_rms_vel;
+      const double mobility  = global_top_rms_vel / global_rms_vel;
       const std::string name_mobility = "Mobility";
 
       statistics.add_value (name_mobility,
