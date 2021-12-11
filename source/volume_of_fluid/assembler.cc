@@ -72,13 +72,16 @@ namespace aspect
       data.local_matrix = 0;
       data.local_rhs = 0;
 
-      //loop over all possible subfaces of the cell, and reset corresponding rhs
-      for (unsigned int f = 0; f < GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell; ++f)
-        {
-          data.local_face_rhs[f] = 0.0;
-          data.local_face_matrices_ext_ext[f] = 0.0;
-          data.face_contributions_mask[f] = false;
-        }
+      // For interior face contributions loop over all possible
+      // subfaces of the cell, and reset their matrices.
+      for (auto &m : data.local_face_rhs)
+        m = 0;
+      for (auto &m : data.local_face_matrices_ext_ext)
+        m = 0;
+
+      // Mark the arrays initialized to zero above as currently all unused
+      std::fill (data.face_contributions_mask.begin(), data.face_contributions_mask.end(),
+                 false);
 
       scratch.finite_element_values[solution_field].get_function_values (vof_solution_vector,
                                                                          scratch.old_field_values);

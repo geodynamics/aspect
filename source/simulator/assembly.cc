@@ -988,15 +988,17 @@ namespace aspect
 
     if (has_interior_face_assemblers)
       {
-        // for interior face contributions loop over all possible
+        // For interior face contributions loop over all possible
         // subfaces of the cell, and reset their matrices.
-        for (unsigned int f = 0; f < GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell; ++f)
-          {
-            data.local_matrices_ext_int[f] = 0;
-            data.local_matrices_int_ext[f] = 0;
-            data.local_matrices_ext_ext[f] = 0;
-            data.assembled_matrices[f] = false;
-          }
+        for (auto &m : data.local_matrices_ext_int)
+          m = 0;
+        for (auto &m : data.local_matrices_int_ext)
+          m = 0;
+        for (auto &m : data.local_matrices_ext_ext)
+          m = 0;
+        // Mark the arrays initialized to zero above as currently all unused
+        std::fill (data.assembled_matrices.begin(), data.assembled_matrices.end(),
+                   false);
       }
 
     for (scratch.face_number=0; scratch.face_number<cell->n_faces(); ++scratch.face_number)
