@@ -79,7 +79,10 @@ namespace aspect
         Vector<double> local_rhs(dofs_per_cell);
         Vector<double> local_mass_matrix(dofs_per_cell);
 
-        // The mass matrix may be stored in a vector as it is a diagonal matrix.
+        // The mass matrix may be stored in a vector as it is a diagonal matrix:
+        // it is computed based on quadrature over faces, and we use a node-location
+        // based quadrature formula above, so phi_i(x_q)=delta_{iq} where the
+        // x_q are the node points of the finite element shape functions on the face.
         LinearAlgebra::BlockVector mass_matrix(simulator_access.introspection().index_sets.system_partitioning,
                                                simulator_access.get_mpi_communicator());
         LinearAlgebra::BlockVector distributed_heat_flux_vector(simulator_access.introspection().index_sets.system_partitioning,
@@ -236,7 +239,9 @@ namespace aspect
                   // Compute heat flux through Dirichlet boundary using CBF method
                   if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                     {
-                      // Assemble the mass matrix for cell face.
+                      // Assemble the mass matrix for cell face. Because the quadrature
+                      // formula is chosen as co-located with the nodes of shape functions,
+                      // the resulting matrix is diagonal.
                       for (unsigned int q=0; q<n_face_q_points; ++q)
                         for (unsigned int i=0; i<dofs_per_cell; ++i)
                           local_mass_matrix(i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
@@ -306,6 +311,8 @@ namespace aspect
 
         return heat_flux_vector;
       }
+
+
 
       template <int dim>
       std::vector<std::vector<std::pair<double, double>>>
@@ -435,6 +442,8 @@ namespace aspect
         return heat_flux_and_area;
       }
     }
+
+
 
     template <int dim>
     std::pair<std::string,std::string>
