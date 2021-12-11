@@ -437,6 +437,9 @@ namespace aspect
     lateral_averaging.initialize_simulator (*this);
 
     geometry_model->create_coarse_mesh (triangulation);
+    Assert (triangulation.all_reference_cells_are_hyper_cube(),
+            ExcMessage ("ASPECT only supports meshes that are composed of quadrilateral "
+                        "or hexahedral cells."))
     global_Omega_diameter = GridTools::diameter (triangulation);
 
     // After creating the coarse mesh, initialize mapping cache if one is used
