@@ -311,9 +311,8 @@ namespace aspect
       std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
       {
-        std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
-                                                                               std::vector<std::pair<double, double>>(GeometryInfo<dim>::faces_per_cell,
-                                                                                   std::pair<double,double>(0.0,0.0)));
+        std::vector<std::vector<std::pair<double, double>>>
+        heat_flux_and_area(simulator_access.get_triangulation().n_active_cells());
 
         // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
         // for a justification of the chosen quadrature degree.
@@ -360,6 +359,15 @@ namespace aspect
               for (const unsigned int f : cell->face_indices())
                 if (cell->at_boundary(f))
                   {
+                    // See if this is the first face on this cell we visit, and if
+                    // so resize the output array.
+                    if (heat_flux_and_area[cell->active_cell_index()].size() == 0)
+                      heat_flux_and_area[cell->active_cell_index()]
+                      .resize (cell->n_faces(), std::pair<double,double>(0.0,0.0));
+                    else
+                      Assert (heat_flux_and_area[cell->active_cell_index()].size() == cell->n_faces(),
+                              ExcInternalError());
+
                     // Determine the type of boundary
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
                     const bool prescribed_temperature = fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end();
