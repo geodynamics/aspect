@@ -450,21 +450,21 @@ namespace aspect
                         finite_element.dofs_per_cell),
           local_matrices_int_ext ((field_is_discontinuous
                                    ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_int ((field_is_discontinuous
                                    ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_ext ((field_is_discontinuous
                                    ?
-                                   GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
@@ -473,14 +473,14 @@ namespace aspect
 
           assembled_matrices ((field_is_discontinuous
                                ?
-                               GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+                               finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
                                :
                                0), false),
 
           local_dof_indices (finite_element.dofs_per_cell),
           neighbor_dof_indices ((field_is_discontinuous
                                  ?
-                                 GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
+                                 finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
                                  :
                                  0),
                                 std::vector<types::global_dof_index>(finite_element.dofs_per_cell))

@@ -88,7 +88,7 @@ namespace aspect
               }
 
             // now for the surface cells only
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->face(f)->boundary_id() == top_boundary_id)
                 {
                   fe_face_values.reinit (cell, f);
