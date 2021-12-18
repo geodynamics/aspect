@@ -94,6 +94,8 @@ jobs:
         -D ASPECT_UNITY_BUILD=ON \
         ..
         ninja
+        cat detailed.log
+        ./aspect -v
         ./aspect --test
 
   tests:
