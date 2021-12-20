@@ -211,6 +211,14 @@ namespace aspect
       double kdd;
       // Sediment transport coefficient.
       double kdsed;
+      
+      // Orographic parameters
+      int mmax;
+      int wb;
+      int wd;
+      double reduc_mmax;
+      double reduc_wb;
+      bool stackoro;
 
       /**
        * Marine parameters
