@@ -444,7 +444,7 @@ namespace aspect
                   if (current_timestep == 1)
                     {
                       // + or - 5 meters of topography.
-                      const double h_seed = (std::rand()%100)/10 - 5;
+                      const double h_seed = (std::rand()%( 2*noise_h+1 )) - noise_h;
                       h[i] = h[i] + h_seed;
                     }
               
@@ -1117,6 +1117,9 @@ namespace aspect
           prm.declare_entry ("Sediment rain intervals", "0",
                              Patterns::List (Patterns::Double(0)),
                              "A list of sediment rain times.");
+          prm.declare_entry("Initial noise magnitude", "5",
+                            Patterns::Integer(),
+                            "Maximum topography change in meters from the initial noise.");
 
 
           prm.enter_subsection ("Boundary conditions");
@@ -1263,6 +1266,7 @@ namespace aspect
           use_ghost = prm.get_bool("Use ghost nodes");
           use_v = prm.get_bool("Use velocities");
           precision = prm.get_double("Precision");
+          noise_h = prm.get_integer("Initial noise magnitude");
           sr_values = Utilities::string_to_double
                              (Utilities::split_string_list(prm.get ("Sediment rain")));
           sr_times = Utilities::string_to_double

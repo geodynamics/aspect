@@ -167,6 +167,8 @@ namespace aspect
       std::map<types::boundary_id, std::vector<std::string> > mesh_deformation_boundary_indicators_map;
       // Whether or not to use the ghost nodes.
       bool use_ghost;
+      // Magintude in meters of the initial noise appleid to FastScape.
+      int noise_h;
       // Sediment rain in m/yr, added to surface every ASPECT timestep.
       std::vector<double> sr_values;
       std::vector<double> sr_times;
