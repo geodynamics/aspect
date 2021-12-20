@@ -65,6 +65,31 @@ namespace aspect
       // Initialize parameters for restarting fastscape
       restart = this->get_parameters().resume_computation;
       restart_step = 0;
+      
+      // Since we don't open these until we're on one processor, we need to check if the 
+      // restart files exist before hand.
+      // TODO: This was quickly done and can likely be shortened/improved.
+      if(restart)
+      {
+        // Create variables for output directory and restart file
+        std::string dirname = this->get_output_directory();
+        
+        std::ifstream in;
+        in.open(dirname + "fastscape_h_restart.txt");
+        if (in.fail())
+            AssertThrow(false,ExcMessage("Cannot open topography file to restart FastScape."));
+        in.close();
+        
+        in.open(dirname + "fastscape_b_restart.txt");
+        if (in.fail())
+            AssertThrow(false,ExcMessage("Cannot open basement file to restart FastScape."));
+        in.close();
+        
+        in.open(dirname + "fastscape_steps_restart.txt");
+        if (in.fail())
+            AssertThrow(false,ExcMessage("Cannot open steps file to restart FastScape."));
+        in.close();
+      }
 
       // second is for maximum coordinates, first for minimum.
       for (unsigned int i=0; i<dim; ++i)
@@ -353,8 +378,6 @@ namespace aspect
 
                           in.close();
                         }
-                      else if (!in)
-                        AssertThrow(false,ExcMessage("Cannot open file to restart FastScape."));
 
                       // Load in b values.
                       std::ifstream in_b;
@@ -371,8 +394,6 @@ namespace aspect
 
                           in_b.close();
                         }
-                      else if (!in_b)
-                        AssertThrow(false,ExcMessage("Cannot open basement file to restart FastScape."));
 
                       /*
                        * Now load the fastscape istep at time of restart.
@@ -386,8 +407,6 @@ namespace aspect
                           in_step >> restart_step;
                           in_step.close();
                         }
-                      else if (!in_step)
-                        AssertThrow(false,ExcMessage("Cannot open file to restart fastscape."));
 
                       restart = false;
                     }
