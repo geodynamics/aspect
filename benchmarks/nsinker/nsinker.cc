@@ -8,11 +8,13 @@
 namespace aspect
 {
   /**
-   * This is the "NSinker" benchmark defined in \cite May2015496 in the implementation
-   * of \cite rudi2017weighted. It creates a number of spherical high-viscosity, high-density
-   * sinking spheres in a box geometry that provide a challenge for the Stokes preconditioner.
-   * The difficulty of the problem is determined by the number of sinkers and the viscosity
-   * contrast between sinkers and background.
+   * This is the "NSinker" benchmark as defined in Rudi et al. (2017),
+   * which is based on May et al. (2014). It creates a number of
+   * spherical high-viscosity, high-density sinking spheres in a box
+   * geometry that provide a challenge for the Stokes preconditioner.
+   * The difficulty of the problem is determined by the number of
+   * sinkers and the viscosity contrast between sinkers and
+   * background.
    */
   namespace NSinkerBenchmark
   {
