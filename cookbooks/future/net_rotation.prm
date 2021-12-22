@@ -1,6 +1,5 @@
-# A simple setup for convection in a quarter of a 2d shell. See the
-# manual for more information.
-
+# A 2d shell with free slip top and bottom boundary to demonstrate
+# net rotation removal
 
 set Dimension                              = 2
 set Use years in output instead of seconds = true
