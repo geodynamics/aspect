@@ -81,7 +81,7 @@ The number of space dimensions you want to run this program in. ASPECT can run i
 The end time of the simulation. The default value is a number so that when converted from years to seconds it is approximately equal to the largest number representable in floating point arithmetic. For all practical purposes, this equals infinity. Units: Years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-325
+327
 </pattern>
 <pattern_description>
 [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
@@ -3805,7 +3805,7 @@ Select one of the following models:
 
 `box&apos;: A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. The box geometry labels its 2*dim sides as follows: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries; in 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo&apos;&apos;). You can also use symbolic names ``left&apos;&apos;, ``right&apos;&apos;, etc., to refer to these boundaries in input files. It is also possible to add initial topography to the box model. Note however that this is done after the last initial adaptive refinement cycle. Also, initial topography is supposed to be small, as it is not taken into account when depth or a representative point is computed. 
 
-`box with lithosphere boundary indicators&apos;: A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``GeometryInfo&apos;&apos;), while indicators 6, 7, 8 and 9 denote the left, right, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left&apos;&apos;, ``right&apos;&apos;, ``left lithosphere&apos;&apos;, etc., to refer to these boundaries in input files.
+`box with lithosphere boundary indicators&apos;: A box geometry parallel to the coordinate directions. The extent of the box in each coordinate direction is set in the parameter file. This geometry model labels its sides with 2*dim+2*(dim-1) boundary indicators: in 2d, boundary indicators 0 through 3 denote the left, right, bottom and top boundaries, while indicators4 and 5 denote the upper part of the left and right vertical boundary, respectively. In 3d, boundary indicators 0 through 5 indicate left, right, front, back, bottom and top boundaries (see also the documentation of the deal.II class ``ReferenceCell&apos;&apos;), while indicators 6, 7, 8 and 9 denote the left, right, front and back upper parts of the vertical boundaries, respectively. You can also use symbolic names ``left&apos;&apos;, ``right&apos;&apos;, ``left lithosphere&apos;&apos;, etc., to refer to these boundaries in input files.
 
 Note that for a given ``Global refinement level&apos;&apos; and no user-specified ``Repetitions&apos;&apos;, the lithosphere part of the mesh will be more refined. 
 
@@ -16435,6 +16435,8 @@ As stated, this postprocessor computes the \textit{outbound} mass flux. If you a
 
 `memory statistics&apos;: A postprocessor that computes some statistics about the memory consumption. In particular, it computes the memory usage of the system matrix, triangulation, p4est, DoFHandler, current constraints, solution vector, and peak virtual memory usage, all in MB. It also outputs the memory usage of the system matrix to the screen.
 
+`mobility statistics&apos;: A postprocessor that computes some statistics about mobility following Tackley (2000) and Lourenco et al. (2020).
+
 `particle count statistics&apos;: A postprocessor that computes some statistics about the particle distribution, if present in this simulation. In particular, it computes minimal, average and maximal values of particles per cell in the global domain.
 
 `particles&apos;: A Postprocessor that creates particles that follow the velocity field of the simulation. The particles can be generated and propagated in various ways and they can carry a number of constant or time-varying properties. The postprocessor can write output positions and properties of all particles at chosen intervals, although this is not mandatory. It also allows other parts of the code to query the particles for information.
@@ -16470,7 +16472,7 @@ The file format then consists of lines with Euclidean coordinates followed by th
 130
 </pattern>
 <pattern_description>
-[MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+[MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 </pattern_description>
 </List_20of_20postprocessors>
 <Run_20postprocessors_20on_20nonlinear_20iterations>
@@ -18824,7 +18826,7 @@ File operations can potentially take a long time, blocking the progress of the r
 The name of the compositional field whose output should be visualized. 
 </documentation>
 <pattern>
-174
+176
 </pattern>
 <pattern_description>
 [Anything]
@@ -18839,7 +18841,7 @@ The name of the compositional field whose output should be visualized.
 A list of sets of compositional fields which should be output as vectors. Sets are separated from each other by semicolons and vector components within each set are separated by commas (e.g. $vec1_x$, $vec1_y$ ; $vec2_x$, $vec2_y$) where each name must be a defined named compositional field. If only one name is given in a set, it is interpreted as the first in a sequence of dim consecutive compositional fields.
 </documentation>
 <pattern>
-176
+174
 </pattern>
 <pattern_description>
 [Anything]
@@ -18852,7 +18854,7 @@ A list of sets of compositional fields which should be output as vectors. Sets a
 Names of vectors as they will appear in the output.
 </documentation>
 <pattern>
-175
+173
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -18871,7 +18873,7 @@ false
 A boolean flag that controls whether to output the heat flux map as a point wise value, or as a cell-wise averaged value. The point wise output is more accurate, but it currently omits prescribed heat flux values at boundaries and advective heat flux that is caused by velocities non-tangential to boundaries. If you do not use these two features it is recommended to switch this setting on to benefit from the increased output resolution.
 </documentation>
 <pattern>
-173
+175
 </pattern>
 <pattern_description>
 [Bool]
@@ -20390,7 +20392,7 @@ Whether to checkpoint the simulation right before termination.
 Terminate the simulation once the specified timestep has been reached.
 </documentation>
 <pattern>
-324
+326
 </pattern>
 <pattern_description>
 [Integer range 0...2147483647 (inclusive)]
@@ -20440,7 +20442,7 @@ The criterion considers the total heat flux over all boundaries listed by their 
 The wall time of the simulation. Unit: hours.
 </documentation>
 <pattern>
-326
+328
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20456,7 +20458,7 @@ A comma separated list of names denoting those boundaries that should be taken i
 The names of the boundaries listed here can either be numbers (in which case they correspond to the numerical boundary indicators assigned by the geometry object), or they can correspond to any of the symbolic names the geometry object may have provided for each part of the boundary. You may want to compare this with the documentation of the geometry model you use in your model.
 </documentation>
 <pattern>
-329
+331
 </pattern>
 <pattern_description>
 [List of &lt;[Anything]&gt; of length 0...4294967295 (inclusive)]
@@ -20473,7 +20475,7 @@ The names of the boundaries listed here can either be numbers (in which case the
 The maximum relative deviation of the heat flux in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
-327
+329
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20490,7 +20492,7 @@ The maximum relative deviation of the heat flux in recent simulation time for th
 The minimum length of simulation time that the system should be in steady state before termination. Note that if the time step size is similar to or larger than this value, the termination criterion will only have very few (in the most extreme case, just two) heat flux values to check. To ensure that a larger number of time steps are included in the check for steady state, this value should be much larger than the time step size. Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
 </documentation>
 <pattern>
-328
+330
 </pattern>
 <pattern_description>
 [Double 0...MAX_DOUBLE (inclusive)]
@@ -20507,6 +20509,42 @@ The minimum length of simulation time that the system should be in steady state 
 </default_value>
 <documentation>
 The maximum relative deviation of the temperature in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
+</documentation>
+<pattern>
+323
+</pattern>
+<pattern_description>
+[Double 0...MAX_DOUBLE (inclusive)]
+</pattern_description>
+</Maximum_20relative_20deviation>
+<Time_20in_20steady_20state>
+<value>
+1e7
+</value>
+<default_value>
+1e7
+</default_value>
+<documentation>
+The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
+</documentation>
+<pattern>
+324
+</pattern>
+<pattern_description>
+[Double 0...MAX_DOUBLE (inclusive)]
+</pattern_description>
+</Time_20in_20steady_20state>
+</Steady_20state_20temperature>
+<Steady_20state_20velocity>
+<Maximum_20relative_20deviation>
+<value>
+0.05
+</value>
+<default_value>
+0.05
+</default_value>
+<documentation>
+The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
 </documentation>
 <pattern>
 321
@@ -20532,42 +20570,6 @@ The minimum length of simulation time that the system should be in steady state 
 [Double 0...MAX_DOUBLE (inclusive)]
 </pattern_description>
 </Time_20in_20steady_20state>
-</Steady_20state_20temperature>
-<Steady_20state_20velocity>
-<Maximum_20relative_20deviation>
-<value>
-0.05
-</value>
-<default_value>
-0.05
-</default_value>
-<documentation>
-The maximum relative deviation of the RMS in recent simulation time for the system to be considered in steady state. If the actual deviation is smaller than this number, then the simulation will be terminated.
-</documentation>
-<pattern>
-330
-</pattern>
-<pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
-</pattern_description>
-</Maximum_20relative_20deviation>
-<Time_20in_20steady_20state>
-<value>
-1e7
-</value>
-<default_value>
-1e7
-</default_value>
-<documentation>
-The minimum length of simulation time that the system should be in steady state before termination.Units: years if the &apos;Use years in output instead of seconds&apos; parameter is set; seconds otherwise.
-</documentation>
-<pattern>
-331
-</pattern>
-<pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
-</pattern_description>
-</Time_20in_20steady_20state>
 </Steady_20state_20velocity>
 <User_20request>
 <File_20name>
@@ -20581,7 +20583,7 @@ terminate-aspect
 The name of a file that, if it exists in the output directory (whose name is also specified in the input file) will lead to termination of the simulation. The file&apos;s location is chosen to be in the output directory, rather than in a generic location such as the ASPECT directory, so that one can run multiple simulations at the same time (which presumably write to different output directories) and can selectively terminate a particular one.
 </documentation>
 <pattern>
-323
+325
 </pattern>
 <pattern_description>
 [FileName (Type: input)]
