@@ -217,12 +217,12 @@ namespace aspect
       if (update_ghost_particles &&
           dealii::Utilities::MPI::n_mpi_processes(this->get_mpi_communicator()) > 1)
         {
-          auto lambda = [&] (typename parallel::distributed::Triangulation<dim> &)
+          auto do_ghost_exchange = [&] (typename parallel::distributed::Triangulation<dim> &)
           {
             particle_handler_.exchange_ghost_particles();
           };
-          signals.post_refinement_load_user_data.connect(lambda);
-          signals.post_resume_load_user_data.connect(lambda);
+          signals.post_refinement_load_user_data.connect(do_ghost_exchange);
+          signals.post_resume_load_user_data.connect(do_ghost_exchange);
         }
 
       signals.post_mesh_deformation.connect(

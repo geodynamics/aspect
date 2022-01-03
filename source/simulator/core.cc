@@ -666,15 +666,13 @@ namespace aspect
         // there
         for (const auto p : boundary_temperature_manager.get_fixed_temperature_boundary_indicators())
           {
-            auto lambda = [&] (const dealii::Point<dim> &x) -> double
+            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+              [&] (const dealii::Point<dim> &x) -> double
             {
               return boundary_temperature_manager.boundary_temperature(p, x);
-            };
-
-            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-              lambda,
-              introspection.component_masks.temperature.first_selected_component(),
-              introspection.n_components);
+            },
+            introspection.component_masks.temperature.first_selected_component(),
+            introspection.n_components);
 
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
@@ -707,15 +705,13 @@ namespace aspect
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
             {
-              auto lambda = [&] (const Point<dim> &x) -> double
+              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                [&] (const Point<dim> &x) -> double
               {
                 return boundary_composition_manager.boundary_composition(p, x, c);
-              };
-
-              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-                lambda,
-                introspection.component_masks.compositional_fields[c].first_selected_component(),
-                introspection.n_components);
+              },
+              introspection.component_masks.compositional_fields[c].first_selected_component(),
+              introspection.n_components);
 
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
