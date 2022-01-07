@@ -83,7 +83,7 @@ namespace aspect
           // Prepare some values for phase dependent properties
           const double depth = this->get_geometry_model().depth(in.position[i]);
           const double adiabatic_pressure = this->get_adiabatic_conditions().pressure(in.position[i]);
-          const double pressure_depth_derivative = (depth > 0.0 && adiabatic_pressure > 0.0)
+          const double pressure_depth_derivative = (depth > 0.0)
                                                    ?
                                                    adiabatic_pressure / depth
                                                    :
