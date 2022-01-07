@@ -1,0 +1,17 @@
+# This is a copy of shell_quarter_gmg.prm.
+# It tests if boundary conditions are applied correctly at
+# tangential boundaries (in this case, top) when they are not
+# fixed on outflow parts of the boundary.
+
+include $ASPECT_SOURCE_DIR/tests/shell_quarter_gmg.prm
+
+set End time                               = 3e6
+
+subsection Boundary temperature model
+  set Allow fixed temperature on outflow boundaries = false
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators       =
+  set Tangential velocity boundary indicators = top, left, right, bottom
+end
