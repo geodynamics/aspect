@@ -98,6 +98,9 @@ namespace aspect
           void
           create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
+          const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
+          get_material_lookup (unsigned int lookup_index) const;
+
 
         private:
           unsigned int n_material_lookups;

@@ -547,6 +547,15 @@ namespace aspect
               std::make_unique<MaterialModel::PhaseOutputs<dim>> (n_points));
           }
       }
+
+
+
+      template <int dim>
+      const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
+      ThermodynamicTableLookup<dim>::get_material_lookup (unsigned int lookup_index) const
+      {
+        return *material_lookup[lookup_index].get();
+      }
     }
   }
 }
