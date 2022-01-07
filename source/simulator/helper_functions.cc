@@ -2034,13 +2034,18 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
+    // Do not replace the id on boundaries with tangential velocity
+    const std::set<types::boundary_id> &tangential_velocity_boundaries =
+      boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
         for (const unsigned int face_number : cell->face_indices())
           {
             const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
-            if (face->at_boundary())
+            if (face->at_boundary() &&
+                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
