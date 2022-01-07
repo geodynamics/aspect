@@ -842,6 +842,10 @@ namespace aspect
                                   const std::vector<double> &densities,
                                   const bool return_as_fraction)
       {
+        Assert(masses.size() == densities.size(),
+               ExcMessage ("The mass fractions and densities vectors used for computing "
+                           "volumes from masses have to have the same length!"));
+
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
 
