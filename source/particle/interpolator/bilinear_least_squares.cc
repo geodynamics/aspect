@@ -256,8 +256,16 @@ namespace aspect
                         interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
                         // Due to floating point inaccuracies init and interpolated_value can differ resulting in
                         // an overshoot or undershoot of around 1e-16. We resolve these small overshoot/undershoots by chopping
-                        // and ensuring that we chopped no more than a 1e-14th of the value.
-                        Assert(std::abs(init - interpolated_value) <= 1e-14 * std::abs(init), ExcInternalError());
+                        // and ensuring that we chopped no more than a 1e-12th of the value.
+                        double number_scale = 1;
+                        if (std::abs(interpolated_value) > 1) {
+                          number_scale = interpolated_value;
+                        }
+                        if (std::abs(init - interpolated_value)/number_scale > 1e-14) {
+                          std::cerr << "Wat! Over/Undershoot: " << init << ' ' << interpolated_value << ' ' << std::abs(init - interpolated_value) << std::endl;
+                        }
+                        
+                        Assert(std::abs(init - interpolated_value)/number_scale <= 1e-14 * std::abs(init), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
