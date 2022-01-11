@@ -291,10 +291,10 @@ namespace aspect
       // set up variable to interpolate prescribed field outputs onto compositional field
       PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
 
-      if (this->introspection().compositional_name_exists("density_field")
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
           && prescribed_field_out != nullptr)
         {
-          const unsigned int projected_density_index = this->introspection().compositional_index_for_name("density_field");
+          const unsigned int projected_density_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
           prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
         }
     }
@@ -408,7 +408,6 @@ namespace aspect
 
           // Check if compositional fields represent a composition
           std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
-          unsigned int n_chemical_fields = 0;
 
           // All chemical compositional fields are assumed to represent mass fractions.
           // If the field type is unspecified (has not been set in the input file),
@@ -418,10 +417,9 @@ namespace aspect
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
                 || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
-              {
-                composition_mask->set(c, true);
-                n_chemical_fields++;
-              }
+              composition_mask->set(c, true);
+
+          const unsigned int n_chemical_fields = composition_mask->n_selected_components();
 
           // Assign background field and do some error checking
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
@@ -461,7 +459,8 @@ namespace aspect
     {
       equation_of_state.create_additional_named_outputs(out);
 
-      if (out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+          && out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

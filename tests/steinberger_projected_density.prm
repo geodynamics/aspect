@@ -1,7 +1,7 @@
 # This is a copy of the steinberger compressible test.
 # It is intended to test the ability of the steinberger
 # material model to be used with the projected density
-# approximations, which requires using compositional
+# approximation, which requires using compositional
 # fields that do not correspond to a look-up table.
 
 set CFL number                             = 1.0
@@ -20,7 +20,7 @@ end
 subsection Compositional fields
   set Number of fields            = 3
   set Names of fields             = composition, density_field, another_field
-  set Types of fields             = chemical composition, generic, generic
+  set Types of fields             = chemical composition, density, generic
   set Compositional field methods = field, prescribed field, field
 end
 
@@ -86,10 +86,6 @@ subsection Mesh refinement
   set Time steps between mesh refinement = 0
 end
 
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
 
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 0,1
