@@ -238,7 +238,7 @@ namespace aspect
 
                           }
                       }
-                }
+                  }
                 std::size_t positions_index = 0;
                 for (typename std::vector<Point<dim>>::const_iterator itr = positions.begin(); itr != positions.end(); ++itr, ++positions_index)
                   {
@@ -251,21 +251,18 @@ namespace aspect
                       }
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
+#ifdef DEBUG
                         double init = interpolated_value;
+#endif
+                        // Due to floating point inaccuracies init and interpolated_value can differ resulting in
+                        // an overshoot or undershoot of around machine error. We resolve these small overshoot/undershoots by chopping.
                         interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
                         interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
-                        // Due to floating point inaccuracies init and interpolated_value can differ resulting in
-                        // an overshoot or undershoot of around 1e-16. We resolve these small overshoot/undershoots by chopping
-                        // and ensuring that we chopped no more than a 1e-12th of the value.
-                        double number_scale = 1;
-                        if (std::abs(interpolated_value) > 1) {
-                          number_scale = interpolated_value;
-                        }
-                        if (std::abs(init - interpolated_value)/number_scale > 1e-14) {
-                          std::cerr << "Wat! Over/Undershoot: " << init << ' ' << interpolated_value << ' ' << std::abs(init - interpolated_value) << std::endl;
-                        }
-                        
-                        Assert(std::abs(init - interpolated_value)/number_scale <= 1e-14 * std::abs(init), ExcInternalError());
+                        // If the limiter is working correctly, we should not be chopping anything more than machine error,
+                        // So the check ensures that we have chopped no more than a 1e-12th of the initial value.
+                        // To prevent division by zero, but still provide some amount of scale to our error checking,
+                        // we divide by the larger of 1 and the interpolated value
+                        Assert(std::abs(init - interpolated_value)/std::max(std::abs(interpolated_value), 1.0) <= 1e-12, ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
