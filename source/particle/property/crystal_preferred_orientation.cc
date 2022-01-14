@@ -512,7 +512,7 @@ namespace aspect
 
             deformation_types[mineral_i] = (unsigned int)DeformationType::passive;
 
-            const std::array<double,4> ref_resolved_shear_stress = {1e60,1e60,1e60,1e60};
+            const std::array<double,4> ref_resolved_shear_stress = {{1e60,1e60,1e60,1e60}};
 
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
@@ -1004,7 +1004,7 @@ namespace aspect
               {
                 prm.declare_entry("Model name","Uniform grains and random uniform rotations",
                                   Patterns::Anything(),
-                                  "The model used to initialize the CPO for all particles. Currently 'Uniform grains and Random Uniform rotations' is the only valid option.");
+                                  "The model used to initialize the CPO for all particles. Currently 'Uniform grains and random uniform rotations' is the only valid option.");
                 prm.enter_subsection("Uniform grains and random uniform rotations");
                 {
                   prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
@@ -1094,10 +1094,10 @@ namespace aspect
               prm.enter_subsection("Initial grains");
               {
                 const std::string model_name = prm.get("Model name");
-                AssertThrow(model_name == "Uniform grains and Random Uniform rotations",
+                AssertThrow(model_name == "Uniform grains and random uniform rotations",
                             ExcMessage("No model named " + model_name + "for CPO particle property initialization. "
-                                       + "Only the model \"Uniform grains and Random Uniform rotations\" is available."));
-                prm.enter_subsection("Uniform grains and Random Uniform rotations");
+                                       + "Only the model \"Uniform grains and random uniform rotations\" is available."));
+                prm.enter_subsection("Uniform grains and random uniform rotations");
                 {
                   const std::vector<std::string> temp_deformation_type_selector = dealii::Utilities::split_string_list(prm.get("Minerals"));
                   n_minerals = temp_deformation_type_selector.size();

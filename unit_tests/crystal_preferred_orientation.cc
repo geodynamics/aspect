@@ -138,8 +138,8 @@ TEST_CASE("CPO core: Store and Load")
         prm.set("Property advection method","Crank-Nicolson");
         prm.enter_subsection("Initial grains");
         {
-          prm.set("Model name","Uniform grains and Random Uniform rotations");
-          prm.enter_subsection("Uniform grains and Random Uniform rotations");
+          prm.set("Model name","Uniform grains and random uniform rotations");
+          prm.enter_subsection("Uniform grains and random uniform rotations");
           {
             // Let the minerals just passively rotate with the rotation of
             // the particle caused by the flow.
@@ -454,8 +454,8 @@ TEST_CASE("CPO core: Spin tensor")
           prm.set("Property advection method","Forward Euler");
           prm.enter_subsection("Initial grains");
           {
-            prm.set("Model name","Uniform grains and Random Uniform rotations");
-            prm.enter_subsection("Uniform grains and Random Uniform rotations");
+            prm.set("Model name","Uniform grains and random uniform rotations");
+            prm.enter_subsection("Uniform grains and random uniform rotations");
             {
               // Let the minerals just passively rotate with the rotation of
               // the particle caused by the flow.
