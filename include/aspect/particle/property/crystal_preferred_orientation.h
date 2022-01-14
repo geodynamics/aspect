@@ -39,6 +39,7 @@ namespace aspect
       {
         passive
       };
+
       enum class DeformationTypeSelector
       {
         passive
@@ -57,7 +58,7 @@ namespace aspect
       /**
        * The plugin manages and computes the evolution of Lattice/Crystal Preferred Orientations (LPO/CPO)
        * on particles. Each ASPECT particle represents many grains. Each grain is assigned a size and a orientation
-       * matrix. This allows for LPO evolution tracking with polycrysal kinematic CPO evolution models such
+       * matrix. This allows tracking the LPO evolution with kinematic polycrystal CPO evolution models such
        * as D-Rex (Kaminski and Ribe, 2001; ́Kaminski et al., 2004).
        *
        * This plugin stores M minerals and for each mineral it stores N grains. The total amount of memory stored is 2
@@ -75,10 +76,9 @@ namespace aspect
        *                                      => 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
        *
        * Last used data entry is n_minerals * (n_grains * 10 + 2). In case the Crank-Nicolson
-       * advection scheme is used, the previous derivative data is stored after the main data. It stores one double
-       * per grain double for the volume fraction derivative and 9 doubles for the rotation matrix derivative. This
-       * means the last data entry in this case is:
-       * n_minerals * (n_grains * 10 + 2) + mineral_n * (n_grains * 10).
+       * advection scheme is used, the derivative data is stored after the main data and each grain
+       * stores twice the amount of data. The last data entry in this case is:
+       * n_minerals * (n_grains * 10 + 2) + n_minerals * (n_grains * 10).
        *
        * We store the same number of grains for all minerals (e.g. olivine and enstatite
        * grains), although their volume fractions may not be the same. This is because we need a minimum number
@@ -257,7 +257,7 @@ namespace aspect
            * the new volume fractions.
            * @param dt is the timestep.
            * @param derivatives is a pair containing the derivatives for the volume fractions and
-           * orienatations respectively.
+           * orientations respectively.
            * @param volume_fractions are the current volume fractions of the grains in a mineral.
            * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
            */
@@ -272,7 +272,7 @@ namespace aspect
            * the $n^{\text{th}}$ iteration. The function returns the sum of the new volume fractions.
            * @param dt is the timestep.
            * @param derivatives is a pair containing the derivatives for the volume fractions and
-           * orienatations respectively.
+           * orientations respectively.
            * @param volume_fractions are the current volume fractions of the grains in a mineral.
            * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
            */
@@ -289,7 +289,7 @@ namespace aspect
            * iteration. The function returns the sum of the new volume fractions.
            * @param dt is the timestep
            * @param derivatives is a pair containing the derivatives for the volume fractions and
-           * orienatations respectively.
+           * orientations respectively.
            * @param volume_fractions are the current volume fractions of the grains in a mineral.
            * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
            * @param previous_volume_fraction_derivatives are the volume fraction derivatives from
@@ -326,7 +326,7 @@ namespace aspect
                               const std::array<double,4> &ref_resolved_shear_stress) const;
 
           /**
-           * Computes and returns the  volume fraction and grain orientation derivatives such that
+           * Computes and returns the volume fraction and grain orientation derivatives such that
            * the grains stay the same size and the orientations rotating passively with the particle.
            *
            * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
@@ -396,7 +396,7 @@ namespace aspect
           double property_advection_tolerance;
 
           /**
-           * This value determines the the maximum amount of iterations used for the
+           * This value determines the the maximum number of iterations used for the
            * Backward Euler and Crank-Nicolson iterations.
            */
           unsigned int property_advection_max_iterations;

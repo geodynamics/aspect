@@ -84,7 +84,7 @@ namespace aspect
         volume_fraction_mineral.resize(n_minerals);
         volume_fractions_grains.resize(n_minerals);
         rotation_matrices_grains.resize(n_minerals);
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             deformation_type[mineral_i] = data[cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)];
             volume_fraction_mineral[mineral_i] = data[cpo_data_position + 1 + mineral_i *(n_grains * 10 + 2)];
@@ -94,9 +94,9 @@ namespace aspect
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
                 // store volume fraction for olivine grains
-                volume_fractions_grains[mineral_i][grain_i] = data[cpo_data_position + 2 + grain_i * 10 + mineral_i *(n_grains * 10 + 2)];
+                volume_fractions_grains[mineral_i][grain_i] = data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
 
-                // store a_{ij} for olivine grains
+                // store a_{ij} for mineral grains
                 for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
                   {
                     const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
@@ -190,7 +190,7 @@ namespace aspect
          *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
          * See class header information for more layout information
          */
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             Assert(volume_fractions_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: volume_fractions_mineral[mineral_i] is not the same as n_grains."));
             Assert(rotation_matrices_grains[mineral_i].size() == n_grains, ExcMessage("Internal error: rotation_matrices_mineral[mineral_i] is not the same as n_grains."));
@@ -297,7 +297,7 @@ namespace aspect
         //                                      => data_position + 3 + i_grain * 10 + mineral_i * (n_grains * 10 + 2), or
         //                                      => data_position + 3 + i_grain * (2 * Tensor<2,3>::n_independent_components+ 2) + mineral_i * (n_grains * 10 + 2)
         //
-        // Note is that we store exactly the same number of grains of all minerals (e.g. olivine and enstatite
+        // Note that we store exactly the same number of grains of all minerals (e.g. olivine and enstatite
         // grains), although their volume fractions may not be the same. We need a minimum amount
         // of grains per tracer to perform reliable statistics on it. This minimum is the same for all phases.
         // and enstatite.
@@ -311,7 +311,7 @@ namespace aspect
         std::vector<std::vector<double > >volume_fractions_grains(n_minerals);
         std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains(n_minerals);
 
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             volume_fractions_grains[mineral_i].resize(n_grains);
             rotation_matrices_grains[mineral_i].resize(n_grains);
@@ -402,7 +402,7 @@ namespace aspect
               }
           }
 
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             data.emplace_back(deformation_type[mineral_i]);
             data.emplace_back(volume_fractions_minerals[mineral_i]);
@@ -507,7 +507,7 @@ namespace aspect
                              rotation_matrices_grains_derivatives);
 
 
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
 
             deformation_types[mineral_i] = (unsigned int)DeformationType::passive;
@@ -523,11 +523,11 @@ namespace aspect
 
             for (unsigned int i = 0; i < n_grains; ++i)
               {
-                for (size_t j = 0; j < 3; j++)
+                for (unsigned int j = 0; j < 3; j++)
                   {
                     for (size_t k = 0; k < 3; k++)
                       {
-                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage(" rotation_matrices_grains[mineral_i] is nan directly after loading."));
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage("rotation_matrices_grains[mineral_i] is NaN directly after loading."));
                       }
                   }
               }
@@ -723,7 +723,7 @@ namespace aspect
       {
         std::vector<std::pair<std::string,unsigned int> > property_information;
 
-        for (size_t mineral_i = 0; mineral_i < n_minerals; mineral_i++)
+        for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " type",1));
             property_information.push_back(std::make_pair("cpo mineral " + std::to_string(mineral_i) + " volume fraction",1));
@@ -783,7 +783,7 @@ namespace aspect
             rotation_matrices[grain_i] = rotation_matrices[grain_i] + dt * rotation_matrices[grain_i] * derivatives.second[grain_i];
           }
 
-        Assert(sum_volume_fractions != 0, ExcMessage("Sum of volumes is equal to zero, which is not supporsed to happen."));
+        Assert(sum_volume_fractions != 0, ExcMessage("The sum of all grain volume fractions of a mineral is equal to zero. This should not happen."));
         return sum_volume_fractions;
       }
 
@@ -921,7 +921,7 @@ namespace aspect
           {
             case CPODerivativeAlgorithm::spin_tensor:
             {
-              return this->compute_derivatives_spin_tensor(velocity_gradient_tensor);
+              return compute_derivatives_spin_tensor(velocity_gradient_tensor);
               break;
             }
             default:
@@ -1002,10 +1002,10 @@ namespace aspect
 
               prm.enter_subsection("Initial grains");
               {
-                prm.declare_entry("Model name","Uniform grains and Random Uniform rotations",
+                prm.declare_entry("Model name","Uniform grains and random uniform rotations",
                                   Patterns::Anything(),
                                   "The model used to initialize the CPO for all particles. Currently 'Uniform grains and Random Uniform rotations' is the only valid option.");
-                prm.enter_subsection("Uniform grains and Random Uniform rotations");
+                prm.enter_subsection("Uniform grains and random uniform rotations");
                 {
                   prm.declare_entry ("Minerals", "Olivine: Karato 2008, Enstatite",
                                      Patterns::List(Patterns::Anything()),
@@ -1039,7 +1039,7 @@ namespace aspect
       void
       CrystalPreferredOrientation<dim>::parse_parameters (ParameterHandler &prm)
       {
-        AssertThrow(dim != 2, ExcMessage("CPO computations are currently only supported for 3D models. "
+        AssertThrow(dim == 3, ExcMessage("CPO computations are currently only supported for 3D models. "
                                          "2D computations will work when this assert is removed, but you will need to make sure that the "
                                          "correct 3D strain-rate and velocity gradient tensors are provided to the algorithm."));
 
@@ -1113,14 +1113,14 @@ namespace aspect
                         {
                           AssertThrow(false,
                                       ExcMessage("The fabric needs to be assigned one of the following comma-delimited values: Olivine: Karato 2008, "
-                                                 "Olivine: A-fabric,Olivine: B-fabric,Olivine: C-fabric,Olivine: D-fabric,"
-                                                 "Olivine: E-fabric, Enstatite and Passive."))
+                                                 "Olivine: A-fabric, Olivine: B-fabric, Olivine: C-fabric, Olivine: D-fabric,"
+                                                 "Olivine: E-fabric, Enstatite, Passive."))
                         }
                     }
 
                   volume_fractions_minerals = Utilities::string_to_double(dealii::Utilities::split_string_list(prm.get("Volume fractions minerals")));
                   double volume_fractions_minerals_sum = 0;
-                  for (auto &&fraction : volume_fractions_minerals)
+                  for (auto fraction : volume_fractions_minerals)
                     {
                       volume_fractions_minerals_sum += fraction;
                     }
