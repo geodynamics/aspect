@@ -249,7 +249,7 @@ namespace aspect
             {
               // We only want to compute mass/volume fractions for fields that are chemical compositions.
               std::vector<double> chemical_compositions;
-              std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+              const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
               for (unsigned int c=0; c<in.composition[i].size(); ++c)
                 if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
@@ -407,7 +407,7 @@ namespace aspect
           equation_of_state.parse_parameters(prm);
 
           // Check if compositional fields represent a composition
-          std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+          const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
 
           // All chemical compositional fields are assumed to represent mass fractions.
           // If the field type is unspecified (has not been set in the input file),
