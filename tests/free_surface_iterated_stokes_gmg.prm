@@ -1,3 +1,4 @@
+# test gmg + free surface
 include $ASPECT_SOURCE_DIR/tests/free_surface_iterated_stokes.prm
 
 set Dimension = 2

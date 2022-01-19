@@ -130,7 +130,8 @@ namespace aspect
 
       /**
        * Table which stores the product of the pressure perturbation
-       * and the normalized gravity.
+       * and the normalized gravity. The size is n_face_boundary * n_face_q_points,
+       * but only those on the free surface are computed and stored.
        */
       Table<2, Tensor<1, dim, VectorizedArray<number>>> free_surface_stabilization_term_table;
 

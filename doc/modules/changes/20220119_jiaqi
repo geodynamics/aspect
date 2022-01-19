@@ -1,5 +1,4 @@
 New: The matrix-free GMG Stokes preconditioner is now 
-implemented for the free surface stabilization, but
-multilevel is not implemented in GMG yet. 
+implemented for the free surface stabilization.
 <br>
 (Timo Heister, John Naliboff, Jiaqi Zhang, 2022/01/11)

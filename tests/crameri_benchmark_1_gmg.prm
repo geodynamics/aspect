@@ -1,6 +1,4 @@
-# Can check this benchmark in gnuplot by opening it and running:
-# plot "statistics" using 2:(-$14), "statistics" using 2:(7000.*exp(-$2/14825))
-# This compares relaxation of the topography to an analytical solution
+# test gmg + free surface
 
 include $ASPECT_SOURCE_DIR/benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm
 

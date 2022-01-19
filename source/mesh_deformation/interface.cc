@@ -865,13 +865,13 @@ namespace aspect
               level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                                 relevant_mg_dofs,
                                                 sim.mpi_communicator);
+              level_displacements[level].update_ghost_values();
             }
 
           // create the mappings on each level:
           level_mappings.resize(0, n_levels-1);
           level_mappings.apply([&](const unsigned int level, std::unique_ptr<Mapping<dim>> &object)
           {
-            level_displacements[level].update_ghost_values();
             object = std::make_unique<MappingQEulerian<dim,
             dealii::LinearAlgebra::distributed::Vector<double>>>(
               /* degree = */ 1,

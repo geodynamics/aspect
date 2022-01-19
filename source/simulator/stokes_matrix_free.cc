@@ -823,6 +823,9 @@ namespace aspect
                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
                               const std::pair<unsigned int, unsigned int> &face_range) const
   {
+    // Assemble the fictive stabilization stress (phi_u[i].g)*(phi_u[j].n)
+    // g=pressure_perturbation * g_hat is stored in free_surface_stabilization_term_table
+    //  n is the normal vector
     FEFaceEvaluation<dim, degree_v, degree_v + 1, dim, number> velocity(data);
     const unsigned int n_faces_interior = data.n_inner_face_batches();
 
@@ -1783,6 +1786,9 @@ namespace aspect
     {
       // Create active mesh tables to store the product of the pressure perturbation and
       // the normalized gravity used in the free surface stabilization.
+      // Currently, mutilevel is not implemented yet, it may slow down the convergence.
+
+      // TODO: implement multilevel surface terms for the free surface stabilization.
 
       active_cell_data.apply_stabilization_free_surface_faces = false;
 
