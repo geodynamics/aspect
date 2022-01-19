@@ -32,7 +32,7 @@ pipeline {
     stage ("Check Permissions") {
       when {
         allOf {
-          not {branch 'master'}
+          changeRequest()
           not {changeRequest authorEmail: "rene.gassmoeller@mailbox.org"}
           not {changeRequest authorEmail: "timo.heister@gmail.com"}
           not {changeRequest authorEmail: "bangerth@colostate.edu"}
