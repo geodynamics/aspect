@@ -374,14 +374,10 @@ namespace aspect
           // sum gravity components for all n_satellites:
           sum_g += g.norm();
           sum_g_potential += g_potential;
-          if (g.norm() > max_g)
-            max_g = g.norm();
-          if (g.norm() < min_g)
-            min_g = g.norm();
-          if (g_potential > max_g_potential)
-            max_g_potential = g_potential;
-          if (g_potential < min_g_potential)
-            min_g_potential = g_potential;
+          max_g = std::max(g.norm(), max_g);
+          min_g = std::min(g.norm(), min_g);
+          max_g_potential = std::max(g_potential, max_g_potential);
+          min_g_potential = std::min(g_potential, min_g_potential);
 
           // On processor 0, compute analytical solutions and write output
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
