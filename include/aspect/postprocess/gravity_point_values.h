@@ -277,7 +277,7 @@ namespace aspect
         double model_outer_radius;
         double model_inner_radius;
 
-        std::vector<Point<dim>> satellites_coordinate;
+        std::vector<std::array<double,dim>> satellites_coordinate;
     };
   }
 }

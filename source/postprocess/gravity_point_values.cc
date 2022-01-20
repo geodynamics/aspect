@@ -319,11 +319,8 @@ namespace aspect
 
           // The spherical coordinates are shifted into cartesian to allow simplification
           // in the mathematical equation.
-          std::array<double,dim> satellite_point_coordinate;
-          satellite_point_coordinate[0] = satellites_coordinate[p][0];
-          satellite_point_coordinate[1] = satellites_coordinate[p][1];
-          satellite_point_coordinate[2] = satellites_coordinate[p][2];
-          const Point<dim> position_satellite = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_point_coordinate);
+          const Point<dim> position_satellite
+            = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellites_coordinate[p]);
 
           // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
