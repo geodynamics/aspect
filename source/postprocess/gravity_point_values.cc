@@ -270,8 +270,6 @@ namespace aspect
             ++local_cell_number;
           }
 
-      // Pre-Assign the coordinates of all satellites in a vector point:
-
       // open the file on rank 0 and write the headers
       std::ofstream output;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -338,35 +336,38 @@ namespace aspect
               {
                 for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                   {
-                    const double dist = (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]).norm();
+                    const unsigned int array_index = local_cell_number * n_quadrature_points_per_cell + q;
+
+                    const double dist = (position_satellite - position_point[array_index]).norm();
+
                     // For gravity acceleration:
-                    const double KK = - G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                    local_g += KK * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                    const double KK = - G * density_JxW[array_index] / std::pow(dist,3);
+                    local_g += KK * (position_satellite - position_point[array_index]);
                     // For gravity anomalies:
-                    const double KK_anomalies = - G * density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,3);
-                    local_g_anomaly += KK_anomalies * (position_satellite - position_point[local_cell_number * n_quadrature_points_per_cell + q]);
+                    const double KK_anomalies = - G * density_anomalies_JxW[array_index] / std::pow(dist,3);
+                    local_g_anomaly += KK_anomalies * (position_satellite - position_point[array_index]);
                     // For gravity potential:
-                    local_g_potential -= G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / dist;
+                    local_g_potential -= G * density_JxW[array_index] / dist;
                     // For gravity gradient:
-                    const double grad_KK = G * density_JxW[local_cell_number * n_quadrature_points_per_cell + q] / std::pow(dist,5);
+                    const double grad_KK = G * density_JxW[array_index] / std::pow(dist,5);
                     local_g_gradient[0][0] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0]),2)
+                                                         * std::pow((position_satellite[0] - position_point[array_index][0]),2)
                                                          - std::pow(dist,2));
                     local_g_gradient[1][1] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]),2)
+                                                         * std::pow((position_satellite[1] - position_point[array_index][1]),2)
                                                          - std::pow(dist,2));
                     local_g_gradient[2][2] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]),2)
+                                                         * std::pow((position_satellite[2] - position_point[array_index][2]),2)
                                                          - std::pow(dist,2));
                     local_g_gradient[0][1] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1]));
+                                                         * (position_satellite[0] - position_point[array_index][0])
+                                                         * (position_satellite[1] - position_point[array_index][1]));
                     local_g_gradient[0][2] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[local_cell_number * n_quadrature_points_per_cell + q][0])
-                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
+                                                         * (position_satellite[0] - position_point[array_index][0])
+                                                         * (position_satellite[2] - position_point[array_index][2]));
                     local_g_gradient[1][2] += grad_KK * (3.0
-                                                         * (position_satellite[1] - position_point[local_cell_number * n_quadrature_points_per_cell + q][1])
-                                                         * (position_satellite[2] - position_point[local_cell_number * n_quadrature_points_per_cell + q][2]));
+                                                         * (position_satellite[1] - position_point[array_index][1])
+                                                         * (position_satellite[2] - position_point[array_index][2]));
                   }
                 ++local_cell_number;
               }
