@@ -321,7 +321,7 @@ namespace aspect
       const unsigned int n_satellites = satellite_positions_spherical.size();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
-          const Point<dim> position_satellite = satellite_positions_cartesian[p];
+          const Point<dim> satellite_position = satellite_positions_cartesian[p];
 
           // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
@@ -338,7 +338,7 @@ namespace aspect
                   {
                     const unsigned int array_index = local_cell_number * n_quadrature_points_per_cell + q;
 
-                    const Tensor<1,dim> r_vector = position_satellite - position_point[array_index];
+                    const Tensor<1,dim> r_vector = satellite_position - position_point[array_index];
 
                     const double r_squared = r_vector.norm_square();
                     const double r = std::sqrt(r_squared);
@@ -428,7 +428,7 @@ namespace aspect
               // Then do the off-diagonal elements:
               for (unsigned int e=0; e<dim; ++e)
                 for (unsigned int f=e; f<dim; ++f)
-                  g_gradient_theory[e][f] += -(- 3.0 * position_satellite[e] * position_satellite[f])
+                  g_gradient_theory[e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
                                              /  std::pow(r,5);
               g_gradient_theory *= common_factor;
             }
@@ -440,9 +440,9 @@ namespace aspect
               output << satellite_positions_spherical[p][0] << ' '
                      << satellite_positions_spherical[p][1] *180. / numbers::PI << ' '
                      << satellite_positions_spherical[p][2] *180. / numbers::PI << ' '
-                     << position_satellite[0] << ' '
-                     << position_satellite[1] << ' '
-                     << position_satellite[2] << ' '
+                     << satellite_position[0] << ' '
+                     << satellite_position[1] << ' '
+                     << satellite_position[2] << ' '
                      << std::setprecision(precision)
                      << g << ' '
                      << g.norm() << ' '
