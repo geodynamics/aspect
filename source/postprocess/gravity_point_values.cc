@@ -326,9 +326,9 @@ namespace aspect
           // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
           // gravity vector components x,y,z (in tensor), potential and gradients.
-          Tensor<1,dim> local_g;
-          Tensor<1,dim> local_g_anomaly;
-          Tensor<2,dim> local_g_gradient;
+          Tensor<1,dim>          local_g;
+          Tensor<1,dim>          local_g_anomaly;
+          SymmetricTensor<2,dim> local_g_gradient;
           double local_g_potential = 0;
           local_cell_number = 0;
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
@@ -366,10 +366,10 @@ namespace aspect
               }
 
           // Sum local gravity components over global domain:
-          const Tensor<1,dim> g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
-          const Tensor<1,dim> g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
-          const Tensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
-          const double g_potential       = Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
+          const Tensor<1,dim>          g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
+          const Tensor<1,dim>          g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
+          const SymmetricTensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
+          const double                 g_potential= Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
 
           // sum gravity components for all n_satellites:
           sum_g += g.norm();
