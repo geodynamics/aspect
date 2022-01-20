@@ -277,7 +277,12 @@ namespace aspect
         double model_outer_radius;
         double model_inner_radius;
 
-        std::vector<std::array<double,dim>> satellites_coordinate;
+        /**
+         * The positions of all satellite positions in spherical and
+         * Cartesian coordinate systems.
+         */
+        std::vector<std::array<double,dim>> satellite_positions_spherical;
+        std::vector<Point<dim>>             satellite_positions_cartesian;
     };
   }
 }

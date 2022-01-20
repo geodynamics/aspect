@@ -98,7 +98,7 @@ namespace aspect
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
-      satellites_coordinate.resize(n_satellites);
+      satellite_positions_spherical.resize(n_satellites);
       if (sampling_scheme == map)
         {
           unsigned int p = 0;
@@ -109,17 +109,17 @@ namespace aspect
                   for (unsigned int j=0; j < n_points_latitude; ++j)
                     {
                       if (n_points_radius > 1)
-                        satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                        satellite_positions_spherical[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
                       else
-                        satellites_coordinate[p][0] = minimum_radius;
+                        satellite_positions_spherical[p][0] = minimum_radius;
                       if (n_points_longitude > 1)
-                        satellites_coordinate[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = (minimum_colongitude + ((maximum_colongitude - minimum_colongitude) / (n_points_longitude - 1)) * i) * numbers::PI / 180.;
                       else
-                        satellites_coordinate[p][1] = minimum_colongitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][1] = minimum_colongitude * numbers::PI / 180.;
                       if (n_points_latitude > 1)
-                        satellites_coordinate[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = (minimum_colatitude + ((maximum_colatitude - minimum_colatitude) / (n_points_latitude - 1)) * j) * numbers::PI / 180.;
                       else
-                        satellites_coordinate[p][2] = minimum_colatitude * numbers::PI / 180.;
+                        satellite_positions_spherical[p][2] = minimum_colatitude * numbers::PI / 180.;
                       ++p;
                     }
                 }
@@ -135,11 +135,11 @@ namespace aspect
               for (unsigned int s=0; s < n_points_spiral; ++s)
                 {
                   if (n_points_radius > 1)
-                    satellites_coordinate[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
+                    satellite_positions_spherical[p][0] = minimum_radius + ((maximum_radius - minimum_radius) / (n_points_radius - 1)) * h;
                   else
-                    satellites_coordinate[p][0] = minimum_radius;
-                  satellites_coordinate[p][2] = std::acos(1. - 2. * s / (n_points_spiral - 1.));
-                  satellites_coordinate[p][1] = std::fmod((s*golden_angle), 2.*numbers::PI);
+                    satellite_positions_spherical[p][0] = minimum_radius;
+                  satellite_positions_spherical[p][2] = std::acos(1. - 2. * s / (n_points_spiral - 1.));
+                  satellite_positions_spherical[p][1] = std::fmod((s*golden_angle), 2.*numbers::PI);
                   ++p;
                 }
             }
@@ -149,16 +149,23 @@ namespace aspect
           for (unsigned int p=0; p < n_satellites; ++p)
             {
               if (radius_list.size() == 1)
-                satellites_coordinate[p][0] = radius_list[0];
+                satellite_positions_spherical[p][0] = radius_list[0];
               else
-                satellites_coordinate[p][0] = radius_list[p];
+                satellite_positions_spherical[p][0] = radius_list[p];
               if (longitude_list[p] < 0)
-                satellites_coordinate[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
+                satellite_positions_spherical[p][1] = (360 + longitude_list[p]) * numbers::PI / 180.;
               else
-                satellites_coordinate[p][1] = (longitude_list[p]) * numbers::PI / 180.;
-              satellites_coordinate[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
+                satellite_positions_spherical[p][1] = (longitude_list[p]) * numbers::PI / 180.;
+              satellite_positions_spherical[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
             }
         }
+
+      // The spherical coordinates are shifted into cartesian to allow simplification
+      // in the mathematical equation.
+      satellite_positions_cartesian.resize (n_satellites);
+      for (unsigned int p=0; p<n_satellites; ++p)
+        satellite_positions_cartesian[p]
+          = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellite_positions_spherical[p]);
     }
 
 
@@ -313,14 +320,10 @@ namespace aspect
       double sum_g_potential = 0;
       double min_g_potential = std::numeric_limits<double>::max();
       double max_g_potential = std::numeric_limits<double>::lowest();
-      const unsigned int n_satellites = satellites_coordinate.size();
+      const unsigned int n_satellites = satellite_positions_spherical.size();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
-
-          // The spherical coordinates are shifted into cartesian to allow simplification
-          // in the mathematical equation.
-          const Point<dim> position_satellite
-            = Utilities::Coordinates::spherical_to_cartesian_coordinates<dim>(satellites_coordinate[p]);
+          const Point<dim> position_satellite = satellite_positions_cartesian[p];
 
           // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
@@ -391,58 +394,58 @@ namespace aspect
           double g_theory = 0;
           double g_potential_theory = 0;
           Tensor<2,dim> g_gradient_theory;
-          if (satellites_coordinate[p][0] <= model_inner_radius)
+          if (satellite_positions_spherical[p][0] <= model_inner_radius)
             {
               g_theory = 0;
               g_potential_theory = 2.0 * G * numbers::PI * reference_density * (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
             }
-          else if ((satellites_coordinate[p][0] > model_inner_radius) && (satellites_coordinate[p][0] < model_outer_radius))
+          else if ((satellite_positions_spherical[p][0] > model_inner_radius) && (satellite_positions_spherical[p][0] < model_outer_radius))
             {
-              g_theory = G * numbers::PI * 4./3. * reference_density * (satellites_coordinate[p][0] - (std::pow(model_inner_radius,3)
-                                                                        /  std::pow(satellites_coordinate[p][0],2)));
+              g_theory = G * numbers::PI * 4./3. * reference_density * (satellite_positions_spherical[p][0] - (std::pow(model_inner_radius,3)
+                                                                        /  std::pow(satellite_positions_spherical[p][0],2)));
               g_potential_theory = G * numbers::PI * 4./3. * reference_density
-                                   * ((std::pow(satellites_coordinate[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellites_coordinate[p][0]))
+                                   * ((std::pow(satellite_positions_spherical[p][0],2)/2.0) + (std::pow(model_inner_radius,3)/satellite_positions_spherical[p][0]))
                                    - G * numbers::PI * 2.0 * reference_density * std::pow(model_outer_radius,2);
             }
           else
             {
               g_theory = G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                         / std::pow(satellites_coordinate[p][0],2);
+                         / std::pow(satellite_positions_spherical[p][0],2);
               g_potential_theory = - G * numbers::PI * 4./3. * reference_density * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                   /  satellites_coordinate[p][0];
+                                   /  satellite_positions_spherical[p][0];
               g_gradient_theory[0][0] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        * (std::pow(satellite_positions_spherical[p][0], 2) - 3.0 * std::pow(position_satellite[0],2))
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
               g_gradient_theory[1][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        * (std::pow(satellite_positions_spherical[p][0], 2) - 3.0 * std::pow(position_satellite[1],2))
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
               g_gradient_theory[2][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
-                                        * (std::pow(satellites_coordinate[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        * (std::pow(satellite_positions_spherical[p][0], 2) - 3.0 * std::pow(position_satellite[2],2))
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
               g_gradient_theory[0][1] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[1])
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
               g_gradient_theory[0][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[0] * position_satellite[2])
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
               g_gradient_theory[1][2] = -G * numbers::PI * 4./3. * reference_density
                                         * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3))
                                         * (- 3.0 * position_satellite[1] * position_satellite[2])
-                                        /  std::pow(satellites_coordinate[p][0],5);
+                                        /  std::pow(satellite_positions_spherical[p][0],5);
             }
 
           // write output.
           // g_gradient is here given in eotvos E (1E = 1e-9 per square seconds):
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
             {
-              output << satellites_coordinate[p][0] << ' '
-                     << satellites_coordinate[p][1] *180. / numbers::PI << ' '
-                     << satellites_coordinate[p][2] *180. / numbers::PI << ' '
+              output << satellite_positions_spherical[p][0] << ' '
+                     << satellite_positions_spherical[p][1] *180. / numbers::PI << ' '
+                     << satellite_positions_spherical[p][2] *180. / numbers::PI << ' '
                      << position_satellite[0] << ' '
                      << position_satellite[1] << ' '
                      << position_satellite[2] << ' '
