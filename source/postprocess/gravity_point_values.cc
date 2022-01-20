@@ -326,17 +326,17 @@ namespace aspect
       std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
       std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
 
-      for (unsigned int p=0; p < n_satellites; ++p)
-        {
-          const Point<dim> satellite_position = satellite_positions_cartesian[p];
-
-          // For each point (i.e. satellite), the fourth integral goes over cells and
-          // quadrature points to get the unique distance between those, to calculate
-          // gravity vector components x,y,z (in tensor), potential and gradients.
-          local_cell_number = 0;
-          for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-            if (cell->is_locally_owned())
+      // For each point (i.e. satellite), the fourth integral goes over cells and
+      // quadrature points to get the unique distance between those, to calculate
+      // gravity vector components x,y,z (in tensor), potential and gradients.
+      local_cell_number = 0;
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            for (unsigned int p=0; p < n_satellites; ++p)
               {
+                const Point<dim> satellite_position = satellite_positions_cartesian[p];
+
                 for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                   {
                     const unsigned int array_index = local_cell_number * n_quadrature_points_per_cell + q;
@@ -365,9 +365,10 @@ namespace aspect
                                                                 * r_vector[e] * r_vector[f]
                                                                 - (e==f ? r_squared : 0));
                   }
-                ++local_cell_number;
               }
-        }
+
+            ++local_cell_number;
+          }
 
       for (unsigned int p=0; p < n_satellites; ++p)
         {
