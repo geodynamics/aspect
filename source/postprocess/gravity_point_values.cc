@@ -56,62 +56,10 @@ namespace aspect
 
 
     template <int dim>
-    std::pair<std::string,std::string>
-    GravityPointValues<dim>::execute (TableHandler &)
+    void
+    GravityPointValues<dim>::initialize ()
     {
-      AssertThrow(false, ExcNotImplemented());
-      return std::pair<std::string,std::string>();
-    }
-
-
-
-    template <>
-    std::pair<std::string,std::string>
-    GravityPointValues<3>::execute (TableHandler &statistics)
-    {
-      const int dim = 3;
-
-      // Check time to see if we output gravity
-      if (std::isnan(last_output_time))
-        {
-          last_output_time = this->get_time() - output_interval;
-          last_output_timestep = this->get_timestep_number();
-        }
-      if ((this->get_time() < last_output_time + output_interval)
-          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
-          && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
-
-      // Up the counter of the number of the file by one, but not in
-      // the very first output step. if we run postprocessors on all
-      // iterations, only increase file number in the first nonlinear iteration
-      const bool increase_file_number = (this->get_nonlinear_iteration() == 0) || (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
-      if (output_file_number == numbers::invalid_unsigned_int)
-        output_file_number = 0;
-      else if (increase_file_number)
-        ++output_file_number;
-
-      const std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
-      const std::string filename = (this->get_output_directory()
-                                    + "output_gravity/"
-                                    + file_prefix);
-
-      // Get quadrature formula and increase the degree of quadrature over the velocity
-      // element degree.
-      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
-                                  + quadrature_degree_increase;
-      const QGauss<dim> quadrature_formula (degree);
-      FEValues<dim> fe_values (this->get_mapping(),
-                               this->get_fe(),
-                               quadrature_formula,
-                               update_values   |
-                               update_gradients |
-                               update_quadrature_points |
-                               update_JxW_values);
-
       // Get the value of the outer radius and inner radius:
-      double model_outer_radius;
-      double model_inner_radius;
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
         {
           model_outer_radius = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>
@@ -138,46 +86,7 @@ namespace aspect
           model_inner_radius = 0;
         }
 
-      // Get the value of the universal gravitational constant:
-      const double G = aspect::constants::big_g;
 
-      // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops. Because the postprocessor
-      // runs in parallel, the total number of local quadrature points has to be determined:
-      const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
-      const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
-
-      // Declare the vector 'density_JxW' to store the density at quadrature points. The
-      // density and the JxW are here together for simplicity in the equation (both variables
-      // only appear together):
-      std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-
-      // Declare the vector 'position_point' to store the position of quadrature points:
-      std::vector<Point<dim>> position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
-
-      // The following loop perform the storage of the position and density * JxW values
-      // at local quadrature points:
-      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),this->n_compositional_fields());
-      unsigned int local_cell_number = 0;
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            const std::vector<Point<dim>> &position_point_cell = fe_values.get_quadrature_points();
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
-            this->get_material_model().evaluate(in, out);
-            for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
-              {
-                density_JxW[local_cell_number * n_quadrature_points_per_cell + q] = out.densities[q] * fe_values.JxW(q);
-                density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q] = (out.densities[q]-reference_density) * fe_values.JxW(q);
-                position_point[local_cell_number * n_quadrature_points_per_cell + q] = position_point_cell[q];
-              }
-            ++local_cell_number;
-          }
-
-      // Pre-Assign the coordinates of all satellites in a vector point:
       // *** First calculate the number of satellites according to the sampling scheme:
       unsigned int n_satellites;
       if (sampling_scheme == fibonacci_spiral)
@@ -189,7 +98,7 @@ namespace aspect
       else n_satellites = 1;
 
       // *** Second assign the coordinates of all satellites:
-      std::vector<Point<dim>> satellites_coordinate(n_satellites);
+      satellites_coordinate.resize(n_satellites);
       if (sampling_scheme == map)
         {
           unsigned int p = 0;
@@ -250,6 +159,111 @@ namespace aspect
               satellites_coordinate[p][2] = (90 - latitude_list[p]) * numbers::PI / 180. ;
             }
         }
+    }
+
+
+
+    template <int dim>
+    std::pair<std::string,std::string>
+    GravityPointValues<dim>::execute (TableHandler &)
+    {
+      AssertThrow(false, ExcNotImplemented());
+      return std::pair<std::string,std::string>();
+    }
+
+
+
+    template <>
+    std::pair<std::string,std::string>
+    GravityPointValues<3>::execute (TableHandler &statistics)
+    {
+      const int dim = 3;
+
+      // Check time to see if we output gravity
+      if (std::isnan(last_output_time))
+        {
+          last_output_time = this->get_time() - output_interval;
+          last_output_timestep = this->get_timestep_number();
+        }
+      if ((this->get_time() < last_output_time + output_interval)
+          && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
+          && (this->get_timestep_number() != 0))
+        return {};
+
+      // Up the counter of the number of the file by one, but not in
+      // the very first output step. if we run postprocessors on all
+      // iterations, only increase file number in the first nonlinear iteration
+      const bool increase_file_number = (this->get_nonlinear_iteration() == 0) ||
+                                        (!this->get_parameters().run_postprocessors_on_nonlinear_iterations);
+      if (output_file_number == numbers::invalid_unsigned_int)
+        output_file_number = 0;
+      else if (increase_file_number)
+        ++output_file_number;
+
+      const std::string file_prefix = "gravity-" + Utilities::int_to_string (output_file_number, 5);
+      const std::string filename = (this->get_output_directory()
+                                    + "output_gravity/"
+                                    + file_prefix);
+
+      // Get quadrature formula and increase the degree of quadrature over the velocity
+      // element degree.
+      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+                                  + quadrature_degree_increase;
+      const QGauss<dim> quadrature_formula (degree);
+      FEValues<dim> fe_values (this->get_mapping(),
+                               this->get_fe(),
+                               quadrature_formula,
+                               update_values   |
+                               update_gradients |
+                               update_quadrature_points |
+                               update_JxW_values);
+
+
+      // Get the value of the universal gravitational constant:
+      const double G = aspect::constants::big_g;
+
+      // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
+      // avoids to use MaterialModel and fe_values within the loops. Because the postprocessor
+      // runs in parallel, the total number of local quadrature points has to be determined:
+      const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
+      const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
+
+      // Declare the vector 'density_JxW' to store the density at quadrature points. The
+      // density and the JxW are here together for simplicity in the equation (both variables
+      // only appear together):
+      std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+      std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
+
+      // Declare the vector 'position_point' to store the position of quadrature points:
+      std::vector<Point<dim>> position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
+
+      // The following loop perform the storage of the position and density * JxW values
+      // at local quadrature points:
+      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
+                                                   this->n_compositional_fields());
+      unsigned int local_cell_number = 0;
+      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
+        if (cell->is_locally_owned())
+          {
+            fe_values.reinit (cell);
+            const std::vector<Point<dim>> &position_point_cell = fe_values.get_quadrature_points();
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            this->get_material_model().evaluate(in, out);
+            for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
+              {
+                density_JxW[local_cell_number * n_quadrature_points_per_cell + q]
+                  = out.densities[q] * fe_values.JxW(q);
+                density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q]
+                  = (out.densities[q]-reference_density) * fe_values.JxW(q);
+                position_point[local_cell_number * n_quadrature_points_per_cell + q]
+                  = position_point_cell[q];
+              }
+            ++local_cell_number;
+          }
+
+      // Pre-Assign the coordinates of all satellites in a vector point:
 
       // open the file on rank 0 and write the headers
       std::ofstream output;
@@ -299,6 +313,7 @@ namespace aspect
       double sum_g_potential = 0;
       double min_g_potential = std::numeric_limits<double>::max();
       double max_g_potential = std::numeric_limits<double>::lowest();
+      const unsigned int n_satellites = satellites_coordinate.size();
       for (unsigned int p=0; p < n_satellites; ++p)
         {
 

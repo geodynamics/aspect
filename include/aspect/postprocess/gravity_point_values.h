@@ -63,6 +63,11 @@ namespace aspect
         GravityPointValues ();
 
         /**
+         * @copydoc Interface::initialize().
+         */
+        void initialize();
+
+        /**
          * Specify the creation of output_gravity.txt.
          */
         std::pair<std::string,std::string> execute (TableHandler &) override;
@@ -266,6 +271,13 @@ namespace aspect
          */
         std::vector<double> latitude_list;
 
+        // ------------ the following variables are not set from parameters,
+        //              but are instead computed up front from input
+        //              parameters and other parts of the overall model
+        double model_outer_radius;
+        double model_inner_radius;
+
+        std::vector<Point<dim>> satellites_coordinate;
     };
   }
 }
