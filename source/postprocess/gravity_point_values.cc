@@ -338,40 +338,29 @@ namespace aspect
                   {
                     const unsigned int array_index = local_cell_number * n_quadrature_points_per_cell + q;
 
-                    const double r_squared = (position_satellite - position_point[array_index]).norm_square();
+                    const Tensor<1,dim> r_vector = position_satellite - position_point[array_index];
+
+                    const double r_squared = r_vector.norm_square();
                     const double r = std::sqrt(r_squared);
 
                     // For gravity acceleration:
                     const double KK = - G * density_JxW[array_index] / std::pow(r,3);
-                    local_g += KK * (position_satellite - position_point[array_index]);
+                    local_g += KK * r_vector;
 
                     // For gravity anomalies:
                     const double KK_anomalies = - G * density_anomalies_JxW[array_index] / std::pow(r,3);
-                    local_g_anomaly += KK_anomalies * (position_satellite - position_point[array_index]);
+                    local_g_anomaly += KK_anomalies * r_vector;
 
                     // For gravity potential:
                     local_g_potential -= G * density_JxW[array_index] / r;
 
                     // For gravity gradient:
                     const double grad_KK = G * density_JxW[array_index] / std::pow(r,5);
-                    local_g_gradient[0][0] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[0] - position_point[array_index][0]),2)
-                                                         - r_squared);
-                    local_g_gradient[1][1] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[1] - position_point[array_index][1]),2)
-                                                         - r_squared);
-                    local_g_gradient[2][2] += grad_KK * (3.0
-                                                         * std::pow((position_satellite[2] - position_point[array_index][2]),2)
-                                                         - r_squared);
-                    local_g_gradient[0][1] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[array_index][0])
-                                                         * (position_satellite[1] - position_point[array_index][1]));
-                    local_g_gradient[0][2] += grad_KK * (3.0
-                                                         * (position_satellite[0] - position_point[array_index][0])
-                                                         * (position_satellite[2] - position_point[array_index][2]));
-                    local_g_gradient[1][2] += grad_KK * (3.0
-                                                         * (position_satellite[1] - position_point[array_index][1])
-                                                         * (position_satellite[2] - position_point[array_index][2]));
+                    for (unsigned int e=0; e<dim; ++e)
+                      for (unsigned int f=e; f<dim; ++f)
+                        local_g_gradient[e][f] += grad_KK * (3.0
+                                                             * r_vector[e] * r_vector[f]
+                                                             - (e==f ? r_squared : 0));
                   }
                 ++local_cell_number;
               }
