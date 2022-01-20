@@ -318,7 +318,14 @@ namespace aspect
       double sum_g_potential = 0;
       double min_g_potential = std::numeric_limits<double>::max();
       double max_g_potential = std::numeric_limits<double>::lowest();
+
       const unsigned int n_satellites = satellite_positions_spherical.size();
+
+      std::vector<double>                 local_g_potential (n_satellites);
+      std::vector<Tensor<1,dim>>          local_g (n_satellites);
+      std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
+      std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
+
       for (unsigned int p=0; p < n_satellites; ++p)
         {
           const Point<dim> satellite_position = satellite_positions_cartesian[p];
@@ -326,10 +333,6 @@ namespace aspect
           // For each point (i.e. satellite), the fourth integral goes over cells and
           // quadrature points to get the unique distance between those, to calculate
           // gravity vector components x,y,z (in tensor), potential and gradients.
-          Tensor<1,dim>          local_g;
-          Tensor<1,dim>          local_g_anomaly;
-          SymmetricTensor<2,dim> local_g_gradient;
-          double local_g_potential = 0;
           local_cell_number = 0;
           for (const auto &cell : this->get_dof_handler().active_cell_iterators())
             if (cell->is_locally_owned())
@@ -345,31 +348,36 @@ namespace aspect
 
                     // For gravity acceleration:
                     const double KK = - G * density_JxW[array_index] / std::pow(r,3);
-                    local_g += KK * r_vector;
+                    local_g[p] += KK * r_vector;
 
                     // For gravity anomalies:
                     const double KK_anomalies = - G * density_anomalies_JxW[array_index] / std::pow(r,3);
-                    local_g_anomaly += KK_anomalies * r_vector;
+                    local_g_anomaly[p] += KK_anomalies * r_vector;
 
                     // For gravity potential:
-                    local_g_potential -= G * density_JxW[array_index] / r;
+                    local_g_potential[p] -= G * density_JxW[array_index] / r;
 
                     // For gravity gradient:
                     const double grad_KK = G * density_JxW[array_index] / std::pow(r,5);
                     for (unsigned int e=0; e<dim; ++e)
                       for (unsigned int f=e; f<dim; ++f)
-                        local_g_gradient[e][f] += grad_KK * (3.0
-                                                             * r_vector[e] * r_vector[f]
-                                                             - (e==f ? r_squared : 0));
+                        local_g_gradient[p][e][f] += grad_KK * (3.0
+                                                                * r_vector[e] * r_vector[f]
+                                                                - (e==f ? r_squared : 0));
                   }
                 ++local_cell_number;
               }
+        }
+
+      for (unsigned int p=0; p < n_satellites; ++p)
+        {
+          const Point<dim> satellite_position = satellite_positions_cartesian[p];
 
           // Sum local gravity components over global domain:
-          const Tensor<1,dim>          g          = Utilities::MPI::sum (local_g, this->get_mpi_communicator());
-          const Tensor<1,dim>          g_anomaly  = Utilities::MPI::sum (local_g_anomaly, this->get_mpi_communicator());
-          const SymmetricTensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient, this->get_mpi_communicator());
-          const double                 g_potential= Utilities::MPI::sum (local_g_potential, this->get_mpi_communicator());
+          const Tensor<1,dim>          g          = Utilities::MPI::sum (local_g[p], this->get_mpi_communicator());
+          const Tensor<1,dim>          g_anomaly  = Utilities::MPI::sum (local_g_anomaly[p], this->get_mpi_communicator());
+          const SymmetricTensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient[p], this->get_mpi_communicator());
+          const double                 g_potential= Utilities::MPI::sum (local_g_potential[p], this->get_mpi_communicator());
 
           // sum gravity components for all n_satellites:
           sum_g += g.norm();
