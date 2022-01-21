@@ -28,6 +28,7 @@
 #include <aspect/utilities.h>
 
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/mpi.templates.h>
 #include <deal.II/fe/fe_values.h>
 
 #include <boost/archive/text_oarchive.hpp>
@@ -294,12 +295,64 @@ namespace aspect
               }
           }
 
+      // Sum local gravity components over global domain and compute
+      // some max and mins. We can directly call Utilities::MPI::sum()
+      // for a vector of doubles, but for the other data types we have
+      // to be more creative:
+      std::vector<double> g_potential(n_satellites);
+      Utilities::MPI::sum (make_const_array_view(local_g_potential),
+                           this->get_mpi_communicator(),
+                           make_array_view(g_potential));
+
+      const auto tensor_sum
+        = [] (const auto &v1, const auto &v2)
+      {
+        AssertDimension (v1.size(), v2.size());
+
+        using element_type = typename std::remove_reference<decltype(v1)>::type::value_type;
+
+        std::vector<element_type> result (v1.size());
+        for (unsigned int i=0; i<result.size(); ++i)
+          result[i] = v1[i] + v2[i];
+        return result;
+      };
+
+      const std::vector<Tensor<1,dim>>
+                                    g = Utilities::MPI::all_reduce<decltype(local_g)>
+                                        (local_g,
+                                         this->get_mpi_communicator(),
+                                         tensor_sum);
+
+      const std::vector<Tensor<1,dim>>
+                                    g_anomaly = Utilities::MPI::all_reduce<decltype(local_g_anomaly)>
+                                                (local_g_anomaly,
+                                                 this->get_mpi_communicator(),
+                                                 tensor_sum);
+
+      const std::vector<SymmetricTensor<2,dim>>
+                                             g_gradient = Utilities::MPI::all_reduce<decltype(local_g_gradient)>
+                                                          (local_g_gradient,
+                                                           this->get_mpi_communicator(),
+                                                           tensor_sum);
+
       double sum_g = 0;
       double min_g = std::numeric_limits<double>::max();
       double max_g = std::numeric_limits<double>::lowest();
       double sum_g_potential = 0;
       double min_g_potential = std::numeric_limits<double>::max();
       double max_g_potential = std::numeric_limits<double>::lowest();
+
+      for (unsigned int p=0; p < n_satellites; ++p)
+        {
+          // sum gravity components for all n_satellites:
+          sum_g += g[p].norm();
+          sum_g_potential += g_potential[p];
+          max_g = std::max(g[p].norm(), max_g);
+          min_g = std::min(g[p].norm(), min_g);
+          max_g_potential = std::max(g_potential[p], max_g_potential);
+          min_g_potential = std::min(g_potential[p], min_g_potential);
+        }
+
 
       // open the file on rank 0 and write the headers
       std::ofstream output;
@@ -343,20 +396,6 @@ namespace aspect
       for (unsigned int p=0; p < n_satellites; ++p)
         {
           const Point<dim> satellite_position = satellite_positions_cartesian[p];
-
-          // Sum local gravity components over global domain:
-          const Tensor<1,dim>          g          = Utilities::MPI::sum (local_g[p], this->get_mpi_communicator());
-          const Tensor<1,dim>          g_anomaly  = Utilities::MPI::sum (local_g_anomaly[p], this->get_mpi_communicator());
-          const SymmetricTensor<2,dim> g_gradient = Utilities::MPI::sum (local_g_gradient[p], this->get_mpi_communicator());
-          const double                 g_potential= Utilities::MPI::sum (local_g_potential[p], this->get_mpi_communicator());
-
-          // sum gravity components for all n_satellites:
-          sum_g += g.norm();
-          sum_g_potential += g_potential;
-          max_g = std::max(g.norm(), max_g);
-          min_g = std::min(g.norm(), min_g);
-          max_g_potential = std::max(g_potential, max_g_potential);
-          min_g_potential = std::min(g_potential, min_g_potential);
 
           // On processor 0, compute analytical solutions and write output
           if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
@@ -420,19 +459,19 @@ namespace aspect
                      << satellite_position[1] << ' '
                      << satellite_position[2] << ' '
                      << std::setprecision(precision)
-                     << g << ' '
-                     << g.norm() << ' '
+                     << g[p] << ' '
+                     << g[p].norm() << ' '
                      << g_theory << ' '
-                     << g_potential << ' '
+                     << g_potential[p] << ' '
                      << g_potential_theory << ' '
-                     << g_anomaly << ' '
-                     << g_anomaly.norm() << ' '
-                     << g_gradient[0][0] *1e9 << ' '
-                     << g_gradient[1][1] *1e9 << ' '
-                     << g_gradient[2][2] *1e9 << ' '
-                     << g_gradient[0][1] *1e9 << ' '
-                     << g_gradient[0][2] *1e9 << ' '
-                     << g_gradient[1][2] *1e9 << ' '
+                     << g_anomaly[p] << ' '
+                     << g_anomaly[p].norm() << ' '
+                     << g_gradient[p][0][0] *1e9 << ' '
+                     << g_gradient[p][1][1] *1e9 << ' '
+                     << g_gradient[p][2][2] *1e9 << ' '
+                     << g_gradient[p][0][1] *1e9 << ' '
+                     << g_gradient[p][0][2] *1e9 << ' '
+                     << g_gradient[p][1][2] *1e9 << ' '
                      << g_gradient_theory[0][0] *1e9 << ' '
                      << g_gradient_theory[1][1] *1e9 << ' '
                      << g_gradient_theory[2][2] *1e9 << ' '
