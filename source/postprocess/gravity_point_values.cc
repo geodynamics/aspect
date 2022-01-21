@@ -391,15 +391,11 @@ namespace aspect
                  << "# 28: gravity_gradient_theory_xz" << '\n'
                  << "# 29: gravity_gradient_theory_yz" << '\n'
                  << '\n';
-        }
 
-      for (unsigned int p=0; p < n_satellites; ++p)
-        {
-          const Point<dim> satellite_position = satellite_positions_cartesian[p];
-
-          // On processor 0, compute analytical solutions and write output
-          if (dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+          for (unsigned int p=0; p < n_satellites; ++p)
             {
+              const Point<dim> satellite_position = satellite_positions_cartesian[p];
+
               // analytical solution to calculate the theoretical gravity and its derivatives
               // from a uniform density model. Can only be used if concentric density profile.
               double g_theory = 0;
