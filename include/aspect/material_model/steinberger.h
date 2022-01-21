@@ -215,6 +215,19 @@ namespace aspect
 
       private:
         /**
+         * Compute the pressure- and temperature-dependent thermal
+         * conductivity either as a constant value, or based on the
+         * equation given in Stackhouse et al., 2015: First-principles
+         * calculations of the lattice thermal conductivity of the
+         * lower mantle, or based on the equation given in Tosi et al.,
+         * 2013: Mantle dynamics with pressure- and temperature-dependent
+         * thermal expansivity and conductivity.
+         */
+        double thermal_conductivity (const double temperature,
+                                     const double pressure,
+                                     const Point<dim> &position) const;
+
+        /**
          * Whether the compositional fields representing mass fractions
          * should be normalized to one when computing their fractions
          * (if false), or whether there is an additional composition
@@ -253,10 +266,30 @@ namespace aspect
         double reference_eta;
 
         /**
-         * The value for thermal conductivity. This model only
-         * implements a constant thermal conductivity for the whole domain.
+         * The value of the thermal conductivity if a constant thermal
+         * conductivity is used for the whole domain.
          */
         double thermal_conductivity_value;
+
+        /**
+         * Enumeration for selecting which type of conductivity law to use.
+         */
+        enum ConductivityFormulation
+        {
+          constant,
+          p_T_dependent
+        } conductivity_formulation;
+
+        /**
+         * Parameters for the temperature- and pressure dependence of the
+         * thermal conductivity.
+         */
+        std::vector<double> conductivity_transition_depths;
+        std::vector<double> reference_thermal_conductivities;
+        std::vector<double> conductivity_pressure_dependencies;
+        std::vector<double> conductivity_reference_temperatures;
+        std::vector<double> conductivity_exponents;
+        std::vector<double> saturation_scaling;
 
         /**
          * Information about lateral temperature averages.

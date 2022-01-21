@@ -221,6 +221,46 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Steinberger<dim>::
+    thermal_conductivity (const double temperature,
+                          const double pressure,
+                          const Point<dim> &position) const
+    {
+      if (conductivity_formulation == constant)
+        return thermal_conductivity_value;
+
+      else if (conductivity_formulation == p_T_dependent)
+        {
+          // Find the conductivity layer that corresponds to the depth of the evaluation point.
+          const double depth = this->get_geometry_model().depth(position);
+          unsigned int layer_index = std::distance(conductivity_transition_depths.begin(),
+                                                   std::lower_bound(conductivity_transition_depths.begin(),conductivity_transition_depths.end(), depth));
+
+          // Make sure the temperature is positive.
+          const double T = std::max(temperature, 1.e-3 * conductivity_reference_temperatures[layer_index]);
+          const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
+          const double p_dependence = reference_thermal_conductivities[layer_index] + conductivity_pressure_dependencies[layer_index] * pressure;
+
+          // Function based on the theory of Roufosse and Klemens (1974) that accounts for saturation.
+          // For the Tosi formulation, the scaling should be zero so that this term is 1.
+          double saturation_function = 1.0;
+          if (1./T_dependence > 1)
+            saturation_function = (1. - saturation_scaling[layer_index])
+                                  + saturation_scaling[layer_index] * (2./3. * std::sqrt(T_dependence) + 1./3. * 1./T_dependence);
+
+          return p_dependence * saturation_function * T_dependence;
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<double>();
+        }
+    }
+
+
+
+    template <int dim>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -236,7 +276,7 @@ namespace aspect
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.thermal_conductivities[i] = thermal_conductivity_value;
+          out.thermal_conductivities[i] = thermal_conductivity(in.temperature[i], in.pressure[i], in.position[i]);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0;
 
@@ -338,8 +378,71 @@ namespace aspect
                              "laterally by this factor squared.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
-                             "The value of the thermal conductivity $k$. "
+                             "The value of the thermal conductivity $k$. Only used in case "
+                             "the 'constant' Thermal conductivity formulation is selected. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity formulation", "constant",
+                             Patterns::Selection("constant|p-T-dependent"),
+                             "Which law should be used to compute the thermal conductivity. "
+                             "The 'constant' law uses a constant value for the thermal "
+                             "conductivity. The 'p-T-dependent' formulation uses equations "
+                             "from Stackhouse et al. (2015): First-principles calculations "
+                             "of the lattice thermal conductivity of the lower mantle "
+                             "(https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. "
+                             "(2013): Mantle dynamics with pressure- and temperature-dependent "
+                             "thermal expansivity and conductivity "
+                             "(https://doi.org/10.1016/j.pepi.2013.02.004) to compute the "
+                             "thermal conductivity in dependence of temperature and pressure. "
+                             "The thermal conductivity parameter sets can be chosen in such a "
+                             "way that either the Stackhouse or the Tosi relations are used. "
+                             "The conductivity description can consist of several layers with "
+                             "different sets of parameters. Note that the Stackhouse "
+                             "parametrization is only valid for the lower mantle (bridgmanite).");
+          prm.declare_entry ("Thermal conductivity transition depths", "410000, 520000, 660000",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of depth values that indicate where the transitions between "
+                             "the different conductivity parameter sets should occur in the "
+                             "'p-T-dependent' Thermal conductivity formulation (in most cases, "
+                             "this will be the depths of major mantle phase transitions). "
+                             "Units: \\si{\\meter}.");
+          prm.declare_entry ("Reference thermal conductivities", "2.47, 3.81, 3.52, 4.9",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of base values of the thermal conductivity for each of the "
+                             "horizontal layers in the 'p-T-dependent' Thermal conductivity "
+                             "formulation. Pressure- and temperature-dependence will be applied"
+                             "on top of this base value, according to the parameters 'Pressure "
+                             "dependencies of thermal conductivity' and 'Reference temperatures "
+                             "for thermal conductivity'. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
+          prm.declare_entry ("Pressure dependencies of thermal conductivity", "3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10",
+                             Patterns::List(Patterns::Double ()),
+                             "A list of values that determine the linear scaling of the "
+                             "thermal conductivity with the pressure in the 'p-T-dependent' "
+                             "Thermal conductivity formulation. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin\\per\\pascal}.");
+          prm.declare_entry ("Reference temperatures for thermal conductivity", "300, 300, 300, 1200",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of values of reference temperatures used to determine "
+                             "the temperature-dependence of the thermal conductivity in the "
+                             "'p-T-dependent' Thermal conductivity formulation. "
+                             "Units: \\si{\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity exponents", "0.48, 0.56, 0.61, 1.0",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of exponents in the temperature-dependent term of the "
+                             "'p-T-dependent' Thermal conductivity formulation. Note that this "
+                             "exponent is not used (and should have a value of 1) in the "
+                             "formulation of Stackhouse et al. (2015). "
+                             "Units: none.");
+          prm.declare_entry ("Saturation prefactors", "0, 0, 0, 1",
+                             Patterns::List(Patterns::Double (0., 1.)),
+                             "A list of values that indicate how a given layer in the "
+                             "conductivity formulation should take into account the effects "
+                             "of saturation on the temperature-dependence of the thermal "
+                             "conducitivity. This factor is multiplied with a saturation function "
+                             "based on the theory of Roufosse and Klemens, 1974. A value of 1 "
+                             "reproduces the formulation of Stackhouse et al. (2015), a value of "
+                             "0 reproduces the formulation of Tosi et al., (2013). "
+                             "Units: none.");
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -370,6 +473,37 @@ namespace aspect
           max_eta              = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
+
+          // Rheological parameters
+          if (prm.get ("Thermal conductivity formulation") == "constant")
+            conductivity_formulation = constant;
+          else if (prm.get ("Thermal conductivity formulation") == "p-T-dependent")
+            conductivity_formulation = p_T_dependent;
+          else
+            AssertThrow(false, ExcMessage("Not a valid thermal conductivity formulation"));
+
+          conductivity_transition_depths = Utilities::string_to_double
+                                           (Utilities::split_string_list(prm.get ("Thermal conductivity transition depths")));
+          const unsigned int n_conductivity_layers = conductivity_transition_depths.size() + 1;
+          AssertThrow (std::is_sorted(conductivity_transition_depths.begin(), conductivity_transition_depths.end()),
+                       ExcMessage("The list of 'Thermal conductivity transition depths' must "
+                                  "be sorted such that the values increase monotonically."));
+
+          reference_thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference thermal conductivities"))),
+                                                                                     n_conductivity_layers,
+                                                                                     "Reference thermal conductivities");
+          conductivity_pressure_dependencies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Pressure dependencies of thermal conductivity"))),
+                                                                                       n_conductivity_layers,
+                                                                                       "Pressure dependencies of thermal conductivity");
+          conductivity_reference_temperatures = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference temperatures for thermal conductivity"))),
+                                                                                        n_conductivity_layers,
+                                                                                        "Reference temperatures for thermal conductivity");
+          conductivity_exponents = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivity exponents"))),
+                                                                           n_conductivity_layers,
+                                                                           "Thermal conductivity exponents");
+          saturation_scaling = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Saturation prefactors"))),
+                                                                       n_conductivity_layers,
+                                                                       "Saturation prefactors");
 
           // Parse the table lookup parameters
           equation_of_state.initialize_simulator (this->get_simulator());
