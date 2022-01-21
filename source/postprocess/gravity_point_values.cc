@@ -229,20 +229,7 @@ namespace aspect
       // Get the value of the universal gravitational constant:
       const double G = aspect::constants::big_g;
 
-      // Storing cartesian coordinates, density and JxW at local quadrature points in a vector
-      // avoids to use MaterialModel and fe_values within the loops. Because the postprocessor
-      // runs in parallel, the total number of local quadrature points has to be determined:
-      const unsigned int n_locally_owned_cells = (this->get_triangulation().n_locally_owned_active_cells());
       const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
-
-      // Declare the vector 'density_JxW' to store the density at quadrature points. The
-      // density and the JxW are here together for simplicity in the equation (both variables
-      // only appear together):
-      std::vector<double> density_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-      std::vector<double> density_anomalies_JxW (n_locally_owned_cells * n_quadrature_points_per_cell);
-
-      // Declare the vector 'position_point' to store the position of quadrature points:
-      std::vector<Point<dim>> position_point (n_locally_owned_cells * n_quadrature_points_per_cell);
 
       // The following loop perform the storage of the position and density * JxW values
       // at local quadrature points:
@@ -250,25 +237,6 @@ namespace aspect
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
                                                    this->n_compositional_fields());
-      unsigned int local_cell_number = 0;
-      for (const auto &cell : this->get_dof_handler().active_cell_iterators())
-        if (cell->is_locally_owned())
-          {
-            fe_values.reinit (cell);
-            const std::vector<Point<dim>> &position_point_cell = fe_values.get_quadrature_points();
-            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
-            this->get_material_model().evaluate(in, out);
-            for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
-              {
-                density_JxW[local_cell_number * n_quadrature_points_per_cell + q]
-                  = out.densities[q] * fe_values.JxW(q);
-                density_anomalies_JxW[local_cell_number * n_quadrature_points_per_cell + q]
-                  = (out.densities[q]-reference_density) * fe_values.JxW(q);
-                position_point[local_cell_number * n_quadrature_points_per_cell + q]
-                  = position_point_cell[q];
-              }
-            ++local_cell_number;
-          }
 
       // open the file on rank 0 and write the headers
       std::ofstream output;
@@ -329,36 +297,43 @@ namespace aspect
       // For each point (i.e. satellite), the fourth integral goes over cells and
       // quadrature points to get the unique distance between those, to calculate
       // gravity vector components x,y,z (in tensor), potential and gradients.
-      local_cell_number = 0;
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
+            // Evaluate the solution at the quadrature points of this cell
+            fe_values.reinit (cell);
+
+            in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
+            this->get_material_model().evaluate(in, out);
+
             for (unsigned int p=0; p < n_satellites; ++p)
               {
                 const Point<dim> satellite_position = satellite_positions_cartesian[p];
 
                 for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
                   {
-                    const unsigned int array_index = local_cell_number * n_quadrature_points_per_cell + q;
-
-                    const Tensor<1,dim> r_vector = satellite_position - position_point[array_index];
+                    const Tensor<1,dim> r_vector = satellite_position - fe_values.quadrature_point(q);
 
                     const double r_squared = r_vector.norm_square();
                     const double r = std::sqrt(r_squared);
 
+                    const double density_JxW = out.densities[q] * fe_values.JxW(q);
+
                     // For gravity acceleration:
-                    const double KK = - G * density_JxW[array_index] / std::pow(r,3);
+                    const double KK = - G * density_JxW / std::pow(r,3);
                     local_g[p] += KK * r_vector;
 
                     // For gravity anomalies:
-                    const double KK_anomalies = - G * density_anomalies_JxW[array_index] / std::pow(r,3);
+                    const double KK_anomalies = - G * (out.densities[q]-reference_density) /
+                                                std::pow(r,3) *
+                                                fe_values.JxW(q);
                     local_g_anomaly[p] += KK_anomalies * r_vector;
 
                     // For gravity potential:
-                    local_g_potential[p] -= G * density_JxW[array_index] / r;
+                    local_g_potential[p] -= G * density_JxW / r;
 
                     // For gravity gradient:
-                    const double grad_KK = G * density_JxW[array_index] / std::pow(r,5);
+                    const double grad_KK = G * density_JxW / std::pow(r,5);
                     for (unsigned int e=0; e<dim; ++e)
                       for (unsigned int f=e; f<dim; ++f)
                         local_g_gradient[p][e][f] += grad_KK * (3.0
@@ -366,8 +341,6 @@ namespace aspect
                                                                 - (e==f ? r_squared : 0));
                   }
               }
-
-            ++local_cell_number;
           }
 
       for (unsigned int p=0; p < n_satellites; ++p)
