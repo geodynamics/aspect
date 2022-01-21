@@ -214,7 +214,8 @@ namespace aspect
 
       // Get quadrature formula and increase the degree of quadrature over the velocity
       // element degree.
-      const unsigned int degree = this->get_fe().base_element(this->introspection().base_elements.velocities).degree
+      const unsigned int degree = this->get_fe().base_element(this->introspection()
+                                                              .base_elements.velocities).degree
                                   + quadrature_degree_increase;
       const QGauss<dim> quadrature_formula (degree);
       FEValues<dim> fe_values (this->get_mapping(),
@@ -231,72 +232,22 @@ namespace aspect
 
       const unsigned int n_quadrature_points_per_cell = quadrature_formula.size();
 
-      // The following loop perform the storage of the position and density * JxW values
-      // at local quadrature points:
-      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),
-                                                 this->n_compositional_fields());
-      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
-                                                   this->n_compositional_fields());
+      const unsigned int n_satellites = satellite_positions_spherical.size();
 
-      // open the file on rank 0 and write the headers
-      std::ofstream output;
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          output.open(filename.c_str());
-          AssertThrow(output,
-                      ExcMessage("Unable to open file for writing: " + filename +"."));
-          output << "# 1: position_satellite_r" << '\n'
-                 << "# 2: position_satellite_phi" << '\n'
-                 << "# 3: position_satellite_theta" << '\n'
-                 << "# 4: position_satellite_x" << '\n'
-                 << "# 5: position_satellite_y" << '\n'
-                 << "# 6: position_satellite_z" << '\n'
-                 << "# 7: gravity_x" << '\n'
-                 << "# 8: gravity_y" << '\n'
-                 << "# 9: gravity_z" << '\n'
-                 << "# 10: gravity_norm" << '\n'
-                 << "# 11: gravity_theory" << '\n'
-                 << "# 12: gravity_potential" << '\n'
-                 << "# 13: gravity_potential_theory" << '\n'
-                 << "# 14: gravity_anomaly_x" << '\n'
-                 << "# 15: gravity_anomaly_y" << '\n'
-                 << "# 16: gravity_anomaly_z" << '\n'
-                 << "# 17: gravity_anomaly_norm" << '\n'
-                 << "# 18: gravity_gradient_xx" << '\n'
-                 << "# 19: gravity_gradient_yy" << '\n'
-                 << "# 20: gravity_gradient_zz" << '\n'
-                 << "# 21: gravity_gradient_xy" << '\n'
-                 << "# 22: gravity_gradient_xz" << '\n'
-                 << "# 23: gravity_gradient_yz" << '\n'
-                 << "# 24: gravity_gradient_theory_xx" << '\n'
-                 << "# 25: gravity_gradient_theory_yy" << '\n'
-                 << "# 26: gravity_gradient_theory_zz" << '\n'
-                 << "# 27: gravity_gradient_theory_xy" << '\n'
-                 << "# 28: gravity_gradient_theory_xz" << '\n'
-                 << "# 29: gravity_gradient_theory_yz" << '\n'
-                 << '\n';
-        }
 
       // This is the main loop which computes gravity acceleration, potential and
       // gradients at a point located at the spherical coordinate [r, phi, theta].
       // This loop corresponds to the 3 integrals of Newton law:
-      double sum_g = 0;
-      double min_g = std::numeric_limits<double>::max();
-      double max_g = std::numeric_limits<double>::lowest();
-      double sum_g_potential = 0;
-      double min_g_potential = std::numeric_limits<double>::max();
-      double max_g_potential = std::numeric_limits<double>::lowest();
-
-      const unsigned int n_satellites = satellite_positions_spherical.size();
-
       std::vector<double>                 local_g_potential (n_satellites);
       std::vector<Tensor<1,dim>>          local_g (n_satellites);
       std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
       std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
 
-      // For each point (i.e. satellite), the fourth integral goes over cells and
-      // quadrature points to get the unique distance between those, to calculate
-      // gravity vector components x,y,z (in tensor), potential and gradients.
+      MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),
+                                                 this->n_compositional_fields());
+      MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
+                                                   this->n_compositional_fields());
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -342,6 +293,52 @@ namespace aspect
                   }
               }
           }
+
+      double sum_g = 0;
+      double min_g = std::numeric_limits<double>::max();
+      double max_g = std::numeric_limits<double>::lowest();
+      double sum_g_potential = 0;
+      double min_g_potential = std::numeric_limits<double>::max();
+      double max_g_potential = std::numeric_limits<double>::lowest();
+
+      // open the file on rank 0 and write the headers
+      std::ofstream output;
+      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
+        {
+          output.open(filename.c_str());
+          AssertThrow(output,
+                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          output << "# 1: position_satellite_r" << '\n'
+                 << "# 2: position_satellite_phi" << '\n'
+                 << "# 3: position_satellite_theta" << '\n'
+                 << "# 4: position_satellite_x" << '\n'
+                 << "# 5: position_satellite_y" << '\n'
+                 << "# 6: position_satellite_z" << '\n'
+                 << "# 7: gravity_x" << '\n'
+                 << "# 8: gravity_y" << '\n'
+                 << "# 9: gravity_z" << '\n'
+                 << "# 10: gravity_norm" << '\n'
+                 << "# 11: gravity_theory" << '\n'
+                 << "# 12: gravity_potential" << '\n'
+                 << "# 13: gravity_potential_theory" << '\n'
+                 << "# 14: gravity_anomaly_x" << '\n'
+                 << "# 15: gravity_anomaly_y" << '\n'
+                 << "# 16: gravity_anomaly_z" << '\n'
+                 << "# 17: gravity_anomaly_norm" << '\n'
+                 << "# 18: gravity_gradient_xx" << '\n'
+                 << "# 19: gravity_gradient_yy" << '\n'
+                 << "# 20: gravity_gradient_zz" << '\n'
+                 << "# 21: gravity_gradient_xy" << '\n'
+                 << "# 22: gravity_gradient_xz" << '\n'
+                 << "# 23: gravity_gradient_yz" << '\n'
+                 << "# 24: gravity_gradient_theory_xx" << '\n'
+                 << "# 25: gravity_gradient_theory_yy" << '\n'
+                 << "# 26: gravity_gradient_theory_zz" << '\n'
+                 << "# 27: gravity_gradient_theory_xy" << '\n'
+                 << "# 28: gravity_gradient_theory_xz" << '\n'
+                 << "# 29: gravity_gradient_theory_yz" << '\n'
+                 << '\n';
+        }
 
       for (unsigned int p=0; p < n_satellites; ++p)
         {
