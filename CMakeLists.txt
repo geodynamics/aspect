@@ -287,11 +287,13 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   ADD_DEPENDENCIES(test run_unit_tests)
 ENDIF()
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
-  AND ${ASPECT_NEED_TEST_CONFIGURE})
-
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   # Hook up the tests:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
+ENDIF()
+
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+  AND ${ASPECT_NEED_TEST_CONFIGURE})
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
