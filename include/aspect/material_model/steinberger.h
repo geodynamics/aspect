@@ -291,6 +291,17 @@ namespace aspect
          */
         std::unique_ptr<internal::RadialViscosityLookup> radial_viscosity_lookup;
 
+        /**
+         * A function that fills the prescribed additional outputs in the
+         * MaterialModelOutputs object that is handed over, if it exists,
+         * in this case, densities for the projected density approximation.
+         * Does nothing otherwise.
+         */
+        void fill_prescribed_outputs (const unsigned int i,
+                                      const std::vector<double> &volume_fractions,
+                                      const MaterialModel::MaterialModelInputs<dim> &in,
+                                      MaterialModel::MaterialModelOutputs<dim> &out) const;
+
     };
   }
 }

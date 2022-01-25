@@ -247,7 +247,16 @@ namespace aspect
             mass_fractions.push_back(1.0);
           else
             {
-              mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], *composition_mask);
+              // We only want to compute mass/volume fractions for fields that are chemical compositions.
+              std::vector<double> chemical_compositions;
+              const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
+                    || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+                  chemical_compositions.push_back(in.composition[i][c]);
+
+              mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
 
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
@@ -262,10 +271,32 @@ namespace aspect
                                                                                true);
 
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
+          fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
 
       // fill additional outputs if they exist
       equation_of_state.fill_additional_outputs(in, volume_fractions, out);
+    }
+
+
+
+    template <int dim>
+    void
+    Steinberger<dim>::
+    fill_prescribed_outputs(const unsigned int q,
+                            const std::vector<double> &,
+                            const MaterialModel::MaterialModelInputs<dim> &,
+                            MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      // set up variable to interpolate prescribed field outputs onto compositional field
+      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
+
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+          && prescribed_field_out != nullptr)
+        {
+          const unsigned int projected_density_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+          prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
+        }
     }
 
 
@@ -375,24 +406,37 @@ namespace aspect
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters(prm);
 
+          // Check if compositional fields represent a composition
+          const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+
+          // All chemical compositional fields are assumed to represent mass fractions.
+          // If the field type is unspecified (has not been set in the input file),
+          // we have to assume it also represents a chemical composition for reasons of
+          // backwards compatibility.
+          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), false);
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
+                || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+              composition_mask->set(c, true);
+
+          const unsigned int n_chemical_fields = composition_mask->n_selected_components();
+
           // Assign background field and do some error checking
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
-                       (equation_of_state.number_of_lookups() == this->n_compositional_fields()) ||
-                       (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1),
+                       (equation_of_state.number_of_lookups() == n_chemical_fields) ||
+                       (equation_of_state.number_of_lookups() == n_chemical_fields + 1),
                        ExcMessage("The Steinberger material model assumes that all compositional "
-                                  "fields correspond to mass fractions of materials. There must either be "
-                                  "one material lookup file, the same number of material lookup files "
-                                  "as compositional fields, or one additional file "
-                                  "(if a background field is used). You have "
+                                  "fields of the type chemical composition correspond to mass fractions of "
+                                  "materials. There must either be one material lookup file, the same "
+                                  "number of material lookup files as compositional fields of type chemical "
+                                  "composition, or one additional file (if a background field is used). You "
+                                  "have "
                                   + Utilities::int_to_string(equation_of_state.number_of_lookups())
                                   + " material data files, but there are "
-                                  + Utilities::int_to_string(this->n_compositional_fields())
-                                  + " compositional fields. "));
+                                  + Utilities::int_to_string(n_chemical_fields)
+                                  + " fields of type chemical composition."));
 
-          has_background_field = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
-
-          // All compositional fields are assumed to represent mass fractions.
-          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), true);
+          has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
 
           prm.leave_subsection();
         }
@@ -414,6 +458,14 @@ namespace aspect
     Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       equation_of_state.create_additional_named_outputs(out);
+
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+          && out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+        }
     }
 
   }

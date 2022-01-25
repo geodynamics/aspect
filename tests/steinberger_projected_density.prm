@@ -1,10 +1,8 @@
-# This is a copy of the simple compressible test.
-# However it uses the Steinberger material model, which
-# reads in lookup tables. The testdata used in this test
-# was prepared with the same equations as in the simple
-# compressible material model. The output between the two is
-# very similar, although not completely equal due to roundoff
-# errors.
+# This is a copy of the steinberger compressible test.
+# It is intended to test the ability of the steinberger
+# material model to be used with the projected density
+# approximation, which requires using compositional
+# fields that do not correspond to a look-up table.
 
 set CFL number                             = 1.0
 set End time                               = 1e5
@@ -16,6 +14,21 @@ subsection Boundary temperature model
   subsection Spherical constant
     set Inner temperature = 4250
     set Outer temperature = 273
+  end
+end
+
+subsection Compositional fields
+  set Number of fields            = 3
+  set Names of fields             = composition, density_field, another_field
+  set Types of fields             = chemical composition, density, generic
+  set Compositional field methods = field, prescribed field, field
+end
+
+subsection Initial composition model
+  set Model name = function
+
+  subsection Function
+    set Function expression = (sqrt(x*x+y*y)-3481000)/(6371000-3481000); 3300; x/6371000
   end
 end
 
@@ -37,7 +50,6 @@ subsection Gravity model
   end
 end
 
-
 subsection Initial temperature model
   set Model name = harmonic perturbation
   subsection Harmonic perturbation
@@ -50,12 +62,13 @@ subsection Material model
 
   subsection Steinberger model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/steinberger/test-steinberger-compressible/
-    set Material file names              = testdata.txt
+    set Material file names              = testdata.txt,testdata-modified-alpha.txt
     set Lateral viscosity file name      = test-viscosity-prefactor.txt
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
     set Reference viscosity              = 1e21
+    set Thermal conductivity             = 1.5
   end
 end
 
@@ -94,7 +107,7 @@ subsection Postprocess
   subsection Visualization
     set Interpolate output = false
     set Output format                 = vtu
-    set List of output variables      = density
+    set List of output variables      = density, thermal conductivity, thermal expansivity
     set Time between graphical output = 0
   end
 
@@ -107,4 +120,9 @@ end
 
 subsection Heating model
   set List of model names = adiabatic heating
+end
+
+subsection Formulation
+  set Mass conservation = projected density field
+  set Temperature equation = real density
 end

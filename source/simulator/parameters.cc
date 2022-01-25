@@ -1182,7 +1182,7 @@ namespace aspect
                          Patterns::List(Patterns::Anything()),
                          "A user-defined name for each of the compositional fields requested.");
       prm.declare_entry ("Types of fields", "unspecified",
-                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|generic|unspecified")),
+                         Patterns::List (Patterns::Selection("chemical composition|stress|grain size|porosity|density|generic|unspecified")),
                          "A type for each of the compositional fields requested. "
                          "Each entry of the list must be "
                          "one of several recognized types: chemical composition, "
@@ -1833,6 +1833,9 @@ namespace aspect
                    ExcMessage ("The length of the list of names for the field types of compositional "
                                "fields needs to either have one entry or have a length equal to "
                                "the number of compositional fields."));
+
+      AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
+                   ExcMessage("There can only be one field of type 'density' in a simulation!"));
 
       // If only one method is specified apply this to all fields
       if (x_compositional_field_types.size() == 1)

@@ -360,6 +360,35 @@ namespace aspect
       const std::vector<typename Parameters<dim>::CompositionalFieldDescription> &
       get_composition_descriptions () const;
 
+
+      /**
+       * A function that gets the type of a compositional field as an input
+       * parameter and returns if any compositional field of that type is
+       * used in this simulation.
+       *
+       * @param type The type of compositional field (as specified in the
+       * input file)
+       */
+      bool
+      composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+
+
+      /**
+       * A function that gets the type of a compositional field as an input
+       * parameter and returns the index of the first compositional field of
+       * this type used in this simulation. If no such field is found, the
+       * function returns the number of compositional fields.
+       *
+       * @param type The type of compositional field (as specified in the
+       * input file)
+       */
+      unsigned int
+      find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
+
+
+
+
       /**
        * A function that gets the name of a compositional field as an input
        * parameter and returns if the compositional field is used in this

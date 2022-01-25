@@ -314,6 +314,30 @@ namespace aspect
 
   template <int dim>
   bool
+  Introspection<dim>::composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  {
+    for (unsigned int c=0; c<composition_descriptions.size(); ++c)
+      if (composition_descriptions[c].type == type)
+        return true;
+    return false;
+  }
+
+
+
+  template <int dim>
+  unsigned int
+  Introspection<dim>::find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const
+  {
+    for (unsigned int c=0; c<composition_descriptions.size(); ++c)
+      if (composition_descriptions[c].type == type)
+        return c;
+    return composition_descriptions.size();
+  }
+
+
+
+  template <int dim>
+  bool
   Introspection<dim>::compositional_name_exists (const std::string &name) const
   {
     return (std::find(composition_names.begin(), composition_names.end(), name) != composition_names.end()
