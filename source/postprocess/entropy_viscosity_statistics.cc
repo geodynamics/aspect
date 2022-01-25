@@ -47,7 +47,7 @@ namespace aspect
                                quadrature_formula,
                                update_JxW_values);
 
-      double local_max_viscosity = 0.0;
+      double local_maximum_viscosity = 0.0;
       double local_integrated_viscosity = 0.0;
       double local_volume = 0.0;
 
@@ -62,7 +62,7 @@ namespace aspect
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
                 const double entropy_viscosity_cell = entropy_viscosity[cell->active_cell_index()];
-                local_max_viscosity = std::max(local_max_viscosity,entropy_viscosity_cell);
+                local_maximum_viscosity = std::max(local_maximum_viscosity,entropy_viscosity_cell);
                 local_volume += fe_values.JxW(q);
                 local_integrated_viscosity += entropy_viscosity_cell * fe_values.JxW(q);
               }
@@ -72,13 +72,13 @@ namespace aspect
         = Utilities::MPI::sum (local_integrated_viscosity, this->get_mpi_communicator());
       const double global_integrated_volume
         = Utilities::MPI::sum (local_volume, this->get_mpi_communicator());
-      const double global_max_viscosity
-        = Utilities::MPI::max (local_max_viscosity, this->get_mpi_communicator());
+      const double global_maximum_viscosity
+        = Utilities::MPI::max (local_maximum_viscosity, this->get_mpi_communicator());
 
       const double average_viscosity = global_integrated_viscosity / global_integrated_volume;
 
       statistics.add_value ("Max entropy viscosity (W/(m*K))",
-                            global_max_viscosity);
+                            global_maximum_viscosity);
       statistics.add_value ("Average entropy viscosity (W/(m*K))",
                             average_viscosity);
 
@@ -95,7 +95,7 @@ namespace aspect
 
       std::ostringstream output;
       output.precision(3);
-      output << global_max_viscosity
+      output << global_maximum_viscosity
              << " W/(m*K), "
              << average_viscosity
              << " W/(m*K)";
