@@ -1834,12 +1834,18 @@ namespace aspect
                                "fields needs to either have one entry or have a length equal to "
                                "the number of compositional fields."));
 
-      AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
-                   ExcMessage("There can only be one field of type 'density' in a simulation!"));
-
       // If only one method is specified apply this to all fields
       if (x_compositional_field_types.size() == 1)
         x_compositional_field_types = std::vector<std::string> (n_compositional_fields, x_compositional_field_types[0]);
+
+      // For backwards compatibility, convert a field named "density_field" without type to a density field
+      const unsigned int density_index = std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "density_field")
+                                         - names_of_compositional_fields.begin();
+      if (density_index != n_compositional_fields && x_compositional_field_types[density_index] == "unspecified")
+        x_compositional_field_types[density_index] = "density";
+
+      AssertThrow (std::count(x_compositional_field_types.begin(), x_compositional_field_types.end(), "density") < 2,
+                   ExcMessage("There can only be one field of type 'density' in a simulation!"));
 
       composition_descriptions.resize(n_compositional_fields);
 

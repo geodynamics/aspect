@@ -50,6 +50,7 @@ subsection Compositional fields
   set Number of fields = 1
   set Names of fields = density_field
   set Compositional field methods = prescribed field
+  set Types of fields             = density
 end
 
 subsection Initial composition model
