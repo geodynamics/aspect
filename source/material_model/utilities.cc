@@ -612,11 +612,11 @@ namespace aspect
             {
               first_natural_variable = column_name;
               in >> column_name;
-              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be P(bar)."))
             }
           else
             {
-              AssertThrow(false, ExcMessage("The first column name in PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
+              AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
             }
 
           for (unsigned int n=2; n<n_columns; n++)
