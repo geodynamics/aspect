@@ -1,0 +1,3 @@
+Fixed: Periodic boundaries now work correctly in compressible models.
+<br>
+(Juliane Dannberg, 2022/01/26)
