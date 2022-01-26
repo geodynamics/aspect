@@ -244,6 +244,9 @@ namespace aspect
       std::vector<Tensor<1,dim>>          local_g_anomaly (n_satellites);
       std::vector<SymmetricTensor<2,dim>> local_g_gradient (n_satellites);
 
+      std::vector<double> G_times_density_times_JxW (n_quadrature_points_per_cell);
+      std::vector<double> G_times_density_anomaly_times_JxW (n_quadrature_points_per_cell);
+
       MaterialModel::MaterialModelInputs<dim> in(quadrature_formula.size(),
                                                  this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(quadrature_formula.size(),
@@ -258,6 +261,20 @@ namespace aspect
             in.reinit(fe_values, cell, this->introspection(), this->get_solution(), false);
             this->get_material_model().evaluate(in, out);
 
+            // Pull some computations that are independent of the
+            // satellite position out of the following loop. This is
+            // because we may have a very large number of satellites,
+            // so even just one multiplication that is unnecessarily
+            // repeated can be expensive.
+            for (unsigned int q = 0; q < n_quadrature_points_per_cell; ++q)
+              {
+                G_times_density_times_JxW[q]         = G * out.densities[q] *
+                                                       fe_values.JxW(q);
+                G_times_density_anomaly_times_JxW[q] = G * (out.densities[q]-reference_density) *
+                                                       fe_values.JxW(q);
+              }
+
+
             for (unsigned int p=0; p < n_satellites; ++p)
               {
                 const Point<dim> satellite_position = satellite_positions_cartesian[p];
@@ -269,23 +286,22 @@ namespace aspect
                     const double r_squared = r_vector.norm_square();
                     const double r = std::sqrt(r_squared);
 
-                    const double density_JxW = out.densities[q] * fe_values.JxW(q);
+                    const double G_density_JxW = G_times_density_times_JxW[q];
 
                     // For gravity acceleration:
-                    const double KK = - G * density_JxW / std::pow(r,3);
+                    const double KK = - G_density_JxW / std::pow(r,3);
                     local_g[p] += KK * r_vector;
 
                     // For gravity anomalies:
-                    const double KK_anomalies = - G * (out.densities[q]-reference_density) /
-                                                std::pow(r,3) *
-                                                fe_values.JxW(q);
+                    const double KK_anomalies = - G_times_density_anomaly_times_JxW[q] /
+                                                std::pow(r,3);
                     local_g_anomaly[p] += KK_anomalies * r_vector;
 
                     // For gravity potential:
-                    local_g_potential[p] -= G * density_JxW / r;
+                    local_g_potential[p] -= G_density_JxW / r;
 
                     // For gravity gradient:
-                    const double grad_KK = G * density_JxW / std::pow(r,5);
+                    const double grad_KK = G_density_JxW / std::pow(r,5);
                     for (unsigned int e=0; e<dim; ++e)
                       for (unsigned int f=e; f<dim; ++f)
                         local_g_gradient[p][e][f] += grad_KK * (3.0
