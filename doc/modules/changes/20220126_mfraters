@@ -1,0 +1,5 @@
+Fixed: The compressible terms for the DC Stokes and Newton solvers 
+where not correctly assembled. This is fixed now, and tests comparing
+the Stokes and DC Stokes solver have been added. 
+<br>
+(Menno Fraters, 2022/01/26)
