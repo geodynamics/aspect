@@ -1924,7 +1924,7 @@ namespace aspect
     distributed_vector.block(advection_block).compress(VectorOperation::insert);
 
     if (adv_field.is_temperature() ||
-        introspection.name_for_compositional_index(adv_field.compositional_variable) != "density_field")
+        adv_field.compositional_variable != introspection.find_composition_type(Parameters<dim>::CompositionalFieldDescription::density))
       current_constraints.distribute (distributed_vector);
 
     solution.block(advection_block) = distributed_vector.block(advection_block);

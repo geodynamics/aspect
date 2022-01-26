@@ -726,7 +726,7 @@ namespace aspect
       const unsigned int stokes_dofs_per_cell = data.local_dof_indices.size();
       const unsigned int n_q_points    = scratch.finite_element_values.n_quadrature_points;
       const double pressure_scaling = this->get_pressure_scaling();
-      const unsigned int density_idx = this->introspection().compositional_index_for_name("density_field");
+      const unsigned int density_idx = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
 
       const double time_step = this->get_timestep();
       const double old_time_step = this->get_old_timestep();
