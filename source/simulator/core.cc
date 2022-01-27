@@ -475,6 +475,16 @@ namespace aspect
     for (const auto p : boundary_velocity_manager.get_tangential_boundary_velocity_indicators())
       open_velocity_boundary_indicators.erase (p);
 
+    // Make sure that we do the pressure right-hand side modification correctly for periodic boundaries
+    using periodic_boundary_set
+      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int>>;
+    periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
+    for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+      {
+        open_velocity_boundary_indicators.erase ((*p).first.first);
+        open_velocity_boundary_indicators.erase ((*p).first.second);
+      }
+
     // We need to do the RHS compatibility modification, if the model is
     // compressible or compatible (in the case of melt transport), and
     // there is no open boundary to balance the pressure.
