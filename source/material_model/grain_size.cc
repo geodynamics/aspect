@@ -713,19 +713,42 @@ namespace aspect
           // get the pressures and temperatures at the vertices of the cell
           const QTrapezoid<dim> quadrature_formula;
 
-          const unsigned int n_q_points = quadrature_formula.size();
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   quadrature_formula,
-                                   update_values);
+          std::vector<double> solution_values(this->get_fe().dofs_per_cell);
+          in.current_cell->get_dof_values(this->get_current_linearization_point(),
+                                          solution_values.begin(),
+                                          solution_values.end());
 
-          std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-          fe_values.reinit (in.current_cell);
+          // Only create the evaluator the first time we get here
+          if (!temperature_evaluator)
+            temperature_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
+                                                                     this->get_fe(),
+                                                                     update_values,
+                                                                     this->introspection().component_indices.temperature));
+          if (!pressure_evaluator)
+            pressure_evaluator.reset(new FEPointEvaluation<1,dim>(this->get_mapping(),
+                                                                  this->get_fe(),
+                                                                  update_values,
+                                                                  this->introspection().component_indices.pressure));
 
-          fe_values[this->introspection().extractors.temperature]
-          .get_function_values (this->get_current_linearization_point(), temperatures);
-          fe_values[this->introspection().extractors.pressure]
-          .get_function_values (this->get_current_linearization_point(), pressures);
+
+          // Initialize the evaluator for the temperature
+          temperature_evaluator->reinit(in.current_cell, quadrature_formula.get_points());
+          temperature_evaluator->evaluate(solution_values,
+                                          EvaluationFlags::values);
+
+          // Initialize the evaluator for the pressure
+          pressure_evaluator->reinit(in.current_cell, quadrature_formula.get_points());
+          pressure_evaluator->evaluate(solution_values,
+                                       EvaluationFlags::values);
+
+          std::vector<double> temperatures(quadrature_formula.size());
+          std::vector<double> pressures(quadrature_formula.size());
+
+          for (unsigned int i=0; i<quadrature_formula.size(); ++i)
+            {
+              temperatures[i] = temperature_evaluator->get_value(i);
+              pressures[i] = pressure_evaluator->get_value(i);
+            }
 
           AssertThrow (material_lookup.size() == 1,
                        ExcMessage("This formalism is only implemented for one material "
