@@ -285,23 +285,25 @@ namespace aspect
 
                     const double r_squared = r_vector.norm_square();
                     const double r = std::sqrt(r_squared);
+                    const double r_cubed = r * r_squared;
+                    const double one_over_r_cubed = 1. / r_cubed;
+                    const double r_to_the_5 = r_squared * r_cubed;
 
                     const double G_density_JxW = G_times_density_times_JxW[q];
 
                     // For gravity acceleration:
-                    const double KK = - G_density_JxW / std::pow(r,3);
+                    const double KK = - G_density_JxW * one_over_r_cubed;
                     local_g[p] += KK * r_vector;
 
                     // For gravity anomalies:
-                    const double KK_anomalies = - G_times_density_anomaly_times_JxW[q] /
-                                                std::pow(r,3);
+                    const double KK_anomalies = - G_times_density_anomaly_times_JxW[q] * one_over_r_cubed;
                     local_g_anomaly[p] += KK_anomalies * r_vector;
 
                     // For gravity potential:
                     local_g_potential[p] -= G_density_JxW / r;
 
                     // For gravity gradient:
-                    const double grad_KK = G_density_JxW / std::pow(r,5);
+                    const double grad_KK = G_density_JxW / r_to_the_5;
                     for (unsigned int e=0; e<dim; ++e)
                       for (unsigned int f=e; f<dim; ++f)
                         local_g_gradient[p][e][f] += grad_KK * (3.0
