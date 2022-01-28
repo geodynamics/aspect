@@ -373,12 +373,10 @@ namespace aspect
 
 
       // open the file on rank 0 and write the headers
-      std::ofstream output;
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
-          output.open(filename.c_str());
-          AssertThrow(output,
-                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          // First put all of our output into a string buffer:
+          std::ostringstream output;
           output << "# 1: position_satellite_r" << '\n'
                  << "# 2: position_satellite_phi" << '\n'
                  << "# 3: position_satellite_theta" << '\n'
@@ -494,6 +492,12 @@ namespace aspect
                      << g_gradient_theory[1][2] *1e9 << ' '
                      << '\n';
             }
+
+          // Now push the entire buffer into the output file in one swoop fell:
+          std::ofstream output_file(filename);
+          AssertThrow(output_file,
+                      ExcMessage("Unable to open file for writing: " + filename +"."));
+          output_file << output.str();
         }
 
       // write quantities in the statistic file
