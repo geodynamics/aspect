@@ -228,8 +228,14 @@ namespace aspect
       std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
       std::vector<std::vector<double>> volume_fractions (in.n_evaluation_points(), std::vector<double> (equation_of_state.number_of_lookups()));
 
+      // We need to make a copy of the material model inputs because we want to use the adiabatic pressure
+      // rather than the real pressure for the equations of state (to avoid numerical instabilities).
+      MaterialModel::MaterialModelInputs<dim> eos_in(in);
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        eos_in.pressure[i] = this->get_adiabatic_conditions().pressure(in.position[i]);
+
       // Evaluate the equation of state properties over all evaluation points
-      equation_of_state.evaluate(in, eos_outputs);
+      equation_of_state.evaluate(eos_in, eos_outputs);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
