@@ -203,16 +203,20 @@ namespace aspect
 
         // Functionality to average the additional RHS terms over the cell is not implemented.
         // Consequently, it is only possible to use elasticity with the Material averaging schemes
-        // 'none', 'harmonic average only viscosity', 'project to Q1 only viscosity'.
+        // 'none', 'harmonic average only viscosity', 'geometric average only viscosity', and
+        // 'project to Q1 only viscosity'.
         AssertThrow((this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::none
                      ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::harmonic_average_only_viscosity
                      ||
+                     this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::geometric_average_only_viscosity
+                     ||
                      this->get_parameters().material_averaging == MaterialModel::MaterialAveraging::project_to_Q1_only_viscosity),
                     ExcMessage("Material models with elasticity can only be used with the material "
-                               "averaging schemes 'none', 'harmonic average only viscosity', and "
-                               "project to Q1 only viscosity'. This parameter ('Material averaging') "
-                               "is located within the 'Material model' subsection."));
+                               "averaging schemes 'none', 'harmonic average only viscosity', "
+                               "'geometric average only viscosity', and 'project to Q1 only viscosity'. "
+                               "This parameter ('Material averaging') is located within the 'Material "
+                               "model' subsection."));
       }
 
 

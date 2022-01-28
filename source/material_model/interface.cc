@@ -466,7 +466,7 @@ namespace aspect
     {
       std::string get_averaging_operation_names ()
       {
-        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|project to Q1 only viscosity";
+        return "none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity";
       }
 
 
@@ -488,6 +488,8 @@ namespace aspect
           return log_average;
         else if (s == "harmonic average only viscosity")
           return harmonic_average_only_viscosity;
+        else if (s == "geometric average only viscosity")
+          return geometric_average_only_viscosity;
         else if (s == "project to Q1 only viscosity")
           return project_to_Q1_only_viscosity;
         else
@@ -818,6 +820,13 @@ namespace aspect
         if (operation == harmonic_average_only_viscosity)
           {
             average_property (harmonic_average, projection_matrix, expansion_matrix,
+                              values_out.viscosities);
+            return;
+          }
+
+        if (operation == geometric_average_only_viscosity)
+          {
+            average_property (geometric_average, projection_matrix, expansion_matrix,
                               values_out.viscosities);
             return;
           }

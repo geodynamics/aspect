@@ -1,0 +1,5 @@
+New: There is now an averaging operation "geometric average only viscosity"
+that can be used to average the viscosity values of the different
+points in a cell. This can be used together with the GMG solver.
+<br>
+(Juliane Dannberg, 2022/01/28)
