@@ -1315,7 +1315,8 @@ namespace aspect
     AssertThrow((sim.parameters.material_averaging &
                  (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
                   | avg::pick_largest | avg::project_to_Q1 | avg::log_average
-                  | avg::harmonic_average_only_viscosity | avg::project_to_Q1_only_viscosity)) != 0,
+                  | avg::harmonic_average_only_viscosity | avg::geometric_average_only_viscosity
+                  | avg::project_to_Q1_only_viscosity)) != 0,
                 ExcMessage("The matrix-free Stokes solver currently only works if material model averaging "
                            "is enabled. If no averaging is desired, consider using ``project to Q1 only "
                            "viscosity''."));
