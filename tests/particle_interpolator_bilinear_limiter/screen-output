@@ -9,14 +9,14 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 180+0 iterations.
+   Solving Stokes system... 192+0 iterations.
 
    Postprocessing:
      Writing graphical output:                          output-particle_interpolator_bilinear_limiter/solution/solution-00000
      RMS, max velocity:                                 0.00241 m/s, 0.00428 m/s
-     Compositions min/max/mass:                         0/1/0.04948 // 0/1/0.2604
-     Pressure min/avg/max:                              -6.917e-05 Pa, 0.3012 Pa, 0.7915 Pa
-     Average density / Average viscosity / Total mass:  0.7877 kg/m^3, 33.57 Pa s, 0.7877 kg
+     Compositions min/max/mass:                         0/1/0.04953 // 0/1/0.2604
+     Pressure min/avg/max:                              -7.036e-05 Pa, 0.3015 Pa, 0.7915 Pa
+     Average density / Average viscosity / Total mass:  0.7877 kg/m^3, 34.25 Pa s, 0.7877 kg
      Number of advected particles:                      2304
 
 Termination requested by criterion: end time

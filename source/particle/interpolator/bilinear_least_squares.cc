@@ -37,7 +37,7 @@ namespace aspect
 
       bool string_to_bool(const std::string &s)
       {
-        return (s == "true");
+        return (s == "true" || s == "yes");
       }
 
       template <int dim>
@@ -108,8 +108,10 @@ namespace aspect
 
         unsigned int positions_index = 0;
         const auto &mapping = this->get_mapping();
-        const double unit_offset = 0.5; // The unit cell of deal.II is [0,1]^dim. The limiter needs a 'unit' cell of [-.5,.5]^dim.
-        std::vector<std::pair<double, double>> property_bounds(n_particle_properties, std::pair<double, double>(std::numeric_limits<double>::max(), std::numeric_limits<double>::min())); // {min, max}
+        // The unit cell of deal.II is [0,1]^dim. The limiter needs a 'unit' cell of [-.5,.5]^dim.
+        const double unit_offset = 0.5;
+        std::vector<double> property_minimums(n_particle_properties, std::numeric_limits<double>::max());
+        std::vector<double> property_maximums(n_particle_properties, std::numeric_limits<double>::lowest());
         for (typename ParticleHandler<dim>::particle_iterator particle = particle_range.begin();
              particle != particle_range.end(); ++particle, ++positions_index)
           {
@@ -121,8 +123,8 @@ namespace aspect
                     b[property_index][positions_index] = particle_property_value[property_index];
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
-                        property_bounds[property_index].first = std::min(b[property_index][positions_index], property_bounds[property_index].first);
-                        property_bounds[property_index].second = std::max(b[property_index][positions_index], property_bounds[property_index].second);
+                        property_minimums[property_index] = std::min(b[property_index][positions_index], property_minimums[property_index]);
+                        property_maximums[property_index] = std::max(b[property_index][positions_index], property_maximums[property_index]);
                       }
                   }
               }
@@ -170,73 +172,23 @@ namespace aspect
               {
                 if (use_linear_least_squares_limiter[property_index] == true)
                   {
-                    c[property_index][0] = std::max(c[property_index][0], property_bounds[property_index].first);
-                    c[property_index][0] = std::min(c[property_index][0], property_bounds[property_index].second);
+                    c[property_index][0] = std::max(c[property_index][0], property_minimums[property_index]);
+                    c[property_index][0] = std::min(c[property_index][0], property_maximums[property_index]);
 
-                    double max_total_slope = std::min(c[property_index][0] - property_bounds[property_index].first,
-                                                      property_bounds[property_index].second - c[property_index][0]);
+                    const double max_total_slope = std::min(c[property_index][0] - property_minimums[property_index],
+                                                            property_maximums[property_index] - c[property_index][0])
+                                                   / half_h;
                     double current_total_slope = 0.0;
                     for (unsigned int i = 1; i < n_matrix_columns; ++i)
                       {
-                        // The slope in any one direction should not overshoot/undershoot on its own.
-                        c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]) * 2, max_total_slope), c[property_index][i]);
                         current_total_slope += std::abs(c[property_index][i]);
                       }
-                    current_total_slope *= half_h;
+
                     if (current_total_slope > max_total_slope)
                       {
-                        current_total_slope = 0;
+                        double slope_change_ratio = max_total_slope/current_total_slope;
                         for (unsigned int i = 1; i < n_matrix_columns; ++i)
-                          {
-                            c[property_index][i] = std::copysign(std::min(std::abs(c[property_index][i]), max_total_slope / half_h), c[property_index][i]);
-                            current_total_slope += std::abs(c[property_index][i]);
-                          }
-                        current_total_slope *= half_h;
-                        if (current_total_slope > max_total_slope)
-                          {
-                            double change_in_slope = (current_total_slope - max_total_slope)/(dim * half_h);
-                            dealii::Vector<double> c_i(n_matrix_columns);
-                            c_i[0] = c[property_index][0];
-                            for (unsigned int i = 1; i < n_matrix_columns; ++i)
-                              {
-                                c_i[i] = std::copysign(std::abs(c[property_index][i]) - change_in_slope, c[property_index][i]);
-                              }
-                            if (dim == 2)
-                              {
-                                c[property_index] = c_i;
-                              }
-                            else
-                              {
-                                // In two dimensions half the neccessary change can be safely removed from each slope component
-                                // however in three dimensions this additional check is neccessary to ensure that a third of the neccesary slope can be removed from each component.
-                                // An example where this could happen is if c is [.5, 1, .04, .01]' with boundaries of [0, 1].
-                                // Without these checks, c_3 would become negative, and would result in a different corner of the cell over(under)shooting.
-                                if (c[property_index][1] * c_i[1] <= 0)
-                                  {
-                                    c[property_index][2] = std::copysign(std::abs(c_i[2]) - std::abs(c_i[1]/2), c[property_index][2]);
-                                    c[property_index][3] = std::copysign(std::abs(c_i[3]) - std::abs(c_i[1]/2), c[property_index][3]);
-                                    c[property_index][1] = 0;
-                                  }
-                                else if (c[property_index][2] * c_i[2] <= 0)
-                                  {
-                                    c[property_index][1] = std::copysign(std::abs(c_i[1]) - std::abs(c_i[2]/2), c[property_index][1]);
-                                    c[property_index][3] = std::copysign(std::abs(c_i[3]) - std::abs(c_i[2]/2), c[property_index][3]);
-                                    c[property_index][2] = 0;
-
-                                  }
-                                else if (c[property_index][3] * c_i[3] <= 0)
-                                  {
-                                    c[property_index][1] = std::copysign(std::abs(c_i[1]) - std::abs(c_i[3]/2), c[property_index][1]);
-                                    c[property_index][2] = std::copysign(std::abs(c_i[2]) - std::abs(c_i[3]/2), c[property_index][2]);
-                                    c[property_index][3] = 0;
-                                  }
-                                else
-                                  {
-                                    c[property_index] = c_i;
-                                  }
-                              }
-
-                          }
+                          c[property_index][i] *= slope_change_ratio;
                       }
                   }
                 std::size_t positions_index = 0;
@@ -251,18 +203,9 @@ namespace aspect
                       }
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
-#ifdef DEBUG
-                        double init = interpolated_value;
-#endif
-                        // Due to floating point inaccuracies init and interpolated_value can differ resulting in
-                        // an overshoot or undershoot of around machine error. We resolve these small overshoot/undershoots by chopping.
-                        interpolated_value = std::min(interpolated_value, property_bounds[property_index].second);
-                        interpolated_value = std::max(interpolated_value, property_bounds[property_index].first);
-                        // If the limiter is working correctly, we should not be chopping anything more than machine error,
-                        // So the check ensures that we have chopped no more than a 1e-12th of the initial value.
-                        // To prevent division by zero, but still provide some amount of scale to our error checking,
-                        // we divide by the larger of 1 and the interpolated value
-                        Assert(std::abs(init - interpolated_value)/std::max(std::abs(interpolated_value), 1.0) <= 1e-12, ExcInternalError());
+                        // If the limiter is working correctly, we should not be significantly more than machine error outside of the range of the property bounds
+                        Assert(interpolated_value >= property_minimums[property_index] - std::abs(property_minimums[property_index]) * 8 * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert(interpolated_value <= property_maximums[property_index] + std::abs(property_maximums[property_index]) * 8 * std::numeric_limits<double>::epsilon(), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
@@ -331,9 +274,9 @@ namespace aspect
                   }
                 else if (split.size() == n_property_components - n_internal_components)
                   {
-                    std::vector<bool> parsed(n_property_components, false);
-                    for (unsigned int i = 0; i < split.size(); i++)
-                      parsed[i] = string_to_bool(split[i]);
+                    std::vector<bool> parsed;
+                    for (const auto &component: split)
+                      parsed.push_back(string_to_bool(component));
                     use_linear_least_squares_limiter = ComponentMask(parsed);
                   }
                 else
@@ -367,9 +310,8 @@ namespace aspect
                                             "Uses linear least squares to obtain the slopes and center of a 2D or "
                                             "3D plane from the particle positions and a particular property value "
                                             "on those particles. "
-                                            "Interpolate this property onto the support points or to initiate the "
-                                            "property value on a new particle. If the limiter is enabled then it "
-                                            "will ensure the interpolated properties do not exceed the "
+                                            "Interpolate this property onto a vector of points. If the limiter is "
+                                            "enabled then it will ensure the interpolated properties do not exceed the "
                                             "range of the minimum and maximum of the values of the property on the "
                                             "particles. Note that deal.II must be configured with BLAS and LAPACK to "
                                             "support this operation.")

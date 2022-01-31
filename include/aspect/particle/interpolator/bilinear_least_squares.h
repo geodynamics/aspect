@@ -70,10 +70,12 @@ namespace aspect
 
         private:
           /**
-           * Variable related to a limiting scheme that prevents overshoot and
-           * undershoot of interpolated particle properties based on the local
-           * max and min on the particles in that cell for each property.
-           * Mask is set or not set for each component if the limiter is enabled.
+           *  A component mask that determines whether a limiting scheme is
+           *  used for each interpolated property. The limiting scheme
+           *  prevents overshoot and undershoot of interpolated particle
+           *  properties based on the local max and min of the particle
+           *  properties in that cell (i.e. the interpolated properties
+           *  will never exxceed the max and min of the properties on the particles).
            */
           ComponentMask use_linear_least_squares_limiter;
 
