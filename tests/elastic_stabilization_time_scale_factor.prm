@@ -10,6 +10,7 @@ set Output directory                       = elastic_stabilization_time_scale_fa
 subsection Material model
   subsection Viscoelastic
     set Stabilization time scale factor = 2
+    set Use stress averaging            = true
   end
 end
 
