@@ -573,6 +573,11 @@ namespace aspect
        */
       bool do_timings;
 
+      /**
+       * The max/min of the evaluated viscosities.
+       */
+      double viscosity_max, viscosity_min;
+
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
       DoFHandler<dim> dof_handler_projection;
