@@ -9,6 +9,7 @@ Number of degrees of freedom: 3,041 (2,187+125+729)
    Solving Stokes system... 
     GMG coarse size A: 81, coarse size S: 8
     GMG n_levels: 3
+    Viscosity range: 0.01 - 0.198921
     GMG workload imbalance: 1
     Stokes solver: 9+0 iterations.
     Schur complement preconditioner: 25+0 iterations.
