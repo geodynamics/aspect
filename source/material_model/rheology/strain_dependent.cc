@@ -571,7 +571,7 @@ namespace aspect
 
             for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
               {
-                if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0)
+                if (in.current_cell.state() == IteratorState::valid)
 
                   {
                     // Convert the compositional fields into the tensor quantity they represent.
