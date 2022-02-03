@@ -1370,8 +1370,8 @@ namespace aspect
 
     const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
 
-    double min_el_local = std::numeric_limits<double>::max();
-    double max_el_local = std::numeric_limits<double>::lowest();
+    double minimum_viscosity_local = std::numeric_limits<double>::max();
+    double maximum_viscosity_local = std::numeric_limits<double>::lowest();
 
     // Fill the DGQ0 or DGQ1 vector of viscosity values on the active mesh
     {
@@ -1423,8 +1423,8 @@ namespace aspect
         for (unsigned int i=0; i<values.size(); ++i)
           {
             // Find the local max/min of the evaluated viscosities.
-            min_el_local = std::min(min_el_local, out.viscosities[i]);
-            max_el_local = std::max(max_el_local, out.viscosities[i]);
+            minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
+            maximum_viscosity_local = std::max(maximum_viscosity_local, out.viscosities[i]);
 
             values[i] = out.viscosities[i];
           }
@@ -1435,8 +1435,8 @@ namespace aspect
       active_viscosity_vector.compress(VectorOperation::insert);
     }
 
-    viscosity_min = dealii::Utilities::MPI::min(min_el_local, sim.triangulation.get_communicator());
-    viscosity_max = dealii::Utilities::MPI::max(max_el_local, sim.triangulation.get_communicator());
+    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, sim.triangulation.get_communicator());
+    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, sim.triangulation.get_communicator());
 
     FEValues<dim> fe_values_projection (*(sim.mapping),
                                         fe_projection,
@@ -1495,7 +1495,7 @@ namespace aspect
                   // of the evaluated viscosity on the active level.
                   for (unsigned int q=0; q<n_q_points; ++q)
                     active_cell_data.viscosity(cell, q)[i]
-                      = std::min(std::max(values_on_quad[q], viscosity_min), viscosity_max);
+                      = std::min(std::max(values_on_quad[q], minimum_viscosity), maximum_viscosity);
                 }
             }
         }
@@ -1585,8 +1585,8 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       level_cell_data[level].viscosity(cell,q)[i]
-                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(viscosity_min)),
-                                   static_cast<GMGNumberType>(viscosity_max));
+                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(minimum_viscosity)),
+                                   static_cast<GMGNumberType>(maximum_viscosity));
                   }
               }
           }
@@ -1907,7 +1907,7 @@ namespace aspect
         sim.pcout << std::endl
                   << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
                   << "    GMG n_levels: " << sim.triangulation.n_global_levels() << std::endl
-                  << "    Viscosity range: " << viscosity_min << " - " << viscosity_max << std::endl;
+                  << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
 
         const double imbalance = MGTools::workload_imbalance(sim.triangulation);
         sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl

@@ -576,7 +576,8 @@ namespace aspect
       /**
        * The max/min of the evaluated viscosities.
        */
-      double viscosity_max, viscosity_min;
+      double minimum_viscosity;
+      double maximum_viscosity;
 
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;
