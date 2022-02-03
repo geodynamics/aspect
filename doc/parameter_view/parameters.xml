@@ -3301,7 +3301,7 @@ A type for each of the compositional fields requested. Each entry of the list mu
 91
 </pattern>
 <pattern_description>
-[List of &lt;[Selection chemical composition|stress|grain size|porosity|generic|unspecified ]&gt; of length 0...4294967295 (inclusive)]
+[List of &lt;[Selection chemical composition|stress|grain size|porosity|density|generic|unspecified ]&gt; of length 0...4294967295 (inclusive)]
 </pattern_description>
 </Types_20of_20fields>
 </Compositional_20fields>
@@ -5760,7 +5760,7 @@ A comma-separated list of initial composition models that together describe the 
 
 The following composition models are available:
 
-`adiabatic density&apos;: Specify the initial composition as the adiabatic reference density at each position. Note that only the field with the name &apos;density\_field&apos; will be filled for all other fields this plugin returns 0.0.
+`adiabatic density&apos;: Specify the initial composition as the adiabatic reference density at each position. Note that only the field of the type &apos;density&apos; will be filled. For all other fields this plugin returns 0.0.
 
 `ascii data&apos;: Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `#&apos;, but one of these lines needs to contain the number of grid points in each dimension as for example `# POINTS: 3 3&apos;. The order of the data columns has to be `x&apos;, `y&apos;, `composition1&apos;, `composition2&apos;, etc. in a 2d model and `x&apos;, `y&apos;, `z&apos;, `composition1&apos;, `composition2&apos;, etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x&apos; will be replaced by the radial distance of the point to the bottom of the model, `y&apos; by the azimuth angle and `z&apos; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r&apos;, `phi&apos;, `theta&apos; and not `r&apos;, `theta&apos;, `phi&apos;, since this allows for dimension independent expressions.
 
@@ -5806,7 +5806,7 @@ unspecified
 <documentation>
 Select one of the following models:
 
-`adiabatic density&apos;: Specify the initial composition as the adiabatic reference density at each position. Note that only the field with the name &apos;density\_field&apos; will be filled for all other fields this plugin returns 0.0.
+`adiabatic density&apos;: Specify the initial composition as the adiabatic reference density at each position. Note that only the field of the type &apos;density&apos; will be filled. For all other fields this plugin returns 0.0.
 
 `ascii data&apos;: Implementation of a model in which the initial composition is derived from files containing data in ascii format. Note the required format of the input data: The first lines may contain any number of comments if they begin with `#&apos;, but one of these lines needs to contain the number of grid points in each dimension as for example `# POINTS: 3 3&apos;. The order of the data columns has to be `x&apos;, `y&apos;, `composition1&apos;, `composition2&apos;, etc. in a 2d model and `x&apos;, `y&apos;, `z&apos;, `composition1&apos;, `composition2&apos;, etc. in a 3d model, according to the number of compositional fields, which means that there has to be a single column for every composition in the model.Note that the data in the input files need to be sorted in a specific order: the first coordinate needs to ascend first, followed by the second and the third at last in order to assign the correct data to the prescribed coordinates. If you use a spherical model, then the assumed grid changes. `x&apos; will be replaced by the radial distance of the point to the bottom of the model, `y&apos; by the azimuth angle and `z&apos; by the polar angle measured positive from the north pole. The grid will be assumed to be a latitude-longitude grid. Note that the order of spherical coordinates is `r&apos;, `phi&apos;, `theta&apos; and not `r&apos;, `theta&apos;, `phi&apos;, since this allows for dimension independent expressions.
 
@@ -7773,7 +7773,7 @@ none
 <documentation>
 Whether or not (and in the first case, how) to do any averaging of material model output data when constructing the linear systems for velocity/pressure, temperature, and compositions in each time step, as well as their corresponding preconditioners.
 
-Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|project to Q1 only viscosity
+Possible choices: none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity
 
 The process of averaging, and where it may be used, is discussed in more detail in Section~\ref{sec:sinker-with-averaging}.
 
@@ -7783,7 +7783,7 @@ More averaging schemes are available in the averaging material model. This mater
 95
 </pattern>
 <pattern_description>
-[Selection none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|project to Q1 only viscosity ]
+[Selection none|arithmetic average|harmonic average|geometric average|pick largest|project to Q1|log average|harmonic average only viscosity|geometric average only viscosity|project to Q1 only viscosity ]
 </pattern_description>
 </Material_20averaging>
 <Model_20name>
@@ -14338,13 +14338,13 @@ Maximum number of iterations to find the correct Peierls strain rate.
 1e28
 </default_value>
 <documentation>
-Upper cutoff for effective viscosity. Units: \si{\pascal\second}.
+Upper cutoff for effective viscosity. Units: \si{\pascal\second}. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
 </documentation>
 <pattern>
 415
 </pattern>
 <pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
+[Anything]
 </pattern_description>
 </Maximum_20viscosity>
 <Maximum_20yield_20stress>
@@ -14389,13 +14389,13 @@ Stabilizes strain dependent viscosity. Units: \si{\per\second}.
 1e17
 </default_value>
 <documentation>
-Lower cutoff for effective viscosity. Units: \si{\pascal\second}.
+Lower cutoff for effective viscosity. Units: \si{\pascal\second}. List with as many components as active compositional fields (material data is assumed to be in order with the ordering of the fields). 
 </documentation>
 <pattern>
 414
 </pattern>
 <pattern_description>
-[Double 0...MAX_DOUBLE (inclusive)]
+[Anything]
 </pattern_description>
 </Minimum_20viscosity>
 <Peierls_20creep_20flow_20law>
