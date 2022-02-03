@@ -237,19 +237,23 @@ namespace aspect
           unsigned int layer_index = std::distance(conductivity_transition_depths.begin(),
                                                    std::lower_bound(conductivity_transition_depths.begin(),conductivity_transition_depths.end(), depth));
 
-          // Make sure the temperature is positive.
-          const double T = std::max(temperature, 1.e-3 * conductivity_reference_temperatures[layer_index]);
-          const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
           const double p_dependence = reference_thermal_conductivities[layer_index] + conductivity_pressure_dependencies[layer_index] * pressure;
+
+          // Make reasonably sure we will not compute any invalid values due to the temperature-dependence.
+          // Since both the temperature-dependence and the saturation term scale with (Tref/T), we have to
+          // make sure we can compute the square of this number. If the temperature is small enough to
+          // be close to yielding NaN values, the conductivity will be set to the maximum value anyway.
+          const double T = std::max(temperature, sqrt(std::numeric_limits<double>::min() * conductivity_reference_temperatures[layer_index]));
+          const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
 
           // Function based on the theory of Roufosse and Klemens (1974) that accounts for saturation.
           // For the Tosi formulation, the scaling should be zero so that this term is 1.
           double saturation_function = 1.0;
-          if (1./T_dependence > 1)
+          if (1./T_dependence > 1.)
             saturation_function = (1. - saturation_scaling[layer_index])
                                   + saturation_scaling[layer_index] * (2./3. * std::sqrt(T_dependence) + 1./3. * 1./T_dependence);
 
-          return p_dependence * saturation_function * T_dependence;
+          return std::min(p_dependence * saturation_function * T_dependence, maximum_conductivity);
         }
       else
         {
@@ -443,6 +447,10 @@ namespace aspect
                              "reproduces the formulation of Stackhouse et al. (2015), a value of "
                              "0 reproduces the formulation of Tosi et al., (2013). "
                              "Units: none.");
+          prm.declare_entry ("Maximum thermal conductivity", "1000",
+                             Patterns::Double (0.),
+                             "The maximum thermal conductivity that is allowed in the "
+                             "model. Larger values will be cut off.");
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -504,6 +512,7 @@ namespace aspect
           saturation_scaling = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Saturation prefactors"))),
                                                                        n_conductivity_layers,
                                                                        "Saturation prefactors");
+          maximum_conductivity = prm.get_double ("Maximum thermal conductivity");
 
           // Parse the table lookup parameters
           equation_of_state.initialize_simulator (this->get_simulator());

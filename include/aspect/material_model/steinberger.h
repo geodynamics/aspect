@@ -290,6 +290,7 @@ namespace aspect
         std::vector<double> conductivity_reference_temperatures;
         std::vector<double> conductivity_exponents;
         std::vector<double> saturation_scaling;
+        double maximum_conductivity;
 
         /**
          * Information about lateral temperature averages.
