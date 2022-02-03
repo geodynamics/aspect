@@ -184,7 +184,7 @@ namespace aspect
                         current_total_slope += std::abs(c[property_index][i]);
                       }
 
-                    if (current_total_slope > max_total_slope)
+                    if (current_total_slope > max_total_slope && current_total_slope > std::numeric_limits<double>::min())
                       {
                         double slope_change_ratio = max_total_slope/current_total_slope;
                         for (unsigned int i = 1; i < n_matrix_columns; ++i)
@@ -204,8 +204,8 @@ namespace aspect
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
                         // If the limiter is working correctly, we should not be significantly more than machine error outside of the range of the property bounds
-                        Assert(interpolated_value >= property_minimums[property_index] - std::abs(property_minimums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
-                        Assert(interpolated_value <= property_maximums[property_index] + std::abs(property_maximums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert((property_minimums[property_index] - interpolated_value) <= (property_maximums[property_index] - property_minimums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert((interpolated_value - property_maximums[property_index]) <= (property_maximums[property_index] - property_minimums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
