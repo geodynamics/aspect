@@ -470,7 +470,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim>
+    template <int dim, int spacedim=dim>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -492,7 +492,7 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim>                    &position,
+        get_data_component (const Point<spacedim>               &position,
                             const unsigned int                   component) const;
 
       protected:
@@ -500,7 +500,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim>> lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<spacedim>> lookup;
     };
 
 
