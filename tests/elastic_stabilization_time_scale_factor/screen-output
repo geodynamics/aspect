@@ -29,11 +29,11 @@ Number of mesh deformation degrees of freedom: 336
    Solving plate system ... 2 iterations.
    Solving inclusion system ... 2 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 42+0 iterations.
+   Solving Stokes system... 45+0 iterations.
 
    Postprocessing:
      Average density / Average viscosity / Total mass:  2672 kg/m^3, 3.044e+18 Pa s, 2.338e+12 kg
-     RMS, max velocity:                                 1.43 m/year, 2.79 m/year
+     RMS, max velocity:                                 1.52 m/year, 2.92 m/year
      Topography min/max:                                -9.004 m, 17.42 m
 
 Termination requested by criterion: end time
