@@ -243,7 +243,7 @@ namespace aspect
           // Since both the temperature-dependence and the saturation term scale with (Tref/T), we have to
           // make sure we can compute the square of this number. If the temperature is small enough to
           // be close to yielding NaN values, the conductivity will be set to the maximum value anyway.
-          const double T = std::max(temperature, sqrt(std::numeric_limits<double>::min() * conductivity_reference_temperatures[layer_index]));
+          const double T = std::max(temperature, std::sqrt(std::numeric_limits<double>::min()) * conductivity_reference_temperatures[layer_index]);
           const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
 
           // Function based on the theory of Roufosse and Klemens (1974) that accounts for saturation.
