@@ -204,8 +204,8 @@ namespace aspect
                     if (use_linear_least_squares_limiter[property_index] == true)
                       {
                         // If the limiter is working correctly, we should not be significantly more than machine error outside of the range of the property bounds
-                        Assert((property_minimums[property_index] - interpolated_value) <= (property_maximums[property_index] - property_minimums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
-                        Assert((interpolated_value - property_maximums[property_index]) <= (property_maximums[property_index] - property_minimums[property_index]) * 16 * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert(interpolated_value >= property_minimums[property_index] - std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert(interpolated_value <= property_maximums[property_index] + std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
                       }
                     cell_properties[positions_index][property_index] = interpolated_value;
                   }
@@ -234,9 +234,9 @@ namespace aspect
                                   "Limit the interpolation of particle properties "
                                   "onto the cell so the value of each property is no "
                                   "smaller than its minimum and no larger than its "
-                                  "maximum on the particles in each cell. Currently "
-                                  "doesn't work on spherical grids. If more than one "
-                                  "value is specified, they will be treated as a list.");
+                                  "maximum on the particles in each cell. If more "
+                                  "than one value is specified, they will be treated "
+                                  "as a list.");
 
               }
               prm.leave_subsection();
