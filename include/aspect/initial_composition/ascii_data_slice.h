@@ -23,6 +23,7 @@
 #define _aspect_initial_composition_ascii_data_slice_h
 
 #include <aspect/initial_composition/interface.h>
+#include <aspect/boundary_velocity/gplates.h>
 
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
@@ -80,6 +81,25 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        // The point that defines the location of the slice.
+        Tensor<1,3> slice_normal_vector;
+
+        /**
+          * The matrix, which describes the rotation by which a 2D model
+          * needs to be transformed to a plane that contains the origin and
+          * the prescribed point given in the input.
+          */
+        Tensor<2,3> rotation_matrix;
+
+        /**
+         * A function that returns the corresponding euler angles for a
+         * rotation described by rotation axis and angle.
+         */
+        Tensor<2,3>
+        rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                                   const double rotation_angle) const;
     };
   }
 }
