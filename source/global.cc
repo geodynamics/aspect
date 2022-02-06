@@ -45,7 +45,7 @@ void print_aspect_header(Stream &stream)
 
   stream << "--     . using deal.II " << DEAL_II_PACKAGE_VERSION;
   if (strcmp(DEAL_II_GIT_BRANCH,"") != 0)
-    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ")";
+    stream << " (" << DEAL_II_GIT_BRANCH << ", " << DEAL_II_GIT_SHORTREV << ')';
   stream << "\n";
   stream << "--     .       with "
 #ifdef DEAL_II_WITH_64BIT_INDICES

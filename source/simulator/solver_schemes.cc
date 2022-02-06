@@ -511,7 +511,7 @@ namespace aspect
                       << Newton::to_string(newton_handler->parameters.preconditioner_stabilization)
                       << " and A block is "
                       << Newton::to_string(newton_handler->parameters.velocity_block_stabilization)
-                      << ".";
+                      << '.';
               }
             pcout << std::endl;
           }

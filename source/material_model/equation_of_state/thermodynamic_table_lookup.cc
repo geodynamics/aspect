@@ -133,7 +133,7 @@ namespace aspect
             for (unsigned int p=0; p<list_of_dominant_phases.size(); ++p)
               {
                 file << p
-                     << " "
+                     << ' '
                      << list_of_dominant_phases[p]
                      << std::endl;
               }

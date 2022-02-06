@@ -1504,7 +1504,7 @@ namespace aspect
                   << std::left
                   << std::setw(width)
                   << p.first
-                  << " "
+                  << ' '
                   << p.second
                   << std::endl;
         }
@@ -2024,7 +2024,7 @@ namespace aspect
 
     pcout << "-- Total wallclock time elapsed including restarts:"
           << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-          << "s" << std::endl;
+          << 's' << std::endl;
 
     CitationInfo::print_info_block (pcout);
 

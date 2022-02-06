@@ -234,7 +234,7 @@ namespace aspect
                   // Write the header
                   f << "#       time" << "        depth";
                   for ( unsigned int i = 0; i < variables.size(); ++i)
-                    f << " " << variables[i];
+                    f << ' ' << variables[i];
                   f << std::endl;
 
                   // Output each data point in the entries object

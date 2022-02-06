@@ -133,7 +133,7 @@ namespace aspect
             {
               label_stream << *it;
               if (++it!=err_abrev.end())
-                label_stream << "/";
+                label_stream << '/';
             }
           label_stream << "):";
           label_string = label_stream.str();

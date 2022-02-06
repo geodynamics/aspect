@@ -12,11 +12,11 @@ void check_point(T point1, T point2)
 {
   std::cout << std::endl << "Point 1: ";
   for (unsigned int i = 0; i < dim; ++i)
-    std::cout << point1[i] << " ";
+    std::cout << point1[i] << ' ';
 
   std::cout << std::endl << "Point 2: ";
   for (unsigned int i = 0; i < dim; ++i)
-    std::cout << point2[i] << " ";
+    std::cout << point2[i] << ' ';
 
   std::cout << std::endl;
 }

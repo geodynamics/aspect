@@ -241,7 +241,7 @@ namespace aspect
     TerminationCriteria::Manager<dim>::write_plugin_graph(out);
 
     // end the graph
-    out << "}"
+    out << '}'
         << std::endl;
   }
 
@@ -508,7 +508,7 @@ namespace aspect
             computing_timer.print_summary ();
             pcout << "-- Total wallclock time elapsed including restarts:"
                   << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-                  << "s" << std::endl;
+                  << 's' << std::endl;
           }
 
         output_statistics();
@@ -590,7 +590,7 @@ namespace aspect
         computing_timer.print_summary ();
         pcout << "-- Total wallclock time elapsed including restarts:"
               << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-              << "s" << std::endl;
+              << 's' << std::endl;
       }
   }
 

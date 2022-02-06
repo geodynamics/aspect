@@ -1073,7 +1073,7 @@ namespace aspect
               urlString << "# POINTS:";
               for (unsigned int i = 0; i < points.size(); i++)
                 {
-                  urlString << " " << points[i];
+                  urlString << ' ' << points[i];
                 }
               urlString << "\n";
 
@@ -1086,7 +1086,7 @@ namespace aspect
                   for (unsigned int j = 0; j < columns.size(); j++)
                     {
                       urlString << columns[j][i];
-                      urlString << " ";
+                      urlString << ' ';
                     }
                   urlString << "\n";
                 }
@@ -2414,7 +2414,7 @@ namespace aspect
 
                   unsigned int j=0;
                   for (const auto &residual: solver_control.get_history_data())
-                    f << j++ << " " << residual << std::endl;
+                    f << j++ << ' ' << residual << std::endl;
                 }
 
               f.close();

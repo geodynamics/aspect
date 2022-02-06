@@ -113,10 +113,10 @@ void f(const aspect::SimulatorAccess<dim> &simulator_access,
       creep_stress = 2.*(viscosity*total_strain_rate - lim_visc*creep_strain_rate);
 
       // Print the output
-      std::cout << temperature << " " << viscosity << " " << creep_stress << " " << total_strain_rate;
+      std::cout << temperature << ' ' << viscosity << ' ' << creep_stress << ' ' << total_strain_rate;
       for (unsigned int i=0; i < partial_strain_rates.size(); ++i)
         {
-          std::cout << " " << partial_strain_rates[i]/total_strain_rate;
+          std::cout << ' ' << partial_strain_rates[i]/total_strain_rate;
         }
       std::cout << std::endl;
 

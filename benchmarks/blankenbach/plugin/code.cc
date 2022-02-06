@@ -140,7 +140,7 @@ namespace aspect
       f << std::scientific << std::setprecision(15);
 
       // Note: POINTS is only useful if our mesh is a structured grid
-      f << "# POINTS: " << n_x << " " << n_y << "\n";
+      f << "# POINTS: " << n_x << ' ' << n_y << "\n";
       f << "# x y T\n";
 
       for (unsigned int idx = 0; idx< entries.size(); ++idx)

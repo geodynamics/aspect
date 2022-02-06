@@ -2379,11 +2379,11 @@ namespace aspect
     if (print_details)
       {
         sim.pcout << "    Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
-                  << "+"
+                  << '+'
                   << preconditioner_expensive.n_iterations_Schur_complement()
                   << " iterations." << std::endl;
         sim.pcout << "    A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
-                  << "+"
+                  << '+'
                   << preconditioner_expensive.n_iterations_A_block()
                   << " iterations." << std::endl;
       }

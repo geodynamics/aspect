@@ -588,7 +588,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number, boundary_id));
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
 
 
           AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
@@ -613,7 +613,7 @@ namespace aspect
               if (Utilities::fexists(filename))
                 {
                   this->get_pcout() << std::endl << "   Also loading next Ascii data boundary file "
-                                    << filename << "." << std::endl << std::endl;
+                                    << filename << '.' << std::endl << std::endl;
                   lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
                   lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
@@ -816,7 +816,7 @@ namespace aspect
         {
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -837,7 +837,7 @@ namespace aspect
 
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
       if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -1241,7 +1241,7 @@ namespace aspect
       const std::string filename = this->data_directory + this->data_file_name;
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
 
 
       AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),

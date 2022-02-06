@@ -37,7 +37,7 @@ namespace aspect
     this->get_artificial_viscosity(ev);
     std::cout << "EV temperature: " << std::endl;
     ev.print(std::cout);
-    os << ev.l2_norm() << " ";
+    os << ev.l2_norm() << ' ';
 
     for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
       {
@@ -45,7 +45,7 @@ namespace aspect
         this->get_artificial_viscosity_composition(ev, c);
         std::cout << "EV composition " << c << ": " << std::endl;
         ev.print(std::cout, 10);
-        os << ev.l2_norm() << " ";
+        os << ev.l2_norm() << ' ';
       }
     return std::make_pair("EV norms:", os.str());
   }

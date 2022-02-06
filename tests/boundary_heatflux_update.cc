@@ -65,7 +65,7 @@ namespace aspect
           timestep = this->get_timestep_number();
           std::cout << "Updating boundary heat flux to time step "
                     << timestep
-                    << "!"
+                    << '!'
                     << std::endl;
         }
 

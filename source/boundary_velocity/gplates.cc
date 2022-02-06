@@ -132,8 +132,8 @@ namespace aspect
                    << std::endl <<  std::setprecision(2)
                    << "   Model will be rotated by " << -rotation_angle * 180.0 / numbers::PI
                    << " degrees around axis " << rotation_axis << std::endl
-                   << "   The ParaView rotation angles are: " << angles[0] << " " << angles [1] << " " << angles[2] << std::endl
-                   << "   The inverse ParaView rotation angles are: " << back_angles[0] << " " << back_angles [1] << " " << back_angles[2]
+                   << "   The ParaView rotation angles are: " << angles[0] << ' ' << angles [1] << ' ' << angles[2] << std::endl
+                   << "   The inverse ParaView rotation angles are: " << back_angles[0] << ' ' << back_angles [1] << ' ' << back_angles[2]
 
                    << std::endl;
           }
@@ -611,7 +611,7 @@ namespace aspect
         (current_file_number + 1);
 
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                        << create_filename (current_file_number) << "." << std::endl << std::endl;
+                        << create_filename (current_file_number) << '.' << std::endl << std::endl;
 
       const std::string filename (create_filename (current_file_number));
       if (Utilities::fexists(filename))
@@ -636,7 +636,7 @@ namespace aspect
         {
           const std::string filename (create_filename (next_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
@@ -726,7 +726,7 @@ namespace aspect
         {
           const std::string filename (create_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
@@ -747,7 +747,7 @@ namespace aspect
 
       const std::string filename (create_filename (next_file_number));
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
       if (Utilities::fexists(filename))
         {
           lookup.swap(old_lookup);

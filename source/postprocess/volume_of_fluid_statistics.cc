@@ -90,7 +90,7 @@ namespace aspect
           output << global_volume_of_fluid_vol_sums[f];
 
           if (f+1 < n_volume_of_fluid_fields)
-            output << "/";
+            output << '/';
 
           // also make sure that the columns filled by this object
           // show up with sufficient accuracy and in scientific notation
