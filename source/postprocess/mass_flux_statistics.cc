@@ -142,7 +142,7 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second << " " << unit
+          screen_text << p->second << ' ' << unit
                       << (index == global_boundary_fluxes.size()-1 ? "" : ", ");
         }
 

@@ -132,7 +132,7 @@ namespace aspect
             << (dim == 3 ? "<velocity_z> " : "")
             << "<pressure> <temperature>";
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
-            f << " <" << this->introspection().name_for_compositional_index(c) << ">";
+            f << " <" << this->introspection().name_for_compositional_index(c) << '>';
           f << '\n';
 
           for (const auto &time_point : point_values)

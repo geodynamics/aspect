@@ -95,9 +95,9 @@ namespace aspect
       std::ostringstream output;
       output.precision(3);
       output << vrms *unit_scale_factor
-             << " " << units << ", "
+             << ' ' << units << ", "
              << global_max_velocity *unit_scale_factor
-             << " " << units;
+             << ' ' << units;
 
       return std::pair<std::string, std::string> ("RMS, max velocity:",
                                                   output.str());

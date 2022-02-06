@@ -258,7 +258,7 @@ void possibly_load_shared_libs (const std::string &parameters)
           if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
             std::cout << "Loading shared library <"
                       << shared_lib
-                      << ">" << std::endl;
+                      << '>' << std::endl;
 
           void *handle = dlopen (shared_lib.c_str(), RTLD_LAZY);
           AssertThrow (handle != nullptr,
