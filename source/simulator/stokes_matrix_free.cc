@@ -2800,7 +2800,7 @@ namespace aspect
                                                 level_viscosity_vector[level](dg_dof_indices[0])
                                                 :
                                                 std::min(std::max(visc_on_quad[q], static_cast<GMGNumberType>(minimum_viscosity)),
-                                                         static_cast<GMGNumberType>(minimum_viscosity)));
+                                                         static_cast<GMGNumberType>(maximum_viscosity)));
 
                       for (unsigned int k=0; k<dofs_per_cell; ++k)
                         {
