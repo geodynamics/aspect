@@ -1,19 +1,5 @@
------------------------------------------------------------------------------
--- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
---     . version 2.4.0-pre (gmg-fix-negative-viscosity, 4f54b3b5c)
---     . using deal.II 9.3.1
---     .       with 32 bit indices and vectorization level 2 (256 bits)
---     . using Trilinos 12.18.1
---     . using p4est 2.2.0
---     . running in OPTIMIZED mode
---     . running with 1 MPI process
------------------------------------------------------------------------------
 
-Vectorization over 4 doubles = 256 bits (AVX), VECTORIZATION_LEVEL=2
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&mf=1&sha=4f54b3b5c&src=code
------------------------------------------------------------------------------
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
 Number of active cells: 192 (on 3 levels)
 Number of degrees of freedom: 2,832 (1,728+240+864)
 
@@ -24,12 +10,12 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
     GMG n_levels: 3
     Viscosity range: 5e+19 - 1.5e+23
     GMG workload imbalance: 1
-    Stokes solver: 170+0 iterations.
-    Schur complement preconditioner: 171+0 iterations.
-    A block preconditioner: 171+0 iterations.
+    Stokes solver: 148+0 iterations.
+    Schur complement preconditioner: 149+0 iterations.
+    A block preconditioner: 149+0 iterations.
 
    Postprocessing:
-     Writing graphical output:           test/solution/solution-00000
+     Writing graphical output:           output-gmg_test_project_q1/solution/solution-00000
      RMS, max velocity:                  0.0221 m/year, 0.061 m/year
      Temperature min/avg/max:            273 K, 1602 K, 3700 K
      Heat fluxes through boundary parts: 9.777e+05 W, 4.047e+07 W
@@ -37,26 +23,4 @@ Number of degrees of freedom: 2,832 (1,728+240+864)
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-| Total wallclock time elapsed since start     |     0.504s |            |
-|                                              |            |            |
-| Section                          | no. calls |  wall time | % of total |
-+----------------------------------+-----------+------------+------------+
-| Assemble Stokes system rhs       |         1 |    0.0165s |       3.3% |
-| Assemble temperature system      |         1 |    0.0219s |       4.4% |
-| Build Stokes preconditioner      |         1 |   0.00311s |      0.62% |
-| Build temperature preconditioner |         1 |  0.000816s |      0.16% |
-| Initialization                   |         1 |     0.208s |        41% |
-| Postprocessing                   |         1 |    0.0265s |       5.3% |
-| Setup dof systems                |         1 |   0.00807s |       1.6% |
-| Setup initial conditions         |         1 |   0.00716s |       1.4% |
-| Setup matrices                   |         1 |   0.00112s |      0.22% |
-| Solve Stokes system              |         1 |     0.205s |        41% |
-| Solve temperature system         |         1 |  0.000185s |         0% |
-+----------------------------------+-----------+------------+------------+
 
--- Total wallclock time elapsed including restarts:1s
------------------------------------------------------------------------------
--- For information on how to cite ASPECT, see:
---   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&mf=1&sha=4f54b3b5c&src=code
------------------------------------------------------------------------------
