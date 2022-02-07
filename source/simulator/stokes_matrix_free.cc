@@ -1787,25 +1787,19 @@ namespace aspect
 
       // TODO: implement multilevel surface terms for the free surface stabilization.
 
-      active_cell_data.apply_stabilization_free_surface_faces = false;
-
-      if (sim.mesh_deformation
-          && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty())
+      active_cell_data.apply_stabilization_free_surface_faces = sim.mesh_deformation
+                                                                && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty();
+      if (active_cell_data.apply_stabilization_free_surface_faces == true)
         {
           const double free_surface_theta =
             sim.mesh_deformation->template get_matching_mesh_deformation_object<MeshDeformation::FreeSurface<dim>>()
           .get_free_surface_theta();
 
-          // GMG doesn't support melt transport
-          AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
-
-
-          active_cell_data.apply_stabilization_free_surface_faces = true;
-
           const QGauss<dim-1> face_quadrature_formula (sim.parameters.stokes_velocity_degree+1);
 
           const unsigned int n_face_q_points = face_quadrature_formula.size();
 
+          // We need the gradients for the material model inputs.
           FEFaceValues<dim> fe_face_values (*sim.mapping,
                                             sim.finite_element,
                                             face_quadrature_formula,
@@ -1843,7 +1837,7 @@ namespace aspect
                                                                                 &(sim.dof_handler));
 
                   const types::boundary_id boundary_indicator = stokes_matrix.get_matrix_free()->get_boundary_id(face);
-                  AssertDimension(boundary_indicator, simulator_cell->face(cell_face_pair.second)->boundary_id());
+                  Assert(boundary_indicator == simulator_cell->face(cell_face_pair.second)->boundary_id(), ExcInternalError());
 
                   // only apply on free surface faces
                   if (active_cell_data.free_surface_boundary_indicators.find(boundary_indicator)
@@ -1852,10 +1846,16 @@ namespace aspect
 
                   fe_face_values.reinit(simulator_cell, cell_face_pair.second);
 
-                  face_material_inputs.reinit(fe_face_values, simulator_cell, sim.introspection, sim.solution);
+                  face_material_inputs.reinit(fe_face_values,
+                                              simulator_cell,
+                                              sim.introspection,
+                                              sim.solution);
 
-                  sim.compute_material_model_input_values(sim.solution, fe_face_values,
-                                                          simulator_cell, false, face_material_inputs);
+                  sim.compute_material_model_input_values(sim.solution,
+                                                          fe_face_values,
+                                                          simulator_cell,
+                                                          false,
+                                                          face_material_inputs);
                   sim.material_model->evaluate(face_material_inputs, face_material_outputs);
 
                   for (unsigned int q = 0; q < n_face_q_points; ++q)
@@ -1873,16 +1873,10 @@ namespace aspect
                       for (unsigned int d = 0; d < dim; ++d)
                         active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q)[d][i]
                           = pressure_perturbation * g_hat[d];
-
                     }
-
                 }
             }
-
-
-
         }
-
     }
   }
 
