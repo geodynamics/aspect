@@ -990,14 +990,15 @@ namespace aspect
 
       Tensor<2,3> rotation_matrix ({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
 
+      // Calculate the crossing line of the two normals,
+      // which will be the rotation axis to transform the one
+      // normal into the other
+      Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector, rotated_normal_vector);
+
       // If the normal vector of the slice already points in z-direction, we do not have to
       // apply the first rotation.
-      if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
+      if (rotation_axis.norm() > std::numeric_limits<double>::min())
         {
-          // Calculate the crossing line of the two normals,
-          // which will be the rotation axis to transform the one
-          // normal into the other
-          Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector, rotated_normal_vector);
           rotation_axis /= rotation_axis.norm();
 
           // Calculate the rotation angle from the inner product rule
@@ -1007,7 +1008,8 @@ namespace aspect
 
       // Now apply the rotation that will project point_one onto the known point
       // (0,1,0).
-      const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
+      const Tensor<1,3> normalized_point_one = point_one / point_one.norm();
+      const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * normalized_point_one;
       const Tensor<1,3> final_point_one ({0.0,1.0,0.0});
 
       const double second_rotation_angle = std::acos(rotated_point_one * final_point_one);
