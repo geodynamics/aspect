@@ -539,12 +539,13 @@ namespace aspect
                                            MaterialModel::MaterialModelOutputs<dim> &out) const
       {
 
-        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
+        if (in.current_cell.state() == IteratorState::valid && this->get_timestep_number() > 0 &&
+            in.requests_property(MaterialProperties::reaction_terms) && weakening_mechanism == finite_strain_tensor)
           {
             // We need the velocity gradient for the finite strain (they are not
             // in material model inputs), so we get them from the finite element.
             std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
-            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+            for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
               quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
 
             std::vector<double> solution_values(this->get_fe().dofs_per_cell);
@@ -554,10 +555,10 @@ namespace aspect
 
             // Only create the evaluator the first time we get here
             if (!evaluator)
-              evaluator.reset(new FEPointEvaluation<dim,dim>(this->get_mapping(),
-                                                             this->get_fe(),
-                                                             update_gradients,
-                                                             this->introspection().component_indices.velocities[0]));
+              evaluator.reset(new FEPointEvaluation<dim, dim>(this->get_mapping(),
+                                                              this->get_fe(),
+                                                              update_gradients,
+                                                              this->introspection().component_indices.velocities[0]));
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);
@@ -568,27 +569,26 @@ namespace aspect
             // If there are too many fields, we simply fill only the first fields with the
             // existing strain tensor components.
 
-            for (unsigned int q=0; q < in.n_evaluation_points(); ++q)
+            for (unsigned int q = 0; q < in.n_evaluation_points(); ++q)
               {
-                if (in.current_cell.state() == IteratorState::valid && weakening_mechanism == finite_strain_tensor
-                    && this->get_timestep_number() > 0)
+                if (in.current_cell.state() == IteratorState::valid)
 
                   {
                     // Convert the compositional fields into the tensor quantity they represent.
-                    Tensor<2,dim> strain;
+                    Tensor<2, dim> strain;
                     const unsigned int n_first = this->introspection().compositional_index_for_name("s11");
-                    for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+                    for (unsigned int i = n_first; i < n_first + Tensor<2, dim>::n_independent_components; ++i)
                       {
-                        strain[Tensor<2,dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
+                        strain[Tensor<2, dim>::unrolled_to_component_indices(i)] = in.composition[q][i];
                       }
 
                     // Compute the strain accumulated in this timestep.
-                    const Tensor<2,dim> strain_increment = this->get_timestep() * (evaluator->get_gradient(q) * strain);
+                    const Tensor<2, dim> strain_increment = this->get_timestep() * (evaluator->get_gradient(q) * strain);
 
                     // Output the strain increment component-wise to its respective compositional field's reaction terms.
-                    for (unsigned int i = n_first; i < n_first + Tensor<2,dim>::n_independent_components ; ++i)
+                    for (unsigned int i = n_first; i < n_first + Tensor<2, dim>::n_independent_components; ++i)
                       {
-                        out.reaction_terms[q][i] = strain_increment[Tensor<2,dim>::unrolled_to_component_indices(i)];
+                        out.reaction_terms[q][i] = strain_increment[Tensor<2, dim>::unrolled_to_component_indices(i)];
                       }
                   }
               }
