@@ -966,53 +966,65 @@ namespace aspect
     compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
                                        const Tensor<1,3> &point_two)
     {
+      AssertThrow(point_one.norm() > std::numeric_limits<double>::min()
+                  && point_two.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "at the origin of the coordinate system."));
+
       // Set up the normal vector of an unrotated 2D spherical shell
       // that by default lies in the x-y plane.
-      const double normal[3] = {0.0,0.0,1.0};
-      const Tensor<1,3> unrotated_normal_vector (normal);
+      const Tensor<1,3> unrotated_normal_vector ({0.0,0.0,1.0});
 
       // Compute the normal vector of the plane that contains
-      // the origin and the two user-specified points
-      Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one,point_two);
+      // the origin and the two points specified as the function arguments.
+      Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one, point_two);
+
+      AssertThrow(rotated_normal_vector.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "along the line that also goes through the origin "
+                             "of the coordinate system."));
 
       rotated_normal_vector /= rotated_normal_vector.norm();
 
-      Tensor<2,3> rotation_matrix ({{1.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0},
-        {0.0, 0.0, 1.0}
-      });
+      Tensor<2,3> rotation_matrix ({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
 
+      // If the normal vector of the slice already points in z-direction, we do not have to
+      // apply the first rotation.
       if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
         {
           // Calculate the crossing line of the two normals,
           // which will be the rotation axis to transform the one
           // normal into the other
-          Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector,rotated_normal_vector);
+          Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector, rotated_normal_vector);
           rotation_axis /= rotation_axis.norm();
 
           // Calculate the rotation angle from the inner product rule
-          const double rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
+          const double rotation_angle = std::acos(rotated_normal_vector * unrotated_normal_vector);
+          rotation_matrix = rotation_matrix_from_axis(rotation_axis, rotation_angle);
+        }
 
-          rotation_matrix = rotation_matrix_from_axis(rotation_axis,rotation_angle);
+      // Now apply the rotation that will project point_one onto the known point
+      // (0,1,0).
+      const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
+      const Tensor<1,3> final_point_one ({0.0,1.0,0.0});
 
-          // Now apply the rotation that will project point_one onto the known point
-          // (0,1,0).
-          const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
+      const double second_rotation_angle = std::acos(rotated_point_one * final_point_one);
+      Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one, rotated_point_one);
 
-          const double point_one_coords[3] = {0.0,1.0,0.0};
-          const Tensor<1,3> final_point_one (point_one_coords);
-
-          const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
-          Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one,rotated_point_one);
+      // If point 1 is already located at (0,1,0) after the first rotation, we do not
+      // have to apply the second rotation.
+      if (second_rotation_axis.norm() > std::numeric_limits<double>::min())
+        {
           second_rotation_axis /= second_rotation_axis.norm();
-
-          const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
+          const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis, second_rotation_angle);
 
           // The final rotation used for the model will be the combined
-          // rotation of the two operation above. This is achieved by a
+          // rotation of the two operations above. This is achieved by a
           // matrix multiplication of the rotation matrices.
           // This concatenation of rotations is the reason for using a
-          // rotation matrix instead of a combined rotation_axis + angle
+          // rotation matrix instead of a combined rotation_axis + angle.
           rotation_matrix = rotation_matrix * second_rotation_matrix;
         }
       return rotation_matrix;

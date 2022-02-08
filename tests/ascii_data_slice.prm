@@ -53,12 +53,13 @@ subsection Initial composition model
   set List of model names = ascii data slice
 
   subsection Ascii data model
-    set Data directory = /home/juliane/software/aspect-melt/data/initial-composition/ascii-data/test/
+    set Data directory = $ASPECT_SOURCE_DIR/data/initial-composition/ascii-data/test/
     set Data file name = shell_3d_2.txt
   end
 
   subsection Ascii data slice
-    set Slice normal vector = 1,0.3,0.7
+    set First point on slice  = 0.3, -1, 0
+    set Second point on slice = 0.4, 1, -1
   end
 end
 

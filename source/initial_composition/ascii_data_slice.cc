@@ -41,57 +41,7 @@ namespace aspect
 
       Utilities::AsciiDataInitial<dim, 3>::initialize(this->n_compositional_fields());
 
-      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
-        {
-          rotation_matrix[0][0] = 1.0;
-          rotation_matrix[1][1] = 1.0;
-          rotation_matrix[2][2] = 1.0;
-
-          AssertThrow(slice_normal_vector.norm() > std::numeric_limits<double>::min(),
-                      ExcMessage("The normal vector of the slice can not have length zero."));
-
-          // Set up the normal vector of an unrotated 2D spherical shell
-          // that by default lies in the x-y plane.
-          const Tensor<1,3> unrotated_normal_vector({0.0,0.0,1.0});
-
-          Tensor<1,3> rotated_normal_vector = slice_normal_vector / slice_normal_vector.norm();
-
-          if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1.e-3)
-            {
-              const Tensor<1,3> point_on_slice = cross_product_3d(rotated_normal_vector, unrotated_normal_vector);
-
-              // Calculate the crossing line of the two normals,
-              // which will be the rotation axis to transform the one
-              // normal into the other
-              Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector,rotated_normal_vector);
-              rotation_axis /= rotation_axis.norm();
-
-              // Calculate the rotation angle from the inner product rule
-              const double rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
-              rotation_matrix = Utilities::rotation_matrix_from_axis(rotation_axis,rotation_angle);
-
-              // Now apply the rotation that will project point_one onto the known point
-              // (0,1,0).
-              const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_on_slice;
-              const Tensor<1,3> final_point_one ({0.0,1.0,0.0});
-
-              const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
-              Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one,rotated_point_one);
-
-              if (second_rotation_axis.norm() > std::numeric_limits<double>::min())
-                {
-                  second_rotation_axis /= second_rotation_axis.norm();
-                  const Tensor<2,3> second_rotation_matrix = Utilities::rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
-
-                  // The final rotation used for the model will be the combined
-                  // rotation of the two operation above. This is achieved by a
-                  // matrix multiplication of the rotation matrices.
-                  // This concatenation of rotations is the reason for using a
-                  // rotation matrix instead of a combined rotation_axis + angle
-                  rotation_matrix = rotation_matrix * second_rotation_matrix;
-                }
-            }
-        }
+      rotation_matrix = Utilities::compute_rotation_matrix_for_slice(first_point_on_slice, second_point_on_slice);
     }
 
 
@@ -101,20 +51,9 @@ namespace aspect
     initial_composition (const Point<dim> &position,
                          const unsigned int n_comp) const
     {
-      // make a 3D point based on the 2D position
-      Point<3> position_3d(position[0], position[1], 0.0);
-
-      if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::cartesian)
-        position_3d[2] = slice_normal_vector[2];
-      else if (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical)
-        {
-          Tensor<1,3> position_tensor({position_3d[0], position_3d[1], position_3d[2]});
-          position_3d = Point<3> (rotation_matrix * position_tensor);
-        }
-      else
-        AssertThrow(false,
-                    ExcMessage("The Ascii data slice model can only be used in spherical or "
-                               "cartesian geometry models."));
+      // Compute the coordinates of a 3d point based on the 2D position.
+      Tensor<1,3> position_tensor({position[0], position[1], 0.0});
+      Point<3> position_3d (rotation_matrix * position_tensor);
 
       return Utilities::AsciiDataInitial<dim, 3>::get_data_component(position_3d, n_comp);
     }
@@ -132,12 +71,20 @@ namespace aspect
                                                           "box_2d.txt");
         prm.enter_subsection("Ascii data slice");
         {
-          prm.declare_entry ("Slice normal vector", "0.0,0.0,1.0",
+          prm.declare_entry ("First point on slice", "0.0,1.0,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which the 2D slice lies in. "
-                             "In a spherical geometry, the slice will go though the center of the "
-                             "model domain. In Cartesian geometry, the slice will be in the third "
-                             "coordinate direction. The point has to be given in Cartesian "
+                             "The slice will go through this point, the point defined by the "
+                             "parameter 'Second point on slice', and the center of the model "
+                             "domain. After the rotation, this first point will lie along the "
+                             "(0,1,0) axis of the coordinate system. The coordinates of the "
+                             "point have to be given in Cartesian coordinates.");
+          prm.declare_entry ("Second point on slice", "1.0,0.0,0.0",
+                             Patterns::Anything (),
+                             "Second point that determines the plane in which the 2D slice lies in. "
+                             "The slice will go through this point, the point defined by the "
+                             "parameter 'First point on slice', and the center of the model "
+                             "domain. The coordinates of the point have to be given in Cartesian "
                              "coordinates.");
         }
         prm.leave_subsection();
@@ -156,15 +103,19 @@ namespace aspect
 
         prm.enter_subsection("Ascii data slice");
         {
-          std::vector<double> point = Utilities::string_to_double(Utilities::split_string_list(prm.get("Slice normal vector")));
+          std::vector<double> point_one = Utilities::string_to_double(Utilities::split_string_list(prm.get("First point on slice")));
+          std::vector<double> point_two = Utilities::string_to_double(Utilities::split_string_list(prm.get("Second point on slice")));
 
-          AssertThrow(point.size() == 3,
-                      ExcMessage("The Point on slice in the Ascii data slice model needs "
+          AssertThrow(point_one.size() == 3 && point_two.size() == 3,
+                      ExcMessage("The points on the slice in the Ascii data slice model need "
                                  "to be given in three dimensions; in other words, as three "
                                  "numbers, separated by commas."));
 
           for (unsigned int d=0; d<3; d++)
-            slice_normal_vector[d] = point[d];
+            first_point_on_slice[d] = point_one[d];
+
+          for (unsigned int d=0; d<3; d++)
+            second_point_on_slice[d] = point_two[d];
         }
         prm.leave_subsection();
 
@@ -184,7 +135,7 @@ namespace aspect
                                               "Implementation of a model in which the initial "
                                               "composition is derived from files containing data "
                                               "in ascii format. For more details on the data format, "
-                                              "see the ascii data plugin. The speacial feature of "
+                                              "see the ascii data plugin. The special feature of "
                                               "this model is that it reads in a 3d ascii data file, "
                                               "but then only uses a slice of it in a 2d model (so it "
                                               "can only be used in 2d.")

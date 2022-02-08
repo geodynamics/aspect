@@ -83,8 +83,9 @@ namespace aspect
         parse_parameters (ParameterHandler &prm) override;
 
       private:
-        // The point that defines the location of the slice.
-        Tensor<1,3> slice_normal_vector;
+        // The two points that define the location of the slice.
+        Tensor<1,3> first_point_on_slice;
+        Tensor<1,3> second_point_on_slice;
 
         /**
           * The matrix that describes the rotation by which a 2D model
