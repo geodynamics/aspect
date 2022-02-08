@@ -68,7 +68,7 @@ namespace aspect
 
               // Calculate the rotation angle from the inner product rule
               const double rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
-              rotation_matrix = rotation_matrix_from_axis(rotation_axis,rotation_angle);
+              rotation_matrix = Utilities::rotation_matrix_from_axis(rotation_axis,rotation_angle);
 
               // Now apply the rotation that will project point_one onto the known point
               // (0,1,0).
@@ -81,7 +81,7 @@ namespace aspect
               if (second_rotation_axis.norm() > std::numeric_limits<double>::min())
                 {
                   second_rotation_axis /= second_rotation_axis.norm();
-                  const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
+                  const Tensor<2,3> second_rotation_matrix = Utilities::rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
 
                   // The final rotation used for the model will be the combined
                   // rotation of the two operation above. This is achieved by a
@@ -117,26 +117,6 @@ namespace aspect
                                "cartesian geometry models."));
 
       return Utilities::AsciiDataInitial<dim, 3>::get_data_component(position_3d, n_comp);
-    }
-
-
-
-    template <int dim>
-    Tensor<2,3>
-    AsciiDataSlice<dim>::rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
-                                                    const double rotation_angle) const
-    {
-      Tensor<2,3> rotation_matrix;
-      rotation_matrix[0][0] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[0] + std::cos(rotation_angle);
-      rotation_matrix[0][1] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[1] - rotation_axis[2] * std::sin(rotation_angle);
-      rotation_matrix[0][2] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[2] + rotation_axis[1] * std::sin(rotation_angle);
-      rotation_matrix[1][0] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[0] + rotation_axis[2] * std::sin(rotation_angle);
-      rotation_matrix[1][1] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[1] + std::cos(rotation_angle);
-      rotation_matrix[1][2] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[2] - rotation_axis[0] * std::sin(rotation_angle);
-      rotation_matrix[2][0] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[0] - rotation_axis[1] * std::sin(rotation_angle);
-      rotation_matrix[2][1] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[1] + rotation_axis[0] * std::sin(rotation_angle);
-      rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
-      return rotation_matrix;
     }
 
 

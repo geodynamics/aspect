@@ -328,6 +328,24 @@ namespace aspect
     orthogonal_vectors (const Tensor<1,dim> &v);
 
     /**
+      * A function that returns the corresponding euler angles for a
+      * rotation described by rotation axis and angle.
+      */
+    Tensor<2,3>
+    rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                               const double rotation_angle);
+
+    /**
+      * Compute the 3d rotation matrix that describes the rotation of a
+      * plane defined by the two points @p point_one and @p point_two
+      * onto the x-y-plane in a way that the vector from the origin to
+      * point_one points into the (0,1,0) direction after the rotation.
+      */
+    Tensor<2,3>
+    compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
+                                       const Tensor<1,3> &point_two);
+
+    /**
      * A function for evaluating real spherical harmonics. It takes the degree (l)
      * and the order (m) of the spherical harmonic, where $l \geq 0$ and $0 \leq m \leq l$.
      * It also takes the colatitude (theta) and longitude (phi), which are in

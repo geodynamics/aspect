@@ -114,14 +114,6 @@ namespace aspect
                                      const Tensor<2,3> &rotation_matrix) const;
 
           /**
-           * A function that returns the corresponding euler angles for a
-           * rotation described by rotation axis and angle.
-           */
-          Tensor<2,3>
-          rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
-                                     const double rotation_angle) const;
-
-          /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
            * dimension out. If $out < in$ the last elements will be discarded,
            * if $out > in$ zeroes will be appended to fill the tensor.
