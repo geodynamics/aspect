@@ -1,4 +1,4 @@
-Added: A bounds perserving slope limiter for the bilinear least
+Added: A bounds preserving slope limiter for the bilinear least
 squares particle interpolator.
 <br>
 (Mack Gregory, 2022/02/08)
