@@ -179,10 +179,13 @@ namespace aspect
       const bool supports_shared_data = false;
 #endif
 
-      // If this is the root process, or if we don't support data sharing,
+      // If this is the root process, or if the user did not request
+      // sharing, or if we don't support data sharing,
       // then set up the various member variables we need to compute
       // from the input data
       if ((supports_shared_data == false)
+          ||
+          (root_process == numbers::invalid_unsigned_int)
           ||
           ((supports_shared_data == true)
            &&
