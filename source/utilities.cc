@@ -60,6 +60,154 @@ namespace aspect
    */
   namespace Utilities
   {
+    namespace internal
+    {
+      namespace MPI
+      {
+        // --------------------------------------------------------------------
+        // The following is copied from deal.II's mpi.templates.h file.
+        // We should instead import it from deal.II's header files directly
+        // if that information is made available via one of the existing .h
+        // files.
+        // --------------------------------------------------------------------
+#ifdef DEAL_II_WITH_MPI
+        /**
+         * Return the corresponding MPI data type id for the argument given.
+         */
+        inline MPI_Datatype
+        mpi_type_id(const bool *)
+        {
+#  if DEAL_II_MPI_VERSION_GTE(2, 2)
+          return MPI_CXX_BOOL;
+#  else
+          return MPI_C_BOOL;
+#  endif
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const char *)
+        {
+          return MPI_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const signed char *)
+        {
+          return MPI_SIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const short *)
+        {
+          return MPI_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const int *)
+        {
+          return MPI_INT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long int *)
+        {
+          return MPI_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned char *)
+        {
+          return MPI_UNSIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned short *)
+        {
+          return MPI_UNSIGNED_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned int *)
+        {
+          return MPI_UNSIGNED;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long int *)
+        {
+          return MPI_UNSIGNED_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long long int *)
+        {
+          return MPI_UNSIGNED_LONG_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const float *)
+        {
+          return MPI_FLOAT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const double *)
+        {
+          return MPI_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long double *)
+        {
+          return MPI_LONG_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<float> *)
+        {
+          return MPI_COMPLEX;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<double> *)
+        {
+          return MPI_DOUBLE_COMPLEX;
+        }
+#endif
+      }
+    }
+
+
     template <typename T>
     Table<2,T>
     parse_input_table (const std::string &input_string,
@@ -985,6 +1133,7 @@ namespace aspect
     }
 
 
+
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm)
@@ -993,15 +1142,15 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          // set file size to an invalid size (signaling an error if we can not read it)
-          unsigned int filesize = numbers::invalid_unsigned_int;
+          std::size_t filesize;
 
           // Check to see if the prm file will be reading data from disk or
           // from a provided URL
           if (filename_is_url(filename))
             {
 #ifdef ASPECT_WITH_LIBDAP
-              libdap::Connect *url = new libdap::Connect(filename);
+              std::unique_ptr<libdap::Connect> url
+                = std::make_unique<libdap::Connect>(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
               libdap::DAS das;
@@ -1057,9 +1206,7 @@ namespace aspect
               std::vector<std::string> points;
               for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
                 {
-                  libdap::AttrTable *table;
-
-                  table = das.get_table(i);
+                  libdap::AttrTable *table = das.get_table(i);
                   if (table->get_attr("POINTS") != "")
                     points.push_back(table->get_attr("POINTS"));
                   if (table->get_attr("points") != "")
@@ -1093,12 +1240,16 @@ namespace aspect
 
               data_string = urlString.str();
               filesize = data_string.size();
-              delete url;
+
 #else // ASPECT_WITH_LIBDAP
 
-              // broadcast failure state, then throw
-              const int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-              AssertThrowMPI(ierr);
+              // Broadcast failure state, then throw. We signal the failure by
+              // setting the file size to an invalid size, then trigger an assert.
+              {
+                std::size_t invalid_filesize = numbers::invalid_size_type;
+                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                AssertThrowMPI(ierr);
+              }
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
@@ -1113,11 +1264,11 @@ namespace aspect
               if (!filestream)
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
-                  return data_string; // never reached
                 }
 
 
@@ -1128,13 +1279,13 @@ namespace aspect
               if (!filestream.eof())
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Reading of file ") + filename + " finished " +
                                            "before the end of file was reached. Is the file corrupted or "
                                            "too large for the input buffer?"));
-                  return data_string; // never reached
                 }
 
               data_string = datastream.str();
@@ -1142,29 +1293,43 @@ namespace aspect
             }
 
           // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+
+          AssertThrow (filesize < static_cast<std::size_t>(std::numeric_limits<signed int>::max()),
+                       ExcMessage ("You are trying to broadcast a file that is larger than what "
+                                   "MPI can handle in a single MPI_Bcast call. This is not currently "
+                                   "supported"));
+          ierr = MPI_Bcast(&data_string[0], filesize, MPI_CHAR, 0, comm);
           AssertThrowMPI(ierr);
         }
       else
         {
           // Prepare for receiving data
-          unsigned int filesize;
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          std::size_t filesize;
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          if (filesize == numbers::invalid_unsigned_int)
+          if (filesize == numbers::invalid_size_type)
             throw QuietException();
 
           data_string.resize(filesize);
 
+          // Check whether the size is small enough to be handled in a single Bcast call.
+          // If not, error out for now. We may fix this later. (We error out by throwing
+          // a quiet exception; the root rank will throw a more information exception,
+          // see above.)
+          if (filesize >= static_cast<std::size_t>(std::numeric_limits<signed int>::max()))
+            throw QuietException();
+
           // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
+          ierr = MPI_Bcast(&data_string[0], filesize, MPI_CHAR, 0, comm);
           AssertThrowMPI(ierr);
         }
 
       return data_string;
     }
+
+
 
     int
     mkdirp(std::string pathname,const mode_t mode)
