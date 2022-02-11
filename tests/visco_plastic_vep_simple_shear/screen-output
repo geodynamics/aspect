@@ -1,13 +1,12 @@
 
 Number of active cells: 64 (on 3 levels)
-Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
+Number of degrees of freedom: 1,815 (578+81+289+289+289+289)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
    Solving temperature system... 0 iterations.
    Skipping ve_stress_xx composition solve because RHS is zero.
    Skipping ve_stress_yy composition solve because RHS is zero.
    Skipping ve_stress_xy composition solve because RHS is zero.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 2+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
@@ -18,77 +17,72 @@ Number of degrees of freedom: 2,104 (578+81+289+289+289+289+289)
 
 
    Postprocessing:
-     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0 // 1/1/1
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/0/0
 
 *** Timestep 1:  t=0.01 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 12 iterations.
    Solving ve_stress_yy system ... 12 iterations.
    Solving ve_stress_xy system ... 11 iterations.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 2.96604e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: -1.922e-14/1.905e-14/5.757e-19 // -1.905e-14/1.922e-14/-5.757e-19 // 0.0495/0.0495/0.0495 // 1/1/1
+     Compositions min/max/mass: -1.922e-14/1.905e-14/5.757e-19 // -1.905e-14/1.922e-14/-5.757e-19 // 0.0495/0.0495/0.0495
 
 *** Timestep 2:  t=0.02 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 4.50027e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 3.268e-05/3.268e-05/3.268e-05 // -3.268e-05/-3.268e-05/-3.268e-05 // 0.09836/0.09836/0.09836 // 1/1/1
+     Compositions min/max/mass: 3.268e-05/3.268e-05/3.268e-05 // -3.268e-05/-3.268e-05/-3.268e-05 // 0.09836/0.09836/0.09836
 
 *** Timestep 3:  t=0.03 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
       Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 6.0527e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 9.172e-05/9.172e-05/9.172e-05 // -9.172e-05/-9.172e-05/-9.172e-05 // 0.1467/0.1467/0.1467 // 1/1/1
+     Compositions min/max/mass: 9.172e-05/9.172e-05/9.172e-05 // -9.172e-05/-9.172e-05/-9.172e-05 // 0.1467/0.1467/0.1467
 
 *** Timestep 4:  t=0.04 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 11 iterations.
    Solving ve_stress_yy system ... 11 iterations.
    Solving ve_stress_xy system ... 9 iterations.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.60236e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 7.60238e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0.0001748/0.0001748/0.0001748 // -0.0001748/-0.0001748/-0.0001748 // 0.1945/0.1945/0.1945 // 1/1/1
+     Compositions min/max/mass: 0.0001748/0.0001748/0.0001748 // -0.0001748/-0.0001748/-0.0001748 // 0.1945/0.1945/0.1945
 
 *** Timestep 5:  t=0.05 seconds, dt=0.01 seconds
    Solving temperature system... 0 iterations.
    Solving ve_stress_xx system ... 10 iterations.
    Solving ve_stress_yy system ... 10 iterations.
    Solving ve_stress_xy system ... 9 iterations.
-   Solving goo system ... 0 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+0 iterations.
-      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.14097e-12
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 9.141e-12
 
 
    Postprocessing:
-     Compositions min/max/mass: 0.0002807/0.0002807/0.0002807 // -0.0002807/-0.0002807/-0.0002807 // 0.2418/0.2418/0.2418 // 1/1/1
+     Compositions min/max/mass: 0.0002807/0.0002807/0.0002807 // -0.0002807/-0.0002807/-0.0002807 // 0.2418/0.2418/0.2418
 
 Termination requested by criterion: end time
 
