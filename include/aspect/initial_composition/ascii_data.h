@@ -41,7 +41,7 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public Utilities::AsciiDataInitial<dim>
+    class AsciiData : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -55,9 +55,6 @@ namespace aspect
          */
         void
         initialize () override;
-
-        // avoid -Woverloaded-virtual:
-        using Utilities::AsciiDataInitial<dim>::initialize;
 
         /**
          * Return the initial composition as a function of position. For the
@@ -79,6 +76,23 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        std::unique_ptr<Utilities::AsciiDataInitial<dim>> ascii_data_initial;
+        std::unique_ptr<Utilities::AsciiDataInitial<dim,3>> ascii_data_slice;
+
+        bool slice_data;
+
+        // The two points that define the location of the slice.
+        Tensor<1,3> first_point_on_slice;
+        Tensor<1,3> second_point_on_slice;
+
+        /**
+          * The matrix that describes the rotation by which a 2D model
+          * needs to be transformed to a plane that contains the origin and
+          * the prescribed point given in the input.
+          */
+        Tensor<2,3> rotation_matrix;
     };
   }
 }
