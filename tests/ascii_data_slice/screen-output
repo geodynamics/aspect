@@ -1,0 +1,20 @@
+
+
+   Loading Ascii data initial file ASPECT_DIR/data/initial-composition/ascii-data/test/shell_3d_2.txt.
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 768 (on 4 levels)
+Number of degrees of freedom: 13,920 (6,528+864+3,264+3,264)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 11+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:        1.05e-05 m/year, 2.47e-05 m/year
+     Writing graphical output: output-ascii_data_slice/solution/solution-00000
+
+Termination requested by criterion: end time
+
+
+

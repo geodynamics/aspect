@@ -1217,15 +1217,15 @@ namespace aspect
 
 
 
-    template <int dim>
-    AsciiDataInitial<dim>::AsciiDataInitial ()
+    template <int dim, int spacedim>
+    AsciiDataInitial<dim, spacedim>::AsciiDataInitial ()
     {}
 
 
 
-    template <int dim>
+    template <int dim, int spacedim>
     void
-    AsciiDataInitial<dim>::initialize (const unsigned int components)
+    AsciiDataInitial<dim, spacedim>::initialize (const unsigned int components)
     {
       AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
@@ -1235,8 +1235,8 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, or box geometry."));
 
-      lookup = std::make_unique<Utilities::StructuredDataLookup<dim>> (components,
-                                                                       this->scale_factor);
+      lookup = std::make_unique<Utilities::StructuredDataLookup<spacedim>> (components,
+                                                                            this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
@@ -1255,21 +1255,21 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <int dim, int spacedim>
     double
-    AsciiDataInitial<dim>::
-    get_data_component (const Point<dim>                    &position,
+    AsciiDataInitial<dim, spacedim>::
+    get_data_component (const Point<spacedim>                    &position,
                         const unsigned int                   component) const
     {
-      Point<dim> internal_position = position;
+      Point<spacedim> internal_position = position;
 
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model())
           || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model())))
         {
-          const std::array<double,dim> spherical_position =
+          const std::array<double,spacedim> spherical_position =
             Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
-          for (unsigned int i = 0; i < dim; i++)
+          for (unsigned int i = 0; i < spacedim; i++)
             internal_position[i] = spherical_position[i];
         }
       return lookup->get_data(internal_position,component);
@@ -1378,8 +1378,9 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataLayered<2>;
     template class AsciiDataLayered<3>;
-    template class AsciiDataInitial<2>;
-    template class AsciiDataInitial<3>;
+    template class AsciiDataInitial<2, 2>;
+    template class AsciiDataInitial<2, 3>;
+    template class AsciiDataInitial<3, 3>;
     template class AsciiDataProfile<1>;
     template class AsciiDataProfile<2>;
     template class AsciiDataProfile<3>;
