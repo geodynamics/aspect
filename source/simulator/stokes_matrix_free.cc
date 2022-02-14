@@ -22,6 +22,7 @@
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 
@@ -800,14 +801,80 @@ namespace aspect
       }
   }
 
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
+  ::local_apply_face(const dealii::MatrixFree<dim, number> &,
+                     dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const std::pair<unsigned int, unsigned int> &) const
+  {
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
+  ::local_apply_boundary_face(const dealii::MatrixFree<dim, number> &data,
+                              dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                              const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                              const std::pair<unsigned int, unsigned int> &face_range) const
+  {
+    // Assemble the fictive stabilization stress (phi_u[i].g)*(phi_u[j].n)
+    // g=pressure_perturbation * g_hat is stored in free_surface_stabilization_term_table
+    //  n is the normal vector
+    FEFaceEvaluation<dim, degree_v, degree_v + 1, dim, number> velocity(data);
+    const unsigned int n_faces_interior = data.n_inner_face_batches();
+
+    for (unsigned int face = face_range.first; face < face_range.second; ++face)
+      {
+        const auto boundary_id = data.get_boundary_id(face);
+        if (cell_data->free_surface_boundary_indicators.find(boundary_id)
+            == cell_data->free_surface_boundary_indicators.end())
+          continue;
+
+        velocity.reinit(face);
+        velocity.gather_evaluate (src.block(0), EvaluationFlags::values);
+
+        for (unsigned int q = 0; q < velocity.n_q_points; ++q)
+          {
+            const Tensor<1, dim, VectorizedArray<number>> phi_u_i = velocity.get_value(q);
+            const auto &normal_vector = velocity.get_normal_vector(q);
+            const auto stabilization_tensor = cell_data->free_surface_stabilization_term_table(face - n_faces_interior, q);
+            const auto value_submit = -(stabilization_tensor * phi_u_i) * normal_vector;
+
+            velocity.submit_value(value_submit, q);
+          }
+        velocity.integrate_scatter(EvaluationFlags::values, dst.block(0));
+      }
+  }
+
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
   {
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
-        data->cell_loop(&StokesOperator::local_apply, this, dst, src);
+    if (cell_data->apply_stabilization_free_surface_faces)
+      MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+          data->loop(&StokesOperator::local_apply,
+                     &StokesOperator::local_apply_face,
+                     &StokesOperator::local_apply_boundary_face,
+                     this,
+                     dst,
+                     src,
+                     false, /*zero_dst_vector*/
+                     MatrixFree<dim, number>::DataAccessOnFaces::values,
+                     MatrixFree<dim, number>::DataAccessOnFaces::values);
+
+    else
+      MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+          data->cell_loop(&StokesOperator::local_apply, this, dst, src);
   }
 
   /**
@@ -819,6 +886,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
   {}
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::clear ()
@@ -827,6 +896,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
@@ -834,6 +905,8 @@ namespace aspect
   {
     this->cell_data = &data;
   }
+
+
 
   template <int dim, int degree_p, typename number>
   void
@@ -884,6 +957,8 @@ namespace aspect
       }
   }
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
@@ -893,6 +968,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
                                                                                    data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
   }
+
+
 
   template <int dim, int degree_p, typename number>
   void
@@ -1288,12 +1365,11 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    if (sim.parameters.mesh_deformation_enabled)
-      {
-        // This requires porting the additional stabilization terms
-        AssertThrow(sim.mesh_deformation->get_free_surface_boundary_indicators().empty(),
-                    ExcMessage("The matrix-free Stokes solver does not support free surface boundaries."));
-      }
+    AssertThrow(!(sim.parameters.mesh_deformation_enabled
+                  && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty()
+                  && sim.parameters.enable_elasticity),
+                ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
+
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
@@ -1707,6 +1783,105 @@ namespace aspect
             level_cell_data[level].enable_newton_derivatives = false;
         }
     }
+
+    {
+      // Create active mesh tables to store the product of the pressure perturbation and
+      // the normalized gravity used in the free surface stabilization.
+      // Currently, mutilevel is not implemented yet, it may slow down the convergence.
+
+      // TODO: implement multilevel surface terms for the free surface stabilization.
+
+      active_cell_data.apply_stabilization_free_surface_faces = sim.mesh_deformation
+                                                                && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty();
+      if (active_cell_data.apply_stabilization_free_surface_faces == true)
+        {
+          const double free_surface_theta =
+            sim.mesh_deformation->template get_matching_mesh_deformation_object<MeshDeformation::FreeSurface<dim>>()
+          .get_free_surface_theta();
+
+          const QGauss<dim-1> face_quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+
+          const unsigned int n_face_q_points = face_quadrature_formula.size();
+
+          // We need the gradients for the material model inputs.
+          FEFaceValues<dim> fe_face_values (*sim.mapping,
+                                            sim.finite_element,
+                                            face_quadrature_formula,
+                                            update_values   |
+                                            update_gradients |
+                                            update_quadrature_points |
+                                            update_JxW_values);
+
+          const unsigned int n_faces_boundary = stokes_matrix.get_matrix_free()->n_boundary_face_batches();
+          const unsigned int n_faces_interior = stokes_matrix.get_matrix_free()->n_inner_face_batches();
+
+          active_cell_data.free_surface_boundary_indicators =
+            sim.mesh_deformation->get_free_surface_boundary_indicators();
+
+          MaterialModel::MaterialModelInputs<dim> face_material_inputs(n_face_q_points, sim.introspection.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> face_material_outputs(n_face_q_points, sim.introspection.n_compositional_fields);
+
+          active_cell_data.free_surface_stabilization_term_table.reinit(n_faces_boundary, n_face_q_points);
+
+          for (unsigned int face=n_faces_interior; face<n_faces_boundary + n_faces_interior; ++face)
+            {
+              const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_face_batch(face);
+
+              for (unsigned int i=0; i<n_components_filled; ++i)
+                {
+                  // The first element of the pair is the active cell iterator
+                  // the second element of the pair is the face number
+                  const auto cell_face_pair = stokes_matrix.get_matrix_free()->get_face_iterator(face, i, true);
+
+                  typename DoFHandler<dim>::active_cell_iterator matrix_free_cell =
+                    cell_face_pair.first;
+                  typename DoFHandler<dim>::active_cell_iterator simulator_cell(&(sim.triangulation),
+                                                                                matrix_free_cell->level(),
+                                                                                matrix_free_cell->index(),
+                                                                                &(sim.dof_handler));
+
+                  const types::boundary_id boundary_indicator = stokes_matrix.get_matrix_free()->get_boundary_id(face);
+                  Assert(boundary_indicator == simulator_cell->face(cell_face_pair.second)->boundary_id(), ExcInternalError());
+
+                  // only apply on free surface faces
+                  if (active_cell_data.free_surface_boundary_indicators.find(boundary_indicator)
+                      == active_cell_data.free_surface_boundary_indicators.end())
+                    continue;
+
+                  fe_face_values.reinit(simulator_cell, cell_face_pair.second);
+
+                  face_material_inputs.reinit(fe_face_values,
+                                              simulator_cell,
+                                              sim.introspection,
+                                              sim.solution);
+
+                  sim.compute_material_model_input_values(sim.solution,
+                                                          fe_face_values,
+                                                          simulator_cell,
+                                                          false,
+                                                          face_material_inputs);
+                  sim.material_model->evaluate(face_material_inputs, face_material_outputs);
+
+                  for (unsigned int q = 0; q < n_face_q_points; ++q)
+                    {
+                      const Tensor<1,dim>
+                      gravity = sim.gravity_model->gravity_vector(fe_face_values.quadrature_point(q));
+                      const double g_norm = gravity.norm();
+
+                      const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
+
+                      const double pressure_perturbation = face_material_outputs.densities[q] *
+                                                           sim.time_step *
+                                                           free_surface_theta *
+                                                           g_norm;
+                      for (unsigned int d = 0; d < dim; ++d)
+                        active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q)[d][i]
+                          = pressure_perturbation * g_hat[d];
+                    }
+                }
+            }
+        }
+    }
   }
 
 
@@ -1789,6 +1964,40 @@ namespace aspect
         pressure.integrate_scatter (EvaluationFlags::values,
                                     rhs_correction.block(1));
       }
+
+    if (active_cell_data.apply_stabilization_free_surface_faces)
+      {
+        const unsigned int n_faces_boundary = stokes_matrix.get_matrix_free()->n_boundary_face_batches();
+        const unsigned int n_faces_interior = stokes_matrix.get_matrix_free()->n_inner_face_batches();
+
+        FEFaceEvaluation<dim,velocity_degree,velocity_degree+1,dim,double>
+        velocity_boundary(*stokes_matrix.get_matrix_free());
+
+        for (unsigned int face=n_faces_interior; face<n_faces_boundary + n_faces_interior; ++face)
+          {
+            const auto boundary_id = stokes_matrix.get_matrix_free()->get_boundary_id(face);
+            if (active_cell_data.free_surface_boundary_indicators.find(boundary_id)
+                == active_cell_data.free_surface_boundary_indicators.end())
+              continue;
+
+            velocity_boundary.reinit(face);
+            velocity_boundary.read_dof_values_plain (u0.block(0));
+            velocity_boundary.evaluate (EvaluationFlags::values);
+
+            for (unsigned int q = 0; q < velocity_boundary.n_q_points; ++q)
+              {
+                const Tensor<1, dim, VectorizedArray<double>> phi_u_i = velocity_boundary.get_value(q);
+                const auto &normal_vector = velocity_boundary.get_normal_vector(q);
+                const auto stabilization_tensor = active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q);
+                const auto value_submit = (stabilization_tensor * phi_u_i) * normal_vector;
+                velocity_boundary.submit_value(value_submit, q);
+
+              }
+            velocity_boundary.integrate_scatter(EvaluationFlags::values,
+                                                rhs_correction.block(0));
+          }
+      }
+
     rhs_correction.compress(VectorOperation::add);
 
     // Copy to the correct vector type and add the correction to the system rhs.
@@ -2548,6 +2757,14 @@ namespace aspect
         MatrixFree<dim,double>::AdditionalData::none;
       additional_data.mapping_update_flags = (update_values | update_gradients |
                                               update_JxW_values | update_quadrature_points);
+
+      if (sim.mesh_deformation
+          && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty())
+        additional_data.mapping_update_flags_boundary_faces =
+          (update_values  |
+           update_quadrature_points |
+           update_normal_vectors |
+           update_JxW_values);
 
       std::vector<const DoFHandler<dim>*> stokes_dofs;
       stokes_dofs.push_back(&dof_handler_v);

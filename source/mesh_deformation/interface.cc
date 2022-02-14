@@ -865,6 +865,7 @@ namespace aspect
               level_displacements[level].reinit(mesh_deformation_dof_handler.locally_owned_mg_dofs(level),
                                                 relevant_mg_dofs,
                                                 sim.mpi_communicator);
+              level_displacements[level].update_ghost_values();
             }
 
           // create the mappings on each level:

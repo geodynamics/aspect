@@ -1,0 +1,225 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.4.0-pre (gmg-surface-bc, f546077bf)
+--     . using deal.II 10.0.0-pre (master, da86939b7b)
+--     .       with 32 bit indices and vectorization level 1 (128 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.3.2
+--     . running in OPTIMIZED mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&mf=1&sha=f546077bf&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 640 (on 4 levels)
+Number of degrees of freedom: 8,716 (5,346+697+2,673)
+
+Number of mesh deformation degrees of freedom: 1394
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+11 iterations.
+
+Number of active cells: 664 (on 5 levels)
+Number of degrees of freedom: 9,184 (5,634+733+2,817)
+
+Number of mesh deformation degrees of freedom: 1466
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Solving Stokes system... 0+11 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        200000
+     Temperature contrast across model domain (K):  0
+     Reference depth (m):                           0
+     Reference temperature (K):                     0
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     10
+     Reference density (kg/m^3):                    3300
+     Reference thermal expansion coefficient (1/K): 4e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      4.7
+     Reference viscosity (Pa*s):                    1e+21
+     Reference thermal diffusivity (m^2/s):         1.13939e-06
+     Rayleigh number:                               0
+
+     Topography min/max: 0 m, 0 m
+     RMS, max velocity:  0.00071 m/year, 0.00228 m/year
+
+*** Timestep 1:  t=684459 years, dt=684459 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 18 iterations.
+   Solving Stokes system... 0+44 iterations.
+
+   Postprocessing:
+     Topography min/max: -398.6 m, 885.8 m
+     RMS, max velocity:  0.000762 m/year, 0.00215 m/year
+
+*** Timestep 2:  t=2.11561e+06 years, dt=1.43115e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 21 iterations.
+   Solving Stokes system... 0+65 iterations.
+
+   Postprocessing:
+     Topography min/max: -2251 m, 1093 m
+     RMS, max velocity:  0.00125 m/year, 0.00309 m/year
+
+*** Timestep 3:  t=2.66159e+06 years, dt=545985 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 0+40 iterations.
+
+   Postprocessing:
+     Topography min/max: -582.8 m, 278.3 m
+     RMS, max velocity:  0.000917 m/year, 0.00231 m/year
+
+*** Timestep 4:  t=3.33737e+06 years, dt=675777 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 0+42 iterations.
+
+   Postprocessing:
+     Topography min/max: -385.2 m, 793 m
+     RMS, max velocity:  0.000707 m/year, 0.00194 m/year
+
+*** Timestep 5:  t=4.92118e+06 years, dt=1.58381e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 22 iterations.
+   Solving Stokes system... 0+70 iterations.
+
+   Postprocessing:
+     Topography min/max: -2343 m, 1225 m
+     RMS, max velocity:  0.00121 m/year, 0.00292 m/year
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      5.53s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |         7 |     0.151s |       2.7% |
+| Assemble temperature system      |         7 |      0.18s |       3.3% |
+| Build Stokes preconditioner      |         7 |    0.0136s |      0.25% |
+| Build temperature preconditioner |         7 |    0.0235s |      0.42% |
+| Initialization                   |         1 |     0.151s |       2.7% |
+| Mesh deformation                 |         7 |    0.0955s |       1.7% |
+| Mesh deformation initialize      |         2 |    0.0208s |      0.38% |
+| Postprocessing                   |         6 |    0.0108s |      0.19% |
+| Refine mesh structure, part 1    |         1 |    0.0189s |      0.34% |
+| Refine mesh structure, part 2    |         1 |   0.00364s |         0% |
+| Setup dof systems                |         2 |    0.0726s |       1.3% |
+| Setup initial conditions         |         2 |    0.0294s |      0.53% |
+| Setup matrices                   |         2 |   0.00993s |      0.18% |
+| Solve Stokes system              |         7 |       4.7s |        85% |
+| Solve temperature system         |         7 |     0.014s |      0.25% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts:6s
+*** Timestep 6:  t=5.52709e+06 years, dt=605917 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 0+41 iterations.
+
+   Postprocessing:
+     Topography min/max: -594.6 m, 308.1 m
+     RMS, max velocity:  0.000869 m/year, 0.00206 m/year
+
+*** Timestep 7:  t=6.2934e+06 years, dt=766309 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 14 iterations.
+   Solving Stokes system... 0+44 iterations.
+
+   Postprocessing:
+     Topography min/max: -443.9 m, 852.5 m
+     RMS, max velocity:  0.000695 m/year, 0.00189 m/year
+
+*** Timestep 8:  t=7.92477e+06 years, dt=1.63137e+06 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 22 iterations.
+   Solving Stokes system... 0+71 iterations.
+
+   Postprocessing:
+     Topography min/max: -2282 m, 1264 m
+     RMS, max velocity:  0.00116 m/year, 0.00276 m/year
+
+*** Timestep 9:  t=8.59078e+06 years, dt=666003 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 0+42 iterations.
+
+   Postprocessing:
+     Topography min/max: -462.9 m, 254 m
+     RMS, max velocity:  0.00069 m/year, 0.00162 m/year
+
+*** Timestep 10:  t=9.56101e+06 years, dt=970233 years
+   Solving mesh displacement system... 1 iterations.
+   Solving temperature system... 15 iterations.
+   Solving Stokes system... 0+48 iterations.
+
+   Postprocessing:
+     Topography min/max: -470.9 m, 868.8 m
+     RMS, max velocity:  0.000586 m/year, 0.00156 m/year
+
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      10.2s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |        12 |     0.259s |       2.5% |
+| Assemble temperature system      |        12 |     0.322s |       3.1% |
+| Build Stokes preconditioner      |        12 |    0.0252s |      0.25% |
+| Build temperature preconditioner |        12 |    0.0402s |      0.39% |
+| Initialization                   |         1 |     0.151s |       1.5% |
+| Mesh deformation                 |        12 |     0.161s |       1.6% |
+| Mesh deformation initialize      |         2 |    0.0208s |       0.2% |
+| Postprocessing                   |        11 |    0.0189s |      0.18% |
+| Refine mesh structure, part 1    |         1 |    0.0189s |      0.19% |
+| Refine mesh structure, part 2    |         1 |   0.00364s |         0% |
+| Setup dof systems                |         2 |    0.0726s |      0.71% |
+| Setup initial conditions         |         2 |    0.0294s |      0.29% |
+| Setup matrices                   |         2 |   0.00993s |         0% |
+| Solve Stokes system              |        12 |      9.02s |        88% |
+| Solve temperature system         |        12 |    0.0261s |      0.25% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts:10s
+Termination requested by criterion: end step
+
+
++----------------------------------------------+------------+------------+
+| Total wallclock time elapsed since start     |      10.2s |            |
+|                                              |            |            |
+| Section                          | no. calls |  wall time | % of total |
++----------------------------------+-----------+------------+------------+
+| Assemble Stokes system rhs       |        12 |     0.259s |       2.5% |
+| Assemble temperature system      |        12 |     0.322s |       3.1% |
+| Build Stokes preconditioner      |        12 |    0.0252s |      0.25% |
+| Build temperature preconditioner |        12 |    0.0402s |      0.39% |
+| Initialization                   |         1 |     0.151s |       1.5% |
+| Mesh deformation                 |        12 |     0.161s |       1.6% |
+| Mesh deformation initialize      |         2 |    0.0208s |       0.2% |
+| Postprocessing                   |        11 |    0.0189s |      0.18% |
+| Refine mesh structure, part 1    |         1 |    0.0189s |      0.19% |
+| Refine mesh structure, part 2    |         1 |   0.00364s |         0% |
+| Setup dof systems                |         2 |    0.0726s |      0.71% |
+| Setup initial conditions         |         2 |    0.0294s |      0.29% |
+| Setup matrices                   |         2 |   0.00993s |         0% |
+| Solve Stokes system              |        12 |      9.02s |        88% |
+| Solve temperature system         |        12 |    0.0261s |      0.25% |
++----------------------------------+-----------+------------+------------+
+
+-- Total wallclock time elapsed including restarts:10s
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=2.4.0-pre&mf=1&sha=f546077bf&src=code
+-----------------------------------------------------------------------------

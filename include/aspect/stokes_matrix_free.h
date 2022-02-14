@@ -93,6 +93,11 @@ namespace aspect
       bool symmetrize_newton_system;
 
       /**
+       * If true, apply the stabilization on free surface faces.
+       */
+      bool apply_stabilization_free_surface_faces;
+
+      /**
        * Table which stores viscosity values for each cell.
        *
        * If the second dimension is of size 1, the viscosity is
@@ -122,6 +127,18 @@ namespace aspect
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       newton_factor_wrt_strain_rate_table;
+
+      /**
+       * Table which stores the product of the pressure perturbation
+       * and the normalized gravity. The size is n_face_boundary * n_face_q_points,
+       * but only those on the free surface are computed and stored.
+       */
+      Table<2, Tensor<1, dim, VectorizedArray<number>>> free_surface_stabilization_term_table;
+
+      /**
+       * Boundary indicators of those boundaries with a free surface.
+       */
+      std::set<types::boundary_id> free_surface_boundary_indicators;
 
       /**
        * Determine an estimate for the memory consumption (in bytes) of this
@@ -183,6 +200,22 @@ namespace aspect
                           dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                           const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
+
+        /**
+         * This function doesn't do anything, it's created to use the matrixfree loop.
+         */
+        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
+                               dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                               const std::pair<unsigned int, unsigned int> &face_range) const;
+
+        /**
+         * Apply the stabilization on free surface faces.
+         */
+        void local_apply_boundary_face (const dealii::MatrixFree<dim, number> &data,
+                                        dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                                        const std::pair<unsigned int, unsigned int> &face_range) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
