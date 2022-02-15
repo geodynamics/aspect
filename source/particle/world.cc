@@ -977,6 +977,26 @@ namespace aspect
         // to specify which evaluators to use. Currently, this is only
         // possible by manually accessing the public members of this class.
         velocity.reinit (cell, positions);
+
+#if DEAL_II_VERSION_GTE(10,0,0)
+        // Only compute the mapping data once for velocity,
+        // and reuse it for the other components.
+        const auto &mapping_data = velocity.get_mapping_data();
+
+        pressure.reinit (cell, positions, mapping_data);
+        temperature.reinit (cell, positions, mapping_data);
+        compositions.reinit (cell, positions, mapping_data);
+
+        for (auto &evaluator_composition: additional_compositions)
+          evaluator_composition.reinit (cell, positions, mapping_data);
+
+        if (simulator_access.include_melt_transport())
+          {
+            fluid_velocity->reinit (cell, positions, mapping_data);
+            fluid_pressure->reinit (cell, positions, mapping_data);
+            compaction_pressure->reinit (cell, positions, mapping_data);
+          }
+#else
         pressure.reinit (cell, positions);
         temperature.reinit (cell, positions);
         compositions.reinit (cell, positions);
@@ -990,6 +1010,7 @@ namespace aspect
             fluid_pressure->reinit (cell, positions);
             compaction_pressure->reinit (cell, positions);
           }
+#endif
 
         velocity.evaluate (solution_values, evaluation_flags);
         pressure.evaluate (solution_values, evaluation_flags);
