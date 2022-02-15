@@ -81,12 +81,13 @@ namespace aspect
         {
           prm.declare_entry("Slice dataset in 2D plane", "false",
                             Patterns::Bool (),
-                            "Whether to use a 2D data slice from a 3D data file "
+                            "Whether to use a 2D data slice of a 3D data file "
                             "or the entire data file. Slicing a 3D dataset is "
                             "only supported for 2D models.");
           prm.declare_entry ("First point on slice", "0.0,1.0,0.0",
                              Patterns::Anything (),
                              "Point that determines the plane in which the 2D slice lies in. "
+                             "This variable is only used if 'Slice dataset in 2D plane' is true. "
                              "The slice will go through this point, the point defined by the "
                              "parameter 'Second point on slice', and the center of the model "
                              "domain. After the rotation, this first point will lie along the "
@@ -95,6 +96,7 @@ namespace aspect
           prm.declare_entry ("Second point on slice", "1.0,0.0,0.0",
                              Patterns::Anything (),
                              "Second point that determines the plane in which the 2D slice lies in. "
+                             "This variable is only used if 'Slice dataset in 2D plane' is true. "
                              "The slice will go through this point, the point defined by the "
                              "parameter 'First point on slice', and the center of the model "
                              "domain. The coordinates of the point have to be given in Cartesian "
