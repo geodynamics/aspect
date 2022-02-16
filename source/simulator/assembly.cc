@@ -456,6 +456,9 @@ namespace aspect
                                       introspection.component_masks.velocities,
                                       constant_modes);
 
+    // When we solve with melt migration, the pressure block contains
+    // both pressures and contains an elliptic operator, so it makes
+    // sense to use AMG instead of ILU:
     if (parameters.include_melt_transport)
       Mp_preconditioner = std::make_unique<LinearAlgebra::PreconditionAMG>();
     else
