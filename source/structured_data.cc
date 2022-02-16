@@ -902,12 +902,11 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      // For initial ascii data topography, we need access to the data before get_time() is set,
-      // as this is when the grid including topography is constructed for the chunk geometry.
-      if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
-            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-            this->get_timestep_number() == numbers::invalid_unsigned_int) ||
-           this->get_time() - first_data_file_model_time >= 0.0)
+      // Only apply the boundary condition if it is active from the start or if
+      // we are past the time it started.
+      if (first_data_file_model_time == 0.0 ||
+          (this->simulator_is_past_initialization() &&
+           this->get_time() >= first_data_file_model_time))
         {
           const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
@@ -948,12 +947,11 @@ namespace aspect
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
-      // For initial ascii data topography, we need access to the data before get_time() is set,
-      // as this is when the grid including topography is constructed for the chunk geometry.
-      if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
-           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-           this->get_timestep_number() == numbers::invalid_unsigned_int) ||
-          this->get_time() - first_data_file_model_time >= 0.0 )
+      // Only apply the boundary condition if it is active from the start or if
+      // we are past the time it started.
+      if (first_data_file_model_time == 0.0 ||
+          (this->simulator_is_past_initialization() &&
+           this->get_time() >= first_data_file_model_time))
         {
           const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
 
