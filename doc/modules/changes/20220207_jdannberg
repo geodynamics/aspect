@@ -1,7 +1,7 @@
-New: There is now a new initial composition model called 'ascii data
-slice' that can can read in 3d ascii datasets into a 2d model and
-otherwise works like the ascii data initial composition model. This
+Changed: The initial composition model called 'ascii data' can now
+read in 3d ascii datasets into a 2d model and slice the dataset
+in a user controlled plane. This
 allows it to make high-resolution 2d models of problems that use
 observational data (such as seismic tomography models). 
 <br>
-(Juliane Dannberg, 2022/02/07)
+(Juliane Dannberg, Rene Gassmoeller, 2022/02/07)
