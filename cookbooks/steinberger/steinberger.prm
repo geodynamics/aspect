@@ -7,7 +7,7 @@
 set Dimension                              = 2
 set End time                               = 3e8
 set Adiabatic surface temperature          = 1613.0
-set Output directory                       = steinberger
+set Output directory                       = output-steinberger
 
 # Because the model is compressible, we use a nonlinear solver.
 # We here choose a tolerance of 1e-3 to limit model runtime, but in a
@@ -17,7 +17,7 @@ set Output directory                       = steinberger
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-3
 
-# We run a 2d convection model in a quarterof a spherical shell.
+# We run a 2d convection model in a quarter of a spherical shell.
 subsection Geometry model
   set Model name = spherical shell
 
@@ -93,17 +93,17 @@ subsection Material model
     set Material file names                           = pyr-ringwood88.txt
     set Radial viscosity file name                    = radial-visc-simple.txt
 
-    # Because of the resolution in this cookbook we limit the overall viscosity
-    # between 1e20 Pa s and 5e23 Pa s and the lateral viscosity variations to
-    # three orders of magnitude in both directions (for a total of six orders of
-    # magnitude. This allows the features of the flow field to be resolved.
-    # In the Earth, we would expect higher viscosities in the lithosphere and
-    # lower viscosities in plumes and near the core-mantle boundaries.
+    # Because of the resolution in this cookbook we limit the lateral viscosity
+    # variations to three orders of magnitude in both directions (for a total of
+    # six orders of magnitude). We then additionally limit the overall viscosity
+    # between 1e20 Pa s and 5e23 Pa s. This allows the features of the flow field
+    # to be resolved. In the Earth, we would expect higher viscosities in the
+    # lithosphere and lower viscosities in plumes and near the core-mantle boundary.
     # In addition, this model only accounts for diffusion creep, so the
     # lithosphere has a high viscosity and forms a stagnant lid on top of the
     # model. In order to have more realistic subduction in a model like this,
     # one would have to either prescribe plate velocities at the surface
-    # (forcing plate to subduct) or take into account plastic yielding (so that
+    # (forcing plates to subduct) or take into account plastic yielding (so that
     # the lithosphere can break).
     set Maximum lateral viscosity variation           = 1e3
     set Maximum viscosity                             = 5e23
@@ -114,11 +114,6 @@ subsection Material model
     # material porperties used in the model rather than the laterally
     # averaged temperature.
     set Use lateral average temperature for viscosity = false
-
-    # We want to interpolate between data points in the look-up table rather
-    # than simply taking the value of the closest point, since this is more
-    # accurate.
-    set Bilinear interpolation                        = true
 
     # We do not want to include latent heat in our model, mainly because it
     # can lead to a lot of numerical problems. In a research application, a
