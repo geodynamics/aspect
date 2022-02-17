@@ -563,7 +563,6 @@ namespace aspect
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
       current_file_number(0),
-      first_data_file_model_time(0.0),
       first_data_file_number(0),
       decreasing_file_order(false),
       data_file_time_step(0.0),
@@ -783,13 +782,20 @@ namespace aspect
     void
     AsciiDataBoundary<dim>::update ()
     {
-      if (time_dependent && (this->get_time() - first_data_file_model_time >= 0.0))
+      // always initialize with the start time during model setup, even
+      // when restarting (to have identical setup in both cases)
+      double model_time = this->get_parameters().start_time;
+
+      // if we are past initialization use the current time instead
+      if (this->simulator_is_past_initialization())
+        model_time = this->get_time();
+
+      if (time_dependent == true)
         {
-          const double time_steps_since_start = (this->get_time() - first_data_file_model_time)
-                                                / data_file_time_step;
+          const double time_steps_since_start = model_time / data_file_time_step;
           // whether we need to update our data files. This looks so complicated
           // because we need to catch increasing and decreasing file orders and all
-          // possible first_data_file_model_times and first_data_file_numbers.
+          // possible first_data_file_numbers.
           const bool need_update =
             static_cast<int> (time_steps_since_start)
             > std::abs(current_file_number - first_data_file_number);
@@ -902,42 +908,33 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      // Only apply the boundary condition if it is active from the start or if
-      // we are past the time it started.
-      if (first_data_file_model_time == 0.0 ||
-          (this->simulator_is_past_initialization() &&
-           this->get_time() >= first_data_file_model_time))
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) && dim == 3)
         {
-          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-          Point<dim> internal_position;
-          for (unsigned int i = 0; i < dim; i++)
-            internal_position[i] = natural_position[i];
-
-          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-          if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) && dim == 3)
-            {
-              internal_position[2] = numbers::PI/2. - internal_position[2];
-            }
-
-          const std::array<unsigned int,dim-1> boundary_dimensions =
-            get_boundary_dimensions(boundary_indicator);
-
-          Point<dim-1> data_position;
-          for (unsigned int i = 0; i < dim-1; i++)
-            data_position[i] = internal_position[boundary_dimensions[i]];
-
-          const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
-
-          if (!time_dependent)
-            return data;
-
-          const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
-
-          return time_weight * data + (1 - time_weight) * old_data;
+          internal_position[2] = numbers::PI/2. - internal_position[2];
         }
-      else
-        return 0.0;
+
+      const std::array<unsigned int,dim-1> boundary_dimensions =
+        get_boundary_dimensions(boundary_indicator);
+
+      Point<dim-1> data_position;
+      for (unsigned int i = 0; i < dim-1; i++)
+        data_position[i] = internal_position[boundary_dimensions[i]];
+
+      const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+      if (!time_dependent)
+        return data;
+
+      const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+      return time_weight * data + (1 - time_weight) * old_data;
     }
 
 
@@ -947,42 +944,33 @@ namespace aspect
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
-      // Only apply the boundary condition if it is active from the start or if
-      // we are past the time it started.
-      if (first_data_file_model_time == 0.0 ||
-          (this->simulator_is_past_initialization() &&
-           this->get_time() >= first_data_file_model_time))
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
         {
-          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-          Point<dim> internal_position;
-          for (unsigned int i = 0; i < dim; i++)
-            internal_position[i] = natural_position[i];
-
-          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
-            {
-              internal_position[2] = numbers::PI/2. - internal_position[2];
-            }
-
-          const std::array<unsigned int,dim-1> boundary_dimensions =
-            get_boundary_dimensions(boundary_indicator);
-
-          Point<dim-1> data_position;
-          for (unsigned int i = 0; i < dim-1; ++i)
-            data_position[i] = internal_position[boundary_dimensions[i]];
-
-          const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
-
-          if (!time_dependent)
-            return gradients;
-
-          const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
-
-          return time_weight * gradients + (1 - time_weight) * old_gradients;
+          internal_position[2] = numbers::PI/2. - internal_position[2];
         }
-      else
-        return Tensor<1,dim-1>();
+
+      const std::array<unsigned int,dim-1> boundary_dimensions =
+        get_boundary_dimensions(boundary_indicator);
+
+      Point<dim-1> data_position;
+      for (unsigned int i = 0; i < dim-1; ++i)
+        data_position[i] = internal_position[boundary_dimensions[i]];
+
+      const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+      if (!time_dependent)
+        return gradients;
+
+      const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+      return time_weight * gradients + (1 - time_weight) * old_gradients;
     }
 
 
@@ -1024,11 +1012,10 @@ namespace aspect
                            "The default is one million, i.e., either one million seconds or one million years.");
         prm.declare_entry ("First data file model time", "0",
                            Patterns::Double (0.),
-                           "Time from which on the data file with number `First data "
-                           "file number' is used as boundary condition. Until this "
-                           "time, a boundary condition equal to zero everywhere is assumed. "
-                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
-                           "in the input file, this number is either interpreted as seconds or as years.");
+                           "The `First data file model time' parameter "
+                           "has been deactivated and will be removed in a future release. "
+                           "Do not use this paramter and instead provide data files "
+                           "starting from the model start time.");
         prm.declare_entry ("First data file number", "0",
                            Patterns::Integer (),
                            "Number of the first velocity file to be loaded when the model time "
@@ -1056,14 +1043,20 @@ namespace aspect
       prm.enter_subsection(subsection_name);
       {
         data_file_time_step             = prm.get_double ("Data file time step");
-        first_data_file_model_time      = prm.get_double ("First data file model time");
+        const double first_data_file_model_time      = prm.get_double ("First data file model time");
+
+        AssertThrow (first_data_file_model_time == 0.0,
+                     ExcMessage("The `First data file model time' parameter "
+                                "has been deactivated and will be removed in a future release. "
+                                "Do not use this parameter and instead provide data files "
+                                "starting from the model start time."));
+
         first_data_file_number          = prm.get_integer("First data file number");
         decreasing_file_order           = prm.get_bool   ("Decreasing file order");
 
         if (this->convert_output_to_years() == true)
           {
             data_file_time_step        *= year_in_seconds;
-            first_data_file_model_time *= year_in_seconds;
           }
       }
       prm.leave_subsection();
