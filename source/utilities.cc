@@ -1388,12 +1388,7 @@ namespace aspect
           int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
 
-          AssertThrow (filesize < static_cast<std::size_t>(std::numeric_limits<signed int>::max()),
-                       ExcMessage ("You are trying to broadcast a file that is larger than what "
-                                   "MPI can handle in a single MPI_Bcast call. This is not currently "
-                                   "supported"));
-          ierr = MPI_Bcast(&data_string[0], filesize, MPI_CHAR, 0, comm);
-          AssertThrowMPI(ierr);
+          big_mpi::broadcast<>(&data_string[0], filesize, 0, comm);
         }
       else
         {
@@ -1414,8 +1409,7 @@ namespace aspect
             throw QuietException();
 
           // Receive and store data
-          ierr = MPI_Bcast(&data_string[0], filesize, MPI_CHAR, 0, comm);
-          AssertThrowMPI(ierr);
+          big_mpi::broadcast<>(&data_string[0], filesize, 0, comm);
         }
 
       return data_string;
