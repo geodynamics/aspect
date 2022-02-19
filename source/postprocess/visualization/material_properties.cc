@@ -135,6 +135,7 @@ namespace aspect
                                                      input_data.template get_cell<dim>(),
                                                      Quadrature<dim>(),
                                                      this->get_mapping(),
+                                                     in.requests_property(MaterialModel::MaterialProperties::viscosity),
                                                      out);
 
         std::vector<double> melt_fractions(n_quadrature_points);

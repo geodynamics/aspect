@@ -733,6 +733,7 @@ namespace aspect
                     const typename DoFHandler<dim>::active_cell_iterator &cell,
                     const Quadrature<dim>         &quadrature_formula,
                     const Mapping<dim>            &mapping,
+                    const bool                     average_viscosity,
                     MaterialModelOutputs<dim>     &values_out);
 
       /**
