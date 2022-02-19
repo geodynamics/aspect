@@ -1165,6 +1165,7 @@ namespace aspect
           FEQ_cell,
           quadrature_formula,
           *sim.mapping,
+          in.requested_properties,
           out);
 
         for (unsigned int i=0; i<values.size(); ++i)
@@ -1417,6 +1418,7 @@ namespace aspect
                                                             in.current_cell,
                                                             fe_values.get_quadrature(),
                                                             *sim.mapping,
+                                                            in.requested_properties,
                                                             out);
 
                   Assert(std::isfinite(in.strain_rate[0].norm()),
