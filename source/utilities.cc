@@ -1401,13 +1401,6 @@ namespace aspect
 
           data_string.resize(filesize);
 
-          // Check whether the size is small enough to be handled in a single Bcast call.
-          // If not, error out for now. We may fix this later. (We error out by throwing
-          // a quiet exception; the root rank will throw a more information exception,
-          // see above.)
-          if (filesize >= static_cast<std::size_t>(std::numeric_limits<signed int>::max()))
-            throw QuietException();
-
           // Receive and store data
           big_mpi::broadcast<>(&data_string[0], filesize, 0, comm);
         }
