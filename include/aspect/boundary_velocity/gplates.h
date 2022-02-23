@@ -279,7 +279,7 @@ namespace aspect
         /**
          * Scale the velocity boundary condition by a scalar factor.
          */
-        double scale_factor;
+        double velocity_scaling_factor;
 
         /**
          * Two user defined points that prescribe the plane from which the 2D
