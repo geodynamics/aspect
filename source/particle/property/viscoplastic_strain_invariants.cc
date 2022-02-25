@@ -61,6 +61,9 @@ namespace aspect
         if (this->introspection().compositional_name_exists("total_strain"))
           n_components += 1;
 
+        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+          n_components += 1;
+
         if (n_components == 0)
           AssertThrow(false,
                       ExcMessage("This particle property requires a compositional "
@@ -84,6 +87,9 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("total_strain"))
           data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("total_strain")));
+
+        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+          data.push_back(this->get_initial_composition_manager().initial_composition(position,this->introspection().compositional_index_for_name("noninitial_plastic_strain")));
 
       }
 
@@ -123,39 +129,46 @@ namespace aspect
 
         const bool plastic_yielding = viscoplastic.is_yielding(material_inputs);
 
-
-        /* Next take the integrated strain invariant from the prior time step. When
-         * there are two fields (plastic and viscous), this assumes plastic
-         * strain is always in data position one and viscous strain in position two.
-         * In this case old_strain will first be given the plastic strain, and then,
-         * if there is no plastic yielding it will update to the viscous strain instead.
-         */
+        // Next take the integrated strain invariant from the prior time step.
         auto &data = particle->get_properties();
-        double old_strain = data[data_position];
-        if (n_components == 2 && plastic_yielding == false)
-          old_strain = data[data_position+(n_components-1)];
-
 
         // Calculate strain rate second invariant
         const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(material_inputs.strain_rate[0]))));
 
-        // New strain is the old strain plus dt*edot_ii
-        const double new_strain = old_strain + dt*edot_ii;
+        // Calcualte strain invariant magnitude over the last time time step
+        const double strain_update = dt*edot_ii;
 
-
-        /* Once we know whether the particle underwent plastic, viscous, or
-         * total strain assign the new strain to the correct data position.
-         * NOTE: This assumes that total strain cannot be used in combination with the
-         * other fields. If this changes in the future, this will need to be updated.
+        /* Update the strain values that are used in the simulation, which use the following assumptions
+         * to identify the correct position in the data vector for each value:
+         * (1) Total strain cannot be used in combination with any other strain field
+         * (2) If plastic strain is tracked, it will always be in the first data position
+         * (3) If noninitial plastic strain is tracked, it will always be in the last data position
+         * (4) If noninitial plastic strain is tracked, plastic strain is also being tracked
+         * (5) If only viscous strain is tracked, it will be in the first data position.
+         * (6) If both viscous and plastic strain are tracked, viscous strain will be in the second data position
+         * If these assumptions change in the future, they will need to be updated.
          * */
+
         if (this->introspection().compositional_name_exists("plastic_strain") && plastic_yielding == true)
-          data[data_position] = new_strain;
+          data[data_position] += strain_update;
 
         if (this->introspection().compositional_name_exists("viscous_strain") && plastic_yielding == false)
-          data[data_position+(n_components-1)] = new_strain;
+          {
+            if (n_components == 1)
+              data[data_position] += strain_update;
+
+            if (n_components == 2)
+              data[data_position+(n_components-1)] += strain_update;
+
+            if (n_components == 3)
+              data[data_position+(n_components-2)] += strain_update;
+          }
 
         if (this->introspection().compositional_name_exists("total_strain"))
-          data[data_position] = new_strain;
+          data[data_position] += strain_update;
+
+        if (this->introspection().compositional_name_exists("noninitial_plastic_strain") && plastic_yielding == true)
+          data[data_position+(n_components-1)] += strain_update;
       }
 
 
@@ -192,6 +205,9 @@ namespace aspect
 
         if (this->introspection().compositional_name_exists("total_strain"))
           property_information.emplace_back("total_strain", 1);
+
+        if (this->introspection().compositional_name_exists("noninitial_plastic_strain"))
+          property_information.emplace_back("noninitial_plastic_strain", 1);
 
         return property_information;
       }
