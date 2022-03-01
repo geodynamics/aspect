@@ -3742,11 +3742,11 @@ Be careful if you choose 1 as the degree. The resulting element is not stable an
 
 {\it Description:} By default (i.e., when this parameter is set to its default value `false') \aspect{} uses finite element combinations in which the pressure shape functions are polynomials one degree lower than the shape functions for the velocity. An example is the Taylor-Hood element that uses $Q_k$ elements for the velocity and $Q_{k-1}$ for the pressure. This is because using the \textit{same} polynomial degree for both the velocity and the pressure turns out to violate some mathematical properties necessary to make the problem solvable. (In particular, thecondition in question goes by the name ``inf-sup'' or Babu{\v s}ka-Brezzi or LBB condition.) A consequence of violating this condition is that the pressure may show oscillations and not converge to the correct pressure.
 
-That said, people have often used $Q_1$ elements for both thevelocity and pressure anyway. This is commonly referred to as using the Q1-Q1 method. It is, by default, not stable as mentioned above, but it can be made stable by adding small amount of compressibility to the model. There are numerous ways to do that. Today, the way that is generally considered to be the best approach is the one by Dohrmann and Bochev \cite{DohrmannBochev2004}.
+That said, people have often used $Q_1$ elements for both the velocity and pressure anyway. This is commonly referred to as using the $Q_1-Q_1$ method. It is, by default, not stable as mentioned above, but it can be made stable by adding a small amount of compressibility to the model. There are numerous ways to do that. Today, the way that is generally considered to be the best approach is the one by Dohrmann and Bochev \cite{DohrmannBochev2004}.
 
-When this parameter is set to ``true'', then \aspect{} will use this method by using $Q_k	imes Q_k$ elements for velocity and pressure, respectively, where $k$ is the value provided for the parameter ``Stokes velocity polynomial degree''.
+When this parameter is set to ``true'', then \aspect{} will use this method by using $Q_k\times Q_k$ elements for velocity and pressure, respectively, where $k$ is the value provided for the parameter ``Stokes velocity polynomial degree''.
 
-\note{While \aspect{} \textit{allows} you to use this   method, it is generally understood that this is not a   great idea as it leads to rather low accuracy in   general. It also leads to substantial problems when   using free surfaces. As a consequence, the presence   of this parameter should not be seen as an   endorsement of the method, or a suggestion to   actually use it. It simply makes the method available.}
+\note{While \aspect{} \textit{allows} you to use this   method, it is generally understood that this is not a   great idea as it leads to rather low accuracy in   general as documented in \cite{thba22}.   It also leads to substantial problems when   using free surfaces. As a consequence, the presence   of this parameter should not be seen as an   endorsement of the method, or a suggestion to   actually use it. It simply makes the method available.}
 
 
 {\it Possible values:} A boolean value (true or false)
@@ -6428,6 +6428,23 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 
 {\it Possible values:} A list of 0 to 4294967295 elements where each element is [Any string]
+\item {\it Parameter name:} {\tt First point on slice}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/First point on slice}
+\label{parameters:Initial_20composition_20model/Ascii_20data_20model/First_20point_20on_20slice}
+
+
+\index[prmindex]{First point on slice}
+\index[prmindexfull]{Initial composition model!Ascii data model!First point on slice}
+{\it Value:} 0.0,1.0,0.0
+
+
+{\it Default:} 0.0,1.0,0.0
+
+
+{\it Description:} Point that determines the plane in which the 2D slice lies in. This variable is only used if 'Slice dataset in 2D plane' is true. The slice will go through this point, the point defined by the parameter 'Second point on slice', and the center of the model domain. After the rotation, this first point will lie along the (0,1,0) axis of the coordinate system. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
 \item {\it Parameter name:} {\tt Interpolation scheme}
 \phantomsection\label{parameters:Initial composition model/Ascii data model/Interpolation scheme}
 \label{parameters:Initial_20composition_20model/Ascii_20data_20model/Interpolation_20scheme}
@@ -6462,6 +6479,40 @@ When ``composition is specified, the initial model is treated as a standard comp
 
 
 {\it Possible values:} A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Second point on slice}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/Second point on slice}
+\label{parameters:Initial_20composition_20model/Ascii_20data_20model/Second_20point_20on_20slice}
+
+
+\index[prmindex]{Second point on slice}
+\index[prmindexfull]{Initial composition model!Ascii data model!Second point on slice}
+{\it Value:} 1.0,0.0,0.0
+
+
+{\it Default:} 1.0,0.0,0.0
+
+
+{\it Description:} Second point that determines the plane in which the 2D slice lies in. This variable is only used if 'Slice dataset in 2D plane' is true. The slice will go through this point, the point defined by the parameter 'First point on slice', and the center of the model domain. The coordinates of the point have to be given in Cartesian coordinates.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Slice dataset in 2D plane}
+\phantomsection\label{parameters:Initial composition model/Ascii data model/Slice dataset in 2D plane}
+\label{parameters:Initial_20composition_20model/Ascii_20data_20model/Slice_20dataset_20in_202D_20plane}
+
+
+\index[prmindex]{Slice dataset in 2D plane}
+\index[prmindexfull]{Initial composition model!Ascii data model!Slice dataset in 2D plane}
+{\it Value:} false
+
+
+{\it Default:} false
+
+
+{\it Description:} Whether to use a 2D data slice of a 3D data file or the entire data file. Slicing a 3D dataset is only supported for 2D models.
+
+
+{\it Possible values:} A boolean value (true or false)
 \end{itemize}
 
 \subsection{Parameters in section \tt Initial composition model/Function}
@@ -14591,6 +14642,23 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Maximum thermal conductivity}
+\phantomsection\label{parameters:Material model/Steinberger model/Maximum thermal conductivity}
+\label{parameters:Material_20model/Steinberger_20model/Maximum_20thermal_20conductivity}
+
+
+\index[prmindex]{Maximum thermal conductivity}
+\index[prmindexfull]{Material model!Steinberger model!Maximum thermal conductivity}
+{\it Value:} 1000
+
+
+{\it Default:} 1000
+
+
+{\it Description:} The maximum thermal conductivity that is allowed in the model. Larger values will be cut off.
+
+
+{\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
 \item {\it Parameter name:} {\tt Maximum viscosity}
 \phantomsection\label{parameters:Material model/Steinberger model/Maximum viscosity}
 \label{parameters:Material_20model/Steinberger_20model/Maximum_20viscosity}
@@ -14642,6 +14710,23 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} An integer $n$ such that $1\leq n \leq 2147483647$
+\item {\it Parameter name:} {\tt Pressure dependencies of thermal conductivity}
+\phantomsection\label{parameters:Material model/Steinberger model/Pressure dependencies of thermal conductivity}
+\label{parameters:Material_20model/Steinberger_20model/Pressure_20dependencies_20of_20thermal_20conductivity}
+
+
+\index[prmindex]{Pressure dependencies of thermal conductivity}
+\index[prmindexfull]{Material model!Steinberger model!Pressure dependencies of thermal conductivity}
+{\it Value:} 3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10
+
+
+{\it Default:} 3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10
+
+
+{\it Description:} A list of values that determine the linear scaling of the thermal conductivity with the pressure in the 'p-T-dependent' Thermal conductivity formulation. Units: \si{\watt\per\meter\per\kelvin\per\pascal}.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Radial viscosity file name}
 \phantomsection\label{parameters:Material model/Steinberger model/Radial viscosity file name}
 \label{parameters:Material_20model/Steinberger_20model/Radial_20viscosity_20file_20name}
@@ -14659,6 +14744,40 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 
 {\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Reference temperatures for thermal conductivity}
+\phantomsection\label{parameters:Material model/Steinberger model/Reference temperatures for thermal conductivity}
+\label{parameters:Material_20model/Steinberger_20model/Reference_20temperatures_20for_20thermal_20conductivity}
+
+
+\index[prmindex]{Reference temperatures for thermal conductivity}
+\index[prmindexfull]{Material model!Steinberger model!Reference temperatures for thermal conductivity}
+{\it Value:} 300, 300, 300, 1200
+
+
+{\it Default:} 300, 300, 300, 1200
+
+
+{\it Description:} A list of values of reference temperatures used to determine the temperature-dependence of the thermal conductivity in the 'p-T-dependent' Thermal conductivity formulation. Units: \si{\kelvin}.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Reference thermal conductivities}
+\phantomsection\label{parameters:Material model/Steinberger model/Reference thermal conductivities}
+\label{parameters:Material_20model/Steinberger_20model/Reference_20thermal_20conductivities}
+
+
+\index[prmindex]{Reference thermal conductivities}
+\index[prmindexfull]{Material model!Steinberger model!Reference thermal conductivities}
+{\it Value:} 2.47, 3.81, 3.52, 4.9
+
+
+{\it Default:} 2.47, 3.81, 3.52, 4.9
+
+
+{\it Description:} A list of base values of the thermal conductivity for each of the horizontal layers in the 'p-T-dependent' Thermal conductivity formulation. Pressure- and temperature-dependence will be appliedon top of this base value, according to the parameters 'Pressure dependencies of thermal conductivity' and 'Reference temperatures for thermal conductivity'. Units: \si{\watt\per\meter\per\kelvin}
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Reference viscosity}
 \phantomsection\label{parameters:Material model/Steinberger model/Reference viscosity}
 \label{parameters:Material_20model/Steinberger_20model/Reference_20viscosity}
@@ -14680,6 +14799,23 @@ Units: \si{\pascal\second}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Saturation prefactors}
+\phantomsection\label{parameters:Material model/Steinberger model/Saturation prefactors}
+\label{parameters:Material_20model/Steinberger_20model/Saturation_20prefactors}
+
+
+\index[prmindex]{Saturation prefactors}
+\index[prmindexfull]{Material model!Steinberger model!Saturation prefactors}
+{\it Value:} 0, 0, 0, 1
+
+
+{\it Default:} 0, 0, 0, 1
+
+
+{\it Description:} A list of values that indicate how a given layer in the conductivity formulation should take into account the effects of saturation on the temperature-dependence of the thermal conducitivity. This factor is multiplied with a saturation function based on the theory of Roufosse and Klemens, 1974. A value of 1 reproduces the formulation of Stackhouse et al. (2015), a value of 0 reproduces the formulation of Tosi et al., (2013). Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq 1$]
 \item {\it Parameter name:} {\tt Thermal conductivity}
 \phantomsection\label{parameters:Material model/Steinberger model/Thermal conductivity}
 \label{parameters:Material_20model/Steinberger_20model/Thermal_20conductivity}
@@ -14693,10 +14829,61 @@ Units: \si{\pascal\second}.
 {\it Default:} 4.7
 
 
-{\it Description:} The value of the thermal conductivity $k$. Units: \si{\watt\per\meter\per\kelvin}.
+{\it Description:} The value of the thermal conductivity $k$. Only used in case the 'constant' Thermal conductivity formulation is selected. Units: \si{\watt\per\meter\per\kelvin}.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
+\item {\it Parameter name:} {\tt Thermal conductivity exponents}
+\phantomsection\label{parameters:Material model/Steinberger model/Thermal conductivity exponents}
+\label{parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20exponents}
+
+
+\index[prmindex]{Thermal conductivity exponents}
+\index[prmindexfull]{Material model!Steinberger model!Thermal conductivity exponents}
+{\it Value:} 0.48, 0.56, 0.61, 1.0
+
+
+{\it Default:} 0.48, 0.56, 0.61, 1.0
+
+
+{\it Description:} A list of exponents in the temperature-dependent term of the 'p-T-dependent' Thermal conductivity formulation. Note that this exponent is not used (and should have a value of 1) in the formulation of Stackhouse et al. (2015). Units: none.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+\item {\it Parameter name:} {\tt Thermal conductivity formulation}
+\phantomsection\label{parameters:Material model/Steinberger model/Thermal conductivity formulation}
+\label{parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20formulation}
+
+
+\index[prmindex]{Thermal conductivity formulation}
+\index[prmindexfull]{Material model!Steinberger model!Thermal conductivity formulation}
+{\it Value:} constant
+
+
+{\it Default:} constant
+
+
+{\it Description:} Which law should be used to compute the thermal conductivity. The 'constant' law uses a constant value for the thermal conductivity. The 'p-T-dependent' formulation uses equations from Stackhouse et al. (2015): First-principles calculations of the lattice thermal conductivity of the lower mantle (https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. (2013): Mantle dynamics with pressure- and temperature-dependent thermal expansivity and conductivity (https://doi.org/10.1016/j.pepi.2013.02.004) to compute the thermal conductivity in dependence of temperature and pressure. The thermal conductivity parameter sets can be chosen in such a way that either the Stackhouse or the Tosi relations are used. The conductivity description can consist of several layers with different sets of parameters. Note that the Stackhouse parametrization is only valid for the lower mantle (bridgmanite).
+
+
+{\it Possible values:} Any one of constant, p-T-dependent
+\item {\it Parameter name:} {\tt Thermal conductivity transition depths}
+\phantomsection\label{parameters:Material model/Steinberger model/Thermal conductivity transition depths}
+\label{parameters:Material_20model/Steinberger_20model/Thermal_20conductivity_20transition_20depths}
+
+
+\index[prmindex]{Thermal conductivity transition depths}
+\index[prmindexfull]{Material model!Steinberger model!Thermal conductivity transition depths}
+{\it Value:} 410000, 520000, 660000
+
+
+{\it Default:} 410000, 520000, 660000
+
+
+{\it Description:} A list of depth values that indicate where the transitions between the different conductivity parameter sets should occur in the 'p-T-dependent' Thermal conductivity formulation (in most cases, this will be the depths of major mantle phase transitions). Units: \si{\meter}.
+
+
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
 \item {\it Parameter name:} {\tt Use lateral average temperature for viscosity}
 \phantomsection\label{parameters:Material model/Steinberger model/Use lateral average temperature for viscosity}
 \label{parameters:Material_20model/Steinberger_20model/Use_20lateral_20average_20temperature_20for_20viscosity}
@@ -18632,7 +18819,7 @@ Select one of the following models:
 
 {\it Description:} Select one of the following models:
 
-`bilinear least squares': Interpolates particle properties onto a vector of points using a bilinear least squares method. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
+`bilinear least squares': Uses linear least squares to obtain the slopes and center of a 2D or 3D plane from the particle positions and a particular property value on those particles. Interpolate this property onto a vector of points. If the limiter is enabled then it will ensure the interpolated properties do not exceed the range of the minimum and maximum of the values of the property on the particles. Note that deal.II must be configured with BLAS and LAPACK to support this operation.
 
 `cell average': Return the arithmetic average of all particle properties in the given cell, or in the neighboring cells if the given cell is empty. In case the neighboring cells are also empty, and 'Allow cells without particles' is set to true, the interpolator returns 0. Otherwise, an exception is thrown. 
 
@@ -19428,57 +19615,23 @@ If the function you are describing represents a vector-valued function with mult
 \label{parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares}
 
 \begin{itemize}
-\item {\it Parameter name:} {\tt Global particle property maximum}
-\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Bilinear least squares/Global particle property maximum}
-\label{parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Global_20particle_20property_20maximum}
+\item {\it Parameter name:} {\tt Use linear least squares limiter}
+\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Bilinear least squares/Use linear least squares limiter}
+\label{parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20linear_20least_20squares_20limiter}
 
 
-\index[prmindex]{Global particle property maximum}
-\index[prmindexfull]{Postprocess!Particles!Interpolator/Bilinear least squares/Global particle property maximum}
-{\it Value:} 1.7976931348623157e+308
-
-
-{\it Default:} 1.7976931348623157e+308
-
-
-{\it Description:} The maximum global particle property values that will be used as a limiter for the bilinear least squares interpolation. The number of the input 'Global particle property maximum' values separated by ',' has to be the same as the number of particle properties.
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Global particle property minimum}
-\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Bilinear least squares/Global particle property minimum}
-\label{parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Global_20particle_20property_20minimum}
-
-
-\index[prmindex]{Global particle property minimum}
-\index[prmindexfull]{Postprocess!Particles!Interpolator/Bilinear least squares/Global particle property minimum}
-{\it Value:} -1.7976931348623157e+308
-
-
-{\it Default:} -1.7976931348623157e+308
-
-
-{\it Description:} The minimum global particle property that will be used as a limiter for the bilinear least squares interpolation. The number of the input 'Global particle property minimum' values separated by ',' has to be the same as the number of particle properties.
-
-
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $-\text{MAX\_DOUBLE} \leq v \leq \text{MAX\_DOUBLE}$]
-\item {\it Parameter name:} {\tt Use limiter}
-\phantomsection\label{parameters:Postprocess/Particles/Interpolator/Bilinear least squares/Use limiter}
-\label{parameters:Postprocess/Particles/Interpolator/Bilinear_20least_20squares/Use_20limiter}
-
-
-\index[prmindex]{Use limiter}
-\index[prmindexfull]{Postprocess!Particles!Interpolator/Bilinear least squares/Use limiter}
+\index[prmindex]{Use linear least squares limiter}
+\index[prmindexfull]{Postprocess!Particles!Interpolator/Bilinear least squares/Use linear least squares limiter}
 {\it Value:} false
 
 
 {\it Default:} false
 
 
-{\it Description:} Whether to apply a global particle property limiting scheme to the interpolated particle properties.
+{\it Description:} Limit the interpolation of particle properties onto the cell so the value of each property is no smaller than its minimum and no larger than its maximum on the particles in each cell. If more than one value is specified, they will be treated as a list.
 
 
-{\it Possible values:} A boolean value (true or false)
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A boolean value (true or false)]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Particles/Interpolator/Quadratic least squares}
