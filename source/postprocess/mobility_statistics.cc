@@ -121,7 +121,7 @@ namespace aspect
 
       // now add the computed rms velocities to the statistics object
       // and create a single string that can be output to the screen
-      const double mobility  = global_top_rms_vel / global_rms_vel;
+      mobility  = global_top_rms_vel / global_rms_vel;
       const std::string name_mobility = "Mobility";
 
       statistics.add_value (name_mobility,
@@ -138,6 +138,14 @@ namespace aspect
 
       return std::pair<std::string, std::string> ("Mobility:",
                                                   output.str());
+    }
+
+    template <int dim>
+    double
+    MobilityStatistics<dim>::get_mobility() const
+    {
+      //Elodie Feb 2022
+      return mobility;
     }
   }
 }

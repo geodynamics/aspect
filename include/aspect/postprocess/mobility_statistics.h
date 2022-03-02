@@ -44,6 +44,11 @@ namespace aspect
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
+        double get_mobility() const;
+ 
+      private:
+        double mobility;
+
     };
   }
 }
