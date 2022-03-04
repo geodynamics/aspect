@@ -43,6 +43,8 @@ namespace aspect
       // the first time step.
       if (std::isnan(last_output_time))
         last_output_time = this->get_time() - output_interval;
+        //Initialise combined_mobility
+        combined_mobility = 0;
      
       // see if output is requested at this time      
       if (this->get_time() < last_output_time + output_interval)
@@ -132,6 +134,9 @@ namespace aspect
       // now add the computed rms velocities to the statistics object
       // and create a single string that can be output to the screen
       mobility  = global_top_rms_vel / global_rms_vel;
+      //Add mobility every time to be averaged
+      combined_mobility = combined_mobility + mobility;
+
       const std::string name_mobility = "Mobility";
 
       statistics.add_value (name_mobility,
