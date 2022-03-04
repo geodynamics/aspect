@@ -38,6 +38,16 @@ namespace aspect
     std::pair<std::string,std::string>
     MobilityStatistics<dim>::execute (TableHandler &statistics)
     {
+      // If this is the first time we get here, set the next output time
+      // to the current time. This makes sure we always produce data during
+      // the first time step.
+      if (std::isnan(last_output_time))
+        last_output_time = this->get_time() - output_interval;
+     
+      // see if output is requested at this time      
+      if (this->get_time() < last_output_time + output_interval)
+        return std::pair<std::string,std::string>();
+
       // create a quadrature formula for the velocity for the volume of cells
       const QGauss<dim> quadrature_formula (this->get_fe()
                                             .base_element(this->introspection().base_elements.velocities).degree+1);
@@ -136,9 +146,81 @@ namespace aspect
       output.precision(3);
       output << mobility;
 
+      // Update time
+      set_last_output_time (this->get_time());
+
       return std::pair<std::string, std::string> ("Mobility:",
                                                   output.str());
     }
+
+
+    template <int dim>
+    void
+    MobilityStatistics<dim>::declare_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Mobility statistics");
+        { 
+          prm.declare_entry ("Time between mobility output", "0.",  
+                             Patterns::Double (0.),
+                             "The time interval between each generation of "
+                             "mobility output. A value of zero indicates "
+                              "that output should be generated in each time step. "
+                              "Units: years if the "
+                              "'Use years in output instead of seconds' parameter is set; "
+                              "seconds otherwise.");
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    void
+    MobilityStatistics<dim>::parse_parameters (ParameterHandler &prm)
+    {
+      prm.enter_subsection("Postprocess");
+      {
+        prm.enter_subsection("Mobility statistics");
+        {
+          output_interval = prm.get_double ("Time between mobility output");
+          if (this->convert_output_to_years())
+            output_interval *= year_in_seconds;
+        }
+        prm.leave_subsection();
+      }
+      prm.leave_subsection();
+    }
+
+
+    template <int dim>
+    template <class Archive>
+    void MobilityStatistics<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      & last_output_time;
+    }
+
+    
+    template <int dim>
+    void
+    MobilityStatistics<dim>::set_last_output_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple.
+      if (output_interval > 0)
+        {
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done
+          // by forcing std::floor to round 1.0-eps to 1.0.      
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_output_time = last_output_time + std::floor((current_time-last_output_time)/output_interval*magic) * output_interval/magic;
+        }
+    }   
 
     template <int dim>
     double
