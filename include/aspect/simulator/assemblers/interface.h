@@ -132,6 +132,8 @@ namespace aspect
           const bool rebuild_stokes_matrix;
         };
 
+
+
         /**
          * A scratch object to store all necessary information to assemble
          * the terms in the Stokes equations.
@@ -202,6 +204,8 @@ namespace aspect
            */
           const bool rebuild_newton_stokes_matrix;
         };
+
+
 
         /**
          * A scratch object to store all necessary information to assemble
@@ -321,6 +325,8 @@ namespace aspect
           double artificial_viscosity;
         };
       }
+
+
 
       /**
        * The CopyData arrays are similar to the Scratch arrays except they are
@@ -550,7 +556,9 @@ namespace aspect
          * This ensures the additional material model output is available when
          * execute() is called.
          */
-        virtual void create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
+        virtual
+        void
+        create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const;
 
         /**
          * A required function for objects that implement the assembly of terms
@@ -569,6 +577,8 @@ namespace aspect
         std::vector<double>
         compute_residual(internal::Assembly::Scratch::ScratchBase<dim> &) const;
     };
+
+
 
     /**
      * A base class for objects that implement assembly
@@ -609,6 +619,8 @@ namespace aspect
         std::vector<double>
         diffusion_prefactors(internal::Assembly::Scratch::ScratchBase<dim> &scratch_base) const;
     };
+
+
 
     /**
      * A class that owns member variables representing
