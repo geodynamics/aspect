@@ -20,6 +20,7 @@
 
 #include <aspect/simulator_access.h>
 #include <aspect/utilities.h>
+#include <aspect/simulator/assemblers/interface.h>
 #include <aspect/volume_of_fluid/utilities.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/volume_of_fluid/field.h>
@@ -491,7 +492,7 @@ namespace aspect
               // that correspond to the solution_field we are interested in
               neighbor->get_dof_indices (neighbor_dof_indices);
 
-              const unsigned int f_rhs_ind = face_no * GeometryInfo<dim>::max_children_per_face;
+              const unsigned int f_rhs_ind = Assemblers::nth_interface_matrix(cell->reference_cell(), face_no);
 
               for (unsigned int i=0; i<volume_of_fluid_dofs_per_cell; ++i)
                 data.neighbor_dof_indices[f_rhs_ind][i]
@@ -587,7 +588,7 @@ namespace aspect
               std::vector<types::global_dof_index> neighbor_dof_indices (scratch.subface_finite_element_values.get_fe().dofs_per_cell);
               neighbor_child->get_dof_indices (neighbor_dof_indices);
 
-              const unsigned int f_rhs_ind = face_no * GeometryInfo<dim>::max_children_per_face+subface_no;
+              const unsigned int f_rhs_ind = Assemblers::nth_interface_matrix(cell->reference_cell(), face_no, subface_no);
 
               for (unsigned int i=0; i<volume_of_fluid_dofs_per_cell; ++i)
                 data.neighbor_dof_indices[f_rhs_ind][i]

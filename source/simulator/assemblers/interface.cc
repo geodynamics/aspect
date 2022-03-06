@@ -450,21 +450,21 @@ namespace aspect
                         finite_element.dofs_per_cell),
           local_matrices_int_ext ((field_is_discontinuous
                                    ?
-                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
+                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_int ((field_is_discontinuous
                                    ?
-                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
+                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
                                                      finite_element.dofs_per_cell)),
           local_matrices_ext_ext ((field_is_discontinuous
                                    ?
-                                   finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
+                                   Assemblers::n_interface_matrices(finite_element.reference_cell())
                                    :
                                    0),
                                   FullMatrix<double>(finite_element.dofs_per_cell,
@@ -473,14 +473,14 @@ namespace aspect
 
           assembled_matrices ((field_is_discontinuous
                                ?
-                               finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
+                               Assemblers::n_interface_matrices(finite_element.reference_cell())
                                :
                                0), false),
 
           local_dof_indices (finite_element.dofs_per_cell),
           neighbor_dof_indices ((field_is_discontinuous
                                  ?
-                                 finite_element.reference_cell().n_faces() * GeometryInfo<dim>::max_children_per_face
+                                 Assemblers::n_interface_matrices(finite_element.reference_cell())
                                  :
                                  0),
                                 std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
@@ -494,6 +494,90 @@ namespace aspect
 
   namespace Assemblers
   {
+    unsigned int
+    n_interface_matrices (const ReferenceCell &reference_cell)
+    {
+      // The current implementation assumes that all faces are
+      // the same; so no wedges or pyramids please.
+      Assert ((reference_cell == ReferenceCells::Triangle)
+              ||
+              (reference_cell == ReferenceCells::Quadrilateral)
+              ||
+              (reference_cell == ReferenceCells::Tetrahedron)
+              ||
+              (reference_cell == ReferenceCells::Hexahedron),
+              ExcNotImplemented());
+#if DEAL_II_VERSION_GTE(10,0,0)
+      return (reference_cell.n_faces() *
+              reference_cell.face_reference_cell(0).n_isotropic_children());
+#else
+      // The ReferenceCell::n_isotropic_children() function did not
+      // exist before pre-10.0. Work around this by assuming that
+      // we are using quadrilateral/hexahedral meshes. That's
+      // a pretty safe bet since deal.II did not have all of the
+      // capabilities to really run ASPECT in a meaningful way
+      // before then anyway.
+      if (reference_cell.get_dimension() == 2)
+        return 4 * 2;
+      else
+        return 6 * 4;
+#endif
+    }
+
+
+
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face)
+    {
+      AssertIndexRange (face, reference_cell.n_faces());
+#if DEAL_II_VERSION_GTE(10,0,0)
+      return (face *
+              reference_cell.face_reference_cell(0).n_isotropic_children());
+#else
+      // The ReferenceCell::n_isotropic_children() function did not
+      // exist before pre-10.0. Work around this by assuming that
+      // we are using quadrilateral/hexahedral meshes. That's
+      // a pretty safe bet since deal.II did not have all of the
+      // capabilities to really run ASPECT in a meaningful way
+      // before then anyway.
+      if (reference_cell.get_dimension() == 2)
+        return face * 2;
+      else
+        return face * 4;
+#endif
+    }
+
+
+
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face,
+                          const unsigned int sub_face)
+    {
+      AssertIndexRange (face, reference_cell.n_faces());
+#if DEAL_II_VERSION_GTE(10,0,0)
+      AssertIndexRange (sub_face,
+                        reference_cell.face_reference_cell(0).n_isotropic_children());
+      return (face *
+              reference_cell.face_reference_cell(0).n_isotropic_children()
+              + sub_face);
+#else
+      // The ReferenceCell::n_isotropic_children() function did not
+      // exist before pre-10.0. Work around this by assuming that
+      // we are using quadrilateral/hexahedral meshes. That's
+      // a pretty safe bet since deal.II did not have all of the
+      // capabilities to really run ASPECT in a meaningful way
+      // before then anyway.
+      if (reference_cell.get_dimension() == 2)
+        return face * 2 + sub_face;
+      else
+        return face * 4 + sub_face;
+#endif
+    }
+
+
+
     template <int dim>
     void
     Interface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &) const

@@ -135,23 +135,23 @@ namespace aspect
           /**
            * Local contributions to the global rhs from the face terms in the
            * discontinuous Galerkin interpretation of the VolumeOfFluid method.
+           *
+           * The array has a length sufficient to hold one element for each
+           * possible face and sub-face of a cell.
            */
-          std::array<Vector<double>,
-              GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
-              local_face_rhs;
-          std::array<FullMatrix<double>,
-              GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
-              local_face_matrices_ext_ext;
+          std::vector<Vector<double>> local_face_rhs;
+          std::vector<FullMatrix<double>> local_face_matrices_ext_ext;
 
           /**
            * Denotes which face's rhs have actually been assembled in the DG
            * field assembly. Entries not used (for example, those corresponding
            * to non-existent subfaces; or faces being assembled by the
            * neighboring cell) are set to false.
+           *
+           * The array has a length sufficient to hold one element for each
+           * possible face and sub-face of a cell.
            */
-          std::array<bool,
-              GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
-              face_contributions_mask;
+          std::vector<bool> face_contributions_mask;
 
           /**
            * Indices of those degrees of freedom that actually correspond to
@@ -168,10 +168,11 @@ namespace aspect
            * Indices of the degrees of freedom corresponding to the volume_of_fluid field
            * on all possible neighboring cells. This is used in the
            * discontinuous Galerkin interpretation of the VolumeOfFluid method.
+           *
+           * The array has a length sufficient to hold one element for each
+           * possible face and sub-face of a cell.
            */
-          std::array<std::vector<types::global_dof_index>,
-              GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell>
-              neighbor_dof_indices;
+          std::vector<std::vector<types::global_dof_index>> neighbor_dof_indices;
         };
       }
     }
