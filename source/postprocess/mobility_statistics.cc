@@ -42,10 +42,21 @@ namespace aspect
       // to the current time. This makes sure we always produce data during
       // the first time step.
       if (std::isnan(last_output_time))
-        last_output_time = this->get_time() - output_interval;
-        //Initialise combined_mobility
-        combined_mobility = 0;
-     
+        {  
+          last_output_time = this->get_time() - output_interval;
+          last_average_time = this->get_time() - average_interval;
+         
+          //Initialise combined_mobility
+           combined_mobility = 0;
+        }
+      else
+        {
+          // Get a pointer to the combined_mobility
+          const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+          double combined_mobility = mobility_statistics.get_combined_mobility();
+        }    
+      
       // see if output is requested at this time      
       if (this->get_time() < last_output_time + output_interval)
         return std::pair<std::string,std::string>();
@@ -133,9 +144,14 @@ namespace aspect
 
       // now add the computed rms velocities to the statistics object
       // and create a single string that can be output to the screen
-      mobility  = global_top_rms_vel / global_rms_vel;
+      const double mobility  = global_top_rms_vel / global_rms_vel;
+      
       //Add mobility every time to be averaged
       combined_mobility = combined_mobility + mobility;
+      
+      // see if averaging is requested at this time      
+      if (this->get_time() >= last_average_time + average_interval)
+        average_mobility = combined_mobility/average_interval;
 
       const std::string name_mobility = "Mobility";
 
@@ -153,7 +169,8 @@ namespace aspect
 
       // Update time
       set_last_output_time (this->get_time());
-
+      set_last_average_time (this->get_time());
+      
       return std::pair<std::string, std::string> ("Mobility:",
                                                   output.str());
     }
@@ -175,6 +192,14 @@ namespace aspect
                               "Units: years if the "
                               "'Use years in output instead of seconds' parameter is set; "
                               "seconds otherwise.");
+          prm.declare_entry ("Time between averaging mobility", "0.",
+                             Patterns::Double (0.),
+                             "The time interval between averaging the "
+                             "mobility output. A value of zero indicates "
+                             "that output should be generated in each time step. "
+                             "Units: years if the "
+                             "'Use years in output instead of seconds' parameter is set; "
+                             "seconds otherwise.");
         }
         prm.leave_subsection();
       }
@@ -193,6 +218,9 @@ namespace aspect
           output_interval = prm.get_double ("Time between mobility output");
           if (this->convert_output_to_years())
             output_interval *= year_in_seconds;
+          average_interval = prm.get_double ("Time between averaging mobility");
+          if (this->convert_output_to_years())
+            average_interval *= year_in_seconds;
         }
         prm.leave_subsection();
       }
@@ -205,6 +233,7 @@ namespace aspect
     void MobilityStatistics<dim>::serialize (Archive &ar, const unsigned int)
     {
       & last_output_time;
+      & last_average_time;
     }
 
     
@@ -228,11 +257,38 @@ namespace aspect
     }   
 
     template <int dim>
+    void
+    MobilityStatistics<dim>::set_last_average_time (const double current_time)
+    {
+      // if output_interval is positive, then set the next output interval to
+      // a positive multiple.       if (output_interval > 0)
+      if (average_interval > 0)
+        {
+          // We need to find the last time output was supposed to be written.
+          // this is the last_output_time plus the largest positive multiple
+          // of output_intervals that passed since then. We need to handle the
+          // edge case where last_output_time+output_interval==current_time,
+          // we did an output and std::floor sadly rounds to zero. This is done           // by forcing std::floor to round 1.0-eps to 1.0.      
+          // by forcing std::floor to round 1.0-eps to 1.0.      
+          const double magic = 1.0+2.0*std::numeric_limits<double>::epsilon();
+          last_average_time = last_average_time + std::floor((current_time-last_average_time)/average_interval*magic) * average_interval/magic;
+        }
+    }
+    
+    template <int dim>
     double
-    MobilityStatistics<dim>::get_mobility() const
+    MobilityStatistics<dim>::get_combined_mobility() const
     {
       //Elodie Feb 2022
-      return mobility;
+      return combined_mobility;
+    }
+
+    template <int dim>
+    double
+    MobilityStatistics<dim>::get_average_mobility() const
+    {
+      //Elodie Feb 2022
+      return average_mobility;
     }
   }
 }

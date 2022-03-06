@@ -62,7 +62,11 @@ namespace aspect
             // Get a pointer to the mobility postprocessor
             const Postprocess::MobilityStatistics<dim> &mobility_statistics =
               this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-            double mobility = mobility_statistics.get_mobility();          
+            double average_mobility = mobility_statistics.get_average_mobility();          
+            //print statement Elodie 2022            
+            this->get_pcout() << "Average Mobility: "
+                  << average_mobility
+                  << std::endl; 
 
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  cohesions, composition);

@@ -44,8 +44,11 @@ namespace aspect
          */
         std::pair<std::string,std::string>
         execute (TableHandler &statistics) override;
-        double get_mobility() const;
-      
+ 
+        double get_average_mobility() const;
+        
+        double get_combined_mobility() const;     
+     
         /**
          * Declare the parameters this class takes through input files.
          */
@@ -76,19 +79,23 @@ namespace aspect
           * the time step becomes larger. This is done after every output.
           */
           void set_last_output_time (const double current_time);
+          void set_last_average_time (const double current_time);
     
           /**
            * Interval between the generation of output in seconds.
            */
           double output_interval;
+          double average_interval;
      
           /**
            * A time (in seconds) the last output has been produced.
            */
           double last_output_time;
-         
-         double mobility;
+          double last_average_time;
+ 
+          double combined_mobility;
 
+          double average_mobility; 
     };
   }
 }
