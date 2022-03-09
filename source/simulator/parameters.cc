@@ -779,13 +779,13 @@ namespace aspect
                          "solved there."
                          "\n\n"
                          "Note that it is possible to supply conflicting refinement "
-                         "and coarsening settings, such as an Initial global refinement "
-                         "of 4 and a Maximum refinement function Strategy that limits "
+                         "and coarsening settings, such as an 'Initial global refinement' "
+                         "of 4 and a 'Maximum refinement function' strategy that limits "
                          "the refinement locally to 2. In this case, the tagging strategies "
-                         "such as the Maximum refinement function will remove refinement "
+                         "such as the 'Maximum refinement function' will remove refinement "
                          "flags in each initial global refinement step, such that the "
                          "resulting mesh is not necessarily uniform or of the level "
-                         "given by the Initial global refinement parameter.");
+                         "given by the 'Initial global refinement' parameter.");
       prm.declare_entry ("Initial adaptive refinement", "0",
                          Patterns::Integer (0),
                          "The number of adaptive refinement steps performed after "
