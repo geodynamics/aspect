@@ -383,7 +383,7 @@ namespace aspect
         {
           unsigned int n_particles_in_cell = 0;
 
-          for (unsigned int child_index = 0; child_index < GeometryInfo<dim>::max_children_per_cell; ++child_index)
+          for (unsigned int child_index = 0; child_index < cell->n_children(); ++child_index)
             n_particles_in_cell += particle_handler->n_particles_in_cell(cell->child(child_index));
 
           return n_particles_in_cell * particle_weight;
