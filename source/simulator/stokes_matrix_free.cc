@@ -61,7 +61,7 @@ namespace aspect
       add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
                      const Tensor<1, dim> &constraining_vector,
                      AffineConstraints<double> &constraints,
-                     const double inhomogeneity = 0)
+                     const double inhomogeneity)
       {
         // This function is modified from an internal deal.II function in vector_tools.templates.h
         switch (dim)
