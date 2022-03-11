@@ -25,8 +25,6 @@
 
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/parameter_handler.h>
-#include <aspect/postprocess/mobility_statistics.h>
-#include <iostream>
 
 namespace aspect
 {
@@ -59,26 +57,6 @@ namespace aspect
             // Average among phases
             drucker_prager_parameters.angle_internal_friction = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                                 angles_internal_friction, composition);
-            //Elodie Feb 2022
-            // Get a pointer to the mobility postprocessor
-            const Postprocess::MobilityStatistics<dim> &mobility_statistics =
-              this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-            double average_mobility = mobility_statistics.get_average_mobility();          
-            //print statement Elodie 2022            
-            pcout << "Average Mobility: "
-                  << average_mobility
-                  << std::endl; 
-
-            //first find factors
-            if (average_mobility > 1 && average_mobility < 2) 
-              double friction_factor = 1.5;
-            else if (average_mobility <= 1)
-              double friciton_factor = 0.5;
-            else if (average_mobility >= 2)
-              double friction_factor = -average_mobility + 2.5;
-            
-            //now modify friction
-            //drucker_prager_parameters.angle_internal_friction*friction_factor 
              
             drucker_prager_parameters.cohesion = MaterialModel::MaterialUtilities::phase_average_value(phase_function_values, n_phases_per_composition,
                                                  cohesions, composition);

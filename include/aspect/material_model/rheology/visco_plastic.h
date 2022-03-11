@@ -33,6 +33,7 @@
 #include <aspect/material_model/rheology/drucker_prager.h>
 #include <aspect/material_model/rheology/elasticity.h>
 #include <aspect/simulator_access.h>
+#include <aspect/postprocess/mobility_statistics.h>
 
 #include<deal.II/fe/component_mask.h>
 

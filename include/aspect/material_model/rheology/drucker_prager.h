@@ -139,7 +139,6 @@ namespace aspect
            * Viscosity of a damper used to stabilize plasticity
            */
           double damper_viscosity;
-          //ConditionalOStream                  pcout;
       };
     }
   }
