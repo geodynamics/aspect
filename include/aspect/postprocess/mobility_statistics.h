@@ -95,7 +95,7 @@ namespace aspect
  
           double combined_mobility;
 
-          double average_mobility; 
+          double average_mobility = 0; 
     };
   }
 }

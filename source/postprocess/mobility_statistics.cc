@@ -151,7 +151,10 @@ namespace aspect
       
       // see if averaging is requested at this time      
       if (this->get_time() >= last_average_time + average_interval)
-        average_mobility = combined_mobility/average_interval;
+        {  
+          average_mobility = combined_mobility/(average_interval/output_interval);
+          combined_mobility = 0;
+        } 
 
       const std::string name_mobility = "Mobility";
 
