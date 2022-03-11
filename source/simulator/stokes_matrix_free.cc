@@ -26,6 +26,8 @@
 #include <aspect/melt.h>
 #include <aspect/newton.h>
 
+#include <deal.II/base/signaling_nan.h>
+
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
@@ -36,12 +38,11 @@
 #include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/read_write_vector.templates.h>
-
 #include <deal.II/lac/solver_idr.h>
 
+#include <deal.II/grid/manifold.h>
 
 
 namespace aspect
