@@ -39,7 +39,7 @@
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/signaling_nan.h>
 #include <deal.II/base/patterns.h>
-
+#include <deal.II/numerics/fe_field_function.h>
 
 
 #include <cerrno>
@@ -1899,6 +1899,7 @@ namespace aspect
       }
 
     } // namespace tk
+
 
 
     std::string

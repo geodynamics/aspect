@@ -23,7 +23,6 @@
 #include <aspect/adiabatic_conditions/interface.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/numerics/fe_field_function.h>
 
 
 namespace aspect
@@ -116,20 +115,13 @@ namespace aspect
       if (this->include_melt_transport() && in.current_cell.state() == IteratorState::valid
           && this->get_timestep_number() > 0 && !this->get_parameters().use_operator_splitting)
         {
-          // Prepare the field function
-#if DEAL_II_VERSION_GTE(10,0,0)
-          Functions::FEFieldFunction<dim, LinearAlgebra::BlockVector>
-#else
-          Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector>
-#endif
-          fe_value(this->get_dof_handler(), this->get_old_solution(), this->get_mapping());
-
           const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
-
-          fe_value.set_active_cell(in.current_cell);
-          fe_value.value_list(in.position,
-                              old_porosity,
-                              this->introspection().component_indices.compositional_fields[porosity_idx]);
+          old_porosity = aspect::Utilities::evaluate_advection_solution(this->get_dof_handler(),
+                                                                        this->get_mapping(),
+                                                                        this->get_old_solution(),
+                                                                        this->introspection().component_indices.compositional_fields[porosity_idx],
+                                                                        in.current_cell,
+                                                                        in.position);
         }
       else if (this->get_parameters().use_operator_splitting)
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
