@@ -35,15 +35,7 @@ namespace big_mpi
 
 #if DEAL_II_VERSION_GTE(10,0,0)
 
-  template <typename T>
-  void
-  broadcast(T                 *buffer,
-            const size_t       count,
-            const unsigned int root,
-            const MPI_Comm    &comm)
-  {
-    dealii::Utilities::MPI::broadcast(buffer, count, root, comm);
-  }
+  using dealii::Utilities::MPI::broadcast;
 
 #else
 
@@ -54,12 +46,9 @@ namespace big_mpi
   }
 
   /**
-       * Broadcast the information in @p buffer from @p root to all
-       * other ranks.
-       *
-       * This will be in deal.II 10.0-pre after https://github.com/dealii/dealii/pull/13368
-       * is merged under the name Utilities::MPI::broadcast().
-       */
+   * Broadcast the information in @p buffer from @p root to all
+   * other ranks.
+   */
   template <typename T>
   void
   broadcast(T                 *buffer,

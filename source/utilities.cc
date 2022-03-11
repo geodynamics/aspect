@@ -1388,7 +1388,7 @@ namespace aspect
           int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
 
-          big_mpi::broadcast<>(&data_string[0], filesize, 0, comm);
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
       else
         {
@@ -1402,7 +1402,7 @@ namespace aspect
           data_string.resize(filesize);
 
           // Receive and store data
-          big_mpi::broadcast<>(&data_string[0], filesize, 0, comm);
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
 
       return data_string;
