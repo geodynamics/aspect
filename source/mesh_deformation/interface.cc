@@ -24,6 +24,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
+#include <aspect/stokes_matrix_free.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -755,7 +756,7 @@ namespace aspect
 
       TimerOutput::Scope timer (this->sim.computing_timer, "gmg displacement");
 
-      // TODO: may need higher degrees.
+      Assert(mesh_deformation_fe.degree == 1, ExcNotImplemented());
       const unsigned int mesh_deformation_fe_degree = 1;
 
       using SystemMatrixType = dealii::MatrixFreeOperators::
@@ -822,7 +823,7 @@ namespace aspect
                                                          zero_mesh_deformation_boundary_indicators);
 
       {
-        // Handle no normal flux, copyied from GMG Stokes solver.
+        // Handle no normal flux, copied from GMG Stokes solver.
         const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
         if (!no_flux_boundary.empty() && !sim.geometry_model->has_curved_elements())
           for (const auto bid : no_flux_boundary)
