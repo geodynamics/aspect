@@ -952,7 +952,7 @@ namespace aspect
 
       mesh_velocity_constraints.set_zero(mf_solution);
       cg.solve(mf_mesh_matrix, mf_solution, corrected_rhs, preconditioner);
-      this->get_pcout() << "   Solving mesh displacement systemn using GMG... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+      this->get_pcout() << "   Solving mesh displacement system using GMG... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
 
       mesh_velocity_constraints.distribute(mf_solution);
       mf_solution.update_ghost_values();
