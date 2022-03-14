@@ -323,7 +323,7 @@ namespace aspect
                   {
                     const unsigned int n_particles_to_remove = n_particles_in_cell - max_particles_per_cell;
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
                     for (unsigned int i=0; i < n_particles_to_remove; ++i)
                       {
                         const unsigned int current_n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
@@ -429,7 +429,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 #else
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
@@ -485,7 +485,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 #else
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
@@ -539,7 +539,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle,
                                        internal::SolutionEvaluators<dim> &evaluators)
     {
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 #else
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
@@ -598,7 +598,7 @@ namespace aspect
                                        const typename ParticleHandler<dim>::particle_iterator &begin_particle,
                                        const typename ParticleHandler<dim>::particle_iterator &end_particle)
     {
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
       const unsigned int n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
 #else
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
@@ -732,7 +732,7 @@ namespace aspect
     void
     World<dim>::initialize_particles()
     {
-#if !DEAL_II_VERSION_GTE(10,0,0)
+#if !DEAL_II_VERSION_GTE(9,4,0)
       // Initialize the particle's access to the property_pool. This is necessary
       // even if the Particle do not carry properties, because they need a
       // way to determine the number of properties they carry.
@@ -978,7 +978,7 @@ namespace aspect
         // possible by manually accessing the public members of this class.
         velocity.reinit (cell, positions);
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
         // Only compute the mapping data once for velocity,
         // and reuse it for the other components.
         const auto &mapping_data = velocity.get_mapping_data();
@@ -1192,7 +1192,7 @@ namespace aspect
           // a bug for dynamically allocating scalar evaluators for individual components of a
           // base element with multiplicity (see https://github.com/dealii/dealii/pull/12786).
           bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
           if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
               dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
             use_fast_path = true;
@@ -1260,7 +1260,7 @@ namespace aspect
                 {
                   // Only use deal.II FEPointEvaluation if it's fast path is used
                   bool use_fast_path = false;
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
                   if (dynamic_cast<const MappingQGeneric<dim> *>(&this->get_mapping()) != nullptr ||
                       dynamic_cast<const MappingCartesian<dim> *>(&this->get_mapping()) != nullptr)
                     use_fast_path = true;
