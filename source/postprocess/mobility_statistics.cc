@@ -173,8 +173,7 @@ namespace aspect
       // Update time
       set_last_output_time (this->get_time());
       set_last_average_time (this->get_time());
-      
-      return std::pair<std::string, std::string> ("Mobility:",
+      return std::pair<std::string, std::string> ("Mobility: ",
                                                   output.str());
     }
 

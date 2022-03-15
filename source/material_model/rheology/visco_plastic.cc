@@ -268,24 +268,20 @@ namespace aspect
             const Postprocess::MobilityStatistics<dim> &mobility_statistics =
               this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
             double average_mobility = mobility_statistics.get_average_mobility();
-            //print statement Elodie 2022  
-            std::cout << "Average Mobility: "
-                      << average_mobility
-                      << std::endl;  
             double friction_factor = 0;
             //first find factors 
             if (average_mobility = 0)
               double friction_factor = 1;
-            else if (average_mobility <= 1)
-              double friciton_factor = 0.5;
-            else if (average_mobility > 1 && average_mobility < 2)
-              double friction_factor = 1.5;
-            else if (average_mobility >= 2)
-              double friction_factor = -average_mobility + 2.5;
+            else if (average_mobility <= 2)
+              double friciton_factor = 1.5;
+            else if (average_mobility > 2 && average_mobility < 3)
+              double friction_factor = 3.5- average_mobility;
+            else if (average_mobility >= 3)
+              double friction_factor = 0.5;
                          
             //now modify friction
-            const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
-            //const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor;
+            //const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
+            const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor;
 
             // Step 5: plastic yielding
 
