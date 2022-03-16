@@ -1,0 +1,43 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 1,555 (on 5 levels)
+Number of degrees of freedom: 21,207 (13,028+1,665+6,514)
+
+*** Timestep 0:  t=0 seconds, dt=0 seconds
+   Solving temperature system... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 44+0 iterations.
+
+   Postprocessing:
+
+     Model domain depth (m):                        1
+     Temperature contrast across model domain (K):  1
+     Reference depth (m):                           0
+     Reference temperature (K):                     1
+     Reference pressure (Pa):                       0
+     Reference gravity (m/s^2):                     1
+     Reference density (kg/m^3):                    1
+     Reference thermal expansion coefficient (1/K): 2e-05
+     Reference specific heat capacity (J/(K*kg)):   1250
+     Reference thermal conductivity (W/(m*K)):      1e-06
+     Reference viscosity (Pa*s):                    1
+     Reference thermal diffusivity (m^2/s):         8e-10
+     Rayleigh number:                               25000
+
+     Writing graphical output:           output-initial_global_refinement/solution/solution-00000
+     RMS, max velocity:                  1.27e-08 m/s, 4.87e-08 m/s
+     Temperature min/avg/max:            0 K, 1.027 K, 1.152 K
+     Heat fluxes through boundary parts: 1.666e-07 W, 5.573e-05 W, 0 W, 0 W
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------

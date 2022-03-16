@@ -1894,7 +1894,8 @@ namespace aspect
         for (unsigned int n=0; n<parameters.initial_global_refinement; ++n)
           {
             for (const auto &cell : triangulation.active_cell_iterators())
-              cell->set_refine_flag ();
+              if (cell->is_locally_owned())
+                cell->set_refine_flag ();
 
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
