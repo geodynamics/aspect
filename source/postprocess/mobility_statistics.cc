@@ -54,7 +54,7 @@ namespace aspect
           // Get a pointer to the combined_mobility
           const Postprocess::MobilityStatistics<dim> &mobility_statistics =
           this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-          double combined_mobility = mobility_statistics.get_combined_mobility();
+          combined_mobility = mobility_statistics.get_combined_mobility();
         }    
       
       // see if output is requested at this time      
