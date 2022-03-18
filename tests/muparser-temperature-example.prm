@@ -64,7 +64,7 @@ end
 # then refinement level = 5, else  refinement level = 0
 
 subsection Mesh refinement
-  set Initial global refinement          = 1
+  set Initial global refinement          = 3
   set Minimum refinement level           = 1
   set Initial adaptive refinement        = 2
   set Time steps between mesh refinement = 1
