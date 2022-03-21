@@ -33,7 +33,7 @@
 namespace big_mpi
 {
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
 
   using dealii::Utilities::MPI::broadcast;
 
