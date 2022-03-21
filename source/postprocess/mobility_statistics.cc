@@ -48,13 +48,6 @@ namespace aspect
          
           //Initialise combined_mobility
            combined_mobility = 0;
-        }
-      else
-        {
-          // Get a pointer to the combined_mobility
-          const Postprocess::MobilityStatistics<dim> &mobility_statistics =
-          this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
-          combined_mobility = mobility_statistics.get_combined_mobility();
         }    
       
       // see if output is requested at this time      
@@ -159,7 +152,7 @@ namespace aspect
       const std::string name_mobility = "Mobility";
 
       statistics.add_value (name_mobility,
-                            mobility);
+                            average_mobility);
 
       // also make sure that the other columns filled by this object
       // all show up with sufficient accuracy and in scientific notation
@@ -277,13 +270,13 @@ namespace aspect
         }
     }
     
-    template <int dim>
-    double
-    MobilityStatistics<dim>::get_combined_mobility() const
-    {
+    //template <int dim>
+    //double
+    //MobilityStatistics<dim>::get_combined_mobility() const
+    //{
       //Elodie Feb 2022
-      return combined_mobility;
-    }
+    //  return combined_mobility;
+    //}
 
     template <int dim>
     double

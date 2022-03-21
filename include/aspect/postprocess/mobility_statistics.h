@@ -47,7 +47,7 @@ namespace aspect
  
         double get_average_mobility() const;
         
-        double get_combined_mobility() const;     
+        //double get_combined_mobility() const;     
      
         /**
          * Declare the parameters this class takes through input files.
