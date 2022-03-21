@@ -29,8 +29,8 @@ Number of degrees of freedom: 2,124 (1,298+177+649)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 351 (on 5 levels)
-Number of degrees of freedom: 5,127 (3,146+408+1,573)
+Number of active cells: 288 (on 5 levels)
+Number of degrees of freedom: 4,308 (2,642+345+1,321)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -44,8 +44,8 @@ Number of degrees of freedom: 5,127 (3,146+408+1,573)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 567 (on 6 levels)
-Number of degrees of freedom: 8,247 (5,066+648+2,533)
+Number of active cells: 480 (on 6 levels)
+Number of degrees of freedom: 7,116 (4,370+561+2,185)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -74,8 +74,8 @@ Number of degrees of freedom: 8,247 (5,066+648+2,533)
      Heat fluxes through boundary parts: 983.4 W, 1971 W, 0 W, 0 W
      Writing depth average:              output-minimum_refinement_function_spherical/depth_average
 
-Number of active cells: 567 (on 6 levels)
-Number of degrees of freedom: 8,247 (5,066+648+2,533)
+Number of active cells: 480 (on 6 levels)
+Number of degrees of freedom: 7,116 (4,370+561+2,185)
 
 Termination requested by criterion: end time
 
