@@ -29,13 +29,13 @@ Number of degrees of freedom: 5,823 (3,570+468+1,785)
      Heat fluxes through boundary parts: 1005 W, 1956 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average
 
-Number of active cells: 732 (on 6 levels)
-Number of degrees of freedom: 10,720 (6,576+856+3,288)
+Number of active cells: 759 (on 6 levels)
+Number of degrees of freedom: 11,081 (6,798+884+3,399)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 47+0 iterations.
+   Solving Stokes system... 48+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00002
@@ -44,8 +44,8 @@ Number of degrees of freedom: 10,720 (6,576+856+3,288)
      Heat fluxes through boundary parts: 994.6 W, 1958 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average
 
-Number of active cells: 1,014 (on 6 levels)
-Number of degrees of freedom: 14,919 (9,160+1,179+4,580)
+Number of active cells: 1,218 (on 6 levels)
+Number of degrees of freedom: 17,885 (10,982+1,412+5,491)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -56,16 +56,16 @@ Number of degrees of freedom: 14,919 (9,160+1,179+4,580)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00003
      RMS, max velocity:                  8.27e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 997.9 W, 1961 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 996.7 W, 1962 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average
 
-Number of active cells: 1,233 (on 6 levels)
-Number of degrees of freedom: 18,619 (11,432+1,471+5,716)
+Number of active cells: 1,815 (on 6 levels)
+Number of degrees of freedom: 26,161 (16,068+2,059+8,034)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 52+0 iterations.
+   Solving Stokes system... 53+0 iterations.
 
    Postprocessing:
 
@@ -86,11 +86,11 @@ Number of degrees of freedom: 18,619 (11,432+1,471+5,716)
      Writing graphical output:           output-maximum_refinement_function_spherical/solution/solution-00004
      RMS, max velocity:                  8.28e-07 m/year, 1.47e-06 m/year
      Temperature min/avg/max:            1400 K, 1627 K, 1800 K
-     Heat fluxes through boundary parts: 992.7 W, 1961 W, 0 W, 0 W
+     Heat fluxes through boundary parts: 990.7 W, 1962 W, 0 W, 0 W
      Writing depth average:              output-maximum_refinement_function_spherical/depth_average
 
-Number of active cells: 1,347 (on 6 levels)
-Number of degrees of freedom: 19,641 (12,062+1,548+6,031)
+Number of active cells: 2,130 (on 7 levels)
+Number of degrees of freedom: 30,844 (18,946+2,425+9,473)
 
 Termination requested by criterion: end time
 
