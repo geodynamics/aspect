@@ -96,7 +96,7 @@ namespace aspect
       {
         material_inputs.position[0] = particle->get_location();
 
-#if DEAL_II_VERSION_GTE(10,0,0)
+#if DEAL_II_VERSION_GTE(9,4,0)
         material_inputs.current_cell = typename DoFHandler<dim>::active_cell_iterator(*particle->get_surrounding_cell(),
                                                                                       &(this->get_dof_handler()));
 #else

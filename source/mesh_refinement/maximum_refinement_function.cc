@@ -54,29 +54,15 @@ namespace aspect
         {
           if (cell->is_locally_owned())
             {
-              bool coarsen = false;
-              bool clear_refine = false;
+              const Point<dim> center = cell->center();
+              const Utilities::NaturalCoordinate<dim> point =
+                this->get_geometry_model().cartesian_to_other_coordinates(center, coordinate_system);
 
-              for (const unsigned int v : cell->vertex_indices())
-                {
-                  const Point<dim> vertex = cell->vertex(v);
-                  const Utilities::NaturalCoordinate<dim> point =
-                    this->get_geometry_model().cartesian_to_other_coordinates(vertex, coordinate_system);
+              const double maximum_refinement_level = max_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
 
-                  const double maximum_refinement_level = max_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
-
-                  if (cell->level() >= rint(maximum_refinement_level))
-                    clear_refine = true;
-                  if (cell->level() >  rint(maximum_refinement_level))
-                    {
-                      coarsen = true;
-                      break;
-                    }
-                }
-
-              if (clear_refine)
+              if (cell->level() >= rint(maximum_refinement_level))
                 cell->clear_refine_flag ();
-              if (coarsen)
+              if (cell->level() >  rint(maximum_refinement_level))
                 cell->set_coarsen_flag ();
             }
         }

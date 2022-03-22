@@ -471,7 +471,7 @@ namespace aspect
                                    "denote the left, right, bottom and top boundaries; in 3d, boundary "
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
                                    "and top boundaries (see also the documentation of the deal.II class "
-                                   "``GeometryInfo''). You can also use symbolic names ``left'', ``right'', "
+                                   "``ReferenceCell''). You can also use symbolic names ``left'', ``right'', "
                                    "etc., to refer to these boundaries in input files. "
                                    "It is also possible to add initial topography to the box model. Note however that "
                                    "this is done after the last initial adaptive refinement cycle. "
