@@ -60,9 +60,10 @@ namespace aspect
 
               const double maximum_refinement_level = max_refinement_level.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()));
 
-              if (cell->level() >= rint(maximum_refinement_level))
+              if (cell->level() >= static_cast<int>(std::round(maximum_refinement_level)))
                 cell->clear_refine_flag ();
-              if (cell->level() >  rint(maximum_refinement_level))
+
+              if (cell->level() > static_cast<int>(std::round(maximum_refinement_level)))
                 cell->set_coarsen_flag ();
             }
         }
