@@ -102,7 +102,7 @@ jobs:
     #linux build including tests
     name: tests
     runs-on: [ubuntu-latest]
-    container: geodynamics/aspect-tester:focal-dealii-9.3-v1
+    container: geodynamics/aspect-tester:focal-dealii-9.3-v2
 
     steps:
     - uses: actions/checkout@v2
