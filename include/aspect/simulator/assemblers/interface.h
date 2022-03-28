@@ -425,15 +425,16 @@ namespace aspect
            */
           FullMatrix<double>          local_matrix;
 
-          /** Local contributions to the global matrix from the face terms in the
-           * discontinuous Galerkin method. The vectors are of length
-           * GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell
-           * so as to hold one matrix for each possible face or subface of the cell.
-           * The discontinuous Galerkin bilinear form contains terms arising from internal
-           * (to the cell) values and external (to the cell) values.
-           * _int_ext and ext_int hold the terms arising from the pairing between a cell
-           * and its neighbor, while _ext_ext is the pairing of the neighbor's dofs with
-           * themselves. In the continuous Galerkin case, these are unused, and set to size zero.
+          /**
+           * Local contributions to the global matrix from the face terms in the
+           * discontinuous Galerkin method. These arrays are of a length sufficient
+           * to hold one matrix for each possible face or subface of the cell.
+           * The discontinuous Galerkin bilinear form contains terms arising from
+           * internal (to the cell) values and external (to the cell) values.
+           * `_int_ext` and `_ext_int` hold the terms arising from the pairing
+           * between a cell and its neighbor, while `_ext_ext` is the pairing
+           * of the neighbor's dofs with themselves. In the continuous
+           * Galerkin case, these are unused, and set to size zero.
            */
           std::vector<FullMatrix<double>>         local_matrices_int_ext;
           std::vector<FullMatrix<double>>         local_matrices_ext_int;
@@ -466,8 +467,9 @@ namespace aspect
           /**
            * Indices of the degrees of freedom corresponding to the temperature
            * or composition field on all possible neighboring cells. This is used
-           * in the discontinuous Galerkin method. The outer std::vector has
-           * length GeometryInfo<dim>::max_children_per_face * GeometryInfo<dim>::faces_per_cell,
+           * in the discontinuous Galerkin method. The outer array has a
+           * length sufficient to hold one element for each possible face
+           * and sub-face of the current cell. The object is not used
            * and has size zero if in the continuous Galerkin case.
            */
           std::vector<std::vector<types::global_dof_index>>   neighbor_dof_indices;
@@ -482,6 +484,38 @@ namespace aspect
    */
   namespace Assemblers
   {
+
+    /**
+     * For a reference cell (which is typically obtained by asking the finite
+     * element to be used), determine how many interface matrices are needed.
+     * Since interface matrices are needed for as many neighbors as each
+     * cell can have, this is the number of faces for the given reference cell
+     * times the number of children each of these faces can have. This
+     * accommodates the fact that the neighbors of a cell can all be refined,
+     * though they can only be refined once.
+     */
+    unsigned int
+    n_interface_matrices (const ReferenceCell &reference_cell);
+
+    /**
+     * For a given reference cell, and a given face we are currently
+     * assembling on, return which element of an array of size
+     * `n_interface_matrices(reference_cell)` to use.
+     */
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face);
+
+    /**
+     * For a given reference cell, and a given face and sub-face we are
+     * currently assembling on, return which element of an array of size
+     * `n_interface_matrices(reference_cell)` to use.
+     */
+    unsigned int
+    nth_interface_matrix (const ReferenceCell &reference_cell,
+                          const unsigned int face,
+                          const unsigned int sub_face);
+
     /**
      * A base class for objects that implement assembly
      * operations.

@@ -1092,35 +1092,31 @@ namespace aspect
                                                     system_matrix,
                                                     system_rhs);
 
-    /* In the following, we copy DG contributions element by element. This
-     * is allowed since there are no constraints imposed on discontinuous fields.
-     */
+    // In the following, we copy DG contributions entry by entry. This
+    // is allowed since there are no constraints imposed on discontinuous fields.
     if (!assemblers->advection_system_on_interior_face.empty() &&
         assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_finite_element_evaluation)
       {
-        for (unsigned int f=0; f<GeometryInfo<dim>::max_children_per_face
-             * GeometryInfo<dim>::faces_per_cell; ++f)
-          {
-            if (data.assembled_matrices[f])
-              {
-                for (unsigned int i=0; i<data.local_dof_indices.size(); ++i)
-                  for (unsigned int j=0; j<data.neighbor_dof_indices[f].size(); ++j)
-                    {
-                      system_matrix.add (data.local_dof_indices[i],
-                                         data.neighbor_dof_indices[f][j],
-                                         data.local_matrices_int_ext[f](i,j));
-                      system_matrix.add (data.neighbor_dof_indices[f][j],
-                                         data.local_dof_indices[i],
-                                         data.local_matrices_ext_int[f](j,i));
-                    }
-
-                for (unsigned int i=0; i<data.neighbor_dof_indices[f].size(); ++i)
-                  for (unsigned int j=0; j<data.neighbor_dof_indices[f].size(); ++j)
-                    system_matrix.add (data.neighbor_dof_indices[f][i],
+        for (unsigned int f=0; f<data.assembled_matrices.size(); ++f)
+          if (data.assembled_matrices[f])
+            {
+              for (unsigned int i=0; i<data.local_dof_indices.size(); ++i)
+                for (unsigned int j=0; j<data.neighbor_dof_indices[f].size(); ++j)
+                  {
+                    system_matrix.add (data.local_dof_indices[i],
                                        data.neighbor_dof_indices[f][j],
-                                       data.local_matrices_ext_ext[f](i,j));
-              }
-          }
+                                       data.local_matrices_int_ext[f](i,j));
+                    system_matrix.add (data.neighbor_dof_indices[f][j],
+                                       data.local_dof_indices[i],
+                                       data.local_matrices_ext_int[f](j,i));
+                  }
+
+              for (unsigned int i=0; i<data.neighbor_dof_indices[f].size(); ++i)
+                for (unsigned int j=0; j<data.neighbor_dof_indices[f].size(); ++j)
+                  system_matrix.add (data.neighbor_dof_indices[f][i],
+                                     data.neighbor_dof_indices[f][j],
+                                     data.local_matrices_ext_ext[f](i,j));
+            }
       }
   }
 
