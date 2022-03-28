@@ -53,7 +53,10 @@ namespace aspect
           void
           generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
 
-          // avoid -Woverloaded-virtual:
+          // avoid -Woverloaded-virtual
+          // TODO: remove this using directive once the following deprecated
+          // function in the interface class has been removed:
+          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
           using Generator::Interface<dim>::generate_particles;
 
           /**
