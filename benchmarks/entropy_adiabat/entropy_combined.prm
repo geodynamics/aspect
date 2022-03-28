@@ -1,0 +1,57 @@
+# Downwelling along a pipe. 
+# This is a modification of the entropy adiabat example with added diffusion.
+# According to Schubert, Turcotte and Olson (part 1, p. 194), the added
+# diffusion should only affect the temperature profile above the phase transition.
+# Schubert, Turcotte and Olson also give an analytical solution for the
+# temperature profile. However, since they do not include adiabatic heating, this
+# model does not yield the exact solution from Schubert, Turcotte and Olson.
+# Instead, the temperature is slightly cooler below the phase transition due to
+# the additional heat conduction along the adiabat.
+
+include ./entropy_adiabat.prm
+
+set Additional shared libraries            = ./plugins/libentropy_plugins.so
+
+set Dimension                              = 2
+
+set End time                               = 2.5e8
+set Output directory                       = output-entropy-combined
+
+
+set Surface pressure                       = 0
+set Adiabatic surface temperature          = 1600.1243896484375
+
+
+
+# Prescribing downward flow through a vertical pipe with
+# tangential side boundaries.
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = top:function
+  set Tangential velocity boundary indicators = left, right
+  subsection Function
+    set Function expression = 0; -0.01
+  end
+end
+
+
+# We start at the same entropy as the one used for the
+# adiabatic profile.
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    # Entropy equivalent to T=1595 K according to table
+    set Function expression = 2534; 0.0
+  end
+end
+
+
+# We use a data table for orthopyroxe computed using the thermodynamic
+# modeling software HeFESTo.
+subsection Material model
+  set Model name = entropy model
+
+  subsection Entropy model
+    set Thermal conductivity             = 50
+  end
+end
