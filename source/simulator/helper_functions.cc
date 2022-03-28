@@ -119,7 +119,13 @@ namespace aspect
   typename Parameters<dim>::AdvectionFieldMethod::Kind
   Simulator<dim>::AdvectionField::advection_method(const Introspection<dim> &introspection) const
   {
-    return introspection.compositional_field_methods[compositional_variable];
+    if (field_type == temperature_field)
+      return introspection.temperature_method;
+    else if (field_type == compositional_field)
+      return introspection.compositional_field_methods[compositional_variable];
+
+    Assert (false, ExcInternalError());
+    return Parameters<dim>::AdvectionFieldMethod::fem_field;
   }
 
   template <int dim>

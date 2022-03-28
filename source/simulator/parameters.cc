@@ -567,7 +567,7 @@ namespace aspect
       {
         prm.declare_entry ("Diffusion length scale", "1.e4",
                            Patterns::Double (0.),
-                           "Set a length scale for the diffusion of compositional fields if the "
+                           "Set a length scale for the diffusion of advection fields if the "
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
@@ -1176,11 +1176,11 @@ namespace aspect
                          "\n"
                          "\\item ``prescribed field with diffusion'': If the temperature field is "
                          "marked this way, the value of a specific additional material model output, "
-                         "called the `PrescribedFieldOutputs' is interpolated onto the field, as in "
+                         "called the `PrescribedTemperatureOutputs' is interpolated onto the field, as in "
                          "the ``prescribed field'' method. Afterwards, the field is diffused based on "
                          "a solver parameter, the diffusion length scale, smoothing the field. "
                          "Specifically, the field is updated by solving the equation "
-                         "$(I-l^2 \\Delta) C_\\text{smoothed} = C_\\text{prescribed}$, "
+                         "$(I-l^2 \\Delta) T_\\text{smoothed} = T_\\text{prescribed}$, "
                          "where $l$ is the diffusion length scale. Note that this means that the amount "
                          "of diffusion is independent of the time step size, and that the field is not "
                          "advected with the flow."
