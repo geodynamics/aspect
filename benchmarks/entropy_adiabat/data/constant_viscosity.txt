@@ -1,0 +1,6 @@
+# Test data for ascii data reference state with constant viscosity
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
+# POINTS: 2
+depth viscosity
+0.0000000e+00    1.0000000e+22
+3.0000000e+06    1.0000000e+22
