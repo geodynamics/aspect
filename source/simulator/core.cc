@@ -1052,7 +1052,9 @@ namespace aspect
             compositional_fields_need_matrix_block(introspection))
           {
             // If we solve for more than one compositional field make sure we keep constrained entries
-            // to allow different boundary conditions for different fields.
+            // to allow different boundary conditions for different fields. In order to keep constrained
+            // entries we need to repeat the call to DoFTools::make_flux_sparsity_pattern above,
+            // but with 'true' as 4th argument, and only for the composition block.
             Table<2,DoFTools::Coupling> composition_coupling(introspection.n_components,
                                                              introspection.n_components);
             composition_coupling.fill (DoFTools::none);
@@ -1082,7 +1084,9 @@ namespace aspect
                                          this_mpi_process(mpi_communicator));
 
         // If we solve for more than one compositional field make sure we keep constrained entries
-        // to allow different boundary conditions for different fields.
+        // to allow different boundary conditions for different fields. In order to keep constrained
+        // entries we need to repeat the call to DoFTools::make_sparsity_pattern above,
+        // but with 'true' as 4th argument, and only for the composition block.
         if (solver_scheme_solves_advection_equations(parameters)
             &&
             compositional_fields_need_matrix_block(introspection))
