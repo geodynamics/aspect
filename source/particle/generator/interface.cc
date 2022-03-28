@@ -60,8 +60,13 @@ namespace aspect
       void
       Interface<dim>::generate_particles(Particles::ParticleHandler<dim> &particle_handler)
       {
+        // This function is implemented to ensure backwards compatibility to an old interface.
+        // Once the old interface function has been removed this implementation can be removed
+        // as well and the function can be made pure.
+
         std::multimap<Particles::internal::LevelInd, Particles::Particle<dim>> particles;
 
+        // avoid deprecation warnings about calling the old interface
         DEAL_II_DISABLE_EXTRA_DIAGNOSTICS
         generate_particles(particles);
         DEAL_II_ENABLE_EXTRA_DIAGNOSTICS
@@ -112,7 +117,7 @@ namespace aspect
                                                   Particles::ParticleHandler<dim> &particle_handler) const
       {
         // Try to find the cell of the given position.
-        std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
+        const std::pair<const typename parallel::distributed::Triangulation<dim>::active_cell_iterator,
             Point<dim>> it =
               GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position);
 

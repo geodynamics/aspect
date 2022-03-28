@@ -41,6 +41,8 @@ namespace aspect
                                                        random_number_seed);
       }
 
+
+
       template <int dim>
       void
       RandomUniform<dim>::declare_parameters (ParameterHandler &prm)

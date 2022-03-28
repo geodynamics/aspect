@@ -181,9 +181,9 @@ namespace aspect
            * in which the particle is generated is not known, it has to be
            * found, which is an expensive operation.
            *
-           * @p position Position of the particle.
-           * @p id The id of the particle.
-           * @p particle_handler The particle handler into which the particle
+           * @param position Position of the particle.
+           * @param id The id of the particle.
+           * @param particle_handler The particle handler into which the particle
            * should be inserted.
            *
            * @return An iterator to the inserted particle. If the position was
