@@ -57,13 +57,13 @@ subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Function expression = 1595
+    set Function expression = 1600.1243896484375
   end
 end
 
 
 set Surface pressure                       = 0
-set Adiabatic surface temperature          = 1595
+set Adiabatic surface temperature          = 1600.1243896484375
 
 subsection Adiabatic conditions model
   # The 'ascii data' option does not need the additional
@@ -88,7 +88,7 @@ end
 # We prescribe temperatures according to the data table.
 # This output is computed in the material model.
 subsection Temperature field
-  set Temperature method = prescribed field
+  set Temperature method = prescribed field with diffusion
 end
 
 
@@ -105,7 +105,8 @@ end
 subsection Boundary temperature model
   # No temperature boundary conditions,
   # as the temperature equation is not solved
-  set Fixed temperature boundary indicators =
+  set Fixed temperature boundary indicators = top
+  set List of model names = initial temperature
 end
 
 
@@ -163,6 +164,7 @@ subsection Material model
     set Data directory                   = $ASPECT_SOURCE_DIR/data/material-model/
     set Material file name               = entropy-table/opxtable/material_table.txt
     set Reference viscosity              = 1e22
+    set Thermal conductivity             = 0.1
   end
 
   subsection Depth dependent viscosity
