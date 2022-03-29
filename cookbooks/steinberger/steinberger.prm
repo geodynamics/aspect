@@ -161,10 +161,10 @@ end
 # For fields of this type, the material model provides the values that should be
 # interpolated onto the field.
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields  = density_field
-  set Types of fields = density
-  set Compositional field methods = prescribed field
+  set Number of fields                   = 1
+  set Names of fields                    = density_field
+  set Types of fields                    = density
+  set Compositional field methods        = prescribed field
 end
 
 # We refine the mesh near the boundaries, and where temperature variations are
