@@ -317,6 +317,12 @@ namespace aspect
       IndexSets index_sets;
 
       /**
+       * A variable that contains the field method for the temperature field
+       * and is used to determine how to solve it when solving a timestep.
+       */
+      typename Parameters<dim>::AdvectionFieldMethod::Kind temperature_method;
+
+      /**
        * A vector that contains a field method for every compositional
        * field and is used to determine how to solve a particular field when
        * solving a timestep.

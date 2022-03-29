@@ -79,7 +79,7 @@ namespace aspect
 
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      if (!advection_field_is_temperature && advection_field.advection_method (introspection)
+      if (advection_field.advection_method (introspection)
           == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
         return;
 
@@ -327,7 +327,7 @@ namespace aspect
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
 
-      if (advection_field.is_temperature() || advection_field.advection_method(introspection)
+      if (advection_field.advection_method(introspection)
           != Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
         return;
 

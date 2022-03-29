@@ -1,0 +1,6 @@
+New: There is now a new advection method for the temperature
+called 'prescribed field with diffusion', which works in the
+same way as the corresponding advection field method for
+compositional fields. 
+<br>
+(Juliane Dannberg, 2022/03/28)

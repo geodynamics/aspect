@@ -201,7 +201,8 @@ namespace aspect
 
     // add the diffusion assemblers if we have fields that use this method
     if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
-                  Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end())
+                  Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion) != parameters.compositional_field_methods.end()
+        || parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
       assemblers->advection_system.push_back(
         std::make_unique<aspect::Assemblers::DiffusionSystem<dim>>());
 

@@ -200,6 +200,7 @@ namespace aspect
     polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
     component_masks (*this),
     system_dofs_per_block (n_blocks),
+    temperature_method(parameters.temperature_method),
     compositional_field_methods(parameters.compositional_field_methods),
     composition_names(parameters.names_of_compositional_fields),
     composition_descriptions(parameters.composition_descriptions)

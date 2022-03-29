@@ -567,7 +567,7 @@ namespace aspect
       {
         prm.declare_entry ("Diffusion length scale", "1.e4",
                            Patterns::Double (0.),
-                           "Set a length scale for the diffusion of compositional fields if the "
+                           "Set a length scale for the diffusion of advection fields if the "
                            "``prescribed field with diffusion'' method is selected for a field. "
                            "More precisely, this length scale represents the square root of the "
                            "product of diffusivity and time in the diffusion equation, and controls "
@@ -1154,7 +1154,7 @@ namespace aspect
     prm.enter_subsection ("Temperature field");
     {
       prm.declare_entry ("Temperature method", "field",
-                         Patterns::Selection("field|prescribed field|static"),
+                         Patterns::Selection("field|prescribed field|prescribed field with diffusion|static"),
                          "A comma separated list denoting the solution method of the "
                          "temperature field. Each entry of the list must be "
                          "one of the currently implemented field types."
@@ -1173,6 +1173,17 @@ namespace aspect
                          "model output, called the `PrescribedTemperatureOutputs' is interpolated "
                          "onto the temperature. This field does not change otherwise, it is not "
                          "advected with the flow. "
+                         "\n"
+                         "\\item ``prescribed field with diffusion'': If the temperature field is "
+                         "marked this way, the value of a specific additional material model output, "
+                         "called the `PrescribedTemperatureOutputs' is interpolated onto the field, as in "
+                         "the ``prescribed field'' method. Afterwards, the field is diffused based on "
+                         "a solver parameter, the diffusion length scale, smoothing the field. "
+                         "Specifically, the field is updated by solving the equation "
+                         "$(I-l^2 \\Delta) T_\\text{smoothed} = T_\\text{prescribed}$, "
+                         "where $l$ is the diffusion length scale. Note that this means that the amount "
+                         "of diffusion is independent of the time step size, and that the field is not "
+                         "advected with the flow."
                          "\n"
                          "\\item ``static'': If a temperature field is marked "
                          "this way, then it does not evolve at all. Its values are "
@@ -1761,6 +1772,8 @@ namespace aspect
         temperature_method = AdvectionFieldMethod::fem_field;
       else if (x_temperature_method == "prescribed field")
         temperature_method = AdvectionFieldMethod::prescribed_field;
+      else if (x_temperature_method == "prescribed field with diffusion")
+        temperature_method = AdvectionFieldMethod::prescribed_field_with_diffusion;
       else if (x_temperature_method == "static")
         temperature_method = AdvectionFieldMethod::static_field;
       else

@@ -145,8 +145,25 @@ namespace aspect
     switch (parameters.temperature_method)
       {
         case Parameters<dim>::AdvectionFieldMethod::fem_field:
+        case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
         {
-          assemble_advection_system (AdvectionField::temperature());
+          const AdvectionField adv_field (AdvectionField::temperature());
+
+          // if this is a prescribed field with diffusion, we first have to copy the material model
+          // outputs into the prescribed field before we assemble and solve the equation
+          if (parameters.temperature_method == Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion)
+            {
+              TimerOutput::Scope timer (computing_timer, "Interpolate prescribed temperature");
+
+              interpolate_material_output_into_advection_field(adv_field);
+
+              // Also set the old_solution block to the prescribed field. The old
+              // solution is the one that is used to assemble the diffusion system in
+              // assemble_advection_system() for this solver scheme.
+              old_solution.block(adv_field.block_index(introspection)) = solution.block(adv_field.block_index(introspection));
+            }
+
+          assemble_advection_system (adv_field);
 
           if (compute_initial_residual)
             {
@@ -154,7 +171,7 @@ namespace aspect
               *initial_residual = system_rhs.block(introspection.block_indices.temperature).l2_norm();
             }
 
-          const double current_residual = solve_advection(AdvectionField::temperature());
+          const double current_residual = solve_advection(adv_field);
 
           current_linearization_point.block(introspection.block_indices.temperature)
             = solution.block(introspection.block_indices.temperature);
