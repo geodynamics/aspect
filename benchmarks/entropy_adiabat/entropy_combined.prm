@@ -1,4 +1,4 @@
-# Downwelling along a pipe. 
+# Downwelling along a pipe.
 # This is a modification of the entropy adiabat example with added diffusion.
 # According to Schubert, Turcotte and Olson (part 1, p. 194), the added
 # diffusion should only affect the temperature profile above the phase transition.

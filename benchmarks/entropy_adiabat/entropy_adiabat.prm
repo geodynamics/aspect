@@ -168,7 +168,7 @@ subsection Material model
   end
 
   subsection Depth dependent viscosity
-    set Data directory                   = ./data/
+    set Data directory                   = $ASPECT_SOURCE_DIR/benchmarks/entropy_adiabat/data/
     set Data file name                   = constant_viscosity.txt
   end
 end
