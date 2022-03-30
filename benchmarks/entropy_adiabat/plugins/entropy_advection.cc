@@ -58,9 +58,8 @@ namespace aspect
       const unsigned int solution_component = advection_field.component_index(introspection);
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
 
-      std::vector<double> old_temperatures (n_q_points);
       scratch.finite_element_values[introspection.extractors.temperature].get_function_values (this->get_old_solution(),
-          old_temperatures);
+          scratch.old_temperature_values);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -141,7 +140,7 @@ namespace aspect
                 current_u -= scratch.mesh_velocity_values[q];
 
               // We compute the amount of diffusion based on the solution of the temperature equation.
-              const double diffusion_term = (scratch.material_model_inputs.temperature[q] - old_temperatures[q])
+              const double diffusion_term = (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q])
                                             * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
 
               // do the actual assembly. note that we only need to loop over the advection
