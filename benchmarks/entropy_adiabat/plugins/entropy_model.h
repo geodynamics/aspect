@@ -25,6 +25,7 @@
 
 #include <aspect/utilities.h>
 #include <aspect/simulator_access.h>
+#include <aspect/material_model/rheology/ascii_depth_profile.h>
 
 namespace aspect
 {
@@ -123,9 +124,12 @@ namespace aspect
 
       private:
         /**
-         * Constant reference viscosity.
+         * Reference viscosity and lateral viscosity variations.
          */
         double reference_eta;
+        double lateral_viscosity_prefactor;
+        double min_eta;
+        double max_eta;
 
         /**
          * The value for thermal conductivity. This model only
@@ -143,6 +147,12 @@ namespace aspect
          * Pointer to the StructuredDataLookup object that holds the material data.
          */
         std::unique_ptr<Utilities::StructuredDataLookup<2>> material_lookup;
+
+        /**
+         * Pointer to the rheology model used for depth-dependence from an
+         * ascii file
+         */
+        std::unique_ptr<Rheology::AsciiDepthProfile<dim>> depth_dependent_rheology;
     };
   }
 }

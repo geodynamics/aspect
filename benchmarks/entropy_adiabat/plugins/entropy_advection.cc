@@ -41,8 +41,8 @@ namespace aspect
       const FiniteElement<dim> &fe = this->get_fe();
 
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
-      if (advection_field.is_temperature() ||
-          introspection.name_for_compositional_index(advection_field.compositional_variable) != "entropy")
+      if (!advection_field.is_temperature()
+          && introspection.name_for_compositional_index(advection_field.compositional_variable) != "entropy")
         return;
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
@@ -57,6 +57,9 @@ namespace aspect
 
       const unsigned int solution_component = advection_field.component_index(introspection);
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
+
+      scratch.finite_element_values[introspection.extractors.temperature].get_function_values (this->get_old_solution(),
+          scratch.old_temperature_values);
 
       for (unsigned int q=0; q<n_q_points; ++q)
         {
@@ -75,75 +78,94 @@ namespace aspect
               ++i;
             }
 
-          const double rho_T              =
-            scratch.material_model_outputs.densities[q] *
-            scratch.material_model_inputs.temperature[q];
-
-          Assert (rho_T >= 0,
-                  ExcMessage ("The product of density and temperature needs to be a "
-                              "non-negative quantity."));
-
-          const double gamma =
-            scratch.heating_model_outputs.heating_source_terms[q];
-
-          const double field_term_for_rhs
-            = (use_bdf2_scheme ?
-               (scratch.old_field_values[q] *
-                (1 + time_step/old_time_step)
-                -
-                scratch.old_old_field_values[q] *
-                (time_step * time_step) /
-                (old_time_step * (time_step + old_time_step)))
-               :
-               scratch.old_field_values[q])
-              *
-              (rho_T);
-
-          Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-          // Subtract off the mesh velocity for ALE corrections if necessary
-          if (this->get_parameters().mesh_deformation_enabled)
-            current_u -= scratch.mesh_velocity_values[q];
-
           const double JxW = scratch.finite_element_values.JxW(q);
 
-          // For the diffusion constant, use the larger of the physical
-          // and the artificial viscosity/conductivity/diffusion constant.
-          // One could also choose the sum of the two, but if the
-          // physical diffusion is larger than the artificial one,
-          // then (because the latter is chosen sufficiently large to
-          // make the problem stable) one may as well stick with the
-          // physical one. And if the physical diffusion is too small to
-          // make the problem stable, then we ought to choose the smallest
-          // diffusivity value that makes the problem stable -- which is
-          // exactly the artificial viscosity.
-          const double entropy_conductivity =  scratch.material_model_outputs.thermal_conductivities[q] * scratch.material_model_inputs.temperature[q] /
-                                               scratch.material_model_outputs.specific_heat[q];
-          const double diffusion_constant = std::max (entropy_conductivity,
-                                                      scratch.artificial_viscosity);
-
-          // do the actual assembly. note that we only need to loop over the advection
-          // shape functions because these are the only contributions we compute here
-          for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+          // solve the diffusion equation for the temperature
+          if (advection_field.is_temperature())
             {
-              data.local_rhs(i)
-              += (field_term_for_rhs * scratch.phi_field[i]
-                  + time_step *
-                  scratch.phi_field[i]
-                  * gamma)
-                 *
-                 JxW;
+              const double density_c_P = scratch.material_model_outputs.densities[q] *
+                                         scratch.material_model_outputs.specific_heat[q];
 
-              for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+              const double field_term_for_rhs = scratch.old_field_values[q] * density_c_P;
+
+              // do the actual assembly. note that we only need to loop over the advection
+              // shape functions because these are the only contributions we compute here
+              for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
                 {
-                  data.local_matrix(i,j)
-                  += (
-                       (time_step * diffusion_constant
-                        * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
-                       + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
-                          + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
-                       (rho_T)
-                     )
-                     * JxW;
+                  data.local_rhs(i)
+                  += field_term_for_rhs * scratch.phi_field[i] * JxW;
+
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      data.local_matrix(i,j)
+                      += (
+                           (time_step * scratch.material_model_outputs.thermal_conductivities[q]
+                            * (scratch.grad_phi_field[i] * scratch.grad_phi_field[j]))
+                           + (scratch.phi_field[i] * scratch.phi_field[j]) * density_c_P
+                         )
+                         * JxW;
+                    }
+                }
+            }
+          else
+            // solve the entropy equation
+            {
+              const double rho_T              =
+                scratch.material_model_outputs.densities[q] *
+                scratch.material_model_inputs.temperature[q];
+
+              Assert (rho_T >= 0,
+                      ExcMessage ("The product of density and temperature needs to be a "
+                                  "non-negative quantity."));
+
+              const double gamma =
+                scratch.heating_model_outputs.heating_source_terms[q];
+
+              const double field_term_for_rhs
+                = (use_bdf2_scheme ?
+                   (scratch.old_field_values[q] *
+                    (1 + time_step/old_time_step)
+                    -
+                    scratch.old_old_field_values[q] *
+                    (time_step * time_step) /
+                    (old_time_step * (time_step + old_time_step)))
+                   :
+                   scratch.old_field_values[q])
+                  *
+                  (rho_T);
+
+              Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+              // Subtract off the mesh velocity for ALE corrections if necessary
+              if (this->get_parameters().mesh_deformation_enabled)
+                current_u -= scratch.mesh_velocity_values[q];
+
+              // We compute the amount of diffusion based on the solution of the temperature equation.
+              const double diffusion_term = (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q])
+                                            * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
+
+              // do the actual assembly. note that we only need to loop over the advection
+              // shape functions because these are the only contributions we compute here
+              for (unsigned int i=0; i<advection_dofs_per_cell; ++i)
+                {
+                  data.local_rhs(i)
+                  += (field_term_for_rhs * scratch.phi_field[i]
+                      + diffusion_term * scratch.phi_field[i]
+                      + time_step * scratch.phi_field[i] * gamma)
+                     *
+                     JxW;
+
+                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
+                    {
+                      data.local_matrix(i,j)
+                      += (
+                           (time_step * scratch.artificial_viscosity
+                            * scratch.grad_phi_field[i] * scratch.grad_phi_field[j])
+                           + ((time_step * (scratch.phi_field[i] * (current_u * scratch.grad_phi_field[j])))
+                              + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j])) *
+                           (rho_T)
+                         )
+                         * JxW;
+                    }
                 }
             }
         }
@@ -181,17 +203,19 @@ namespace aspect
           const double u_grad_field = u * (scratch.old_field_grads[q] +
                                            scratch.old_old_field_grads[q]) / 2;
 
-          const double density       = scratch.material_model_outputs.densities[q];
-          const double entropy_conductivity  = scratch.material_model_outputs.thermal_conductivities[q] *
-                                               scratch.material_model_inputs.temperature[q] /
-                                               scratch.material_model_outputs.specific_heat[q];
-          const double k_Delta_field = entropy_conductivity * (scratch.old_field_laplacians[q] +
-                                                               scratch.old_old_field_laplacians[q]) / 2;
+          const double density      = scratch.material_model_outputs.densities[q];
+          const double gamma        = scratch.heating_model_outputs.heating_source_terms[q];
 
-          const double gamma           = scratch.heating_model_outputs.heating_source_terms[q];
+          // Because we solve the diffusion equation for the temperature before the advection equation, we can use
+          // the current and old temperature here, together with the current time step.
+          const double diffusion_term = (this->get_timestep() == 0.0) ? 0.0
+                                        :
+                                        (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q]) / this->get_timestep()
+                                        * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
+
 
           residuals[q]
-            = std::abs((density * scratch.material_model_inputs.temperature[q]) * (dField_dt + u_grad_field) - k_Delta_field - gamma);
+            = std::abs((density * scratch.material_model_inputs.temperature[q]) * (dField_dt + u_grad_field) - gamma - diffusion_term);
         }
       return residuals;
     }
@@ -241,14 +265,13 @@ namespace aspect
                  ExcMessage ("The entropy advection assembler can only be used with the "
                              "material model 'entropy model'!"));
 
-    AssertThrow (assemblers.advection_system.size() == 1,
-                 ExcMessage("There is more than one advection assembler active. This is not allowed."));
-
     AssertThrow (simulator_access.get_heating_model_manager().adiabatic_heating_enabled() == false,
                  ExcMessage("The entropy advection assembler requires "
                             "that adiabatic heating is disabled."));
 
-    assemblers.advection_system[0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
+    // Replace all existing assemblers by the one for the entropy equation.
+    assemblers.advection_system.resize(1);
+    assemblers.advection_system[0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim> >();
 
     assemblers.advection_system_assembler_properties[0].needed_update_flags = update_hessians;
   }
