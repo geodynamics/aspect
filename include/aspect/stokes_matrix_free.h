@@ -78,6 +78,30 @@ namespace aspect
                                                     const std::set<types::boundary_id> &boundary_ids,
                                                     AffineConstraints<double> &constraints);
     }
+
+    /**
+     * Matrix-free operators must use deal.II defined vectors, while the rest of the ASPECT
+     * software is based on Trilinos vectors. Here we define functions which copy between the
+     * vector types.
+     */
+    namespace ChangeVectorTypes
+    {
+      void import(TrilinosWrappers::MPI::Vector &out,
+                  const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
+                  const VectorOperation::values                 operation);
+
+      void copy(TrilinosWrappers::MPI::Vector &out,
+                const dealii::LinearAlgebra::distributed::Vector<double> &in);
+
+      void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
+                const TrilinosWrappers::MPI::Vector &in);
+
+      void copy(TrilinosWrappers::MPI::BlockVector &out,
+                const dealii::LinearAlgebra::distributed::BlockVector<double> &in);
+
+      void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
+                const TrilinosWrappers::MPI::BlockVector &in);
+    }
   }
 
   /**

@@ -743,7 +743,8 @@ namespace aspect
     template <int dim>
     void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
     {
-      // Same as compute_mesh_displacements, but using GMG instead of AMG.
+      // Same as compute_mesh_displacements, but using matrix-free GMG
+      // instead of matrix-based AMG.
 
       // We use this gmg solver only when the gmg stokes solver is used
       // for the following reasons (TODO):
@@ -754,22 +755,22 @@ namespace aspect
       // 3. Although this gmg solver is much faster than the amg solver, it's only tested for
       //    limited free surface cases.
 
-      TimerOutput::Scope timer (this->sim.computing_timer, "gmg displacement");
-
       Assert(mesh_deformation_fe.degree == 1, ExcNotImplemented());
+      // To be efficient, the operations performed in the matrix-free implementation require
+      // knowledge of loop lengths at compile time, which are given by the degree of the finite element.
       const unsigned int mesh_deformation_fe_degree = 1;
 
-      using SystemMatrixType = dealii::MatrixFreeOperators::
-                               LaplaceOperator<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim>;
+      using SystemOperatorType = dealii::MatrixFreeOperators::
+                                 LaplaceOperator<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim>;
 
-      SystemMatrixType mf_mesh_matrix;
+      SystemOperatorType laplace_operator;
 
-      MGLevelObject<SystemMatrixType> mg_matrices;
+      MGLevelObject<SystemOperatorType> mg_matrices;
 
       typename MatrixFree<dim, double>::AdditionalData additional_data;
       additional_data.tasks_parallel_scheme =
         MatrixFree<dim, double>::AdditionalData::none;
-      UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
+      const UpdateFlags update_flags(update_values | update_JxW_values | update_gradients);
       additional_data.mapping_update_flags = update_flags;
       std::shared_ptr<MatrixFree<dim, double>> system_mf_storage(
                                               new MatrixFree<dim, double>());
@@ -778,40 +779,54 @@ namespace aspect
                                 mesh_velocity_constraints,
                                 QGauss<1>(mesh_deformation_fe_degree + 1),
                                 additional_data);
-      mf_mesh_matrix.initialize(system_mf_storage);
+      laplace_operator.initialize(system_mf_storage);
 
       // correct rhs:
-      dealii::LinearAlgebra::distributed::Vector<double> u0, corrected_rhs, mf_solution;
-      mf_mesh_matrix.initialize_dof_vector(u0);
-      mf_mesh_matrix.initialize_dof_vector(corrected_rhs);
-      mf_mesh_matrix.initialize_dof_vector(mf_solution);
+      // In a matrix-free method, since the LaplaceOperator class represents
+      // the matrix-vector product of a homogeneous operator (the left-hand
+      // side of the last formula). It does not matter whether the AffineConstraints
+      // object passed to the MatrixFree::reinit() contains inhomogeneous constraints or not,
+      // the MatrixFree::cell_loop() call will only resolve the homogeneous
+      // part of the constraints as long as it represents a linear operator.
+
+      // What this function does is to move the inhomogeneous constraints to the
+      // right-hand side of the system by computing the residual of the system
+      // and subtracting it from the right-hand side: r = b - A*u0,
+      // where u0 is the initial guess and stored the degrees of freedom constrained by
+      // Inhomogeneous Dirichlet boundary conditions, and r is rhs.
+      // Then we have a new system Ax = r, and the solution is u = u0 + x.
+      // More details can be found in deal.II tutorial step-37 Section Possibilities for extensions.
+      dealii::LinearAlgebra::distributed::Vector<double> u0, rhs, solution;
+      laplace_operator.initialize_dof_vector(u0);
+      laplace_operator.initialize_dof_vector(rhs);
+      laplace_operator.initialize_dof_vector(solution);
       u0 = 0.;
       mesh_velocity_constraints.distribute(u0);
       u0.update_ghost_values();
 
-      corrected_rhs = 0.;
+      rhs = 0.;
 
-      FEEvaluation<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim, double> phi(*mf_mesh_matrix.get_matrix_free());
+      FEEvaluation<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim, double> mesh_deformation(*laplace_operator.get_matrix_free());
       for (unsigned int cell = 0;
-           cell < mf_mesh_matrix.get_matrix_free()->n_cell_batches();
+           cell < laplace_operator.get_matrix_free()->n_cell_batches();
            ++cell)
         {
-          phi.reinit(cell);
-          phi.read_dof_values_plain(u0);
-          phi.evaluate(EvaluationFlags::gradients);
-          for (unsigned int q = 0; q < phi.n_q_points; ++q)
+          mesh_deformation.reinit(cell);
+          mesh_deformation.read_dof_values_plain(u0);
+          mesh_deformation.evaluate(EvaluationFlags::gradients);
+          for (unsigned int q = 0; q < mesh_deformation.n_q_points; ++q)
             {
-              phi.submit_gradient(-1.0 * phi.get_gradient(q), q);
+              mesh_deformation.submit_gradient(-1.0 * mesh_deformation.get_gradient(q), q);
             }
-          phi.integrate(EvaluationFlags::gradients);
-          phi.distribute_local_to_global(corrected_rhs);
+          mesh_deformation.integrate(EvaluationFlags::gradients);
+          mesh_deformation.distribute_local_to_global(rhs);
         }
-      corrected_rhs.compress(VectorOperation::add);
+      rhs.compress(VectorOperation::add);
 
-      // setup GMG, follow step-37:
+      // setup GMG, following deal.II step-37:
       const unsigned int n_levels = sim.triangulation.n_global_levels();
 
-      // Currently not support periodic boundary constraints
+      // Currently does not support periodic boundary constraints
       {
         using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
         const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
@@ -896,13 +911,21 @@ namespace aspect
       mg_transfer.build(mesh_deformation_dof_handler);
 
       using SmootherType =
-        PreconditionChebyshev<SystemMatrixType, dealii::LinearAlgebra::distributed::Vector<double>>;
+        PreconditionChebyshev<SystemOperatorType, dealii::LinearAlgebra::distributed::Vector<double>>;
 
       mg::SmootherRelaxation<SmootherType, dealii::LinearAlgebra::distributed::Vector<double>> mg_smoother;
 
       MGLevelObject<typename SmootherType::AdditionalData> smoother_data;
       smoother_data.resize(0, n_levels - 1);
 
+      // Smoother: Chebyshev, degree 5. We use a relatively high degree here (5),
+      // since matrix-vector products are comparably cheap. We choose to smooth out
+      // a range of [1.2lambda_max/15,1.2lambda_max] in the smoother where lambda_max
+      // is an estimate of the largest eigenvalue (the factor 1.2 is applied inside
+      // PreconditionChebyshev). In order to compute that eigenvalue,
+      // the Chebyshev initialization performs a few steps of a CG algorithm without preconditioner.
+      // Since the highest eigenvalue is usually the easiest one to find
+      // and a rough estimate is enough, we choose 10 iterations.
       for (unsigned int level = 0; level < n_levels;
            ++level)
         {
@@ -914,6 +937,8 @@ namespace aspect
             }
           else
             {
+              // On level zero, we initialize the smoother differently
+              // because we want to use the Chebyshev iteration as a solver.
               smoother_data[0].smoothing_range = 1e-3;
               smoother_data[0].degree = numbers::invalid_unsigned_int;
               smoother_data[0].eig_cg_n_iterations = mg_matrices[0].m();
@@ -928,7 +953,7 @@ namespace aspect
 
       // set up the interface matrices
       mg::Matrix<dealii::LinearAlgebra::distributed::Vector<double>> mg_matrix(mg_matrices);
-      MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<SystemMatrixType>> mg_interface_matrices;
+      MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<SystemOperatorType>> mg_interface_matrices;
       mg_interface_matrices.resize(0, n_levels - 1);
       for (unsigned int level = 0; level < n_levels;
            ++level)
@@ -946,23 +971,21 @@ namespace aspect
         = sim.parameters.linear_stokes_solver_tolerance
           * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
 
-      SolverControl solver_control_mf(5 * corrected_rhs.size(),
-                                      tolerance * corrected_rhs.l2_norm());
+      SolverControl solver_control_mf(5 * rhs.size(),
+                                      tolerance * rhs.l2_norm());
       SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
 
-      mesh_velocity_constraints.set_zero(mf_solution);
-      cg.solve(mf_mesh_matrix, mf_solution, corrected_rhs, preconditioner);
-      this->get_pcout() << "   Solving mesh displacement system using GMG... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+      mesh_velocity_constraints.set_zero(solution);
+      cg.solve(laplace_operator, solution, rhs, preconditioner);
+      this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
 
-      mesh_velocity_constraints.distribute(mf_solution);
-      mf_solution.update_ghost_values();
+      mesh_velocity_constraints.distribute(solution);
+      solution.update_ghost_values();
 
       // copy solution:
       LinearAlgebra::Vector solution_tmp;
       solution_tmp.reinit(mesh_locally_owned, sim.mpi_communicator);
-      dealii::LinearAlgebra::ReadWriteVector<double> rwv(solution_tmp.locally_owned_elements());
-      rwv.import(mf_solution, VectorOperation::insert);
-      solution_tmp.import(rwv, VectorOperation::insert);
+      internal::ChangeVectorTypes::copy(solution_tmp, solution);
 
       // Update the mesh velocity vector
       fs_mesh_velocity = solution_tmp;
