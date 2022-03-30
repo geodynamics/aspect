@@ -192,11 +192,6 @@ namespace aspect
                                                  scratch.material_model_outputs,
                                                  scratch.heating_model_outputs);
 
-      // We compute the amount of diffusion based on the solution of the temperature equation.
-      std::vector<double> old_temperatures (n_q_points);
-      scratch.finite_element_values[this->introspection().extractors.temperature].get_function_values (this->get_old_solution(),
-          old_temperatures);
-
       for (unsigned int q=0; q < n_q_points; ++q)
         {
           const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
@@ -216,7 +211,7 @@ namespace aspect
           // the current and old temperature here, together with the current time step.
           const double diffusion_term = (this->get_timestep() == 0.0) ? 0.0
                                         :
-                                        (scratch.material_model_inputs.temperature[q] - old_temperatures[q]) / this->get_timestep()
+                                        (scratch.material_model_inputs.temperature[q] - scratch.old_temperature_values[q]) / this->get_timestep()
                                         * scratch.material_model_outputs.densities[q] * scratch.material_model_outputs.specific_heat[q];
 
 

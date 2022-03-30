@@ -23,31 +23,22 @@ set Adiabatic surface temperature          = 1600.1243896484375
 
 
 
-# Prescribing downward flow through a vertical pipe with
-# tangential side boundaries.
-subsection Boundary velocity model
-  set Prescribed velocity boundary indicators = top:function
-  set Tangential velocity boundary indicators = left, right
-  subsection Function
-    set Function expression = 0; -0.01
-  end
-end
-
-
 # We start at the same entropy as the one used for the
 # adiabatic profile.
 subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    # Entropy equivalent to T=1595 K according to table
+    # Entropy equivalent to T=1600 K according to table
     set Function expression = 2534; 0.0
   end
 end
 
 
-# We use a data table for orthopyroxe computed using the thermodynamic
-# modeling software HeFESTo.
+# We increase the thermal conductivity compared to the
+# entropy adiabat example. We choose a very large value
+# here because the thermal diffusion effects only become
+# visible for large conductivities (or slow flow).
 subsection Material model
   set Model name = entropy model
 

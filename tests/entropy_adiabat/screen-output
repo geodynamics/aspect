@@ -1,10 +1,6 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libentropy_adiabat.so>
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 10 (on 1 levels)
 Number of degrees of freedom: 337 (126+22+63+63+63)
 
@@ -110,7 +106,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00001
      RMS, max velocity:                  0.00873 m/year, 0.00993 m/year
      Temperature min/avg/max:            1452 K, 1611 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.394e+05 kg/yr, -4.372e+05 kg/yr
@@ -155,7 +150,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00002
      RMS, max velocity:                  0.00873 m/year, 0.00993 m/year
      Temperature min/avg/max:            1452 K, 1612 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.396e+05 kg/yr, -4.372e+05 kg/yr
@@ -191,7 +185,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00003
      RMS, max velocity:                  0.00873 m/year, 0.00992 m/year
      Temperature min/avg/max:            1448 K, 1612 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.397e+05 kg/yr, -4.372e+05 kg/yr
@@ -227,7 +220,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00004
      RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
      Temperature min/avg/max:            1448 K, 1613 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.4e+05 kg/yr, -4.372e+05 kg/yr
@@ -263,7 +255,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00005
      RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
      Temperature min/avg/max:            1449 K, 1614 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.399e+05 kg/yr, -4.372e+05 kg/yr
@@ -299,7 +290,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00006
      RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
      Temperature min/avg/max:            1453 K, 1615 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.399e+05 kg/yr, -4.372e+05 kg/yr
@@ -335,7 +325,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00007
      RMS, max velocity:                  0.00874 m/year, 0.00992 m/year
      Temperature min/avg/max:            1458 K, 1616 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.4e+05 kg/yr, -4.372e+05 kg/yr
@@ -371,7 +360,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00008
      RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
      Temperature min/avg/max:            1466 K, 1617 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
@@ -407,7 +395,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00009
      RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
      Temperature min/avg/max:            1474 K, 1618 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
@@ -443,7 +430,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00010
      RMS, max velocity:                  0.00874 m/year, 0.00993 m/year
      Temperature min/avg/max:            1484 K, 1619 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
@@ -479,7 +465,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00011
      RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
      Temperature min/avg/max:            1487 K, 1620 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
@@ -515,7 +500,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00012
      RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
      Temperature min/avg/max:            1488 K, 1621 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
@@ -551,7 +535,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00013
      RMS, max velocity:                  0.00874 m/year, 0.00994 m/year
      Temperature min/avg/max:            1491 K, 1622 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.401e+05 kg/yr, -4.372e+05 kg/yr
@@ -596,7 +579,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00014
      RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
      Temperature min/avg/max:            1494 K, 1623 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
@@ -641,7 +623,6 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00015
      RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
      Temperature min/avg/max:            1498 K, 1624 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
@@ -686,7 +667,7 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 
 
    Postprocessing:
-     Writing graphical output:           output-entropy_adiabat/solution/solution-00016
+     Writing graphical output:           output-entropy_adiabat/solution/solution-00001
      RMS, max velocity:                  0.00874 m/year, 0.00995 m/year
      Temperature min/avg/max:            1499 K, 1624 K, 1742 K
      Mass fluxes through boundary parts: 0 kg/yr, 0 kg/yr, 4.402e+05 kg/yr, -4.372e+05 kg/yr
@@ -695,9 +676,4 @@ Number of degrees of freedom: 337 (126+22+63+63+63)
 Termination requested by criterion: end time
 
 
-+------------------------------------------------+------------+------------+
-+------------------------------------+-----------+------------+------------+
-+------------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------

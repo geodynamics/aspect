@@ -36,6 +36,8 @@ end
 subsection Initial temperature model
   # We convert the initial temperature from the
   # initial entropy.
+  # The value below corresponds to the entropy of 2534 J/kg/K
+  # used as the top boundary condition and the initial condition.
   set Model name = prescribed temperature
 end
 
@@ -49,7 +51,7 @@ subsection Adiabatic conditions model
   set Model name = compute entropy profile
 
   subsection Compute entropy profile
-    # Entropy equivalent to T=1595 K according to the used table
+    # Entropy equivalent to T=1600 K according to the used table
     set Surface entropy = 2534
   end
 end
@@ -113,7 +115,7 @@ subsection Initial composition model
   set List of model names = function
 
   subsection Function
-    # Entropy equivalent to T=1595 K according to table
+    # Entropy equivalent to T=1600 K according to table
     set Function expression = 2534; 0.0
   end
 end

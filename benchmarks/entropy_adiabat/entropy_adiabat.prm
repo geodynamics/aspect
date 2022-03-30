@@ -54,6 +54,8 @@ end
 subsection Initial temperature model
   # The actual initial temperature is irrelevant, because it
   # is recalculated from the entropy during the first timestep.
+  # The value below corresponds to the entropy of 2534 J/kg/K
+  # used as the top boundary condition.
   set Model name = function
 
   subsection Function
@@ -74,7 +76,7 @@ subsection Adiabatic conditions model
   set Model name = compute entropy profile
 
   subsection Compute entropy profile
-    # Entropy equivalent to T=1595 K according to the used table
+    # Entropy equivalent to T=1600 K according to the used table
     set Surface entropy = 2534
   end
 
@@ -185,7 +187,7 @@ subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, temperature statistics, mass flux statistics, composition statistics
 
   subsection Visualization
-     set Time between graphical output = 0
+     set Time between graphical output = 1e7
      set List of output variables      = material properties, adiabat, nonadiabatic pressure, nonadiabatic temperature
      subsection Material properties
        set List of material properties = density,thermal expansivity,specific heat,viscosity, compressibility
