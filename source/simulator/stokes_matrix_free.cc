@@ -1371,12 +1371,17 @@ namespace aspect
                   && sim.parameters.enable_elasticity),
                 ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
 
+
+#if !DEAL_II_VERSION_GTE(9,3,2)
+    AssertThrow(false,
+                ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
+#endif
+
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
     // operator:
     AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
-
 
     // sanity check:
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
