@@ -45,9 +45,6 @@ namespace aspect
         {  
           last_output_time = this->get_time() - output_interval;
           last_average_time = this->get_time() - average_interval;
-         
-          //Initialise combined_mobility
-           combined_mobility = 0;
         }    
       
       // see if output is requested at this time      
@@ -227,11 +224,38 @@ namespace aspect
     template <class Archive>
     void MobilityStatistics<dim>::serialize (Archive &ar, const unsigned int)
     {
-      & last_output_time;
-      & last_average_time;
+      ar &combined_mobility;
+      ar &average_mobility;
+      ar &last_output_time;
+      ar &last_average_time;
     }
 
+    template <int dim>
+    void
+    MobilityStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      aspect::oarchive oa (os);
+      oa << (*this);
+  
+      status_strings["MobilityStatistics"] = os.str();
+    } 
+ 
     
+    template <int dim>
+    void
+    MobilityStatistics<dim>::load (const std::map<std::string, std::string> &status_strings)    
+    {
+      // see if something was saved
+      if (status_strings.find("MobilityStatistics") != status_strings.end())
+      {
+        std::istringstream is (status_strings.find("MobilityStatistics")->second);
+        aspect::iarchive ia (is);
+        ia >> (*this);
+      }
+    }    
+  
+
     template <int dim>
     void
     MobilityStatistics<dim>::set_last_output_time (const double current_time)

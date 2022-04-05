@@ -40,6 +40,11 @@ namespace aspect
     {
       public:
         /**
+          * Constructor.
+          */
+        MobilityStatistics ();
+
+        /**
          * Evaluate the solution for some mobility statistics.
          */
         std::pair<std::string,std::string>
@@ -61,7 +66,17 @@ namespace aspect
          */
          void
          parse_parameters (ParameterHandler &prm) override;
-         
+
+        /**
+         * Save the state of this object.
+         */
+        void save (std::map<std::string, std::string> &status_strings) const override;         
+
+        /**
+         * Restore the state of the object.
+         */
+        void load (const std::map<std::string, std::string> &status_strings) override;
+              
         /**
          * Serialize the contents of this class as far as they are not read
          * from input parameter files.
@@ -93,7 +108,7 @@ namespace aspect
           double last_output_time;
           double last_average_time;
  
-          double combined_mobility;
+          double combined_mobility = 0;
 
           double average_mobility = 0; 
     };
