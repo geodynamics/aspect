@@ -1,0 +1,7 @@
+name: aspect
+channels:
+  - conda-forge
+dependencies:
+  - myst-parser
+  - pydata-sphinx-theme
+  - sphinxcontrib-bibtex
