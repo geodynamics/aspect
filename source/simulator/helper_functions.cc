@@ -802,7 +802,7 @@ namespace aspect
       {
         const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
 
-        const QGauss<dim-1> quadrature (parameters.stokes_velocity_degree + 1);
+        const Quadrature<dim-1> &quadrature = this->introspection.face_quadratures.velocities;
 
         const unsigned int n_q_points = quadrature.size();
         FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
@@ -835,7 +835,7 @@ namespace aspect
       }
     else if (parameters.pressure_normalization == "volume")
       {
-        const QGauss<dim> quadrature (parameters.stokes_velocity_degree + 1);
+        const Quadrature<dim> &quadrature = this->introspection.quadratures.velocities;
 
         const unsigned int n_q_points = quadrature.size();
         FEValues<dim> fe_values (*mapping, finite_element,  quadrature,
@@ -1399,11 +1399,13 @@ namespace aspect
       }
 
     Assert (quadrature_points.size() == n_q_points, ExcInternalError());
-    Quadrature<dim> quadrature_formula(quadrature_points);
+    const Quadrature<dim> quadrature_formula(quadrature_points);
 
     // Quadrature rules only used for the numerical integration for better accuracy
-    const QGauss<dim> quadrature_formula_0 (advection_field.polynomial_degree(introspection)+1);
-
+    const Quadrature<dim> &quadrature_formula_0
+      = (advection_field.is_temperature() ?
+         introspection.quadratures.temperature :
+         introspection.quadratures.compositional_fields);
     const unsigned int n_q_points_0 = quadrature_formula_0.size();
 
     // fe values for points evaluation

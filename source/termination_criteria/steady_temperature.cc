@@ -55,8 +55,7 @@ namespace aspect
     bool
     SteadyTemperature<dim>::execute()
     {
-      const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.temperature).degree+1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.temperature;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),
