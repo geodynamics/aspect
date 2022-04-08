@@ -39,7 +39,8 @@ namespace aspect
       FrictionModels<dim>::
       compute_friction_angle(const double current_edot_ii,
                              const unsigned int volume_fraction_index,
-                             const double static_friction_angle) const
+                             const double static_friction_angle,
+                             const Point<dim> &position) const
       {
 
         switch (friction_mechanism)
@@ -75,6 +76,28 @@ namespace aspect
                        "The friction angle should be smaller than 1.6 rad."));
               return dynamic_friction_angle;
             }
+            case function:
+            {
+              // Use a given function input per composition to get the friction angle
+              Utilities::NaturalCoordinate<dim> point =
+                this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system_friction_function);
+
+              // we get time passed as seconds (always) but may want
+              // to reinterpret it in years
+              if (this->convert_output_to_years())
+                friction_function->set_time (this->get_time() / year_in_seconds);
+              else
+                friction_function->set_time (this->get_time());
+
+              // determine the friction angle based on position and composition
+              double friction_from_function =
+                friction_function->value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),volume_fraction_index);
+
+              // Convert angles from degrees to radians
+              friction_from_function *= numbers::PI/180.0;
+
+              return friction_from_function;
+            }
           }
         // we should never get here, return something anyway, so the compiler does not complain...
         AssertThrow (false, ExcMessage("Unknown friction model."));
@@ -98,7 +121,7 @@ namespace aspect
       FrictionModels<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Friction mechanism", "none",
-                           Patterns::Selection("none|dynamic friction"),
+                           Patterns::Selection("none|dynamic friction|function"),
                            "Whether to make the friction angle dependent on strain rate or not. This rheology "
                            "is intended to be used together with the visco-plastic rheology model."
                            "\n\n"
@@ -117,7 +140,10 @@ namespace aspect
                            "$\\mu_s$ and $\\mu_d$ can be specified by setting 'Angles of internal friction' and "
                            "'Dynamic angles of internal friction', respectively. "
                            "This relationship is similar to rate-and-state friction constitutive relationships, which "
-                           "are applicable to the strength of rocks during earthquakes.");
+                           "are applicable to the strength of rocks during earthquakes."
+                           "\n\n"
+                           "\\item ``function'': Specify the friction angle as a function of space and time "
+                           "for each compositional field.");
 
         // Dynamic friction paramters
         prm.declare_entry ("Dynamic characteristic strain rate", "1e-12",
@@ -146,6 +172,32 @@ namespace aspect
                            "curve of the friction angle vs. the strain rate smoother, while a factor $>$ 1 makes "
                            "the change between static and dynamic friction angle more steplike. "
                            "Units: none.");
+
+        /**
+         * If friction is specified as a function input.
+         */
+        prm.enter_subsection("Friction function");
+        {
+          /**
+           * The function to specify the friction angle per composition can be declared in dependence
+           * of depth, cartesian coordinates or spherical coordinates. Note that the order
+           * of spherical coordinates is r,phi,theta and not r,theta,phi, since
+           * this allows for dimension independent expressions.
+           */
+          prm.declare_entry ("Coordinate system", "cartesian",
+                             Patterns::Selection ("cartesian|spherical|depth"),
+                             "A selection that determines the assumed coordinate "
+                             "system for the function variables. Allowed values "
+                             "are `cartesian', `spherical', and `depth'. `spherical' coordinates "
+                             "are interpreted as r,phi or r,phi,theta in 2D/3D "
+                             "respectively with theta being the polar angle. `depth' "
+                             "will create a function, in which only the first "
+                             "parameter is non-zero, which is interpreted to "
+                             "be the depth of the point.");
+
+          Functions::ParsedFunction<dim>::declare_parameters(prm,1);
+        }
+        prm.leave_subsection();
       }
 
 
@@ -163,6 +215,8 @@ namespace aspect
           friction_mechanism = static_friction;
         else if (prm.get ("Friction mechanism") == "dynamic friction")
           friction_mechanism = dynamic_friction;
+        else if (prm.get ("Friction mechanism") == "function")
+          friction_mechanism = function;
         else
           AssertThrow(false, ExcMessage("Not a valid friction mechanism option!"));
 
@@ -180,6 +234,31 @@ namespace aspect
           }
 
         dynamic_friction_smoothness_exponent = prm.get_double("Dynamic friction smoothness exponent");
+
+        // if friction is specified as a function
+        if (friction_mechanism == function)
+          {
+            prm.enter_subsection("Friction function");
+            {
+              coordinate_system_friction_function = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+              try
+                {
+                  friction_function
+                    = std::make_unique<Functions::ParsedFunction<dim>>(n_fields);
+                  friction_function->parse_parameters (prm);
+                }
+              catch (...)
+                {
+                  std::cerr << "FunctionParser failed to parse\n"
+                            << "\t friction function\n"
+                            << "with expression \n"
+                            << "\t' " << prm.get("Function expression") << "'";
+                  throw;
+                }
+            }
+            prm.leave_subsection();
+          }
+
       }
     }
   }

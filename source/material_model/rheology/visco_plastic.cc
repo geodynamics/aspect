@@ -269,9 +269,10 @@ namespace aspect
             // Note: Maybe this should also be turned around to first apply strain rate dependence and then
             // the strain weakening to the dynamic friction angle. Didn't come up with a clear argument for
             // one order or the other.
-            if (friction_models.get_friction_mechanism() != static_friction)
-              current_friction = friction_models.compute_friction_angle(current_edot_ii,
-                                                                        j, current_friction);
+            current_friction = friction_models.compute_friction_angle(current_edot_ii,
+                                                                      j,
+                                                                      current_friction,
+                                                                      in.position[i]);
             output_parameters.current_friction_angles[j] = current_friction;
 
             // Step 5: plastic yielding
