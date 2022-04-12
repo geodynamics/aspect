@@ -230,6 +230,20 @@ namespace aspect
       ar &last_average_time;
     }
 
+
+    template <int dim>
+    MobilityStatistics<dim>::MobilityStatistics ()
+      :
+      // the following value is later read from the input file
+      output_interval (0),
+      average_interval (0),
+     // initialize this to a nonsensical value; set it to the actual time
+     // the first time around we get to check it
+     last_output_time (std::numeric_limits<double>::quiet_NaN()),
+     last_average_time (std::numeric_limits<double>::quiet_NaN())
+   {}
+
+ 
     template <int dim>
     void
     MobilityStatistics<dim>::save (std::map<std::string, std::string> &status_strings) const

@@ -282,9 +282,9 @@ namespace aspect
             //now modify friction
             //const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
             const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor;
-            std::cout << "av_mob" << average_mobility << std::endl;
-            std::cout << "fric_fac" << friction_factor << std::endl;
-            std::cout << "curr_fric" << current_friction << std::endl;
+            this->get_pcout() << "Average mobility" << average_mobility << std::endl;
+            this->get_pcout() << "friction_factor" << friction_factor << std::endl;
+            this->get_pcout() << "Current friction" << current_friction << std::endl;            
 
             // Step 5: plastic yielding
 
