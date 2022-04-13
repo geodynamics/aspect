@@ -280,11 +280,7 @@ namespace aspect
               friction_factor = 0.5;
             
             //now modify friction
-            //const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1];
             const double current_friction = drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor;
-            this->get_pcout() << "Average mobility" << average_mobility << std::endl;
-            this->get_pcout() << "friction_factor" << friction_factor << std::endl;
-            this->get_pcout() << "Current friction" << current_friction << std::endl;            
 
             // Step 5: plastic yielding
 
@@ -791,8 +787,25 @@ namespace aspect
                                                                           phase_function_values,
                                                                           n_phases_per_composition);
                 plastic_out->cohesions[i]   += volume_fractions[j] * (drucker_prager_parameters.cohesion * weakening_factors[0]);
+ 
+                //Elodie Feb 2022             
+                // Get a pointer to the mobility postprocessor
+                const Postprocess::MobilityStatistics<dim> &mobility_statistics =
+                  this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::MobilityStatistics<dim>>();
+                const double average_mobility = mobility_statistics.get_average_mobility();
+                double friction_factor = 0.;
+                //first find factors 
+                if (average_mobility == 0.)
+                  friction_factor = 1;
+                else if (average_mobility <= 2.)
+                  friction_factor = 1.5;
+                else if (average_mobility > 2. && average_mobility < 3.)
+                  friction_factor = 3.5- average_mobility;
+                else if (average_mobility >= 3.)
+                  friction_factor = 0.5;
+
                 // Also convert radians to degrees
-                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (drucker_prager_parameters.angle_internal_friction * weakening_factors[1]);
+                plastic_out->friction_angles[i] += 180.0/numbers::PI * volume_fractions[j] * (drucker_prager_parameters.angle_internal_friction * weakening_factors[1] * friction_factor);
               }
           }
       }
