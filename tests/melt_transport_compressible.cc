@@ -45,7 +45,6 @@ namespace aspect
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
-            double porosity = in.composition[i][porosity_idx];
             out.viscosities[i] = 0.5 * std::exp(2.0 * in.position[i][0]);
             out.thermal_expansion_coefficients[i] = 0.0;
             out.specific_heat[i] = 1.0;
@@ -63,7 +62,6 @@ namespace aspect
           {
             for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
               {
-                double porosity = in.composition[i][porosity_idx];
                 melt_out->compaction_viscosities[i] = xi_1 * std::exp(-in.position[i][1]) + 2.0/3.0 * std::exp(2.0 * in.position[i][0]) + xi_0;
                 melt_out->fluid_viscosities[i] = 1.0;
                 melt_out->permeabilities[i] = K_D_0 + 2.0 * B / E - rho_s_0 * B * D / E * (1.0/rho_s_0 - 1.0/rho_f_0) * std::exp(in.position[i][1]);
@@ -177,7 +175,7 @@ namespace aspect
 
   template <int dim>
   std::pair<std::string,std::string>
-  CompressibleMeltPostprocessor<dim>::execute (TableHandler &statistics)
+  CompressibleMeltPostprocessor<dim>::execute (TableHandler &)
   {
     RefFunction<dim> ref_func;
     const QGauss<dim> quadrature_formula (this->introspection().polynomial_degree.velocities +2);
@@ -304,9 +302,9 @@ namespace aspect
     public:
       virtual
       void fluid_pressure_gradient (
-        const types::boundary_id boundary_indicator,
+        const types::boundary_id,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
-        const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
+        const MaterialModel::MaterialModelOutputs<dim> &,
         const std::vector<Tensor<1,dim> > &normal_vectors,
         std::vector<double> &output
       ) const
@@ -316,9 +314,7 @@ namespace aspect
             const double rho_s_0 = 1.2;
             const double rho_f_0 = 1.0;
             const double xi_0 = 1.0;
-            const double xi_1 = 1.0;
             const double A = 0.1;
-            const double B = -3.0/4.0 * A;
             const double C = 1.0;
             const double D = 0.3;
             const double E = - 3.0/4.0 * xi_0 * A + C * D *(rho_f_0 - rho_s_0);
