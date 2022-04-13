@@ -23,6 +23,7 @@
 #define _aspect_introspection_h
 
 #include <deal.II/base/index_set.h>
+#include <deal.II/base/quadrature.h>
 #include <deal.II/fe/component_mask.h>
 #include <deal.II/fe/fe_values_extractors.h>
 #include <deal.II/fe/fe.h>
@@ -213,6 +214,38 @@ namespace aspect
       const PolynomialDegree polynomial_degree;
 
       /**
+       * A structure that contains appropriate quadrature formulas for the
+       * finite elements that correspond to each of the variables in this problem,
+       * as well as for the complete system (the `system` variable).
+       *
+       * If there are compositional fields, they are all discretized with the
+       * same polynomial degree and, consequently, we only need a single formula.
+       *
+       * The quadrature formulas provided here are chosen such that the
+       * compute integrals with sufficient accuracy. For hypercube cells,
+       * this means in particular that they are of Gauss type with a
+       * number of Gauss points per coordinate direction that is one larger than
+       * the polynomial degree of the finite element per direction. For
+       * example, when using quadratic elements for the velocity, the
+       * corresponding quadrature formula will have three Gauss points per
+       * direction. If the mesh is based on triangles or tetrahedra, the
+       * quadrature formula is not of tensor-product Gauss type, but the
+       * corresponding analog for simplex cells.
+       */
+      struct Quadratures
+      {
+        Quadrature<dim>       velocities;
+        Quadrature<dim>       temperature;
+        Quadrature<dim>       compositional_fields;
+        Quadrature<dim>       system;
+      };
+      /**
+       * A variable that enumerates the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const Quadratures quadratures;
+
+      /**
        * A structure that contains component masks for each of the variables
        * in this problem. Component masks are a deal.II concept, see the
        * deal.II glossary.
@@ -379,7 +412,6 @@ namespace aspect
       composition_type_exists (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
 
 
-
       /**
        * A function that gets the type of a compositional field as an input
        * parameter and returns the index of the first compositional field of
@@ -391,8 +423,6 @@ namespace aspect
        */
       unsigned int
       find_composition_type (const typename Parameters<dim>::CompositionalFieldDescription::Type &type) const;
-
-
 
 
       /**

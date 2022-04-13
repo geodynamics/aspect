@@ -1450,7 +1450,7 @@ namespace aspect
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                sim.triangulation.get_communicator());
 
-    const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+    const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
 
     double minimum_viscosity_local = std::numeric_limits<double>::max();
     double maximum_viscosity_local = std::numeric_limits<double>::lowest();
@@ -2962,7 +2962,7 @@ namespace aspect
                                    locally_relevant_dofs,
                                    sim.mpi_communicator);
 
-            QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
+            const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
             FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);
