@@ -16,7 +16,7 @@ Here, we use a material model plugin that defines the compositional fields as th
 gradient tensor $\mathbf F_{ij}$, and modifies the right-hand side of
 the corresponding advection equations to accumulate strain over time. This is done by adjusting the
 \verb!out.reaction_terms! variable:
-\lstinputlisting[language=C++]{cookbooks/finite_strain/finite_strain.cc}
+\lstinputlisting[language=C++]{cookbooks/finite_strain/doc/finite_strain.cc}
 
 Let us denote the accumulated deformation at time step $n$ as $\mathbf F^n$. We can calculate its time derivative
 as the product of two tensors, namely the current velocity gradient $\mathbf G_{ij} = \frac{\partial u_i}{\partial x_j}$ and the deformation gradient $\mathbf F^{n-1}$ accumulated up to the previous time step, in other words $\frac{\partial \mathbf F}{\partial t} = \mathbf G \mathbf F$, and $\mathbf F^0 = \mathbf I$, with $\mathbf I$ being the identity tensor.
