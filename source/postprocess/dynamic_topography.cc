@@ -222,7 +222,7 @@ namespace aspect
 
       // Also construct data structures for getting the dynamic topography at the cell face
       // midpoints. This is a more practical thing for text output and visualization.
-      QGauss<dim-1> output_quadrature(quadrature_degree);
+      const QGauss<dim-1> output_quadrature(quadrature_degree);
       FEFaceValues<dim> fe_output_values (this->get_mapping(),
                                           this->get_fe(),
                                           output_quadrature,

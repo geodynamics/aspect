@@ -603,7 +603,7 @@ namespace aspect
       // displacement. The process in this function is otherwise
       // identical.
 
-      QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
+      const QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
       FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
 
