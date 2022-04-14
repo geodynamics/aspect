@@ -802,7 +802,7 @@ namespace aspect
       {
         const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
 
-        QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+        const QGauss<dim-1> quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
         FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
