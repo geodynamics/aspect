@@ -246,6 +246,27 @@ namespace aspect
       const Quadratures quadratures;
 
       /**
+       * A structure that contains appropriate face quadrature formulas for the
+       * finite elements that correspond to each of the variables in this problem,
+       * as well as for the complete system (the `system` variable).
+       *
+       * This structure corresponds to the Quadratures structure above, but for
+       * face integration.
+       */
+      struct FaceQuadratures
+      {
+        Quadrature<dim-1>       velocities;
+        Quadrature<dim-1>       temperature;
+        Quadrature<dim-1>       compositional_fields;
+        Quadrature<dim-1>       system;
+      };
+      /**
+       * A variable that enumerates the polynomial degree of the finite element
+       * that correspond to each of the variables in this problem.
+       */
+      const FaceQuadratures face_quadratures;
+
+      /**
        * A structure that contains component masks for each of the variables
        * in this problem. Component masks are a deal.II concept, see the
        * deal.II glossary.

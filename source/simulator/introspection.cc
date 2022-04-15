@@ -125,6 +125,26 @@ namespace aspect
 
 
     template <int dim>
+    typename Introspection<dim>::FaceQuadratures
+    setup_face_quadratures (const Parameters<dim> &parameters,
+                            const ReferenceCell reference_cell)
+    {
+      typename Introspection<dim>::FaceQuadratures quadratures;
+
+      quadratures.velocities = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.stokes_velocity_degree+1);
+      quadratures.temperature = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.temperature_degree+1);
+      quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.composition_degree+1);
+      quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(std::max({parameters.stokes_velocity_degree,
+                           parameters.temperature_degree,
+                           parameters.composition_degree
+                                                                                                           }) + 1);
+
+      return quadratures;
+    }
+
+
+
+    template <int dim>
     std::shared_ptr<FiniteElement<dim>>
                                      new_FE_Q_or_DGP(const bool discontinuous,
                                                      const unsigned int degree)
@@ -219,6 +239,7 @@ namespace aspect
     base_elements (internal::setup_base_elements<dim>(*this)),
     polynomial_degree (internal::setup_polynomial_degree<dim>(parameters)),
     quadratures (internal::setup_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
+    face_quadratures (internal::setup_face_quadratures<dim>(parameters, ReferenceCells::get_hypercube<dim>())),
     component_masks (*this),
     system_dofs_per_block (n_blocks),
     temperature_method(parameters.temperature_method),
