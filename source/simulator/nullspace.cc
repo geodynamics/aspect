@@ -255,7 +255,7 @@ namespace aspect
     // compute and remove net linear momentum from velocity field, by computing
     // \int \rho (v + v_const) = 0
 
-    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(*mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
@@ -364,8 +364,8 @@ namespace aspect
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
     // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
-    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
-    QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
 
     const unsigned int n_q_points = (limit_to_top_faces == false) ? quadrature.size() : surface_quadrature.size();
     UpdateFlags flags = update_quadrature_points | update_JxW_values | update_values | update_gradients;

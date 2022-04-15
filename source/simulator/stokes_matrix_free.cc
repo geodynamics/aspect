@@ -61,7 +61,7 @@ namespace aspect
       add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
                      const Tensor<1, dim> &constraining_vector,
                      AffineConstraints<double> &constraints,
-                     const double inhomogeneity = 0)
+                     const double inhomogeneity)
       {
         // This function is modified from an internal deal.II function in vector_tools.templates.h
         switch (dim)
@@ -1371,12 +1371,17 @@ namespace aspect
                   && sim.parameters.enable_elasticity),
                 ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
 
+
+#if !DEAL_II_VERSION_GTE(9,3,2)
+    AssertThrow(false,
+                ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
+#endif
+
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
     // operator:
     AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
-
 
     // sanity check:
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
@@ -1445,7 +1450,7 @@ namespace aspect
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                sim.triangulation.get_communicator());
 
-    const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+    const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
 
     double minimum_viscosity_local = std::numeric_limits<double>::max();
     double maximum_viscosity_local = std::numeric_limits<double>::lowest();
@@ -2957,7 +2962,7 @@ namespace aspect
                                    locally_relevant_dofs,
                                    sim.mpi_communicator);
 
-            QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
+            const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
             FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);

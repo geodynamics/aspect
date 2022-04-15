@@ -224,7 +224,7 @@ namespace aspect
       // TODO: should we use the extrapolated solution?
 
       // stuff for iterating over the mesh
-      QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
+      const QGauss<dim-1> face_quadrature(mesh_deformation_dof_handler.get_fe().degree+1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_quadrature_points
                                              | update_normal_vectors | update_JxW_values);
       FEFaceValues<dim> fs_fe_face_values (this->get_mapping(), mesh_deformation_dof_handler.get_fe(), face_quadrature, update_flags);

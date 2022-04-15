@@ -24,6 +24,7 @@
 #include <aspect/geometry_model/initial_topography_model/zero_topography.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/simulator.h>
+#include <aspect/stokes_matrix_free.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -366,7 +367,10 @@ namespace aspect
 
       // Assemble and solve the vector Laplace problem which determines
       // the mesh displacements in the interior of the domain
-      compute_mesh_displacements();
+      if (this->is_stokes_matrix_free())
+        compute_mesh_displacements_gmg();
+      else
+        compute_mesh_displacements();
 
       // Interpolate the mesh velocity into the same
       // finite element space as used in the Stokes solve, which
@@ -451,6 +455,11 @@ namespace aspect
               model->compute_velocity_constraints_on_boundary(mesh_deformation_dof_handler,
                                                               current_plugin_constraints,
                                                               boundary_id_set);
+              if ((this->is_stokes_matrix_free()))
+                {
+                  mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
+                                                                     boundary_id_set);
+                }
 
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
               for (dealii::IndexSet::size_type local_line : local_lines)
@@ -537,6 +546,8 @@ namespace aspect
       // constraints as more important)
       AffineConstraints<double> plugin_constraints(mesh_vertex_constraints.get_local_lines());
 
+      std::set<types::boundary_id> boundary_id_set;
+
       for (const auto &boundary_id_and_deformation_objects: mesh_deformation_objects)
         {
           for (const auto &deformation_object : boundary_id_and_deformation_objects.second)
@@ -555,6 +566,9 @@ namespace aspect
                                                         boundary_id_and_deformation_objects.first,
                                                         vel,
                                                         current_plugin_constraints);
+
+              boundary_id_set.insert(boundary_id_and_deformation_objects.first);
+
 
               const IndexSet local_lines = current_plugin_constraints.get_local_lines();
               for (dealii::IndexSet::size_type local_line : local_lines)
@@ -576,7 +590,11 @@ namespace aspect
                 }
             }
         }
-
+      if ((this->is_stokes_matrix_free()))
+        {
+          mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
+                                                             boundary_id_set);
+        }
       mesh_velocity_constraints.merge(plugin_constraints,
                                       AffineConstraints<double>::left_object_wins);
       mesh_velocity_constraints.close();
@@ -603,7 +621,7 @@ namespace aspect
       // displacement. The process in this function is otherwise
       // identical.
 
-      QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
+      const QGauss<dim> quadrature(mesh_deformation_fe.degree + 1);
       UpdateFlags update_flags = UpdateFlags(update_values | update_JxW_values | update_gradients);
       FEValues<dim> fe_values (*sim.mapping, mesh_deformation_fe, quadrature, update_flags);
 
@@ -718,6 +736,276 @@ namespace aspect
 
       if (this->is_stokes_matrix_free())
         update_multilevel_deformation();
+    }
+
+
+
+    template <int dim>
+    void MeshDeformationHandler<dim>::compute_mesh_displacements_gmg()
+    {
+      // Same as compute_mesh_displacements, but using matrix-free GMG
+      // instead of matrix-based AMG.
+
+      // We use this gmg solver only when the gmg stokes solver is used
+      // for the following reasons (TODO):
+      // 1. this gmg solver does not support periodic boundary conditions
+      // 2. To use this solver even when gmg stokes solver is not used, we need to
+      //    initialize the triangulation with Triangulation<dim>::limit_level_difference_at_vertices
+      //    and parallel::distributed::Triangulation<dim>::construct_multigrid_hierarchy
+      // 3. Although this gmg solver is much faster than the amg solver, it's only tested for
+      //    limited free surface cases.
+
+      Assert(mesh_deformation_fe.degree == 1, ExcNotImplemented());
+      // To be efficient, the operations performed in the matrix-free implementation require
+      // knowledge of loop lengths at compile time, which are given by the degree of the finite element.
+      const unsigned int mesh_deformation_fe_degree = 1;
+
+      using SystemOperatorType = dealii::MatrixFreeOperators::
+                                 LaplaceOperator<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim>;
+
+      SystemOperatorType laplace_operator;
+
+      MGLevelObject<SystemOperatorType> mg_matrices;
+
+      typename MatrixFree<dim, double>::AdditionalData additional_data;
+      additional_data.tasks_parallel_scheme =
+        MatrixFree<dim, double>::AdditionalData::none;
+      const UpdateFlags update_flags(update_values | update_JxW_values | update_gradients);
+      additional_data.mapping_update_flags = update_flags;
+      std::shared_ptr<MatrixFree<dim, double>> system_mf_storage(
+                                              new MatrixFree<dim, double>());
+      system_mf_storage->reinit(*sim.mapping,
+                                mesh_deformation_dof_handler,
+                                mesh_velocity_constraints,
+                                QGauss<1>(mesh_deformation_fe_degree + 1),
+                                additional_data);
+      laplace_operator.initialize(system_mf_storage);
+
+      // correct rhs:
+      // In a matrix-free method, since the LaplaceOperator class represents
+      // the matrix-vector product of a homogeneous operator (the left-hand
+      // side of the last formula). It does not matter whether the AffineConstraints
+      // object passed to the MatrixFree::reinit() contains inhomogeneous constraints or not,
+      // the MatrixFree::cell_loop() call will only resolve the homogeneous
+      // part of the constraints as long as it represents a linear operator.
+
+      // What this function does is to move the inhomogeneous constraints to the
+      // right-hand side of the system by computing the residual of the system
+      // and subtracting it from the right-hand side: r = b - A*u0,
+      // where u0 is the initial guess and stored the degrees of freedom constrained by
+      // Inhomogeneous Dirichlet boundary conditions, and r is rhs.
+      // Then we have a new system Ax = r, and the solution is u = u0 + x.
+      // More details can be found in deal.II tutorial step-37 Section Possibilities for extensions.
+      dealii::LinearAlgebra::distributed::Vector<double> u0, rhs, solution;
+      laplace_operator.initialize_dof_vector(u0);
+      laplace_operator.initialize_dof_vector(rhs);
+      laplace_operator.initialize_dof_vector(solution);
+      u0 = 0.;
+      mesh_velocity_constraints.distribute(u0);
+      u0.update_ghost_values();
+
+      rhs = 0.;
+
+      FEEvaluation<dim, mesh_deformation_fe_degree, mesh_deformation_fe_degree + 1, dim, double> mesh_deformation(*laplace_operator.get_matrix_free());
+      for (unsigned int cell = 0;
+           cell < laplace_operator.get_matrix_free()->n_cell_batches();
+           ++cell)
+        {
+          mesh_deformation.reinit(cell);
+          mesh_deformation.read_dof_values_plain(u0);
+          mesh_deformation.evaluate(EvaluationFlags::gradients);
+          for (unsigned int q = 0; q < mesh_deformation.n_q_points; ++q)
+            {
+              mesh_deformation.submit_gradient(-1.0 * mesh_deformation.get_gradient(q), q);
+            }
+          mesh_deformation.integrate(EvaluationFlags::gradients);
+          mesh_deformation.distribute_local_to_global(rhs);
+        }
+      rhs.compress(VectorOperation::add);
+
+      // setup GMG, following deal.II step-37:
+      const unsigned int n_levels = sim.triangulation.n_global_levels();
+
+      // Currently does not support periodic boundary constraints
+      {
+        using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+        const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
+        AssertThrow(pbp.size() == 0,
+                    ExcMessage("Periodic boundary constraints are not supported in computing mesh displacements using GMG."));
+      }
+
+      mg_constrained_dofs.make_zero_boundary_constraints(mesh_deformation_dof_handler,
+                                                         zero_mesh_deformation_boundary_indicators);
+
+      {
+        // Handle no normal flux, copied from GMG Stokes solver.
+        const std::set<types::boundary_id> no_flux_boundary = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+        if (!no_flux_boundary.empty() && !sim.geometry_model->has_curved_elements())
+          for (const auto bid : no_flux_boundary)
+            {
+              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_box(mesh_deformation_dof_handler,
+                                                                                            bid,
+                                                                                            0 /*first_vector_component*/,
+                                                                                            mg_constrained_dofs);
+            }
+      }
+
+      mg_matrices.clear_elements();
+      mg_matrices.resize(0, n_levels-1);
+
+      for (unsigned int level = 0; level < n_levels; ++level)
+        {
+          IndexSet relevant_dofs;
+          DoFTools::extract_locally_relevant_level_dofs(mesh_deformation_dof_handler,
+                                                        level,
+                                                        relevant_dofs);
+          AffineConstraints<double> level_constraints;
+          level_constraints.reinit(relevant_dofs);
+          level_constraints.add_lines(mg_constrained_dofs.get_boundary_indices(level));
+          level_constraints.close();
+
+          const Mapping<dim> &mapping = get_level_mapping(level);
+
+          std::set<types::boundary_id> no_flux_boundary
+            = sim.boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+          if (!no_flux_boundary.empty() && sim.geometry_model->has_curved_elements())
+            {
+              AffineConstraints<double> user_level_constraints;
+              user_level_constraints.reinit(relevant_dofs);
+
+              internal::TangentialBoundaryFunctions::compute_no_normal_flux_constraints_shell(mesh_deformation_dof_handler,
+                                                                                              mg_constrained_dofs,
+                                                                                              mapping,
+                                                                                              level,
+                                                                                              0,
+                                                                                              no_flux_boundary,
+                                                                                              user_level_constraints);
+              user_level_constraints.close();
+              mg_constrained_dofs.add_user_constraints(level,user_level_constraints);
+
+              // let Dirichlet values win over no normal flux:
+              level_constraints.merge(user_level_constraints, AffineConstraints<double>::left_object_wins);
+              level_constraints.close();
+            }
+
+          typename MatrixFree<dim, double>::AdditionalData additional_data;
+          additional_data.tasks_parallel_scheme =
+            MatrixFree<dim, double>::AdditionalData::none;
+          additional_data.mapping_update_flags = update_flags;
+          additional_data.mg_level = level;
+          std::shared_ptr<MatrixFree<dim, double>> mg_mf_storage_level(
+                                                  new MatrixFree<dim, double>());
+
+          mg_mf_storage_level->reinit(mapping,
+                                      mesh_deformation_dof_handler,
+                                      level_constraints,
+                                      QGauss<1>(mesh_deformation_fe_degree + 1),
+                                      additional_data);
+          mg_matrices[level].clear();
+          mg_matrices[level].initialize(mg_mf_storage_level,
+                                        mg_constrained_dofs,
+                                        level);
+        }
+
+      MGTransferMatrixFree<dim, double> mg_transfer(mg_constrained_dofs);
+      mg_transfer.build(mesh_deformation_dof_handler);
+
+      using SmootherType =
+        PreconditionChebyshev<SystemOperatorType, dealii::LinearAlgebra::distributed::Vector<double>>;
+
+      mg::SmootherRelaxation<SmootherType, dealii::LinearAlgebra::distributed::Vector<double>> mg_smoother;
+
+      MGLevelObject<typename SmootherType::AdditionalData> smoother_data;
+      smoother_data.resize(0, n_levels - 1);
+
+      // Smoother: Chebyshev, degree 5. We use a relatively high degree here (5),
+      // since matrix-vector products are comparably cheap. We choose to smooth out
+      // a range of [1.2lambda_max/15,1.2lambda_max] in the smoother where lambda_max
+      // is an estimate of the largest eigenvalue (the factor 1.2 is applied inside
+      // PreconditionChebyshev). In order to compute that eigenvalue,
+      // the Chebyshev initialization performs a few steps of a CG algorithm without preconditioner.
+      // Since the highest eigenvalue is usually the easiest one to find
+      // and a rough estimate is enough, we choose 10 iterations.
+      for (unsigned int level = 0; level < n_levels;
+           ++level)
+        {
+          if (level > 0)
+            {
+              smoother_data[level].smoothing_range = 15.;
+              smoother_data[level].degree = 5;
+              smoother_data[level].eig_cg_n_iterations = 10;
+            }
+          else
+            {
+              // On level zero, we initialize the smoother differently
+              // because we want to use the Chebyshev iteration as a solver.
+              smoother_data[0].smoothing_range = 1e-3;
+              smoother_data[0].degree = numbers::invalid_unsigned_int;
+              smoother_data[0].eig_cg_n_iterations = mg_matrices[0].m();
+            }
+          mg_matrices[level].compute_diagonal();
+          smoother_data[level].preconditioner =
+            mg_matrices[level].get_matrix_diagonal_inverse();
+        }
+      mg_smoother.initialize(mg_matrices, smoother_data);
+      MGCoarseGridApplySmoother<dealii::LinearAlgebra::distributed::Vector<double>> mg_coarse;
+      mg_coarse.initialize(mg_smoother);
+
+      // set up the interface matrices
+      mg::Matrix<dealii::LinearAlgebra::distributed::Vector<double>> mg_matrix(mg_matrices);
+      MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<SystemOperatorType>> mg_interface_matrices;
+      mg_interface_matrices.resize(0, n_levels - 1);
+      for (unsigned int level = 0; level < n_levels;
+           ++level)
+        mg_interface_matrices[level].initialize(mg_matrices[level]);
+      mg::Matrix<dealii::LinearAlgebra::distributed::Vector<double>> mg_interface(mg_interface_matrices);
+      Multigrid<dealii::LinearAlgebra::distributed::Vector<double>> mg(mg_matrix, mg_coarse, mg_transfer, mg_smoother, mg_smoother);
+      mg.set_edge_matrices(mg_interface, mg_interface);
+      PreconditionMG<dim,
+                     dealii::LinearAlgebra::distributed::Vector<double>,
+                     MGTransferMatrixFree<dim, double>>
+                     preconditioner(mesh_deformation_dof_handler, mg, mg_transfer);
+
+      // solve
+      const double tolerance
+        = sim.parameters.linear_stokes_solver_tolerance
+          * ((this->simulator_is_past_initialization()) ? 1.0 : 1e-5);
+
+      SolverControl solver_control_mf(5 * rhs.size(),
+                                      tolerance * rhs.l2_norm());
+      SolverCG<dealii::LinearAlgebra::distributed::Vector<double>> cg(solver_control_mf);
+
+      mesh_velocity_constraints.set_zero(solution);
+      cg.solve(laplace_operator, solution, rhs, preconditioner);
+      this->get_pcout() << "   Solving mesh displacement system... " << solver_control_mf.last_step() <<" iterations."<< std::endl;
+
+      mesh_velocity_constraints.distribute(solution);
+      solution.update_ghost_values();
+
+      // copy solution:
+      LinearAlgebra::Vector solution_tmp;
+      solution_tmp.reinit(mesh_locally_owned, sim.mpi_communicator);
+      internal::ChangeVectorTypes::copy(solution_tmp, solution);
+
+      // Update the mesh velocity vector
+      fs_mesh_velocity = solution_tmp;
+
+      // Update the mesh displacement vector
+      if (this->simulator_is_past_initialization())
+        {
+          // during the simulation, we add dt*solution
+          LinearAlgebra::Vector distributed_mesh_displacements(mesh_locally_owned, sim.mpi_communicator);
+          distributed_mesh_displacements = mesh_displacements;
+          distributed_mesh_displacements.add(this->get_timestep(), solution_tmp);
+          mesh_displacements = distributed_mesh_displacements;
+        }
+      else
+        {
+          // In the initial step we apply 100% of the initial displacement
+          mesh_displacements = solution_tmp;
+        }
+
+      update_multilevel_deformation();
     }
 
 
@@ -849,6 +1137,8 @@ namespace aspect
         {
           mesh_deformation_dof_handler.distribute_mg_dofs();
 
+          mg_constrained_dofs.initialize(mesh_deformation_dof_handler);
+
           const unsigned int n_levels = this->get_triangulation().n_global_levels();
 
           level_displacements.resize(0, n_levels-1);
@@ -932,7 +1222,10 @@ namespace aspect
           TimerOutput::Scope timer (sim.computing_timer, "Mesh deformation initialize");
 
           make_initial_constraints();
-          compute_mesh_displacements();
+          if (this->is_stokes_matrix_free())
+            compute_mesh_displacements_gmg();
+          else
+            compute_mesh_displacements();
         }
 
       if (this->is_stokes_matrix_free())

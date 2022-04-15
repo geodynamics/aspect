@@ -24,7 +24,6 @@
 
 #include <aspect/plugins.h>
 #include <aspect/simulator_access.h>
-
 #include <aspect/global.h>
 
 #include <deal.II/fe/fe_system.h>
@@ -33,6 +32,7 @@
 #include <deal.II/base/index_set.h>
 #include <deal.II/base/mg_level_object.h>
 #include <deal.II/lac/la_parallel_vector.h>
+#include <deal.II/multigrid/mg_constrained_dofs.h>
 #include <deal.II/multigrid/mg_transfer_matrix_free.h>
 
 
@@ -355,6 +355,12 @@ namespace aspect
         void compute_mesh_displacements ();
 
         /**
+        * Solve vector Laplacian equation using GMG for internal mesh displacements and update
+        * the current displacement vector based on the solution.
+        */
+        void compute_mesh_displacements_gmg ();
+
+        /**
          * Set up the vector with initial displacements of the mesh
          * due to the initial topography, as supplied by the initial
          * topography plugin based on the surface coordinates of the
@@ -517,6 +523,10 @@ namespace aspect
         */
         MGTransferMatrixFree<dim, double> mg_transfer;
 
+        /**
+        * Multigrid level constraints for the displacements
+        */
+        MGConstrainedDoFs mg_constrained_dofs;
 
         friend class Simulator<dim>;
         friend class SimulatorAccess<dim>;

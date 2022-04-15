@@ -311,9 +311,6 @@ SimulatorAccess -> N6aspect13MaterialModel20DiffusionDislocationILi2EEE [style="
 N6aspect13MaterialModel13DruckerPragerILi2EEE [label="drucker prager", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel13DruckerPragerILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel13DruckerPragerILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
-N6aspect13MaterialModel15DynamicFrictionILi2EEE [label="dynamic\nfriction", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
-N6aspect13MaterialModel15DynamicFrictionILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
-SimulatorAccess -> N6aspect13MaterialModel15DynamicFrictionILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
 N6aspect13MaterialModel9GrainSizeILi2EEE [label="grain size", height=.8,width=.8,shape="circle",fillcolor="lightblue"];
 N6aspect13MaterialModel9GrainSizeILi2EEE -> N6aspect13MaterialModel9InterfaceILi2EEE [len=3, weight=50];
 SimulatorAccess -> N6aspect13MaterialModel9GrainSizeILi2EEE [style="dotted", arrowhead="empty", constraint=false, color="gray", len=20, weight=0.1];
