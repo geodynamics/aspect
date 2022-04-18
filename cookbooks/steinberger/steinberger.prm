@@ -1,8 +1,7 @@
 # This is a cookbook for a convection model with realistic material properties.
 # Specifically, it uses material properties read in from a look-up table
 # computed with mineral physics software and the projected density approximation.
-# Since it is a quarter of a apherical shell, it also uses periodic boundary
-# conditions.
+# It is a quarter of a spherical shell and uses periodic boundary conditions.
 
 set Dimension                              = 2
 set End time                               = 3e8
@@ -12,7 +11,7 @@ set Output directory                       = output-steinberger
 # Because the model is compressible, we use a nonlinear solver.
 # We here choose a tolerance of 1e-3 to limit model runtime, but in a
 # research application one would test what tolerance would be required
-# to obtain a sufficiently accurate solution, and 1e-3 is quite a high
+# to obtain a sufficiently accurate solution, and 1e-3 is a quite large
 # value.
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Nonlinear solver tolerance             = 1e-3
