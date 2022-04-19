@@ -133,7 +133,7 @@ namespace aspect
             for (unsigned int p=0; p<list_of_dominant_phases.size(); ++p)
               {
                 file << p
-                     << " "
+                     << ' '
                      << list_of_dominant_phases[p]
                      << std::endl;
               }
@@ -546,6 +546,15 @@ namespace aspect
             out.additional_outputs.push_back(
               std::make_unique<MaterialModel::PhaseOutputs<dim>> (n_points));
           }
+      }
+
+
+
+      template <int dim>
+      const MaterialModel::MaterialUtilities::Lookup::MaterialLookup &
+      ThermodynamicTableLookup<dim>::get_material_lookup (unsigned int lookup_index) const
+      {
+        return *material_lookup[lookup_index].get();
       }
     }
   }

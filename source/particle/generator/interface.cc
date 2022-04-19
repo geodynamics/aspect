@@ -100,7 +100,13 @@ namespace aspect
             try
               {
                 const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(cell, particle_position);
-                if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
+                if (
+#if DEAL_II_VERSION_GTE(9,4,0)
+                  cell->reference_cell().contains_point(p_unit)
+#else
+                  GeometryInfo<dim>::is_inside_unit_cell(p_unit)
+#endif
+                )
                   {
                     // Add the generated particle to the set
                     const Particle<dim> new_particle(particle_position, p_unit, id);
@@ -114,13 +120,21 @@ namespace aspect
               }
             ++iteration;
           }
-        AssertThrow (iteration < maximum_iterations,
-                     ExcMessage ("Couldn't generate particle (unusual cell shape?). "
-                                 "The ratio between the bounding box volume in which the particle is "
-                                 "generated and the actual cell volume is approximately: " +
-                                 Utilities::to_string(cell_bounding_box.volume() / cell->measure())));
 
-        return std::make_pair(Particles::internal::LevelInd(),Particle<dim>());
+        // If the above algorithm has not worked (e.g. because of badly
+        // deformed cells), retry generating particles
+        // randomly within the reference cell. This is not generating a
+        // uniform distribution in real space, but will always succeed.
+        for (unsigned int d=0; d<dim; ++d)
+          particle_position[d] = uniform_distribution_01(random_number_generator);
+
+        const Point<dim> p_real = this->get_mapping().transform_unit_to_real_cell(cell,particle_position);
+
+        // Add the generated particle to the set
+        const Particle<dim> new_particle(p_real, particle_position, id);
+        const Particles::internal::LevelInd cellid(cell->level(), cell->index());
+
+        return std::make_pair(cellid, new_particle);
       }
 
 

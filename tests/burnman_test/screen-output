@@ -4,14 +4,14 @@
 
    Input point 1 spherical coordinates: 1.571 4.870
    Input point 1 normalized cartesian coordinates: 0.157 -0.988 -0.000
-   Input point 1 rotated model coordinates: 0.157 -0.988 -0.000
+   Input point 1 rotated model coordinates: 0.000 1.000 -0.000
    Input point 2 spherical coordinates: 1.571 5.240
    Input point 2 normalized cartesian coordinates: 0.503 -0.864 -0.000
-   Input point 2 rotated model coordinates: 0.503 -0.864 -0.000
+   Input point 2 rotated model coordinates: -0.362 0.932 0.000
 
-   Model will be rotated by -0.00 degrees around axis 0.00 0.00 1.00
-   The ParaView rotation angles are: 0.00 -0.00 0.00
-   The inverse ParaView rotation angles are: 0.00 -0.00 0.00
+   Model will be rotated by -170.97 degrees around axis -0.00 0.00 -1.00
+   The ParaView rotation angles are: -0.00 -0.00 -170.97
+   The inverse ParaView rotation angles are: 0.00 -0.00 170.97
 
    Loading GPlates data boundary file ASPECT_DIR/data/boundary-velocity/gplates/current_day.gpml.
 
@@ -41,17 +41,17 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
      Heat fluxes through boundary parts: -9.148e+07 W, 3.063e+06 W
      Writing depth average:              output-burnman_test/depth_average
 
-*** Timestep 1:  t=896882 years, dt=896882 years
-   Solving temperature system... 11 iterations.
+*** Timestep 1:  t=897266 years, dt=897266 years
+   Solving temperature system... 12 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
      RMS, max velocity:                  0.0611 m/year, 0.157 m/year
      Temperature min/avg/max:            273 K, 2029 K, 3500 K
-     Heat fluxes through boundary parts: -8.425e+07 W, 3.24e+06 W
+     Heat fluxes through boundary parts: -8.426e+07 W, 3.243e+06 W
 
-*** Timestep 2:  t=1e+06 years, dt=103118 years
+*** Timestep 2:  t=1e+06 years, dt=102734 years
    Solving temperature system... 8 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 36+0 iterations.
@@ -59,7 +59,7 @@ Number of degrees of freedom: 7,056 (4,320+576+2,160)
    Postprocessing:
      RMS, max velocity:                  0.0611 m/year, 0.157 m/year
      Temperature min/avg/max:            273 K, 2026 K, 3500 K
-     Heat fluxes through boundary parts: -8.485e+07 W, 3.062e+06 W
+     Heat fluxes through boundary parts: -8.485e+07 W, 3.065e+06 W
      Writing depth average:              output-burnman_test/depth_average
 
 Termination requested by criterion: end time

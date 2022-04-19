@@ -313,7 +313,7 @@ namespace aspect
       // the inner and outer boundary, which conveniently is what
       // happens in the following loop
       for (const auto &cell : coarse_grid.active_cell_iterators())
-        for (unsigned int f = 0; f < GeometryInfo<dim>::faces_per_cell; ++f)
+        for (const unsigned int f : cell->face_indices())
           if (cell->face(f)->at_boundary())
             cell->face(f)->set_boundary_id(f);
     }
@@ -345,8 +345,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("top",    3)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -360,8 +360,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("top",    5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 
@@ -526,7 +526,7 @@ namespace aspect
           NS_subdiv = prm.get_integer("North-South subdivisions");
           depth_subdiv = prm.get_integer("Depth subdivisions");
 
-          // Check whether the corners of the rectangle are really place correctly
+          // Check whether the corners of the rectangle are really placed correctly
           if (present[0] == true && present[1] == true)
             {
               AssertThrow (corners[0][0] >= corners[1][0],

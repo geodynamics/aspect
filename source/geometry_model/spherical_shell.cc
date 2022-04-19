@@ -153,13 +153,11 @@ namespace aspect
                   for (unsigned int cell_layer = 0; cell_layer < R_values.size() - 1; ++cell_layer)
                     {
                       CellData<dim> this_cell;
-                      for (unsigned int vertex_n = 0;
-                           vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                           ++vertex_n)
+                      for (const unsigned int vertex_n : cell->vertex_indices())
                         {
                           this_cell.vertices[vertex_n] =
                             cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
-                          this_cell.vertices[vertex_n + GeometryInfo<dim-1>::vertices_per_cell] =
+                          this_cell.vertices[vertex_n + cell->n_vertices()] =
                             cell->vertex_index(vertex_n) +
                             (cell_layer + 1) * sphere_mesh.n_vertices();
                         }
@@ -176,9 +174,7 @@ namespace aspect
                       if (cell_layer == 0)
                         {
                           CellData<dim-1> face;
-                          for (unsigned int vertex_n = 0;
-                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                               ++vertex_n)
+                          for (const unsigned int vertex_n : cell->vertex_indices())
                             face.vertices[vertex_n] =
                               cell->vertex_index(vertex_n) + cell_layer * sphere_mesh.n_vertices();
                           face.boundary_id = 0;
@@ -191,9 +187,7 @@ namespace aspect
                       if (cell_layer == R_values.size()-2)
                         {
                           CellData<dim-1> face;
-                          for (unsigned int vertex_n = 0;
-                               vertex_n < GeometryInfo<dim-1>::vertices_per_cell;
-                               ++vertex_n)
+                          for (const unsigned int vertex_n : cell->vertex_indices())
                             face.vertices[vertex_n] =
                               cell->vertex_index(vertex_n) +
                               (cell_layer + 1) * sphere_mesh.n_vertices();
@@ -279,20 +273,17 @@ namespace aspect
       if (phi == 360)
         {
           const types::boundary_id s[] = { 0, 1 };
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else if (phi == 90 && dim == 3)
         {
           const types::boundary_id s[] = { 0, 1, 2, 3, 4};
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
       else
         {
           const types::boundary_id s[] = { 0, 1, 2, 3 };
-          return std::set<types::boundary_id>(&s[0],
-                                              &s[sizeof(s)/sizeof(s[0])]);
+          return std::set<types::boundary_id>(std::begin(s), std::end(s));
         }
     }
 
@@ -314,11 +305,11 @@ namespace aspect
                 };
 
             if (phi == 360)
-              return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                               &mapping[2]);
+              return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                               std::begin(mapping)+2);
             else
-              return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                               &mapping[4]);
+              return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                               std::begin(mapping)+4);
           }
 
           case 3:
@@ -330,8 +321,8 @@ namespace aspect
                       std::pair<std::string,types::boundary_id>("top",    1)
                     };
 
-                return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                                 &mapping[2]);
+                return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                                 std::end(mapping));
               }
             else if (phi == 90)
               {
@@ -343,8 +334,8 @@ namespace aspect
                       std::pair<std::string,types::boundary_id>("south",  4)
                     };
 
-                return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                                 &mapping[5]);
+                return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                                 std::end(mapping));
               }
             else
               Assert (false, ExcNotImplemented());
@@ -368,6 +359,47 @@ namespace aspect
           periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2, 3), 1) );
         }
       return periodic_boundaries;
+    }
+
+
+
+    template <int dim>
+    void
+    SphericalShell<dim>::adjust_positions_for_periodicity (Point<dim> &position,
+                                                           const ArrayView<Point<dim>> &connected_positions) const
+    {
+      AssertThrow(dim == 2,
+                  ExcMessage("Periodic boundaries currently "
+                             "only work with 2D spherical shell."));
+      AssertThrow(phi == 90,
+                  ExcMessage("Periodic boundaries currently "
+                             "only work with 90 degree opening angle in spherical shell."));
+
+      if (periodic)
+        {
+          // define a rotation matrix for the new position depending on the boundary
+          Tensor<2,dim> rotation_matrix;
+
+          if (position[0] < 0.)
+            {
+              rotation_matrix[0][1] = 1.;
+              rotation_matrix[1][0] = -1.;
+            }
+          else if (position[1] < 0.)
+            {
+              rotation_matrix[0][1] = -1.;
+              rotation_matrix[1][0] = 1.;
+            }
+          else
+            return;
+
+          position = rotation_matrix * position;
+
+          for (auto &connected_position: connected_positions)
+            connected_position = rotation_matrix * connected_position;
+        }
+
+      return;
     }
 
 

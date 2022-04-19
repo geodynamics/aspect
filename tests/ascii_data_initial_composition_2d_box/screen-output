@@ -115,7 +115,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 
 *** Timestep 9:  t=732284 years, dt=80478.7 years
    Solving temperature system... 20 iterations.
-   Solving C_1 system ... 58 iterations.
+   Solving C_1 system ... 45 iterations.
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 15+0 iterations.
 

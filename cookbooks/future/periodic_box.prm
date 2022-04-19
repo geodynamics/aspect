@@ -1,3 +1,6 @@
+# This is a simple 2d setup that is periodic in x direction, which
+# requires removing the nullspace (here we use "net x translation")
+
 set Dimension = 2
 set CFL number                             = 1.0
 set End time                               = 1e9

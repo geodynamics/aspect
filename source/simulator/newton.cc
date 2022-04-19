@@ -53,8 +53,10 @@ namespace aspect
 
     if (this->get_material_model().is_compressible())
       {
-        assemblers.stokes_preconditioner.push_back(
-          std::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
+        // The compressible part of the preconditioner is only necessary if we use the simplified A block
+        if (this->get_parameters().use_full_A_block_preconditioner == false)
+          assemblers.stokes_preconditioner.push_back(
+            std::make_unique<aspect::Assemblers::StokesCompressiblePreconditioner<dim>>());
 
         assemblers.stokes_system.push_back(
           std::make_unique<aspect::Assemblers::NewtonStokesCompressibleStrainRateViscosityTerm<dim>>());
@@ -180,8 +182,8 @@ namespace aspect
           prm.declare_entry ("Maximum linear Stokes solver tolerance", "0.9",
                              Patterns::Double (0., 1.),
                              "The linear Stokes solver tolerance is dynamically chosen for the Newton solver, based "
-                             "on the Eisenstat walker 1994 paper (https://doi.org/10.1137/0917003), equation 2.2. "
-                             "Because this value can become larger then one, we limit this value by this parameter.");
+                             "on the Eisenstat Walker (1994) paper (https://doi.org/10.1137/0917003), equation 2.2. "
+                             "Because this value can become larger than one, we limit this value by this parameter.");
 
           prm.declare_entry ("Stabilization preconditioner", "SPD",
                              Patterns::Selection ("SPD|PD|symmetric|none"),

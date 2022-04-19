@@ -44,13 +44,13 @@ Number of degrees of freedom: 2,546 (1,562+203+781)
      Heat fluxes through boundary parts: 4.548e-12 W, 0 W, 0 W, 0.4997 W
      Writing depth average:              output-maximum_refinement_function/depth_average
 
-Number of active cells: 256 (on 7 levels)
-Number of degrees of freedom: 4,048 (2,486+319+1,243)
+Number of active cells: 280 (on 7 levels)
+Number of degrees of freedom: 4,432 (2,722+349+1,361)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system... 31+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function/solution/solution-00003
@@ -59,13 +59,13 @@ Number of degrees of freedom: 4,048 (2,486+319+1,243)
      Heat fluxes through boundary parts: 4.548e-12 W, 0 W, 0 W, 0.2496 W
      Writing depth average:              output-maximum_refinement_function/depth_average
 
-Number of active cells: 400 (on 8 levels)
-Number of degrees of freedom: 6,284 (3,862+491+1,931)
+Number of active cells: 448 (on 8 levels)
+Number of degrees of freedom: 7,032 (4,322+549+2,161)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 32+0 iterations.
+   Solving Stokes system... 34+0 iterations.
 
    Postprocessing:
      Writing graphical output:           output-maximum_refinement_function/solution/solution-00004
@@ -74,8 +74,8 @@ Number of degrees of freedom: 6,284 (3,862+491+1,931)
      Heat fluxes through boundary parts: 4.548e-12 W, 0 W, 0 W, 0.2496 W
      Writing depth average:              output-maximum_refinement_function/depth_average
 
-Number of active cells: 568 (on 9 levels)
-Number of degrees of freedom: 8,884 (5,462+691+2,731)
+Number of active cells: 616 (on 9 levels)
+Number of degrees of freedom: 9,632 (5,922+749+2,961)
 
 *** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
@@ -104,8 +104,8 @@ Number of degrees of freedom: 8,884 (5,462+691+2,731)
      Heat fluxes through boundary parts: 4.548e-12 W, 0 W, 0 W, 0.2496 W
      Writing depth average:              output-maximum_refinement_function/depth_average
 
-Number of active cells: 400 (on 8 levels)
-Number of degrees of freedom: 6,284 (3,862+491+1,931)
+Number of active cells: 448 (on 8 levels)
+Number of degrees of freedom: 7,032 (4,322+549+2,161)
 
 Termination requested by criterion: end time
 

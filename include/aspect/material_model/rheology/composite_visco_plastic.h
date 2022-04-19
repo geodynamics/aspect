@@ -138,8 +138,8 @@ namespace aspect
           DruckerPragerParameters drucker_prager_parameters;
 
           unsigned int number_of_compositions;
-          double min_viscosity;
-          double max_viscosity;
+          double minimum_viscosity;
+          double maximum_viscosity;
 
           double min_strain_rate;
           double strain_rate_residual_threshold;

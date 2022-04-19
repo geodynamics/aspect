@@ -381,15 +381,13 @@ namespace aspect
         // wants a function that represents all components of the
         // solution vector, so create such a function object
         // that is simply zero for all velocity components
-        auto lambda = [&](const Point<dim> &p) -> double
+        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+          [&](const Point<dim> &p) -> double
         {
           return adiabatic_conditions->pressure(p);
-        };
-
-        VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-          lambda,
-          pressure_comp,
-          introspection.n_components);
+        },
+        pressure_comp,
+        introspection.n_components);
 
         VectorTools::interpolate (*mapping, dof_handler,
                                   vector_function_object,
@@ -413,7 +411,7 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
-        QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+        const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
 
         Utilities::project_cellwise<dim,LinearAlgebra::BlockVector>(*mapping,
                                                                     dof_handler,

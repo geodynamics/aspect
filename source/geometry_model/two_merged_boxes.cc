@@ -41,32 +41,32 @@ namespace aspect
       // iterate over all active cells and (re)set the boundary indicators
       for (const auto &cell : triangulation.active_cell_iterators())
         {
-
           // first set the default boundary indicators
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
               cell->face(f)->set_boundary_id (f);
 
+          // Then for individual faces set the boundary indicators in specific ways:
           if (cell->face(0)->at_boundary())
             // set the lithospheric part of the left boundary to indicator 2*dim
-            if (cell->face(0)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
+            if (cell->face(0)->vertex(cell->face(0)->n_vertices()-1)[dim-1] > height_lith)
               cell->face(0)->set_boundary_id (2*dim);
 
           if (cell->face(1)->at_boundary())
             // set the lithospheric part of the right boundary to indicator 2*dim+1
-            if (cell->face(1)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
+            if (cell->face(1)->vertex(cell->face(1)->n_vertices()-1)[dim-1] > height_lith)
               cell->face(1)->set_boundary_id (2*dim+1);
 
           if (dim==3)
             {
               // set the lithospheric part of the front boundary to indicator 2*dim+2
               if (cell->face(2)->at_boundary())
-                if (cell->face(2)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
+                if (cell->face(2)->vertex(cell->face(2)->n_vertices()-1)[dim-1] > height_lith)
                   cell->face(2)->set_boundary_id (2*dim+2);
 
               // set the lithospheric part of the back boundary to indicator 2*dim+3
               if (cell->face(3)->at_boundary())
-                if (cell->face(3)->vertex(GeometryInfo<dim-1>::vertices_per_cell-1)[dim-1] > height_lith)
+                if (cell->face(3)->vertex(cell->face(3)->n_vertices()-1)[dim-1] > height_lith)
                   cell->face(3)->set_boundary_id (2*dim+3);
             }
         }
@@ -162,8 +162,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("right lithosphere",5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -181,8 +181,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("back lithosphere",  9)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 
@@ -206,6 +206,33 @@ namespace aspect
           }
       return periodic_boundaries;
     }
+
+
+
+    template <int dim>
+    void
+    TwoMergedBoxes<dim>::adjust_positions_for_periodicity (Point<dim> &position,
+                                                           const ArrayView<Point<dim>> &connected_positions) const
+    {
+      for (unsigned int i = 0; i < dim; ++i)
+        if (periodic[i])
+          {
+            if (position[i] < lower_box_origin[i])
+              {
+                position[i] += extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] += extents[i];
+              }
+            else if (position[i] > lower_box_origin[i] + extents[i])
+              {
+                position[i] -= extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] -= extents[i];
+              }
+          }
+    }
+
+
 
     template <int dim>
     Point<dim>
@@ -504,7 +531,7 @@ namespace aspect
                                    "respectively. In 3d, boundary "
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
                                    "and top boundaries (see also the documentation of the deal.II class "
-                                   "``GeometryInfo''), while indicators 6, 7, 8 and 9 denote the left, "
+                                   "``ReferenceCell''), while indicators 6, 7, 8 and 9 denote the left, "
                                    "right, front and back upper parts of the vertical boundaries, respectively. "
                                    "You can also use symbolic names ``left'', ``right'', "
                                    "``left lithosphere'', etc., to refer to these boundaries in input files."

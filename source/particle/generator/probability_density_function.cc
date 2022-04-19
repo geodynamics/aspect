@@ -151,7 +151,7 @@ namespace aspect
 
         // In the simplest case we do not even need a FEValues object, because
         // using cell->center() and cell->measure() would be equivalent. This
-        // fails however for higher-order mappings like we use.
+        // fails however for higher-order mappings.
         FEValues<dim> fe_values (this->get_mapping(),
                                  this->get_fe(),
                                  quadrature_formula,

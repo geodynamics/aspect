@@ -115,9 +115,7 @@ subsection Postprocess
 
     subsection Interpolator
       subsection Bilinear least squares
-        set Use limiter = true
-        set Global particle property minimum = -1, 1
-        set Global particle property maximum = 1, 1e6
+        set Use linear least squares limiter = true
       end
     end
   end

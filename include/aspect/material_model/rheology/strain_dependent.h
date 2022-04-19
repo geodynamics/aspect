@@ -26,6 +26,7 @@
 #include <aspect/simulator_access.h>
 
 #include<deal.II/fe/component_mask.h>
+#include <deal.II/matrix_free/fe_point_evaluation.h>
 
 namespace aspect
 {
@@ -216,6 +217,13 @@ namespace aspect
            * A prefactor of viscosity used in the strain healing calculation.
            */
           double strain_healing_temperature_dependent_prefactor;
+
+          /**
+           * We cache the evaluator that is necessary to evaluate the velocity
+           * gradients. By caching the evaluator, we can avoid recreating it
+           * every time we need it.
+           */
+          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
       };
     }
   }

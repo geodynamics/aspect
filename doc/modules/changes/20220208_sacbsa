@@ -1,0 +1,6 @@
+Changed: The global limiter for the least squares particle interpolation
+plugin was replaced by a bounds preserving slope limiter that respects
+local bounds on each cell. The global limiter options have been removed
+from the parameter file options.
+<br>
+(Mack Gregory, Gerry Puckett, 2022/02/08)

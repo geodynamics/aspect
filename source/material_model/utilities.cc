@@ -612,11 +612,11 @@ namespace aspect
             {
               first_natural_variable = column_name;
               in >> column_name;
-              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be T(K)."))
+              AssertThrow(column_name == "P(bar)", ExcMessage("The second column name in PerpleX lookup file " + filename + " should be P(bar)."))
             }
           else
             {
-              AssertThrow(false, ExcMessage("The first column name in PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
+              AssertThrow(false, ExcMessage("The first column name in the PerpleX lookup file " + filename + " should be P(bar) or T(K)."))
             }
 
           for (unsigned int n=2; n<n_columns; n++)
@@ -842,6 +842,10 @@ namespace aspect
                                   const std::vector<double> &densities,
                                   const bool return_as_fraction)
       {
+        Assert(masses.size() == densities.size(),
+               ExcMessage ("The mass fractions and densities vectors used for computing "
+                           "volumes from masses have to have the same length!"));
+
         const unsigned int n_fields = masses.size();
         std::vector<double> volumes(n_fields);
 

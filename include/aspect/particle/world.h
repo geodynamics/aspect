@@ -391,16 +391,6 @@ namespace aspect
         apply_particle_per_cell_bounds();
 
         /**
-         * TODO: Implement this for arbitrary meshes.
-         * This function checks if the @p lost_particles moved across a
-         * periodic boundary and tries to reinsert them into
-         * @p moved_particles_cell or @p moved_particles_domain. All particles
-         * that can not be found are discarded.
-         */
-        void
-        move_particles_back_into_mesh();
-
-        /**
          * Advect the particle positions by one integration step. Needs to be
          * called until integrator->continue() returns false.
          */

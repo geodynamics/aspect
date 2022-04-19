@@ -255,7 +255,7 @@ namespace aspect
     // compute and remove net linear momentum from velocity field, by computing
     // \int \rho (v + v_const) = 0
 
-    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
     const unsigned int n_q_points = quadrature.size();
     FEValues<dim> fe(*mapping, finite_element, quadrature,
                      UpdateFlags(update_quadrature_points | update_JxW_values | update_values | update_gradients));
@@ -364,8 +364,8 @@ namespace aspect
     // \int \rho u \cdot r_orth = \omega  * \int \rho x^2    ( 2 dimensions)
     // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
-    QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
-    QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
+    const QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
 
     const unsigned int n_q_points = (limit_to_top_faces == false) ? quadrature.size() : surface_quadrature.size();
     UpdateFlags flags = update_quadrature_points | update_JxW_values | update_values | update_gradients;
@@ -403,7 +403,7 @@ namespace aspect
               // We only want the output at the top boundary, so only compute it if the current cell
               // has a face at the top boundary.
               bool cell_at_top_boundary = false;
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 if (cell->at_boundary(f) &&
                     (geometry_model->translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top"))
                   {

@@ -121,8 +121,8 @@ namespace aspect
          * which involves a division by the strain rate. Units: 1/s.
          */
         double min_strain_rate;
-        double min_visc;
-        double max_visc;
+        double minimum_viscosity;
+        double maximum_viscosity;
         double veff_coefficient;
         double ref_visc;
 

@@ -1,0 +1,5 @@
+Removed: The input parameter 'First data file model time' of the 'ascii data'
+boundary condition plugin has been removed. It was not well defined what
+the plugin returned before this time was reached.
+<br>
+(Rene Gassmoeller, 2022/02/17)

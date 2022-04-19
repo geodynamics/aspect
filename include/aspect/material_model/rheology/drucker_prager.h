@@ -76,6 +76,7 @@ namespace aspect
            * and this number will be checked against the parsed parameters.
            *
            * @param [in] prm The ParameterHandler to read from.
+           * @param expected_n_phases_per_composition Optional list of number of phases.
            */
           void
           parse_parameters (ParameterHandler &prm,

@@ -1,0 +1,116 @@
+#########################################################
+
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 0
+set Use years in output instead of seconds = false
+set Output directory                       = output
+set CFL number                             = 0.25
+set Maximum time step                      = 0.25
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 1
+    set Y extent = 1
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = box
+
+  subsection Box
+    set Bottom temperature = 0
+    set Top temperature    = 0
+  end
+end
+
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = left, right, bottom,top
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 1
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+
+  subsection Function
+    set Variable names      = x,z
+    set Function expression = 0
+  end
+end
+
+subsection Material model
+  set Model name = multicomponent
+  subsection Multicomponent
+    set Densities = 1, 2, 0
+    set Viscosities = 1, 1000, 0.001
+    set Viscosity averaging scheme = geometric
+    set Thermal expansivities = 0
+  end
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 4
+  set Time steps between mesh refinement = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = visualization, velocity statistics, composition statistics, pressure statistics, material statistics, global statistics, particles
+
+  subsection Visualization
+    set Output format = none
+  end
+
+  subsection Particles
+    set Time between data output = 0
+    set Data output format = none
+    set List of particle properties = velocity, initial composition, initial position #, integrated strain
+    set Interpolation scheme = bilinear least squares
+    set Update ghost particles = true
+    set Particle generator name = reference cell
+    subsection Generator
+      subsection Reference cell
+        set Number of particles per cell per direction = 3
+      end
+    end
+    subsection Interpolator
+      subsection Bilinear least squares
+        set Use linear least squares limiter = true
+      end
+    end
+
+  end
+
+end
+
+# Here, we track compositional fields via active particle particles.
+# The initial composition assigned to the particles is 'mapped'
+# to the particles at each time step.  This property is accessed in
+# the material model through a compositional field (standard method)
+# whose values are interpolated from the particles.
+subsection Compositional fields
+  set Number of fields = 2
+  set Names of fields = sphere, air
+  set Compositional field methods = particles, particles
+  set Mapped particle properties = sphere:initial sphere, air: initial air
+end
+
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  = r=0.123456789, xc=0.5, yc=0.6
+    set Function expression = if(sqrt((x-xc)*(x-xc)+(y-yc)*(y-yc)) < r, 1, 0) ; if (y>0.75,1,0)
+  end
+end

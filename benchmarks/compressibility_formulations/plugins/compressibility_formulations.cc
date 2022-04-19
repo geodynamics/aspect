@@ -31,8 +31,8 @@ namespace aspect
   {
     /**
      * A material model that is identical to the simple compressible model,
-     * except that the density is tracked in a compositional field named
-     * 'density_field' using the prescribed field advection method. It also
+     * except that the density is tracked in a compositional field of type
+     * 'density' using the prescribed field advection method. It also
      * allows some modification to the density and thermal expansivity
      * calculation for the compressibility benchmarks.
      *
@@ -145,7 +145,7 @@ namespace aspect
     {
       base_model->evaluate(in,out);
 
-      const unsigned int density_field_index = this->introspection().compositional_index_for_name("density_field");
+      const unsigned int density_field_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
@@ -275,9 +275,9 @@ namespace aspect
     ASPECT_REGISTER_MATERIAL_MODEL(CompressibilityFormulations,
                                    "compressibility formulations",
                                    "A material model that is identical to the simple compressible model, "
-                                   " except that the density is tracked in a compositional field named "
-                                   " 'density_field' using the prescribed field advection method. It also "
-                                   " allows some modification to the density and thermal expansivity "
-                                   " calculation for the compressibility benchmarks.")
+                                   "except that the density is tracked in a compositional field of type "
+                                   "'density' using the prescribed field advection method. It also "
+                                   "allows some modification to the density and thermal expansivity "
+                                   "calculation for the compressibility benchmarks.")
   }
 }

@@ -309,6 +309,27 @@ namespace aspect
             get_periodic_boundary_pairs () const;
 
         /**
+         * Adjust positions to be inside the domain considering periodic boundary conditions.
+         *
+         * This function checks if @p position is outside the domain and if it could
+         * have reasonably crossed a periodic boundary. If so, it will adjust the position
+         * as described by the periodic boundary (e.g. a translation in a box, or a rotation
+         * in a spherical shell). Afterwards, if it adjusted @p position, it will also adjust
+         * all locations given in @p connected_positions (if any where given) in the same way.
+         * Adjusting @p connected_positions allows to adjust related temporary variables,
+         * e.g. the intermediate results of an ordinary differential equation solver
+         * that are used to compute differences/directions between points.
+         *
+         * This function does not check that the position after the adjustment is inside the
+         * domain; to check this is the responsibility of the calling function.
+         * A common application of this function are particles that crossed a periodic boundary.
+         */
+        virtual
+        void
+        adjust_positions_for_periodicity (Point<dim> &position,
+                                          const ArrayView<Point<dim>> &connected_positions = {}) const;
+
+        /**
          * If true, the geometry contains cells with boundaries that are not
          * straight and have a deal.II boundary object attached to it. If the
          * return value is @p false, certain operation can be optimized.The

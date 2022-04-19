@@ -1,0 +1,14 @@
+Fixed: The entropy adiabat benchmark did not include
+thermal conduction along the adiabat. This has been fixed
+by splitting the energy equation into two parts: Conduction
+is solved using the temperature field and the 'prescribed
+field with diffusion' method, and all remaining terms are
+included when solving the equation for the entropy (as a
+compositional field). To show that this works correctly,
+there are now three more variations of the benchmark,
+modeling conduction starting from an adiabatic profile,
+conduction of a half-space without adiabatic heating, and
+a version of the entropy adiabat benchmark with increased
+conduction (all using this new method).
+<br>
+(Juliane Dannberg, 2022/03/28)

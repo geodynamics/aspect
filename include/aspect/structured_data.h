@@ -388,15 +388,6 @@ namespace aspect
         int current_file_number;
 
         /**
-         * Time from which on the data file with number 'First data file
-         * number' is used as boundary condition. Previous to this time, 0 is
-         * returned for every field. Depending on the setting of the global
-         * 'Use years in output instead of seconds' flag in the input file,
-         * this number is either interpreted as seconds or as years."
-         */
-        double first_data_file_model_time;
-
-        /**
          * Number of the first data file to be loaded when the model time is
          * larger than 'First data file model time'.
          */
@@ -470,7 +461,7 @@ namespace aspect
      * A base class that implements initial conditions determined from a
      * AsciiData input file.
      */
-    template <int dim>
+    template <int dim, int spacedim=dim>
     class AsciiDataInitial : public Utilities::AsciiDataBase<dim>, public SimulatorAccess<dim>
     {
       public:
@@ -492,7 +483,7 @@ namespace aspect
          * Returns the data component at the given position.
          */
         double
-        get_data_component (const Point<dim>                    &position,
+        get_data_component (const Point<spacedim>               &position,
                             const unsigned int                   component) const;
 
       protected:
@@ -500,7 +491,7 @@ namespace aspect
          * Pointer to an object that reads and processes data we get from text
          * files.
          */
-        std::unique_ptr<aspect::Utilities::StructuredDataLookup<dim>> lookup;
+        std::unique_ptr<aspect::Utilities::StructuredDataLookup<spacedim>> lookup;
     };
 
 

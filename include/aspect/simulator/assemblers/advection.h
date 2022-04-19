@@ -34,7 +34,7 @@ namespace aspect
      * equation for the current cell.
      */
     template <int dim>
-    class AdvectionSystem : public Assemblers::Interface<dim>,
+    class AdvectionSystem : public Assemblers::Interface<dim>, public Assemblers::AdvectionStabilizationInterface<dim>,
       public SimulatorAccess<dim>
     {
       public:

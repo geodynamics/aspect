@@ -58,7 +58,7 @@ inline void compare_tables_approx(
     {
       for (unsigned int j=0; j<computed.n_cols(); ++j)
         {
-          INFO("array index i,j=" << i << "," << j << ": ");
+          INFO("array index i,j=" << i << ',' << j << ": ");
           REQUIRE(computed[i][j] == Approx(expected[i][j]));
         }
     }

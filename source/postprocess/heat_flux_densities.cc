@@ -49,7 +49,7 @@ namespace aspect
       // Finally, sum over the processors and compute the ratio between the
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f))
               {
                 const types::boundary_id boundary_indicator
@@ -111,7 +111,7 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << p->second << " " << unit
+          screen_text << p->second << ' ' << unit
                       << (index == global_boundary_flux_densities.size()-1 ? "" : ", ");
         }
 

@@ -114,14 +114,6 @@ namespace aspect
                                      const Tensor<2,3> &rotation_matrix) const;
 
           /**
-           * A function that returns the corresponding euler angles for a
-           * rotation described by rotation axis and angle.
-           */
-          Tensor<2,3>
-          rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
-                                     const double rotation_angle) const;
-
-          /**
            * Convert a tensor of rank 1 and dimension in to rank 1 and
            * dimension out. If $out < in$ the last elements will be discarded,
            * if $out > in$ zeroes will be appended to fill the tensor.
@@ -287,7 +279,7 @@ namespace aspect
         /**
          * Scale the velocity boundary condition by a scalar factor.
          */
-        double scale_factor;
+        double velocity_scaling_factor;
 
         /**
          * Two user defined points that prescribe the plane from which the 2D

@@ -21,6 +21,7 @@
 #include <aspect/particle/integrator/rk_2.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/particle/world.h>
+#include <aspect/geometry_model/interface.h>
 
 namespace aspect
 {
@@ -64,6 +65,8 @@ namespace aspect
                           "to the number of particles to advect. For some unknown reason they are different, "
                           "most likely something went wrong in the calling function."));
 
+        const bool geometry_has_periodic_boundary = (this->get_geometry_model().get_periodic_boundary_pairs().size() != 0);
+
         typename std::vector<Tensor<1,dim>>::const_iterator old_velocity = old_velocities.begin();
         typename std::vector<Tensor<1,dim>>::const_iterator velocity = velocities.begin();
 
@@ -75,12 +78,18 @@ namespace aspect
             if (integrator_substep == 0)
               {
                 const Tensor<1,dim> k1 = dt * (*old_velocity);
-                const Point<dim> loc0 = it->get_location();
+                Point<dim> loc0 = it->get_location();
+                Point<dim> new_location = loc0 + 0.5 * k1;
+
+                // Check if we crossed a periodic boundary and if necessary adjust positions
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location,
+                                                                              ArrayView<Point<dim>>(loc0));
 
                 for (unsigned int i=0; i<dim; ++i)
                   properties[property_index_old_location + i] = loc0[i];
 
-                it->set_location(loc0 + 0.5 * k1);
+                it->set_location(new_location);
               }
             else if (integrator_substep == 1)
               {
@@ -90,7 +99,13 @@ namespace aspect
                 for (unsigned int i=0; i<dim; ++i)
                   loc0[i] = properties[property_index_old_location + i];
 
-                it->set_location(loc0 + k2);
+                Point<dim> new_location = loc0 + k2;
+
+                // no need to adjust loc0, because this is the last integrator step
+                if (geometry_has_periodic_boundary)
+                  this->get_geometry_model().adjust_positions_for_periodicity(new_location);
+
+                it->set_location(new_location);
               }
             else
               {

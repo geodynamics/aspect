@@ -68,7 +68,7 @@ namespace aspect
       // and the face area.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->face(f)->at_boundary())
               {
                 fe_face_values.reinit (cell, f);
@@ -189,9 +189,9 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << max_velocity->second *unit_scale_factor << " " << units << ", "
-                      << min_velocity->second *unit_scale_factor << " " << units << ", "
-                      << rms->second *unit_scale_factor << " " << units
+          screen_text << max_velocity->second *unit_scale_factor << ' ' << units << ", "
+                      << min_velocity->second *unit_scale_factor << ' ' << units << ", "
+                      << rms->second *unit_scale_factor << ' ' << units
                       << (index == global_max_vel.size()-1 ? "" : ", ");
         }
 

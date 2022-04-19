@@ -77,7 +77,7 @@ LIST(APPEND CMAKE_MODULE_PATH
   )
 
 FIND_PACKAGE(deal.II 9.3.0 QUIET
-  HINTS ${deal.II_DIR} ${DEAL_II_DIR} ../ ../../ $ENV{DEAL_II_DIR}
+  HINTS ${deal.II_DIR} ${DEAL_II_DIR} $ENV{DEAL_II_DIR}
   )
 IF(NOT ${deal.II_FOUND})
   MESSAGE(FATAL_ERROR "\n*** Could not find a suitably recent version of deal.II. ***\n"
@@ -287,11 +287,13 @@ IF(EXISTS ${CMAKE_SOURCE_DIR}/unit_tests/CMakeLists.txt)
   ADD_DEPENDENCIES(test run_unit_tests)
 ENDIF()
 
-IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
-  AND ${ASPECT_NEED_TEST_CONFIGURE})
-
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt)
   # Hook up the tests:
   FILE(APPEND ${CMAKE_BINARY_DIR}/CTestTestfile.cmake "SUBDIRS(tests)\n")
+ENDIF()
+
+IF(EXISTS ${CMAKE_SOURCE_DIR}/tests/CMakeLists.txt
+  AND ${ASPECT_NEED_TEST_CONFIGURE})
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests)
 
@@ -486,6 +488,15 @@ DEAL_II_SETUP_TARGET(${TARGET})
 IF (NOT CMAKE_BUILD_TYPE MATCHES Debug)
     ADD_DEFINITIONS("-DNDEBUG")
 ENDIF()
+
+# find zlib if it is installed in a non-standard location
+SET(ZLIB_DIR "" CACHE PATH "An optional hint to a ZLIB installation")
+IF("${ZLIB_DIR}" STREQUAL "")
+  SET(ZLIB_DIR "$ENV{ZLIB_DIR}" CACHE PATH "An optional hint to a ZLIB installation" FORCE)
+ENDIF()
+FIND_PACKAGE(ZLIB)
+INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(${TARGET} ${ZLIB_LIBRARY})
 
 FIND_PACKAGE(PerpleX QUIET
   HINTS ./contrib/perplex/install/ ../ ../../ ${PERPLEX_DIR} $ENV{PERPLEX_DIR})

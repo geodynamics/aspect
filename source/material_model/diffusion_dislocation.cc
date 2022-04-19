@@ -72,11 +72,11 @@ namespace aspect
           // Start with the assumption that all strain is accommodated by diffusion creep:
           // If the diffusion creep prefactor is very small, that means that the diffusion viscosity is very large.
           // In this case, use the maximum viscosity instead to compute the starting guess.
-          double stress_ii = (prefactor_stress_diffusion > (0.5 / max_visc)
+          double stress_ii = (prefactor_stress_diffusion > (0.5 / maximum_viscosity)
                               ?
                               edot_ii/prefactor_stress_diffusion
                               :
-                              0.5 / max_visc);
+                              0.5 / maximum_viscosity);
           double strain_rate_residual = 2*strain_rate_residual_threshold;
           double strain_rate_deriv = 0;
           unsigned int stress_iteration = 0;
@@ -128,7 +128,7 @@ namespace aspect
 
                       const double diffusion_viscosity = std::min(std::max(diffusion_prefactor * diffusion_grain_size_dependence
                                                                            * diffusion_strain_rate_dependence * diffusion_T_and_P_dependence,
-                                                                           min_visc), max_visc);
+                                                                           minimum_viscosity), maximum_viscosity);
 
                       const double dislocation_prefactor = 0.5 * std::pow(dislocation_creep_parameters.prefactor,-1.0/dislocation_creep_parameters.stress_exponent);
                       const double dislocation_strain_rate_dependence = std::pow(dislocation_strain_rate, (1.-dislocation_creep_parameters.stress_exponent)/dislocation_creep_parameters.stress_exponent);
@@ -137,7 +137,7 @@ namespace aspect
 
                       const double dislocation_viscosity = std::min(std::max(dislocation_prefactor * dislocation_strain_rate_dependence
                                                                              * dislocation_T_and_P_dependence,
-                                                                             min_visc), max_visc);
+                                                                             minimum_viscosity), maximum_viscosity);
 
                       diffusion_strain_rate = dislocation_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
                       dislocation_strain_rate = diffusion_viscosity / (diffusion_viscosity + dislocation_viscosity) * edot_ii;
@@ -161,7 +161,7 @@ namespace aspect
             }
 
           // The effective viscosity, with minimum and maximum bounds
-          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, min_visc), max_visc);
+          composition_viscosities[j] = std::min(std::max(stress_ii/edot_ii/2, minimum_viscosity), maximum_viscosity);
         }
       return composition_viscosities;
     }
@@ -421,8 +421,8 @@ namespace aspect
           // Reference and minimum/maximum values
           reference_T = prm.get_double("Reference temperature");
           min_strain_rate = prm.get_double("Minimum strain rate");
-          min_visc = prm.get_double ("Minimum viscosity");
-          max_visc = prm.get_double ("Maximum viscosity");
+          minimum_viscosity = prm.get_double ("Minimum viscosity");
+          maximum_viscosity = prm.get_double ("Maximum viscosity");
           veff_coefficient = prm.get_double ("Effective viscosity coefficient");
           ref_visc = prm.get_double ("Reference viscosity");
 

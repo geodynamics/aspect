@@ -48,56 +48,7 @@ namespace aspect
         const Tensor<1,3> point_one = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_one));
         const Tensor<1,3> point_two = cartesian_surface_coordinates(convert_tensor<2,3>(surface_point_two));
 
-        // Set up the normal vector of an unrotated 2D spherical shell
-        // that by default lies in the x-y plane.
-        const double normal[3] = {0.0,0.0,1.0};
-        const Tensor<1,3> unrotated_normal_vector (normal);
-
-        // Compute the normal vector of the plane that contains
-        // the origin and the two user-specified points
-        Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one,point_two);
-
-        rotated_normal_vector /= rotated_normal_vector.norm();
-
-        if ((rotated_normal_vector - unrotated_normal_vector).norm() > 1e-3)
-          {
-            // Calculate the crossing line of the two normals,
-            // which will be the rotation axis to transform the one
-            // normal into the other
-            Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector,rotated_normal_vector);
-            rotation_axis /= rotation_axis.norm();
-
-            // Calculate the rotation angle from the inner product rule
-            const double rotation_angle = std::acos(rotated_normal_vector*unrotated_normal_vector);
-
-            rotation_matrix = rotation_matrix_from_axis(rotation_axis,rotation_angle);
-
-            // Now apply the rotation that will project point_one onto the known point
-            // (0,1,0).
-            const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * point_one;
-
-            const double point_one_coords[3] = {0.0,1.0,0.0};
-            const Tensor<1,3> final_point_one (point_one_coords);
-
-            const double second_rotation_angle = std::acos(rotated_point_one*final_point_one);
-            Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one,rotated_point_one);
-            second_rotation_axis /= second_rotation_axis.norm();
-
-            const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis,second_rotation_angle);
-
-            // The final rotation used for the model will be the combined
-            // rotation of the two operation above. This is achieved by a
-            // matrix multiplication of the rotation matrices.
-            // This concatenation of rotations is the reason for using a
-            // rotation matrix instead of a combined rotation_axis + angle
-            rotation_matrix = rotation_matrix * second_rotation_matrix;
-          }
-        else
-          {
-            rotation_matrix[0][0] = 1.0;
-            rotation_matrix[1][1] = 1.0;
-            rotation_matrix[2][2] = 1.0;
-          }
+        rotation_matrix = Utilities::compute_rotation_matrix_for_slice(point_one, point_two);
       }
 
 
@@ -132,8 +83,8 @@ namespace aspect
                    << std::endl <<  std::setprecision(2)
                    << "   Model will be rotated by " << -rotation_angle * 180.0 / numbers::PI
                    << " degrees around axis " << rotation_axis << std::endl
-                   << "   The ParaView rotation angles are: " << angles[0] << " " << angles [1] << " " << angles[2] << std::endl
-                   << "   The inverse ParaView rotation angles are: " << back_angles[0] << " " << back_angles [1] << " " << back_angles[2]
+                   << "   The ParaView rotation angles are: " << angles[0] << ' ' << angles [1] << ' ' << angles[2] << std::endl
+                   << "   The inverse ParaView rotation angles are: " << back_angles[0] << ' ' << back_angles [1] << ' ' << back_angles[2]
 
                    << std::endl;
           }
@@ -368,26 +319,6 @@ namespace aspect
 
 
       template <int dim>
-      Tensor<2,3>
-      GPlatesLookup<dim>::rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
-                                                     const double rotation_angle) const
-      {
-        Tensor<2,3> rotation_matrix;
-        rotation_matrix[0][0] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[0] + std::cos(rotation_angle);
-        rotation_matrix[0][1] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[1] - rotation_axis[2] * std::sin(rotation_angle);
-        rotation_matrix[0][2] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[2] + rotation_axis[1] * std::sin(rotation_angle);
-        rotation_matrix[1][0] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[0] + rotation_axis[2] * std::sin(rotation_angle);
-        rotation_matrix[1][1] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[1] + std::cos(rotation_angle);
-        rotation_matrix[1][2] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[2] - rotation_axis[0] * std::sin(rotation_angle);
-        rotation_matrix[2][0] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[0] - rotation_axis[1] * std::sin(rotation_angle);
-        rotation_matrix[2][1] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[1] + rotation_axis[0] * std::sin(rotation_angle);
-        rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
-        return rotation_matrix;
-      }
-
-
-
-      template <int dim>
       double
       GPlatesLookup<dim>::rotation_axis_from_matrix (Tensor<1,3> &rotation_axis,
                                                      const Tensor<2,3> &rotation_matrix) const
@@ -611,7 +542,7 @@ namespace aspect
         (current_file_number + 1);
 
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                        << create_filename (current_file_number) << "." << std::endl << std::endl;
+                        << create_filename (current_file_number) << '.' << std::endl << std::endl;
 
       const std::string filename (create_filename (current_file_number));
       if (Utilities::fexists(filename))
@@ -636,7 +567,7 @@ namespace aspect
         {
           const std::string filename (create_filename (next_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
@@ -726,7 +657,7 @@ namespace aspect
         {
           const std::string filename (create_filename (current_file_number));
           this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookup.swap(old_lookup);
@@ -747,7 +678,7 @@ namespace aspect
 
       const std::string filename (create_filename (next_file_number));
       this->get_pcout() << std::endl << "   Loading GPlates data boundary file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
       if (Utilities::fexists(filename))
         {
           lookup.swap(old_lookup);
@@ -796,12 +727,12 @@ namespace aspect
 
       if ((this->get_time() - first_data_file_model_time >= 0.0) && (this->get_geometry_model().depth(position) <= lithosphere_thickness + magic_number))
         {
-          const Tensor<1,dim> data = lookup->surface_velocity(position);
+          const Tensor<1,dim> data = velocity_scaling_factor * lookup->surface_velocity(position);
 
           if (!time_dependent)
             return data;
 
-          const Tensor<1,dim> old_data = old_lookup->surface_velocity(position);
+          const Tensor<1,dim> old_data = velocity_scaling_factor * old_lookup->surface_velocity(position);
 
           return time_weight * data + (1 - time_weight) * old_data;
         }
@@ -899,7 +830,7 @@ namespace aspect
           first_data_file_model_time = prm.get_double ("First data file model time");
           first_data_file_number     = prm.get_integer("First data file number");
           decreasing_file_order      = prm.get_bool   ("Decreasing file order");
-          scale_factor               = prm.get_double ("Scale factor");
+          velocity_scaling_factor    = prm.get_double ("Scale factor");
           point1                     = prm.get        ("Point one");
           point2                     = prm.get        ("Point two");
           lithosphere_thickness      = prm.get_double ("Lithosphere thickness");

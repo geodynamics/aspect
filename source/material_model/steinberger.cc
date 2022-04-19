@@ -221,6 +221,50 @@ namespace aspect
 
 
     template <int dim>
+    double
+    Steinberger<dim>::
+    thermal_conductivity (const double temperature,
+                          const double pressure,
+                          const Point<dim> &position) const
+    {
+      if (conductivity_formulation == constant)
+        return thermal_conductivity_value;
+
+      else if (conductivity_formulation == p_T_dependent)
+        {
+          // Find the conductivity layer that corresponds to the depth of the evaluation point.
+          const double depth = this->get_geometry_model().depth(position);
+          unsigned int layer_index = std::distance(conductivity_transition_depths.begin(),
+                                                   std::lower_bound(conductivity_transition_depths.begin(),conductivity_transition_depths.end(), depth));
+
+          const double p_dependence = reference_thermal_conductivities[layer_index] + conductivity_pressure_dependencies[layer_index] * pressure;
+
+          // Make reasonably sure we will not compute any invalid values due to the temperature-dependence.
+          // Since both the temperature-dependence and the saturation term scale with (Tref/T), we have to
+          // make sure we can compute the square of this number. If the temperature is small enough to
+          // be close to yielding NaN values, the conductivity will be set to the maximum value anyway.
+          const double T = std::max(temperature, std::sqrt(std::numeric_limits<double>::min()) * conductivity_reference_temperatures[layer_index]);
+          const double T_dependence = std::pow(conductivity_reference_temperatures[layer_index] / T, conductivity_exponents[layer_index]);
+
+          // Function based on the theory of Roufosse and Klemens (1974) that accounts for saturation.
+          // For the Tosi formulation, the scaling should be zero so that this term is 1.
+          double saturation_function = 1.0;
+          if (1./T_dependence > 1.)
+            saturation_function = (1. - saturation_scaling[layer_index])
+                                  + saturation_scaling[layer_index] * (2./3. * std::sqrt(T_dependence) + 1./3. * 1./T_dependence);
+
+          return std::min(p_dependence * saturation_function * T_dependence, maximum_conductivity);
+        }
+      else
+        {
+          AssertThrow(false, ExcNotImplemented());
+          return numbers::signaling_nan<double>();
+        }
+    }
+
+
+
+    template <int dim>
     void
     Steinberger<dim>::evaluate(const MaterialModel::MaterialModelInputs<dim> &in,
                                MaterialModel::MaterialModelOutputs<dim> &out) const
@@ -228,15 +272,21 @@ namespace aspect
       std::vector<EquationOfStateOutputs<dim>> eos_outputs (in.n_evaluation_points(), equation_of_state.number_of_lookups());
       std::vector<std::vector<double>> volume_fractions (in.n_evaluation_points(), std::vector<double> (equation_of_state.number_of_lookups()));
 
+      // We need to make a copy of the material model inputs because we want to use the adiabatic pressure
+      // rather than the real pressure for the equations of state (to avoid numerical instabilities).
+      MaterialModel::MaterialModelInputs<dim> eos_in(in);
+      for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
+        eos_in.pressure[i] = this->get_adiabatic_conditions().pressure(in.position[i]);
+
       // Evaluate the equation of state properties over all evaluation points
-      equation_of_state.evaluate(in, eos_outputs);
+      equation_of_state.evaluate(eos_in, eos_outputs);
 
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           if (in.requests_property(MaterialProperties::viscosity))
             out.viscosities[i] = viscosity(in.temperature[i], in.pressure[i], in.composition[i], in.strain_rate[i], in.position[i]);
 
-          out.thermal_conductivities[i] = thermal_conductivity_value;
+          out.thermal_conductivities[i] = thermal_conductivity(in.temperature[i], in.pressure[i], in.position[i]);
           for (unsigned int c=0; c<in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0;
 
@@ -247,7 +297,16 @@ namespace aspect
             mass_fractions.push_back(1.0);
           else
             {
-              mass_fractions = MaterialUtilities::compute_composition_fractions(in.composition[i], *composition_mask);
+              // We only want to compute mass/volume fractions for fields that are chemical compositions.
+              std::vector<double> chemical_compositions;
+              const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+
+              for (unsigned int c=0; c<in.composition[i].size(); ++c)
+                if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
+                    || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+                  chemical_compositions.push_back(in.composition[i][c]);
+
+              mass_fractions = MaterialUtilities::compute_composition_fractions(chemical_compositions, *composition_mask);
 
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
@@ -262,10 +321,32 @@ namespace aspect
                                                                                true);
 
           MaterialUtilities::fill_averaged_equation_of_state_outputs(eos_outputs[i], mass_fractions, volume_fractions[i], i, out);
+          fill_prescribed_outputs(i, volume_fractions[i], in, out);
         }
 
       // fill additional outputs if they exist
       equation_of_state.fill_additional_outputs(in, volume_fractions, out);
+    }
+
+
+
+    template <int dim>
+    void
+    Steinberger<dim>::
+    fill_prescribed_outputs(const unsigned int q,
+                            const std::vector<double> &,
+                            const MaterialModel::MaterialModelInputs<dim> &,
+                            MaterialModel::MaterialModelOutputs<dim> &out) const
+    {
+      // set up variable to interpolate prescribed field outputs onto compositional field
+      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
+
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+          && prescribed_field_out != nullptr)
+        {
+          const unsigned int projected_density_index = this->introspection().find_composition_type(Parameters<dim>::CompositionalFieldDescription::density);
+          prescribed_field_out->prescribed_field_outputs[q][projected_density_index] = out.densities[q];
+        }
     }
 
 
@@ -338,8 +419,75 @@ namespace aspect
                              "laterally by this factor squared.");
           prm.declare_entry ("Thermal conductivity", "4.7",
                              Patterns::Double (0.),
-                             "The value of the thermal conductivity $k$. "
+                             "The value of the thermal conductivity $k$. Only used in case "
+                             "the 'constant' Thermal conductivity formulation is selected. "
                              "Units: \\si{\\watt\\per\\meter\\per\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity formulation", "constant",
+                             Patterns::Selection("constant|p-T-dependent"),
+                             "Which law should be used to compute the thermal conductivity. "
+                             "The 'constant' law uses a constant value for the thermal "
+                             "conductivity. The 'p-T-dependent' formulation uses equations "
+                             "from Stackhouse et al. (2015): First-principles calculations "
+                             "of the lattice thermal conductivity of the lower mantle "
+                             "(https://doi.org/10.1016/j.epsl.2015.06.050), and Tosi et al. "
+                             "(2013): Mantle dynamics with pressure- and temperature-dependent "
+                             "thermal expansivity and conductivity "
+                             "(https://doi.org/10.1016/j.pepi.2013.02.004) to compute the "
+                             "thermal conductivity in dependence of temperature and pressure. "
+                             "The thermal conductivity parameter sets can be chosen in such a "
+                             "way that either the Stackhouse or the Tosi relations are used. "
+                             "The conductivity description can consist of several layers with "
+                             "different sets of parameters. Note that the Stackhouse "
+                             "parametrization is only valid for the lower mantle (bridgmanite).");
+          prm.declare_entry ("Thermal conductivity transition depths", "410000, 520000, 660000",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of depth values that indicate where the transitions between "
+                             "the different conductivity parameter sets should occur in the "
+                             "'p-T-dependent' Thermal conductivity formulation (in most cases, "
+                             "this will be the depths of major mantle phase transitions). "
+                             "Units: \\si{\\meter}.");
+          prm.declare_entry ("Reference thermal conductivities", "2.47, 3.81, 3.52, 4.9",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of base values of the thermal conductivity for each of the "
+                             "horizontal layers in the 'p-T-dependent' Thermal conductivity "
+                             "formulation. Pressure- and temperature-dependence will be applied"
+                             "on top of this base value, according to the parameters 'Pressure "
+                             "dependencies of thermal conductivity' and 'Reference temperatures "
+                             "for thermal conductivity'. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin}");
+          prm.declare_entry ("Pressure dependencies of thermal conductivity", "3.3e-10, 3.4e-10, 3.6e-10, 1.05e-10",
+                             Patterns::List(Patterns::Double ()),
+                             "A list of values that determine the linear scaling of the "
+                             "thermal conductivity with the pressure in the 'p-T-dependent' "
+                             "Thermal conductivity formulation. "
+                             "Units: \\si{\\watt\\per\\meter\\per\\kelvin\\per\\pascal}.");
+          prm.declare_entry ("Reference temperatures for thermal conductivity", "300, 300, 300, 1200",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of values of reference temperatures used to determine "
+                             "the temperature-dependence of the thermal conductivity in the "
+                             "'p-T-dependent' Thermal conductivity formulation. "
+                             "Units: \\si{\\kelvin}.");
+          prm.declare_entry ("Thermal conductivity exponents", "0.48, 0.56, 0.61, 1.0",
+                             Patterns::List(Patterns::Double (0.)),
+                             "A list of exponents in the temperature-dependent term of the "
+                             "'p-T-dependent' Thermal conductivity formulation. Note that this "
+                             "exponent is not used (and should have a value of 1) in the "
+                             "formulation of Stackhouse et al. (2015). "
+                             "Units: none.");
+          prm.declare_entry ("Saturation prefactors", "0, 0, 0, 1",
+                             Patterns::List(Patterns::Double (0., 1.)),
+                             "A list of values that indicate how a given layer in the "
+                             "conductivity formulation should take into account the effects "
+                             "of saturation on the temperature-dependence of the thermal "
+                             "conducitivity. This factor is multiplied with a saturation function "
+                             "based on the theory of Roufosse and Klemens, 1974. A value of 1 "
+                             "reproduces the formulation of Stackhouse et al. (2015), a value of "
+                             "0 reproduces the formulation of Tosi et al., (2013). "
+                             "Units: none.");
+          prm.declare_entry ("Maximum thermal conductivity", "1000",
+                             Patterns::Double (0.),
+                             "The maximum thermal conductivity that is allowed in the "
+                             "model. Larger values will be cut off.");
 
           // Table lookup parameters
           EquationOfState::ThermodynamicTableLookup<dim>::declare_parameters(prm);
@@ -371,28 +519,73 @@ namespace aspect
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");
           thermal_conductivity_value = prm.get_double ("Thermal conductivity");
 
+          // Rheological parameters
+          if (prm.get ("Thermal conductivity formulation") == "constant")
+            conductivity_formulation = constant;
+          else if (prm.get ("Thermal conductivity formulation") == "p-T-dependent")
+            conductivity_formulation = p_T_dependent;
+          else
+            AssertThrow(false, ExcMessage("Not a valid thermal conductivity formulation"));
+
+          conductivity_transition_depths = Utilities::string_to_double
+                                           (Utilities::split_string_list(prm.get ("Thermal conductivity transition depths")));
+          const unsigned int n_conductivity_layers = conductivity_transition_depths.size() + 1;
+          AssertThrow (std::is_sorted(conductivity_transition_depths.begin(), conductivity_transition_depths.end()),
+                       ExcMessage("The list of 'Thermal conductivity transition depths' must "
+                                  "be sorted such that the values increase monotonically."));
+
+          reference_thermal_conductivities = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference thermal conductivities"))),
+                                                                                     n_conductivity_layers,
+                                                                                     "Reference thermal conductivities");
+          conductivity_pressure_dependencies = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Pressure dependencies of thermal conductivity"))),
+                                                                                       n_conductivity_layers,
+                                                                                       "Pressure dependencies of thermal conductivity");
+          conductivity_reference_temperatures = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Reference temperatures for thermal conductivity"))),
+                                                                                        n_conductivity_layers,
+                                                                                        "Reference temperatures for thermal conductivity");
+          conductivity_exponents = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Thermal conductivity exponents"))),
+                                                                           n_conductivity_layers,
+                                                                           "Thermal conductivity exponents");
+          saturation_scaling = Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Saturation prefactors"))),
+                                                                       n_conductivity_layers,
+                                                                       "Saturation prefactors");
+          maximum_conductivity = prm.get_double ("Maximum thermal conductivity");
+
           // Parse the table lookup parameters
           equation_of_state.initialize_simulator (this->get_simulator());
           equation_of_state.parse_parameters(prm);
 
+          // Check if compositional fields represent a composition
+          const std::vector<typename Parameters<dim>::CompositionalFieldDescription> composition_descriptions = this->introspection().get_composition_descriptions();
+
+          // All chemical compositional fields are assumed to represent mass fractions.
+          // If the field type is unspecified (has not been set in the input file),
+          // we have to assume it also represents a chemical composition for reasons of
+          // backwards compatibility.
+          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), false);
+          for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+            if (composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::chemical_composition
+                || composition_descriptions[c].type == Parameters<dim>::CompositionalFieldDescription::unspecified)
+              composition_mask->set(c, true);
+
+          const unsigned int n_chemical_fields = composition_mask->n_selected_components();
+
           // Assign background field and do some error checking
           AssertThrow ((equation_of_state.number_of_lookups() == 1) ||
-                       (equation_of_state.number_of_lookups() == this->n_compositional_fields()) ||
-                       (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1),
+                       (equation_of_state.number_of_lookups() == n_chemical_fields) ||
+                       (equation_of_state.number_of_lookups() == n_chemical_fields + 1),
                        ExcMessage("The Steinberger material model assumes that all compositional "
-                                  "fields correspond to mass fractions of materials. There must either be "
-                                  "one material lookup file, the same number of material lookup files "
-                                  "as compositional fields, or one additional file "
-                                  "(if a background field is used). You have "
+                                  "fields of the type chemical composition correspond to mass fractions of "
+                                  "materials. There must either be one material lookup file, the same "
+                                  "number of material lookup files as compositional fields of type chemical "
+                                  "composition, or one additional file (if a background field is used). You "
+                                  "have "
                                   + Utilities::int_to_string(equation_of_state.number_of_lookups())
                                   + " material data files, but there are "
-                                  + Utilities::int_to_string(this->n_compositional_fields())
-                                  + " compositional fields. "));
+                                  + Utilities::int_to_string(n_chemical_fields)
+                                  + " fields of type chemical composition."));
 
-          has_background_field = (equation_of_state.number_of_lookups() == this->n_compositional_fields() + 1);
-
-          // All compositional fields are assumed to represent mass fractions.
-          composition_mask = std::make_unique<ComponentMask> (this->n_compositional_fields(), true);
+          has_background_field = (equation_of_state.number_of_lookups() == n_chemical_fields + 1);
 
           prm.leave_subsection();
         }
@@ -414,6 +607,14 @@ namespace aspect
     Steinberger<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       equation_of_state.create_additional_named_outputs(out);
+
+      if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
+          && out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
+        {
+          const unsigned int n_points = out.n_evaluation_points();
+          out.additional_outputs.push_back(
+            std::make_unique<MaterialModel::PrescribedFieldOutputs<dim>> (n_points, this->n_compositional_fields()));
+        }
     }
 
   }

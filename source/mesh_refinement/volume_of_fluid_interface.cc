@@ -111,7 +111,7 @@ namespace aspect
 
                 if (!refine_current_cell)
                   {
-                    for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                    for (const unsigned int f : cell->face_indices())
                       {
                         const bool cell_has_periodic_neighbor = cell->has_periodic_neighbor(f);
                         const typename DoFHandler<dim>::face_iterator face = cell->face(f);
@@ -237,7 +237,7 @@ namespace aspect
       for (; mcells != endmc; ++mcells)
         {
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator mcell = *mcells;
-          for (unsigned int vertex_index=0; vertex_index<GeometryInfo<dim>::vertices_per_cell; ++vertex_index)
+          for (const unsigned int vertex_index : mcell->vertex_indices())
             {
               std::set<typename Triangulation<dim>::active_cell_iterator> neighbor_cells = vertex_to_cells[mcell->vertex_index(vertex_index)];
               typename std::set<typename Triangulation<dim>::active_cell_iterator>::const_iterator neighbor_cell = neighbor_cells.begin(),
@@ -255,7 +255,7 @@ namespace aspect
             }
 
           // Check for periodic neighbors, and refine if existing
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : mcell->face_indices())
             {
               if (mcell->has_periodic_neighbor(f))
                 {

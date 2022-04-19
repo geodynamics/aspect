@@ -60,7 +60,7 @@ namespace aspect
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f))
               {
                 const types::boundary_id boundary_indicator
@@ -221,6 +221,13 @@ namespace aspect
                                           "steady state heat flux",
                                           "A criterion that terminates the simulation when the integrated "
                                           "heat flux over a given list of boundaries stays within a certain "
-                                          "range for a specified period of time.")
+                                          "range for a specified period of time."
+                                          "\n\n"
+                                          "The criterion considers the total heat flux over all boundaries "
+                                          "listed by their boundary indicators, rather than each boundary "
+                                          "separately. As a consequence, if the \\textit{sum} of heat fluxes "
+                                          "over individual parts of the boundary no longer changes, then this "
+                                          "criterion recommends termination, even if the heat flux over "
+                                          "individual parts of the boundary continues to change.")
   }
 }

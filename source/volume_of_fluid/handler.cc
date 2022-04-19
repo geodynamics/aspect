@@ -22,6 +22,7 @@
 #include <aspect/parameters.h>
 #include <aspect/volume_of_fluid/handler.h>
 #include <aspect/mesh_refinement/volume_of_fluid_interface.h>
+#include <aspect/simulator/assemblers/interface.h>
 
 #include <deal.II/base/work_stream.h>
 #include <deal.II/grid/filtered_iterator.h>
@@ -136,20 +137,18 @@ namespace aspect
           local_matrix (finite_element.dofs_per_cell,
                         finite_element.dofs_per_cell),
           local_rhs (finite_element.dofs_per_cell),
-          local_dof_indices (finite_element.dofs_per_cell)
-        {
-          TableIndices<2> mat_size(finite_element.dofs_per_cell,
-                                   finite_element.dofs_per_cell);
-          for (unsigned int i=0;
-               i < GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell;
-               ++i)
-            {
-              face_contributions_mask[i] = false;
-              local_face_rhs[i].reinit (finite_element.dofs_per_cell);
-              local_face_matrices_ext_ext[i].reinit(mat_size);
-              neighbor_dof_indices[i].resize(finite_element.dofs_per_cell);
-            }
-        }
+          local_face_rhs (Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                          Vector<double>(finite_element.dofs_per_cell)),
+          local_face_matrices_ext_ext(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                                      FullMatrix<double>(finite_element.dofs_per_cell,
+                                                         finite_element.dofs_per_cell)),
+          face_contributions_mask(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                                  false),
+
+          local_dof_indices (finite_element.dofs_per_cell),
+          neighbor_dof_indices(Assemblers::n_interface_matrices(finite_element.reference_cell()),
+                               std::vector<types::global_dof_index>(finite_element.dofs_per_cell))
+        {}
 
 
 
@@ -160,15 +159,14 @@ namespace aspect
           local_rhs (data.local_rhs),
           local_face_rhs (data.local_face_rhs),
           local_face_matrices_ext_ext (data.local_face_matrices_ext_ext),
+          face_contributions_mask(data.face_contributions_mask),
           local_dof_indices (data.local_dof_indices),
           neighbor_dof_indices (data.neighbor_dof_indices)
         {
-          for (unsigned int i=0;
-               i < GeometryInfo<dim>::max_children_per_face *GeometryInfo<dim>::faces_per_cell;
-               ++i)
-            {
-              face_contributions_mask[i] = false;
-            }
+          // clear the flag that indicates that we have valid data in any
+          // of the matrices
+          for (unsigned int i=0; i < face_contributions_mask.size(); ++i)
+            face_contributions_mask[i] = false;
         }
       }
     }
@@ -618,11 +616,9 @@ namespace aspect
                                                         sim.system_matrix,
                                                         sim.system_rhs);
 
-    /* In the following, we copy DG contributions element by element. This
-     * is allowed since there are no constraints imposed on discontinuous fields.
-     */
-    for (unsigned int f=0; f<GeometryInfo<dim>::max_children_per_face
-         * GeometryInfo<dim>::faces_per_cell; ++f)
+    // In the following, we copy DG contributions entry by entry. This
+    // is allowed since there are no constraints imposed on discontinuous fields.
+    for (unsigned int f=0; f<data.face_contributions_mask.size(); ++f)
       {
         if (data.face_contributions_mask[f])
           {

@@ -437,6 +437,9 @@ namespace aspect
     lateral_averaging.initialize_simulator (*this);
 
     geometry_model->create_coarse_mesh (triangulation);
+    Assert (triangulation.all_reference_cells_are_hyper_cube(),
+            ExcMessage ("ASPECT only supports meshes that are composed of quadrilateral "
+                        "or hexahedral cells."))
     global_Omega_diameter = GridTools::diameter (triangulation);
 
     // After creating the coarse mesh, initialize mapping cache if one is used
@@ -471,6 +474,16 @@ namespace aspect
       open_velocity_boundary_indicators.erase (p);
     for (const auto p : boundary_velocity_manager.get_tangential_boundary_velocity_indicators())
       open_velocity_boundary_indicators.erase (p);
+
+    // Make sure that we do the pressure right-hand side modification correctly for periodic boundaries
+    using periodic_boundary_set
+      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int>>;
+    periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
+    for (periodic_boundary_set::iterator p = pbs.begin(); p != pbs.end(); ++p)
+      {
+        open_velocity_boundary_indicators.erase ((*p).first.first);
+        open_velocity_boundary_indicators.erase ((*p).first.second);
+      }
 
     // We need to do the RHS compatibility modification, if the model is
     // compressible or compatible (in the case of melt transport), and
@@ -663,15 +676,13 @@ namespace aspect
         // there
         for (const auto p : boundary_temperature_manager.get_fixed_temperature_boundary_indicators())
           {
-            auto lambda = [&] (const dealii::Point<dim> &x) -> double
+            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+              [&] (const dealii::Point<dim> &x) -> double
             {
               return boundary_temperature_manager.boundary_temperature(p, x);
-            };
-
-            VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-              lambda,
-              introspection.component_masks.temperature.first_selected_component(),
-              introspection.n_components);
+            },
+            introspection.component_masks.temperature.first_selected_component(),
+            introspection.n_components);
 
             VectorTools::interpolate_boundary_values (*mapping,
                                                       dof_handler,
@@ -704,15 +715,13 @@ namespace aspect
         for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
           for (const auto p : boundary_composition_manager.get_fixed_composition_boundary_indicators())
             {
-              auto lambda = [&] (const Point<dim> &x) -> double
+              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
+                [&] (const Point<dim> &x) -> double
               {
                 return boundary_composition_manager.boundary_composition(p, x, c);
-              };
-
-              VectorFunctionFromScalarFunctionObject<dim> vector_function_object(
-                lambda,
-                introspection.component_masks.compositional_fields[c].first_selected_component(),
-                introspection.n_components);
+              },
+              introspection.component_masks.compositional_fields[c].first_selected_component(),
+              introspection.n_components);
 
               VectorTools::interpolate_boundary_values (*mapping,
                                                         dof_handler,
@@ -1046,14 +1055,69 @@ namespace aspect
                                               face_coupling,
                                               Utilities::MPI::
                                               this_mpi_process(mpi_communicator));
+
+        if (solver_scheme_solves_advection_equations(parameters)
+            &&
+            compositional_fields_need_matrix_block(introspection))
+          {
+            // If we solve for more than one compositional field make sure we keep constrained entries
+            // to allow different boundary conditions for different fields. In order to keep constrained
+            // entries we need to repeat the call to DoFTools::make_flux_sparsity_pattern above,
+            // but with 'true' as 4th argument, and only for the composition block.
+            Table<2,DoFTools::Coupling> composition_coupling(introspection.n_components,
+                                                             introspection.n_components);
+            composition_coupling.fill (DoFTools::none);
+
+            const unsigned int component = introspection.component_indices.compositional_fields[0];
+            composition_coupling[component][component] = coupling[component][component];
+
+            const unsigned int block = introspection.get_components_to_blocks()[component];
+            sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
+                                         sp.block(block,block).locally_owned_domain_indices());
+
+            DoFTools::make_flux_sparsity_pattern (dof_handler,
+                                                  sp,
+                                                  current_constraints, true,
+                                                  composition_coupling,
+                                                  face_coupling,
+                                                  Utilities::MPI::
+                                                  this_mpi_process(mpi_communicator));
+          }
       }
     else
-      DoFTools::make_sparsity_pattern (dof_handler,
-                                       coupling, sp,
-                                       current_constraints, false,
-                                       Utilities::MPI::
-                                       this_mpi_process(mpi_communicator));
+      {
+        DoFTools::make_sparsity_pattern (dof_handler,
+                                         coupling, sp,
+                                         current_constraints, false,
+                                         Utilities::MPI::
+                                         this_mpi_process(mpi_communicator));
 
+        // If we solve for more than one compositional field make sure we keep constrained entries
+        // to allow different boundary conditions for different fields. In order to keep constrained
+        // entries we need to repeat the call to DoFTools::make_sparsity_pattern above,
+        // but with 'true' as 4th argument, and only for the composition block.
+        if (solver_scheme_solves_advection_equations(parameters)
+            &&
+            compositional_fields_need_matrix_block(introspection))
+          {
+            Table<2,DoFTools::Coupling> composition_coupling(introspection.n_components,
+                                                             introspection.n_components);
+            composition_coupling.fill (DoFTools::none);
+
+            const unsigned int component = introspection.component_indices.compositional_fields[0];
+            composition_coupling[component][component] = coupling[component][component];
+
+            const unsigned int block = introspection.get_components_to_blocks()[component];
+            sp.block(block,block).reinit(sp.block(block,block).locally_owned_range_indices(),
+                                         sp.block(block,block).locally_owned_domain_indices());
+
+            DoFTools::make_sparsity_pattern (dof_handler,
+                                             composition_coupling, sp,
+                                             current_constraints, true,
+                                             Utilities::MPI::
+                                             this_mpi_process(mpi_communicator));
+          }
+      }
 
     sp.compress();
 
@@ -1505,7 +1569,7 @@ namespace aspect
                   << std::left
                   << std::setw(width)
                   << p.first
-                  << " "
+                  << ' '
                   << p.second
                   << std::endl;
         }
@@ -1885,7 +1949,8 @@ namespace aspect
         for (unsigned int n=0; n<parameters.initial_global_refinement; ++n)
           {
             for (const auto &cell : triangulation.active_cell_iterators())
-              cell->set_refine_flag ();
+              if (cell->is_locally_owned())
+                cell->set_refine_flag ();
 
             mesh_refinement_manager.tag_additional_cells ();
             triangulation.execute_coarsening_and_refinement();
@@ -2025,7 +2090,7 @@ namespace aspect
 
     pcout << "-- Total wallclock time elapsed including restarts:"
           << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-          << "s" << std::endl;
+          << 's' << std::endl;
 
     CitationInfo::print_info_block (pcout);
 

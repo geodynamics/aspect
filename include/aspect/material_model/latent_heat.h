@@ -111,8 +111,8 @@ namespace aspect
         double thermal_alpha;
         double reference_specific_heat;
         double reference_compressibility;
-        double max_viscosity;
-        double min_viscosity;
+        double maximum_viscosity;
+        double minimum_viscosity;
 
         /**
          * The thermal conductivity.

@@ -33,7 +33,7 @@
       ./contrib/release/update_copyright.sh
       git commit -a -m "doxygen formatting, comment wrapping"
       # create a pull-request
-  . create branch for master PR to update changes.h in doc/modules:
+  . create branch for main PR to update changes.h in doc/modules:
       git checkout -b post-release-$VER
       cd doc/modules; rm -f changes/*~; ./increment_version.sh $OLDVER $VER;cd ../..
       cd contrib/release;./bump_version.sh $NEXTVER; cd ..

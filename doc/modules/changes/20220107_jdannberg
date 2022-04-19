@@ -1,0 +1,4 @@
+Fixed: Boundary conditions are no longer applied to the projected
+density field.   
+<br>
+(Juliane Dannberg, 2022/01/07)

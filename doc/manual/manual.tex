@@ -205,7 +205,6 @@ COMPUTATIONAL INFRASTRUCTURE FOR GEODYNAMICS (CIG)
     Shangxin Liu,
     Hannah Mark,
     Elvira Mulyukova,
-    Bob Myhill,
     Bart Niday,
     Jonathan Perry-Houts,
     Elbridge Gerry Puckett,
@@ -1533,16 +1532,23 @@ actually have anything to do with quantities that can be considered related to
 compositions. For example, one may define a field that tracks the grain size
 of rocks. If the strain rate is high, then the grain size decreases as the
 rocks break. If the temperature is high enough, then grains heal and their size
-increases again. Such ``damage'' models would then call for an equation of the
-form (assuming one uses only a single compositional field)
+increases again. Such ``damage models'' would then introduce a
+quantity $c(t)$ describing the ``damage'' to the material (here
+assumed to be described by a single scalar field) that 
+satisfies an equation of the form
 \begin{align*}
   \frac{\partial c}{\partial t} + \mathbf u \cdot \nabla c
   = q(T,c),
 \end{align*}
-where in the simplest case one could postulate
+where in the simplest case (much simplified from real models) one
+could postulate
 \begin{align*}
-  q(T,c) = -A c + B \max\{T-T_{\text{healing}},0\} c.
+  q(T,c) =  A \dot\varepsilon - B \max\{T-T_{\text{healing}},0\} c.
 \end{align*}
+Here, $\dot\varepsilon$ is the strain rate that causes damage; the
+first term then leads to growth of damage as strain continues to
+accumulate on the material. The second term \textit{decreases} the
+damage if the temperature is high enough.
 One would then use this compositional field in the definition of the viscosity
 of the material: more damage means lower viscosity because the rocks are weaker.
 
@@ -2679,6 +2685,7 @@ so we get
 More details on the implementation can be found in \cite{dannberg_melt}. A benchmark case demonstrating the propagation of solitary waves can be found in Section~\ref{sec:benchmark-solitary_wave}.
 
 \subsection{Nullspace removal}
+\label{sec:nullspace}
 
 The Stokes equation (\ref{eq:stokes-1}) only involves symmetric gradients of the velocity, and as such
 the velocity is determined only up to rigid-body motions (that is to say, translations and rotations).
@@ -5716,80 +5723,8 @@ Figure~\ref{fig:smoothing}.
 \end{figure}
 
 
-
-\subsubsection{Tracking finite strain}
-\label{sec:finite-strain}
-\textit{This section was contributed by Juliane Dannberg and Rene Gassm\"{o}ller}
-
-\note{In this section, following \cite{Becker2003, dahlen1998theoretical}, we denote the velocity gradient tensor as $\mathbf G$, where $\mathbf G = \nabla \mathbf u^T$,
-and $\mathbf u$ is the velocity. Note that this is different from the definition of the strain rate $\epsilon(\mathbf u)$, which only contains the symmetric part of $\mathbf G$. We then denote the deformation gradient (or deformation) tensor by $\mathbf F$, where $\mathbf F$ is the tensor that
-deforms an initial state $\mathbf x$ into an deformed state $\mathbf r = \mathbf F \mathbf x$.}
-
-In many geophysical settings, material properties, and in particular the rheology, do not only depend
-on the current temperature, pressure and strain rate, but also on the history of the system.
-This can be incorporated in \aspect{} models by tracking history variables through compositional fields.
-In this cookbook, we will show how to do this by tracking the strain that idealized little grains of finite size accumulate over time at every
-(Lagrangian) point in the model.
-
-Here, we use a material model plugin that defines the compositional fields as the components of the deformation
-gradient tensor $\mathbf F_{ij}$, and modifies the right-hand side of
-the corresponding advection equations to accumulate strain over time. This is done by adjusting the
-\verb!out.reaction_terms! variable:
-\lstinputlisting[language=C++]{cookbooks/finite_strain/finite_strain.cc}
-
-Let us denote the accumulated deformation at time step $n$ as $\mathbf F^n$. We can calculate its time derivative
-as the product of two tensors, namely the current velocity gradient $\mathbf G_{ij} = \frac{\partial u_i}{\partial x_j}$ and the deformation gradient $\mathbf F^{n-1}$ accumulated up to the previous time step, in other words $\frac{\partial \mathbf F}{\partial t} = \mathbf G \mathbf F$, and $\mathbf F^0 = \mathbf I$, with $\mathbf I$ being the identity tensor.
-While we refer to other studies \cite{McKenzie1983, dahlen1998theoretical, Becker2003} for a derivation of
-this relationship, we can give an intuitive example for the necessity to apply the velocity gradient to the already accumulated deformation, instead of simply integrating the velocity gradient over time. Consider a simple one-dimensional ``grain'' of length $1.0$, in which case the deformation tensor only has one component, the compression in $x$-direction. If one embeds this grain into a convergent flow field for a compressible medium where the dimensionless velocity gradient is $-0.5$  (e.g. a velocity of zero at its left end at $x=0.0$, and a velocity of $-0.5$ at its right end at $x=1.0$), simply integrating the velocity gradient would suggest that the grain reaches a length of zero after two units of time, and would then ``flip'' its orientation, which is clearly non-physical.
-What happens instead can be seen by solving the equation of motion for the right end of the grain $\frac{dx}{dt} = v = -0.5 x$. Solving this equation for $x$ leads to $x(t) = e^{-0.5t}$. This is therefore also the solution for $\mathbf F$ since $\mathbf F x$ transforms the initial position of $x(t=0)=1.0$ into the deformed position of $x(t=1) = e^{-0.5}$, which is the definition of $\mathbf F$.
-
-In more general cases a visualization of $\mathbf F$ is not intuitive, because it contains rotational components that represent a rigid body rotation without deformation. Following \cite{Becker2003} we can polar-decompose the tensor into a positive-definite and symmetric left stretching tensor $\mathbf L$, and an orthogonal rotation tensor $\mathbf Q$, as $\mathbf F = \mathbf L \mathbf Q$, therefore $\mathbf L^2 = \mathbf L \mathbf L^T = \mathbf F \mathbf F^T$. The left stretching tensor $\mathbf L$ (or finite strain tensor) then describes the deformation we are interested in, and its eigenvalues $\lambda_i$ and eigenvectors $\mathbf e_i$ describe the length and orientation of the half-axes of the finite strain ellipsoid. Moreover, we will represent the amount of relative stretching at every point by the ratio $\ln(\lambda_1/\lambda_2)$, called the \textit{natural strain} \cite{Ribe1992}.
-
-The full plugin implementing the integration of $\mathbf F$ can be found in \url{cookbooks/finite_strain/finite_strain.cc} and can be compiled
-with \texttt{cmake . \&\& make} in the \url{cookbooks/finite_strain} directory.
-It can be loaded in a parameter file as an ``Additional shared library'', and selected as material
-model. As it is derived from the ``simple'' material model, all input parameters for the material
-properties are read in from the subsection \texttt{Simple model}.
-\lstinputlisting[language=prmfile]{cookbooks/finite_strain/doc/finite_strain.part.prm.out}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.75\textwidth]{cookbooks/finite_strain/doc/finite_strain.pdf}
-    \caption{\it Accumulated finite strain in an example convection model, as described in Section
-             \ref{sec:finite-strain} at a time of 67.6~Ma. Top panel: Temperature distribution. Bottom panel:
-             Natural strain distribution. Additional black crosses are the scaled eigenvectors of the
-             stretching tensor $\mathbf L$, showing the direction of stretching and compression.}
-    \label{fig:finite_strain}
-\end{figure}
-
-The plugin was tested against analytical solutions for the deformation gradient tensor in simple and pure shear as described in \url{benchmarks/finite_strain/pure_shear.prm} and \url{benchmarks/finite_strain/simple_shear.prm}.
-
-We will demonstrate its use at the example of a 2D Cartesian convection model (Figure~\ref{fig:finite_strain}):
-Heating from the bottom leads to the ascent of plumes from the boundary layer (top panel), and the
-amount of stretching is visible in the distribution of natural strain (color in lower panel).
-Additionally, the black crosses show the direction of stretching and compression (the eigenvectors of $\mathbf L$).
-Material moves to the sides at the top of the plume head, so that it is shortened in vertical
-direction (short vertical lines) and stretched in horizontal direction (long horizontal lines).
-The sides of the plume head show the opposite effect. Shear occurs mostly at the
-edges of the plume head, in the plume tail, and in the bottom boundary layer
-(black areas in the natural strain distribution).
-
-The example used here shows how history variables can be integrated up over the model evolution.
-While we do not use these variables actively in the computation (in our example, there is no
-influence of the accumulated strain on the rheology or any other material property), it would be trivial
-to extend this material model in a way that material properties depend on the integrated strain:
-Because the values of the compositional fields are part of what the material model gets as inputs,
-they can easily be used for computing material model outputs such as the viscosity.
-
-\note{In this model we present the use of multiple compositional fields for other purposes than chemical composition.
-It would have been feasible to run the same model with particles that track the deformation gradient, as
-additionally implemented and tested in the simple shear and pure shear benchmarks mentioned in this section.
-Both approaches have specific advantages, and for scientific computations one needs to evaluate the more suitable
-strategy. Compositional fields cover the whole domain, but are affected by numerical diffusion, effectively reducing the
-maximum accumulated strain. Particles only provide finite strain values at discrete positions, but can, if this is desired, be used in
-fewer numbers and only a part of the model domain (and are much faster in this case). If however
-there needs to be a large number of particles (possibly because they are used for other purposes as well), then they
-can be much more expensive. Both approaches can be used to actively influence the rheology in the material model.}
+% cookbooks/finite_strain/
+\input{cookbooks/finite_strain/doc/finite_strain.tex}
 
 \subsubsection{Reading in compositional initial composition files generated with geomIO}
 \label{sec:geomio}
@@ -6594,7 +6529,7 @@ initialize a mantle convection calculation.
 
 The current version of \aspect{} can read in the shear wave velocity models
 S20RTS \cite{S20RTS} and S40RTS \cite{S40RTS}, which are located
-in \url{data/initial-conditions/S40RTS/}. Those models provide
+in \url{data/initial-temperature/S40RTS/}. Those models provide
 spherical harmonic coefficients up do degree 20 and 40, respectively, for 21
 depth layers. The interpolation with depth is done through a cubic spline
 interpolation. The input files \texttt{S20RTS.sph} and \texttt{S40RTS.sph} were
@@ -6769,6 +6704,11 @@ and gravity anomalies from ASPECT and a spectral based code shows good agreement
 % cookbooks/burnman/
 
 \input{../../cookbooks/burnman/doc/burnman.tex}
+
+
+% cookbooks/steinberger/
+
+\input{../../cookbooks/steinberger/doc/steinberger.tex}
 
 
 \subsubsection{Reproducing rheology of Morency and Doin, 2004}
@@ -11026,7 +10966,7 @@ boundary indicators as follows:
        ++cell)
     for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
       if (cell->face(f)->at_boundary())
-        if (cell->face(f)->center()[0] == -1)
+        if (cell->face(f)->center(true)[0] == -1)
           cell->face(f)->set_boundary_indicator (42);
   \end{lstlisting}
   This calls functions \texttt{TriaAccessor::set\_boundary\_indicator}. In 3d, it may

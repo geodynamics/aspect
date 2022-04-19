@@ -210,7 +210,7 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             bool at_upper_surface = false;
             {
-              for (unsigned int f=0; f<GeometryInfo<3>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 {
                   if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                     {
@@ -515,7 +515,7 @@ namespace aspect
         if (cell->is_locally_owned() && cell->at_boundary())
           {
             // If the cell is at the top boundary, store the cell's upper face midpoint location.
-            for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+            for (const unsigned int f : cell->face_indices())
               if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
                 {
                   fe_face_center_values.reinit(cell,f);

@@ -49,12 +49,15 @@ namespace aspect
         Assert (computed_quantities.size() == n_quadrature_points,    ExcInternalError());
         Assert (computed_quantities[0].size() == dim,    ExcInternalError());
 
+        const double velocity_scaling_factor =
+          this->convert_output_to_years() ? year_in_seconds : 1.0;
+
         Tensor<1,dim> velocity;
         for (unsigned int q=0; q<n_quadrature_points; ++q)
           {
             for (unsigned int d = 0; d < dim; ++d)
               {
-                velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]];
+                velocity[d] = input_data.solution_values[q][this->introspection().component_indices.velocities[d]] * velocity_scaling_factor;
               }
 
             std::array<double,dim> scoord = aspect::Utilities::Coordinates::cartesian_to_spherical_coordinates(input_data.evaluation_points[q]);

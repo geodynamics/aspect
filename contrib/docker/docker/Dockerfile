@@ -10,7 +10,7 @@ ENV PATH $HOME/libs/cmake-3.17.3-Linux-x86_64/bin:$PATH
 RUN git clone https://github.com/geodynamics/aspect.git ./aspect && \ 
     mkdir aspect/build-release && \
     cd aspect/build-release && \
-    git checkout master && \
+    git checkout main && \
     cmake -DCMAKE_BUILD_TYPE=Release \
           -DASPECT_PRECOMPILE_HEADERS=ON \
           .. && \

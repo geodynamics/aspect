@@ -1,0 +1,4 @@
+New: The steinberger material model now includes the option to use
+a pressure- and temperature-dependent thermal conductivity.
+<br>
+(Juliane Dannberg, 2022/01/21)

@@ -50,8 +50,6 @@ subsection Boundary composition model
 
   subsection Ascii data model
     set Data file name       = box_2d_%s.%d.txt
-
-    set First data file model time = 1e5
     set Data file time step = 2e5
   end
 end

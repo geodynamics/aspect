@@ -22,8 +22,11 @@
 #include <aspect/stokes_matrix_free.h>
 #include <aspect/citation_info.h>
 #include <aspect/mesh_deformation/interface.h>
+#include <aspect/mesh_deformation/free_surface.h>
 #include <aspect/melt.h>
 #include <aspect/newton.h>
+
+#include <deal.II/base/signaling_nan.h>
 
 #include <deal.II/dofs/dof_renumbering.h>
 #include <deal.II/dofs/dof_accessor.h>
@@ -35,12 +38,11 @@
 #include <deal.II/fe/fe_dgq.h>
 #include <deal.II/fe/fe_values.h>
 
-#include <deal.II/base/signaling_nan.h>
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/read_write_vector.templates.h>
-
 #include <deal.II/lac/solver_idr.h>
 
+#include <deal.II/grid/manifold.h>
 
 
 namespace aspect
@@ -59,7 +61,7 @@ namespace aspect
       add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
                      const Tensor<1, dim> &constraining_vector,
                      AffineConstraints<double> &constraints,
-                     const double inhomogeneity = 0)
+                     const double inhomogeneity)
       {
         // This function is modified from an internal deal.II function in vector_tools.templates.h
         switch (dim)
@@ -258,9 +260,7 @@ namespace aspect
           if (cell->level_subdomain_id() != numbers::artificial_subdomain_id
               &&
               cell->level_subdomain_id() != numbers::invalid_subdomain_id)
-            for (unsigned int face_no = 0;
-                 face_no < GeometryInfo<dim>::faces_per_cell;
-                 ++face_no)
+            for (const unsigned int face_no : cell->face_indices())
               if ((b_id = boundary_ids.find(cell->face(face_no)->boundary_id())) !=
                   boundary_ids.end())
                 {
@@ -332,8 +332,9 @@ namespace aspect
                 Tensor<1, dim, double> unit_vec;
                 unit_vec[d] = 1.0;
 
-                Tensor<1, dim> normal_vec =
-                  face->get_manifold().normal_vector(face, face->center());
+                const bool respect_manifold = true;
+                const Tensor<1, dim> normal_vec =
+                  face->get_manifold().normal_vector(face, face->center(respect_manifold));
 
                 if (std::abs(std::abs(unit_vec * normal_vec) - 1.0) < 1e-10)
                   comp_mask.set(d + first_vector_component, true);
@@ -801,14 +802,80 @@ namespace aspect
       }
   }
 
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
+  ::local_apply_face(const dealii::MatrixFree<dim, number> &,
+                     dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const dealii::LinearAlgebra::distributed::BlockVector<number> &,
+                     const std::pair<unsigned int, unsigned int> &) const
+  {
+  }
+
+
+
+  template <int dim, int degree_v, typename number>
+  void
+  MatrixFreeStokesOperators::StokesOperator<dim, degree_v, number>
+  ::local_apply_boundary_face(const dealii::MatrixFree<dim, number> &data,
+                              dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                              const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                              const std::pair<unsigned int, unsigned int> &face_range) const
+  {
+    // Assemble the fictive stabilization stress (phi_u[i].g)*(phi_u[j].n)
+    // g=pressure_perturbation * g_hat is stored in free_surface_stabilization_term_table
+    //  n is the normal vector
+    FEFaceEvaluation<dim, degree_v, degree_v + 1, dim, number> velocity(data);
+    const unsigned int n_faces_interior = data.n_inner_face_batches();
+
+    for (unsigned int face = face_range.first; face < face_range.second; ++face)
+      {
+        const auto boundary_id = data.get_boundary_id(face);
+        if (cell_data->free_surface_boundary_indicators.find(boundary_id)
+            == cell_data->free_surface_boundary_indicators.end())
+          continue;
+
+        velocity.reinit(face);
+        velocity.gather_evaluate (src.block(0), EvaluationFlags::values);
+
+        for (unsigned int q = 0; q < velocity.n_q_points; ++q)
+          {
+            const Tensor<1, dim, VectorizedArray<number>> phi_u_i = velocity.get_value(q);
+            const auto &normal_vector = velocity.get_normal_vector(q);
+            const auto stabilization_tensor = cell_data->free_surface_stabilization_term_table(face - n_faces_interior, q);
+            const auto value_submit = -(stabilization_tensor * phi_u_i) * normal_vector;
+
+            velocity.submit_value(value_submit, q);
+          }
+        velocity.integrate_scatter(EvaluationFlags::values, dst.block(0));
+      }
+  }
+
+
+
   template <int dim, int degree_v, typename number>
   void
   MatrixFreeStokesOperators::StokesOperator<dim,degree_v,number>
   ::apply_add (dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                const dealii::LinearAlgebra::distributed::BlockVector<number> &src) const
   {
-    MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
-        data->cell_loop(&StokesOperator::local_apply, this, dst, src);
+    if (cell_data->apply_stabilization_free_surface_faces)
+      MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+          data->loop(&StokesOperator::local_apply,
+                     &StokesOperator::local_apply_face,
+                     &StokesOperator::local_apply_boundary_face,
+                     this,
+                     dst,
+                     src,
+                     false, /*zero_dst_vector*/
+                     MatrixFree<dim, number>::DataAccessOnFaces::values,
+                     MatrixFree<dim, number>::DataAccessOnFaces::values);
+
+    else
+      MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
+          data->cell_loop(&StokesOperator::local_apply, this, dst, src);
   }
 
   /**
@@ -820,6 +887,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::Vector<number>>()
   {}
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::clear ()
@@ -828,6 +897,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::clear();
   }
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>::
@@ -835,6 +906,8 @@ namespace aspect
   {
     this->cell_data = &data;
   }
+
+
 
   template <int dim, int degree_p, typename number>
   void
@@ -885,6 +958,8 @@ namespace aspect
       }
   }
 
+
+
   template <int dim, int degree_p, typename number>
   void
   MatrixFreeStokesOperators::MassMatrixOperator<dim,degree_p,number>
@@ -894,6 +969,8 @@ namespace aspect
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
                                                                                    data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
   }
+
+
 
   template <int dim, int degree_p, typename number>
   void
@@ -1232,6 +1309,12 @@ namespace aspect
       prm.declare_entry ("Output details", "false",
                          Patterns::Bool(),
                          "Turns on extra information for the matrix free GMG solver to be printed.");
+      prm.declare_entry ("Execute solver timings", "false",
+                         Patterns::Bool(),
+                         "Executes different parts of the Stokes solver repeatedly and print timing information. "
+                         "This is for internal benchmarking purposes: It is useful if you want to see how the solver "
+                         "performs. Otherwise, you don't want to enable this, since it adds additional computational cost "
+                         "to get the timing information.");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -1247,6 +1330,7 @@ namespace aspect
     prm.enter_subsection ("Matrix Free");
     {
       print_details = prm.get_bool ("Output details");
+      do_timings = prm.get_bool ("Execute solver timings");
     }
     prm.leave_subsection ();
     prm.leave_subsection ();
@@ -1282,18 +1366,22 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    if (sim.parameters.mesh_deformation_enabled)
-      {
-        // This requires porting the additional stabilization terms
-        AssertThrow(sim.mesh_deformation->get_free_surface_boundary_indicators().empty(),
-                    ExcMessage("The matrix-free Stokes solver does not support free surface boundaries."));
-      }
+    AssertThrow(!(sim.parameters.mesh_deformation_enabled
+                  && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty()
+                  && sim.parameters.enable_elasticity),
+                ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
+
+
+#if !DEAL_II_VERSION_GTE(9,3,2)
+    AssertThrow(false,
+                ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
+#endif
+
     // Sorry, not any time soon:
     AssertThrow(!sim.parameters.include_melt_transport, ExcNotImplemented());
     // Not very difficult to do, but will require a different mass matrix
     // operator:
     AssertThrow(!sim.parameters.use_locally_conservative_discretization, ExcNotImplemented());
-
 
     // sanity check:
     Assert(sim.introspection.variable("velocity").block_index==0, ExcNotImplemented());
@@ -1309,7 +1397,8 @@ namespace aspect
     AssertThrow((sim.parameters.material_averaging &
                  (avg::arithmetic_average | avg::harmonic_average | avg::geometric_average
                   | avg::pick_largest | avg::project_to_Q1 | avg::log_average
-                  | avg::harmonic_average_only_viscosity | avg::project_to_Q1_only_viscosity)) != 0,
+                  | avg::harmonic_average_only_viscosity | avg::geometric_average_only_viscosity
+                  | avg::project_to_Q1_only_viscosity)) != 0,
                 ExcMessage("The matrix-free Stokes solver currently only works if material model averaging "
                            "is enabled. If no averaging is desired, consider using ``project to Q1 only "
                            "viscosity''."));
@@ -1361,10 +1450,10 @@ namespace aspect
     dealii::LinearAlgebra::distributed::Vector<double> active_viscosity_vector(dof_handler_projection.locally_owned_dofs(),
                                                                                sim.triangulation.get_communicator());
 
-    const QGauss<dim> quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+    const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
 
-    double min_el = std::numeric_limits<double>::max();
-    double max_el = std::numeric_limits<double>::lowest();
+    double minimum_viscosity_local = std::numeric_limits<double>::max();
+    double maximum_viscosity_local = std::numeric_limits<double>::lowest();
 
     // Fill the DGQ0 or DGQ1 vector of viscosity values on the active mesh
     {
@@ -1415,9 +1504,9 @@ namespace aspect
 
         for (unsigned int i=0; i<values.size(); ++i)
           {
-            // Find the max/min of the evaluated viscosities.
-            min_el = std::min(min_el, out.viscosities[i]);
-            max_el = std::max(max_el, out.viscosities[i]);
+            // Find the local max/min of the evaluated viscosities.
+            minimum_viscosity_local = std::min(minimum_viscosity_local, out.viscosities[i]);
+            maximum_viscosity_local = std::max(maximum_viscosity_local, out.viscosities[i]);
 
             values[i] = out.viscosities[i];
           }
@@ -1427,6 +1516,9 @@ namespace aspect
 
       active_viscosity_vector.compress(VectorOperation::insert);
     }
+
+    minimum_viscosity = dealii::Utilities::MPI::min(minimum_viscosity_local, sim.triangulation.get_communicator());
+    maximum_viscosity = dealii::Utilities::MPI::max(maximum_viscosity_local, sim.triangulation.get_communicator());
 
     FEValues<dim> fe_values_projection (*(sim.mapping),
                                         fe_projection,
@@ -1485,7 +1577,7 @@ namespace aspect
                   // of the evaluated viscosity on the active level.
                   for (unsigned int q=0; q<n_q_points; ++q)
                     active_cell_data.viscosity(cell, q)[i]
-                      = std::min(std::max(values_on_quad[q], min_el), max_el);
+                      = std::min(std::max(values_on_quad[q], minimum_viscosity), maximum_viscosity);
                 }
             }
         }
@@ -1575,8 +1667,8 @@ namespace aspect
                     // of the evaluated viscosity on the active level.
                     for (unsigned int q=0; q<n_q_points; ++q)
                       level_cell_data[level].viscosity(cell,q)[i]
-                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(min_el)),
-                                   static_cast<GMGNumberType>(max_el));
+                        = std::min(std::max(values_on_quad[q], static_cast<GMGNumberType>(minimum_viscosity)),
+                                   static_cast<GMGNumberType>(maximum_viscosity));
                   }
               }
           }
@@ -1697,6 +1789,105 @@ namespace aspect
             level_cell_data[level].enable_newton_derivatives = false;
         }
     }
+
+    {
+      // Create active mesh tables to store the product of the pressure perturbation and
+      // the normalized gravity used in the free surface stabilization.
+      // Currently, mutilevel is not implemented yet, it may slow down the convergence.
+
+      // TODO: implement multilevel surface terms for the free surface stabilization.
+
+      active_cell_data.apply_stabilization_free_surface_faces = sim.mesh_deformation
+                                                                && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty();
+      if (active_cell_data.apply_stabilization_free_surface_faces == true)
+        {
+          const double free_surface_theta =
+            sim.mesh_deformation->template get_matching_mesh_deformation_object<MeshDeformation::FreeSurface<dim>>()
+          .get_free_surface_theta();
+
+          const QGauss<dim-1> face_quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+
+          const unsigned int n_face_q_points = face_quadrature_formula.size();
+
+          // We need the gradients for the material model inputs.
+          FEFaceValues<dim> fe_face_values (*sim.mapping,
+                                            sim.finite_element,
+                                            face_quadrature_formula,
+                                            update_values   |
+                                            update_gradients |
+                                            update_quadrature_points |
+                                            update_JxW_values);
+
+          const unsigned int n_faces_boundary = stokes_matrix.get_matrix_free()->n_boundary_face_batches();
+          const unsigned int n_faces_interior = stokes_matrix.get_matrix_free()->n_inner_face_batches();
+
+          active_cell_data.free_surface_boundary_indicators =
+            sim.mesh_deformation->get_free_surface_boundary_indicators();
+
+          MaterialModel::MaterialModelInputs<dim> face_material_inputs(n_face_q_points, sim.introspection.n_compositional_fields);
+          MaterialModel::MaterialModelOutputs<dim> face_material_outputs(n_face_q_points, sim.introspection.n_compositional_fields);
+
+          active_cell_data.free_surface_stabilization_term_table.reinit(n_faces_boundary, n_face_q_points);
+
+          for (unsigned int face=n_faces_interior; face<n_faces_boundary + n_faces_interior; ++face)
+            {
+              const unsigned int n_components_filled = stokes_matrix.get_matrix_free()->n_active_entries_per_face_batch(face);
+
+              for (unsigned int i=0; i<n_components_filled; ++i)
+                {
+                  // The first element of the pair is the active cell iterator
+                  // the second element of the pair is the face number
+                  const auto cell_face_pair = stokes_matrix.get_matrix_free()->get_face_iterator(face, i, true);
+
+                  typename DoFHandler<dim>::active_cell_iterator matrix_free_cell =
+                    cell_face_pair.first;
+                  typename DoFHandler<dim>::active_cell_iterator simulator_cell(&(sim.triangulation),
+                                                                                matrix_free_cell->level(),
+                                                                                matrix_free_cell->index(),
+                                                                                &(sim.dof_handler));
+
+                  const types::boundary_id boundary_indicator = stokes_matrix.get_matrix_free()->get_boundary_id(face);
+                  Assert(boundary_indicator == simulator_cell->face(cell_face_pair.second)->boundary_id(), ExcInternalError());
+
+                  // only apply on free surface faces
+                  if (active_cell_data.free_surface_boundary_indicators.find(boundary_indicator)
+                      == active_cell_data.free_surface_boundary_indicators.end())
+                    continue;
+
+                  fe_face_values.reinit(simulator_cell, cell_face_pair.second);
+
+                  face_material_inputs.reinit(fe_face_values,
+                                              simulator_cell,
+                                              sim.introspection,
+                                              sim.solution);
+
+                  sim.compute_material_model_input_values(sim.solution,
+                                                          fe_face_values,
+                                                          simulator_cell,
+                                                          false,
+                                                          face_material_inputs);
+                  sim.material_model->evaluate(face_material_inputs, face_material_outputs);
+
+                  for (unsigned int q = 0; q < n_face_q_points; ++q)
+                    {
+                      const Tensor<1,dim>
+                      gravity = sim.gravity_model->gravity_vector(fe_face_values.quadrature_point(q));
+                      const double g_norm = gravity.norm();
+
+                      const Tensor<1,dim> g_hat = (g_norm == 0.0 ? Tensor<1,dim>() : gravity/g_norm);
+
+                      const double pressure_perturbation = face_material_outputs.densities[q] *
+                                                           sim.time_step *
+                                                           free_surface_theta *
+                                                           g_norm;
+                      for (unsigned int d = 0; d < dim; ++d)
+                        active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q)[d][i]
+                          = pressure_perturbation * g_hat[d];
+                    }
+                }
+            }
+        }
+    }
   }
 
 
@@ -1779,6 +1970,40 @@ namespace aspect
         pressure.integrate_scatter (EvaluationFlags::values,
                                     rhs_correction.block(1));
       }
+
+    if (active_cell_data.apply_stabilization_free_surface_faces)
+      {
+        const unsigned int n_faces_boundary = stokes_matrix.get_matrix_free()->n_boundary_face_batches();
+        const unsigned int n_faces_interior = stokes_matrix.get_matrix_free()->n_inner_face_batches();
+
+        FEFaceEvaluation<dim,velocity_degree,velocity_degree+1,dim,double>
+        velocity_boundary(*stokes_matrix.get_matrix_free());
+
+        for (unsigned int face=n_faces_interior; face<n_faces_boundary + n_faces_interior; ++face)
+          {
+            const auto boundary_id = stokes_matrix.get_matrix_free()->get_boundary_id(face);
+            if (active_cell_data.free_surface_boundary_indicators.find(boundary_id)
+                == active_cell_data.free_surface_boundary_indicators.end())
+              continue;
+
+            velocity_boundary.reinit(face);
+            velocity_boundary.read_dof_values_plain (u0.block(0));
+            velocity_boundary.evaluate (EvaluationFlags::values);
+
+            for (unsigned int q = 0; q < velocity_boundary.n_q_points; ++q)
+              {
+                const Tensor<1, dim, VectorizedArray<double>> phi_u_i = velocity_boundary.get_value(q);
+                const auto &normal_vector = velocity_boundary.get_normal_vector(q);
+                const auto stabilization_tensor = active_cell_data.free_surface_stabilization_term_table(face - n_faces_interior, q);
+                const auto value_submit = (stabilization_tensor * phi_u_i) * normal_vector;
+                velocity_boundary.submit_value(value_submit, q);
+
+              }
+            velocity_boundary.integrate_scatter(EvaluationFlags::values,
+                                                rhs_correction.block(0));
+          }
+      }
+
     rhs_correction.compress(VectorOperation::add);
 
     // Copy to the correct vector type and add the correction to the system rhs.
@@ -1896,7 +2121,8 @@ namespace aspect
       {
         sim.pcout << std::endl
                   << "    GMG coarse size A: " << coarse_A_size << ", coarse size S: " << coarse_S_size << std::endl
-                  << "    GMG n_levels: " << sim.triangulation.n_global_levels() << std::endl;
+                  << "    GMG n_levels: " << sim.triangulation.n_global_levels() << std::endl
+                  << "    Viscosity range: " << minimum_viscosity << " - " << maximum_viscosity << std::endl;
 
         const double imbalance = MGTools::workload_imbalance(sim.triangulation);
         sim.pcout << "    GMG workload imbalance: " << imbalance << std::endl
@@ -2113,6 +2339,122 @@ namespace aspect
 
     PrimitiveVectorMemory<dealii::LinearAlgebra::distributed::BlockVector<double>> mem;
 
+    // Time vmult of different matrix-free operators, solver IDR with the cheap preconditioner, and
+    // solver GMRES with the cheap preconditioner. Each timing is repeated 10 times, and the
+    // function may be called a couple of times within each timing, depending on the argument repeats.
+    if (do_timings)
+      {
+        const int n_timings = 10;
+        Timer timer(sim.mpi_communicator);
+
+        auto time_this = [&](const char *name, int repeats, std::function<void()> body, std::function<void()> prepare)
+        {
+          sim.pcout << "Timing " << name << ' ' << n_timings << " time(s) and repeat "
+                    << repeats << " time(s) within each timing:" << std::endl;
+
+          body(); // warm up
+
+          double average_time = 0.;
+
+          for (int i=0; i<n_timings; ++i)
+            {
+              prepare();
+              sim.pcout << "\t... " << std::flush;
+              timer.restart();
+
+              for (int r=0; r<repeats; ++r)
+                body();
+
+              timer.stop();
+              double time = timer.wall_time();
+              const double average_time_per_timing = time/repeats;
+              sim.pcout << average_time_per_timing << std::endl;
+              average_time += average_time_per_timing;
+            }
+
+          sim.pcout << "\taverage wall time of all: "<< average_time/n_timings << " seconds" << std::endl;
+
+        };
+
+        // stokes vmult
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("stokes_vmult", 10,
+                    [&] {stokes_matrix.vmult(tmp_dst, tmp_src);},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+
+        // stokes preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("stokes_preconditioner", 1,
+                    [&] {preconditioner_cheap.vmult(tmp_dst, tmp_src);},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // A preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("A_preconditioner", 1,
+                    [&] {prec_A.vmult(tmp_dst.block(0), tmp_src.block(0));},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // S preconditioner
+        {
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("S_preconditioner", 5,
+                    [&] {prec_Schur.vmult(tmp_dst.block(1), tmp_src.block(1));},
+                    [&] {tmp_src = tmp_dst;}
+                   );
+        }
+        // Solve
+        {
+          // hard-code the number of iterations here to always do cheap iterations
+          SolverControl solver_control_cheap (1000, solver_tolerance, true);
+
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_dst = solution_copy;
+          dealii::LinearAlgebra::distributed::BlockVector<double> tmp_src = rhs_copy;
+          time_this("Stokes_solve_cheap_idr", 1,
+                    [&]
+          {
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.idr_s_parameter));
+
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
+          },
+          [&] {tmp_dst = solution_copy;}
+                   );
+
+          time_this("Stokes_solve_cheap_gmres", 1,
+                    [&]
+          {
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
+            solver(solver_control_cheap, mem,
+            SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+            AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+            true));
+
+            solver.solve (stokes_matrix,
+            tmp_dst,
+            tmp_src,
+            preconditioner_cheap);
+          },
+          [&] {tmp_dst = solution_copy;}
+                   );
+        }
+      }
+
     // step 1a: try if the simple and fast solver
     // succeeds in n_cheap_stokes_solver_steps steps or less.
     try
@@ -2177,10 +2519,6 @@ namespace aspect
                       solver_control_cheap.last_step():
                       0) << '+' << std::flush;
 
-        // if no expensive steps allowed, we have failed, rethrow exception
-        if (sim.parameters.n_expensive_stokes_solver_steps == 0)
-          throw exc;
-
         // use the value defined by the user
         // OR
         // at least a restart length of 100 for melt models
@@ -2195,15 +2533,20 @@ namespace aspect
 
         try
           {
+            // if no expensive steps allowed, we have failed
+            if (sim.parameters.n_expensive_stokes_solver_steps == 0)
+              {
+                sim.pcout << "0 iterations." << std::endl;
+                throw exc;
+              }
+
             solver.solve(stokes_matrix,
                          solution_copy,
                          rhs_copy,
                          preconditioner_expensive);
 
             // Success. Print expensive iterations to screen.
-            sim.pcout << (solver_control_expensive.last_step() != numbers::invalid_unsigned_int ?
-                          solver_control_expensive.last_step():
-                          0)
+            sim.pcout << solver_control_expensive.last_step()
                       << " iterations." << std::endl;
 
             final_linear_residual = solver_control_expensive.last_value();
@@ -2256,11 +2599,11 @@ namespace aspect
     if (print_details)
       {
         sim.pcout << "    Schur complement preconditioner: " << preconditioner_cheap.n_iterations_Schur_complement()
-                  << "+"
+                  << '+'
                   << preconditioner_expensive.n_iterations_Schur_complement()
                   << " iterations." << std::endl;
         sim.pcout << "    A block preconditioner: " << preconditioner_cheap.n_iterations_A_block()
-                  << "+"
+                  << '+'
                   << preconditioner_expensive.n_iterations_A_block()
                   << " iterations." << std::endl;
       }
@@ -2420,6 +2763,14 @@ namespace aspect
         MatrixFree<dim,double>::AdditionalData::none;
       additional_data.mapping_update_flags = (update_values | update_gradients |
                                               update_JxW_values | update_quadrature_points);
+
+      if (sim.mesh_deformation
+          && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty())
+        additional_data.mapping_update_flags_boundary_faces =
+          (update_values  |
+           update_quadrature_points |
+           update_normal_vectors |
+           update_JxW_values);
 
       std::vector<const DoFHandler<dim>*> stokes_dofs;
       stokes_dofs.push_back(&dof_handler_v);
@@ -2611,7 +2962,7 @@ namespace aspect
                                    locally_relevant_dofs,
                                    sim.mpi_communicator);
 
-            QGauss<dim>  quadrature_formula(sim.parameters.stokes_velocity_degree+1);
+            const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
             FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);
@@ -2671,7 +3022,8 @@ namespace aspect
                                                 ?
                                                 level_viscosity_vector[level](dg_dof_indices[0])
                                                 :
-                                                visc_on_quad[q]);
+                                                std::min(std::max(visc_on_quad[q], static_cast<GMGNumberType>(minimum_viscosity)),
+                                                         static_cast<GMGNumberType>(maximum_viscosity)));
 
                       for (unsigned int k=0; k<dofs_per_cell; ++k)
                         {

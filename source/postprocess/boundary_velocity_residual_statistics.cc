@@ -97,7 +97,7 @@ namespace aspect
     BoundaryVelocityResidualStatistics<dim>::execute (TableHandler &statistics)
     {
       // create a quadrature formula for the velocity.
-      const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities+1);
+      const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.velocities;
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
@@ -133,7 +133,7 @@ namespace aspect
       // magnitude and the face area.
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             for (const auto current_boundary_id : boundary_indicators)
               if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == current_boundary_id)
                 {
@@ -263,9 +263,9 @@ namespace aspect
 
           // finally have something for the screen
           screen_text.precision(4);
-          screen_text << max_velocity->second *unit_scale_factor << " " << units << ", "
-                      << min_velocity->second *unit_scale_factor << " " << units << ", "
-                      << rms->second *unit_scale_factor << " " << units
+          screen_text << max_velocity->second *unit_scale_factor << ' ' << units << ", "
+                      << min_velocity->second *unit_scale_factor << ' ' << units << ", "
+                      << rms->second *unit_scale_factor << ' ' << units
                       << (index == global_max_vel.size()-1 ? "" : ", ");
         }
 

@@ -1,0 +1,4 @@
+New: There is now a postprocessor that computes the
+second invariant of the deviatoric stress tensor. 
+<br>
+(Anne Glerum, 2021/10/22)

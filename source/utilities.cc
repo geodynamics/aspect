@@ -60,6 +60,154 @@ namespace aspect
    */
   namespace Utilities
   {
+    namespace internal
+    {
+      namespace MPI
+      {
+        // --------------------------------------------------------------------
+        // The following is copied from deal.II's mpi.templates.h file.
+        // We should instead import it from deal.II's header files directly
+        // if that information is made available via one of the existing .h
+        // files.
+        // --------------------------------------------------------------------
+#ifdef DEAL_II_WITH_MPI
+        /**
+         * Return the corresponding MPI data type id for the argument given.
+         */
+        inline MPI_Datatype
+        mpi_type_id(const bool *)
+        {
+#  if DEAL_II_MPI_VERSION_GTE(2, 2)
+          return MPI_CXX_BOOL;
+#  else
+          return MPI_C_BOOL;
+#  endif
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const char *)
+        {
+          return MPI_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const signed char *)
+        {
+          return MPI_SIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const short *)
+        {
+          return MPI_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const int *)
+        {
+          return MPI_INT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long int *)
+        {
+          return MPI_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned char *)
+        {
+          return MPI_UNSIGNED_CHAR;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned short *)
+        {
+          return MPI_UNSIGNED_SHORT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned int *)
+        {
+          return MPI_UNSIGNED;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long int *)
+        {
+          return MPI_UNSIGNED_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const unsigned long long int *)
+        {
+          return MPI_UNSIGNED_LONG_LONG;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const float *)
+        {
+          return MPI_FLOAT;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const double *)
+        {
+          return MPI_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const long double *)
+        {
+          return MPI_LONG_DOUBLE;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<float> *)
+        {
+          return MPI_COMPLEX;
+        }
+
+
+
+        inline MPI_Datatype
+        mpi_type_id(const std::complex<double> *)
+        {
+          return MPI_DOUBLE_COMPLEX;
+        }
+#endif
+      }
+    }
+
+
     template <typename T>
     Table<2,T>
     parse_input_table (const std::string &input_string,
@@ -942,6 +1090,98 @@ namespace aspect
     }
 
 
+
+    Tensor<2,3>
+    rotation_matrix_from_axis (const Tensor<1,3> &rotation_axis,
+                               const double rotation_angle)
+    {
+      Tensor<2,3> rotation_matrix;
+      rotation_matrix[0][0] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[0] + std::cos(rotation_angle);
+      rotation_matrix[0][1] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[1] - rotation_axis[2] * std::sin(rotation_angle);
+      rotation_matrix[0][2] = (1-std::cos(rotation_angle)) * rotation_axis[0]*rotation_axis[2] + rotation_axis[1] * std::sin(rotation_angle);
+      rotation_matrix[1][0] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[0] + rotation_axis[2] * std::sin(rotation_angle);
+      rotation_matrix[1][1] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[1] + std::cos(rotation_angle);
+      rotation_matrix[1][2] = (1-std::cos(rotation_angle)) * rotation_axis[1]*rotation_axis[2] - rotation_axis[0] * std::sin(rotation_angle);
+      rotation_matrix[2][0] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[0] - rotation_axis[1] * std::sin(rotation_angle);
+      rotation_matrix[2][1] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[1] + rotation_axis[0] * std::sin(rotation_angle);
+      rotation_matrix[2][2] = (1-std::cos(rotation_angle)) * rotation_axis[2]*rotation_axis[2] + std::cos(rotation_angle);
+      return rotation_matrix;
+    }
+
+
+
+    Tensor<2,3>
+    compute_rotation_matrix_for_slice (const Tensor<1,3> &point_one,
+                                       const Tensor<1,3> &point_two)
+    {
+      AssertThrow(point_one.norm() > std::numeric_limits<double>::min()
+                  && point_two.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "at the origin of the coordinate system."));
+
+      // Set up the normal vector of an unrotated 2D spherical shell
+      // that by default lies in the x-y plane.
+      const Tensor<1,3> unrotated_normal_vector ({0.0,0.0,1.0});
+
+      // Compute the normal vector of the plane that contains
+      // the origin and the two points specified as the function arguments.
+      Tensor<1,3> rotated_normal_vector = cross_product_3d(point_one, point_two);
+
+      AssertThrow(rotated_normal_vector.norm() > std::numeric_limits<double>::min(),
+                  ExcMessage("The points that are used to define the slice that "
+                             "should be rotated onto the x-y-plane can not lie "
+                             "along the line that also goes through the origin "
+                             "of the coordinate system."));
+
+      rotated_normal_vector /= rotated_normal_vector.norm();
+
+      Tensor<2,3> rotation_matrix ({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
+
+      // Calculate the crossing line of the two normals,
+      // which will be the rotation axis to transform the one
+      // normal into the other
+      Tensor<1,3> rotation_axis = cross_product_3d(unrotated_normal_vector, rotated_normal_vector);
+
+      // If the normal vector of the slice already points in z-direction, we do not have to
+      // apply the first rotation.
+      if (rotation_axis.norm() > std::numeric_limits<double>::min())
+        {
+          rotation_axis /= rotation_axis.norm();
+
+          // Calculate the rotation angle from the inner product rule
+          const double rotation_angle = std::acos(rotated_normal_vector * unrotated_normal_vector);
+          rotation_matrix = rotation_matrix_from_axis(rotation_axis, rotation_angle);
+        }
+
+      // Now apply the rotation that will project point_one onto the known point
+      // (0,1,0).
+      const Tensor<1,3> normalized_point_one = point_one / point_one.norm();
+      const Tensor<1,3> rotated_point_one = transpose(rotation_matrix) * normalized_point_one;
+      const Tensor<1,3> final_point_one ({0.0,1.0,0.0});
+
+      const double second_rotation_angle = std::acos(rotated_point_one * final_point_one);
+      Tensor<1,3> second_rotation_axis = cross_product_3d(final_point_one, rotated_point_one);
+
+      // If point 1 is already located at (0,1,0) after the first rotation, we do not
+      // have to apply the second rotation.
+      if (second_rotation_axis.norm() > std::numeric_limits<double>::min())
+        {
+          second_rotation_axis /= second_rotation_axis.norm();
+          const Tensor<2,3> second_rotation_matrix = rotation_matrix_from_axis(second_rotation_axis, second_rotation_angle);
+
+          // The final rotation used for the model will be the combined
+          // rotation of the two operations above. This is achieved by a
+          // matrix multiplication of the rotation matrices.
+          // This concatenation of rotations is the reason for using a
+          // rotation matrix instead of a combined rotation_axis + angle.
+          rotation_matrix = rotation_matrix * second_rotation_matrix;
+        }
+      return rotation_matrix;
+    }
+
+
+
     std::pair<double,double> real_spherical_harmonic( const unsigned int l,
                                                       const unsigned int m,
                                                       const double theta,
@@ -985,6 +1225,7 @@ namespace aspect
     }
 
 
+
     std::string
     read_and_distribute_file_content(const std::string &filename,
                                      const MPI_Comm &comm)
@@ -993,15 +1234,15 @@ namespace aspect
 
       if (Utilities::MPI::this_mpi_process(comm) == 0)
         {
-          // set file size to an invalid size (signaling an error if we can not read it)
-          unsigned int filesize = numbers::invalid_unsigned_int;
+          std::size_t filesize;
 
           // Check to see if the prm file will be reading data from disk or
           // from a provided URL
           if (filename_is_url(filename))
             {
 #ifdef ASPECT_WITH_LIBDAP
-              libdap::Connect *url = new libdap::Connect(filename);
+              std::unique_ptr<libdap::Connect> url
+                = std::make_unique<libdap::Connect>(filename);
               libdap::BaseTypeFactory factory;
               libdap::DataDDS dds(&factory);
               libdap::DAS das;
@@ -1057,9 +1298,7 @@ namespace aspect
               std::vector<std::string> points;
               for (libdap::AttrTable::Attr_iter i = das.var_begin(); i != das.var_end(); i++)
                 {
-                  libdap::AttrTable *table;
-
-                  table = das.get_table(i);
+                  libdap::AttrTable *table = das.get_table(i);
                   if (table->get_attr("POINTS") != "")
                     points.push_back(table->get_attr("POINTS"));
                   if (table->get_attr("points") != "")
@@ -1073,7 +1312,7 @@ namespace aspect
               urlString << "# POINTS:";
               for (unsigned int i = 0; i < points.size(); i++)
                 {
-                  urlString << " " << points[i];
+                  urlString << ' ' << points[i];
                 }
               urlString << "\n";
 
@@ -1086,19 +1325,23 @@ namespace aspect
                   for (unsigned int j = 0; j < columns.size(); j++)
                     {
                       urlString << columns[j][i];
-                      urlString << " ";
+                      urlString << ' ';
                     }
                   urlString << "\n";
                 }
 
               data_string = urlString.str();
               filesize = data_string.size();
-              delete url;
+
 #else // ASPECT_WITH_LIBDAP
 
-              // broadcast failure state, then throw
-              const int ierr = MPI_Bcast(&filesize, 1, MPI_UNSIGNED, 0, comm);
-              AssertThrowMPI(ierr);
+              // Broadcast failure state, then throw. We signal the failure by
+              // setting the file size to an invalid size, then trigger an assert.
+              {
+                std::size_t invalid_filesize = numbers::invalid_size_type;
+                const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
+                AssertThrowMPI(ierr);
+              }
               AssertThrow(false,
                           ExcMessage(std::string("Reading of file ") + filename + " failed. " +
                                      "Make sure you have the dependencies for reading a url " +
@@ -1113,11 +1356,11 @@ namespace aspect
               if (!filestream)
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
-                  return data_string; // never reached
                 }
 
 
@@ -1128,13 +1371,13 @@ namespace aspect
               if (!filestream.eof())
                 {
                   // broadcast failure state, then throw
-                  const int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+                  std::size_t invalid_filesize = numbers::invalid_size_type;
+                  const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
                                ExcMessage (std::string("Reading of file ") + filename + " finished " +
                                            "before the end of file was reached. Is the file corrupted or "
                                            "too large for the input buffer?"));
-                  return data_string; // never reached
                 }
 
               data_string = datastream.str();
@@ -1142,29 +1385,30 @@ namespace aspect
             }
 
           // Distribute data_size and data across processes
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
       else
         {
           // Prepare for receiving data
-          unsigned int filesize;
-          int ierr = MPI_Bcast(&filesize,1,MPI_UNSIGNED,0,comm);
+          std::size_t filesize;
+          int ierr = MPI_Bcast(&filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
           AssertThrowMPI(ierr);
-          if (filesize == numbers::invalid_unsigned_int)
+          if (filesize == numbers::invalid_size_type)
             throw QuietException();
 
           data_string.resize(filesize);
 
           // Receive and store data
-          ierr = MPI_Bcast(&data_string[0],filesize,MPI_CHAR,0,comm);
-          AssertThrowMPI(ierr);
+          big_mpi::broadcast(&data_string[0], filesize, 0, comm);
         }
 
       return data_string;
     }
+
+
 
     int
     mkdirp(std::string pathname,const mode_t mode)
@@ -2157,6 +2401,16 @@ namespace aspect
       return coordinates;
     }
 
+
+
+    template <int dim>
+    const std::array<double,dim> &NaturalCoordinate<dim>::get_coordinates() const
+    {
+      return coordinates;
+    }
+
+
+
     template <>
     std::array<double,1> NaturalCoordinate<2>::get_surface_coordinates() const
     {
@@ -2404,7 +2658,7 @@ namespace aspect
 
                   unsigned int j=0;
                   for (const auto &residual: solver_control.get_history_data())
-                    f << j++ << " " << residual << std::endl;
+                    f << j++ << ' ' << residual << std::endl;
                 }
 
               f.close();

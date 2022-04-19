@@ -41,7 +41,7 @@ namespace aspect
      * @ingroup InitialCompositionModels
      */
     template <int dim>
-    class AsciiData : public Interface<dim>, public Utilities::AsciiDataInitial<dim>
+    class AsciiData : public Interface<dim>, public aspect::SimulatorAccess<dim>
     {
       public:
         /**
@@ -55,9 +55,6 @@ namespace aspect
          */
         void
         initialize () override;
-
-        // avoid -Woverloaded-virtual:
-        using Utilities::AsciiDataInitial<dim>::initialize;
 
         /**
          * Return the initial composition as a function of position. For the
@@ -79,6 +76,41 @@ namespace aspect
          */
         void
         parse_parameters (ParameterHandler &prm) override;
+
+      private:
+        /**
+         * The dataset that contains the initial composition.
+         * This member variable is used in case the dataset has the same
+         * spatial dimensions as the model.
+         */
+        std::unique_ptr<Utilities::AsciiDataInitial<dim>> ascii_data_initial;
+
+        /**
+         * The dataset that contains the initial composition.
+         * This member variable is used in case the dataset has a higher
+         * spatial dimension than the model, and only a slice
+         * of the dataset is used.
+         */
+        std::unique_ptr<Utilities::AsciiDataInitial<dim,3>> ascii_data_slice;
+
+        /**
+         * Whether to use a dataset that has the same spatial dimensions as
+         * the model or not. If true only a slice of the dataset is used.
+         */
+        bool slice_data;
+
+        /**
+         * The two points that define the location of the slice.
+         */
+        Tensor<1,3> first_point_on_slice;
+        Tensor<1,3> second_point_on_slice;
+
+        /**
+          * The matrix that describes the rotation by which a 2D model
+          * needs to be transformed to a plane that contains the origin and
+          * the two prescribed points given in the input.
+          */
+        Tensor<2,3> rotation_matrix;
     };
   }
 }

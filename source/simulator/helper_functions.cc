@@ -119,7 +119,13 @@ namespace aspect
   typename Parameters<dim>::AdvectionFieldMethod::Kind
   Simulator<dim>::AdvectionField::advection_method(const Introspection<dim> &introspection) const
   {
-    return introspection.compositional_field_methods[compositional_variable];
+    if (field_type == temperature_field)
+      return introspection.temperature_method;
+    else if (field_type == compositional_field)
+      return introspection.compositional_field_methods[compositional_variable];
+
+    Assert (false, ExcInternalError());
+    return Parameters<dim>::AdvectionFieldMethod::fem_field;
   }
 
   template <int dim>
@@ -241,7 +247,7 @@ namespace aspect
     TerminationCriteria::Manager<dim>::write_plugin_graph(out);
 
     // end the graph
-    out << "}"
+    out << '}'
         << std::endl;
   }
 
@@ -508,7 +514,7 @@ namespace aspect
             computing_timer.print_summary ();
             pcout << "-- Total wallclock time elapsed including restarts:"
                   << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-                  << "s" << std::endl;
+                  << 's' << std::endl;
           }
 
         output_statistics();
@@ -590,7 +596,7 @@ namespace aspect
         computing_timer.print_summary ();
         pcout << "-- Total wallclock time elapsed including restarts:"
               << round(wall_timer.wall_time()+total_walltime_until_last_snapshot)
-              << "s" << std::endl;
+              << 's' << std::endl;
       }
   }
 
@@ -794,7 +800,9 @@ namespace aspect
     double my_area = 0.0;
     if (parameters.pressure_normalization == "surface")
       {
-        QGauss < dim - 1 > quadrature (parameters.stokes_velocity_degree + 1);
+        const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
+
+        const QGauss<dim-1> quadrature (parameters.stokes_velocity_degree + 1);
 
         const unsigned int n_q_points = quadrature.size();
         FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
@@ -808,10 +816,7 @@ namespace aspect
               for (const unsigned int face_no : cell->face_indices())
                 {
                   const typename DoFHandler<dim>::face_iterator face = cell->face (face_no);
-                  if (face->at_boundary()
-                      &&
-                      (geometry_model->depth (face->center()) <
-                       (face->diameter() / std::sqrt(1.*dim-1) / 3)))
+                  if (face->at_boundary() && face->boundary_id() == top_boundary_id)
                     {
                       fe_face_values.reinit (cell, face_no);
                       fe_face_values[extractor_pressure].get_function_values(vector,
@@ -819,9 +824,10 @@ namespace aspect
 
                       for (unsigned int q = 0; q < n_q_points; ++q)
                         {
+                          const double JxW = fe_face_values.JxW(q);
                           my_pressure += pressure_values[q]
-                                         * fe_face_values.JxW (q);
-                          my_area += fe_face_values.JxW (q);
+                                         * JxW;
+                          my_area += JxW;
                         }
                     }
                 }
@@ -1922,7 +1928,11 @@ namespace aspect
     // updating the ghost elements of the 'solution' vector.
     const unsigned int advection_block = adv_field.block_index(introspection);
     distributed_vector.block(advection_block).compress(VectorOperation::insert);
-    current_constraints.distribute (distributed_vector);
+
+    if (adv_field.is_temperature() ||
+        adv_field.compositional_variable != introspection.find_composition_type(Parameters<dim>::CompositionalFieldDescription::density))
+      current_constraints.distribute (distributed_vector);
+
     solution.block(advection_block) = distributed_vector.block(advection_block);
   }
 
@@ -2034,13 +2044,18 @@ namespace aspect
 
     std::vector<Tensor<1,dim>> face_current_velocity_values (fe_face_values.n_quadrature_points);
 
+    // Do not replace the id on boundaries with tangential velocity
+    const std::set<types::boundary_id> &tangential_velocity_boundaries =
+      boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
+
     // Loop over all of the boundary faces, ...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
-            if (face->at_boundary())
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            if (face->at_boundary() &&
+                tangential_velocity_boundaries.find(face->boundary_id()) == tangential_velocity_boundaries.end())
               {
                 Assert(face->boundary_id() <= offset,
                        ExcMessage("If you do not 'Allow fixed temperature/composition on outflow boundaries', "
@@ -2074,9 +2089,9 @@ namespace aspect
     // Loop over all of the boundary faces...
     for (const auto &cell : dof_handler.active_cell_iterators())
       if (!cell->is_artificial())
-        for (unsigned int face_number=0; face_number<GeometryInfo<dim>::faces_per_cell; ++face_number)
+        for (const unsigned int face_number : cell->face_indices())
           {
-            typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
+            const typename DoFHandler<dim>::face_iterator face = cell->face(face_number);
             if (face->at_boundary())
               {
                 // ... and reset all of the boundary ids we changed in replace_outflow_boundary_ids above.
@@ -2275,11 +2290,9 @@ namespace aspect
       {
         // next make sure that all listed indicators are actually used by
         // this geometry
-        for (unsigned int i=0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          for (std::set<types::boundary_id>::const_iterator
-               p = boundary_indicator_lists[i].begin();
-               p != boundary_indicator_lists[i].end(); ++p)
-            AssertThrow (all_boundary_indicators.find (*p)
+        for (const auto &list : boundary_indicator_lists)
+          for (const auto &p : list)
+            AssertThrow (all_boundary_indicators.find (p)
                          != all_boundary_indicators.end(),
                          ExcMessage ("One of the boundary indicators listed in the input file "
                                      "is not used by the geometry model."));
@@ -2287,8 +2300,8 @@ namespace aspect
     else
       {
         // next make sure that there are no listed indicators
-        for (unsigned  int i = 0; i<sizeof(boundary_indicator_lists)/sizeof(boundary_indicator_lists[0]); ++i)
-          AssertThrow (boundary_indicator_lists[i].empty(),
+        for (const auto &list : boundary_indicator_lists)
+          AssertThrow (list.empty(),
                        ExcMessage ("With the solver scheme `single Advection, no Stokes', "
                                    "one cannot set boundary conditions for velocity."));
       }

@@ -327,13 +327,14 @@ namespace aspect
               if (components == numbers::invalid_unsigned_int)
                 components = name_column_index - dim;
               else if (name_column_index != 0)
-                AssertThrow (components == name_column_index,
+                AssertThrow (components+dim == name_column_index,
                              ExcMessage("The number of expected data columns and the "
                                         "list of column names at the beginning of the data file "
                                         + filename + " do not match. The file should contain "
-                                        "one column name per column (one for each dimension "
-                                        "and one per data column)."));
-
+                                        + Utilities::int_to_string(name_column_index) + " column "
+                                        "names (one for each dimension and one per data column), "
+                                        "but it only has " + Utilities::int_to_string(components+dim) +
+                                        " column names."));
               break;
             }
           catch (const boost::bad_lexical_cast &e)
@@ -380,6 +381,29 @@ namespace aspect
             column_names.push_back("column " + Utilities::int_to_string(c,2));
         }
 
+      // Make sure the data file actually has as many columns as we think it has
+      // (either based on the header, or based on what was passed to the constructor).
+      const std::streampos position = in.tellg();
+      std::string first_data_row;
+      std::getline(in, first_data_row);
+      std::stringstream linestream(first_data_row);
+      std::string column_entry;
+
+      // We have already read in the first data entry above in the try/catch block,
+      // so there's one more column in the file than in the line we just read in.
+      unsigned int number_of_entries = 1;
+      while (linestream >> column_entry)
+        number_of_entries += 1;
+
+      AssertThrow ((number_of_entries) == column_names.size()+dim,
+                   ExcMessage("ERROR: The number of columns in the data file " + filename +
+                              " is incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
+                              " columns, but the first row has " + Utilities::int_to_string(number_of_entries) +
+                              " columns."));
+
+      // Go back to the position in the file where we started the check for the column numbers.
+      in.seekg (position);
+
       // Finally read data lines:
       unsigned int read_data_entries = 0;
       do
@@ -396,13 +420,14 @@ namespace aspect
 
               AssertThrow(old_value == 0. ||
                           (std::abs(old_value-temp_data) < 1e-8*std::abs(old_value)),
-                          ExcMessage("Invalid coordinate "
+                          ExcMessage("Invalid coordinate in column "
                                      + Utilities::int_to_string(column_num) + " in row "
                                      + Utilities::int_to_string(row_num)
                                      + " in file " + filename +
                                      "\nThis class expects the coordinates to be structured, meaning "
                                      "the coordinate values in each coordinate direction repeat exactly "
-                                     "each time."));
+                                     "each time. This also means each row in the data file has to have "
+                                     "the same number of columns as the first row containing data."));
 
               coordinate_values[column_num][idx[column_num]] = temp_data;
             }
@@ -538,7 +563,6 @@ namespace aspect
     AsciiDataBoundary<dim>::AsciiDataBoundary ()
       :
       current_file_number(0),
-      first_data_file_model_time(0.0),
       first_data_file_number(0),
       decreasing_file_order(false),
       data_file_time_step(0.0),
@@ -588,7 +612,7 @@ namespace aspect
           const std::string filename (create_filename (current_file_number, boundary_id));
 
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
 
 
           AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
@@ -613,7 +637,7 @@ namespace aspect
               if (Utilities::fexists(filename))
                 {
                   this->get_pcout() << std::endl << "   Also loading next Ascii data boundary file "
-                                    << filename << "." << std::endl << std::endl;
+                                    << filename << '.' << std::endl << std::endl;
                   lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
                   lookups.find(boundary_id)->second->load_file(filename, this->get_mpi_communicator());
                 }
@@ -758,13 +782,20 @@ namespace aspect
     void
     AsciiDataBoundary<dim>::update ()
     {
-      if (time_dependent && (this->get_time() - first_data_file_model_time >= 0.0))
+      // always initialize with the start time during model setup, even
+      // when restarting (to have identical setup in both cases)
+      double model_time = this->get_parameters().start_time;
+
+      // if we are past initialization use the current time instead
+      if (this->simulator_is_past_initialization())
+        model_time = this->get_time();
+
+      if (time_dependent == true)
         {
-          const double time_steps_since_start = (this->get_time() - first_data_file_model_time)
-                                                / data_file_time_step;
+          const double time_steps_since_start = model_time / data_file_time_step;
           // whether we need to update our data files. This looks so complicated
           // because we need to catch increasing and decreasing file orders and all
-          // possible first_data_file_model_times and first_data_file_numbers.
+          // possible first_data_file_numbers.
           const bool need_update =
             static_cast<int> (time_steps_since_start)
             > std::abs(current_file_number - first_data_file_number);
@@ -816,7 +847,7 @@ namespace aspect
         {
           const std::string filename (create_filename (current_file_number,boundary_id));
           this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                            << filename << "." << std::endl << std::endl;
+                            << filename << '.' << std::endl << std::endl;
           if (Utilities::fexists(filename))
             {
               lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -837,7 +868,7 @@ namespace aspect
 
       const std::string filename (create_filename (next_file_number,boundary_id));
       this->get_pcout() << std::endl << "   Loading Ascii data boundary file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
       if (Utilities::fexists(filename))
         {
           lookups.find(boundary_id)->second.swap(old_lookups.find(boundary_id)->second);
@@ -877,43 +908,33 @@ namespace aspect
                         const Point<dim>                    &position,
                         const unsigned int                   component) const
     {
-      // For initial ascii data topography, we need access to the data before get_time() is set,
-      // as this is when the grid including topography is constructed for the chunk geometry.
-      if ( (dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
-            dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-            this->get_timestep_number() == numbers::invalid_unsigned_int) ||
-           this->get_time() - first_data_file_model_time >= 0.0)
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) && dim == 3)
         {
-          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-          Point<dim> internal_position;
-          for (unsigned int i = 0; i < dim; i++)
-            internal_position[i] = natural_position[i];
-
-          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-          if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()) && dim == 3)
-            {
-              internal_position[2] = numbers::PI/2. - internal_position[2];
-            }
-
-          const std::array<unsigned int,dim-1> boundary_dimensions =
-            get_boundary_dimensions(boundary_indicator);
-
-          Point<dim-1> data_position;
-          for (unsigned int i = 0; i < dim-1; i++)
-            data_position[i] = internal_position[boundary_dimensions[i]];
-
-          const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
-
-          if (!time_dependent)
-            return data;
-
-          const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
-
-          return time_weight * data + (1 - time_weight) * old_data;
+          internal_position[2] = numbers::PI/2. - internal_position[2];
         }
-      else
-        return 0.0;
+
+      const std::array<unsigned int,dim-1> boundary_dimensions =
+        get_boundary_dimensions(boundary_indicator);
+
+      Point<dim-1> data_position;
+      for (unsigned int i = 0; i < dim-1; i++)
+        data_position[i] = internal_position[boundary_dimensions[i]];
+
+      const double data = lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+      if (!time_dependent)
+        return data;
+
+      const double old_data = old_lookups.find(boundary_indicator)->second->get_data(data_position,component);
+
+      return time_weight * data + (1 - time_weight) * old_data;
     }
 
 
@@ -923,43 +944,33 @@ namespace aspect
                                              const Point<dim>                    &position,
                                              const unsigned int                   component) const
     {
-      // For initial ascii data topography, we need access to the data before get_time() is set,
-      // as this is when the grid including topography is constructed for the chunk geometry.
-      if ((dynamic_cast<const GeometryModel::Chunk<dim>*>(&this->get_geometry_model()) != nullptr &&
-           dynamic_cast<const InitialTopographyModel::AsciiData<dim>*>(&this->get_initial_topography_model()) != nullptr &&
-           this->get_timestep_number() == numbers::invalid_unsigned_int) ||
-          this->get_time() - first_data_file_model_time >= 0.0 )
+      const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
+
+      Point<dim> internal_position;
+      for (unsigned int i = 0; i < dim; i++)
+        internal_position[i] = natural_position[i];
+
+      // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
+      if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
         {
-          const std::array<double,dim> natural_position = this->get_geometry_model().cartesian_to_natural_coordinates(position);
-
-          Point<dim> internal_position;
-          for (unsigned int i = 0; i < dim; i++)
-            internal_position[i] = natural_position[i];
-
-          // The chunk model has latitude as natural coordinate. We need to convert this to colatitude
-          if (dynamic_cast<const GeometryModel::Chunk<dim>*> (&this->get_geometry_model()) != nullptr && dim == 3)
-            {
-              internal_position[2] = numbers::PI/2. - internal_position[2];
-            }
-
-          const std::array<unsigned int,dim-1> boundary_dimensions =
-            get_boundary_dimensions(boundary_indicator);
-
-          Point<dim-1> data_position;
-          for (unsigned int i = 0; i < dim-1; ++i)
-            data_position[i] = internal_position[boundary_dimensions[i]];
-
-          const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
-
-          if (!time_dependent)
-            return gradients;
-
-          const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
-
-          return time_weight * gradients + (1 - time_weight) * old_gradients;
+          internal_position[2] = numbers::PI/2. - internal_position[2];
         }
-      else
-        return Tensor<1,dim-1>();
+
+      const std::array<unsigned int,dim-1> boundary_dimensions =
+        get_boundary_dimensions(boundary_indicator);
+
+      Point<dim-1> data_position;
+      for (unsigned int i = 0; i < dim-1; ++i)
+        data_position[i] = internal_position[boundary_dimensions[i]];
+
+      const Tensor<1,dim-1>  gradients = lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+      if (!time_dependent)
+        return gradients;
+
+      const Tensor<1,dim-1> old_gradients = old_lookups.find(boundary_indicator)->second->get_gradients(data_position,component);
+
+      return time_weight * gradients + (1 - time_weight) * old_gradients;
     }
 
 
@@ -1001,11 +1012,10 @@ namespace aspect
                            "The default is one million, i.e., either one million seconds or one million years.");
         prm.declare_entry ("First data file model time", "0",
                            Patterns::Double (0.),
-                           "Time from which on the data file with number `First data "
-                           "file number' is used as boundary condition. Until this "
-                           "time, a boundary condition equal to zero everywhere is assumed. "
-                           "Depending on the setting of the global `Use years in output instead of seconds' flag "
-                           "in the input file, this number is either interpreted as seconds or as years.");
+                           "The `First data file model time' parameter "
+                           "has been deactivated and will be removed in a future release. "
+                           "Do not use this paramter and instead provide data files "
+                           "starting from the model start time.");
         prm.declare_entry ("First data file number", "0",
                            Patterns::Integer (),
                            "Number of the first velocity file to be loaded when the model time "
@@ -1033,14 +1043,20 @@ namespace aspect
       prm.enter_subsection(subsection_name);
       {
         data_file_time_step             = prm.get_double ("Data file time step");
-        first_data_file_model_time      = prm.get_double ("First data file model time");
+        const double first_data_file_model_time      = prm.get_double ("First data file model time");
+
+        AssertThrow (first_data_file_model_time == 0.0,
+                     ExcMessage("The `First data file model time' parameter "
+                                "has been deactivated and will be removed in a future release. "
+                                "Do not use this parameter and instead provide data files "
+                                "starting from the model start time."));
+
         first_data_file_number          = prm.get_integer("First data file number");
         decreasing_file_order           = prm.get_bool   ("Decreasing file order");
 
         if (this->convert_output_to_years() == true)
           {
             data_file_time_step        *= year_in_seconds;
-            first_data_file_model_time *= year_in_seconds;
           }
       }
       prm.leave_subsection();
@@ -1217,15 +1233,15 @@ namespace aspect
 
 
 
-    template <int dim>
-    AsciiDataInitial<dim>::AsciiDataInitial ()
+    template <int dim, int spacedim>
+    AsciiDataInitial<dim, spacedim>::AsciiDataInitial ()
     {}
 
 
 
-    template <int dim>
+    template <int dim, int spacedim>
     void
-    AsciiDataInitial<dim>::initialize (const unsigned int components)
+    AsciiDataInitial<dim, spacedim>::initialize (const unsigned int components)
     {
       AssertThrow ((Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model()))
                    || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
@@ -1235,13 +1251,13 @@ namespace aspect
                    ExcMessage ("This ascii data plugin can only be used when using "
                                "a spherical shell, chunk, or box geometry."));
 
-      lookup = std::make_unique<Utilities::StructuredDataLookup<dim>> (components,
-                                                                       this->scale_factor);
+      lookup = std::make_unique<Utilities::StructuredDataLookup<spacedim>> (components,
+                                                                            this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
       this->get_pcout() << std::endl << "   Loading Ascii data initial file "
-                        << filename << "." << std::endl << std::endl;
+                        << filename << '.' << std::endl << std::endl;
 
 
       AssertThrow(Utilities::fexists(filename) || filename_is_url(filename),
@@ -1255,21 +1271,21 @@ namespace aspect
 
 
 
-    template <int dim>
+    template <int dim, int spacedim>
     double
-    AsciiDataInitial<dim>::
-    get_data_component (const Point<dim>                    &position,
+    AsciiDataInitial<dim, spacedim>::
+    get_data_component (const Point<spacedim>                    &position,
                         const unsigned int                   component) const
     {
-      Point<dim> internal_position = position;
+      Point<spacedim> internal_position = position;
 
       if (Plugins::plugin_type_matches<const GeometryModel::SphericalShell<dim>> (this->get_geometry_model())
           || (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model())))
         {
-          const std::array<double,dim> spherical_position =
+          const std::array<double,spacedim> spherical_position =
             Utilities::Coordinates::cartesian_to_spherical_coordinates(position);
 
-          for (unsigned int i = 0; i < dim; i++)
+          for (unsigned int i = 0; i < spacedim; i++)
             internal_position[i] = spherical_position[i];
         }
       return lookup->get_data(internal_position,component);
@@ -1378,8 +1394,9 @@ namespace aspect
     template class AsciiDataBoundary<3>;
     template class AsciiDataLayered<2>;
     template class AsciiDataLayered<3>;
-    template class AsciiDataInitial<2>;
-    template class AsciiDataInitial<3>;
+    template class AsciiDataInitial<2, 2>;
+    template class AsciiDataInitial<2, 3>;
+    template class AsciiDataInitial<3, 3>;
     template class AsciiDataProfile<1>;
     template class AsciiDataProfile<2>;
     template class AsciiDataProfile<3>;

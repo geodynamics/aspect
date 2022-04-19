@@ -62,7 +62,7 @@ namespace aspect
 
     // Variables to do volume calculations
 
-    QGauss<dim> quadrature(max_degree);
+    const QGauss<dim> quadrature(max_degree);
 
     std::vector<double> xFEM_values(quadrature.size());
 

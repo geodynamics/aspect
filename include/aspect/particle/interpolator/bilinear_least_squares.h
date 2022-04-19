@@ -70,18 +70,14 @@ namespace aspect
 
         private:
           /**
-           * Variables related to a limiting scheme that prevents overshoot and
-           * undershoot of interpolated particle properties based on global max
-           * and global min for each property.
+           *  A component mask that determines whether a limiting scheme is
+           *  used for each interpolated property. The limiting scheme
+           *  prevents overshoot and undershoot of interpolated particle
+           *  properties based on the local max and min of the particle
+           *  properties in that cell (i.e. the interpolated properties
+           *  will never exxceed the max and min of the properties on the particles).
            */
-          bool use_global_min_max_limiter;
-
-          /**
-           * For each interpolated particle property, a global max and global
-           * min are stored as elements of vectors.
-           */
-          std::vector<double> global_maximum_particle_properties;
-          std::vector<double> global_minimum_particle_properties;
+          ComponentMask use_linear_least_squares_limiter;
 
           /**
            * Fallback method if there are too few particles in a cell to

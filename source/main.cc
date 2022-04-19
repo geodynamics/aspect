@@ -30,6 +30,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <regex>
 
 #ifdef DEBUG
 #ifdef ASPECT_USE_FP_EXCEPTIONS
@@ -67,54 +68,28 @@ get_last_value_of_parameter(const std::string &parameters,
   std::istringstream x_file(parameters);
   while (x_file)
     {
-      // get one line and strip spaces at the front and back
+      // Get one line and then match a regex to it that matches the parameter
+      // we are looking for. Before we do that, strip spaces from the front
+      // and back of the line:
       std::string line;
       std::getline(x_file, line);
+
       while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
         line.erase(0, 1);
       while ((line.size() > 0)
              && (line[line.size() - 1] == ' ' || line[line.size() - 1] == '\t'))
         line.erase(line.size() - 1, std::string::npos);
-      // now see whether the line starts with 'set' followed by multiple spaces
-      // if not, try next line
-      if (line.size() < 4)
-        continue;
 
-      if ((line[0] != 's') || (line[1] != 'e') || (line[2] != 't')
-          || !(line[3] == ' ' || line[3] == '\t'))
-        continue;
-
-      // delete the "set " and then delete more spaces if present
-      line.erase(0, 4);
-      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-        line.erase(0, 1);
-      // now see whether the next word is the word we look for
-      if (line.find(parameter_name) != 0)
-        continue;
-
-      line.erase(0, parameter_name.size());
-      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-        line.erase(0, 1);
-
-      // we'd expect an equals size here
-      if ((line.size() < 1) || (line[0] != '='))
-        continue;
-
-      // remove comment
-      std::string::size_type pos = line.find('#');
-      if (pos != std::string::npos)
-        line.erase (pos);
-
-      // trim the equals sign at the beginning and possibly following spaces
-      // as well as spaces at the end
-      line.erase(0, 1);
-      while ((line.size() > 0) && (line[0] == ' ' || line[0] == '\t'))
-        line.erase(0, 1);
-      while ((line.size() > 0) && (line[line.size()-1] == ' ' || line[line.size()-1] == '\t'))
-        line.erase(line.size()-1, std::string::npos);
-
-      // the rest should now be what we were looking for
-      return_value = line;
+      std::match_results<std::string::const_iterator> matches;
+      const std::string regex = "set[ \t]+" + parameter_name + "[ \t]*=[ \t]*(.*)";
+      if (std::regex_match(line, matches, std::regex(regex)))
+        {
+          // Since the line as a whole matched, the 'matches' variable needs to
+          // contain two entries: [0] denotes the whole string, and [1] the
+          // one that was matched by the '(.*)' expression.
+          Assert (matches.size() == 2, dealii::ExcInternalError());
+          return_value = std::string(matches[1].first, matches[1].second);
+        }
     }
 
   return return_value;
@@ -283,7 +258,7 @@ void possibly_load_shared_libs (const std::string &parameters)
           if (Utilities::MPI::this_mpi_process (MPI_COMM_WORLD) == 0)
             std::cout << "Loading shared library <"
                       << shared_lib
-                      << ">" << std::endl;
+                      << '>' << std::endl;
 
           void *handle = dlopen (shared_lib.c_str(), RTLD_LAZY);
           AssertThrow (handle != nullptr,

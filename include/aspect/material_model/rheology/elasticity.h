@@ -25,6 +25,8 @@
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
 
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -182,6 +184,15 @@ namespace aspect
            * time step to create a time scale.
            */
           double stabilization_time_scale_factor;
+
+          /**
+           * We cache the evaluator that is necessary to evaluate the old velocity
+           * gradients. They are required to compute the elastic stresses, but
+           * are not provided by the material model.
+           * By caching the evaluator, we can avoid recreating it every time we
+           * need it.
+           */
+          mutable std::unique_ptr<FEPointEvaluation<dim, dim>> evaluator;
       };
     }
   }

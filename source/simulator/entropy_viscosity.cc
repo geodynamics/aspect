@@ -124,21 +124,36 @@ namespace aspect
     if (advection_field.is_discontinuous(introspection))
       return 0.;
 
-    std::vector<double> residual = assemblers->advection_system[0]->compute_residual(scratch);
+    double max_residual = 0.0;
+    double max_velocity = 0.0;
+    double max_advection_prefactor = 0.0;
+    double max_conductivity = 0.0;
 
-    for (unsigned int i=1; i<assemblers->advection_system.size(); ++i)
+    std::vector<double> residual (scratch.finite_element_values.n_quadrature_points,0.0);
+
+    for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
       {
         const std::vector<double> new_residual = assemblers->advection_system[i]->compute_residual(scratch);
         for (unsigned int j=0; j<residual.size(); ++j)
           residual[j] += new_residual[j];
+
+        if (auto *stabilization_assembler =
+              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>* > ((assemblers->advection_system[i]).get()))
+          {
+            // Ensure no other assembler has set max_advection_prefactor or max_conductivity before,
+            // otherwise we dont know which one to use.
+            Assert (max_advection_prefactor == 0.0 && max_conductivity == 0.0,
+                    ExcMessage("More than one assembler has provided scaling factors for the entropy "
+                               "viscosity stabilization, which is not supported. Make sure only one active advection "
+                               "assembler is derived from the class AdvectionStabilizationInterface."));
+
+            const std::vector<double> advection_prefactors = stabilization_assembler->advection_prefactors(scratch);
+            const std::vector<double> conductivities = stabilization_assembler->diffusion_prefactors(scratch);
+
+            max_advection_prefactor = *std::max_element(advection_prefactors.begin(),advection_prefactors.end());
+            max_conductivity = *std::max_element(conductivities.begin(),conductivities.end());
+          }
       }
-
-
-    double max_residual = 0;
-    double max_velocity = 0;
-    double max_density = (advection_field.is_temperature()) ? 0.0 : 1.0;
-    double max_specific_heat = (advection_field.is_temperature()) ? 0.0 : 1.0;
-    double max_conductivity = 0;
 
     std::vector<Tensor<1,dim>> old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
     std::vector<Tensor<1,dim>> old_old_fluid_velocity_values(scratch.finite_element_values.n_quadrature_points);
@@ -175,13 +190,6 @@ namespace aspect
         max_velocity = std::max (velocity_norm
                                  + parameters.stabilization_gamma * strain_rate * cell_diameter,
                                  max_velocity);
-
-        if (advection_field.is_temperature())
-          {
-            max_density = std::max       (scratch.material_model_outputs.densities[q],              max_density);
-            max_specific_heat = std::max (scratch.material_model_outputs.specific_heat[q],          max_specific_heat);
-            max_conductivity = std::max  (scratch.material_model_outputs.thermal_conductivities[q], max_conductivity);
-          }
       }
 
     // If the velocity is 0 we have to assume a sensible velocity to calculate
@@ -195,17 +203,16 @@ namespace aspect
              max_conductivity / geometry_model->length_scale() *
              cell_diameter;
 
-    const double max_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
-                                 max_density *
-                                 max_specific_heat *
-                                 max_velocity * cell_diameter;
+    const double maximum_viscosity = parameters.stabilization_beta[advection_field.field_index()] *
+                                     max_advection_prefactor *
+                                     max_velocity * cell_diameter;
 
     if (timestep_number <= 1
         || std::abs(global_entropy_variation) < 1e-50
         || std::abs(global_field_variation) < 1e-50)
       // we don't have sensible time-steps during the first two iterations
       // and we can not divide by the entropy_variation if it is zero
-      return max_viscosity;
+      return maximum_viscosity;
     else
       {
         Assert (old_time_step > 0, ExcInternalError());
@@ -223,7 +230,7 @@ namespace aspect
                                (global_u_infty * global_field_variation));
 
 
-        return std::min (max_viscosity, entropy_viscosity);
+        return std::min (maximum_viscosity, entropy_viscosity);
       }
   }
 
@@ -247,6 +254,21 @@ namespace aspect
     // discontinuous Galerkin doesn't require an artificial viscosity
     if (advection_field.is_discontinuous(introspection))
       return;
+
+    bool skip_EV_dirichlet_boundary_cells = false;
+
+    if (advection_field.is_temperature())
+      skip_EV_dirichlet_boundary_cells = true;
+    else
+      {
+        const std::string field_name = introspection.name_for_compositional_index(advection_field.compositional_variable);
+        if (std::find(parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.begin(),
+                      parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end(),
+                      field_name)
+            !=
+            parameters.compositional_fields_with_disabled_boundary_entropy_viscosity.end())
+          skip_EV_dirichlet_boundary_cells = true;
+      }
 
     const std::pair<double,double>
     global_field_range = get_extrapolated_advection_field_range (advection_field);
@@ -340,13 +362,19 @@ namespace aspect
         // we need the stabilization, because the boundary cells can
         // be advection dominated. Hence, only disable artificial
         // viscosity if flow through the boundary is slow, or
-        // tangential.
+        // tangential. Also disable artificial viscosity for compositions
+        // for which this is requested (e.g. compositions with
+        // physical diffusion).
         if (parameters.advection_stabilization_method
             == Parameters<dim>::AdvectionStabilizationMethod::entropy_viscosity
-            && advection_field.is_temperature())
+            && skip_EV_dirichlet_boundary_cells == true)
           {
-            const std::set<types::boundary_id> &fixed_temperature_boundaries =
-              boundary_temperature_manager.get_fixed_temperature_boundary_indicators();
+            const std::set<types::boundary_id> &dirichlet_boundaries =
+              (advection_field.is_temperature() == true)
+              ?
+              boundary_temperature_manager.get_fixed_temperature_boundary_indicators()
+              :
+              boundary_composition_manager.get_fixed_composition_boundary_indicators();
             const std::set<types::boundary_id> &tangential_velocity_boundaries =
               boundary_velocity_manager.get_tangential_boundary_velocity_indicators();
             const std::set<types::boundary_id> &zero_velocity_boundaries =
@@ -355,7 +383,7 @@ namespace aspect
             bool cell_at_conduction_dominated_dirichlet_boundary = false;
             for (const unsigned int face_no : cell->face_indices())
               if (cell->at_boundary(face_no) == true &&
-                  fixed_temperature_boundaries.find(cell->face(face_no)->boundary_id()) != fixed_temperature_boundaries.end())
+                  dirichlet_boundaries.find(cell->face(face_no)->boundary_id()) != dirichlet_boundaries.end())
                 {
                   // If the velocity is tangential or zero we can always disable stabilization, except if there is another
                   // face at a different boundary. Therefore continue with the next face rather than break the loop.

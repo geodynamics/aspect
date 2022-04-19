@@ -1,0 +1,3 @@
+Fixed: The spherical velocity postprocessor now correctly applies the parameter 'Use years in output instead of seconds' to output velocities either per year or per second.
+<br>
+(Elodie Kendall and Rene Gassmoeller, 2021/10/29)

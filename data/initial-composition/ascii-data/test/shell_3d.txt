@@ -1,7 +1,7 @@
 # Test data for ascii data compositional initial conditions.
 # Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
 # POINTS: 3 3 3
-# Columns: r phi theta composition_1
+r phi theta composition_1
 3481000  0       0       1.
 4908500  0       0       1.
 6336000  0       0       1.

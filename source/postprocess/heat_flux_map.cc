@@ -79,7 +79,10 @@ namespace aspect
         Vector<double> local_rhs(dofs_per_cell);
         Vector<double> local_mass_matrix(dofs_per_cell);
 
-        // The mass matrix may be stored in a vector as it is a diagonal matrix.
+        // The mass matrix may be stored in a vector as it is a diagonal matrix:
+        // it is computed based on quadrature over faces, and we use a node-location
+        // based quadrature formula above, so phi_i(x_q)=delta_{iq} where the
+        // x_q are the node points of the finite element shape functions on the face.
         LinearAlgebra::BlockVector mass_matrix(simulator_access.introspection().index_sets.system_partitioning,
                                                simulator_access.get_mpi_communicator());
         LinearAlgebra::BlockVector distributed_heat_flux_vector(simulator_access.introspection().index_sets.system_partitioning,
@@ -224,7 +227,7 @@ namespace aspect
                     }
                 }
 
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 {
                   if (!cell->at_boundary(f))
                     continue;
@@ -236,7 +239,9 @@ namespace aspect
                   // Compute heat flux through Dirichlet boundary using CBF method
                   if (fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end())
                     {
-                      // Assemble the mass matrix for cell face.
+                      // Assemble the mass matrix for cell face. Because the quadrature
+                      // formula is chosen as co-located with the nodes of shape functions,
+                      // the resulting matrix is diagonal.
                       for (unsigned int q=0; q<n_face_q_points; ++q)
                         for (unsigned int i=0; i<dofs_per_cell; ++i)
                           local_mass_matrix(i) += fe_face_values[simulator_access.introspection().extractors.temperature].value(i,q) *
@@ -307,13 +312,14 @@ namespace aspect
         return heat_flux_vector;
       }
 
+
+
       template <int dim>
       std::vector<std::vector<std::pair<double, double>>>
       compute_heat_flux_through_boundary_faces (const SimulatorAccess<dim> &simulator_access)
       {
-        std::vector<std::vector<std::pair<double, double>>> heat_flux_and_area(simulator_access.get_triangulation().n_active_cells(),
-                                                                               std::vector<std::pair<double, double>>(GeometryInfo<dim>::faces_per_cell,
-                                                                                   std::pair<double,double>(0.0,0.0)));
+        std::vector<std::vector<std::pair<double, double>>>
+        heat_flux_and_area(simulator_access.get_triangulation().n_active_cells());
 
         // Quadrature degree for assembling the consistent boundary flux equation, see Simulator::assemble_advection_system()
         // for a justification of the chosen quadrature degree.
@@ -357,9 +363,18 @@ namespace aspect
         for (const auto &cell : simulator_access.get_dof_handler().active_cell_iterators())
           if (cell->is_locally_owned() && cell->at_boundary())
             {
-              for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+              for (const unsigned int f : cell->face_indices())
                 if (cell->at_boundary(f))
                   {
+                    // See if this is the first face on this cell we visit, and if
+                    // so resize the output array.
+                    if (heat_flux_and_area[cell->active_cell_index()].size() == 0)
+                      heat_flux_and_area[cell->active_cell_index()]
+                      .resize (cell->n_faces(), std::pair<double,double>(0.0,0.0));
+                    else
+                      Assert (heat_flux_and_area[cell->active_cell_index()].size() == cell->n_faces(),
+                              ExcInternalError());
+
                     // Determine the type of boundary
                     const unsigned int boundary_id = cell->face(f)->boundary_id();
                     const bool prescribed_temperature = fixed_temperature_boundaries.find(boundary_id) != fixed_temperature_boundaries.end();
@@ -436,6 +451,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     std::pair<std::string,std::string>
     HeatFluxMap<dim>::execute (TableHandler &)
@@ -449,15 +466,19 @@ namespace aspect
       std::vector<std::pair<Point<dim>,double>> stored_values;
 
       // loop over all of the surface cells and evaluate the heat flux
+      const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
+      const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");
+
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
-          for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+          for (const unsigned int f : cell->face_indices())
             if (cell->at_boundary(f) &&
-                (this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "top" ||
-                 this->get_geometry_model().translate_id_to_symbol_name (cell->face(f)->boundary_id()) == "bottom"))
+                (cell->face(f)->boundary_id() == top_boundary_id ||
+                 cell->face(f)->boundary_id() == bottom_boundary_id))
               {
                 // evaluate position of heat flow to write into output file
-                const Point<dim> midpoint_at_surface = cell->face(f)->center();
+                const bool respect_manifold = true;
+                const Point<dim> midpoint_at_surface = cell->face(f)->center(respect_manifold);
 
                 const double flux_density = heat_flux_and_area[cell->active_cell_index()][f].first /
                                             heat_flux_and_area[cell->active_cell_index()][f].second;

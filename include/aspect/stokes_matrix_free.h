@@ -52,6 +52,58 @@ namespace aspect
 {
   using namespace dealii;
 
+  namespace internal
+  {
+    namespace TangentialBoundaryFunctions
+    {
+
+      template <int dim>
+      void compute_no_normal_flux_constraints_box (const DoFHandler<dim>    &dof,
+                                                   const types::boundary_id  bid,
+                                                   const unsigned int first_vector_component,
+                                                   MGConstrainedDoFs         &mg_constrained_dofs);
+      template <int dim>
+      void
+      add_constraint(const std::array<types::global_dof_index,dim> &dof_indices,
+                     const Tensor<1, dim> &constraining_vector,
+                     AffineConstraints<double> &constraints,
+                     const double inhomogeneity = 0);
+
+      template <int dim, int spacedim>
+      void compute_no_normal_flux_constraints_shell(const DoFHandler<dim,spacedim> &dof_handler,
+                                                    const MGConstrainedDoFs        &mg_constrained_dofs,
+                                                    const Mapping<dim> &mapping,
+                                                    const unsigned int level,
+                                                    const unsigned int first_vector_component,
+                                                    const std::set<types::boundary_id> &boundary_ids,
+                                                    AffineConstraints<double> &constraints);
+    }
+
+    /**
+     * Matrix-free operators must use deal.II defined vectors, while the rest of the ASPECT
+     * software is based on Trilinos vectors. Here we define functions which copy between the
+     * vector types.
+     */
+    namespace ChangeVectorTypes
+    {
+      void import(TrilinosWrappers::MPI::Vector &out,
+                  const dealii::LinearAlgebra::ReadWriteVector<double> &rwv,
+                  const VectorOperation::values                 operation);
+
+      void copy(TrilinosWrappers::MPI::Vector &out,
+                const dealii::LinearAlgebra::distributed::Vector<double> &in);
+
+      void copy(dealii::LinearAlgebra::distributed::Vector<double> &out,
+                const TrilinosWrappers::MPI::Vector &in);
+
+      void copy(TrilinosWrappers::MPI::BlockVector &out,
+                const dealii::LinearAlgebra::distributed::BlockVector<double> &in);
+
+      void copy(dealii::LinearAlgebra::distributed::BlockVector<double> &out,
+                const TrilinosWrappers::MPI::BlockVector &in);
+    }
+  }
+
   /**
    * This namespace contains all matrix-free operators used in the Stokes solver.
    */
@@ -93,6 +145,11 @@ namespace aspect
       bool symmetrize_newton_system;
 
       /**
+       * If true, apply the stabilization on free surface faces.
+       */
+      bool apply_stabilization_free_surface_faces;
+
+      /**
        * Table which stores viscosity values for each cell.
        *
        * If the second dimension is of size 1, the viscosity is
@@ -122,6 +179,18 @@ namespace aspect
        */
       Table<2, SymmetricTensor<2, dim, VectorizedArray<number>>>
       newton_factor_wrt_strain_rate_table;
+
+      /**
+       * Table which stores the product of the pressure perturbation
+       * and the normalized gravity. The size is n_face_boundary * n_face_q_points,
+       * but only those on the free surface are computed and stored.
+       */
+      Table<2, Tensor<1, dim, VectorizedArray<number>>> free_surface_stabilization_term_table;
+
+      /**
+       * Boundary indicators of those boundaries with a free surface.
+       */
+      std::set<types::boundary_id> free_surface_boundary_indicators;
 
       /**
        * Determine an estimate for the memory consumption (in bytes) of this
@@ -183,6 +252,22 @@ namespace aspect
                           dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
                           const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
                           const std::pair<unsigned int, unsigned int> &cell_range) const;
+
+        /**
+         * This function doesn't do anything, it's created to use the matrixfree loop.
+         */
+        void local_apply_face (const dealii::MatrixFree<dim, number> &data,
+                               dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                               const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                               const std::pair<unsigned int, unsigned int> &face_range) const;
+
+        /**
+         * Apply the stabilization on free surface faces.
+         */
+        void local_apply_boundary_face (const dealii::MatrixFree<dim, number> &data,
+                                        dealii::LinearAlgebra::distributed::BlockVector<number> &dst,
+                                        const dealii::LinearAlgebra::distributed::BlockVector<number> &src,
+                                        const std::pair<unsigned int, unsigned int> &face_range) const;
 
         /**
          * A pointer to the current cell data that contains viscosity and other required parameters per cell.
@@ -566,6 +651,18 @@ namespace aspect
       Simulator<dim> &sim;
 
       bool print_details;
+
+      /**
+       * If true, it will time the key components of this matrix-free implementation, such as
+       * vmult of different matrices, solver IDR with the cheap preconditioner, etc.
+       */
+      bool do_timings;
+
+      /**
+       * The max/min of the evaluated viscosities.
+       */
+      double minimum_viscosity;
+      double maximum_viscosity;
 
       DoFHandler<dim> dof_handler_v;
       DoFHandler<dim> dof_handler_p;

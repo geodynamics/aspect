@@ -157,8 +157,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("top",    3)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
 
           case 3:
@@ -172,8 +172,8 @@ namespace aspect
                   std::pair<std::string,types::boundary_id>("top",    5)
                 };
 
-            return std::map<std::string,types::boundary_id> (&mapping[0],
-                                                             &mapping[sizeof(mapping)/sizeof(mapping[0])]);
+            return std::map<std::string,types::boundary_id> (std::begin(mapping),
+                                                             std::end(mapping));
           }
         }
 
@@ -193,6 +193,33 @@ namespace aspect
           periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2*i, 2*i+1), i) );
       return periodic_boundaries;
     }
+
+
+
+    template <int dim>
+    void
+    Box<dim>::adjust_positions_for_periodicity (Point<dim> &position,
+                                                const ArrayView<Point<dim>> &connected_positions) const
+    {
+      for (unsigned int i = 0; i < dim; ++i)
+        if (periodic[i])
+          {
+            if (position[i] < box_origin[i])
+              {
+                position[i] += extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] += extents[i];
+              }
+            else if (position[i] > box_origin[i] + extents[i])
+              {
+                position[i] -= extents[i];
+                for (auto &connected_position: connected_positions)
+                  connected_position[i] -= extents[i];
+              }
+          }
+    }
+
+
 
     template <int dim>
     Point<dim>
@@ -444,7 +471,7 @@ namespace aspect
                                    "denote the left, right, bottom and top boundaries; in 3d, boundary "
                                    "indicators 0 through 5 indicate left, right, front, back, bottom "
                                    "and top boundaries (see also the documentation of the deal.II class "
-                                   "``GeometryInfo''). You can also use symbolic names ``left'', ``right'', "
+                                   "``ReferenceCell''). You can also use symbolic names ``left'', ``right'', "
                                    "etc., to refer to these boundaries in input files. "
                                    "It is also possible to add initial topography to the box model. Note however that "
                                    "this is done after the last initial adaptive refinement cycle. "

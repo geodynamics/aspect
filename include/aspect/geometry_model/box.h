@@ -156,6 +156,17 @@ namespace aspect
             get_periodic_boundary_pairs () const override;
 
         /**
+         * @copydoc Interface::adjust_positions_for_periodicity
+         *
+         * Apply a translation to all points outside of the domain
+         * to account for periodicity.
+         */
+        virtual
+        void
+        adjust_positions_for_periodicity (Point<dim> &position,
+                                          const ArrayView<Point<dim>> &connected_positions = {}) const;
+
+        /**
          * @copydoc Interface::has_curved_elements()
          *
          * A box has only straight boundaries and cells, so return false.

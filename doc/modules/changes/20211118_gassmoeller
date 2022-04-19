@@ -1,0 +1,6 @@
+Fixed: The algorithm in the pressure normalization scheme 'surface' ignored
+some surface faces of cells with much larger horizontal than vertical extent in
+curved geometries. This could lead to non-zero averaged surface pressure for
+these models. This is fixed now.
+<br>
+(Rene Gassmoeller, 2021/11/18)

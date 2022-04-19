@@ -500,7 +500,7 @@ namespace aspect
                   bool cell_at_fixed_boundary = false;
                   unsigned int boundary_face = numbers::invalid_unsigned_int;
                   double minimum_face_distance = std::numeric_limits<double>::max();
-                  for (unsigned int f=0; f<GeometryInfo<dim>::faces_per_cell; ++f)
+                  for (const unsigned int f : cell->face_indices())
                     if (cell->at_boundary(f) && fixed_boundaries.count(cell->face(f)->boundary_id()) == 1)
                       {
                         const double face_center_distance = particle_location.distance_square(cell->face(f)->center(true));
