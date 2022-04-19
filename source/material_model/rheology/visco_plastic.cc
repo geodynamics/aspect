@@ -799,7 +799,7 @@ namespace aspect
                   friction_factor = 1;
                 else if (average_mobility <= 1.5)
                   friction_factor = 1.5;
-                else if (average_mobility > 1.5. && average_mobility < 2.5)
+                else if (average_mobility > 1.5 && average_mobility < 2.5)
                   friction_factor = 3 - average_mobility;
                 else if (average_mobility >= 2.5)
                   friction_factor = 0.5;
