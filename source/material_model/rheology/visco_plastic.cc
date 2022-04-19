@@ -272,11 +272,11 @@ namespace aspect
             //first find factors 
             if (average_mobility == 0.)
               friction_factor = 1;
-            else if (average_mobility <= 2.)
+            else if (average_mobility <= 1.5)
               friction_factor = 1.5;
-            else if (average_mobility > 2. && average_mobility < 3.)
-              friction_factor = 3.5- average_mobility;
-            else if (average_mobility >= 3.)
+            else if (average_mobility > 1.5 && average_mobility < 2.5)
+              friction_factor = 3 - average_mobility;
+            else if (average_mobility >= 2.5)
               friction_factor = 0.5;
             
             //now modify friction
@@ -797,11 +797,11 @@ namespace aspect
                 //first find factors 
                 if (average_mobility == 0.)
                   friction_factor = 1;
-                else if (average_mobility <= 2.)
+                else if (average_mobility <= 1.5)
                   friction_factor = 1.5;
-                else if (average_mobility > 2. && average_mobility < 3.)
-                  friction_factor = 3.5- average_mobility;
-                else if (average_mobility >= 3.)
+                else if (average_mobility > 1.5. && average_mobility < 2.5)
+                  friction_factor = 3 - average_mobility;
+                else if (average_mobility >= 2.5)
                   friction_factor = 0.5;
 
                 // Also convert radians to degrees
