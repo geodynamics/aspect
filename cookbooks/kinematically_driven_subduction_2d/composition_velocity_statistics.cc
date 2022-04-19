@@ -92,7 +92,6 @@ namespace aspect
           const std::vector<std::string>::iterator slab_it = std::find(slab_compositions.begin(), slab_compositions.end(), this->introspection().name_for_compositional_index(c));
           if (slab_it != slab_compositions.end())
             {
-              std::cout << "slab compo " << *slab_it << std::endl;
               velocity_square_integral_slab += global_velocity_square_integral[c];
               area_integral_slab += global_area_integral[c];
             }
@@ -100,17 +99,14 @@ namespace aspect
 
       const double vrms_slab = std::sqrt(velocity_square_integral_slab) / std::sqrt(area_integral_slab);
 
-      std::string unit = (this->convert_output_to_years()) ? "m/year" : "m/s";
+      const std::string unit = (this->convert_output_to_years()) ? "m/year" : "m/s";
+      const double time_scaling = (this->convert_output_to_years()) ? year_in_seconds : 1.0;
 
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          if (this->convert_output_to_years())
-            statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
-                                 year_in_seconds * vrms_per_composition[c]);
-          else
-            statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
-                                 vrms_per_composition[c]);
+          statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
+                                time_scaling * vrms_per_composition[c]);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
@@ -124,12 +120,8 @@ namespace aspect
         }
 
       // Also output the slab vrms
-      if (this->convert_output_to_years())
-        statistics.add_value("RMS velocity (" + unit + ") for slab ",
-                             year_in_seconds * vrms_slab);
-      else
-        statistics.add_value("RMS velocity (" + unit + ") for slab ",
-                             vrms_slab);
+      statistics.add_value("RMS velocity (" + unit + ") for slab ",
+                            time_scaling * vrms_slab);
 
       const std::string column = {"RMS velocity (" + unit + ") for slab "};
 
@@ -141,19 +133,11 @@ namespace aspect
 
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          if (this->convert_output_to_years())
-            output << year_in_seconds *vrms_per_composition[c]
-                   << " " << unit;
-          else
-            output << vrms_per_composition[c]
-                   << " " << unit;
-
+          output << time_scaling * vrms_per_composition[c]
+                 << " " << unit;
           output << " // ";
         }
-      if (this->convert_output_to_years())
-        output << year_in_seconds *vrms_slab;
-      else
-        output << vrms_slab;
+        output << time_scaling * vrms_slab;
 
       return std::pair<std::string, std::string>("RMS velocity for compositions and slab:",
                                                  output.str());

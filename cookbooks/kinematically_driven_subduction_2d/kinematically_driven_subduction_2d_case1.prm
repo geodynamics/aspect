@@ -12,14 +12,13 @@ set Additional shared libraries            = librms_velocity_composition.so
 set Dimension                              = 2
 # Run for 15 My
 set Start time                             = 0
-set End time                               = 0 #15.01e6
+set End time                               = 15.01e6
 set CFL number                             = 0.5
 set Use years in output instead of seconds = true
 # Linear solver
 set Nonlinear solver scheme                = single Advection, single Stokes
 set Output directory                       = output-Case1
 set Adiabatic surface temperature          = 0
-#set Resume computation                     = true
 
 
 # We fix composition on the right boundary,
@@ -136,11 +135,11 @@ subsection Initial temperature model
 end
 
 subsection Mesh refinement
-  set Initial adaptive refinement              = 1 #2
-  set Initial global refinement                = 6 #8
-  set Minimum refinement level                 = 6 #7
+  set Initial adaptive refinement              = 1
+  set Initial global refinement                = 6
+  set Minimum refinement level                 = 6
   set Normalize individual refinement criteria = true
-  set Refinement criteria merge operation      = plus #max
+  set Refinement criteria merge operation      = plus
   set Coarsening fraction                      = 0.01
   set Refinement fraction                      = 0.95
   set Run postprocessors on initial refinement = false
@@ -153,7 +152,6 @@ subsection Mesh refinement
     set Coordinate system = depth
     set Variable names = x,z,t
     set Function constants = vel=150e3, L=100e3, crust=10e3
-    #set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
     set Function expression = if(x<crust,10,if(x<L,9,if(x<vel,8,6)))
   end
 
@@ -164,23 +162,18 @@ subsection Formulation
   set Formulation = Boussinesq approximation
 end
 
-subsection Formulation
-  set Formulation = Boussinesq approximation
-end
-
 
 subsection Postprocess
   set List of postprocessors = visualization, velocity statistics, heating statistics, maximum depth of field, composition velocity statistics, viscous dissipation statistics
-
 
   subsection Visualization
     set List of output variables      = density, viscosity, strain rate, error indicator
     set Time between graphical output = 5e5
   end
+
   subsection Composition velocity statistics
     set Names of slab compositional fields = ML_SP, crust_SP
   end
-
 end
 
 
@@ -189,9 +182,9 @@ subsection Termination criteria
   set Termination criteria      = end time
 end
 
+
 subsection Solver parameters
   subsection Stokes solver parameters
     set Linear solver tolerance = 1e-6
-    set Number of cheap Stokes solver steps = 200
   end
 end
