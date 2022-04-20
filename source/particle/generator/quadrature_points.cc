@@ -32,7 +32,8 @@ namespace aspect
       void
       QuadraturePoints<dim>::generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
       {
-        const QGauss<dim> quadrature_formula(this->get_parameters().stokes_velocity_degree + 1);
+        const Quadrature<dim> &quadrature_formula
+          = this->introspection().quadratures.velocities;
 
         types::particle_index n_particles_to_generate = quadrature_formula.size() * this->get_triangulation().n_locally_owned_active_cells();
         types::particle_index prefix_sum = 0;

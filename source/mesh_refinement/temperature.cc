@@ -34,8 +34,7 @@ namespace aspect
     {
       indicators = 0;
 
-      const QGauss<dim-1> quadrature (this->introspection().polynomial_degree.temperature+1);
-
+      const Quadrature<dim-1> &quadrature = this->introspection().face_quadratures.temperature;
       KellyErrorEstimator<dim>::estimate (this->get_mapping(),
                                           this->get_dof_handler(),
                                           quadrature,

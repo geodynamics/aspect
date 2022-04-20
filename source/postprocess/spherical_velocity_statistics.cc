@@ -43,8 +43,7 @@ namespace aspect
               ExcMessage ("This postprocessor can only be used if the geometry "
                           "is a sphere or spherical shell."));
 
-      const QGauss<dim> quadrature_formula (this->get_fe()
-                                            .base_element(this->introspection().base_elements.velocities).degree+1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
       const unsigned int n_q_points = quadrature_formula.size();
 
       FEValues<dim> fe_values (this->get_mapping(),

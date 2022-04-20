@@ -44,7 +44,10 @@ namespace aspect
       return numbers::signaling_nan<double>();
 
     // record maximal entropy on Gauss quadrature points
-    const QGauss<dim> quadrature_formula (advection_field.polynomial_degree(introspection)+1);
+    const Quadrature<dim> &quadrature_formula
+      = (advection_field.is_temperature() ?
+         introspection.quadratures.temperature :
+         introspection.quadratures.compositional_fields);
     const unsigned int n_q_points = quadrature_formula.size();
 
     const FEValuesExtractors::Scalar field = advection_field.scalar_extractor(introspection);
