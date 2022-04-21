@@ -1,6 +1,6 @@
 # The gravity has its maximum value at the boundary of inner and
 # outer core, and decreases approximately linearly to zero towards
-# the center of the core. 
+# the center of the core.
 # The Rayleigh number used in the model is given by the magnitude
 # of the gravity at the inner core/outer core boundary.
 subsection Gravity model
