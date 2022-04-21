@@ -2,7 +2,7 @@ subsection Geometry model
   set Model name = box
 
 # The extents of the box is the same as the width
-# and height of the drawing in px 
+# and height of the drawing in px
 # (an A4 page = 7350x10500 px).
   subsection Box
     set X extent = 7350
@@ -10,7 +10,7 @@ subsection Geometry model
   end
 end
 
-# We need one compositional field that will be assigned 
+# We need one compositional field that will be assigned
 # the values read in from the ascii data plugin.
 subsection Compositional fields
   set Number of fields = 1
@@ -26,7 +26,7 @@ subsection Initial composition model
   end
 end
 
-# We refine the mesh where compositional gradients are 
+# We refine the mesh where compositional gradients are
 # high, i.e. at the boundary between the different phases
 # assigned to the compositional field through the initial
 # condition.
