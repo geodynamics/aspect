@@ -106,7 +106,7 @@ namespace aspect
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           statistics.add_value("RMS velocity (" + unit + ") for composition " + this->introspection().name_for_compositional_index(c),
-                                time_scaling * vrms_per_composition[c]);
+                               time_scaling * vrms_per_composition[c]);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
@@ -121,7 +121,7 @@ namespace aspect
 
       // Also output the slab vrms
       statistics.add_value("RMS velocity (" + unit + ") for slab ",
-                            time_scaling * vrms_slab);
+                           time_scaling * vrms_slab);
 
       const std::string column = {"RMS velocity (" + unit + ") for slab "};
 
@@ -133,11 +133,11 @@ namespace aspect
 
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          output << time_scaling * vrms_per_composition[c]
+          output << time_scaling *vrms_per_composition[c]
                  << " " << unit;
           output << " // ";
         }
-        output << time_scaling * vrms_slab;
+      output << time_scaling *vrms_slab;
 
       return std::pair<std::string, std::string>("RMS velocity for compositions and slab:",
                                                  output.str());
