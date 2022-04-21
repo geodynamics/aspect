@@ -372,7 +372,7 @@ namespace aspect
 
     system_preconditioner_matrix = 0;
 
-    const QGauss<dim> quadrature_formula(parameters.stokes_velocity_degree+1);
+    const Quadrature<dim> &quadrature_formula = introspection.quadratures.velocities;
 
     using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 
@@ -731,8 +731,8 @@ namespace aspect
     if (do_pressure_rhs_compatibility_modification)
       pressure_shape_function_integrals = 0;
 
-    const QGauss<dim>   quadrature_formula(parameters.stokes_velocity_degree+1);
-    const QGauss<dim-1> face_quadrature_formula(parameters.stokes_velocity_degree+1);
+    const Quadrature<dim>   &quadrature_formula = introspection.quadratures.velocities;
+    const Quadrature<dim-1> &face_quadrature_formula = introspection.face_quadratures.velocities;
 
     using CellFilter = FilteredIterator<typename DoFHandler<dim>::active_cell_iterator>;
 

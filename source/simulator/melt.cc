@@ -54,6 +54,7 @@ namespace aspect
     {}
 
 
+
     template <int dim>
     void MeltInputs<dim>::fill (const LinearAlgebra::BlockVector &solution,
                                 const FEValuesBase<dim>          &fe_values,
@@ -68,6 +69,8 @@ namespace aspect
       const FEValuesExtractors::Scalar ex_p_c = introspection.variable("compaction pressure").extractor_scalar();
       fe_values[ex_p_c].get_function_values (solution, compaction_pressures);
     }
+
+
 
     template <int dim>
     void MeltOutputs<dim>::average (const MaterialAveraging::AveragingOperation operation,
@@ -88,6 +91,8 @@ namespace aspect
       // doubles). It's also not quite clear whether these should
       // really be averaged, so avoid this for now
     }
+
+
 
     template <int dim>
     double
@@ -133,6 +138,8 @@ namespace aspect
     }
   }
 
+
+
   namespace Assemblers
   {
     namespace
@@ -158,6 +165,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     void
     MeltInterface<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -178,6 +187,7 @@ namespace aspect
              outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()->rhs_u.size()
              == n_points, ExcInternalError());
     }
+
 
 
     template <int dim>
@@ -1078,7 +1088,7 @@ namespace aspect
       system_matrix.block(block_idx, block_idx) = 0;
       system_rhs.block(block_idx) = 0;
 
-      const QGauss<dim> quadrature(this->get_parameters().stokes_velocity_degree+1);
+      const Quadrature<dim> &quadrature = this->introspection().quadratures.velocities;
       const FiniteElement<dim> &fe = this->get_fe();
 
       FEValues<dim> fe_values (this->get_mapping(),
@@ -1320,6 +1330,8 @@ namespace aspect
     }
   }
 
+
+
   template <int dim>
   bool
   MeltHandler<dim>::
@@ -1330,6 +1342,7 @@ namespace aspect
     else
       return (this->introspection().name_for_compositional_index(advection_field.compositional_variable) == "porosity");
   }
+
 
 
   namespace internal
@@ -1456,6 +1469,8 @@ namespace aspect
 
   }
 
+
+
   template <int dim>
   void
   MeltHandler<dim>::
@@ -1559,6 +1574,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   bool
   MeltHandler<dim>::
@@ -1566,6 +1582,7 @@ namespace aspect
   {
     return is_melt_cell_vector[cell->active_cell_index()];
   }
+
 
 
   template <int dim>
@@ -1579,6 +1596,7 @@ namespace aspect
   }
 
 
+
   template <int dim>
   const BoundaryFluidPressure::Interface<dim> &
   MeltHandler<dim>::
@@ -1586,6 +1604,7 @@ namespace aspect
   {
     return *boundary_fluid_pressure.get();
   }
+
 
 
   template <int dim>

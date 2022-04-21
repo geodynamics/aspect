@@ -411,8 +411,7 @@ namespace aspect
         LinearAlgebra::BlockVector system_tmp;
         system_tmp.reinit (system_rhs);
 
-        const QGauss<dim> quadrature(parameters.stokes_velocity_degree+1);
-
+        const Quadrature<dim> &quadrature = introspection.quadratures.velocities;
         Utilities::project_cellwise<dim,LinearAlgebra::BlockVector>(*mapping,
                                                                     dof_handler,
                                                                     introspection.component_indices.pressure,

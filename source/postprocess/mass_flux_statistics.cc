@@ -35,7 +35,6 @@ namespace aspect
     std::pair<std::string,std::string>
     MassFluxStatistics<dim>::execute (TableHandler &statistics)
     {
-      // First determine the units for the output
       const std::string unit = (this->convert_output_to_years())
                                ?
                                "kg/yr"
@@ -48,7 +47,7 @@ namespace aspect
                               1.0;
 
       // create a quadrature formula based on the temperature element alone.
-      const QGauss<dim-1> quadrature_formula (this->introspection().polynomial_degree.velocities + 1);
+      const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.velocities;
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),

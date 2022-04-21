@@ -35,7 +35,7 @@ namespace aspect
     ViscousDissipationStatistics<dim>::execute (TableHandler &statistics)
     {
       // Create a quadrature formula based on the velocity element.
-      const QGauss<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.velocities).degree + 1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.velocities;
 
       const unsigned int n_q_points = quadrature_formula.size();
 
