@@ -65,7 +65,7 @@ namespace aspect
         /**
          * @copydoc Interface::initialize().
          */
-        void initialize();
+        void initialize() override;
 
         /**
          * Specify the creation of output_gravity.txt.

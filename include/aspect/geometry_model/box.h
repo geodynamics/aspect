@@ -161,10 +161,9 @@ namespace aspect
          * Apply a translation to all points outside of the domain
          * to account for periodicity.
          */
-        virtual
         void
         adjust_positions_for_periodicity (Point<dim> &position,
-                                          const ArrayView<Point<dim>> &connected_positions = {}) const;
+                                          const ArrayView<Point<dim>> &connected_positions = {}) const override;
 
         /**
          * @copydoc Interface::has_curved_elements()
