@@ -1,0 +1,25 @@
+set Dimension                              = 2
+
+subsection Material model
+  set Model name = inner core material
+  subsection Inner core
+    subsection Phase change resistance function
+      set Variable names      = x,y
+      set Function expression = 1e-2     # <-- P    For plume convection, take P=1e2
+    end
+  end
+end
+
+subsection Mesh refinement
+  set Initial global refinement          = 3
+  set Initial adaptive refinement        = 2
+  set Strategy                           = minimum refinement function, thermal energy density
+
+  set Time steps between mesh refinement = 15
+
+  subsection Minimum refinement function
+    set Variable names = depth, phi
+    set Function expression = if(depth>0.1,if(depth>0.2,2,5),6)
+  end
+end
+
