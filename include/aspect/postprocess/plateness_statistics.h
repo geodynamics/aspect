@@ -54,7 +54,7 @@ namespace aspect
    
     private:
       /**
-       * Interval between the generation of output in seconds.
+       * The minimum strain rate from the parameter file. 
        */
       double min_strain_rate;
     };

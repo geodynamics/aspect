@@ -49,8 +49,6 @@ namespace aspect
                                         update_quadrature_points |
                                         update_JxW_values);
          
-      std::vector<Tensor<1,dim>> velocities (fe_face_values.n_quadrature_points);
-
       // Vector to store the integral of the second invariant of the strain rate
       // over the surface.
       double local_second_invariant_of_strain_rate_integral = 0.0;
@@ -67,9 +65,9 @@ namespace aspect
             unsigned int face_idx = numbers::invalid_unsigned_int;
             bool at_upper_surface = false;
             {
-              for (unsigned int f=0; f<GeometryInfo<3>::faces_per_cell; ++f)
+              for (unsigned int f=0; f<cell->n_faces(); ++f)
                 {
-                  if (cell->at_boundary(f) && cell->face(f)->boundary_id() == top_boundary_id)
+                  if (cell->at_boundary(f) && (cell->face(f)->boundary_id() == top_boundary_id))
                     {
                       // If the cell is at the top boundary, assign face_idx.
                       face_idx = f;
@@ -86,12 +84,11 @@ namespace aspect
               
                 for (unsigned int q = 0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    //Merge so column 1 is strain rate invariants and column 2 are the corresponding areas
                     local_second_invariant_of_strain_rate[q] = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate[q])))),min_strain_rate);
                     local_surface_area[q] = fe_face_values.JxW(q);
-                    
+
                     // second invariant of strain rate over the whole surface
-                    local_second_invariant_of_strain_rate_integral = local_second_invariant_of_strain_rate[q] * local_surface_area[q];
+                    local_second_invariant_of_strain_rate_integral += local_second_invariant_of_strain_rate[q] * local_surface_area[q];
                     local_surface_area_integral += local_surface_area[q];
                   }
               }
@@ -100,8 +97,9 @@ namespace aspect
       const double total_second_invariant_of_strain_rate = Utilities::MPI::sum (local_second_invariant_of_strain_rate_integral, this->get_mpi_communicator());
       const double total_surface_area = Utilities::MPI::sum (local_surface_area_integral, this->get_mpi_communicator());
 
-      int n = sizeof(local_second_invariant_of_strain_rate)/sizeof(local_second_invariant_of_strain_rate[0]);
+      const unsigned int n = local_second_invariant_of_strain_rate.size();
       // Entering values in vector of pairs
+      // i.e., merge so column 1 is strain rate invariants and column 2 are the corresponding areas
       for (int i=0; i<n; i++)
         local_second_invariant_of_strain_rate_and_corresponding_area.push_back( std::make_pair(local_second_invariant_of_strain_rate[i],local_surface_area[i]));
       //sort local second invariants of strain rate in size order
@@ -120,19 +118,18 @@ namespace aspect
           row_number = row_number + 1;
         }
       while (cumulative_second_invariant_of_strain_rate<0.8*total_second_invariant_of_strain_rate);
-      double f_80 = cumulative_surface_area/total_surface_area;
+      const double f_80 = cumulative_surface_area/total_surface_area;
 
       // Compute plateness
-      // As explained in Tackely (2000) and Lourenco et al., 2020 for an isoviscous, 
+      // As explained in Tackley (2000) and Lourenco et al., 2020 for an isoviscous, 
       // internally heated calculation with Ra~10^6, 80% of the surface deformation
       // occurs in 60% of the surface area. Therefore we express plateness as described below:
-      double plateness = 0.0;
-      plateness = 1 - f_80/0.6;
+      const double plateness = 1 - f_80/0.6;
 
-      statistics.add_value ("Plateness ",
+      statistics.add_value ("Plateness",
                             plateness);
 
-      const std::string column = "Plateness ";
+      const std::string column = "Plateness";
       statistics.set_precision (column, 8);
       statistics.set_scientific (column, true);
 
@@ -165,17 +162,17 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(PlatenessStatistics,
                                   "plateness statistics",
                                   "A postprocessor that outputs the plateness. "
-                                  "We define plateness following lourenco et al., 2020 and "
-                                  "based on the works by Weinstein and Olson (1992) "
-                                  "and Tackley (2000). The square root of the second invariant of "
-                                  "strain rate, $\\dot{\\sigma_surf} = \\frac{\\dot{\\sigma_\\phi\\phi}}{\\sqrt(2)}$ "
-                                  "is used. The total integrated $\\dot{\\sigma_surf}$ is calculated, "
+                                  "We define plateness following \\cite{Lourenco2020} and "
+                                  "based on the works by \\cite{Weinstein1992} "
+                                  "and \\cite{Tackley2000}. The square root of the second invariant of "
+                                  "strain rate, $\\dot{\\varepsilon_\\text{surf}} = \\frac{\\dot{\\varepsilon_{ij}}}{\\sqrt(2)}$ "
+                                  "is used. The total integrated $\\dot{\\varepsilon_\\text{surf}}$ is calculated, "
                                   "followed by the fraction of the surface area in which 80\\% of "
                                   "that deformation occurs. This area fraction, denoted $f_{80}$ "
                                   "would be 0 for perfect plates (all deformation takes place "
-                                  "within infinitely narrow zones). Tackley (2000) found that in "
+                                  "within infinitely narrow zones). \\cite{Tackley2000} found that in "
                                   "isoviscous, internally heated calculations with Ra=$10^6$, "
-                                  "$f_{80}\\approx$0.6. Therefore plateness should vary between "
+                                  "$f_{80}\\approx 0.6$. Therefore plateness should vary between "
                                   "0 for homogenous-viscosity cases and 1 for perfect plates, "
                                   "where plateness = $1 - \\frac{f_{80}}{0.6}$.")
   }
