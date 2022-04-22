@@ -54,8 +54,6 @@ namespace aspect
       double local_second_invariant_of_strain_rate_integral = 0.0;
       double local_surface_area_integral = 0.0;
 
-      std::vector<Tensor<1,dim>> local_second_invariant_of_strain_rate(fe_face_values.n_quadrature_points);
-      std::vector<Tensor<1,dim>> local_surface_area(fe_face_values.n_quadrature_points); 
       std::vector<std::pair<double,double>> local_second_invariant_of_strain_rate_and_corresponding_area; 
       std::vector<SymmetricTensor<2,dim>> strain_rate (quadrature_formula.size());
  
@@ -84,24 +82,19 @@ namespace aspect
               
                 for (unsigned int q = 0; q<fe_face_values.n_quadrature_points; ++q)
                   {
-                    local_second_invariant_of_strain_rate[q] = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate[q])))),min_strain_rate);
-                    local_surface_area[q] = fe_face_values.JxW(q);
-
+                    local_second_invariant_of_strain_rate_and_corresponding_area[q].first = std::max(std::sqrt(std::fabs(second_invariant(deviator(strain_rate[q])))),min_strain_rate);
+                    local_second_invariant_of_strain_rate_and_corresponding_area[q].second = fe_face_values.JxW(q);
+           
                     // second invariant of strain rate over the whole surface
-                    local_second_invariant_of_strain_rate_integral += local_second_invariant_of_strain_rate[q] * local_surface_area[q];
-                    local_surface_area_integral += local_surface_area[q];
+                    local_second_invariant_of_strain_rate_integral += local_second_invariant_of_strain_rate_and_corresponding_area[q].first * local_second_invariant_of_strain_rate_and_corresponding_area[q].second;
+                    // surface area over the whole surface
+                    local_surface_area_integral += local_second_invariant_of_strain_rate_and_corresponding_area[q].second;
                   }
               }
           }
-
       const double total_second_invariant_of_strain_rate = Utilities::MPI::sum (local_second_invariant_of_strain_rate_integral, this->get_mpi_communicator());
       const double total_surface_area = Utilities::MPI::sum (local_surface_area_integral, this->get_mpi_communicator());
 
-      const unsigned int n = local_second_invariant_of_strain_rate.size();
-      // Entering values in vector of pairs
-      // i.e., merge so column 1 is strain rate invariants and column 2 are the corresponding areas
-      for (int i=0; i<n; i++)
-        local_second_invariant_of_strain_rate_and_corresponding_area.push_back( std::make_pair(local_second_invariant_of_strain_rate[i],local_surface_area[i]));
       //sort local second invariants of strain rate in size order
       std::sort(local_second_invariant_of_strain_rate_and_corresponding_area.begin(), local_second_invariant_of_strain_rate_and_corresponding_area.end());
 
