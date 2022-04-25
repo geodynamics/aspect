@@ -235,6 +235,7 @@ namespace aspect
       struct Quadratures
       {
         Quadrature<dim>       velocities;
+        Quadrature<dim>       pressure;
         Quadrature<dim>       temperature;
         Quadrature<dim>       compositional_fields;
         Quadrature<dim>       system;
@@ -256,6 +257,7 @@ namespace aspect
       struct FaceQuadratures
       {
         Quadrature<dim-1>       velocities;
+        Quadrature<dim-1>       pressure;
         Quadrature<dim-1>       temperature;
         Quadrature<dim-1>       compositional_fields;
         Quadrature<dim-1>       system;

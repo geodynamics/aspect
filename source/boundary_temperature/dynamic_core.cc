@@ -656,7 +656,7 @@ namespace aspect
 
       // Calculate core mantle boundary heat flow
       {
-        const QGauss<dim-1> quadrature_formula (this->get_fe().base_element(this->introspection().base_elements.temperature).degree+1);
+        const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.temperature;
         FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                           this->get_fe(),
                                           quadrature_formula,

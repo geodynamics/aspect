@@ -2036,7 +2036,7 @@ namespace aspect
   void
   Simulator<dim>::replace_outflow_boundary_ids(const unsigned int offset)
   {
-    const QGauss<dim-1> quadrature_formula (finite_element.base_element(introspection.base_elements.temperature).degree+1);
+    const Quadrature<dim-1> &quadrature_formula = introspection.face_quadratures.temperature;
 
     FEFaceValues<dim> fe_face_values (*mapping,
                                       finite_element,

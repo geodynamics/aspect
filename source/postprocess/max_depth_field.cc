@@ -38,7 +38,7 @@ namespace aspect
       // be defensive about determining that a compositional field actually exists
       AssertThrow(this->introspection().base_elements.compositional_fields != numbers::invalid_unsigned_int,
                   ExcMessage("This postprocessor cannot be used without compositional fields."));
-      const QGauss<dim> quadrature_formula(this->get_fe().base_element(this->introspection().base_elements.compositional_fields).degree + 1);
+      const Quadrature<dim> &quadrature_formula = this->introspection().quadratures.compositional_fields;
 
       const unsigned int n_q_points = quadrature_formula.size();
 

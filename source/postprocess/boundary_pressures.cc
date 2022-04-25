@@ -33,13 +33,11 @@ namespace aspect
     std::pair<std::string,std::string>
     BoundaryPressures<dim>::execute (TableHandler &statistics)
     {
-      const QGauss<dim-1> quadrature_formula_face (this->get_fe()
-                                                   .base_element(this->introspection().base_elements.pressure)
-                                                   .degree+1);
+      const Quadrature<dim-1> &quadrature_formula = this->introspection().face_quadratures.pressure;
 
       FEFaceValues<dim> fe_face_values (this->get_mapping(),
                                         this->get_fe(),
-                                        quadrature_formula_face,
+                                        quadrature_formula,
                                         update_values |
                                         update_gradients |
                                         update_quadrature_points |
@@ -50,7 +48,7 @@ namespace aspect
       double local_top_area = 0.;
       double local_bottom_area = 0.;
 
-      std::vector<double> pressure_vals( fe_face_values.n_quadrature_points );
+      std::vector<double> pressure_vals (fe_face_values.n_quadrature_points);
 
       const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
       const types::boundary_id bottom_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("bottom");

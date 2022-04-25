@@ -364,7 +364,7 @@ namespace aspect
     // \int \rho r \times u =  I \cdot \omega  (3 dimensions)
 
     const Quadrature<dim> &quadrature = introspection.quadratures.velocities;
-    const QGauss<dim-1> surface_quadrature(parameters.stokes_velocity_degree+1);
+    const Quadrature<dim-1> &surface_quadrature = introspection.face_quadratures.velocities;
 
     const unsigned int n_q_points = (limit_to_top_faces == false) ? quadrature.size() : surface_quadrature.size();
     UpdateFlags flags = update_quadrature_points | update_JxW_values | update_values | update_gradients;

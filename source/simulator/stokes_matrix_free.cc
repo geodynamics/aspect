@@ -1805,7 +1805,7 @@ namespace aspect
             sim.mesh_deformation->template get_matching_mesh_deformation_object<MeshDeformation::FreeSurface<dim>>()
           .get_free_surface_theta();
 
-          const QGauss<dim-1> face_quadrature_formula (sim.parameters.stokes_velocity_degree+1);
+          const Quadrature<dim-1> &face_quadrature_formula = sim.introspection.face_quadratures.velocities;
 
           const unsigned int n_face_q_points = face_quadrature_formula.size();
 

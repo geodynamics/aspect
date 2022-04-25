@@ -112,6 +112,11 @@ namespace aspect
       typename Introspection<dim>::Quadratures quadratures;
 
       quadratures.velocities = reference_cell.get_gauss_type_quadrature<dim>(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = reference_cell.get_gauss_type_quadrature<dim>(parameters.use_equal_order_interpolation_for_stokes
+                                                                           ?
+                                                                           parameters.stokes_velocity_degree+1
+                                                                           :
+                                                                           parameters.stokes_velocity_degree);
       quadratures.temperature = reference_cell.get_gauss_type_quadrature<dim>(parameters.temperature_degree+1);
       quadratures.compositional_fields = reference_cell.get_gauss_type_quadrature<dim>(parameters.composition_degree+1);
       quadratures.system = reference_cell.get_gauss_type_quadrature<dim>(std::max({parameters.stokes_velocity_degree,
@@ -132,6 +137,11 @@ namespace aspect
       typename Introspection<dim>::FaceQuadratures quadratures;
 
       quadratures.velocities = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.stokes_velocity_degree+1);
+      quadratures.pressure = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.use_equal_order_interpolation_for_stokes
+                             ?
+                             parameters.stokes_velocity_degree+1
+                             :
+                             parameters.stokes_velocity_degree);
       quadratures.temperature = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.temperature_degree+1);
       quadratures.compositional_fields = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(parameters.composition_degree+1);
       quadratures.system = reference_cell.face_reference_cell(0).get_gauss_type_quadrature<dim-1>(std::max({parameters.stokes_velocity_degree,
