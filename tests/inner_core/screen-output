@@ -21,7 +21,7 @@ Number of degrees of freedom: 15,785 (11,451+517+3,817)
 
    Postprocessing:
      Writing graphical output:           output-inner_core/solution/solution-00001
-     RMS, max velocity:                  0.000283 m/s, 0.000382 m/s
+     RMS, max velocity:                  0.000283 m/s, 0.000383 m/s
      Temperature min/avg/max:            0 K, 0.3996 K, 0.999 K
      Heat fluxes through boundary parts: 25.12 W
 
