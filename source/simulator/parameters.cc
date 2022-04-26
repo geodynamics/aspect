@@ -169,7 +169,7 @@ namespace aspect
 
     prm.declare_entry ("Maximum relative increase in time step", boost::lexical_cast<std::string>(std::numeric_limits<int>::max()),
                        Patterns::Double (0.),
-                       "Set a percentage with which the the time step is limited to increase. Generally the "
+                       "Set a percentage with which the time step is limited to increase. Generally the "
                        "time step based on the CFL number should be sufficient, but for complicated models "
                        "which may suddenly drastically change behavior, it may be useful to limit the increase "
                        "in the time step, without limiting the time step size of the whole simulation to a "

@@ -794,7 +794,7 @@ namespace aspect
 
       private:
         /**
-         * An enum which stores the the coordinate system of this natural
+         * An enum which stores the coordinate system of this natural
          * point
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;

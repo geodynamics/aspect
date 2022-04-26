@@ -821,7 +821,7 @@ namespace aspect
                 double pressure_deviation = pressure - transition_pressure
                                             - transition_slopes[phase] * (in.temperature[i] - transition_temperatures[phase]);
 
-                // If we are close to the the phase boundary (pressure difference
+                // If we are close to the phase boundary (pressure difference
                 // is smaller than phase boundary width), and the velocity points
                 // away from the phase transition the material has crossed the transition.
                 if ((std::abs(pressure_deviation) < pressure_width)

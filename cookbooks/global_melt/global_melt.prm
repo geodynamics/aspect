@@ -255,7 +255,7 @@ subsection Material model
     # we also prescribe the temperature-dependence of the bulk viscosity.
     set Thermal bulk viscosity exponent   = 7
 
-    # Analogous the the compressibility of the solid rock, we also define a
+    # Analogous to the compressibility of the solid rock, we also define a
     # comressibility for the melt (which is generally higher than for the solid).
     # As we do not want our compressibility to depend on depth, we set the
     # pressure derivative to zero.

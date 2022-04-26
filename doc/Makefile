@@ -16,7 +16,7 @@ change-files = $(shell find modules/changes/ -type f -not -name '.*')
 # Find all parameter files to be included in the manual and generate their
 # output targets (.prm.out). There are two types of targets: Every file inside
 # the /doc/ folders generates the output inside the same folder. Every file
-# outside the /doc/ folder generates a target inside the the doc folder. For
+# outside the /doc/ folder generates a target inside the doc folder. For
 # that we separate file and directory strings, attach 'doc/' to the directory
 # and '.out' to the file name and join them afterwards.
 aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
