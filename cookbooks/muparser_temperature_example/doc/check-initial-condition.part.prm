@@ -14,6 +14,6 @@ set End time                               = 0
 subsection Solver parameters
 
   subsection Stokes solver parameters
-    set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC 
+    set Linear solver tolerance            = 1e-6 # can set to 1e-3 for checking IC
   end
 end
