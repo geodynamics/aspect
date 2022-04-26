@@ -296,8 +296,8 @@ namespace aspect
 
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
-      IntegratorProperties<dim>::get_property_information() const
+      std::vector<std::pair<std::string, unsigned int>>
+                                                     IntegratorProperties<dim>::get_property_information() const
       {
         return {{"internal: integrator properties", n_integrator_properties}};
       }

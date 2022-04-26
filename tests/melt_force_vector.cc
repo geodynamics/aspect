@@ -81,7 +81,7 @@ namespace aspect
       {
         const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
         MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-        *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+        *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
         for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
           {
@@ -108,7 +108,7 @@ namespace aspect
           }
 
         // fill melt outputs if they exist
-        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
         if (melt_out != nullptr)
           for (unsigned int i=0; i<in.n_evaluation_points(); ++i)
@@ -279,7 +279,7 @@ namespace aspect
         const dealii::types::boundary_id,
         const typename MaterialModel::Interface<dim>::MaterialModelInputs &material_model_inputs,
         const typename MaterialModel::Interface<dim>::MaterialModelOutputs &material_model_outputs,
-        const std::vector<Tensor<1,dim> > &normal_vectors,
+        const std::vector<Tensor<1,dim>> &normal_vectors,
         std::vector<double> &output
       ) const
       {

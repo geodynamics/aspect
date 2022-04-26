@@ -1733,7 +1733,7 @@ namespace aspect
                   sim.material_model->fill_additional_material_model_inputs(in, sim.current_linearization_point, fe_values, sim.introspection);
 
                   const MaterialModel::MaterialModelDerivatives<dim> *derivatives
-                    = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim> >();
+                    = out.template get_additional_output<MaterialModel::MaterialModelDerivatives<dim>>();
 
                   Assert(derivatives != nullptr,
                          ExcMessage ("Error: The Newton method requires the material to "

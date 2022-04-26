@@ -13,7 +13,7 @@ namespace aspect
 {
 
   template <int dim>
-  void my_signal(std::vector<VariableDeclaration<dim> > &variables)
+  void my_signal(std::vector<VariableDeclaration<dim>> &variables)
   {
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
 

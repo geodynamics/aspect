@@ -406,13 +406,13 @@ namespace aspect
       std::vector<double> volumetric_strain_rates(in.n_evaluation_points());
       std::vector<double> volumetric_yield_strength(in.n_evaluation_points());
 
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
 
       if (this->include_melt_transport() )
         {
           if (in.current_cell.state() == IteratorState::valid)
             {
-              std::vector<Point<dim> > quadrature_positions(in.n_evaluation_points());
+              std::vector<Point<dim>> quadrature_positions(in.n_evaluation_points());
 
               for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
                 quadrature_positions[i] = this->get_mapping().transform_real_to_unit_cell(in.current_cell, in.position[i]);
@@ -580,7 +580,7 @@ namespace aspect
               const double cohesion = MaterialUtilities::average_value(volume_fractions, cohesions, viscosity_averaging);
               const double angle_internal_friction = MaterialUtilities::average_value(volume_fractions, angles_internal_friction, viscosity_averaging);
 
-              PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim> >();
+              PlasticAdditionalOutputs<dim> *plastic_out = out.template get_additional_output<PlasticAdditionalOutputs<dim>>();
               if (plastic_out != nullptr)
                 {
                   plastic_out->cohesions[i] = cohesion;
@@ -597,7 +597,7 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
       if (melt_out != NULL)
         {
@@ -1018,7 +1018,7 @@ namespace aspect
     void
     MeltViscoPlastic<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
-      if (out.template get_additional_output<PlasticAdditionalOutputs<dim> >() == nullptr)
+      if (out.template get_additional_output<PlasticAdditionalOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(

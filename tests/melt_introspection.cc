@@ -14,7 +14,7 @@ namespace aspect
 {
 
   template <int dim>
-  void my_signal(std::vector<VariableDeclaration<dim> > &variables)
+  void my_signal(std::vector<VariableDeclaration<dim>> &variables)
   {
     std::cout << "* signals.edit_finite_element_variables:" << std::endl;
 
@@ -76,7 +76,7 @@ namespace aspect
           }
 
         // fill melt outputs if they exist
-        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim> >();
+        aspect::MaterialModel::MeltOutputs<dim> *melt_out = out.template get_additional_output<aspect::MaterialModel::MeltOutputs<dim>>();
 
         if (melt_out != nullptr)
           {

@@ -271,7 +271,7 @@ namespace aspect
       const bool enable_additional_stokes_rhs = this->get_parameters().enable_additional_stokes_rhs;
 
       const MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> *force = enable_additional_stokes_rhs ?
-                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >()
+                                                                            scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>()
                                                                             : nullptr;
 
       const bool enable_elasticity = this->get_parameters().enable_elasticity;
@@ -284,7 +284,7 @@ namespace aspect
 
       const MaterialModel::PrescribedPlasticDilation<dim>
       *prescribed_dilation = enable_prescribed_dilation ?
-                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >()
+                             scratch.material_model_outputs.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>()
                              : nullptr;
 
       const bool material_model_is_compressible = (this->get_material_model().is_compressible());

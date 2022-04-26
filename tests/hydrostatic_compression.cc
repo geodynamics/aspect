@@ -261,7 +261,7 @@ namespace aspect
   {
 
     Assemblers::Interface<dim> *assembler = new ForceAssembler<dim>();
-    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(assembler));
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim>>(assembler));
   }
 }
 

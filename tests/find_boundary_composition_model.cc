@@ -42,19 +42,19 @@ namespace aspect
     template <int dim>
     void Box2<dim>::update()
     {
-      if (this->get_boundary_composition_manager().template has_matching_boundary_composition_model<BoundaryComposition::Box<dim> >())
+      if (this->get_boundary_composition_manager().template has_matching_boundary_composition_model<BoundaryComposition::Box<dim>>())
         std::cout << "Box is found!" << std::endl;
       else
         std::cout << "Box is not found!" << std::endl;
 
-      if (this->get_boundary_composition_manager().template has_matching_boundary_composition_model<BoundaryComposition::InitialComposition<dim> >())
+      if (this->get_boundary_composition_manager().template has_matching_boundary_composition_model<BoundaryComposition::InitialComposition<dim>>())
         std::cout << "InitialComposition is found!" << std::endl;
       else
         std::cout << "InitialComposition is not found!" << std::endl;
 
       try
         {
-          this->get_boundary_composition_manager().template get_matching_boundary_composition_model<BoundaryComposition::Box<dim> >();
+          this->get_boundary_composition_manager().template get_matching_boundary_composition_model<BoundaryComposition::Box<dim>>();
           std::cout << "Box is found!" << std::endl;
         }
       catch (...)
@@ -64,7 +64,7 @@ namespace aspect
 
       try
         {
-          this->get_boundary_composition_manager().template get_matching_boundary_composition_model<BoundaryComposition::InitialComposition<dim> >();
+          this->get_boundary_composition_manager().template get_matching_boundary_composition_model<BoundaryComposition::InitialComposition<dim>>();
           std::cout << "InitialComposition is found!" << std::endl;
         }
       catch (...)

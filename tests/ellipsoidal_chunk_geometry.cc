@@ -37,7 +37,7 @@ int f()
   GeometryModel::EllipsoidalChunk<dim>::EllipsoidalChunkGeometry ellipsoidal_manifold;
   ellipsoidal_manifold.initialize(&topography);
 
-  std::vector<Point<2> > corners(2,Point<2>(-15.0,-15.0));
+  std::vector<Point<2>> corners(2,Point<2>(-15.0,-15.0));
   corners[1] *= -1.0;
 
   std::cout << "Simple sphere test" << std::endl;
@@ -47,7 +47,7 @@ int f()
                                                2890000.0,
                                                corners);
 
-  std::vector<Point<3> > test_points;
+  std::vector<Point<3>> test_points;
   test_points.push_back(Point<3> (6371000.0,0,0));
   test_points.push_back(Point<3> (6171000.0,0,0));
   test_points.push_back(Point<3> (3000000.0,3000000.0,0));

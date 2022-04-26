@@ -121,7 +121,7 @@ namespace aspect
            * Parsed functions that specify the friction angle which must be
            * given in the input file using the function method.
            */
-          std::unique_ptr<Functions::ParsedFunction<dim> > friction_function;
+          std::unique_ptr<Functions::ParsedFunction<dim>> friction_function;
 
           /**
            * The coordinate representation to evaluate the function for the friction angle.

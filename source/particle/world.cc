@@ -435,7 +435,7 @@ namespace aspect
       const unsigned int n_particles_in_cell = std::distance(begin_particle,end_particle);
 #endif
 
-      std::vector<Point<dim> > positions;
+      std::vector<Point<dim>> positions;
       positions.reserve(n_particles_in_cell);
 
       for (auto particle = begin_particle; particle!=end_particle; ++particle)

@@ -151,10 +151,10 @@ namespace aspect
                               MaterialModel::MaterialModelOutputs<dim> &out) const
         {
           MaterialModel::PrescribedPlasticDilation<dim>
-          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim> >();
+          *prescribed_dilation = out.template get_additional_output<MaterialModel::PrescribedPlasticDilation<dim>>();
 
           MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>
-          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim> >();
+          *force = out.template get_additional_output<MaterialModel::AdditionalMaterialOutputsStokesRHS<dim>>();
 
           for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
             {
@@ -316,7 +316,7 @@ namespace aspect
     std::pair<std::string,std::string>
     MyPostprocessor<dim>::execute (TableHandler &statistics)
     {
-      std::unique_ptr<Function<dim> > ref_func;
+      std::unique_ptr<Function<dim>> ref_func;
       {
         const MyMaterial<dim> *
         material_model

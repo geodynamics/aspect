@@ -339,7 +339,7 @@ namespace aspect
                             MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       // set up variable to interpolate prescribed field outputs onto compositional field
-      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim> >();
+      PrescribedFieldOutputs<dim> *prescribed_field_out = out.template get_additional_output<PrescribedFieldOutputs<dim>>();
 
       if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
           && prescribed_field_out != nullptr)
@@ -609,7 +609,7 @@ namespace aspect
       equation_of_state.create_additional_named_outputs(out);
 
       if (this->introspection().composition_type_exists(Parameters<dim>::CompositionalFieldDescription::density)
-          && out.template get_additional_output<PrescribedFieldOutputs<dim> >() == nullptr)
+          && out.template get_additional_output<PrescribedFieldOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
