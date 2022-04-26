@@ -310,7 +310,7 @@ namespace aspect
 
               // The function compute_volumes_from_masses expects as many mass_fractions as densities.
               // But the function compute_composition_fractions always adds another element at the start
-              // of the vector that represents the the background field. If there is no lookup table for
+              // of the vector that represents the background field. If there is no lookup table for
               // the background field, the mass_fractions vector is too long and we remove this element.
               if (!has_background_field)
                 mass_fractions.erase(mass_fractions.begin());

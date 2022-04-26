@@ -84,7 +84,7 @@ namespace aspect
                            "approximated as the product of the second invariant of the strain rate "
                            "in each time step and the time step size in regions where material is "
                            "not plastically yielding. This quantity is integrated and tracked over time, and "
-                           "used to weaken the the pre-yield viscosity. The cohesion and friction angle are "
+                           "used to weaken the pre-yield viscosity. The cohesion and friction angle are "
                            "not weakened."
                            "\n\n"
                            "\\item ``default'': The default option has the same behavior as ``none'', "
