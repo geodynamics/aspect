@@ -47,11 +47,17 @@ namespace aspect
            * Generate a uniformly randomly distributed set of particles in a
            * box-like subdomain of the global domain.
            *
-           * @param [in,out] particles A multimap between cells and their
-           * particles. This map will be filled in this function.
+           * @param [in,out] particle_handler The particle handler into which
+           * the generated particles should be inserted.
            */
           void
-          generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles) override;
+          generate_particles(Particles::ParticleHandler<dim> &particle_handler) override;
+
+          // avoid -Woverloaded-virtual
+          // TODO: remove this using directive once the following deprecated
+          // function in the interface class has been removed:
+          // generate_particles(std::multimap<Particles::internal::LevelInd, Particle<dim>> &particles)
+          using Generator::Interface<dim>::generate_particles;
 
           /**
            * Declare the parameters this class takes through input files.
