@@ -81,6 +81,7 @@ namespace aspect
       // look up material properties
       MaterialModel::MaterialModelInputs<dim> in(1, this->n_compositional_fields());
       MaterialModel::MaterialModelOutputs<dim> out(1, this->n_compositional_fields());
+      // compute the adiabat by referring to the Adiabatic conditions model
       in.position[0]=position;
       in.temperature[0]=this->get_adiabatic_conditions().temperature(position);
       in.pressure[0]=this->get_adiabatic_conditions().pressure(position);
@@ -364,6 +365,12 @@ namespace aspect
                                               "adiabatic",
                                               "Temperature is prescribed as an adiabatic "
                                               "profile with upper and lower thermal boundary layers, "
-                                              "whose ages are given as input parameters.")
+                                              "whose ages are given as input parameters. "
+                                              "Note that this plugin uses the 'Adiabatic conditions model' "
+                                              "to compute the adiabat. Thus, the results depend on variables "
+                                              "defined outside of this specific subsection; "
+                                              "e.g. the globally defined 'Adiabatic surface temperature', "
+                                              "and the variables defined in the 'Material model' section "
+                                              "including densities, heat capacities and thermal expansivities.")
   }
 }
