@@ -388,6 +388,10 @@ namespace aspect
 
           return n_particles_in_cell * particle_weight;
         }
+      else if (status == parallel::distributed::Triangulation<dim>::CELL_INVALID)
+        {
+          return 0;
+        }
 
       Assert (false, ExcInternalError());
       return 0;
