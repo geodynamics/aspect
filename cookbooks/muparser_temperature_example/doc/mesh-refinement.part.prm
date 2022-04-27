@@ -1,9 +1,9 @@
 # Refine the upper 150 km of the mesh so lithosphere structure is resolved.
 # Function expression asks if the depth is less than the lithosphere depth and
-# then refinement level = 7, else refinement level = 0. 
-# Note, the minimum refinement level for the lower 850 km of the mesh would be 
+# then refinement level = 7, else refinement level = 0.
+# Note, the minimum refinement level for the lower 850 km of the mesh would be
 # coarser than the initial one level of global refinement. This would then lead
-# to coarsening in the future. 
+# to coarsening in the future.
 # To avoid this, you may want to set this 'else' value to the same as the number
 # of initial global refinement steps.
 
