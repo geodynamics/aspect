@@ -52,7 +52,11 @@ namespace aspect
     {
       CitationInfo::add("particles");
       if (particle_load_balancing & ParticleLoadBalancing::repartition)
+#if DEAL_II_VERSION_GTE(9,4,0)
+        this->get_triangulation().signals.weight.connect(
+#else
         this->get_triangulation().signals.cell_weight.connect(
+#endif
           [&] (const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                const typename parallel::distributed::Triangulation<dim>::CellStatus status)
           -> unsigned int
@@ -189,13 +193,21 @@ namespace aspect
       signals.pre_refinement_store_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
+#if DEAL_II_VERSION_GTE(9,4,0)
+        particle_handler_.prepare_for_coarsening_and_refinement();
+#else
         particle_handler_.register_store_callback_function();
+#endif
       });
 
       signals.post_refinement_load_user_data.connect(
         [&] (typename parallel::distributed::Triangulation<dim> &)
       {
+#if DEAL_II_VERSION_GTE(9,4,0)
+        particle_handler_.unpack_after_coarsening_and_refinement();
+#else
         particle_handler_.register_load_callback_function(false);
+#endif
       });
 
       // Only connect to checkpoint signals if requested
@@ -204,13 +216,21 @@ namespace aspect
           signals.pre_checkpoint_store_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
+#if DEAL_II_VERSION_GTE(9,4,0)
+            particle_handler_.prepare_for_serialization();
+#else
             particle_handler_.register_store_callback_function();
+#endif
           });
 
           signals.post_resume_load_user_data.connect(
             [&] (typename parallel::distributed::Triangulation<dim> &)
           {
+#if DEAL_II_VERSION_GTE(9,4,0)
+            particle_handler_.deserialize();
+#else
             particle_handler_.register_load_callback_function(true);
+#endif
           });
         }
 
@@ -373,6 +393,31 @@ namespace aspect
       if (cell->is_active() && !cell->is_locally_owned())
         return 0;
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+      const unsigned int base_weight = 1000;
+      unsigned int n_particles_in_cell = 0;
+      switch (status)
+        {
+          case parallel::distributed::Triangulation<dim>::CELL_PERSIST:
+          case parallel::distributed::Triangulation<dim>::CELL_REFINE:
+            n_particles_in_cell = particle_handler->n_particles_in_cell(cell);
+            break;
+
+          case parallel::distributed::Triangulation<dim>::CELL_INVALID:
+            break;
+
+          case parallel::distributed::Triangulation<dim>::CELL_COARSEN:
+            for (const auto &child : cell->child_iterators())
+              n_particles_in_cell += particle_handler->n_particles_in_cell(child);
+            break;
+
+          default:
+            Assert(false, ExcInternalError());
+            break;
+        }
+      return base_weight + n_particles_in_cell * particle_weight;
+
+#else
       if (status == parallel::distributed::Triangulation<dim>::CELL_PERSIST
           || status == parallel::distributed::Triangulation<dim>::CELL_REFINE)
         {
@@ -388,13 +433,10 @@ namespace aspect
 
           return n_particles_in_cell * particle_weight;
         }
-      else if (status == parallel::distributed::Triangulation<dim>::CELL_INVALID)
-        {
-          return 0;
-        }
 
       Assert (false, ExcInternalError());
       return 0;
+#endif
     }
 
 
