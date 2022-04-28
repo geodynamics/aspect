@@ -504,7 +504,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00048
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 49:  t=0.000532865 years, dt=9.04613e-05 years
+*** Timestep 49:  t=0.000532866 years, dt=9.04616e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 96 iterations.
    Rebuilding Stokes preconditioner...
@@ -527,7 +527,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
 Number of active cells: 16 (on 3 levels)
 Number of degrees of freedom: 349 (162+25+81+81)
 
-*** Timestep 51:  t=0.000554775 years, dt=1.31536e-05 years
+*** Timestep 51:  t=0.000554776 years, dt=1.31536e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -537,7 +537,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00051
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 52:  t=0.000573702 years, dt=1.89269e-05 years
+*** Timestep 52:  t=0.000573703 years, dt=1.89268e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 12 iterations.
    Rebuilding Stokes preconditioner...
@@ -547,7 +547,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00052
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 53:  t=0.000604134 years, dt=3.04313e-05 years
+*** Timestep 53:  t=0.000604134 years, dt=3.04312e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...
@@ -567,7 +567,7 @@ Number of degrees of freedom: 349 (162+25+81+81)
      Writing graphical output: output-point_value_02_mpi/solution/solution-00054
      Writing point values:     output-point_value_02_mpi/point_values.txt
 
-*** Timestep 55:  t=0.000732038 years, dt=7.7077e-05 years
+*** Timestep 55:  t=0.000732038 years, dt=7.70765e-05 years
    Skipping temperature solve because RHS is zero.
    Solving C_1 system ... 11 iterations.
    Rebuilding Stokes preconditioner...

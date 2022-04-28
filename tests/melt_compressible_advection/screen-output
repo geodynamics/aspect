@@ -60,8 +60,8 @@ Number of degrees of freedom: 30,600 (12,611+8,450+1,089+4,225+4,225)
    Solving porosity system ... 7 iterations.
    Solving Stokes system... done.
    Solving fluid velocity system... 12 iterations.
-      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.26868e-06, 2.8909e-05
-      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.8909e-05
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 0, 1.26868e-06, 2.87375e-05
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 2.87375e-05
 
 
    Postprocessing:

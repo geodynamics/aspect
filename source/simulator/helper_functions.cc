@@ -802,9 +802,9 @@ namespace aspect
       {
         const types::boundary_id top_boundary_id = geometry_model->translate_symbolic_boundary_name_to_id("top");
 
-        const Quadrature<dim-1> &quadrature = this->introspection.face_quadratures.velocities;
-
+        const Quadrature<dim-1> &quadrature = this->introspection.face_quadratures.pressure;
         const unsigned int n_q_points = quadrature.size();
+
         FEFaceValues<dim> fe_face_values (*mapping, finite_element,  quadrature,
                                           update_JxW_values | update_values);
 
@@ -835,9 +835,9 @@ namespace aspect
       }
     else if (parameters.pressure_normalization == "volume")
       {
-        const Quadrature<dim> &quadrature = this->introspection.quadratures.velocities;
-
+        const Quadrature<dim> &quadrature = this->introspection.quadratures.pressure;
         const unsigned int n_q_points = quadrature.size();
+
         FEValues<dim> fe_values (*mapping, finite_element,  quadrature,
                                  update_JxW_values | update_values);
 
