@@ -1,3 +1,0 @@
-subsection Checkpointing
-  set Steps between checkpoint = 50 
-end

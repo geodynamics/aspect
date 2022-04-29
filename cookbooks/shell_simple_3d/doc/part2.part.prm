@@ -1,9 +1,9 @@
 subsection Geometry model
-  set Model name = spherical shell 
+  set Model name = spherical shell
 
   subsection Spherical shell
-    set Inner radius  = 3481000 
-    set Outer radius  = 6336000 
+    set Inner radius  = 3481000
+    set Outer radius  = 6336000
   end
 end
 
