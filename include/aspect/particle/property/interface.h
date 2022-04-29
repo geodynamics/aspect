@@ -529,8 +529,8 @@ namespace aspect
            * @return A vector that contains pairs of the property names and the
            * number of components this property plugin defines.
            */
-          std::vector<std::pair<std::string, unsigned int> >
-          get_property_information() const override;
+          std::vector<std::pair<std::string, unsigned int>>
+                                                         get_property_information() const override;
 
           /**
            * Read the parameters this class needs to determine which integrator is used,

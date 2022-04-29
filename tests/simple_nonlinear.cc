@@ -115,10 +115,10 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_base(5,3);
   MaterialModelOutputs<dim> out_dviscositydstrainrate(5,3);
 
-  if (out_base.template get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
+  if (out_base.template get_additional_output<MaterialModelDerivatives<dim>>() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
 
   // initialize the material we want to test.
   SimpleNonlinear<dim> mat;
@@ -148,7 +148,7 @@ int f(double parameter)
 
   // set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.template get_additional_output<MaterialModelDerivatives<dim>>();
   double temp;
 
   // have a bool so we know whether the test has succeed or not.

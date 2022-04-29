@@ -46,7 +46,7 @@ namespace aspect
                                update_quadrature_points |
                                update_JxW_values);
 
-      std::vector<Tensor<1,dim> > velocity_values(n_q_points);
+      std::vector<Tensor<1,dim>> velocity_values(n_q_points);
       std::vector<double> compositional_values(n_q_points);
 
       std::vector<double> local_velocity_square_integral(this->n_compositional_fields());

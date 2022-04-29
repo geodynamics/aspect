@@ -271,7 +271,7 @@ namespace aspect
 
     // Replace all existing assemblers by the one for the entropy equation.
     assemblers.advection_system.resize(1);
-    assemblers.advection_system[0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim> >();
+    assemblers.advection_system[0] = std::make_unique<Assemblers::EntropyAdvectionSystem<dim>>();
 
     assemblers.advection_system_assembler_properties[0].needed_update_flags = update_hessians;
   }

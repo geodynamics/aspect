@@ -122,7 +122,7 @@ namespace aspect
         }
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
 
       if (melt_out != nullptr)
         {

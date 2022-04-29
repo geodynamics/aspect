@@ -50,7 +50,7 @@ namespace aspect
 
           AdditionalOutputs1<dim> *additional;
 
-          additional = out.template get_additional_output<AdditionalOutputs1<dim> >();
+          additional = out.template get_additional_output<AdditionalOutputs1<dim>>();
           if (additional)
             ++counter_with;
           else
@@ -89,11 +89,11 @@ namespace aspect
       {
         std::cout << "* create_additional_material_model_outputs() called" << std::endl;
 
-        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >() != nullptr)
+        if (out.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>() != nullptr)
           return;
 
         std::cout << "   creating additional output!" << std::endl;
-        out.additional_outputs.push_back(std::make_unique<MaterialModel::AdditionalOutputs1<dim> > (2));
+        out.additional_outputs.push_back(std::make_unique<MaterialModel::AdditionalOutputs1<dim>> (2));
 
       }
 
@@ -103,7 +103,7 @@ namespace aspect
         internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
 
         MaterialModel::AdditionalOutputs1<dim> *additional
-          = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim> >();
+          = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>();
 
         std::cout << "* local_assemble_stokes call, have additional? " << (additional!=nullptr) << std::endl;
         if (additional!=nullptr)
@@ -128,7 +128,7 @@ namespace aspect
     quiet = false;
 
     TestAssembler<dim> *test_assembler = new TestAssembler<dim>();
-    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim> >(test_assembler));
+    assemblers.stokes_system.push_back(std::unique_ptr<Assemblers::Interface<dim>>(test_assembler));
   }
 }
 

@@ -64,7 +64,7 @@ namespace aspect
       void
       parse_parameters (ParameterHandler &prm);
 
-      std::unique_ptr<Utilities::AsciiDataBoundary<dim> > member;
+      std::unique_ptr<Utilities::AsciiDataBoundary<dim>> member;
 
       std::set<types::boundary_id> boundary_ids;
   };
@@ -78,7 +78,7 @@ namespace aspect
   void
   AsciiBoundaryMember<dim>::initialize ()
   {
-    const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim> > > > &
+    const std::map<types::boundary_id,std::vector<std::unique_ptr<BoundaryVelocity::Interface<dim>>>> &
     bvs = this->get_boundary_velocity_manager().get_active_boundary_velocity_conditions();
     for (const auto &boundary : bvs)
       for (const auto &p : boundary.second)

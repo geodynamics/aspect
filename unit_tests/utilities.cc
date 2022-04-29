@@ -64,7 +64,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=1")
 
   std::vector<std::string> column_names = {"a", "b"};
   Table<1,double> table(2);
-  std::vector<Table<1,double> > raw_data(2, table);
+  std::vector<Table<1,double>> raw_data(2, table);
 
   std::vector<std::vector<double>> coordinate_values(1, std::vector<double>({1.0, 2.0}));
   // c1:
@@ -93,7 +93,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2")
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
-  std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));
+  std::vector<Table<2,double>> raw_data(1, Table<2,double>(3,3));
   std::vector<std::vector<double>> coordinate_values(2, std::vector<double>(3, 0.));
 
   // x:
@@ -124,7 +124,7 @@ TEST_CASE("Utilities::AsciiDataLookup manual dim=2 equid")
   aspect::Utilities::StructuredDataLookup<2> lookup(1 /*n_components*/, 1.0 /*scaling*/);
 
   std::vector<std::string> column_names = {"topography"};
-  std::vector<Table<2,double> > raw_data(1, Table<2,double>(3,3));
+  std::vector<Table<2,double>> raw_data(1, Table<2,double>(3,3));
   std::vector<std::vector<double>> coordinate_values(2, std::vector<double>(3, 0.));
 
   // x:

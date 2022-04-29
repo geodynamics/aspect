@@ -42,7 +42,7 @@ namespace aspect
     template <int dim>
     void Box2<dim>::update()
     {
-      this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::PressureStatistics<dim> >();
+      this->get_postprocess_manager().template get_matching_postprocessor<Postprocess::PressureStatistics<dim>>();
       std::cout << "PressureStatistics is found!" << std::endl;
     }
   }

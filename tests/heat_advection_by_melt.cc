@@ -18,11 +18,11 @@ namespace aspect
         const types::boundary_id /*boundary_indicator*/,
         const MaterialModel::MaterialModelInputs<dim> &material_model_inputs,
         const MaterialModel::MaterialModelOutputs<dim> &material_model_outputs,
-        const std::vector<Tensor<1,dim> > &normal_vectors,
+        const std::vector<Tensor<1,dim>> &normal_vectors,
         std::vector<double> &fluid_pressure_gradient_outputs
       ) const
       {
-        const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim> >();
+        const MaterialModel::MeltOutputs<dim> *melt_outputs = material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
         Assert(melt_outputs != nullptr, ExcMessage("Need MeltOutputs from the material model for shear heating with melt."));
 
         for (unsigned int q=0; q<fluid_pressure_gradient_outputs.size(); ++q)
@@ -61,7 +61,7 @@ namespace aspect
       MeltGlobal<dim>::evaluate(in, out);
 
       // fill melt outputs if they exist
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
       for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
         {
           out.densities[i] = 2.0;

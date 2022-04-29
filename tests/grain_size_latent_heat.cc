@@ -73,8 +73,8 @@ namespace aspect
                                        update_values);
 
               std::vector<double> temperatures(n_q_points), pressures(n_q_points);
-              std::vector<std::vector<double> > compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
-              std::vector<std::vector<double> > composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
+              std::vector<std::vector<double>> compositions (quadrature_formula.size(),std::vector<double> (this->n_compositional_fields()));
+              std::vector<std::vector<double>> composition_values (this->n_compositional_fields(),std::vector<double> (quadrature_formula.size()));
 
               fe_values.reinit (in.current_cell);
 

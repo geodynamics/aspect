@@ -129,10 +129,10 @@ int f(double parameter)
   MaterialModelOutputs<dim> out_dviscositydstrainrate_oneone(5,3);
   MaterialModelOutputs<dim> out_dviscositydtemperature(5,3);
 
-  if (out_base.get_additional_output<MaterialModelDerivatives<dim> >() != nullptr)
+  if (out_base.get_additional_output<MaterialModelDerivatives<dim>>() != nullptr)
     throw "error";
 
-  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim> > (5));
+  out_base.additional_outputs.push_back(std::make_unique<MaterialModelDerivatives<dim>> (5));
 
   SpiegelmanMaterial<dim> mat;
   ParameterHandler prm;
@@ -173,7 +173,7 @@ int f(double parameter)
 
   //set up additional output for the derivatives
   MaterialModelDerivatives<dim> *derivatives;
-  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim> >();
+  derivatives = out_base.get_additional_output<MaterialModelDerivatives<dim>>();
 
   double temp;
   for (unsigned int i = 0; i < 5; i++)

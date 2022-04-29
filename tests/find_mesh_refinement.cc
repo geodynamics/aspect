@@ -42,19 +42,19 @@ namespace aspect
     template <int dim>
     void Box2<dim>::update()
     {
-      if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Density<dim> >())
+      if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Density<dim>>())
         std::cout << "Density is found!" << std::endl;
       else
         std::cout << "Density is not found!" << std::endl;
 
-      if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim> >())
+      if (this->get_mesh_refinement_manager().template has_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim>>())
         std::cout << "Boundary is found!" << std::endl;
       else
         std::cout << "Boundary is not found!" << std::endl;
 
       try
         {
-          this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Density<dim> >();
+          this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Density<dim>>();
           std::cout << "Density is found!" << std::endl;
         }
       catch (...)
@@ -64,7 +64,7 @@ namespace aspect
 
       try
         {
-          this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim> >();
+          this->get_mesh_refinement_manager().template get_matching_mesh_refinement_strategy<MeshRefinement::Boundary<dim>>();
           std::cout << "Boundary is found!" << std::endl;
         }
       catch (...)
