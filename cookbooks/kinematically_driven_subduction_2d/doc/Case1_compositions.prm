@@ -1,8 +1,8 @@
 # We fix composition on the right boundary,
 # because we have inflow there.
 subsection Boundary composition model
-  set Fixed composition boundary indicators = right    
-  set List of model names                   = initial composition 
+  set Fixed composition boundary indicators = right
+  set List of model names                   = initial composition
 end
 
 subsection Compositional fields
