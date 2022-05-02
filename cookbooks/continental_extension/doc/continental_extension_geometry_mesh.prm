@@ -10,7 +10,7 @@ end
 
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
   subsection Minimum refinement function
