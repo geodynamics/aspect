@@ -9,7 +9,10 @@
 # are read from other sections in the input file, ensuring
 # consistency between the parameters set for the initial
 # temperature and those in the material model and compositional
-# heating plugins.
+# heating plugins. Significantly, the continental geotherm
+# initial temperature plugin enforces that specific names are
+# used for crustal and mantle layers, which are specified
+# below in the Compositional fields subsection.
 
 include $ASPECT_SOURCE_DIR/cookbooks/continental_extension/continental_extension.prm
 
@@ -22,6 +25,13 @@ subsection Mesh refinement
   set Initial adaptive refinement        = 0
   set Initial global refinement          = 1
   set Time steps between mesh refinement = 0
+end
+
+# Update the names of the compositional fields associated with the upper crust, lower crust,
+# and lithospheric mantle to be consistent with the naming scheme enforced by the continental
+# geothermal initial temperature plugin.
+subsection Compositional fields
+  set Names of fields = noninitial_plastic_strain, plastic_strain, upper_crust, lower_crust, lithospheric_mantle
 end
 
 # Initial temperature field
