@@ -1,7 +1,7 @@
 subsection Mesh refinement
   set Initial adaptive refinement              = 2
   set Initial global refinement                = 8
-  set Minimum refinement level                 = 6 
+  set Minimum refinement level                 = 6
   set Normalize individual refinement criteria = true
   set Refinement criteria merge operation      = plus
   set Coarsening fraction                      = 0.01
