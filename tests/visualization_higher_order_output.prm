@@ -1,6 +1,6 @@
 set Dimension = 2
 
-include $ASPECT_SOURCE_DIR/cookbooks/van-keken-smooth.prm
+include $ASPECT_SOURCE_DIR/cookbooks/van-keken/van-keken-smooth.prm
 
 set End time = 0.0
 
