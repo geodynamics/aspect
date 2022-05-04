@@ -13,6 +13,7 @@
 /CTestTestfile.cmake
 /Makefile
 /aspect
+/benchmarks/**/*.prm.out
 /benchmarks/**/CMakeCache.txt
 /benchmarks/**/CMakeFiles/
 /benchmarks/**/Makefile
