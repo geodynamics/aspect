@@ -8,9 +8,10 @@ set End time                               = 1e7
 set Use years in output instead of seconds = true
 set Output directory                       = output-heat-flow-plume
 set Adiabatic surface temperature          = 1600
+set Maximum time step                      = 1e6
 
 ############### Parameters describing the model
-# Let us here choose again a box domain of size 2x1
+# Let us choose a box domain (400 km wide and 200 km in depth)
 # where we fix the temperature at the bottom and top,
 # allow free slip along the bottom, left and right,
 # and prescribe the velocity along the top using the
@@ -29,7 +30,7 @@ end
 
 # In order to allow plume material to flow in with the
 # temperature selected in the initial temperature section,
-# we apply the initial temperature as boundary temperature.
+# we apply the initial temperature as the boundary temperature.
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
   set List of model names = initial temperature
@@ -41,6 +42,14 @@ subsection Boundary temperature model
 end
 
 
+# In this model we want material to be able to (1) flow in freely
+# through the base, (2) flow freely in the horizontal direction
+# through the left and right walls where the vertical velocity is 0,
+# and (3) have a velocity of zero at the top boundary. This is
+# achieved through a combination of velocity and pressure boundary
+# conditions, where only the vertical (y) component of the velocity
+# is set to 0 on the left and right walls, while the x and y velocity
+# are both set to zero on the top boundary.
 subsection Boundary velocity model
   set Prescribed velocity boundary indicators = left y: function, right y:function, top:function
 
@@ -50,6 +59,11 @@ subsection Boundary velocity model
   end
 end
 
+# We allow inflow and outflow at the model base by setting the traction
+# boundary condition to the initial lithostatic pressure. On the left
+# and right boundaries, the x component of the  boundary traction is
+# also set to the initial lithostatic pressure, which enables horizontal
+# inflow and outflow.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = bottom:initial lithostatic pressure,right x:initial lithostatic pressure, left x:initial lithostatic pressure
 
@@ -65,12 +79,17 @@ subsection Gravity model
   set Model name = vertical
 end
 
-
+# The initial temperature is set to the value of the
+# Adiabatic surface temperature, in this case 1600 K,
+# but with a cold boudary layer at the surface and a
+# hot thermal anomaly at the base of the model
+# representing a plume. The age of the cold top
+# boundary layer determines its thickness.
 subsection Initial temperature model
   set List of model names = adiabatic, function
 
   subsection Adiabatic
-    # This is the age in years.
+    # This is the age of the top boundary layer in years.
     set Age top boundary layer = 1
   end
 
@@ -84,6 +103,13 @@ subsection Initial temperature model
 end
 
 
+# This model uses the composition reaction material model,
+# where most material properties are constant, except for the
+# viscosity and the density, which depend on temperature as
+# expressed by the Thermal viscosity exponent and the
+# Thermal expansion coefficient. At the Reference temperature,
+# the viscosity equals the value set with the Viscosity
+# parameter.
 subsection Material model
   set Model name = composition reaction
 
@@ -97,8 +123,16 @@ subsection Material model
 end
 
 
-# The final part of this input file describes how many times the
-# mesh is refined and what to do with the solution once computed
+# This part of this input file describes how many times the
+# mesh is refined and what to do with the solution once computed.
+# Here, the mesh is designed to be finer at the surface than at
+# the bottom of the model to better capture the conductive cooling
+# of the plates. It initially undergoes two global refinements and
+# four adaptive refinements in the first time step, but is not
+# refined further (i.e., it remains static) throughout the model
+# run. The adaptive refinements use the minimum refinement function
+# to increase the resolution towards the model surface in a
+# piece-wise fashion at depths of 7 and 30 kilometers.
 subsection Mesh refinement
   set Initial adaptive refinement        = 4
   set Initial global refinement          = 2
@@ -113,7 +147,7 @@ end
 
 
 subsection Postprocess
-  set List of postprocessors = visualization, temperature statistics, heat flux statistics
+  set List of postprocessors = visualization, temperature statistics, heat flux densities
 
   subsection Visualization
     set Time between graphical output = 1e5

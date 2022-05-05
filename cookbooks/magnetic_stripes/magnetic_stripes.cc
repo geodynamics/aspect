@@ -37,6 +37,7 @@ namespace aspect
       for (unsigned int i=0; i < reversal_times.size(); ++i)
         if (this->get_time() < reversal_times[i])
           {
+            // magnetic orientation is either 1 (normal) or -1 (reverse)
             magnetic_orientation = -2 * (i % 2) + 1;
             break;
           }
@@ -48,6 +49,8 @@ namespace aspect
 
           for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
             {
+              // Magnetic lineations are only generated when material approaches the surface,
+              // i.e. above the reaction depth and when the velocity is predominantly upwards.
               if (depth < reaction_depth && in.velocity[i][1] > std::abs(in.velocity[i][0]))
                 out.reaction_terms[i][c] = -in.composition[i][0] + magnetic_orientation;
               else
@@ -68,7 +71,7 @@ namespace aspect
 
           prm.declare_entry ("Reversal times", "5.0, 5.0, 2.0, 2.0, 2.092, 2.419, 2.419",
                              Patterns::List(Patterns::Double(0)),
-                             "Reversal times of the magnatic field."
+                             "Reversal times of the magnetic field."
                              "Units: yr or s, depending on the ``Use years "
                              "in output instead of seconds'' parameter.");
         }
@@ -113,7 +116,17 @@ namespace aspect
   {
     ASPECT_REGISTER_MATERIAL_MODEL(MagneticStripes,
                                    "magnetic stripes",
-                                   "A simple material model that is like the "
-                                   "'melt simple' model, but has a constant reaction term.")
+                                   "A simple material model that is like the 'composition "
+                                   "reaction' model, but with a different reaction term. "
+                                   "In areas above a depth of 7 km and with a velocity that "
+                                   "does not diverge from vertically upwards by more than 45 "
+                                   "degrees, the first compositional field used in the model "
+                                   "is set to either one or minus one. The sign depends on a "
+                                   "list of reversal times that is passed to the material "
+                                   "model as an input. Bevor the 1st, 3rd, 5th, ... entry, "
+                                   "the sign is positive (magnetic normal orientation), and "
+                                   "before the 2nd, 4th, 6th, ... entry, the sign is negative "
+                                   "(magnetic reverse orientation). List entries are sorted "
+                                   "automatically in ascending order.")
   }
 }

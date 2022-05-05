@@ -22,8 +22,9 @@ end
 subsection Heating model
   set List of model names = function, shear heating
 
-  # Radiogenic heat production. Changing Hcrust changes the
-  # heat production rate in the crust.
+  # Radiogenic heat production. Changing the variable
+  # Hcrust in the equation below changes the heat
+  # production rate in the crust.
   subsection Function
     set Variable names = x,y,t
     set Function expression = if(y>93000, Hcrust, Hmantle)

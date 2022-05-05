@@ -37,15 +37,25 @@ end
 
 
 # The next section deals with the initial conditions for the
-# temperature (there are no initial conditions for the
+# temperature. Note that there are no initial conditions for the
 # velocity variable since the velocity is assumed to always
-# be in a static equilibrium with the temperature field).
+# be in a static equilibrium with the temperature field.
 # There are a number of models with the 'function' model
 # a generic one that allows us to enter the actual initial
 # conditions in the form of a formula that can contain
 # constants. We choose a linear temperature profile that
 # matches the boundary conditions defined below plus
-# a small perturbation:
+# a small perturbation. The variables in this equation are
+# described below, and it is important to note that in many
+# cases the values correspond to other model parameters
+# defined elsewhere. As such, if these model parameters are
+# changed, the values below will also need to be adjusted.
+#   L - Model length/width
+#   D - Model depth/height
+#   T_top - Temperature at the top boundary
+#   T_bottom - Temperature at the bottom boundary
+#   p, k - values related to the small temperature perturbation
+
 subsection Initial temperature model
   set Model name = function
 

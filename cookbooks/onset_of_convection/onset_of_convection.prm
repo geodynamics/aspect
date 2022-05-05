@@ -90,10 +90,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, point values, visualization
-  subsection Point values
-    set Evaluation points = 0,1.5e6
-  end
+  set List of postprocessors = velocity statistics, visualization
 
   subsection Visualization
     set Time steps between graphical output = 5

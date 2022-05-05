@@ -4,7 +4,7 @@
 
 The input file for this model can be found at \url{cookbooks/onset_of_convection/onset_of_convection.prm}.
 
-This model is a  copy of the onset of convection benchmark described in Section~\ref{sec:benchmark-onset-of-convection}, 
+This model is a copy of the onset of convection benchmark described in Section~\ref{sec:benchmark-onset-of-convection}, 
 with the difference that parameter values are specified explicitly in the input file (rather than through an ipython notebook). 
 The setup is based on a linear stability analysis for the onset of convection given in Turcotte and Schubert \cite{TS14} (section 6.19).
 The parameters being used here are reasonable for the Earth's mantle. The cookbook folder contains a script 
@@ -87,7 +87,7 @@ do
 What happens here is that the script performs a loop (a so-called for-loop):
 It executes all the commands within the loop for each of the values listed here in quotes. 
 In other words, this loop would run the model for all combinations of the viscosities $10^{24}$, $3.3 \cdot 10^{24}$, $10^{25}$, $3.3 \cdot 10^{25}$, $10^{26}$, $3.3 \cdot 10^{26}$, $10^{27}$ Pa s, and the temperature differences of 10, 30, 100, 300, 1000, 3000 and 10000 K between top and bottom of the model (which is what the DeltaT parameter stands for). 
-These are a lot of models, so these models are only run for 2 time steps each. 
+Given the large number of models, they are only run for 2 time steps each. 
 
 You can start with the original values in the script, but if you find that either almost all or almost none of your models have convection, you will have to modify these ranges so that you can map the boundary of where convection starts. 
 The more models you run, the easier it will be to see the trend in the results, so feel free to increase the number of values in the loops once you have found a parameter range that includes both models with and without convection.  
@@ -114,7 +114,7 @@ You can run the script by typing
 gnuplot plot.plt
 \end{verbatim}
 
-You can open \url{cookbooks/onset_of_convection/plot.plt} with leafpad to see what's in there, and you can also run each of these lines as a separate command interactively in in gnuplot. In order to do that, type \texttt{gnuplot} in the terminal, and then just copy or type any of the commands in the terminal window (but that's optional; hint: to close gnuplot, type \texttt{quit}). 
+You can open \url{cookbooks/onset_of_convection/plot.plt} with leafpad to see what's in there, and you can also run each of these lines as a separate command interactively in gnuplot. In order to do that, type \texttt{gnuplot} in the terminal, and then just copy or type any of the commands in the terminal window (but that's optional; hint: to close gnuplot, type \texttt{quit}). 
 
 Vary your input parameters until you have a plot that clearly shows a boundary between models without and with convection. 
 The temperatures should be in a reasonable range (you can check the densities in the visualization output in ParaView, if you have negative densities, your temperature is too large). 
@@ -163,7 +163,7 @@ State what celestial body you investigate, the vertical extension and the gravit
 Then describe your model results. Include your plot of models with and without convection for different values of the viscosity and temperature difference and discuss it:
 What parameter range did you test?
 How do variations in each of the two parameters influence the occurrence of convection? 
-Describe how the line of the onset of convection (the interface between the part of your plot with and the one without convection)
+Describe how the line of the onset of convection (i.e., the interface between the part of your plot with and the one without convection)
 depends on both parameters: Is this a linear relation between both parameters? In other words, could the interface be expressed in form of an equation that is linear, i.e. temperature variation = constant $\cdot$ viscosity? (Remember that the plot has axes with a logarithmic scale!)
 For an Earth-like temperature variation across the mantle of your celestial body, what viscosity would be required for convection to be likely?
 
