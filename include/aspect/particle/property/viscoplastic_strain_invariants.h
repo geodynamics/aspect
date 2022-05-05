@@ -101,6 +101,15 @@ namespace aspect
            * but it is currently not used in a threaded context.
            */
           mutable MaterialModel::MaterialModelInputs<dim> material_inputs;
+          mutable MaterialModel::MaterialModelOutputs<dim> material_outputs;
+
+          /**
+           * Store the indices of relevant compositional fields to avoid repeated
+           * lookups.
+           * */
+          unsigned int plastic_strain_index;
+          unsigned int viscous_strain_index;
+          unsigned int total_strain_index;
       };
     }
   }
