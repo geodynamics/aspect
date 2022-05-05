@@ -135,7 +135,7 @@ namespace aspect
         // Calculate strain rate second invariant
         const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(material_inputs.strain_rate[0]))));
 
-        // Calculate strain invariant magnitude over the last time time step
+        // Calculate strain invariant magnitude over the last time step
         const double strain_update = dt*edot_ii;
 
         /* Update the strain values that are used in the simulation, which use the following assumptions
@@ -158,16 +158,14 @@ namespace aspect
             if (n_components == 1)
               data[data_position] += strain_update;
 
-            // Not yielding and two total fields, representing plastic strain (first data position)
-            // and viscous strain (second data position, updated below).
-            if (n_components == 2)
-              data[data_position+(n_components-1)] += strain_update;
-
-            // Not yielding and three total fields, representing plastic strain (first data position),
-            // viscous strain (second data position, updated below), and noninitial plastic strain
-            // (third data position).
-            if (n_components == 3)
-              data[data_position+(n_components-2)] += strain_update;
+            // Not yielding and either two or three fields are tracked. If two fields are tracked,
+            // they represent plastic strain (first data position) and viscous strain (second data
+            // data position, updated below). If three fields are tracked, they represent plastic
+            // strain (first data position), viscous strain (second data position, updated below),
+            // and noninitial plastic strain (third data position). In either case, the viscous
+            // strain is in the second data position, allowing us to use a single expression.
+            if (n_components > 1)
+              data[data_position+1] += strain_update;
           }
 
         // Only one field, which tracks total strain and is updated regardless of whether the

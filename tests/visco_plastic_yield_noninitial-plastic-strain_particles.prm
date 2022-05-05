@@ -1,7 +1,7 @@
 # A test to check whether noninitial plastic strain is correctly tracked
 # on particles, which are also used to track plastic and viscous strain.
 # The boundary conditions (see tests/visco_plastic_yield_plastic_viscous_strain_weakening.prm)
-# produce a incremental strain of 1e-5 per time step and material that is always yielding.
+# produce an incremental strain of 1e-5 per time step and material that is always yielding.
 # The initial strain values are as follows - plastic strain: 1e-5, noninitial plastic strain: 0,
 # viscous strain: 0. As a result, the viscous strain should always have a value of 0 throughout
 # the model run. Respectively, after 3 time steps the plastic and noninitial plastic values
