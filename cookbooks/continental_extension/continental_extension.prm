@@ -25,7 +25,6 @@ set Max nonlinear iterations               = 100
 set CFL number                             = 0.5
 set Maximum time step                      = 20e3
 set Output directory                       = output-continental_extension
-set Timing output frequency                = 1
 set Pressure normalization                 = no
 
 #### Parameters describing the model
@@ -53,7 +52,7 @@ end
 # region.
 subsection Mesh refinement
   set Initial adaptive refinement        = 1
-  set Initial global refinement          = 2
+  set Initial global refinement          = 3
   set Time steps between mesh refinement = 0
   set Strategy = minimum refinement function
   subsection Minimum refinement function
@@ -80,7 +79,7 @@ end
 
 # Advecting the free surface using a normal, rather than vertical,
 # projection. To reduce mesh instabilities and associated solver
-# issues when deformation become large, diffusion is applied to
+# issues when deformation becomes large, diffusion is applied to
 # the free surface at each time step.
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface, top: diffusion
@@ -127,7 +126,7 @@ end
 # Initial values of different compositional fields
 # The upper crust (20 km thick), lower crust (20 km thick)
 # and mantle (60 km thick) are continuous horizontal layers
-# of varying thickness. The non initial plastic strain is set
+# of constant thickness. The non initial plastic strain is set
 # to 0 and the initial plastic strain is randomized between
 # 0.5 and 1.5.
 subsection Initial composition model
@@ -204,6 +203,7 @@ end
 subsection Heating model
   set List of model names = compositional heating
   subsection Compositional heating
+    set Use compositional field for heat production averaging = 1, 0, 0, 1, 1, 1
     set Compositional heating values = 0.0, 0.0, 0.0, 1.0e-6, 0.25e-6, 0.
   end
 end

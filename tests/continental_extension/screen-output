@@ -35,7 +35,7 @@ Number of mesh deformation degrees of freedom: 462
 
    Rebuilding Stokes preconditioner...
    Solving Stokes system... 0+18 iterations.
-      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.000259299, norm of the rhs: 2.11533e+13
+      Relative nonlinear residual (total Newton system) after nonlinear iteration 1: 0.000259297, norm of the rhs: 2.11532e+13
 
 
    Postprocessing:

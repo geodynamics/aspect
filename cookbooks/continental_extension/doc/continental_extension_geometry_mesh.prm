@@ -18,5 +18,4 @@ subsection Mesh refinement
     set Variable names      = x,y
     set Function expression = if ( y>=50e3 && x>=40.e3 && x<=160.e3, 4, 3)
   end
-  set Run postprocessors on initial refinement = false
 end

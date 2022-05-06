@@ -11,7 +11,7 @@ end
 subsection Mesh deformation
   set Mesh deformation boundary indicators        = top: free surface, top: diffusion
   subsection Free surface
-    set Surface velocity projection = vertical
+    set Surface velocity projection = normal
   end
   subsection Diffusion
     set Hillslope transport coefficient = 1.e-8
