@@ -142,6 +142,9 @@ namespace aspect
       // We do not need the viscosity.
       in0.strain_rate.resize(0);
 
+      // The velocity is zero for the lithostatic case.
+      in0.velocity[0]= Tensor<1,dim> ();
+
       // Evaluate the material model to get the density.
       this->get_material_model().evaluate(in0, out0);
       const double density0 = out0.densities[0];
@@ -195,6 +198,9 @@ namespace aspect
 
           // We do not need the viscosity.
           in.strain_rate.resize(0);
+
+          // The velocity is zero for the lithostatic case.
+          in.velocity[0]= Tensor<1,dim> ();
 
           // Evaluate the material model to get the density at the current point.
           this->get_material_model().evaluate(in, out);
