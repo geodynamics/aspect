@@ -123,7 +123,7 @@ namespace aspect
                                    "degrees, the first compositional field used in the model "
                                    "is set to either one or minus one. The sign depends on a "
                                    "list of reversal times that is passed to the material "
-                                   "model as an input. Bevor the 1st, 3rd, 5th, ... entry, "
+                                   "model as an input. Before the 1st, 3rd, 5th, ... entry, "
                                    "the sign is positive (magnetic normal orientation), and "
                                    "before the 2nd, 4th, 6th, ... entry, the sign is negative "
                                    "(magnetic reverse orientation). List entries are sorted "
