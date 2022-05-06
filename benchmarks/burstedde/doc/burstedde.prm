@@ -23,7 +23,7 @@ subsection Gravity model
 end
 
 subsection Burstedde benchmark
-   # Viscosity parameter is beta  
+   # Viscosity parameter is beta
    set Viscosity parameter             = 20
 end
 
