@@ -34,13 +34,14 @@ namespace aspect
       CompositionReaction<dim>::evaluate(in, out);
 
       int magnetic_orientation = 1;
-      for (unsigned int i=0; i < reversal_times.size(); ++i)
-        if (this->get_time() < reversal_times[i])
-          {
-            // magnetic orientation is either 1 (normal) or -1 (reverse)
-            magnetic_orientation = -2 * (i % 2) + 1;
-            break;
-          }
+      if (this->simulator_is_past_initialization())
+        for (unsigned int i=0; i < reversal_times.size(); ++i)
+          if (this->get_time() < reversal_times[i])
+            {
+              // magnetic orientation is either 1 (normal) or -1 (reverse)
+              magnetic_orientation = -2 * (i % 2) + 1;
+              break;
+            }
 
       for (unsigned int i=0; i < in.position.size(); ++i)
         {

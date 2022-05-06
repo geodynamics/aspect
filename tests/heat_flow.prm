@@ -1,0 +1,4 @@
+include $ASPECT_SOURCE_DIR/cookbooks/heat_flow/heat-flow.prm
+
+set Dimension = 2
+set End time = 0
