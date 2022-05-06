@@ -1,5 +1,5 @@
-# A description of convection in a 2d box. See the manual for more information.
-
+# A modification of the convection box cookbook using physical units
+# and particle output. See the manual for more information.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -8,9 +8,9 @@ set Dimension                              = 2
 # There are several global variables that have to do with what
 # time system we want to work in and what the end time is. We
 # also designate an output directory.
-set Use years in output instead of seconds = false
-set End time                               = 0.5
-set Output directory                       = output-convection-box
+set Use years in output instead of seconds = true
+set End time                               = 3e10
+set Output directory                       = output-tutorial
 
 # Then there are variables that describe how the pressure should
 # be normalized. Here, we choose a zero average pressure
@@ -18,7 +18,6 @@ set Output directory                       = output-convection-box
 # surface is defined as the top boundary).
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-
 
 # Then come a number of sections that deal with the setup
 # of the problem to solve. The first one deals with the
@@ -30,10 +29,9 @@ set Surface pressure                       = 0
 # model.
 subsection Geometry model
   set Model name = box
-
   subsection Box
-    set X extent = 1
-    set Y extent = 1
+    set X extent = 4.2e6
+    set Y extent = 3e6
   end
 end
 
@@ -53,15 +51,18 @@ end
 # defined elsewhere. As such, if these model parameters are
 # changed, the values below will also need to be adjusted.
 #   L - Model length/width
+#   D - Model depth/height
+#   T_top - Temperature at the top boundary
+#   T_bottom - Temperature at the bottom boundary
 #   p, k - values related to the small temperature perturbation
 
 subsection Initial temperature model
   set Model name = function
 
   subsection Function
-    set Variable names      = x,z
-    set Function constants  = p=0.01, L=1, pi=3.1415926536, k=1
-    set Function expression = (1.0-z) - p*cos(k*pi*x/L)*sin(pi*z)
+    set Variable names      = x,y
+    set Function constants  = p=-0.01, L=4.2e6, D=3e6, pi=3.1415926536, k=1, T_top=273, T_bottom=3600
+    set Function expression = T_top + (T_bottom-T_top)*(1-(y/D) - p*cos(k*pi*x/L)*sin(pi*y/D))
   end
 end
 
@@ -76,13 +77,11 @@ end
 # boundaries).
 subsection Boundary temperature model
   set Fixed temperature boundary indicators = bottom, top
-  set List of model names = box
 
+  set List of model names = box
   subsection Box
-    set Bottom temperature = 1
-    set Left temperature   = 0
-    set Right temperature  = 0
-    set Top temperature    = 0
+    set Bottom temperature = 3300
+    set Top temperature    = 300
   end
 end
 
@@ -96,16 +95,14 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, bottom, top
 end
 
+
 # The following two sections describe first the
 # direction (vertical) and magnitude of gravity and the
-# material model (i.e., density, viscosity, etc). We have
-# discussed the settings used here in the introduction to
-# this cookbook in the manual already.
+# material model (i.e., density, viscosity, etc).
 subsection Gravity model
   set Model name = vertical
-
   subsection Vertical
-    set Magnitude = 1e4   # = Ra
+    set Magnitude = 10.0
   end
 end
 
@@ -114,12 +111,12 @@ subsection Material model
   set Model name = simple
 
   subsection Simple model
-    set Reference density             = 1
-    set Reference specific heat       = 1
+    set Viscosity                     = 3e24
+    set Reference density             = 3000
+    set Thermal conductivity          = 4.86
+    set Thermal expansion coefficient = 2e-5
+    set Reference specific heat       = 1000
     set Reference temperature         = 0
-    set Thermal conductivity          = 1
-    set Thermal expansion coefficient = 1
-    set Viscosity                     = 1
   end
 end
 
@@ -132,14 +129,12 @@ subsection Formulation
 end
 
 
-# The settings above all pertain to the description of the
-# continuous partial differential equations we want to solve.
 # The following section deals with the discretization of
 # this problem, namely the kind of mesh we want to compute
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 4
+  set Initial global refinement                = 3
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
 end
@@ -152,14 +147,19 @@ end
 # statistics about the heat flux through the boundaries of the
 # domain, and to generate graphical output files for later
 # visualization. These output files are created every time
-# a time step crosses time points separated by 0.01. Given
-# our start time (zero) and final time (0.5) this means that
-# we will obtain 50 output files.
+# a time step crosses time points separated by 1e7 years.
 subsection Postprocess
-  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization
-
+  set List of postprocessors = velocity statistics, temperature statistics, heat flux statistics, visualization, particles, basic statistics
   subsection Visualization
-    set Time between graphical output = 0.01
+    set Time between graphical output = 1e7
+    set Output format                 = vtu
+    set List of output variables      = material properties
+  end
+
+  subsection Particles
+    set Number of particles = 1000
+    set Time between data output = 1e7
+    set Data output format = vtu
   end
 end
 
