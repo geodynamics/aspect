@@ -22,13 +22,6 @@ change-files = $(shell find modules/changes/ -type f -not -name '.*')
 aspect-doc-prms = $(shell find -L manual/cookbooks/ -path \*/doc/\* -name \*.prm 2>/dev/null)
 aspect-doc-prms-out = $(aspect-doc-prms:=.out)
 
-aspect-cookbook-prms = $(shell find -L manual/cookbooks/ -not -path \*/doc/\* -not -path \*output\* -not -path \*/compositional_fields/\* -name \*.prm 2>/dev/null)
-aspect-cookbook-file-names = $(notdir $(aspect-cookbook-prms))
-aspect-cookbook-dir-names = $(dir $(aspect-cookbook-prms))
-aspect-cookbook-file-names-out = $(addsuffix .out, $(aspect-cookbook-file-names))
-aspect-cookbook-dir-names-out = $(addsuffix doc/, $(aspect-cookbook-dir-names))
-aspect-cookbook-prms-out = $(join $(aspect-cookbook-dir-names-out), $(aspect-cookbook-file-names-out))
-
 default:
 	@echo "make targets:"
 	@echo "  aspect.tag  - generates doxygen documentation into doxygen/"
@@ -97,7 +90,7 @@ aspect.tag: $(aspect-files) $(change-files) modules/changes.h options.dox Makefi
 # need to ignore them the first time we run pdflatex, because of missing label
 # definitions, etc..
 manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
-            $(aspect-manual-pix) $(aspect-doc-prms-out) $(aspect-cookbook-prms-out)
+            $(aspect-manual-pix) $(aspect-doc-prms-out) 
 	@if test -x "`which pdflatex`" \
                  -a -x "`which bibtex`" \
                  -a -x "`which makeindex`" ; then \

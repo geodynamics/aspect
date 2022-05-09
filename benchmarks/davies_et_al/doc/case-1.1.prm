@@ -5,7 +5,7 @@ subsection Geometry model
   subsection Spherical shell
     set Inner radius  = 1.22
     set Opening angle = 360
-    set Outer radius  = 2.22 
+    set Outer radius  = 2.22
   end
 end
 
@@ -40,7 +40,7 @@ end
 ############### Prescribe the Rayleigh number as g*alpha
 # Here, Ra = 10^4 and alpha was chosen as 10^-6 above.
 subsection Gravity model
-  set Model name = radial constant 
+  set Model name = radial constant
   subsection Radial constant
     set Magnitude =  1e10
   end

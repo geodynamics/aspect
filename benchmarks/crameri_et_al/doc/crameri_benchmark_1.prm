@@ -9,7 +9,7 @@ subsection Geometry model
     set Amplitude = 7.e3
   end
   subsection Box
-    set X extent = 28.e5 
+    set X extent = 28.e5
     set Y extent = 7.e5
     set X repetitions = 300
     set Y repetitions = 75
