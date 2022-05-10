@@ -1,8 +1,8 @@
 # Both initial temperature and composition are set to 1,
-# and will decay starting from this value. 
+# and will decay starting from this value.
 subsection Initial temperature model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function expression = 1.0
@@ -11,7 +11,7 @@ end
 
 subsection Initial composition model
   set Model name = function
-  
+
   subsection Function
     set Variable names      = x,z
     set Function expression = 1.0
@@ -21,7 +21,7 @@ end
 
 # We choose material and heating models that let temperature
 # and composition decay over time, and that is implemented in
-# a plugin.  
+# a plugin.
 subsection Heating model
   set List of model names = exponential decay heating
 
@@ -37,4 +37,3 @@ subsection Material model
     set Half life = 10
   end
 end
-
