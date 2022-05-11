@@ -1042,10 +1042,10 @@ namespace aspect
                   {
                     // First average by log values and then take the exponential.
                     // This is used for averaging prefactors in flow laws.
-                    averaged_parameter += phase_function_values[phase_index-composition_index] * log(parameter_values[phase_index+1] / parameter_values[phase_index]);
+                    averaged_parameter += phase_function_values[phase_index-composition_index] * (std::log(parameter_values[phase_index+1]) - averaged_parameter);
                   }
                 else if (operation == PhaseUtilities::arithmetic)
-                  averaged_parameter += phase_function_values[phase_index-composition_index] * (parameter_values[phase_index+1] - parameter_values[phase_index]);
+                  averaged_parameter += phase_function_values[phase_index-composition_index] * (parameter_values[phase_index+1] - averaged_parameter);
 
                 else
                   AssertThrow(false, ExcInternalError());
@@ -1079,33 +1079,41 @@ namespace aspect
       {
         // the percentage of material that has undergone the transition
         double function_value;
-
-        if (use_depth_instead_of_pressure)
+        if (in.temperature < transition_temperature_lower_limits[in.phase_index] ||
+            in.temperature >= transition_temperature_upper_limits[in.phase_index])
           {
-            // calculate the deviation from the transition point (convert temperature to depth)
-            double depth_deviation = in.depth - transition_depths[in.phase_index];
-
-            if (in.pressure_depth_derivative != 0.0)
-              depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
-                                 * (in.temperature - transition_temperatures[in.phase_index]);
-
-            // use delta function for width = 0
-            if (transition_widths[in.phase_index] == 0)
-              function_value = (depth_deviation > 0) ? 1. : 0.;
-            else
-              function_value = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[in.phase_index]));
+            // assign 0.0 if temperature is out of range
+            function_value = 0.0;
           }
         else
           {
-            // calculate the deviation from the transition point (convert temperature to pressure)
-            const double pressure_deviation = in.pressure - transition_pressures[in.phase_index]
-                                              - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+            if (use_depth_instead_of_pressure)
+              {
+                // calculate the deviation from the transition point (convert temperature to depth)
+                double depth_deviation = in.depth - transition_depths[in.phase_index];
 
-            // use delta function for width = 0
-            if (transition_pressure_widths[in.phase_index] == 0)
-              function_value = (pressure_deviation > 0) ? 1. : 0.;
+                if (in.pressure_depth_derivative != 0.0)
+                  depth_deviation -= transition_slopes[in.phase_index] / in.pressure_depth_derivative
+                                     * (in.temperature - transition_temperatures[in.phase_index]);
+
+                // use delta function for width = 0
+                if (transition_widths[in.phase_index] == 0)
+                  function_value = (depth_deviation > 0) ? 1. : 0.;
+                else
+                  function_value = 0.5*(1.0 + std::tanh(depth_deviation / transition_widths[in.phase_index]));
+              }
             else
-              function_value = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[in.phase_index]));
+              {
+                // calculate the deviation from the transition point (convert temperature to pressure)
+                const double pressure_deviation = in.pressure - transition_pressures[in.phase_index]
+                                                  - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
+
+                // use delta function for width = 0
+                if (transition_pressure_widths[in.phase_index] == 0)
+                  function_value = (pressure_deviation > 0) ? 1. : 0.;
+                else
+                  function_value = 0.5*(1.0 + std::tanh(pressure_deviation / transition_pressure_widths[in.phase_index]));
+              }
           }
 
         return function_value;
@@ -1152,7 +1160,15 @@ namespace aspect
                                           - transition_slopes[in.phase_index] * (in.temperature - transition_temperatures[in.phase_index]);
 
         // calculate the analytical derivative of the phase function
-        if (width_temp == 0)
+        if (
+          (in.temperature < transition_temperature_lower_limits[in.phase_index]) ||
+          (in.temperature >= transition_temperature_upper_limits[in.phase_index])
+        )
+          {
+            // return 0 if temperature is out of range
+            return 0;
+          }
+        else if (width_temp == 0)
           return 0;
         else
           return 0.5 / pressure_width * (1.0 - std::tanh(pressure_deviation / pressure_width)
@@ -1251,6 +1267,32 @@ namespace aspect
                            "Clapeyron slope given in Phase transition Clapeyron slopes. "
                            "List must have the same number of entries as Phase transition depths. "
                            "Units: \\si{\\kelvin}.");
+        prm.declare_entry ("Phase transition temperature upper limits",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                           Patterns::Anything(),
+                           "A list of upper limits of temperature, determining a range where the "
+                           "the phase transition is activated. A negative value means there is no "
+                           "upper limit of temperature for the specific phase transition. "
+                           "List must have the same number of entries as Phase transition depths. "
+                           "When the optional temperature limits are applied, the user has to be "
+                           "careful about the consistency between adjacent phases. Phase transitions "
+                           "should be continuous in pressure-temperature space. "
+                           "We recommend producing a phase diagram with "
+                           "simple model setups to check the implementation as a starting point."
+                           "Units: \\si{\\kelvin}.");
+        prm.declare_entry ("Phase transition temperature lower limits",
+                           boost::lexical_cast<std::string>(std::numeric_limits<double>::lowest()),
+                           Patterns::Anything(),
+                           "A list of lower limits of temperature, determining a range where the "
+                           "the phase transition is activated. A negative value means there is no "
+                           "lower limit of temperature for the specific phase transition. "
+                           "List must have the same number of entries as Phase transition depths. "
+                           "When the optional temperature limits are applied, the user has to be "
+                           "careful about the consistency between adjacent phases. Phase transitions "
+                           "should be continuous in pressure-temperature space. "
+                           "We recommend producing a phase diagram with "
+                           "simple model setups to check the implementation as a starting point."
+                           "Units: \\si{\\kelvin}.");
         prm.declare_entry ("Phase transition Clapeyron slopes", "",
                            Patterns::Anything(),
                            "A list of Clapeyron slopes for each phase transition. A positive "
@@ -1323,6 +1365,22 @@ namespace aspect
                                                                         true,
                                                                         n_phase_transitions_per_composition,
                                                                         true);
+
+        transition_temperature_upper_limits = Utilities::parse_map_to_double_array (prm.get("Phase transition temperature upper limits"),
+                                                                                    list_of_composition_names,
+                                                                                    has_background_field,
+                                                                                    "Phase transition temperature upper limits",
+                                                                                    true,
+                                                                                    n_phase_transitions_per_composition,
+                                                                                    true);
+
+        transition_temperature_lower_limits = Utilities::parse_map_to_double_array (prm.get("Phase transition temperature lower limits"),
+                                                                                    list_of_composition_names,
+                                                                                    has_background_field,
+                                                                                    "Phase transition temperature lower limits",
+                                                                                    true,
+                                                                                    n_phase_transitions_per_composition,
+                                                                                    true);
 
         transition_slopes = Utilities::parse_map_to_double_array (prm.get("Phase transition Clapeyron slopes"),
                                                                   list_of_composition_names,

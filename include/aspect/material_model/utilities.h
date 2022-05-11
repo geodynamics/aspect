@@ -553,8 +553,8 @@ namespace aspect
 
         private:
           /**
-           * List of depth (or pressure), width and Clapeyron slopes
-           * for the different phase transitions
+           * List of depth (or pressure), width, Clapeyron slopes and
+           * limits of temperature for the different phase transitions
            */
           std::vector<double> transition_depths;
           std::vector<double> transition_pressures;
@@ -562,6 +562,8 @@ namespace aspect
           std::vector<double> transition_widths;
           std::vector<double> transition_pressure_widths;
           std::vector<double> transition_slopes;
+          std::vector<double> transition_temperature_upper_limits;
+          std::vector<double> transition_temperature_lower_limits;
 
           /**
            * Whether to define the phase transitions based on depth, or pressure.
