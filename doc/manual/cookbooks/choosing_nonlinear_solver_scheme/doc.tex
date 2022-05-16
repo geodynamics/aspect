@@ -1,37 +1,37 @@
 When the problem to solve in \aspect{} is nonlinear, choosing the right nonlinear 
 solver scheme can be crucial to get fast convergence to the correct solution or  
-even to converge at all. This section is aimed to explain the differences between 
+even to converge at all. This section is aimed at explaining the differences between 
 the three approaches available in \aspect{}: iterated Stokes, iterated defect correction
-Stokes and Newton Stokes. The actual nonlinear solver you choose also will state 
+Stokes and Newton Stokes. The actual nonlinear Stokes solver you choose also will dictate 
 which advection solver you choose, but we won't discuss that in this section.
 
-This cookbook will be structured by first explaining the terms that will be used by looking 
-at a linear system and then explaining the three solver options very 
+This cookbook is structured as follows: first the terms that will be used are explained  by looking 
+at a linear system and then the three solver options are explained very 
 generically through looking at solving for $\sin(x)=0$. Then the options for the Newton
 solver will be explained, including how the stabilization works, and we end with 
 the results to some simple test cases.
 
-\paragraph{Soveling a linear system}
+\paragraph{Solving a linear system}
 
-When we try to solve a system of equations we can write it down as:
+When we try to solve a system of equations, we can write it down as:
 \begin{align}
     \label{sec:cnss:eq1:axb}
     A x = b
-\end{align}, where $A$ is a know value or matrix, $x$ is a unknown scalar or vector of
- knowns, and $b$ is the right hand side scalar/vector. Now if we want to know what $x$ is 
+\end{align}, where $A$ is a known value or matrix, $x$ is a unknown scalar or vector of
+ unknowns, and $b$ is the known right hand side scalar/vector. Now if we want to know what $x$ is 
  for a given $A$ and $b$, we can rearrange the equation to:
 \begin{align}
     x = A^{-1} b
 \end{align}, where $A^{-1}$ is the inverse of $A$. In 1D a concrete example would be $A=2$,
 $b=5$, we would get:
 \begin{align}
-    2 x = 6 \\
+    2 x &= 6 \\
     x = 2^{-1} 6 \\
     x = \frac{1}{2} 6 \\
     x = 3
 \end{align}
 
-\paragraph{Sovling $\bf \sin(x)=0$}
+\paragraph{Solving $\sin(x)=0$}
 
 Making the problem non-linear in our context means that $A$ becomes dependent on $x$. We 
 can write this down as $A(x)$. So our equation becomes:
@@ -55,7 +55,7 @@ figure \ref{fig:cnss-fig1-sin0}b as the basis for the next discussion.
     \draw[red] (0,0) circle (0.25);
     \end{tikzpicture}
 }
-\subfigure[][The red line shows the location of the initial gues for {$x$}.]{
+\subfigure[][The red line shows the location of the initial guess for {$x$}.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -64,12 +64,12 @@ figure \ref{fig:cnss-fig1-sin0}b as the basis for the next discussion.
     \draw [red, thick] (1.5,0) -- (1.5,1);
     \end{tikzpicture}
 }
-\caption{A graph of the nonlinear function {$\sin(x)=0$} we are trying to solve.}
+\caption{\it A graph of the nonlinear function {$\sin(x)=0$} we are trying to solve.}
 \end{figure}
 
 \paragraph{The full Picard iteration}
 
-The full Picard iteration can be written down as $x_{n+1} = f(x_{n})$. For this example, 
+The full Picard iteration can be written down as $x_{n+1} = f(x_{n})$. For our example, 
 that would be $x_{n+1} = \sin(x_{n})$. Solving this nonlinear system through the full Picard 
 iteration can be visualized drawing a line $x = y$, as shown in figure 
 \ref{fig:cnss-fig2-sin0-full-picard}a. The next $x$ can now be easily found by just graphing 
@@ -100,7 +100,7 @@ the black line indicates {$x=y$}]{
     \draw [red, thick] (1.5,0) -- (1.5,1);
     \end{tikzpicture}
 }
-    \subfigure[][Red and blue lines shows one nonlinear iteration extra compared to figure a.]{
+    \subfigure[][Red and blue lines show one nonlinear iteration extra compared to figure a.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -112,7 +112,7 @@ the black line indicates {$x=y$}]{
     \draw [blue, thick] (1,1) -- (1,0.84147);
     \end{tikzpicture}
 }
-\subfigure[][Red and blue line shows one nonlinear iteration extra compared to figure b.]{
+\subfigure[][Red and blue line show one nonlinear iteration extra compared to figure b.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
 \node[draw] at (-1.4,1.4) {find sin(x) = 0};
 \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -126,7 +126,7 @@ the black line indicates {$x=y$}]{
 \draw [red, thick] (0.84147,0.84147) -- (0.84147,0.7456);
 \end{tikzpicture}
 }
-\subfigure[][Red and blue line shows one nonlinear iteration extra compared to figure c.]{
+\subfigure[][Red and blue line show one nonlinear iteration extra compared to figure c.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
 \node[draw] at (-1.4,1.4) {find sin(x) = 0};
 \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -153,11 +153,11 @@ update we not only need to calculate $f(x_n)$, but also the derivative $f'(x_n)$
 can be visualized in the same way as the Picard iteration, but we won't need the line $x=y$ 
 anymore, and we will start from a slightly different starting guess: $x=1$. The reason for
 starting from a slightly different starting guess will hopefully become clear soon. The 
-deriative at $x=1$ is $\cos(1)$, so the new $x$ becomes $1-\frac{\sin(1)}{\cos(1)}=-0.557$. 
+deriative at $x=1$ is $\cos(1)$, so the new $x_{n+1}$ becomes $1-\frac{\sin(1)}{\cos(1)}=-0.557$. 
 
 There are a few things that are important to notice in figure \ref{fig:cnss-fig3-sin0-Newton}. 
 First, in practice each iteration can be represented as a vector with
-the origin atthe solution of $(x,\sin(x))$ pointing in the direction of the derivative. This 
+the origin at the solution of $(x,\sin(x))$ pointing in the direction of the derivative. This 
 means that this vector has a certain length, which we will get back to later.
 Second, when the iteration converges, it can do so much faster than the Picard 
 iteration (see subfigures a and b). Third, when the initial guess
@@ -200,7 +200,7 @@ one more iteration.]{
 
 \subfigure[][Same as figure a, but now showing the case where the initial guess
 leads to a derivative which is zero. This will lead to a division by zero, in the
-update and the solution will be undefined. For a system of equations, this the linear
+update and the solution will be undefined. For a system of equations, the linear
 solver should fail.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
@@ -211,7 +211,7 @@ solver should fail.]{
     \draw[red,thick,<<->>, domain=-1.4:1] (-2.5,1) -- (2.5,1);
     \end{tikzpicture}
 }
-\subfigure[][Same as figure a, but now showing the case where the initial guess further away.
+\subfigure[][Same as figure a, but now showing the case where the initial guess is further away.
 In this case the direction of the next update will be further away from the solution and the
 iteration will diverge.]{
 \begin{tikzpicture}[xscale=1.5,yscale=1.5]
@@ -227,13 +227,13 @@ iteration will diverge.]{
 \end{figure}
 
 
-For the Newon iteration, the equation is usually written as 
+For the Newton iteration, the equation is usually written as 
 \begin{align}
     \label{sec:cnss:eq3:JdxAxx-b}
     J \delta x &= A(x) x - b \\
     &= -F
 \end{align}. In this equation, the right hand side (rhs) ($A(x)x-b$ or $-F$) will be exactly 
-zero when x is the exact solution to the nonlinear problem. Therefore this is also called the 
+zero when $x$ is the exact solution to the nonlinear problem. Therefore this is also called the 
 residual. $J$ is called the Jacobian, which is a derivative matrix. In our simple example, 
 this would just be the derivative. So we solve for $\delta x$ now instead of $x$:
 
@@ -243,7 +243,7 @@ this would just be the derivative. So we solve for $\delta x$ now instead of $x$
 form of computing an update/correction to the solution instead of computing the full
 solution every time is called a defect correction scheme.
 
-For reason beyond the scope of this cookbook, depending on the rheology model, the Jacobian 
+For reasons beyond the scope of this cookbook, depending on the rheology model, the Jacobian 
 matrix may sometimes be the equivalent of figure \ref{fig:cnss-fig3-sin0-Newton}, which 
 means that the linear solver will fail. To stabilize this, there are some stabilization 
 options available in ASPECT based on \cite{FBTGS19}, of which the most important is the 
@@ -281,9 +281,9 @@ in some cases.
 One of the easiest globalization strategies for the Newton solver is to first do a few
 Picard iterations. Remember that the Picard iteration will practically always converge 
 (although for single iterations the residual may go up, the trend is usually down). Once
-you are close enough the solution, switching to the Newton solver should than make 
+you are close enough to the solution, switching to the Newton solver should than make 
 the iteration converge quickly. The main issue is knowing when you are close enough to 
-the solution so that the Newton solver works well. Unfortunalety this is problem dependent,
+the solution so that the Newton solver works well. Unfortunately this is problem dependent,
 but a combination between the different globalization options in this section should help.
 
 \subparagraph{Transition between the Picard and Newton iteration}
@@ -317,10 +317,10 @@ linear solver tolerances. A value of $1e-2$ is a good default, but you may be ab
 even use $1e-1$. 
 If the nonlinear residual doesn't converge quickly enough or at all to the desired nonlinear 
 tolerance, then it is time to consider using the full Newton solver. It is strongly 
-recomended to start by plotting the convergence behavior of the defect correction Picard 
+recommended to start by plotting the convergence behavior of the defect correction Picard 
 method, with number of nonlinear iterations on the x axis and the nonlinear residual on a 
-logscale y axis. This will allow you to see the convergence behavoir much more clearly 
-then by just looking at the numbers in the \aspect{} output file. Furthermore, it allows 
-for a much better comparison with the convergence behavoir of the Newton solver and 
+logscale y axis. This will allow you to see the convergence behavior much more clearly 
+than by just looking at the numbers in the \aspect{} output file. Furthermore, it allows 
+for a much better comparison with the convergence behavior of the Newton solver and 
 between different settings of the Newton solver. For examples of such plots and more advice, 
 please see section 3 of \cite{FBTGS19}.
