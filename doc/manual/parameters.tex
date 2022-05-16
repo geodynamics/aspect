@@ -155,7 +155,7 @@ For more information, see the section in the manual that discusses the general m
 {\it Default:} 2147483647
 
 
-{\it Description:} Set a percentage with which the the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5. Units: \%.
+{\it Description:} Set a percentage with which the time step is limited to increase. Generally the time step based on the CFL number should be sufficient, but for complicated models which may suddenly drastically change behavior, it may be useful to limit the increase in the time step, without limiting the time step size of the whole simulation to a particular number. For example, if this parameter is set to $50$, then that means that the time step can at most increase by 50\% from one time step to the next, or by a factor of 1.5. Units: \%.
 
 
 {\it Possible values:} A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$
@@ -6644,7 +6644,7 @@ If the plugin is used in 2D it will use an equatorial slice of the seismic tomog
 `SAVANI perturbation': An initial temperature field in which the temperature is perturbed following the SAVANI shear wave velocity model by Auer and others, which can be downloaded here \url{http://n.ethz.ch/~auerl/savani.tar.bz2}. Information on the vs model can be found in Auer, L., Boschi, L., Becker, T.W., Nissen-Meyer, T. \& Giardini, D., 2014. Savani: A variable resolution whole-mantle model of anisotropic shear velocity variations based on multiple data sets. Journal of Geophysical Research: Solid Earth 119.4 (2014): 3006-3034. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
 
-`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
+`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters. Note that this plugin uses the 'Adiabatic conditions model' to compute the adiabat. Thus, the results depend on variables defined outside of this specific subsection; e.g. the globally defined 'Adiabatic surface temperature', and the variables defined in the 'Material model' section including densities, heat capacities and thermal expansivities.
 
 `adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary. The user includes an input ascii data file that is formatted as 3 columns of `longitude(radians)', `colatitude(radians)', and `isotherm depth(meters)', where `isotherm depth' represents the depth of an initial temperature of 1673.15 K (by default). The first lines in the data file may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 69 121'. Note that the coordinates need to be sorted in a specific order: the `longitude' coordinate needs to ascend first, followed by the `colatitude' coordinate in order to assign the correct data (isotherm depth) to the prescribed coordinates. The temperature is defined from the surface (273.15 K) to the isotherm depth (1673.15 K) as a linear gradient. Below the isotherm depth the temperature increases approximately adiabatically (0.0005 K per meter). This plugin should work for all geometry models, but is currently only tested for spherical models.
 
@@ -6723,7 +6723,7 @@ If the plugin is used in 2D it will use an equatorial slice of the seismic tomog
 `SAVANI perturbation': An initial temperature field in which the temperature is perturbed following the SAVANI shear wave velocity model by Auer and others, which can be downloaded here \url{http://n.ethz.ch/~auerl/savani.tar.bz2}. Information on the vs model can be found in Auer, L., Boschi, L., Becker, T.W., Nissen-Meyer, T. \& Giardini, D., 2014. Savani: A variable resolution whole-mantle model of anisotropic shear velocity variations based on multiple data sets. Journal of Geophysical Research: Solid Earth 119.4 (2014): 3006-3034. The scaling between the shear wave perturbation and the density perturbation can be constant and set by the user with the 'Vs to density scaling' parameter or depth-dependent and read in from a file. To convert density the user can specify the 'Thermal expansion coefficient in initial temperature scaling' parameter. The scaling is as follows: $\delta \ln \rho (r,\theta,\phi) = \xi \cdot \delta \ln v_s(r,\theta, \phi)$ and $\delta T(r,\theta,\phi) = - \frac{1}{\alpha} \delta \ln \rho(r,\theta,\phi)$. $\xi$ is the `vs to density scaling' parameter and $\alpha$ is the 'Thermal expansion coefficient in initial temperature scaling' parameter. The temperature perturbation is added to an otherwise constant temperature (incompressible model) or adiabatic reference profile (compressible model).If a depth is specified in 'Remove temperature heterogeneity down to specified depth', there is no temperature perturbation prescribed down to that depth.
 Note the required file format if the vs to density scaling is read in from a file: The first lines may contain any number of comments if they begin with '\#', but one of these lines needs to contain the number of points in the reference state as for example '\# POINTS: 3'. Following the comment lines there has to be a single line containing the names of all data columns, separated by arbitrarily many spaces. Column names are not allowed to contain spaces. The file can contain unnecessary columns, but for this plugin it needs to at least provide the columns named `depth' and `vs\_to\_density'. Note that the data lines in the file need to be sorted in order of increasing depth from 0 to the maximal depth in the model domain. Points in the model that are outside of the provided depth range will be assigned the maximum or minimum depth values, respectively. Points do not need to be equidistant, but the computation of properties is optimized in speed if they are.
 
-`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters.
+`adiabatic': Temperature is prescribed as an adiabatic profile with upper and lower thermal boundary layers, whose ages are given as input parameters. Note that this plugin uses the 'Adiabatic conditions model' to compute the adiabat. Thus, the results depend on variables defined outside of this specific subsection; e.g. the globally defined 'Adiabatic surface temperature', and the variables defined in the 'Material model' section including densities, heat capacities and thermal expansivities.
 
 `adiabatic boundary': An initial temperature condition that allows for discretizing the model domain into two layers separated by a user-defined isothermal boundary. The user includes an input ascii data file that is formatted as 3 columns of `longitude(radians)', `colatitude(radians)', and `isotherm depth(meters)', where `isotherm depth' represents the depth of an initial temperature of 1673.15 K (by default). The first lines in the data file may contain any number of comments if they begin with `\#', but one of these lines needs to contain the number of grid points in each dimension as for example `\# POINTS: 69 121'. Note that the coordinates need to be sorted in a specific order: the `longitude' coordinate needs to ascend first, followed by the `colatitude' coordinate in order to assign the correct data (isotherm depth) to the prescribed coordinates. The temperature is defined from the surface (273.15 K) to the isotherm depth (1673.15 K) as a linear gradient. Below the isotherm depth the temperature increases approximately adiabatically (0.0005 K per meter). This plugin should work for all geometry models, but is currently only tested for spherical models.
 
@@ -15087,8 +15087,10 @@ Units: \si{\pascal\second}.
 
 \item ``dynamic friction'': The friction angle is rate dependent.When 'dynamic angles of internal friction' are specified, the friction angle will be weakened for high strain rates with: $\mu = \mu_d + \frac{\mu_s-\mu_d}{1+\frac{\dot{\epsilon}_{ii}}{\dot{\epsilon}_C}}^x$  where $\mu_s$ and $\mu_d$ are the friction angles at low and high strain rates, respectively. $\dot{\epsilon}_{ii}$ is the second invariant of the strain rate and $\dot{\epsilon}_C$ is the 'dynamic characteristic strain rate' where $\mu = (\mu_s+\mu_d)/2$. The 'dynamic friction smoothness exponent' x controls how smooth or step-like the change from $\mu_s$ to $\mu_d$ is. The equation is modified after Equation (13) in \cite{van_dinther_seismic_2013}. $\mu_s$ and $\mu_d$ can be specified by setting 'Angles of internal friction' and 'Dynamic angles of internal friction', respectively. This relationship is similar to rate-and-state friction constitutive relationships, which are applicable to the strength of rocks during earthquakes.
 
+\item ``function'': Specify the friction angle as a function of space and time for each compositional field.
 
-{\it Possible values:} Any one of none, dynamic friction
+
+{\it Possible values:} Any one of none, dynamic friction, function
 \item {\it Parameter name:} {\tt Friction strain weakening factors}
 \phantomsection\label{parameters:Material model/Visco Plastic/Friction strain weakening factors}
 \label{parameters:Material_20model/Visco_20Plastic/Friction_20strain_20weakening_20factors}
@@ -15780,7 +15782,7 @@ This parameter is an alias for the parameter ``\texttt{Heat capacities}''.
 
 \item ``plastic weakening with plastic strain and viscous weakening with viscous strain'': Both the finite strain accumulated by plastic deformation and by viscous deformation are computed separately (each approximated as the product of the second invariant of the corresponding strain rate in each time step and the time step size). The plastic strain is used to weaken the plastic yield stress (specifically, the cohesion and yield angle), and the viscous strain is used to weaken the pre-yield viscosity.
 
-\item ``viscous weakening with viscous strain only'': The finite strain is approximated as the product of the second invariant of the strain rate in each time step and the time step size in regions where material is not plastically yielding. This quantity is integrated and tracked over time, and used to weaken the the pre-yield viscosity. The cohesion and friction angle are not weakened.
+\item ``viscous weakening with viscous strain only'': The finite strain is approximated as the product of the second invariant of the strain rate in each time step and the time step size in regions where material is not plastically yielding. This quantity is integrated and tracked over time, and used to weaken the pre-yield viscosity. The cohesion and friction angle are not weakened.
 
 \item ``default'': The default option has the same behavior as ``none'', but is there to make sure that the original parameters for specifying the strain weakening mechanism (``Use plastic/viscous strain weakening'') are still allowed, but to guarantee that one uses either the old parameter names or the new ones, never both.
 
@@ -16043,6 +16045,86 @@ If a compositional field named 'noninitial\_plastic\_strain' is included in the 
 
 
 {\it Possible values:} Any one of drucker, limiter
+\end{itemize}
+
+
+
+\subsection{Parameters in section \tt Material model/Visco Plastic/Friction function}
+\label{parameters:Material_20model/Visco_20Plastic/Friction_20function}
+
+\begin{itemize}
+\item {\it Parameter name:} {\tt Coordinate system}
+\phantomsection\label{parameters:Material model/Visco Plastic/Friction function/Coordinate system}
+\label{parameters:Material_20model/Visco_20Plastic/Friction_20function/Coordinate_20system}
+
+
+\index[prmindex]{Coordinate system}
+\index[prmindexfull]{Material model!Visco Plastic!Friction function/Coordinate system}
+{\it Value:} cartesian
+
+
+{\it Default:} cartesian
+
+
+{\it Description:} A selection that determines the assumed coordinate system for the function variables. Allowed values are `cartesian', `spherical', and `depth'. `spherical' coordinates are interpreted as r,phi or r,phi,theta in 2D/3D respectively with theta being the polar angle. `depth' will create a function, in which only the first parameter is non-zero, which is interpreted to be the depth of the point.
+
+
+{\it Possible values:} Any one of cartesian, spherical, depth
+\item {\it Parameter name:} {\tt Function constants}
+\phantomsection\label{parameters:Material model/Visco Plastic/Friction function/Function constants}
+\label{parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20constants}
+
+
+\index[prmindex]{Function constants}
+\index[prmindexfull]{Material model!Visco Plastic!Friction function/Function constants}
+{\it Value:} 
+
+
+{\it Default:} 
+
+
+{\it Description:} Sometimes it is convenient to use symbolic constants in the expression that describes the function, rather than having to use its numeric value everywhere the constant appears. These values can be defined using this parameter, in the form `var1=value1, var2=value2, ...'.
+
+A typical example would be to set this runtime parameter to `pi=3.1415926536' and then use `pi' in the expression of the actual formula. (That said, for convenience this class actually defines both `pi' and `Pi' by default, but you get the idea.)
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Function expression}
+\phantomsection\label{parameters:Material model/Visco Plastic/Friction function/Function expression}
+\label{parameters:Material_20model/Visco_20Plastic/Friction_20function/Function_20expression}
+
+
+\index[prmindex]{Function expression}
+\index[prmindexfull]{Material model!Visco Plastic!Friction function/Function expression}
+{\it Value:} 0
+
+
+{\it Default:} 0
+
+
+{\it Description:} The formula that denotes the function you want to evaluate for particular values of the independent variables. This expression may contain any of the usual operations such as addition or multiplication, as well as all of the common functions such as `sin' or `cos'. In addition, it may contain expressions like `if(x>0, 1, -1)' where the expression evaluates to the second argument if the first argument is true, and to the third argument otherwise. For a full overview of possible expressions accepted see the documentation of the muparser library at http://muparser.beltoforion.de/.
+
+If the function you are describing represents a vector-valued function with multiple components, then separate the expressions for individual components by a semicolon.
+
+
+{\it Possible values:} Any string
+\item {\it Parameter name:} {\tt Variable names}
+\phantomsection\label{parameters:Material model/Visco Plastic/Friction function/Variable names}
+\label{parameters:Material_20model/Visco_20Plastic/Friction_20function/Variable_20names}
+
+
+\index[prmindex]{Variable names}
+\index[prmindexfull]{Material model!Visco Plastic!Friction function/Variable names}
+{\it Value:} x,y,t
+
+
+{\it Default:} x,y,t
+
+
+{\it Description:} The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
+
+
+{\it Possible values:} Any string
 \end{itemize}
 
 \subsection{Parameters in section \tt Material model/Viscoelastic}
@@ -16918,7 +17000,7 @@ The way these indicators are derived between pairs of isosurfaces is by checking
 
 For now, only temperature and compositional fields are allowed as field entries. The key words could be 'Temperature' or one of the names of the compositional fields which are either specified by user or set up as C\_0, C\_1, etc.
 
-Usage: A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which again is followed by the minimum and maximum field values separated by a bar (|). An example for two isosurface entries is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. If both isoterm entries are triggered at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags are set, preference is given to refinement. 
+Usage: A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which again is followed by the minimum and maximum field values separated by a bar (|). An example for two isosurface entries is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. If both isoterm entries are triggered at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the cell will be refined. If both the coarsening and refinement flags are set, preference is given to refinement. 
 
 The minimum and maximum refinement levels per isosurface can be provided in absolute values relative to the global minimum and maximum refinement. This is done with the 'min' and 'max' key words. For example: 'set Isosurfaces = max-2,  max,    Temperature: 0 | 600 ; min + 1,min+2, Temperature: 1600 | 3000,   C\_2 : 0.0 | 0.5'.
 
@@ -17190,7 +17272,7 @@ If the list of scaling factors given in this parameter is empty, then this indic
 {\it Default:} 
 
 
-{\it Description:} A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between 300 and 600 and at level 2 when the compositional field C\_1 is between 0.5 and 1. If both happen at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the the cell will refine. If both the coarsening and refinement flags are set, preference is given to refinement. 
+{\it Description:} A list of isosurfaces separated by semi-colons (;). Each isosurface entry consists of multiple entries separated by a comma. The first two entries indicate the minimum and maximum refinement levels respectively. The entries after the first two describe the fields the isosurface applies to, followed by a colon (:), which is again followed by the minimum and maximum property values separated by bar (|). An example for an isosurface is '0, 2, Temperature: 300 | 600; 2, 2, C\_1: 0.5 | 1'. In this example the mesh refinement is kept between level 0 and level 2 if the temperature is between 300 and 600 and at level 2 when the compositional field C\_1 is between 0.5 and 1. If both happen at the same location and the current refinement level is 1, it means that the first isoline will not set any flag and the second isoline will set a refinement flag. This means the cell will be refined. If both the coarsening and refinement flags are set, preference is given to refinement. 
 
 The first two entries for each isosurface, describing the minimum and maximum grid levels, can be two numbers or contain one of the key values 'min' and 'max'. This indicates the key will be replaced with the global minimum and maximum refinement levels. The 'min' and 'max' keys also accept adding values to be added or substracted from them respectively. This is done by adding a '+' or '-' and a number behind them (e.g. min+2 or max-1). Note that you can't substract a value from a minimum value or add a value to the maximum value. If, for example, `max-4` drops below the minimum or `min+4` goes above the maximum, it will simply use the global minimum and maximum values respectively. The same holds for any mesh refinement level below the global minimum or above the global maximum.
 
@@ -18811,7 +18893,7 @@ The following properties are available:
 
 `random uniform': Generates a random uniform distribution of particles over the entire simulation domain.
 
-`reference cell': Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension
+`reference cell': Generates a uniform distribution of particles per cell and spatial direction in the unit cell and transforms each of the particles back to real region in the model domain. Uniform here means the particles will be generated with an equal spacing in each spatial dimension.
 
 `uniform box': Generate a uniform distribution of particles over a rectangular domain in 2D or 3D. Uniform here means the particles will be generated with an equal spacing in each spatial dimension. Note that in order to produce a regular distribution the number of generated particles might not exactly match the one specified in the input file.
 
@@ -19147,7 +19229,7 @@ If the function you are describing represents a vector-valued function with mult
 {\it Description:} List of number of particles to create per cell and spatial dimension. The size of the list is the number of spatial dimensions. If only one value is given, then each spatial dimension is set to the same value. The list of numbers are parsed as a floating point number (so that one can specify, for example, '1e4' particles) but it is interpreted as an integer, of course.
 
 
-{\it Possible values:} A list of 0 to 4294967295 elements where each element is [A floating point number $v$ such that $0 \leq v \leq \text{MAX\_DOUBLE}$]
+{\it Possible values:} A list of 0 to 4294967295 elements where each element is [An integer $n$ such that $1\leq n \leq 2147483647$]
 \end{itemize}
 
 \subsection{Parameters in section \tt Postprocess/Particles/Generator/Uniform box}
@@ -19799,7 +19881,7 @@ Fig.~\ref{fig:max-horizontal-compressive-stress} shows a simple example for this
 
 \begin{figure}  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/temperature.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/velocity.png}  \hfill  \includegraphics[width=0.3\textwidth]    {viz/plugins/maximum_horizontal_compressive_stress/horizontal-stress.png}  \caption{\it Illustration of the `maximum horizontal     compressive stress' visualization plugin. The left     figure shows a ridge-like temperature anomaly. Together     with no-slip boundary along all six boundaries, this     results in two convection rolls (center). The maximal     horizontal compressive strength at the bottom center     of the domain is perpendicular to the ridge because     the flow comes together there from the left and right,     yielding a compressive force in left-right direction.     At the top of the model, the flow separates outward,     leading to a \textit{negative} compressive stress     in left-right direction; because there is no flow     in front-back direction, the compressive strength     in front-back direction is zero, making the along-ridge     direction the dominant one. At the center of the     convection rolls, both horizontal directions yield     the same stress; the plugin therefore chooses an     essentially arbitrary horizontal vector, but then     uses a zero magnitude given that the difference     between the maximal and minimal horizontal stress     is zero at these points.}  \label{fig:max-horizontal-compressive-stress}\end{figure}
 
-`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is at least one compositional field, the postprocessor assumes that the  first compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
+`melt fraction': A visualization output object that generates output for the melt fraction at the temperature and pressure of the current point. If the material model computes a melt fraction, this is the quantity that will be visualized. Otherwise, a specific parametrization for batch melting (as described in the following) will be used. It does not take into account latent heat. If there are no compositional fields, or no fields called 'pyroxenite',  this postprocessor will visualize the melt fraction of peridotite (calculated using the anhydrous model of Katz, 2003). If there is a compositional field called 'pyroxenite', the postprocessor assumes that this compositional field is the content of pyroxenite, and will visualize the melt fraction for a mixture of peridotite and pyroxenite (using the melting model of Sobolev, 2011 for pyroxenite). All the parameters that were used in these calculations can be changed in the input file, the most relevant maybe being the mass fraction of Cpx in peridotite in the Katz melting model (Mass fraction cpx), which right now has a default of 15\%. The corresponding p-T-diagrams can be generated by running the tests melt\_postprocessor\_peridotite and melt\_postprocessor\_pyroxenite.
 
 `melt material properties': A visualization output object that generates output for melt related properties of the material model. Note that this postprocessor always outputs the compaction pressure, but can output a large range of additional properties, as selected in the ``List of properties'' parameter.
 
