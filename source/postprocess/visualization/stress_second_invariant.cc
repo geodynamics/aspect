@@ -103,7 +103,7 @@ namespace aspect
             // in the same way as the second moment invariant of the deviatoric
             // strain rate is computed in the viscoplastic material model.
             // TODO check that this is valid for the compressible case.
-            const double stress_invariant = std::sqrt(std::fabs(second_invariant(deviatoric_stress)));
+            const double stress_invariant = std::sqrt(std::max(-second_invariant(deviatoric_stress), 0.));
 
             computed_quantities[q](0) = stress_invariant;
           }

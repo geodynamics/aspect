@@ -498,7 +498,8 @@ namespace aspect
         // Calculate changes in strain and update the reaction terms
         if  (this->simulator_is_past_initialization() && this->get_timestep_number() > 0 && in.requests_property(MaterialProperties::reaction_terms))
           {
-            const double edot_ii = std::max(sqrt(std::fabs(second_invariant(deviator(in.strain_rate[i])))),min_strain_rate);
+            const double edot_ii = std::max(std::sqrt(std::max(-second_invariant(deviator(in.strain_rate[i])), 0.)),
+                                            min_strain_rate);
             double delta_e_ii = edot_ii*this->get_timestep();
 
             // Adjusting strain values to account for strain healing without exceeding an unreasonable range
