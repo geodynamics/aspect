@@ -142,7 +142,24 @@ namespace aspect
               }
           }
 
-        ImplicitQR <Vector<double>> qr;
+        std::vector<typename parallel::distributed::Triangulation<dim>::active_cell_iterator> active_neighbors;
+        GridTools::get_active_neighbors<parallel::distributed::Triangulation<dim>>(found_cell, active_neighbors);
+        for (const auto &active_neighbor : active_neighbors)
+          {
+            if (!active_neighbor->is_locally_owned())
+              continue;
+            const std::vector<double> neighbor_cell_average = fallback_interpolator.properties_at_points(particle_handler, positions, selected_properties, active_neighbor)[0];
+            for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
+              {
+                if (selected_properties[property_index] == true && use_linear_least_squares_limiter[property_index] == true)
+                  {
+                    property_minimums[property_index] = std::min(property_minimums[property_index], neighbor_cell_average[property_index]);
+                    property_maximums[property_index] = std::max(property_maximums[property_index], neighbor_cell_average[property_index]);
+                  }
+              }
+          }
+
+        ImplicitQR<Vector<double>> qr;
         for (const auto &column : A)
           qr.append_column(column);
         // If A is rank deficent then qr.append_column will not append
@@ -269,22 +286,26 @@ namespace aspect
                 const auto &particle_property_information = particle_postprocessor.get_particle_world().get_property_manager().get_data_info();
                 const unsigned int n_property_components = particle_property_information.n_components();
                 const unsigned int n_internal_components = particle_property_information.get_components_by_field_name("internal: integrator properties");
-                std::vector<std::string> split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
-                if (split.size() == 1)
+
+                std::vector<std::string> linear_least_squares_limiter_split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
+                std::vector<bool> linear_least_squares_limiter_parsed;
+                if (linear_least_squares_limiter_split.size() == 1)
                   {
-                    use_linear_least_squares_limiter = ComponentMask(n_property_components, internal::string_to_bool(split[0]));
+                      linear_least_squares_limiter_parsed = std::vector<bool>(n_property_components - n_internal_components, internal::string_to_bool(linear_least_squares_limiter_split[0]));
                   }
-                else if (split.size() == n_property_components - n_internal_components)
+                else if (linear_least_squares_limiter_split.size() == n_property_components - n_internal_components)
                   {
-                    std::vector<bool> parsed;
-                    for (const auto &component: split)
-                      parsed.push_back(internal::string_to_bool(component));
-                    use_linear_least_squares_limiter = ComponentMask(parsed);
+                    for (const auto &component: linear_least_squares_limiter_split)
+                      linear_least_squares_limiter_parsed.push_back(internal::string_to_bool(component));
                   }
                 else
                   {
                     AssertThrow(false, ExcMessage("The size of 'Use linear least squares limiter' should either be 1 or the number of particle properties"));
                   }
+                for (unsigned int i = 0; i < n_internal_components; ++i)
+                  linear_least_squares_limiter_parsed.push_back(false);
+                use_linear_least_squares_limiter = ComponentMask(linear_least_squares_limiter_parsed);
+
               }
               prm.leave_subsection();
             }
