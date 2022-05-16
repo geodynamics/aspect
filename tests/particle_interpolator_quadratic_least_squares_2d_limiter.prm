@@ -5,7 +5,7 @@
 # Interpolation algorithm correctly computes the particle version of the Solkz
 # benchmark.
 
-set Additional shared libraries            = ./libparticle_interpolator_quadratic_add_particles.so
+set Additional shared libraries            = ./libparticle_interpolator_quadratic_least_squares_2d_limiter.so
 
 ############### Global parameters
 
@@ -95,9 +95,6 @@ subsection Postprocess
     set List of particle properties = function
     set Integration scheme = rk2
     set Interpolation scheme = quadratic least squares
-    set Minimum particles per cell = 10
-    set Maximum particles per cell = 16384
-    set Load balancing strategy = remove and add particles
     set Update ghost particles = true
 
     subsection Function
@@ -117,7 +114,8 @@ subsection Postprocess
 
     subsection Interpolator
       subsection Quadratic least squares
-        set Use quadratic least squares limiter = false
+        set Use quadratic least squares limiter = true
+        set Use boundary extrapolation = true
       end
     end
   end

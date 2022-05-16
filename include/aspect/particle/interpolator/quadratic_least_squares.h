@@ -22,6 +22,7 @@
 #define _aspect_particle_interpolator_quadratic_least_squares_h
 
 #include <aspect/particle/interpolator/interface.h>
+#include <aspect/particle/interpolator/cell_average.h>
 #include <aspect/simulator_access.h>
 #include <deal.II/lac/lapack_full_matrix.h>
 
@@ -76,18 +77,33 @@ namespace aspect
 
         private:
           /**
-           * Variables related to a limiting scheme that prevents overshoot and
-           * undershoot of interpolated particle properties based on global max
-           * and global min for each property.
+           * Use the cell average interpolator in case the quadratic least
+           * squares interpolator fails due to a lack of particles.
            */
-          bool use_global_values_limiter;
+          Interpolator::CellAverage<dim> fallback_interpolator;
 
           /**
-           * For each interpolated particle property, a global max and global
-           * min are stored as elements of vectors.
+           * Enables a limiting scheme that prevents overshoot and
+           * undershoot of interpolated particles based upon the range
+           * of property values found in the area of the cell.
            */
-          std::vector<double> global_maximum_particle_properties;
-          std::vector<double> global_minimum_particle_properties;
+          ComponentMask use_quadratic_least_squares_limiter;
+
+          /**
+           * Enables a linear extrapolation of boundary values for the limiting scheme
+           */
+          ComponentMask use_boundary_extrapolation;
+
+          /**
+           * Check if a point found in the process of limiting
+           * is inside of the unit cell [-0.5, 0.5]^dim
+           */
+          bool in_unit_cell(const Point<dim> &p) const;
+
+          /**
+           * Calculate the value of the interpolation function given by coefficents c at point p
+           */
+          double evaluate(const Vector<double> &c, const Point<dim> &p) const;
       };
     }
   }
