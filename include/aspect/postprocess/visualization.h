@@ -125,6 +125,20 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes. The empty string, "", refers to an unknown
+           * or nonexistent unit.
+           *
+           * If a visualization postprocessor generates more than one
+           * output component, and if the different components have different
+           * physical units, then they should be separated by commas. If
+           * the different components have the same physical units, these units
+           * need to be specified only once and will apply to all components.
+           */
+          explicit Interface (const std::string &physical_units = "");
+
+          /**
            * Destructor. Does nothing but is virtual so that derived classes
            * destructors are also virtual.
            */
@@ -185,7 +199,6 @@ namespace aspect
           std::list<std::string>
           required_other_postprocessors () const;
 
-
           /**
            * Save the state of this object to the argument given to this
            * function. This function is in support of checkpoint/restart
@@ -223,6 +236,12 @@ namespace aspect
            */
           virtual
           void load (const std::map<std::string, std::string> &status_strings);
+
+        private:
+          /**
+           * The physical units encoded by this visualization postprocessor.
+           */
+          const std::string physical_units;
       };
 
 
@@ -243,6 +262,13 @@ namespace aspect
       class CellDataVectorCreator : public Interface<dim>
       {
         public:
+          /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes.
+           */
+          explicit CellDataVectorCreator (const std::string &physical_units = "");
+
           /**
            * Destructor.
            */

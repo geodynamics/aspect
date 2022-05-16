@@ -165,14 +165,25 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      Interface<dim>::Interface (const std::string &physical_units)
+        :
+        physical_units (physical_units)
+      {}
+
+
+
+      template <int dim>
       void
       Interface<dim>::initialize ()
       {}
+
+
 
       template <int dim>
       void
       Interface<dim>::update ()
       {}
+
 
 
       template <int dim>
@@ -207,6 +218,14 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::load (const std::map<std::string,std::string> &)
+      {}
+
+
+
+      template <int dim>
+      CellDataVectorCreator<dim>::CellDataVectorCreator (const std::string &physical_units)
+        :
+        Interface<dim> (physical_units)
       {}
     }
 
