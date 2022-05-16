@@ -268,7 +268,7 @@ namespace aspect
                             std::abs(c[property_index][3]) > std::numeric_limits<double>::epsilon())
                           {
                             point[1] = ((c[property_index][1] * c[property_index][3])/(2 * c[property_index][4]) - c[property_index][2])/
-                                        ((c[property_index][3] * c[property_index][3])/(-2 * c[property_index][4]) + 2 * c[property_index][5]);
+                                       ((c[property_index][3] * c[property_index][3])/(-2 * c[property_index][4]) + 2 * c[property_index][5]);
                             point[0] = -(c[property_index][2] + 2 * c[property_index][5] * point[1])/c[property_index][3];
                           }
                         else
@@ -386,8 +386,8 @@ namespace aspect
                           {
                             point[0] = -0.5;
                             point[1] = -(c[property_index][6] * (c[property_index][3] + c[property_index][5] * point[0]) -
-                                                                 2 * c[property_index][9] * (c[property_index][2] + c[property_index][4] * point[0]))/
-                                        (c[property_index][6] * c[property_index][6] - 4 * c[property_index][9] * c[property_index][8]);
+                                         2 * c[property_index][9] * (c[property_index][2] + c[property_index][4] * point[0]))/
+                                       (c[property_index][6] * c[property_index][6] - 4 * c[property_index][9] * c[property_index][8]);
                             point[2] = -(c[property_index][3] + c[property_index][5] * point[0] + c[property_index][6] * point[1])/(2 * c[property_index][9]);
                             if (in_unit_cell(point))
                               {
@@ -397,7 +397,7 @@ namespace aspect
                               }
                             point[0] = 0.5;
                             point[1] = -(c[property_index][6] * (c[property_index][3] + c[property_index][5] * point[0]) - 2 * c[property_index][9] * (c[property_index][2] + c[property_index][4] * point[0]))/
-                                        (c[property_index][6] * c[property_index][6] - 4 * c[property_index][9] * c[property_index][8]);
+                                       (c[property_index][6] * c[property_index][6] - 4 * c[property_index][9] * c[property_index][8]);
                             point[2] = -(c[property_index][3] + c[property_index][5] * point[0] + c[property_index][6] * point[1])/(2 * c[property_index][9]);
                             if (in_unit_cell(point))
                               {
@@ -411,7 +411,7 @@ namespace aspect
                           {
                             point[1] = -0.5;
                             point[0] = -(c[property_index][5] * (c[property_index][3] + c[property_index][6] * point[1]) - 2 * c[property_index][9] * (c[property_index][1] + c[property_index][4] * point[1]))/
-                                        (c[property_index][5] * c[property_index][5] - 4 * c[property_index][9] * c[property_index][7]);
+                                       (c[property_index][5] * c[property_index][5] - 4 * c[property_index][9] * c[property_index][7]);
                             point[2] = -(c[property_index][3] + c[property_index][6] * point[1] + c[property_index][5] * point[0])/(2 * c[property_index][9]);
                             if (in_unit_cell(point))
                               {
@@ -421,7 +421,7 @@ namespace aspect
                               }
                             point[1] = 0.5;
                             point[0] = -(c[property_index][5] * (c[property_index][3] + c[property_index][6] * point[1]) - 2 * c[property_index][9] * (c[property_index][1] + c[property_index][4] * point[1]))/
-                                        (c[property_index][5] * c[property_index][5] - 4 * c[property_index][9] * c[property_index][7]);
+                                       (c[property_index][5] * c[property_index][5] - 4 * c[property_index][9] * c[property_index][7]);
                             point[2] = -(c[property_index][3] + c[property_index][6] * point[1] + c[property_index][5] * point[0])/(2 * c[property_index][9]);
                             if (in_unit_cell(point))
                               {
@@ -444,7 +444,7 @@ namespace aspect
                               }
                             point[2] = 0.5;
                             point[0] = -(c[property_index][4] * (c[property_index][2] + c[property_index][6] * point[2]) - 2 * c[property_index][8] * (c[property_index][1] + c[property_index][5] * point[2]))/
-                                        (c[property_index][4] * c[property_index][4] - 4 * c[property_index][8] * c[property_index][7]);
+                                       (c[property_index][4] * c[property_index][4] - 4 * c[property_index][8] * c[property_index][7]);
                             point[1] = -(c[property_index][2] + c[property_index][4] * point[0] + c[property_index][6] * point[2]) / (2 * c[property_index][8]);
                             if (in_unit_cell(point))
                               {
