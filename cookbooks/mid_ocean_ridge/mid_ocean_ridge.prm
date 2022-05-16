@@ -10,7 +10,7 @@ set Adiabatic surface temperature          = 1570
 # use an iterative solver scheme, that iterates between solving the temperature
 # composition and Stokes equations.
 set Nonlinear solver scheme                = iterated Advection and Stokes
-set Output directory                       = output_mid_ocean_ridge
+set Output directory                       = output-mid_ocean_ridge
 
 # The end time of the simulation. We want to run the model until it reaches
 # steady state, which is after approximately 6 million years.
