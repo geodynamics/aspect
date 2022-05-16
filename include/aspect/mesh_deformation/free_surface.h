@@ -85,11 +85,6 @@ namespace aspect
          */
         void parse_parameters (ParameterHandler &prm) override;
 
-        /**
-         * Return the stabilization parameter for the free surface.
-         */
-        double get_free_surface_theta () const;
-
       private:
         /**
          * Project the Stokes velocity solution onto the

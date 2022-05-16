@@ -1488,6 +1488,14 @@ namespace aspect
 
 
     template <int dim>
+    double MeshDeformationHandler<dim>::get_free_surface_theta()const
+    {
+      return surface_theta;
+    }
+
+
+
+    template <int dim>
     const LinearAlgebra::Vector &
     MeshDeformationHandler<dim>::get_mesh_displacements () const
     {

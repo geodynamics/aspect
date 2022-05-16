@@ -299,6 +299,11 @@ namespace aspect
         get_free_surface_boundary_indicators () const;
 
         /**
+         * Return the stabilization parameter for the free surface.
+         */
+        double get_free_surface_theta () const;
+
+        /**
          * Return the initial topography stored on
          * the Q1 finite element that describes the mesh geometry.
          * Note that a topography is set for all mesh nodes,

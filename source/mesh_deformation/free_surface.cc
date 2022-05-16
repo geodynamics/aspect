@@ -68,13 +68,6 @@ namespace aspect
                     ExcMessage("The free surface mesh deformation plugin cannot be used with the current velocity boundary conditions"));
     }
 
-    template <int dim>
-    double FreeSurface<dim>::get_free_surface_theta()const
-    {
-      return free_surface_theta;
-    }
-
-
 
     template <int dim>
     void FreeSurface<dim>::project_velocity_onto_boundary(const DoFHandler<dim> &mesh_deformation_dof_handler,
