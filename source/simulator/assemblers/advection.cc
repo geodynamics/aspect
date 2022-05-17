@@ -468,39 +468,6 @@ namespace aspect
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     template <int dim>
     void
     DarcySystem<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
@@ -511,7 +478,7 @@ namespace aspect
     template <int dim>
     void
     DarcySystem<dim>::execute (internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,
-                                   internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
+                               internal::Assembly::CopyData::CopyDataBase<dim> &data_base) const
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
@@ -522,9 +489,9 @@ namespace aspect
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
       if (advection_field.advection_method(introspection)
           != Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
-        return;      
+        return;
 
-      
+
 
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
@@ -701,9 +668,9 @@ namespace aspect
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       std::vector<double> residuals(n_q_points);
       if (advection_field.is_temperature())
-          {
-            return residuals;
-          }  
+        {
+          return residuals;
+        }
 
 
       const MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
@@ -717,7 +684,7 @@ namespace aspect
 
           const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
                                    scratch.old_old_velocity_values[q]) / 2;
-                                   - K_D*(rho_s * gravity - rho_f*gravity);
+          - K_D*(rho_s * gravity - rho_f*gravity);
 
           const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
                                    (
@@ -727,8 +694,8 @@ namespace aspect
                                            scratch.old_old_field_grads[q]) / 2;
 
           const double dreaction_term_dt = (this->get_old_timestep() == 0) ? 0.0 :
-                                            scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
-                                            / this->get_old_timestep();
+                                           scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]
+                                           / this->get_old_timestep();
 
           residuals[q] = std::abs(dField_dt + u_grad_field - dreaction_term_dt);
         }
@@ -736,41 +703,7 @@ namespace aspect
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     template <int dim>
     void
     AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,

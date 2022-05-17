@@ -1941,7 +1941,7 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
 
 
-            
+
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")
