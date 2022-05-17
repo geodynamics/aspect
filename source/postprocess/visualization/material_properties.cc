@@ -61,6 +61,8 @@ namespace aspect
         return solution_names;
       }
 
+
+
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       MaterialProperties<dim>::
@@ -197,6 +199,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       MaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
@@ -230,6 +234,7 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
 
 
       template <int dim>
