@@ -103,6 +103,11 @@ echo "--- Found astyle 2.04 at ${astyle}"
 # look-behind expression is not part of the match itself (which is only ">"
 # in the expression above) and is only used to restrict which occurrences
 # of ">" are actually matches (and consequently substituted).
+#
+# For unclear reasons, astyle insists on appending a separate empty line
+# at the end of the file. Fix this up using the last two 'sed' commands,
+# using the same logic as in the 'ensure_single_trailing_newline()'
+# function below.
 indent_file() {
   file="${1}"
   tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
@@ -110,7 +115,10 @@ indent_file() {
   cat ${file} \
       | perl -p -e 's/(?<=>)>/ >/g;' \
       | "${astyle}" --options=contrib/utilities/astyle.rc \
-      | perl -p -e 's/(?<=>) >/>/g;' > ${tmpfile}
+      | perl -p -e 's/(?<=>) >/>/g;' \
+      | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' \
+      | sed -e '$a\' \
+      > ${tmpfile}
 
   if ! diff -q "${file}" "${tmpfile}" >/dev/null; then
     mv "${tmpfile}" "${file}"
@@ -172,6 +180,7 @@ remove_trailing_whitespace()
 }
 export -f remove_trailing_whitespace
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+
 
 # Ensure only a single newline at end of files
 ensure_single_trailing_newline()
