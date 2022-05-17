@@ -1216,7 +1216,7 @@ namespace aspect
                          "If a plugin such as a material model uses these types, "
                          "the choice of type will affect how that module functions.");
       prm.declare_entry ("Compositional field methods", "",
-                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion")),
+                         Patterns::List (Patterns::Selection("field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion")),
                          "A comma separated list denoting the solution method of each "
                          "compositional field. Each entry of the list must be "
                          "one of the currently implemented field methods."
@@ -1262,6 +1262,22 @@ namespace aspect
                          "This method can only be chosen if melt transport is active in the "
                          "model."
                          "\n"
+
+
+
+                         "\\item ``darcy field'': If a compositional field is marked with this "
+                         "method, then its values are computed in each time step by "
+                         "advecting along the values of the previous time step using the "
+                         "melt velocity, and applying reaction rates to it. In other words, "
+                         "this corresponds to the usual notion of a composition field as "
+                         "mentioned in Section~\\ref{sec:compositional}, except that it is "
+                         "advected with the melt velocity instead of the solid velocity. "
+                         "This method can only be chosen if melt transport is active in the "
+                         "model."
+                         "\n"
+
+
+
                          "\\item ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
                          "marked with this method, then the value of a specific additional material "
@@ -1918,6 +1934,14 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
+
+
+
+          else if (x_compositional_field_methods[i] == "darcy field")
+            compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
+
+
+            
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")

@@ -867,6 +867,7 @@ namespace aspect
             {
               case Parameters<dim>::AdvectionFieldMethod::fem_field:
               case Parameters<dim>::AdvectionFieldMethod::fem_melt_field:
+              case Parameters<dim>::AdvectionFieldMethod::fem_darcy_field:
               case Parameters<dim>::AdvectionFieldMethod::prescribed_field_with_diffusion:
                 return true;
               case Parameters<dim>::AdvectionFieldMethod::particles:

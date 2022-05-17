@@ -410,6 +410,8 @@ namespace aspect
       const double pressure_scaling = this->get_pressure_scaling();
 
       std::vector<double> reactions(n_q_points, numbers::signaling_nan<double>());
+      std::cout << n_q_points << std::endl;
+
       const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
       if (this->get_parameters().use_operator_splitting)
         scratch.finite_element_values[introspection.extractors.compositional_fields[porosity_index]].get_function_values(this->get_reaction_vector(),
