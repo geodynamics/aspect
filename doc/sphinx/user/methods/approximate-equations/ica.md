@@ -32,7 +32,7 @@ or to assume that heating is everywhere adiabatic and use the isentropic compres
 Both choices are possible in ASPECT, the user simply needs to specify their preferred compressibility in the material model.
 The isentropic compressibility is likely to be the more accurate approximation in models of mantle convection.
 
-For this approximation, Equation {math:numref}`eq:stokes-2-compressible` replaces Equation {math:numref}`eq:stokes-2`. It has the advantage that it retains the symmetry of the Stokes equations if we can treat the right hand side of {math:numref}`eq:stokes-2-compressible` as known.
+For this approximation, equation {math:numref}`eq:stokes-2-compressible` replaces equation {math:numref}`eq:stokes-2`. It has the advantage that it retains the symmetry of the Stokes equations if we can treat the right hand side of {math:numref}`eq:stokes-2-compressible` as known.
 We do so by evaluating $\rho$ and $\mathbf u$ using the solution from the last time step (or values extrapolated from previous time steps), or using a nonlinear solver scheme.
 
 :::{note}
