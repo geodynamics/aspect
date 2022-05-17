@@ -129,6 +129,28 @@ namespace aspect
           {
             return update_values;
           }
+
+
+          std::vector<std::string>
+          get_physical_units () const
+          {
+            std::vector<std::string> solution_units (dim, "m/s");
+
+            if (this->include_melt_transport())
+              {
+                solution_units.emplace_back("kg/m/s/s"); // fluid pressure
+                solution_units.emplace_back("kg/m/s/s"); // scaled pressure
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_units.emplace_back("m/s");
+              }
+            solution_units.emplace_back("kg/m/s/s");
+
+            solution_units.emplace_back("K");
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              solution_units.push_back (""); // we don't know here
+
+            return solution_units;
+          }
       };
 
       /**
@@ -140,7 +162,8 @@ namespace aspect
       {
         public:
           MeshDeformationPostprocessor ()
-            : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
+            : DataPostprocessorVector<dim>("mesh_velocity",
+                                           update_values)
           {}
 
 
@@ -157,6 +180,13 @@ namespace aspect
             for (unsigned int q=0; q<n_q_points; ++q)
               for (unsigned int i=0; i<dim; ++i)
                 computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
+          }
+
+
+          std::string
+          get_physical_units () const
+          {
+            return "m/s";
           }
       };
     }
