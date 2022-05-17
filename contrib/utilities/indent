@@ -61,11 +61,53 @@ fi
 echo "--- Found astyle 2.04 at ${astyle}"
 
 
-# collect all header and source files and process them in batches of 50 files
-# with up to 10 in parallel
+# Collect all header and source files and process them in batches of 50 files
+# with up to 10 in parallel.
+#
+# We use astyle 2.04 for indentation, which is a tool that predates C++11
+# and that consequently has trouble with things such as
+#   std::vector<Point<dim>>
+# where it interprets the closing `>>` as a right shift operator. It then
+# gets its template closing angle bracket counter all out of whack and
+# produces awkward indentations. To avoid this, we first convert all closing
+# `>>` into `> >`, run astyle, and then change it back. This leads to reasonable
+# results.
+#
+# One might think that a regex substitution such as
+#   s/>>/> >/g;
+# would work (and putting the space on the left hand side for the way back).
+# But this is not true because Perl does not go back to look at the substitution
+# again, even with the /g modifier. As a consequence, the regex above
+# replaces *triple* closing angle brackets as
+#   ">>>"  ->  "> >>"
+# and it does not look at the ">>" on the right hand side because the 'point'
+# within the string where the regex matcher starts looking again with /g
+# is now the last ">", having replaced the initial ">>" by "> >". Clearly,
+# strings such as ">>>>" with four or more closing brackets encounter
+# similar issues.
+#
+# The way to work around this is to replace "a '>' preceded by another
+# '>' by ' >'". This is expressed with positive look-behind, and leads to
+# the regex substitution
+#   s/(?<=>)>/ >/g
+# where "(?<=" starts the positive look-behind expression. Note that the
+# look-behind expression is not part of the match itself (which is only ">"
+# in the expression above) and is only used to restrict which occurrences
+# of ">" are actually matches (and consequently substituted).
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \
+     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
+  | xargs -n 50 -P 10 perl -pi -e 's/(?<=>)>/ >/g;'
+
+find tests include source benchmarks cookbooks unit_tests \
+     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
+  | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
+
+find tests include source benchmarks cookbooks unit_tests \
+     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
+  | xargs -n 50 -P 10 perl -pi -e 's/(?<=>) >/>/g;'
+
 
 # remove execute permission on source files:
 find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
