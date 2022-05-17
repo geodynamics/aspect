@@ -139,6 +139,7 @@ namespace aspect
     Point<2> as_2d(const Point<3> &/*p*/)
     {
       Assert (false, ExcInternalError());
+      return Point<2>();
     }
 
     Point<2> as_2d(const Point<2> &p)
@@ -149,6 +150,7 @@ namespace aspect
     Point<3> as_3d(const Point<2> &/*p*/)
     {
       Assert (false, ExcInternalError());
+      return Point<3>();
     }
 
     Point<3> as_3d(const Point<3> &p)
