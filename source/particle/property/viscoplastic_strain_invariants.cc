@@ -133,7 +133,7 @@ namespace aspect
         auto &data = particle->get_properties();
 
         // Calculate strain rate second invariant
-        const double edot_ii = std::sqrt(std::fabs(second_invariant(deviator(material_inputs.strain_rate[0]))));
+        const double edot_ii = std::sqrt(std::max(-second_invariant(deviator(material_inputs.strain_rate[0])), 0.));
 
         // Calculate strain invariant magnitude over the last time step
         const double strain_update = dt*edot_ii;

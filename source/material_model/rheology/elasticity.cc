@@ -423,7 +423,7 @@ namespace aspect
         const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stress /
                                                      calculate_elastic_viscosity(shear_modulus);
 
-        return std::sqrt(std::fabs(second_invariant(edot_deviator)));
+        return std::sqrt(std::max(-second_invariant(edot_deviator), 0.));
       }
     }
   }
