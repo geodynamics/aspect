@@ -1,7 +1,7 @@
 (sec:methods:choosing-a-formulation:mass-conservation-approx)=
 # Mass conservation approximation
 
-First, we have to choose how to approximate the conservation of mass: $\nabla \cdot (\rho \mathbf u) = 0$ (see Equation {math:numref}`eq:stokes-2`).
+First, we have to choose how to approximate the conservation of mass: $\nabla \cdot (\rho \mathbf u) = 0$ (see equation {math:numref}`eq:stokes-2`).
 We provide the following options, which can be selected in the parameter file in the subsection `Formulation/Mass conservation` (see also {ref}`parameters:Formulation/Mass conservation`):
 
 :::{admonition} TODO
