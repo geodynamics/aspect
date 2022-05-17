@@ -149,8 +149,11 @@ dos_to_unix()
 {
     f=$1
     tr -d '\015' <$f >$f.tmp
-    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
-    rm -f $f.tmp
+    if ! diff -q $f $f.tmp >/dev/null ; then
+      mv $f.tmp $f
+    else
+      rm $f.tmp
+    fi
 }
 export -f dos_to_unix
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
