@@ -95,15 +95,14 @@ namespace aspect
           ComponentMask use_boundary_extrapolation;
 
           /**
-           * Check if a point found in the process of limiting
-           * is inside of the unit cell [-0.5, 0.5]^dim
+           * Calculate the value of the interpolation function at a given position
            */
-          bool in_unit_cell(const Point<dim> &p) const;
+          double evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const;
 
           /**
-           * Calculate the value of the interpolation function given by coefficents c at point p
+           * Update the bounds of where the plane reaches by checking whether a point is in the cell and what its value is.
            */
-          double evaluate(const Vector<double> &c, const Point<dim> &p) const;
+          void update_bounds(const Vector<double> &coefficents, const Point<dim> &position, double &interpolation_min, double &interpolation_max) const;
       };
     }
   }

@@ -34,10 +34,12 @@ namespace aspect
   {
     namespace Interpolator
     {
-
-      bool string_to_bool(const std::string &s)
+      namespace internal
       {
-        return (s == "true" || s == "yes");
+        bool string_to_bool(const std::string &s)
+        {
+          return (s == "true" || s == "yes");
+        }
       }
 
       template <int dim>
@@ -270,13 +272,13 @@ namespace aspect
                 std::vector<std::string> split = Utilities::split_string_list(prm.get("Use linear least squares limiter"));
                 if (split.size() == 1)
                   {
-                    use_linear_least_squares_limiter = ComponentMask(n_property_components, string_to_bool(split[0]));
+                    use_linear_least_squares_limiter = ComponentMask(n_property_components, internal::string_to_bool(split[0]));
                   }
                 else if (split.size() == n_property_components - n_internal_components)
                   {
                     std::vector<bool> parsed;
                     for (const auto &component: split)
-                      parsed.push_back(string_to_bool(component));
+                      parsed.push_back(internal::string_to_bool(component));
                     use_linear_least_squares_limiter = ComponentMask(parsed);
                   }
                 else
