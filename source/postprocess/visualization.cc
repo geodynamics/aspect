@@ -59,6 +59,7 @@ namespace aspect
       {
         public:
 
+          virtual
           void
           evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
                                 std::vector<Vector<double>> &computed_quantities) const override
@@ -79,7 +80,10 @@ namespace aspect
                 }
           }
 
-          std::vector<std::string> get_names () const override
+
+          virtual
+          std::vector<std::string>
+          get_names () const override
           {
             std::vector<std::string> solution_names (dim, "velocity");
 
@@ -100,6 +104,7 @@ namespace aspect
           }
 
 
+          virtual
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
           get_data_component_interpretation () const override
           {
@@ -121,7 +126,10 @@ namespace aspect
             return interpretation;
           }
 
-          UpdateFlags get_needed_update_flags () const override
+
+          virtual
+          UpdateFlags
+          get_needed_update_flags () const override
           {
             return update_values;
           }
