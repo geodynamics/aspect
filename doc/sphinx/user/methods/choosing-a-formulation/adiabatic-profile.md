@@ -2,7 +2,7 @@
 # Reference state: The adiabatic profile
 
 The reference temperature profile $\bar{T}$, reference density profile $\bar{\rho}$ and the reference pressure $\bar{p}$ are computed in the adiabatic conditions model (provided by the class `AdiabaticConditions`, see {ref}`sec:methods:initial-conditions`).
-By default, these fields satisfy adiabatic conditions (if adiabatic heating is included in the model, see {ref}`parameters:Heating_20model/Adiabatic_20heating`:
+By default, these fields satisfy adiabatic conditions (if adiabatic heating is included in the model, see {ref}`parameters:Heating_20model/Adiabatic_20heating`):
 
 ```{math}
 \begin{align}
