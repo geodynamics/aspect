@@ -21,6 +21,14 @@
 ##
 ## ---------------------------------------------------------------------
 
+
+#
+# Mac OSX's mktemp doesn't know the --tmpdir option without argument. So,
+# let's do all of that by hand:
+#
+export TMPDIR="${TMPDIR:-/tmp}"
+
+
 find_astyle() {
   # Split $PATH variable into an array
   IFS=':' PATHS=(${PATH})
@@ -35,6 +43,7 @@ find_astyle() {
   done
 }
 
+
 if test ! -d source -o ! -d include ; then
   echo "*** This script must be run from the top-level directory of ASPECT."
   exit 1
@@ -47,6 +56,7 @@ fi
 
 astyle="$(find_astyle)"
 astyle="${astyle:-`which astyle`}" # Fallback to `which astyle`
+export astyle
 
 if test -z "${astyle}"; then
   echo "*** No astyle program found."
@@ -61,8 +71,7 @@ fi
 echo "--- Found astyle 2.04 at ${astyle}"
 
 
-# Collect all header and source files and process them in batches of 50 files
-# with up to 10 in parallel.
+# Indent a file.
 #
 # We use astyle 2.04 for indentation, which is a tool that predates C++11
 # and that consequently has trouble with things such as
@@ -94,19 +103,33 @@ echo "--- Found astyle 2.04 at ${astyle}"
 # look-behind expression is not part of the match itself (which is only ">"
 # in the expression above) and is only used to restrict which occurrences
 # of ">" are actually matches (and consequently substituted).
+indent_file() {
+  file="${1}"
+  tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
+
+  cat ${file} \
+      | perl -p -e 's/(?<=>)>/ >/g;' \
+      | "${astyle}" --options=contrib/utilities/astyle.rc \
+      | perl -p -e 's/(?<=>) >/>/g;' > ${tmpfile}
+
+  if ! diff -q "${file}" "${tmpfile}" >/dev/null; then
+    mv "${tmpfile}" "${file}"
+  else
+    rm ${tmpfile}
+  fi
+}
+export -f indent_file
+
+
+
+# Collect all header and source files and process them 
+# with up to 10 processes in parallel.
+#
 echo "--- Indenting all ASPECT header and source files"
 
 find tests include source benchmarks cookbooks unit_tests \
      \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
-  | xargs -n 50 -P 10 perl -pi -e 's/(?<=>)>/ >/g;'
-
-find tests include source benchmarks cookbooks unit_tests \
-     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
-  | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
-
-find tests include source benchmarks cookbooks unit_tests \
-     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
-  | xargs -n 50 -P 10 perl -pi -e 's/(?<=>) >/>/g;'
+  | xargs -P 10 -I {} bash -c "indent_file {}"
 
 
 # remove execute permission on source files:
