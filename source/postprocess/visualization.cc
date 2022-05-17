@@ -1403,7 +1403,8 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
 #define INSTANTIATE(dim) \
-  template class Interface<dim>;
+  template class Interface<dim>; \
+  template class CellDataVectorCreator<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
 
