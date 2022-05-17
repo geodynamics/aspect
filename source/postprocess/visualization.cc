@@ -496,9 +496,12 @@ namespace aspect
                     output_history.background_thread.join();
                   // ...then continue with writing our own data.
                   output_history.background_thread
-                    = std::thread([ &, my_file_contents = std::move(file_contents)]()
+                    = std::thread([this,
+                                   my_filename = std::move(filename),
+                                   my_temporary_output_location = temporary_output_location,
+                                   my_file_contents = std::move(file_contents)]()
                   {
-                    writer (filename, temporary_output_location, *my_file_contents);
+                    writer (my_filename, my_temporary_output_location, *my_file_contents);
                   });
                 }
               else
