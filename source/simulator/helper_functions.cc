@@ -1317,7 +1317,7 @@ namespace aspect
     const unsigned int n_q_points_2 = quadrature_formula_2.size();
     const unsigned int n_q_points   = dim * n_q_points_2 * static_cast<unsigned int>(std::pow(n_q_points_1, dim-1));
 
-    std::vector< Point <dim>> quadrature_points;
+    std::vector<Point <dim>> quadrature_points;
     quadrature_points.reserve(n_q_points);
 
     switch (dim)
@@ -2266,7 +2266,7 @@ namespace aspect
 
     // Check that the periodic boundaries do not have other boundary conditions set
     using periodic_boundary_set
-      = std::set< std::pair< std::pair< types::boundary_id, types::boundary_id>, unsigned int>>;
+      = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
 
     periodic_boundary_set pbs = geometry_model->get_periodic_boundary_pairs();
 

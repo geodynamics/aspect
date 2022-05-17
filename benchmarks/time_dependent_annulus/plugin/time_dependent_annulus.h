@@ -94,8 +94,8 @@ namespace aspect
           density_function (density)
         {}
 
-        virtual void vector_value (const Point< dim > &p,
-                                   Vector< double >   &values) const
+        virtual void vector_value (const Point<dim> &p,
+                                   Vector<double>   &values) const
         {
           double pos[2]= {p(0),p(1)};
 

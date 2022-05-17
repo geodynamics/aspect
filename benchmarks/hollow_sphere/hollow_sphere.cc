@@ -177,8 +177,8 @@ namespace aspect
             mmm_(mmm)
           {}
 
-          virtual void vector_value (const Point< dim >   &pos,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim>   &pos,
+                                     Vector<double>   &values) const
           {
             Assert (dim == 3, ExcNotImplemented());
             Assert (values.size() >= 4, ExcInternalError());

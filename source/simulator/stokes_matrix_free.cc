@@ -2135,34 +2135,34 @@ namespace aspect
     mg_interface_matrices_A.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_A[level].initialize(mg_matrices_A_block[level]);
-    mg::Matrix<VectorType > mg_interface_A(mg_interface_matrices_A);
+    mg::Matrix<VectorType> mg_interface_A(mg_interface_matrices_A);
 
     // Schur complement matrix GMG
     MGLevelObject<MatrixFreeOperators::MGInterfaceOperator<GMGSchurComplementMatrixType>> mg_interface_matrices_Schur;
     mg_interface_matrices_Schur.resize(0, sim.triangulation.n_global_levels()-1);
     for (unsigned int level=0; level<sim.triangulation.n_global_levels(); ++level)
       mg_interface_matrices_Schur[level].initialize(mg_matrices_Schur_complement[level]);
-    mg::Matrix<VectorType > mg_interface_Schur(mg_interface_matrices_Schur);
+    mg::Matrix<VectorType> mg_interface_Schur(mg_interface_matrices_Schur);
 
     // MG Matrix
-    mg::Matrix<VectorType > mg_matrix_A(mg_matrices_A_block);
-    mg::Matrix<VectorType > mg_matrix_Schur(mg_matrices_Schur_complement);
+    mg::Matrix<VectorType> mg_matrix_A(mg_matrices_A_block);
+    mg::Matrix<VectorType> mg_matrix_Schur(mg_matrices_Schur_complement);
 
     // MG object
     // ABlock GMG
-    Multigrid<VectorType > mg_A(mg_matrix_A,
-                                mg_coarse_A,
-                                mg_transfer_A_block,
-                                mg_smoother_A,
-                                mg_smoother_A);
+    Multigrid<VectorType> mg_A(mg_matrix_A,
+                               mg_coarse_A,
+                               mg_transfer_A_block,
+                               mg_smoother_A,
+                               mg_smoother_A);
     mg_A.set_edge_matrices(mg_interface_A, mg_interface_A);
 
     // Schur complement matrix GMG
-    Multigrid<VectorType > mg_Schur(mg_matrix_Schur,
-                                    mg_coarse_Schur,
-                                    mg_transfer_Schur_complement,
-                                    mg_smoother_Schur,
-                                    mg_smoother_Schur);
+    Multigrid<VectorType> mg_Schur(mg_matrix_Schur,
+                                   mg_coarse_Schur,
+                                   mg_transfer_Schur_complement,
+                                   mg_smoother_Schur,
+                                   mg_smoother_Schur);
     mg_Schur.set_edge_matrices(mg_interface_Schur, mg_interface_Schur);
 
     // GMG Preconditioner for ABlock and Schur complement

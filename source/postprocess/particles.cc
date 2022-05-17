@@ -151,7 +151,7 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector< std::string >
+      std::vector<std::string>
       ParticleOutput<dim>::get_dataset_names () const
       {
         return dataset_names;

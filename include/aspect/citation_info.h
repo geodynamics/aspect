@@ -48,7 +48,7 @@ namespace CitationInfo
    * Print the info text containing the citation info into the given
    * stream.
    */
-  template < class Stream>
+  template <class Stream>
   void print_info_block (Stream &stream)
   {
     stream << "-----------------------------------------------------------------------------\n"

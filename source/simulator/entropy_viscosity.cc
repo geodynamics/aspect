@@ -141,7 +141,7 @@ namespace aspect
           residual[j] += new_residual[j];
 
         if (auto *stabilization_assembler =
-              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>* > ((assemblers->advection_system[i]).get()))
+              dynamic_cast<Assemblers::AdvectionStabilizationInterface<dim>*> ((assemblers->advection_system[i]).get()))
           {
             // Ensure no other assembler has set max_advection_prefactor or max_conductivity before,
             // otherwise we dont know which one to use.

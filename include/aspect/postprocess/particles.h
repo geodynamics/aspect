@@ -71,7 +71,7 @@ namespace aspect
           /**
            * Implementation of the corresponding function of the base class.
            */
-          std::vector< std::string >
+          std::vector<std::string>
           get_dataset_names () const override;
 
           /**

@@ -305,7 +305,7 @@ namespace aspect
          * specifically use a geometry model with periodic boundary conditions
          */
         virtual
-        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
+        std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
             get_periodic_boundary_pairs () const;
 
         /**

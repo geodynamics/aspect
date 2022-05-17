@@ -116,8 +116,8 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(2*dim+5) {}
-      virtual void vector_value (const Point< dim >   &p,
-                                 Vector< double >   &values) const
+      virtual void vector_value (const Point<dim>   &p,
+                                 Vector<double>   &values) const
       {
         const double x = p(0);
         const double y = p(1);

@@ -281,8 +281,8 @@ namespace aspect
             delta_ = delta;
           }
 
-          virtual void vector_value (const Point< dim > &p,
-                                     Vector< double >   &values) const
+          virtual void vector_value (const Point<dim> &p,
+                                     Vector<double>   &values) const
           {
             unsigned int index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
             if (p[dim-1]-delta_ < 0)

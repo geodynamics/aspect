@@ -111,7 +111,7 @@ namespace aspect
          * Data structures to store depth and viscosity lookup tables as well as interpolating
          * function to calculate viscosity for File Depth dependence method
          */
-        std::unique_ptr< Functions::InterpolatedTensorProductGridData<1>> viscosity_file_function;
+        std::unique_ptr<Functions::InterpolatedTensorProductGridData<1>> viscosity_file_function;
 
         /**
          * Function to calculate viscosity at depth using values provided as List input

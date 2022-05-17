@@ -349,11 +349,11 @@ namespace aspect
 
 
     template <int dim>
-    std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
+    std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
         SphericalShell<dim>::
         get_periodic_boundary_pairs () const
     {
-      std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
+      std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       if (periodic)
         {
           periodic_boundaries.insert( std::make_pair( std::pair<types::boundary_id, types::boundary_id>(2, 3), 1) );

@@ -77,7 +77,7 @@ namespace aspect
            * Stores sets of compositional field indices to
            * be visualized together as vector fields.
            */
-          std::vector<std::vector<unsigned int >> sets;
+          std::vector<std::vector<unsigned int>> sets;
       };
     }
   }

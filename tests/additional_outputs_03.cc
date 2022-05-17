@@ -100,7 +100,7 @@ namespace aspect
       virtual void execute(internal::Assembly::Scratch::ScratchBase<dim>        &scratch_base,
                            internal::Assembly::CopyData::CopyDataBase<dim>       &/*data_base*/) const
       {
-        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
+        internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
 
         MaterialModel::AdditionalOutputs1<dim> *additional
           = scratch.material_model_outputs.template get_additional_output<MaterialModel::AdditionalOutputs1<dim>>();

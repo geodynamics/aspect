@@ -616,7 +616,7 @@ namespace aspect
       // write output that can be used to calculate the angle of the shear bands
       const unsigned int max_lvl = this->get_triangulation().n_global_levels();
 
-      std::vector< Point<3>> data;  //x, y, porosity
+      std::vector<Point<3>> data;  //x, y, porosity
 
       // we want to have equidistant points in the output
       const QMidpoint<1> mp_rule;
