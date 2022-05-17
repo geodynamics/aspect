@@ -1,0 +1,322 @@
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Loading shared library <./libdarcy_velocity.so>
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Number of active cells: 512 (on 5 levels)
+Number of degrees of freedom: 13,431 (4,290+561+2,145+2,145+2,145+2,145)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 25+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83084e-16, 1.48573e-16, 1.48573e-16, 1.62545e-16, 1
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 1
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.83084e-16, 1.48573e-16, 1.48573e-16, 1.62545e-16, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: 7.188e-28/1/6.283e+08 // 7.188e-28/1/6.283e+08 // 7.188e-28/1/6.283e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00000
+
+*** Timestep 1:  t=625 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 10 iterations.
+   Solving solid system ... 10 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43166e-16, 0.0440401, 0.0440401, 0.0893733, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0893733
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 11 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43166e-16, 2.25688e-13, 2.25688e-13, 0.00402122, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00402122
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.43166e-16, 2.25688e-13, 2.25688e-13, 1.13613e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -8.385e-07/0.9909/6.283e+08 // -8.385e-07/0.9909/6.283e+08 // -8.363e-07/0.9899/6.269e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00001
+
+*** Timestep 2:  t=1250 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00214841, 0.00214841, 0.0127703, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0127703
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.58173e-13, 3.58173e-13, 0.000171771, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000171771
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.58173e-13, 3.58173e-13, 1.98922e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -1.258e-05/0.9823/6.283e+08 // -1.258e-05/0.9823/6.283e+08 // -1.449e-05/0.9786/6.247e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00002
+
+*** Timestep 3:  t=1875 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00238002, 0.00238002, 0.0163967, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0163967
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 9 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.14147e-13, 3.14147e-13, 0.00025609, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.00025609
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.14147e-13, 3.14147e-13, 9.1432e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -4.556e-05/0.9728/6.283e+08 // -4.556e-05/0.9728/6.283e+08 // -5.374e-05/0.9711/6.212e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00003
+
+*** Timestep 4:  t=2500 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00301865, 0.00301865, 0.0172202, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0172202
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.59777e-13, 3.59777e-13, 0.000440677, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000440677
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.59777e-13, 3.59777e-13, 2.15154e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0001428/0.9734/6.283e+08 // -0.0001428/0.9734/6.283e+08 // -0.0002155/0.9731/6.166e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00004
+
+*** Timestep 5:  t=3125 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00326764, 0.00326764, 0.0171165, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0171165
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.26755e-13, 3.26755e-13, 0.000530169, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000530169
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 3.26755e-13, 3.26755e-13, 2.14253e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.000282/0.9705/6.283e+08 // -0.000282/0.9705/6.283e+08 // -0.0004146/0.9725/6.109e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00005
+
+*** Timestep 6:  t=3750 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00340137, 0.00340137, 0.0167044, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0167044
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.89392e-13, 2.89392e-13, 0.000594436, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000594436
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.89392e-13, 2.89392e-13, 2.39662e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0004293/0.9646/6.283e+08 // -0.0004293/0.9646/6.283e+08 // -0.0006575/0.9709/6.043e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00006
+
+*** Timestep 7:  t=4375 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00330339, 0.00330339, 0.0162742, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0162742
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.73829e-13, 2.73829e-13, 0.000562065, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000562065
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.73829e-13, 2.73829e-13, 2.35467e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0005794/0.9643/6.283e+08 // -0.0005794/0.9643/6.283e+08 // -0.001069/0.9816/5.967e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00007
+
+*** Timestep 8:  t=5000 years, dt=625 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 11 iterations.
+   Solving solid system ... 11 iterations.
+   Solving fluid system ... 12 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 0.00329433, 0.00329433, 0.0159739, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 0.0159739
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 10 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.75433e-13, 2.75433e-13, 0.000552994, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 2: 0.000552994
+
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 0 iterations.
+   Solving solid system ... 0 iterations.
+   Solving fluid system ... 0 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.64908e-16, 2.75433e-13, 2.75433e-13, 2.03243e-13, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 3: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0007264/0.9672/6.283e+08 // -0.0007264/0.9672/6.283e+08 // -0.001406/0.9843/5.884e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00008
+
+*** Timestep 9:  t=5000 years, dt=0.00176169 years
+   Solving temperature system... 0 iterations.
+   Solving porosity system ... 4 iterations.
+   Solving solid system ... 4 iterations.
+   Solving fluid system ... 4 iterations.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system... 0+0 iterations.
+      Relative nonlinear residuals (temperature, compositional fields, Stokes system): 1.81664e-16, 4.92364e-09, 4.92364e-09, 2.09501e-08, 7.73712e-08
+      Relative nonlinear residual (total system) after nonlinear iteration 1: 7.73712e-08
+
+
+   Postprocessing:
+     Compositions min/max/mass: -0.0007264/0.9672/6.283e+08 // -0.0007264/0.9672/6.283e+08 // -0.001406/0.9843/5.884e+08
+     Writing graphical output:  output-darcy_velocity/solution/solution-00009
+
+Termination requested by criterion: end time
+
+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
