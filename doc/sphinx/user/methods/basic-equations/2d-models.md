@@ -11,7 +11,7 @@ As a consequence, we ought to really think of these two-dimensional models as th
 If one adopts this point of view, the Stokes equations {math:numref}`eq:stokes-1`-{math:numref}`eq:stokes-2` naturally simplify in a way that allows us to reduce the $3+1$ equations to only $2+1$, but it makes clear that the correct description of the compressible strain rate is still $\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1$, rather than using a factor of $\frac{1}{2}$ for the second term.
 (A derivation of why the compressible strain rate tensor has this form can be found in {cite:t}`schubert:etal:2001`, sec. 6.5.)
 
-It is interesting to realize that this compressible strain rate indeed requires a $3\times 3$ tensor: While under the assumptions above we have
+It is interesting to realize that this compressible strain rate indeed requires a $3\times 3$ tensor. While under the assumptions above, we have
 ```{math}
 \begin{align}
   \varepsilon(\mathbf u) = \begin{pmatrix} \tfrac{\partial u_x}{\partial x} & \tfrac 12 \tfrac{\partial u_x}{\partial y} + \tfrac 12 \tfrac{\partial u_y}{\partial x} & 0 \\
@@ -28,7 +28,7 @@ with the expected zeros in the last row and column, the full compressible strain
 \end{align}
 ```
 The entry in the $(3,3)$ position of this tensor may be surprising.
-It disappears, however, when taking the (three-dimensional) divergence of the stress, as is done in {math:numref}`eq:stokes-1`, because the divergence applies the $z$ derivative to all elements of the last row - and the assumption above was that all $z$ derivatives are zero; consequently whatever lives in the third row of the strain rate tensor does not matter.
+It disappears, however, when taking the (three-dimensional) divergence of the stress, as is done in {math:numref}`eq:stokes-1`, because the divergence applies the $z$ derivative to all elements of the last row - and the assumption above was that all $z$ derivatives are zero; consequently, whatever lives in the third row of the strain rate tensor does not matter.
 
 # Comments on the final set of equations
 
