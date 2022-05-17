@@ -81,6 +81,7 @@ namespace aspect
       }
 
 
+
       template <int dim>
       void
       TemperatureAnomaly<dim>::
@@ -106,6 +107,8 @@ namespace aspect
             computed_quantities[q](0) = temperature - depth_average_temperature;
           }
       }
+
+
 
       template <int dim>
       void
@@ -138,6 +141,9 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
+
       template <int dim>
       void
       TemperatureAnomaly<dim>::parse_parameters(ParameterHandler &prm)
