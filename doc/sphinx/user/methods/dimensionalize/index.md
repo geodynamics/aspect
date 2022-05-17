@@ -23,7 +23,7 @@ Whether one or the other is the more appropriate description is a decision we pu
 There are of course good reasons to use non-dimensional descriptions of realistic problems, rather than to use the original form in which all coefficients remain in their physical units.
 On the other hand, there are also downsides:
 
--   Non-dimensional descriptions, such as when using the [Rayleigh](https://en.wikipedia.org/wiki/Rayleigh_number) number to indicate the relative strength of convective to diffusive thermal transport, have the advantage that they allow to reduce a system to its essence.
+-   Non-dimensional descriptions, such as when using the [Rayleigh](https://en.wikipedia.org/wiki/Rayleigh_number) number to indicate the relative strength of convective to diffusive thermal transport, have the advantage that they allow one to reduce a system to its essence.
 For example, it is clear that we get the same behavior if one increases both the viscosity and the thermal expansion coefficient by a factor of two because the resulting Rayleigh number; similarly, if we were to increase the size of the domain by a factor of 2 and thermal diffusion coefficient by a factor of 8.
 In both of these cases, the non-dimensional equations are exactly the same. On the other hand, the equations in their physical unit form are different and one may not see that the result of this variations in coefficients will be exactly the same as before.
 Using non-dimensional variables therefore reduces the space of independent parameters one may have to consider when doing parameter studies.
@@ -40,7 +40,7 @@ On the other hand, it is more difficult and a source of many errors if this has 
 Getting this right at every one of the dozens or hundreds of places inside a program and using the correct (but distinct) conversion factors for each of these quantities is both a challenge and a possible source of errors.
 
 -   From a mathematical viewpoint, it is typically clear how an equation needs to be non-dimensionalized if all coefficients are constant.
-However, how is one to normalize the equations if, as is the case in the earth mantle, the viscosity varies by several orders of magnitude?
+However, how is one to normalize the equations if, as is the case in the Earth's mantle, the viscosity varies by several orders of magnitude?
 In cases like these, one has to choose a reference viscosity, density, etc.
 While the resulting non-dimensionalization retains the universality of parameters in the equations, as discussed above, it is not entirely clear that this would also retain the numerical stability if the reference values are poorly chosen.
 
