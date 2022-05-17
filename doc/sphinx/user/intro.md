@@ -28,7 +28,7 @@ ASPECT is designed from the start to support this level of parallelism.
 -   *Building on others' work:* Building a code that satisfies above criteria from scratch would likely require several 100,000 lines of code.
 This is outside what any one group can achieve on academic time scales.
 Fortunately, most of the functionality we need is already available in the form of widely used, actively maintained, and well tested and documented libraries, and we leverage these to make ASPECT a much smaller and easier to understand system.
-Specifically, ASPECT builds immediately on top of the DEAL.II library (see <https://www.dealii.org/>) for everything that has to do with finite elements, geometries, meshes, etc.; and, through DEAL.II on Trilinos (see <http://trilinos.org/>) for parallel linear algebra and on P4EST (see <http://www.p4est.org/>) for parallel mesh handling.
+Specifically, ASPECT builds immediately on top of the deal.II library (see <https://www.dealii.org/>) for everything that has to do with finite elements, geometries, meshes, etc.; and, through deal.II on Trilinos (see <http://trilinos.org/>) for parallel linear algebra and on P4EST (see <http://www.p4est.org/>) for parallel mesh handling.
 
 -   *Community:* We believe that a large project like ASPECT can only be successful as a community project.
 Every contribution is welcome and we want to help you so we can improve ASPECT together.
