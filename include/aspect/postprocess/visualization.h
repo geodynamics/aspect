@@ -555,13 +555,12 @@ namespace aspect
          * A function that writes the text in the second argument to a file
          * with the name given in the first argument. The function is run on a
          * separate thread to allow computations to continue even though
-         * writing data is still continuing. The function takes over ownership
-         * of these arguments and deletes them at the end of its work.
+         * writing data is still continuing.
          */
         static
         void writer (const std::string filename,
                      const std::string temporary_filename,
-                     const std::string *file_contents);
+                     const std::string &file_contents);
 
         /**
          * A list of postprocessor objects that have been requested in the
