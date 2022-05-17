@@ -1,6 +1,6 @@
 # A comment on adiabatic heating
 
-Other codes and texts sometimes make a simplification to the adiabatic heating term in the previous equation.
+Other codes and texts sometime make a simplification to the adiabatic heating term in the previous equation.
 If you assume the vertical component of the gradient of the *dynamic* pressure to be small compared to the gradient of the *total* pressure (in other words, the gradient is dominated by the gradient of the hydrostatic pressure), then $-\rho \mathbf g \approx \nabla \mathbf{p}$, and we have the following relation (the negative sign is due to $\mathbf g$ pointing downwards)
 ```{math}
 \begin{align}
