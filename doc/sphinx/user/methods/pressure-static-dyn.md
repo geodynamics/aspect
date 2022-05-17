@@ -28,8 +28,8 @@ In this formulation, it is clear that the quantity that drives the fluid flow is
 This reformulation has a number of advantages and disadvantages:
 
 -   One can notice that in many realistic cases, the dynamic component $p_d$ of the pressure is orders of magnitude smaller than the static component $p_s$.
-  For example, in the earth, the two are separated by around 6 orders of magnitude at the bottom of the earth mantle.
-  Consequently, if one wants to solve the linear system that arises from discretization of the original equations, one has to solve it a significant degree of accuracy (6-7 digits) to get the dynamic part of the pressure correct to even one digit.
+  For example, in the Earth, the two are separated by around 6 orders of magnitude at the bottom of the Earth's mantle.
+  Consequently, if one wants to solve the linear system that arises from discretization of the original equations, one has to solve it to a significant degree of accuracy (6-7 digits) to get the dynamic part of the pressure correct to even one digit.
   This entails a very significant numerical effort, and one that is not necessary if we can split the pressure in a way so that the pre-computed static pressure $p_s$ (or, rather, the density using the static pressure and temperature from which $p_s$ results) absorbs the dominant part and one only has to compute the remaining, dynamic pressure to 2 or 3 digits of accuracy, rather than the corresponding 7-8 for the total pressure.
 
 -   On the other hand, the pressure $p_d$ one computes this way is not immediately comparable to quantities that we use to look up pressure-dependent quantities such as the density.
@@ -46,7 +46,7 @@ On the other hand, for more complicated models, it is not a priori clear which d
     The problem is that it may well be that the erroneously computed density profile $\hat \rho$ does *not* lead to a separation where $|p_d|\ll|p_s|$ because, especially if the material undergoes phase changes, there will be entire areas of the computational domain in which $|\rho-\hat \rho_s|\ll |\rho|$ but $|\rho-\bar \rho_s|\not\ll |\rho|$.
     Consequently the benefits of lesser requirements on the iterative linear solver would not be realized.
 
-We do note that most of the codes available today and that we are aware of split the pressure into static and dynamic parts nevertheless, either internally or require the user to specify the density profile as the difference between the true and the hydrostatic density.
+We do note that most of the codes available today, and that we are aware of, split the pressure into static and dynamic parts either internally or require the user to specify the density profile as the difference between the true and the hydrostatic density.
 This may, in part, be due to the fact that historically most codes were written to solve problems in which the medium was considered incompressible, i.e., where the definition of a static density was simple.
 
 On the other hand, we intend ASPECT to be a code that can solve more general models for which this definition is not as simple.
