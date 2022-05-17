@@ -1,13 +1,13 @@
 (cha:intro)=
 # Introduction
 
-ASPECT - short for Advanced Solver for Problems in Earth's ConvecTion - is a code intended to solve the equations that describe thermally driven convection with a focus on doing so in the context of convection in the Earth mantle.
+ASPECT - short for Advanced Solver for Problems in Earth's ConvecTion - is a code intended to solve the equations that describe thermally driven convection with a focus on doing so in the context of convection in the Earth's mantle.
 It is developed by computational scientists all over the world based on the following principles:
 
--   *Usability and extensibility:* Simulating mantle convection is a difficult problem characterized not only by complicated and nonlinear material models but, more generally, by a lack of understanding which parts of a much more complicated model are really necessary to simulate the defining features of the problem.
+-   *Usability and extensibility:* Simulating mantle convection is a difficult problem characterized not only by complicated and nonlinear material models but, more generally, by a lack of understanding of which parts of a much more complicated model are really necessary to simulate the defining features of the problem.
 To name just a few examples:
 
-    -   Mantle convection is often solved in a spherical shell geometry, butthe Earth is not a sphere - its true shape on the longest length scales is dominated by polar oblateness, but deviations from spherical shape relevant to convection patterns may go down to the length scales of mountain belts, mid-ocean ridges or subduction trenches.
+    -   Mantle convection is often solved in a spherical shell geometry, but the Earth is not a sphere - its true shape on the longest length scales is dominated by polar oblateness, but deviations from spherical shape relevant to convection patterns may go down to the length scales of mountain belts, mid-ocean ridges or subduction trenches.
     Furthermore, processes outside the mantle like crustal depression during glaciations can change the geometry as well.
 
     -   Rocks in the mantle flow on long time scales, but on shorter time scales they behave more like a visco-elasto-plastic material as they break and as their crystalline structure heals again.
@@ -15,17 +15,17 @@ To name just a few examples:
 
     -   If pressures are low and temperatures high enough, rocks melt, leading to all sorts of new and interesting behavior.
 
-    This uncertainty in what problem one actually wants to solve requires a code that is easy to extend by users to support the community in determining what the essential features of convection in the Earth mantle are.
+    This uncertainty in what problem one actually wants to solve requires a code that is easy to extend by users to support the community in determining what are the essential features of convection in the Earth's mantle.
     Achieving this goal also opens up possibilities outside the original scope, such as the simulation of convection in exoplanets or the icy satellites of the gas giant planets in our solar system.
 
--   *Modern numerical methods:* We build ASPECT on numerical methods that are at the forefront of research in all areas - adaptive mesh refinement, linear and nonlinear solvers, stabilization of transport-dominated processes.
+-   *Modern numerical methods:* We build ASPECT on numerical methods that are at the forefront of research in all areas - adaptive mesh refinement, linear and nonlinear solvers, and stabilization of transport-dominated processes.
 This implies complexity in our algorithms, but also guarantees highly accurate solutions while remaining efficient in the number of unknowns and with CPU and memory resources.
 
 -   *Parallelism:* Many convection processes of interest are characterized by small features in large domains - for example, mantle plumes of a few tens of kilometers diameter in a mantle almost 3,000 km deep.
 Such problems can not be solved on a single computer but require dozens or hundreds of processors to work together.
 ASPECT is designed from the start to support this level of parallelism.
 
--   *Building on others' work:* Building a code that satisfies above criteria from scratch would likely require several 100,000 lines of code.
+-   *Building on others' work:* Building a code that satisfies the above criteria from scratch would likely require several 100,000 lines of code.
 This is outside what any one group can achieve on academic time scales.
 Fortunately, most of the functionality we need is already available in the form of widely used, actively maintained, and well tested and documented libraries, and we leverage these to make ASPECT a much smaller and easier to understand system.
 Specifically, ASPECT builds immediately on top of the DEAL.II library (see <https://www.dealii.org/>) for everything that has to do with finite elements, geometries, meshes, etc.; and, through DEAL.II on Trilinos (see <http://trilinos.org/>) for parallel linear algebra and on P4EST (see <http://www.p4est.org/>) for parallel mesh handling.
@@ -59,7 +59,7 @@ Also see {cite:t}`aspectmanual,aspect-doi-v1.5.0,aspect-doi-v2.0.0,aspect-doi-v2
 ## Acknowledgments
 
 The development of ASPECT has been funded through a variety of grants to the authors.
-Most immediately, it has been supported through the Computational Infrastructure in Geodynamics (CIG), initially by the CIG-I grant (National Science Foundation Award No. EAR-0426271, via The California Institute of Technology) and later by the CIG-II and CIG-III grants (National Science Foundation Awards No. EAR-0949446 and EAR-1550901, via The University of California - Davis).
+Most immediately, it has been supported through the Computational Infrastructure in Geodynamics (CIG), initially by the CIG-I grant (National Science Foundation Award No. EAR-0426271, via The California Institute of Technology) and later by the CIG-II and CIG-III grants (National Science Foundation Awards No. EAR-0949446 and EAR-1550901, via the University of California Davis).
 In addition, the libraries upon which ASPECT builds heavily have been supported through many other grants that are equally gratefully acknowledged.
 
 Please acknowledge CIG as follows:
