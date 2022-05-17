@@ -25,7 +25,7 @@ Concretely, we consider the following coefficients and dependencies:
     In general, the density depends on pressure and temperature, both through pressure compression, thermal expansion, and phase changes the material   may undergo as it moves through the pressure-temperature phase diagram.
 
     The simplest parameterization for the density is to assume a linear dependence on temperature, yielding the form $\rho(T)=\rho_{\text{ref}}[1-\alpha (T-T_{\text{ref}})]$ where $\rho_{\text{ref}}$ is the reference density at temperature $T_{\text{ref}}$ and $\alpha$ is the linear thermal expansion coefficient.
-    For the earth's mantle, typical values for this parameterization would be $\rho_{\text{ref}}=3300\frac{\text{ kg}}{\text{ m}^3}$, $T_{\text{ref}}=293 \text{ K}$, $\alpha=2\times 10^{-5} \frac{1}{\mathrm{K}}$.
+    For the Earth's mantle, typical values for this parameterization would be $\rho_{\text{ref}}=3300\frac{\text{ kg}}{\text{ m}^3}$, $T_{\text{ref}}=293 \text{ K}$, $\alpha=2\times 10^{-5} \frac{1}{\mathrm{K}}$.
 
 -   *The gravity vector $\mathbf g=\mathbf g(\mathbf x)$:* Units $\frac{\text{ m}}{\textrm{s}^2}$.
 
@@ -47,7 +47,7 @@ Concretely, we consider the following coefficients and dependencies:
 -   *The thermal conductivity $k=k(p,T,\mathfrak c,\mathbf x)$:* Units $\frac{\textrm{W}}{\text{ m}\cdot\text{ K}}=\frac{\text{ kg}\cdot\text{ m}}{\textrm{s}^3\cdot\text{ K}}$.
 
     The thermal conductivity denotes the amount of thermal energy flowing through a unit area for a given temperature gradient.
-    It depends on the material and as such will from a physical perspective depend on pressure and temperature due to phase changes of the material as well as through different mechanisms for heat transport (see, for example, the partial transparency of perovskite, the most abundant material in the earth mantle, at pressures above around 120 GPa {cite}`badro:etal:2004`.
+    It depends on the material and as such will from a physical perspective depend on pressure and temperature due to phase changes of the material as well as through different mechanisms for heat transport (see, for example, the partial transparency of perovskite, the most abundant material in the Earth's mantle, at pressures above around 120 GPa {cite}`badro:etal:2004`.
 
     As a rule of thumb for its order of magnitude, Wikipedia quotes values of $1.83$-$2.90\frac{\textrm{W}}{\text{ m}\cdot\text{ K}}$ for sandstone and $1.73$-$3.98\frac{\textrm{W}}{\text{ m}\cdot\text{ K}}$ for granite[^footnote2].
     The values in the mantle are almost certainly higher than this though probably not by much.
@@ -58,7 +58,7 @@ Concretely, we consider the following coefficients and dependencies:
 -   *The intrinsic specific heat production $H=H(\mathbf x)$:* Units $\frac{\textrm{W}}{\text{ kg}}=\frac{\text{ m}^2}{\textrm{s}^3}$.
 
     This term denotes the intrinsic heating of the material, for example due to the decay of radioactive material.
-    As such, it depends not on pressure or temperature, but may depend on the location due to different chemical composition of material in the earth mantle.
+    As such, it depends not on pressure or temperature, but may depend on the location due to different chemical composition of material in the Earth's mantle.
     The literature suggests a value of $\gamma=7.4\times 10^{-12}\frac{\textrm{W}}{\text{ kg}}$.
 
 -   *The thermal expansion coefficient $\alpha=\alpha(p,T,\mathfrak c ,\mathbf x)$:* Units $\frac{1}{\text{ K}}$.
