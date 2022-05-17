@@ -67,6 +67,8 @@ namespace aspect
         return solution_names;
       }
 
+
+
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       MeltMaterialProperties<dim>::
@@ -87,6 +89,8 @@ namespace aspect
         return interpretation;
       }
 
+
+
       template <int dim>
       UpdateFlags
       MeltMaterialProperties<dim>::
@@ -94,6 +98,8 @@ namespace aspect
       {
         return update_gradients | update_values  | update_quadrature_points;
       }
+
+
 
       template <int dim>
       void
@@ -178,6 +184,8 @@ namespace aspect
           }
       }
 
+
+
       template <int dim>
       void
       MeltMaterialProperties<dim>::declare_parameters (ParameterHandler &prm)
@@ -209,6 +217,8 @@ namespace aspect
         }
         prm.leave_subsection();
       }
+
+
 
       template <int dim>
       void

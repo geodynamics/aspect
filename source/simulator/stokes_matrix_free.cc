@@ -1373,7 +1373,7 @@ namespace aspect
 
 
 #if !DEAL_II_VERSION_GTE(9,3,2)
-    AssertThrow(false,
+    AssertThrow(!sim.parameters.mesh_deformation_enabled,
                 ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
 #endif
 

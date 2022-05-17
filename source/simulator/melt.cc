@@ -1941,7 +1941,7 @@ namespace aspect
     template class MeltAdvectionSystem<dim>; \
     template class MeltPressureRHSCompatibilityModification<dim>; \
     template class MeltBoundaryTraction<dim>; \
-  } \
+  }
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

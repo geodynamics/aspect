@@ -253,7 +253,7 @@ namespace aspect
 #define INSTANTIATE(dim) \
   template struct VariableDeclaration<dim>; \
   template struct FEVariable<dim>; \
-  template class FEVariableCollection<dim>; \
+  template class FEVariableCollection<dim>;
 
   ASPECT_INSTANTIATE(INSTANTIATE)
 

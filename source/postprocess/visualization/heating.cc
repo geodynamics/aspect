@@ -55,6 +55,8 @@ namespace aspect
         return names;
       }
 
+
+
       template <int dim>
       std::vector<DataComponentInterpretation::DataComponentInterpretation>
       Heating<dim>::
@@ -65,6 +67,8 @@ namespace aspect
                 DataComponentInterpretation::component_is_scalar);
       }
 
+
+
       template <int dim>
       UpdateFlags
       Heating<dim>::
@@ -72,6 +76,8 @@ namespace aspect
       {
         return update_gradients | update_values  | update_quadrature_points | update_JxW_values;
       }
+
+
 
       template <int dim>
       void
