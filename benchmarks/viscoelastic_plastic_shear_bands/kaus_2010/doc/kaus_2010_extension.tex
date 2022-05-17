@@ -3,33 +3,33 @@
 
 \textit{This section was contributed by John Naliboff, Marcel Saaro and Cedric Thieulot.}
 
-This setup is borrowed from Kaus (2010) \cite{kaus10}. The domain is a Cartesian box of size $(L_x\times L_y)=(40~\si{\km}\times10~\si{\km})$.
+This setup is based on from Kaus (2010) \cite{kaus10} and the  prm file is in {\tt /benchmarks/viscoelastic\_plastic\_shear\_bands}. The domain is a Cartesian box of size $(L_x \times L_y)=(\SI{40}{km} \times \SI{10}{km})$.
 The setup is shown in Fig.~\ref{fig:kaus_brick}. 
-The viscous inclusion of size $(800~\si{\meter} \times 400\si{\meter})$ is centered at the bottom of the domain. Its viscosity is $\eta_i=10^{20}~\si{\pascal\second}$.
+The viscous inclusion of size $(\SI{800}{m} \times \SI{400}{m})$ is centered at the bottom of the domain. Its viscosity is $\eta_i=\SI{1e20}{\pascal\second}$.
 
 The brick material is characterised by an (elasto-)visco-plastic
-rheology following a Drucker-Prager yield criterion with a cohesion $c=40~\si{\mega\pascal}$ and angle of 
-friction $\phi=30\si{\degree}$. The elastic shear modulus is set to $G=50\cdot10^{10}~\si{\pascal}$.
+rheology following a Drucker-Prager yield criterion with a cohesion $c=\SI{40}{\mega\pascal}$ and angle of 
+friction $\phi=\SI{30}{\degree}$. The elastic shear modulus is set to $G=\SI{50e10}{\pascal}$.
 
-Both materials have a density of $\rho=2700~\si{\kg\per\cubic\meter}$. The gravity is pointing downwards with $g=10~\si{\meter\per\square\second}$.
+Both materials (brick and inclusion) have a density of $\rho=\SI{2700}{\kg\per\cubic\meter}$. The gravity is pointing downwards with $g=\SI{10}{\meter\per\square\second}$.
 The flow is assumed to be isothermal and incompressible.
 
-The boundary conditions are free slip at the bottom and sides and stress free at the top (free surface). The horizontal component of the velocity is prescribed on the sides such that it results in a background strainrate of $\dot{\varepsilon}=2\cdot 10^{-15}~\si{\per\second}$. By reversing the values on both boundaries the brick can be put in compression or extension. 
+The boundary conditions are free slip at the bottom and sides and stress free at the top (free surface). The horizontal component of the velocity is prescribed on the sides such that it results in a background strainrate of $\dot{\varepsilon}=\SI{2e-15}{\per\second}$. By reversing the velocity directions on both sides the brick can be put in compression or extension. 
 
-The background resolution is composed of $100\times25$ repetitions, i.e. a resolution of $400~\si{\m}$. The model runs for $20~\si{\kilo\year}$.
+The mesh is composed of $100\times25$ repetitions, i.e. a resolution of $\SI{400}{\m}$ in the absence of further refinement. The model runs for $\SI{20}{\kilo\year}$.
 
 \begin{figure}[h]
 \centering
-\input{tikz_brick}
-\caption{\it Setup for the Kaus (2010) brick.}
+\input{tikz/tikz_brick}
+\caption{\it Setup for the Kaus (2010) brick in compression.}
 \label{fig:kaus_brick}
 \end{figure}
 
-There is a python script included to generate Fig.-\ref{fig:kaus_brick_result}. The script is based on the one for plotting the strain rate field for the visco-elasto-plastic block.
+Figure~\ref{fig:kaus_brick_result} shows the effective strain rate field at 3 different times as obtained with the python script included in the corresponding folder. Elastic stresses build up until the yield criterion is reached and plastic deformation is activated, ultimately generating two conjugated shear bands rooted on the inclusion.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=12cm]{kaus10_vep.pdf}
-\caption{The evolution of the shear bands over time shown by plotting the second strain rate invariant.}
+\includegraphics[width=12cm]{images/results/kaus10_vep.pdf}
+\caption{\it Time evolution of the shear bands in the extensional case.}
 \label{fig:kaus_brick_result}
 \end{figure}
