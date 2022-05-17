@@ -32,6 +32,7 @@ release = '2.4.0-pre'
 extensions = [
     "myst_parser",
     "sphinxcontrib.bibtex",
+    "sphinxcontrib.tikz"
 ]
 myst_enable_extensions = [
     "colon_fence",
@@ -42,6 +43,7 @@ myst_enable_extensions = [
     "amsmath",
 ]
 
+tikz_proc_suite = "GhostScript"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

@@ -19,4 +19,5 @@ melt-transport.md
 nullspace-removal.md
 particles.md
 geometric-multigrid.md
+nonlinear-stokes-solvers.md
 :::
