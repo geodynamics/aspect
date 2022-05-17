@@ -720,7 +720,8 @@ namespace aspect
          */
         template <typename DataOutType>
         std::string write_data_out_data(DataOutType   &data_out,
-                                        OutputHistory &output_history) const;
+                                        OutputHistory &output_history,
+                                        const std::map<std::string,std::string> &visualization_field_names_and_units) const;
     };
   }
 
