@@ -88,7 +88,7 @@ namespace aspect
 
     template <int dim>
     std::list<std::pair<std::string,std::string>>
-                                               Manager<dim>::execute (TableHandler &statistics)
+    Manager<dim>::execute (TableHandler &statistics)
     {
       // call the execute() functions of all postprocessor objects we have
       // here in turns
@@ -423,10 +423,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<2>>::PluginInfo> *
-                                                                      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<Postprocess::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Postprocess::Interface<3>>::PluginInfo> *
-                                                                      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<Postprocess::Interface<3>>::plugins = nullptr;
     }
   }
 

@@ -32,10 +32,10 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-                                    NearestNeighbor<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                                               const std::vector<Point<dim>> &positions,
-                                                                               const ComponentMask &selected_properties,
-                                                                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      NearestNeighbor<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                 const std::vector<Point<dim>> &positions,
+                                                 const ComponentMask &selected_properties,
+                                                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator found_cell;
 

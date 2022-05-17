@@ -197,7 +197,7 @@ namespace aspect
 
   template <int dim>
   const std::vector<FEVariable<dim>> &
-                                  FEVariableCollection<dim>::get_variables() const
+  FEVariableCollection<dim>::get_variables() const
   {
     return variables;
   }

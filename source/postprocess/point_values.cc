@@ -61,8 +61,8 @@ namespace aspect
 
       // evaluate the solution at all of our evaluation points
       std::vector<Vector<double>>
-                               current_point_values (evaluation_points_cartesian.size(),
-                                                     Vector<double> (this->introspection().n_components));
+      current_point_values (evaluation_points_cartesian.size(),
+                            Vector<double> (this->introspection().n_components));
 
       for (unsigned int p=0; p<evaluation_points_cartesian.size(); ++p)
         {

@@ -428,11 +428,11 @@ namespace aspect
   namespace ASPECT_REGISTER_BOUNDARY_TEMPERATURE_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::BoundaryTemperature::Manager<2>::register_boundary_temperature, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::BoundaryTemperature::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::BoundaryTemperature::Manager<3>::register_boundary_temperature, \
+                                name, description); \
   }
   }
 }

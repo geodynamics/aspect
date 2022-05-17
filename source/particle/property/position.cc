@@ -55,7 +55,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     Position<dim>::get_property_information() const
+      Position<dim>::get_property_information() const
       {
         const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("position",dim));
         return property_information;

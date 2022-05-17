@@ -336,22 +336,22 @@ namespace aspect
       };
 
       const std::vector<Tensor<1,dim>>
-                                    g = Utilities::MPI::all_reduce<decltype(local_g)>
-                                        (local_g,
-                                         this->get_mpi_communicator(),
-                                         tensor_sum);
+      g = Utilities::MPI::all_reduce<decltype(local_g)>
+          (local_g,
+           this->get_mpi_communicator(),
+           tensor_sum);
 
       const std::vector<Tensor<1,dim>>
-                                    g_anomaly = Utilities::MPI::all_reduce<decltype(local_g_anomaly)>
-                                                (local_g_anomaly,
-                                                 this->get_mpi_communicator(),
-                                                 tensor_sum);
+      g_anomaly = Utilities::MPI::all_reduce<decltype(local_g_anomaly)>
+                  (local_g_anomaly,
+                   this->get_mpi_communicator(),
+                   tensor_sum);
 
       const std::vector<SymmetricTensor<2,dim>>
-                                             g_gradient = Utilities::MPI::all_reduce<decltype(local_g_gradient)>
-                                                          (local_g_gradient,
-                                                           this->get_mpi_communicator(),
-                                                           tensor_sum);
+      g_gradient = Utilities::MPI::all_reduce<decltype(local_g_gradient)>
+                   (local_g_gradient,
+                    this->get_mpi_communicator(),
+                    tensor_sum);
 
       double sum_g = 0;
       double min_g = std::numeric_limits<double>::max();

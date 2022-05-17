@@ -89,7 +89,7 @@ namespace aspect
            * number of components this property plugin defines.
            */
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const override;
+          get_property_information() const override;
       };
     }
   }

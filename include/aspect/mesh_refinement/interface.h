@@ -377,11 +377,11 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_REFINEMENT_CRITERION_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::MeshRefinement::Manager<2>::register_mesh_refinement_criterion, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshRefinement::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::MeshRefinement::Manager<3>::register_mesh_refinement_criterion, \
+                                name, description); \
   }
   }
 }

@@ -392,10 +392,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<TimeStepping::Interface<2>>::PluginInfo> *
-                                                                       internal::Plugins::PluginList<TimeStepping::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<TimeStepping::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<TimeStepping::Interface<3>>::PluginInfo> *
-                                                                       internal::Plugins::PluginList<TimeStepping::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<TimeStepping::Interface<3>>::plugins = nullptr;
     }
   }
 

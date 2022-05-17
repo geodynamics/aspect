@@ -66,7 +66,7 @@ namespace aspect
            * Implementation of the corresponding function of the base class.
            */
           const std::vector<DataOutBase::Patch<0,dim>> &
-                                                    get_patches () const override;
+          get_patches () const override;
 
           /**
            * Implementation of the corresponding function of the base class.

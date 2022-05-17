@@ -145,7 +145,7 @@ namespace aspect
 
       template <int dim>
       const std::vector<DataOutBase::Patch<0,dim>> &
-                                                ParticleOutput<dim>::get_patches () const
+      ParticleOutput<dim>::get_patches () const
       {
         return patches;
       }

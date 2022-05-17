@@ -72,7 +72,7 @@ namespace aspect
           std::vector<double> melt_fraction(1);
 
           Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>>
-                                                                                (this->get_material_model()).melt_fractions(in,melt_fraction);
+          (this->get_material_model()).melt_fractions(in,melt_fraction);
           return melt_fraction[0];
         }
       return 0.0;

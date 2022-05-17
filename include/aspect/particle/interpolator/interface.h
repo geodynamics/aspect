@@ -77,9 +77,9 @@ namespace aspect
           DEAL_II_DEPRECATED
           virtual
           std::vector<std::vector<double>>
-                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                             const std::vector<Point<dim>> &positions,
-                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
+                               const std::vector<Point<dim>> &positions,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Perform an interpolation of the properties of the particles in
@@ -107,10 +107,10 @@ namespace aspect
            */
           virtual
           std::vector<std::vector<double>>
-                                        properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                             const std::vector<Point<dim>> &positions,
-                                                             const ComponentMask &selected_properties,
-                                                             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
+          properties_at_points(const ParticleHandler<dim> &particle_handler,
+                               const std::vector<Point<dim>> &positions,
+                               const ComponentMask &selected_properties,
+                               const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const = 0;
 
           /**
            * Declare the parameters this class takes through input files. The
@@ -215,11 +215,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_INTERPOLATOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Interpolator::register_particle_interpolator<2>, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Interpolator::register_particle_interpolator<2>, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Interpolator::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Interpolator::register_particle_interpolator<3>, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Interpolator::register_particle_interpolator<3>, \
+                                name, description); \
   }
     }
   }

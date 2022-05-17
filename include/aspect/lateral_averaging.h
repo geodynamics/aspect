@@ -116,8 +116,8 @@ namespace aspect
        */
       DEAL_II_DEPRECATED
       std::vector<std::vector<double>>
-                                    get_averages(const unsigned int n_slices,
-                                                 const std::vector<std::string> &property_names) const;
+      get_averages(const unsigned int n_slices,
+                   const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -136,8 +136,8 @@ namespace aspect
        * as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const unsigned int n_slices,
-                                                             const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const unsigned int n_slices,
+                               const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages of the selected
@@ -162,8 +162,8 @@ namespace aspect
        * and there are as many vectors returned as names in @p property_names.
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
-                                                             const std::vector<std::string> &property_names) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               const std::vector<std::string> &property_names) const;
 
       /**
        * Return a depth profile of lateral averages. This function is the
@@ -196,8 +196,8 @@ namespace aspect
        * the number of @p depth_bounds).
        */
       std::vector<std::vector<double>>
-                                    compute_lateral_averages(const std::vector<double> &depth_bounds,
-                                                             std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
+      compute_lateral_averages(const std::vector<double> &depth_bounds,
+                               std::vector<std::unique_ptr<internal::FunctorBase<dim>>> &functors) const;
 
       /**
        * Fill the argument with a set of lateral averages of the current

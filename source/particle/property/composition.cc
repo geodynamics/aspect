@@ -67,7 +67,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     Composition<dim>::get_property_information() const
+      Composition<dim>::get_property_information() const
       {
 
         AssertThrow(this->n_compositional_fields() > 0,

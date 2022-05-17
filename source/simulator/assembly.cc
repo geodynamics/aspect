@@ -84,7 +84,7 @@ namespace aspect
     // the values of the compositional fields are stored as block vectors for each field
     // we have to extract them in this structure
     std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
-                                                         std::vector<double> (n_q_points));
+                                                          std::vector<double> (n_q_points));
 
     for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
       input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,

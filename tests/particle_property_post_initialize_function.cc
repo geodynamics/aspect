@@ -38,7 +38,7 @@ namespace aspect
 
           virtual
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const
+          get_property_information() const
           {
             return std::vector<std::pair<std::string, unsigned int>>();
           }

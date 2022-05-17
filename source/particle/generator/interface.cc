@@ -86,8 +86,8 @@ namespace aspect
 
       template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
-                                                          Interface<dim>::generate_particle(const Point<dim> &position,
-                                                              const types::particle_index id) const
+      Interface<dim>::generate_particle(const Point<dim> &position,
+                                        const types::particle_index id) const
       {
         // Try to find the cell of the given position. If the position is not
         // in the domain on the local process, throw a ExcParticlePointNotInDomain
@@ -131,8 +131,8 @@ namespace aspect
 
       template <int dim>
       std::pair<Particles::internal::LevelInd,Particle<dim>>
-                                                          Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                                              const types::particle_index id)
+      Interface<dim>::generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                                         const types::particle_index id)
       {
         // Uniform distribution on the interval [0,1]. This
         // will be used to generate random particle locations.
@@ -305,10 +305,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Particle::Generator::Interface<2>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<Particle::Generator::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<Particle::Generator::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Particle::Generator::Interface<3>>::PluginInfo> *
-                                                                              internal::Plugins::PluginList<Particle::Generator::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<Particle::Generator::Interface<3>>::plugins = nullptr;
     }
   }
 

@@ -95,7 +95,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     IntegratedStrain<dim>::get_property_information() const
+      IntegratedStrain<dim>::get_property_information() const
       {
         const unsigned int n_components = Tensor<2,dim>::n_independent_components;
         const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("integrated strain",n_components));

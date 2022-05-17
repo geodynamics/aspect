@@ -578,7 +578,7 @@ namespace aspect
       // the values of the compositional fields are stored as blockvectors for each field
       // we have to extract them in this structure
       std::vector<std::vector<double>> prelim_composition_values (this->n_compositional_fields(),
-                                                                  std::vector<double> (n_q_points));
+                                                                   std::vector<double> (n_q_points));
 
       typename MaterialModel::Interface<dim>::MaterialModelInputs in(n_q_points,
                                                                      this->n_compositional_fields());
