@@ -138,7 +138,7 @@ def plot_timesteps(solution_folder, output_dir, interesting_times, xsize=8, ysiz
 
   fig.tight_layout()
 
-  fig.suptitle('Strain Rate Second Invariant log10(1/s)', x=0.5, y=1.025)
+  fig.suptitle('Strain Rate Second Invariant in $\log_{10}$ scale (1/s)', x=0.5, y=1.025)
 
   if vmin and vmax:
     fig.colorbar(c, ax=axes.ravel().tolist())
