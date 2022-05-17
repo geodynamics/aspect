@@ -597,7 +597,9 @@ namespace aspect
           const double rho_s = scratch.material_model_outputs.densities[q];
           const double rho_f = melt_outputs->fluid_densities[q];
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
-          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
+          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-20);
+          const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
           Tensor<1,dim> current_u = scratch.current_velocity_values[q];
           Tensor<1,dim> current_u_f = current_u - K_D * (rho_s * gravity - rho_f * gravity);
 
@@ -700,7 +702,7 @@ namespace aspect
       std::vector<double> residuals(n_q_points);
       if (advection_field.is_temperature())
           {
-            return 0.;
+            return residuals;
           }  
 
 
