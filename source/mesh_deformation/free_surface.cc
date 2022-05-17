@@ -46,8 +46,8 @@ namespace aspect
     execute (internal::Assembly::Scratch::ScratchBase<dim>       &scratch_base,
              internal::Assembly::CopyData::CopyDataBase<dim>      &data_base) const
     {
-      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>& > (scratch_base);
-      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>& > (data_base);
+      internal::Assembly::Scratch::StokesSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::StokesSystem<dim>&> (scratch_base);
+      internal::Assembly::CopyData::StokesSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::StokesSystem<dim>&> (data_base);
 
       AssertThrow(!this->get_mesh_deformation_handler().get_free_surface_boundary_indicators().empty(),
                   ExcMessage("Applying free surface stabilization, even though no free surface is active. "));
@@ -244,7 +244,7 @@ namespace aspect
       AffineConstraints<double> mass_matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, mass_matrix_constraints);
 
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,

@@ -285,8 +285,8 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+3) {}
-      virtual void vector_value (const Point< dim > &/*position*/,
-                                 Vector< double >   &values) const
+      virtual void vector_value (const Point<dim> &/*position*/,
+                                 Vector<double>   &values) const
       {
         values[0] = 0.0; // velocity x
         values[1] = 0.0; // velocity z

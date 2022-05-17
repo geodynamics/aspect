@@ -152,7 +152,7 @@ namespace aspect
          * Return the set of periodic boundaries as described in the input
          * file.
          */
-        std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
+        std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
             get_periodic_boundary_pairs () const override;
 
         /**

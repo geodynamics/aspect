@@ -313,7 +313,7 @@ namespace aspect
      * points is calculated.
      */
     double
-    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2> &point_list,
                      const dealii::Point<2> &point);
 
     /**

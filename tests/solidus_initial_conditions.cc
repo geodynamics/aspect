@@ -259,7 +259,7 @@ namespace aspect
       AssertThrow(solidus_curve.n_points!=0,ExcMessage("Error reading solidus file."));
       AssertThrow(solidus_curve.is_radius==true,ExcMessage("The solidus curve has to be radius dependent."));
       const GeometryModel::SphericalShell<dim> *spherical_geometry_model=
-        dynamic_cast< const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
+        dynamic_cast<const GeometryModel::SphericalShell<dim> *>(&this->get_geometry_model());
 
       AssertThrow(spherical_geometry_model!=0,
                   ExcMessage("This initial condition can only be used with spherical shell geometry model."));

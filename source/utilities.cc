@@ -974,7 +974,7 @@ namespace aspect
 
       for (unsigned int i = 0; i < n_poly_points; ++i)
         {
-          const std::array<Point<2>,2 > list = {{point_list[i], shifted_point_list[i]}};
+          const std::array<Point<2>,2> list = {{point_list[i], shifted_point_list[i]}};
           distances[i] = distance_to_line(list, point);
         }
 
@@ -983,7 +983,7 @@ namespace aspect
     }
 
     double
-    distance_to_line(const std::array<dealii::Point<2>,2 > &point_list,
+    distance_to_line(const std::array<dealii::Point<2>,2> &point_list,
                      const dealii::Point<2> &point)
     {
 
@@ -1575,11 +1575,11 @@ namespace aspect
           /**
            * diagonal and off-diagonals above
            */
-          std::vector< std::vector<double>> m_upper;
+          std::vector<std::vector<double>> m_upper;
           /**
            * diagonals below the diagonal
            */
-          std::vector< std::vector<double>> m_lower;
+          std::vector<std::vector<double>> m_lower;
       };
 
       band_matrix::band_matrix(int dim, int n_u, int n_l)

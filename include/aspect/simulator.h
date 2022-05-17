@@ -1837,7 +1837,7 @@ namespace aspect
       std::ofstream log_file_stream;
 
       using TeeDevice = boost::iostreams::tee_device<std::ostream, std::ofstream>;
-      using TeeStream = boost::iostreams::stream< TeeDevice >;
+      using TeeStream = boost::iostreams::stream<TeeDevice>;
 
       TeeDevice iostream_tee_device;
       TeeStream iostream_tee_stream;

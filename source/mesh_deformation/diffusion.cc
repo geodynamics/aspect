@@ -96,8 +96,8 @@ namespace aspect
       AffineConstraints<double> matrix_constraints(mesh_locally_relevant);
       DoFTools::make_hanging_node_constraints(mesh_deformation_dof_handler, matrix_constraints);
 
-      std::set< types::boundary_id > periodic_boundary_indicators;
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      std::set<types::boundary_id> periodic_boundary_indicators;
+      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         {

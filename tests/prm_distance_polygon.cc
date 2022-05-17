@@ -11,14 +11,14 @@ int f()
   const int dim=3;
 
   // A square polygon
-  std::vector< Point<2>> polygon(4);
+  std::vector<Point<2>> polygon(4);
   polygon[0] = Point<2>(0.0,0.0);
   polygon[1] = Point<2>(1.0,0.0);
   polygon[2] = Point<2>(1.0,1.0);
   polygon[3] = Point<2>(0.0,1.0);
 
   // A concave polygon
-  std::vector< Point<2>> concave_polygon(5);
+  std::vector<Point<2>> concave_polygon(5);
   concave_polygon[0] = Point<2>(0.0,0.0);
   concave_polygon[1] = Point<2>(1.0,0.0);
   concave_polygon[2] = Point<2>(1.0,1.0);
@@ -26,7 +26,7 @@ int f()
   concave_polygon[4] = Point<2>(0.0,1.0);
 
   // A selfcrossing polygon
-  std::vector< Point<2>> crossing_polygon(4);
+  std::vector<Point<2>> crossing_polygon(4);
   crossing_polygon[0] = Point<2>(0.0,0.0);
   crossing_polygon[1] = Point<2>(1.0,0.0);
   crossing_polygon[2] = Point<2>(1.0,-1.0);

@@ -312,7 +312,7 @@ namespace aspect
           tangential_mesh_deformation_boundary_indicators.erase(boundary_id);
 
         // All periodic boundaries are implicitly treated as tangential mesh deformation boundaries.
-        using periodic_boundary_pair = std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>;
+        using periodic_boundary_pair = std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>;
         for (const periodic_boundary_pair &p : this->get_geometry_model().get_periodic_boundary_pairs())
           {
             tangential_mesh_deformation_boundary_indicators.insert(p.first.first);
@@ -406,7 +406,7 @@ namespace aspect
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         DoFTools::make_periodicity_constraints(mesh_deformation_dof_handler,
@@ -505,8 +505,8 @@ namespace aspect
       mesh_velocity_constraints.merge(mesh_vertex_constraints);
 
       // Add the vanilla periodic boundary constraints
-      std::set< types::boundary_id > periodic_boundaries;
-      using periodic_boundary_pairs = std::set< std::pair< std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
+      std::set<types::boundary_id> periodic_boundaries;
+      using periodic_boundary_pairs = std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>;
       const periodic_boundary_pairs pbp = this->get_geometry_model().get_periodic_boundary_pairs();
       for (const auto &p : pbp)
         {

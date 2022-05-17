@@ -112,7 +112,7 @@ namespace aspect
                          std::vector<std::unique_ptr<AssemblerType>> &assemblers)
     {
       for (unsigned int i=0; i<assemblers.size(); ++i)
-        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>* >(assemblers[i].get()))
+        if (SimulatorAccess<dim> *p = dynamic_cast<SimulatorAccess<dim>*>(assemblers[i].get()))
           p->initialize_simulator(simulator);
     }
   }
