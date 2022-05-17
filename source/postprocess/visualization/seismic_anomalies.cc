@@ -158,7 +158,7 @@ namespace aspect
 
                     // Compute the percentage deviation from the average
                     const double Vs_average = (1. - fractional_slice)*padded_Vs_depth_average[idx] + fractional_slice*padded_Vs_depth_average[idx+1];
-                    (*return_value.second)(cell->active_cell_index()) = (Vs - Vs_average)/Vs_average*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vs - Vs_average)/Vs_average * 100 /* per cent */;
                   }
               break;
             }
@@ -236,7 +236,7 @@ namespace aspect
                     const double adiabatic_Vp = adiabatic_seismic_outputs->vp[0];
 
                     // Compute the percentage deviation from the average
-                    (*return_value.second)(cell->active_cell_index()) = (Vp - adiabatic_Vp)/adiabatic_Vp*1e2;
+                    (*return_value.second)(cell->active_cell_index()) = (Vp - adiabatic_Vp)/adiabatic_Vp * 100 /* per cent */;
                   }
               break;
             }
