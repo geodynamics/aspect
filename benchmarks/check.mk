@@ -174,5 +174,5 @@ viscoelastic_plastic_shear_bands/: dummy
 
 # amg.prm does not converge with a coarse mesh
 nsinker_spherical_shell/: dummy
-	+@$(def); make_lib $@/plugin
+	+@$(def); make_lib $@
 	@$(def); run_prm $@ gmg.prm
