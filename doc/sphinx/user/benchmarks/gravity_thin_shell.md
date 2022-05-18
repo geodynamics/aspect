@@ -113,7 +113,7 @@ points per cell. &lsquo;a.v.&rsquo; stands for analytical value.*
 
 </div>
 
-  
+
 
 The accuracy of the calculations increases with $I$ but so does the time spent
 in the postprocessor: for $I\in\{-1,0,1,2\}$ this time was about 18, 132, 440

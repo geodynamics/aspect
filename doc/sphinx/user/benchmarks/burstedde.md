@@ -126,7 +126,7 @@ label="tab:burstedde-table">\[tab:burstedde-table\]</span>*
 
 </div>
 
-&nbsp;  
+&nbsp;
 &nbsp;
 
 The convergence of the numerical error of this benchmark has been analysed by

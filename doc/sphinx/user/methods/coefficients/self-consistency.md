@@ -26,7 +26,7 @@ The following equations provide the definitions and relationships between thermo
 ```{math}
 :label: eq:mm_betaT_g
   \beta_T = -\rho \left( \frac{\partial^2 \mathcal{G}}{\partial {p}^2}  \right)_{T},
-```  
+```
 ```{math}
 :label: eq:mm_isobaric_heat_capacity
   C_p = -T \left( \frac{\partial^2 \mathcal{G}}{\partial {T}^2}  \right)_{p},

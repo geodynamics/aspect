@@ -22,4 +22,3 @@ domain. Additionally, a transition zone with distance 0.89583 from the
 origin (or about 660km depth if this is assumed to be a
 non-dimensionalized Earth-like computation) with a sharp viscosity
 jump can be enabled.
-

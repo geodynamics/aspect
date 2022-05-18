@@ -31,7 +31,7 @@ show the advantages of using the artificial viscosity smoothing feature.
 By applying the following changes shown below to the parameters of the already
 existing file
 
-    cookbooks/shell_simple_2d/shell_simple_2d.prm, 
+    cookbooks/shell_simple_2d/shell_simple_2d.prm,
 
 ``` prmfile
 ```

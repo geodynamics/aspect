@@ -26,7 +26,7 @@ This is made more complicated by the use of dynamically changing meshes, and it 
 -   *Modularity of the code:* A code that implements all of these methods from *scratch* will be unwieldy, unreadable and unusable as a community resource.
 To avoid this, we build our implementation on widely used and well tested libraries that can provide researchers interested in extending it with the support of a large user community.
 Specifically, we use the deal.II library ({cite}`bangerth:etal:2007,bangerth:etal:2012`) for meshes, finite elements and everything discretization related; the Trilinos library ({cite}`heroux:etal:2005,trilinos-web-page`) for scalable and parallel linear algebra; and p4est ({cite}`p4est`) for distributed, adaptive meshes.
-As a consequence, our code is freed of the mundane tasks of defining finite element shape functions or dealing with the data structures of linear algebra, can focus on the high-level description of what is supposed to happen, and remains relatively compact.    
+As a consequence, our code is freed of the mundane tasks of defining finite element shape functions or dealing with the data structures of linear algebra, can focus on the high-level description of what is supposed to happen, and remains relatively compact.
 The code will also automatically benefit from improvements to the underlying libraries with their much larger development communities.
 ASPECT is extensively documented to enable other researchers to understand, test, use, and extend it.
 

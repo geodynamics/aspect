@@ -157,18 +157,18 @@ second underscore (to read in volume fractions of different phases). As an
 example, the header of the table used in this cookbook is given below:
 
     |6.6.6
-    PYR-Ringwood88_2.tab                                                                                
+    PYR-Ringwood88_2.tab
                2
-    T(K)    
-       400.00360000000001     
-       19.999960000020000     
+    T(K)
+       400.00360000000001
+       19.999960000020000
              181
-    P(bar)  
-       15001.334999999999     
-       5114.9322988556905     
+    P(bar)
+       15001.334999999999
+       5114.9322988556905
              262
                8
-    T(K)           P(bar)         rho,kg/m3      alpha,1/K      cp,J/K/kg      vp,km/s        vs,km/s        h,J/kg 
+    T(K)           P(bar)         rho,kg/m3      alpha,1/K      cp,J/K/kg      vp,km/s        vs,km/s        h,J/kg
 
 Below this header, the table contains the actual data values, using one column
 for each of the property names given in the last line of the header. It is

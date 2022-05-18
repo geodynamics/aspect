@@ -23,7 +23,7 @@ necessary is an evaluation function that looks like this:
 template <int dim>
     void
     SimplerWithCrust<dim>::
-    evaluate(const typename Interface<dim>::MaterialModelInputs &in, 
+    evaluate(const typename Interface<dim>::MaterialModelInputs &in,
              typename Interface<dim>::MaterialModelOutputs &out ) const
     {
       for (unsigned int i=0; i<in.n_evaluation_points(); ++i)

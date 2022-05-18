@@ -99,7 +99,7 @@ The other lines you will have to modify are the following:
     for viscosity in "1e24" "3.3e24" "1e25" "3.3e25" "1e26" "3.3e26" "1e27"
     do
       for DeltaT in "10" "30" "100" "300" "1000" "3000" "10000"
-      do   
+      do
 
 What happens here is that the script performs a loop (a so-called for-loop):
 It executes all the commands within the loop for each of the values listed
@@ -187,7 +187,7 @@ In order to do that, you can modify the file `run.sh` in the
     for viscosity in "value1" "value2" "value3"
     do
       for DeltaT in "temperature_value"
-      do  
+      do
 
 where value1, value2 and value3 should be replaced by your three viscosity
 values, and temperature_value by your value for the temperature variation
@@ -239,7 +239,7 @@ logarithmic scale!) For an Earth-like temperature variation across the mantle
 of your celestial body, what viscosity would be required for convection to be
 likely?
 
-###### Bonus question 
+###### Bonus question
 
 Find an approximate equation for the line of the onset of convection in the
 plot. Relate it to the forces acting in the model: Why does the equation

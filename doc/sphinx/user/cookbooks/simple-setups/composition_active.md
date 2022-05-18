@@ -53,7 +53,7 @@ postprocessing section, using the `density` visualization plugin:
 <img src="cookbooks/composition_active/doc/visit0001.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />
 <img src="cookbooks/composition_active/doc/visit0002.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
-  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />  
+  12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />
 <img src="cookbooks/composition_active/doc/visit0003.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />
 <img src="cookbooks/composition_active/doc/visit0004.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,

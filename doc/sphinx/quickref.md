@@ -133,7 +133,7 @@ Captions are optional.
 
 When you're in the working on documentation for cookbooks, here's the path to the cookbooks folder: ../../../../manual/cookbooks/
 
-And if you're benchmarks documentation: ../../../manual/cookbooks/ 
+And if you're benchmarks documentation: ../../../manual/cookbooks/
 
 ## Tables
 
