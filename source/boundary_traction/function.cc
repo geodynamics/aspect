@@ -47,6 +47,8 @@ namespace aspect
         this->get_geometry_model().cartesian_to_other_coordinates(position, coordinate_system);
       for (unsigned int d=0; d<dim; ++d)
         traction[d] = boundary_traction_function.value(Utilities::convert_array_to_point<dim>(point.get_coordinates()),d);
+      if (use_spherical_unit_vectors)
+        traction = Utilities::Coordinates::spherical_to_cartesian_vector(traction, position);
 
       return traction;
     }
