@@ -44,7 +44,7 @@ This makes it clear that the true driver of motion is in fact the *deviation* of
 
 As such, the Boussinesq approximation can be justified.
 On the other hand, given the real pressures and temperatures at the bottom of the Earth's mantle, it is arguable whether the density can be considered to be almost constant.
-Most realistic models predict that the density of mantle rocks increases from somewhere around 3300 at the surface to over 5000 kilogram per cubic meters at the core mantle boundary, due to the increasing lithostatic pressure.
+Most realistic models predict that the density of mantle rocks increases from somewhere around 3300 at the surface to over 5000 kilogram per cubic meters at the core-mantle boundary, due to the increasing lithostatic pressure.
 While this appears to be a large variability, if the density changes slowly with depth, this is not in itself an indication that the Boussinesq approximation will be wrong.
 To this end, consider that the continuity equation can be rewritten as $\frac 1\rho \nabla \cdot (\rho \mathbf u)=0$, which we can multiply out to obtain
 ```{math}
