@@ -123,7 +123,7 @@ indent_file() {
   if ! diff -q "${file}" "${tmpfile}" >/dev/null; then
     mv "${tmpfile}" "${file}"
   else
-    rm ${tmpfile}
+    rm "${tmpfile}"
   fi
 }
 export -f indent_file
