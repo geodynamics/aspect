@@ -32,6 +32,3 @@
 --max-instatement-indent=80
 --suffix=none
 --quiet
-
-# use "classname<dim>", not "classname< dim >" or other variations
---close-templates
