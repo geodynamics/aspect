@@ -85,6 +85,12 @@ namespace aspect
                              "will create a function, in which only the first "
                              "parameter is non-zero, which is interpreted to "
                              "be the depth of the point.");
+          prm.declare_entry ("Use spherical unit vectors", "false",
+                             Patterns::Bool (),
+                             "Specify velocity as $r$, $\\phi$, and $\\theta$ components "
+                             "instead of $x$, $y$, and $z$. Positive velocities point up, east, "
+                             "and north (in 3D) or out and clockwise (in 2D). "
+                             "This setting only makes sense for spherical geometries.");
 
           Functions::ParsedFunction<dim>::declare_parameters (prm, dim);
         }
@@ -103,6 +109,11 @@ namespace aspect
         prm.enter_subsection("Function");
         {
           coordinate_system = Utilities::Coordinates::string_to_coordinate_system(prm.get("Coordinate system"));
+          use_spherical_unit_vectors = prm.get_bool("Use spherical unit vectors");
+          if (use_spherical_unit_vectors)
+            AssertThrow (this->get_geometry_model().natural_coordinate_system() == Utilities::Coordinates::spherical,
+                         ExcMessage ("Spherical unit vectors should not be used "
+                                     "when geometry model is not spherical."));
         }
         try
           {
