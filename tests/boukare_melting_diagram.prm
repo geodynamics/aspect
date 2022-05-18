@@ -3,6 +3,11 @@
 # melting model, with a zero melt fraction below the solidus,
 # and a melt fraction of 1 above the solidus.
 
+# To plot the output:
+# gnuplot
+# set view map
+# splot "solution-00000.0000.gnuplot" using 1:2:25 palette
+
 # At the top, we define the number of space dimensions we would like to
 # work in:
 set Dimension                              = 2
@@ -25,8 +30,8 @@ set Use operator splitting = true
 set Maximum time step                      = 1e3
 
 subsection Compositional fields
-  set Number of fields = 8
-  set Names of fields  = bridgmanite, iron_fraction_in_bridgmanite, iron_fraction_in_periclase, porosity, iron_fraction_in_the_melt, magnesium_fraction_in_the_melt, molar_Fe_in_solid, molar_Fe_in_melt
+  set Number of fields = 3
+  set Names of fields  = porosity, molar_Fe_in_solid, molar_Fe_in_melt
 end
 
 subsection Melt settings
@@ -74,7 +79,7 @@ end
 subsection Initial composition model
   set List of model names = function
   subsection Function
-   set Function expression = 0.5; 0.11; 0.11; 0; 0.11; 0; x+1e-7; x+1e-7
+   set Function expression = 0; x+1e-7; x+1e-7
   end
 end
 
@@ -83,20 +88,6 @@ subsection Boundary velocity model
   set Prescribed velocity boundary indicators =
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
-
-subsection Boundary temperature model
-  set Allow fixed temperature on outflow boundaries = false
-  set List of model names = initial temperature
-  subsection Initial temperature
-    set Maximal temperature = 5000
-  end
-end
-
-subsection Boundary composition model
-  set Allow fixed composition on outflow boundaries = false
-  set Model name = initial composition
-end
-
 
 subsection Heating model
   set List of model names =
@@ -140,7 +131,7 @@ subsection Mesh refinement
   set Minimum refinement level                 = 0
 
   subsection Composition threshold
-    set Compositional field thresholds = 1,1,1,0.01,1,1,1,1
+    set Compositional field thresholds = 0.01,1,1
   end
 end
 

@@ -1,4 +1,7 @@
 # Test for the equation of state in the boukare material model
+# The test has only 4 cells and a constant temperature and pressure.
+# It checks if the material properties are computed correctly for
+# a mixture of melt and solid with (20% porosity).
 
 
 # At the top, we define the number of space dimensions we would like to

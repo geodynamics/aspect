@@ -6,7 +6,7 @@
 Number of active cells: 1 (on 1 levels)
 Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
-*** Timestep 0:  t=0 years
+*** Timestep 0:  t=0 years, dt=0 years
    Solving temperature system... 0 iterations.
    Skipping porosity composition solve because RHS is zero.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -18,8 +18,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0/0/0 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00000
 
-*** Timestep 1:  t=0.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 1:  t=0.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -31,8 +31,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.001175/0.001175/0.001175 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00001
 
-*** Timestep 2:  t=0.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 2:  t=0.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -44,8 +44,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.00235/0.00235/0.00235 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00002
 
-*** Timestep 3:  t=0.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 3:  t=0.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -57,8 +57,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.003524/0.003524/0.003524 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00003
 
-*** Timestep 4:  t=0.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 4:  t=0.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -70,8 +70,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.004698/0.004698/0.004698 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00004
 
-*** Timestep 5:  t=0.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 5:  t=0.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -83,8 +83,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.005871/0.005871/0.005871 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00005
 
-*** Timestep 6:  t=0.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 6:  t=0.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -96,8 +96,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.007044/0.007044/0.007044 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00006
 
-*** Timestep 7:  t=0.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 7:  t=0.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -109,8 +109,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.008217/0.008217/0.008217 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00007
 
-*** Timestep 8:  t=0.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 8:  t=0.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -122,8 +122,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.009389/0.009389/0.009389 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00008
 
-*** Timestep 9:  t=0.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 9:  t=0.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -135,8 +135,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01056/0.01056/0.01056 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00009
 
-*** Timestep 10:  t=1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 10:  t=1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -148,8 +148,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01173/0.01173/0.01173 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00010
 
-*** Timestep 11:  t=1.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 11:  t=1.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -161,8 +161,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0129/0.0129/0.0129 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00011
 
-*** Timestep 12:  t=1.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 12:  t=1.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -174,8 +174,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01407/0.01407/0.01407 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00012
 
-*** Timestep 13:  t=1.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 13:  t=1.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -187,8 +187,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01524/0.01524/0.01524 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00013
 
-*** Timestep 14:  t=1.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 14:  t=1.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -200,8 +200,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01641/0.01641/0.01641 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00014
 
-*** Timestep 15:  t=1.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 15:  t=1.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -213,8 +213,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01758/0.01758/0.01758 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00015
 
-*** Timestep 16:  t=1.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 16:  t=1.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -226,8 +226,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01875/0.01875/0.01875 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00016
 
-*** Timestep 17:  t=1.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 17:  t=1.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -239,8 +239,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.01992/0.01992/0.01992 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00017
 
-*** Timestep 18:  t=1.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 18:  t=1.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -252,8 +252,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02109/0.02109/0.02109 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00018
 
-*** Timestep 19:  t=1.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 19:  t=1.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -265,8 +265,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02225/0.02225/0.02225 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00019
 
-*** Timestep 20:  t=2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 20:  t=2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -278,8 +278,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02342/0.02342/0.02342 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00020
 
-*** Timestep 21:  t=2.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 21:  t=2.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -291,8 +291,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02459/0.02459/0.02459 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00021
 
-*** Timestep 22:  t=2.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 22:  t=2.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -304,8 +304,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02575/0.02575/0.02575 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00022
 
-*** Timestep 23:  t=2.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 23:  t=2.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -317,8 +317,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02692/0.02692/0.02692 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00023
 
-*** Timestep 24:  t=2.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 24:  t=2.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -330,8 +330,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02808/0.02808/0.02808 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00024
 
-*** Timestep 25:  t=2.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 25:  t=2.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -343,8 +343,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.02925/0.02925/0.02925 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00025
 
-*** Timestep 26:  t=2.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 26:  t=2.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -356,8 +356,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03041/0.03041/0.03041 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00026
 
-*** Timestep 27:  t=2.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 27:  t=2.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -369,8 +369,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03158/0.03158/0.03158 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00027
 
-*** Timestep 28:  t=2.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 28:  t=2.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -382,8 +382,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03274/0.03274/0.03274 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00028
 
-*** Timestep 29:  t=2.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 29:  t=2.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -395,8 +395,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0339/0.0339/0.0339 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00029
 
-*** Timestep 30:  t=3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 30:  t=3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -408,8 +408,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03506/0.03506/0.03506 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00030
 
-*** Timestep 31:  t=3.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 31:  t=3.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -421,8 +421,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03623/0.03623/0.03623 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00031
 
-*** Timestep 32:  t=3.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 32:  t=3.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -434,8 +434,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03739/0.03739/0.03739 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00032
 
-*** Timestep 33:  t=3.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 33:  t=3.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -447,8 +447,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03855/0.03855/0.03855 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00033
 
-*** Timestep 34:  t=3.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 34:  t=3.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -460,8 +460,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.03971/0.03971/0.03971 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00034
 
-*** Timestep 35:  t=3.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 35:  t=3.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -473,8 +473,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04087/0.04087/0.04087 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00035
 
-*** Timestep 36:  t=3.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 36:  t=3.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -486,8 +486,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04203/0.04203/0.04203 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00036
 
-*** Timestep 37:  t=3.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 37:  t=3.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -499,8 +499,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04319/0.04319/0.04319 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00037
 
-*** Timestep 38:  t=3.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 38:  t=3.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -512,8 +512,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04434/0.04434/0.04434 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00038
 
-*** Timestep 39:  t=3.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 39:  t=3.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -525,8 +525,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0455/0.0455/0.0455 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00039
 
-*** Timestep 40:  t=4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 40:  t=4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -538,8 +538,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04666/0.04666/0.04666 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00040
 
-*** Timestep 41:  t=4.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 41:  t=4.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -551,8 +551,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04782/0.04782/0.04782 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00041
 
-*** Timestep 42:  t=4.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 42:  t=4.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -564,8 +564,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.04897/0.04897/0.04897 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00042
 
-*** Timestep 43:  t=4.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 43:  t=4.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -577,8 +577,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05013/0.05013/0.05013 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00043
 
-*** Timestep 44:  t=4.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 44:  t=4.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -590,8 +590,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05128/0.05128/0.05128 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00044
 
-*** Timestep 45:  t=4.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 45:  t=4.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -603,8 +603,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05244/0.05244/0.05244 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00045
 
-*** Timestep 46:  t=4.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 46:  t=4.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -616,8 +616,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05359/0.05359/0.05359 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00046
 
-*** Timestep 47:  t=4.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 47:  t=4.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -629,8 +629,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05475/0.05475/0.05475 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00047
 
-*** Timestep 48:  t=4.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 48:  t=4.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -642,8 +642,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0559/0.0559/0.0559 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00048
 
-*** Timestep 49:  t=4.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 49:  t=4.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -655,8 +655,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05705/0.05705/0.05705 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00049
 
-*** Timestep 50:  t=5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 50:  t=5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -668,8 +668,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05821/0.05821/0.05821 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00050
 
-*** Timestep 51:  t=5.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 51:  t=5.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -681,8 +681,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.05936/0.05936/0.05936 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00051
 
-*** Timestep 52:  t=5.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 52:  t=5.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -694,8 +694,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06051/0.06051/0.06051 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00052
 
-*** Timestep 53:  t=5.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 53:  t=5.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -707,8 +707,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06166/0.06166/0.06166 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00053
 
-*** Timestep 54:  t=5.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 54:  t=5.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -720,8 +720,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06281/0.06281/0.06281 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00054
 
-*** Timestep 55:  t=5.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 55:  t=5.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -733,8 +733,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06396/0.06396/0.06396 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00055
 
-*** Timestep 56:  t=5.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 56:  t=5.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -746,8 +746,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06511/0.06511/0.06511 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00056
 
-*** Timestep 57:  t=5.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 57:  t=5.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -759,8 +759,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06626/0.06626/0.06626 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00057
 
-*** Timestep 58:  t=5.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 58:  t=5.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -772,8 +772,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06741/0.06741/0.06741 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00058
 
-*** Timestep 59:  t=5.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 59:  t=5.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -785,8 +785,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.06855/0.06855/0.06855 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00059
 
-*** Timestep 60:  t=6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 60:  t=6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -798,8 +798,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0697/0.0697/0.0697 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00060
 
-*** Timestep 61:  t=6.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 61:  t=6.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -811,8 +811,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07085/0.07085/0.07085 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00061
 
-*** Timestep 62:  t=6.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 62:  t=6.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -824,8 +824,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07199/0.07199/0.07199 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00062
 
-*** Timestep 63:  t=6.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 63:  t=6.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -837,8 +837,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07314/0.07314/0.07314 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00063
 
-*** Timestep 64:  t=6.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 64:  t=6.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -850,8 +850,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07429/0.07429/0.07429 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00064
 
-*** Timestep 65:  t=6.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 65:  t=6.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -863,8 +863,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07543/0.07543/0.07543 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00065
 
-*** Timestep 66:  t=6.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 66:  t=6.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -876,8 +876,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07657/0.07657/0.07657 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00066
 
-*** Timestep 67:  t=6.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 67:  t=6.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -889,8 +889,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07772/0.07772/0.07772 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00067
 
-*** Timestep 68:  t=6.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 68:  t=6.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -902,8 +902,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.07886/0.07886/0.07886 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00068
 
-*** Timestep 69:  t=6.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 69:  t=6.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -915,8 +915,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08/0.08/0.08 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00069
 
-*** Timestep 70:  t=7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 70:  t=7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -928,8 +928,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08114/0.08114/0.08114 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00070
 
-*** Timestep 71:  t=7.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 71:  t=7.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -941,8 +941,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08229/0.08229/0.08229 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00071
 
-*** Timestep 72:  t=7.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 72:  t=7.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -954,8 +954,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08343/0.08343/0.08343 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00072
 
-*** Timestep 73:  t=7.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 73:  t=7.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -967,8 +967,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08457/0.08457/0.08457 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00073
 
-*** Timestep 74:  t=7.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 74:  t=7.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -980,8 +980,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08571/0.08571/0.08571 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00074
 
-*** Timestep 75:  t=7.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 75:  t=7.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -993,8 +993,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08684/0.08684/0.08684 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00075
 
-*** Timestep 76:  t=7.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 76:  t=7.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1006,8 +1006,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08798/0.08798/0.08798 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00076
 
-*** Timestep 77:  t=7.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 77:  t=7.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1019,8 +1019,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.08912/0.08912/0.08912 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00077
 
-*** Timestep 78:  t=7.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 78:  t=7.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1032,8 +1032,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09026/0.09026/0.09026 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00078
 
-*** Timestep 79:  t=7.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 79:  t=7.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1045,8 +1045,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0914/0.0914/0.0914 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00079
 
-*** Timestep 80:  t=8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 80:  t=8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1058,8 +1058,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09253/0.09253/0.09253 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00080
 
-*** Timestep 81:  t=8.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 81:  t=8.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1071,8 +1071,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09367/0.09367/0.09367 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00081
 
-*** Timestep 82:  t=8.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 82:  t=8.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1084,8 +1084,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0948/0.0948/0.0948 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00082
 
-*** Timestep 83:  t=8.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 83:  t=8.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1097,8 +1097,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09594/0.09594/0.09594 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00083
 
-*** Timestep 84:  t=8.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 84:  t=8.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1110,8 +1110,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09707/0.09707/0.09707 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00084
 
-*** Timestep 85:  t=8.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 85:  t=8.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1123,8 +1123,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.0982/0.0982/0.0982 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00085
 
-*** Timestep 86:  t=8.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 86:  t=8.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1136,8 +1136,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09934/0.09934/0.09934 // 0.001/0.001/0.001 // 0.001/0.001/0.001
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00086
 
-*** Timestep 87:  t=8.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 87:  t=8.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1149,8 +1149,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09933/0.09933/0.09933 // 0.0009987/0.0009987/0.0009987 // 0.001007/0.001007/0.001007
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00087
 
-*** Timestep 88:  t=8.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 88:  t=8.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1162,8 +1162,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09933/0.09933/0.09933 // 0.0009974/0.0009974/0.0009974 // 0.001014/0.001014/0.001014
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00088
 
-*** Timestep 89:  t=8.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 89:  t=8.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1175,8 +1175,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09932/0.09932/0.09932 // 0.0009962/0.0009962/0.0009962 // 0.00102/0.00102/0.00102
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00089
 
-*** Timestep 90:  t=9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 90:  t=9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1188,8 +1188,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09932/0.09932/0.09932 // 0.0009949/0.0009949/0.0009949 // 0.001027/0.001027/0.001027
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00090
 
-*** Timestep 91:  t=9.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 91:  t=9.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1201,8 +1201,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09932/0.09932/0.09932 // 0.0009937/0.0009937/0.0009937 // 0.001034/0.001034/0.001034
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00091
 
-*** Timestep 92:  t=9.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 92:  t=9.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1214,8 +1214,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09932/0.09932/0.09932 // 0.0009924/0.0009924/0.0009924 // 0.00104/0.00104/0.00104
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00092
 
-*** Timestep 93:  t=9.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 93:  t=9.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1227,8 +1227,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09932/0.09932/0.09932 // 0.0009912/0.0009912/0.0009912 // 0.001047/0.001047/0.001047
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00093
 
-*** Timestep 94:  t=9.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 94:  t=9.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1240,8 +1240,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.00099/0.00099/0.00099 // 0.001053/0.001053/0.001053
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00094
 
-*** Timestep 95:  t=9.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 95:  t=9.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1253,8 +1253,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009887/0.0009887/0.0009887 // 0.00106/0.00106/0.00106
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00095
 
-*** Timestep 96:  t=9.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 96:  t=9.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1266,8 +1266,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009875/0.0009875/0.0009875 // 0.001067/0.001067/0.001067
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00096
 
-*** Timestep 97:  t=9.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 97:  t=9.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1279,8 +1279,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009863/0.0009863/0.0009863 // 0.001073/0.001073/0.001073
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00097
 
-*** Timestep 98:  t=9.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 98:  t=9.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1292,8 +1292,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000985/0.000985/0.000985 // 0.00108/0.00108/0.00108
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00098
 
-*** Timestep 99:  t=9.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 99:  t=9.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1305,8 +1305,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009838/0.0009838/0.0009838 // 0.001086/0.001086/0.001086
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00099
 
-*** Timestep 100:  t=10 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 100:  t=10 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1320,12 +1320,12 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
-*** Timestep 101:  t=10.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 101:  t=10.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1337,8 +1337,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009814/0.0009814/0.0009814 // 0.001099/0.001099/0.001099
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00101
 
-*** Timestep 102:  t=10.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 102:  t=10.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1350,8 +1350,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009802/0.0009802/0.0009802 // 0.001106/0.001106/0.001106
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00102
 
-*** Timestep 103:  t=10.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 103:  t=10.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1363,8 +1363,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000979/0.000979/0.000979 // 0.001112/0.001112/0.001112
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00103
 
-*** Timestep 104:  t=10.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 104:  t=10.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1376,8 +1376,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009778/0.0009778/0.0009778 // 0.001118/0.001118/0.001118
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00104
 
-*** Timestep 105:  t=10.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 105:  t=10.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1389,8 +1389,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009766/0.0009766/0.0009766 // 0.001125/0.001125/0.001125
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00105
 
-*** Timestep 106:  t=10.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 106:  t=10.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1402,8 +1402,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009754/0.0009754/0.0009754 // 0.001131/0.001131/0.001131
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00106
 
-*** Timestep 107:  t=10.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 107:  t=10.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1415,8 +1415,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009742/0.0009742/0.0009742 // 0.001138/0.001138/0.001138
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00107
 
-*** Timestep 108:  t=10.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 108:  t=10.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1428,8 +1428,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000973/0.000973/0.000973 // 0.001144/0.001144/0.001144
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00108
 
-*** Timestep 109:  t=10.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 109:  t=10.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1441,8 +1441,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009718/0.0009718/0.0009718 // 0.00115/0.00115/0.00115
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00109
 
-*** Timestep 110:  t=11 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 110:  t=11 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1454,8 +1454,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009706/0.0009706/0.0009706 // 0.001157/0.001157/0.001157
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00110
 
-*** Timestep 111:  t=11.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 111:  t=11.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1467,8 +1467,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009694/0.0009694/0.0009694 // 0.001163/0.001163/0.001163
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00111
 
-*** Timestep 112:  t=11.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 112:  t=11.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1480,8 +1480,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009682/0.0009682/0.0009682 // 0.001169/0.001169/0.001169
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00112
 
-*** Timestep 113:  t=11.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 113:  t=11.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1493,8 +1493,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000967/0.000967/0.000967 // 0.001176/0.001176/0.001176
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00113
 
-*** Timestep 114:  t=11.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 114:  t=11.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1506,8 +1506,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009658/0.0009658/0.0009658 // 0.001182/0.001182/0.001182
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00114
 
-*** Timestep 115:  t=11.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 115:  t=11.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1519,8 +1519,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009646/0.0009646/0.0009646 // 0.001188/0.001188/0.001188
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00115
 
-*** Timestep 116:  t=11.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 116:  t=11.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1532,8 +1532,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009634/0.0009634/0.0009634 // 0.001195/0.001195/0.001195
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00116
 
-*** Timestep 117:  t=11.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 117:  t=11.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1545,8 +1545,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009623/0.0009623/0.0009623 // 0.001201/0.001201/0.001201
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00117
 
-*** Timestep 118:  t=11.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 118:  t=11.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1558,8 +1558,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009611/0.0009611/0.0009611 // 0.001207/0.001207/0.001207
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00118
 
-*** Timestep 119:  t=11.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 119:  t=11.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1571,8 +1571,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009599/0.0009599/0.0009599 // 0.001213/0.001213/0.001213
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00119
 
-*** Timestep 120:  t=12 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 120:  t=12 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1584,8 +1584,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009588/0.0009588/0.0009588 // 0.00122/0.00122/0.00122
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00120
 
-*** Timestep 121:  t=12.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 121:  t=12.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1597,8 +1597,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009576/0.0009576/0.0009576 // 0.001226/0.001226/0.001226
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00121
 
-*** Timestep 122:  t=12.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 122:  t=12.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1610,8 +1610,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009564/0.0009564/0.0009564 // 0.001232/0.001232/0.001232
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00122
 
-*** Timestep 123:  t=12.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 123:  t=12.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1623,8 +1623,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009553/0.0009553/0.0009553 // 0.001238/0.001238/0.001238
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00123
 
-*** Timestep 124:  t=12.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 124:  t=12.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1636,8 +1636,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009541/0.0009541/0.0009541 // 0.001244/0.001244/0.001244
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00124
 
-*** Timestep 125:  t=12.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 125:  t=12.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1649,8 +1649,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009529/0.0009529/0.0009529 // 0.001251/0.001251/0.001251
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00125
 
-*** Timestep 126:  t=12.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 126:  t=12.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1662,8 +1662,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009518/0.0009518/0.0009518 // 0.001257/0.001257/0.001257
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00126
 
-*** Timestep 127:  t=12.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 127:  t=12.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1675,8 +1675,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009506/0.0009506/0.0009506 // 0.001263/0.001263/0.001263
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00127
 
-*** Timestep 128:  t=12.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 128:  t=12.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1688,8 +1688,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009495/0.0009495/0.0009495 // 0.001269/0.001269/0.001269
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00128
 
-*** Timestep 129:  t=12.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 129:  t=12.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1701,8 +1701,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009483/0.0009483/0.0009483 // 0.001275/0.001275/0.001275
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00129
 
-*** Timestep 130:  t=13 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 130:  t=13 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1714,8 +1714,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009472/0.0009472/0.0009472 // 0.001281/0.001281/0.001281
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00130
 
-*** Timestep 131:  t=13.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 131:  t=13.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1727,8 +1727,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000946/0.000946/0.000946 // 0.001287/0.001287/0.001287
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00131
 
-*** Timestep 132:  t=13.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 132:  t=13.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1740,8 +1740,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009449/0.0009449/0.0009449 // 0.001293/0.001293/0.001293
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00132
 
-*** Timestep 133:  t=13.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 133:  t=13.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1753,8 +1753,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009438/0.0009438/0.0009438 // 0.001299/0.001299/0.001299
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00133
 
-*** Timestep 134:  t=13.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 134:  t=13.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1766,8 +1766,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009426/0.0009426/0.0009426 // 0.001306/0.001306/0.001306
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00134
 
-*** Timestep 135:  t=13.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 135:  t=13.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1779,8 +1779,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009415/0.0009415/0.0009415 // 0.001312/0.001312/0.001312
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00135
 
-*** Timestep 136:  t=13.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 136:  t=13.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1792,8 +1792,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009403/0.0009403/0.0009403 // 0.001318/0.001318/0.001318
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00136
 
-*** Timestep 137:  t=13.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 137:  t=13.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1805,8 +1805,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009392/0.0009392/0.0009392 // 0.001324/0.001324/0.001324
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00137
 
-*** Timestep 138:  t=13.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 138:  t=13.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1818,8 +1818,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009381/0.0009381/0.0009381 // 0.00133/0.00133/0.00133
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00138
 
-*** Timestep 139:  t=13.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 139:  t=13.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1831,8 +1831,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000937/0.000937/0.000937 // 0.001336/0.001336/0.001336
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00139
 
-*** Timestep 140:  t=14 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 140:  t=14 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1844,8 +1844,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009358/0.0009358/0.0009358 // 0.001342/0.001342/0.001342
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00140
 
-*** Timestep 141:  t=14.1 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 141:  t=14.1 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1857,8 +1857,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009347/0.0009347/0.0009347 // 0.001348/0.001348/0.001348
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00141
 
-*** Timestep 142:  t=14.2 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 142:  t=14.2 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1870,8 +1870,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009336/0.0009336/0.0009336 // 0.001354/0.001354/0.001354
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00142
 
-*** Timestep 143:  t=14.3 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 143:  t=14.3 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1883,8 +1883,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009325/0.0009325/0.0009325 // 0.001359/0.001359/0.001359
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00143
 
-*** Timestep 144:  t=14.4 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 144:  t=14.4 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1896,8 +1896,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009314/0.0009314/0.0009314 // 0.001365/0.001365/0.001365
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00144
 
-*** Timestep 145:  t=14.5 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 145:  t=14.5 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1909,8 +1909,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009302/0.0009302/0.0009302 // 0.001371/0.001371/0.001371
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00145
 
-*** Timestep 146:  t=14.6 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 146:  t=14.6 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1922,8 +1922,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009291/0.0009291/0.0009291 // 0.001377/0.001377/0.001377
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00146
 
-*** Timestep 147:  t=14.7 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 147:  t=14.7 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1935,8 +1935,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.000928/0.000928/0.000928 // 0.001383/0.001383/0.001383
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00147
 
-*** Timestep 148:  t=14.8 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 148:  t=14.8 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1948,8 +1948,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009269/0.0009269/0.0009269 // 0.001389/0.001389/0.001389
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00148
 
-*** Timestep 149:  t=14.9 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 149:  t=14.9 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1961,8 +1961,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009258/0.0009258/0.0009258 // 0.001395/0.001395/0.001395
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00149
 
-*** Timestep 150:  t=15 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 150:  t=15 years, dt=0.1 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1974,8 +1974,8 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
      Compositions min/max/mass: 0.09931/0.09931/0.09931 // 0.0009247/0.0009247/0.0009247 // 0.001401/0.001401/0.001401
      Writing graphical output:  output-boukare_latent_heat/solution/solution-00150
 
-*** Timestep 151:  t=15 years
-   Solving composition reactions in 1 substep(s).
+*** Timestep 151:  t=15 years, dt=3.77759e-14 years
+   Solving composition reactions... in 1 substep(s).
    Solving temperature system... 0 iterations.
    Solving porosity system ... 0 iterations.
    Solving molar_Fe_in_solid system ... 0 iterations.
@@ -1990,9 +1990,9 @@ Number of degrees of freedom: 84 (18+8+18+4+9+9+9+9)
 Termination requested by criterion: end time
 
 
-+---------------------------------------------+------------+------------+
-+---------------------------------+-----------+------------+------------+
-+---------------------------------+-----------+------------+------------+
++----------------------------------------------+------------+------------+
++----------------------------------+-----------+------------+------------+
++----------------------------------+-----------+------------+------------+
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
