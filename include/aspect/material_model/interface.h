@@ -1208,9 +1208,9 @@ namespace aspect
         }
 
         /**
-         * Elastic shear moduli at the evaluation points passed to
-         * the instance of MaterialModel::Interface::evaluate() that fills
-         * the current object.
+         * Enthalpies of fusion, describing the amount of heat required to
+         * melt/solidify the material. These values are used when computing
+         * latent heat effects.
          */
         std::vector<double> enthalpies_of_fusion;
     };

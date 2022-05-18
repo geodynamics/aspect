@@ -67,9 +67,9 @@ namespace aspect
     void
     MeltBoukare<dim>::initialize()
     {
-      // compute parameters for the modified Tait equation of state for the different endmembers
-      // derived from the isothermal bulk modulus and its two first pressure derivatives
-      // EQ 4 from Holland and Powell, 2011
+      // Compute parameters for the modified Tait equation of state for the different endmembers
+      // derived from the isothermal bulk modulus and its two first pressure derivatives.
+      // This corresponds to Equation 4 from Holland and Powell, 2011 (https://doi.org/10.1111/j.1525-1314.2010.00923.x).
 
       const unsigned int n_endmembers = reference_bulk_moduli.size();
 
@@ -367,6 +367,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     MeltBoukare<dim>::
@@ -386,6 +387,7 @@ namespace aspect
       else
         return change_of_value;
     }
+
 
 
     template <int dim>
@@ -409,7 +411,7 @@ namespace aspect
         const double T = temperature;                // temperature in K
         const double R = constants::gas_constant;    // Ideal Gas Constant
 
-        // Free Energy Change Delta_G due to Melting as a function of temperature and pressure
+        // Free Energy Change Delta_G due to melting as a function of temperature and pressure
         const double dG_Fe_mantle = (Fe_mantle_melting_temperature - T) * Fe_mantle_melting_entropy
                                     + (P - melting_reference_pressure) * Fe_mantle_melting_volume;
         const double dG_Mg_mantle = (Mg_mantle_melting_temperature - T) * Mg_mantle_melting_entropy
@@ -602,7 +604,7 @@ namespace aspect
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
           std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
 
-          double solid_composition = in.composition[q][Fe_solid_idx];
+          const double solid_composition = in.composition[q][Fe_solid_idx];
 
           fill_endmember_properties(in, q, endmembers);
 
@@ -625,8 +627,7 @@ namespace aspect
               const unsigned int Fe_melt_idx = this->introspection().compositional_index_for_name("molar_Fe_in_melt");
               const unsigned int porosity_idx = this->introspection().compositional_index_for_name("porosity");
 
-              // For now, we only consider the fraction of Fe in the melt
-              // TODO: For now, we don't have an simelt endmember...
+              // For now, we only consider the fraction of Fe in the melt.
               endmember_mole_fractions_per_phase[mgmelt_idx] = (1. - in.composition[q][Fe_melt_idx]);
               endmember_mole_fractions_per_phase[femelt_idx] = in.composition[q][Fe_melt_idx];
               endmember_mole_fractions_per_phase[simelt_idx] = 0.0;
