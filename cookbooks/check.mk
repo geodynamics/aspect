@@ -79,6 +79,6 @@ free_surface_with_crust/: dummy
 	+@$(def); make_lib $@/plugin
 	@$(def); run_all_prms $@
 
-# doesn't run witout generating input file using python script
+# does not run without generating an input file using a python script
 prescribed_velocity_ascii_data/: dummy
 	+@$(def); make_lib $@
