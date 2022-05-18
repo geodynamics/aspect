@@ -1,7 +1,4 @@
-
 # Running ASPECT models
-
-#### Running ASPECT models
 
 The internal setup of the virtual machine is similar to the Docker container
 discussed above, except that it contains a full-featured desktop environment.

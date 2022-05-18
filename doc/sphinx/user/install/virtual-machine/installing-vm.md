@@ -1,9 +1,7 @@
 # Installing VM software and setting up the virtual machine
 
-#### Installing VM software and setting up the virtual machine
-
 The ASPECT project provides an experimental
-virtual machine containing a fully configured version of <span
+virtual machine containing a fully configured version of
 ASPECT. To use this machine, you will need to install
 VirtualBox (<http://www.virtualbox.org/>) on your machine, and then import a
 virtual machine image that can be downloaded from
