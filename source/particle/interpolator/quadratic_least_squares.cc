@@ -67,11 +67,11 @@ namespace aspect
       void QuadraticLeastSquares<dim>::update_bounds(const Vector<double> &coefficients, const Point<dim> &position, double &interpolation_min, double &interpolation_max) const
       {
         for (unsigned int d = 0; d < dim; ++d)
-          if (position[d] < -0.5 || position[d] > 0.5)
+          if (position[d] < -0.5 - 1e-15 || position[d] > 0.5 + 1e-15)
             return;
         const double value_at_position = evaluate_interpolation_function(coefficients, position);
         interpolation_min = std::min(interpolation_min, value_at_position);
-        interpolation_max = std::max(interpolation_max, value_at_position );
+        interpolation_max = std::max(interpolation_max, value_at_position);
       }
 
 
@@ -159,9 +159,10 @@ namespace aspect
                   {
                     b[property_index][particle_index] = particle_property_value[property_index];
                     property_minimums[property_index] = std::min(property_minimums[property_index], particle_property_value[property_index]);
-                    property_minimums[property_index] = std::min(property_minimums[property_index], particle_property_value[property_index]);
+                    property_maximums[property_index] = std::max(property_maximums[property_index], particle_property_value[property_index]);
                   }
               }
+
             Point<dim> relative_particle_position = particle->get_reference_location();
             for (unsigned int d = 0; d < dim; ++d)
               relative_particle_position[d] -= unit_offset;
@@ -317,7 +318,10 @@ namespace aspect
                               {
                                 critical_point[0] = x;
                                 critical_point[1] = y;
-                                update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
+                                // update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
+                                const double value_at_position = evaluate_interpolation_function(c[property_index], critical_point);
+                                interpolation_min = std::min(interpolation_min, value_at_position);
+                                interpolation_max = std::max(interpolation_max, value_at_position);
                               }
                           }
                       }
@@ -436,6 +440,19 @@ namespace aspect
                                   }
                               }
                           }
+                        if (std::abs(c[property_index][8]) > std::numeric_limits<double>::epsilon())
+                          {
+                            for (double x = -0.5; x <= 0.5; ++x)
+                              {
+                                for (double z = -0.5; z <= 0.5; ++z)
+                                  {
+                                    critical_point[0] = x;
+                                    critical_point[2] = z;
+                                    critical_point[1] = -(c[property_index][2] + c[property_index][4] * critical_point[0] + c[property_index][6] * critical_point[2]) / (2 * c[property_index][8]);
+                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
+                                  }
+                              }
+                          }
                         if (std::abs(c[property_index][7]) > std::numeric_limits<double>::epsilon())
                           {
                             for (double y = -0.5; y <= 0.5; ++y)
@@ -445,19 +462,6 @@ namespace aspect
                                     critical_point[1] = y;
                                     critical_point[2] = z;
                                     critical_point[0] = -(c[property_index][1] + c[property_index][4] * critical_point[1] + c[property_index][5] * critical_point[2])/(2*c[property_index][7]);
-                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                  }
-                              }
-                          }
-                        if (std::abs(c[property_index][8]) > std::numeric_limits<double>::epsilon())
-                          {
-                            for (double x = -0.5; x <= 0.5; ++x)
-                              {
-                                for (double z = -0.5; z <= 0.5; ++z)
-                                  {
-                                    critical_point[0] = x;
-                                    critical_point[2] = z;
-                                    critical_point[1] = -(c[property_index][1] + c[property_index][4] * critical_point[0] + c[property_index][6] * critical_point[2]) / (2 * c[property_index][8]);
                                     update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
                                   }
                               }
