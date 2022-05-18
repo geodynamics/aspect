@@ -9,7 +9,7 @@ numerical output is significant. The test suite is run using the `ctest`
 program that comes with `cmake`, and should therefore be available on all
 systems that have compiled ASPECT.
 
-After running `cmake` and then compiling <span
+After running `cmake` and then compiling 
 ASPECT, you can run the test suite by using the
 command `ctest` in your build directory. By default, this will only run a
 small subset of all tests given that both setting up all tests (several
@@ -83,7 +83,7 @@ Given that some tests are expected to fail on any given system raises the
 question why it makes sense to have tests at all? The answer is that there is
 *one* system on which all tests are supposed to succeed: This system is a
 machine that churns through all tests every time someone proposes a change to
-the ASPECT code base via the <span
+the ASPECT code base via the 
 ASPECT GitHub page.[9] Upon completion of the test
 suite, both the general summary (pass/fail) and a full verbose log will
 available from the GitHub page. Because the official test setup is set up in a
@@ -101,7 +101,7 @@ docker run -v ASPECT_SOURCE_DIR:/home/dealii/aspect \
 ```
 
 This command executes the shell script `cmake/compile_and_update_tests.sh`
-*inside* the docker container that contains the official <span
-ASPECT test system. Note that by mounting your <span
+*inside* the docker container that contains the official 
+ASPECT test system. Note that by mounting your 
 ASPECT folder into the container you are actually
 updating the reference test results on the host system (i.e. your computer).

@@ -15,13 +15,13 @@ available memory per core. Running with for example two threads per process
 will offset some of the performance loss you will see in these situations.
 
 Multithreading is controlled by setting the command line parameter `-j` or
-`--threads`. If the parameter is not set, <span
+`--threads`. If the parameter is not set, 
 ASPECT will create exactly one thread per MPI
-process, i.e. multithreading is disabled. Appending the parameter allows <span
+process, i.e. multithreading is disabled. Appending the parameter allows 
 ASPECT to spawn several threads per MPI process. Note
 that the internally used TBB library will determine the number of threads
 based on the number of available cores, i.e., if you start 2&nbsp;MPI
-processes on a quadcore machine with hyperthreading (8 logical cores), <span
+processes on a quadcore machine with hyperthreading (8 logical cores), 
 ASPECT will spawn 4 threads on each MPI process. Also
 note that there is no guarantee that the final number of threads will exactly
 match the number of available logical cores if you start with a number of

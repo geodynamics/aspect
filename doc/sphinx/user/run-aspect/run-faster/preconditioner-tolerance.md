@@ -3,7 +3,7 @@
 #### Adjusting solver preconditioner tolerances
 
 To solve the Stokes equations it is necessary to lower the condition number of
-the Stokes matrix by preconditioning it. In <span
+the Stokes matrix by preconditioning it. In 
 ASPECT a right preconditioner $Y^{-1} =
 \begin{pmatrix}
 \widetilde{A^{-1}} & -\widetilde{A^{-1}}B^{T}\widetilde{S^{-1}} \\

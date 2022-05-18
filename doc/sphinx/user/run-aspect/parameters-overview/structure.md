@@ -15,7 +15,7 @@ sub-directories. And just as with files, parameters have both a name (the
 thing to the left of the equals sign) and a content (what's to the
 right).
 
-All parameters you can list in this input file have been *declared* in <span
+All parameters you can list in this input file have been *declared* in 
 ASPECT. What this means is that you can't just
 list anything in the input file, and expect that entries that are unknown are
 simply ignored. Rather, if your input file contains a line setting a parameter
