@@ -480,13 +480,14 @@ namespace aspect
             {
               // Put the content we want to write into a string object that
               // we can then write in the background
-              const std::string *file_contents;
+              std::unique_ptr<std::string> file_contents;
               {
                 std::ostringstream tmp;
                 data_out.write(tmp,
                                DataOutBase::parse_output_format(output_format));
-                file_contents = new std::string(tmp.str());
+                file_contents = std::make_unique<std::string>(tmp.str());
               }
+
               if (write_in_background_thread)
                 {
                   // Wait for all previous write operations to finish, should
@@ -495,13 +496,13 @@ namespace aspect
                     output_history.background_thread.join();
                   // ...then continue with writing our own data.
                   output_history.background_thread
-                    = std::thread([&]()
+                    = std::thread([ &, my_file_contents = std::move(file_contents)]()
                   {
-                    writer (filename, temporary_output_location, file_contents);
+                    writer (filename, temporary_output_location, *my_file_contents);
                   });
                 }
               else
-                writer(filename, temporary_output_location, file_contents);
+                writer(filename, temporary_output_location, *file_contents);
             }
           else
             // Just write one data file in parallel
@@ -835,7 +836,7 @@ namespace aspect
     // We need to pass the arguments by value, as this function can be called on a separate thread:
     void Visualization<dim>::writer (const std::string filename, //NOLINT(performance-unnecessary-value-param)
                                      const std::string temporary_output_location, //NOLINT(performance-unnecessary-value-param)
-                                     const std::string *file_contents)
+                                     const std::string &file_contents)
     {
       std::string tmp_filename = filename;
       if (temporary_output_location != "")
@@ -882,7 +883,7 @@ namespace aspect
 
       // now write and then move the tmp file to its final destination
       // if necessary
-      out << *file_contents;
+      out << file_contents;
       out.close ();
 
       if (tmp_filename != filename)
@@ -895,9 +896,6 @@ namespace aspect
                                  + filename + ". On processor "
                                  + Utilities::int_to_string(Utilities::MPI::this_mpi_process (MPI_COMM_WORLD)) + "."));
         }
-
-      // destroy the pointer to the data we needed to write
-      delete file_contents;
     }
 
 
