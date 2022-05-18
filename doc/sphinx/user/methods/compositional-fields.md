@@ -23,7 +23,7 @@ Another example of using a right hand side - quite outside what the original ter
 
 In actual practice, one finds that it is often useful to allow $\mathfrak q$ to be a function that has both a smooth (say, continuous) in time component, and one that is singular in time (i.e., contains Dirac delta, or "impulse" functions).
 Typical time integrators require the evaluation of the right hand side at specific points in time, but this would preclude the use of delta functions.
-Consequently, the integrators in <span ASPECT only require material models to provide an *integrated* value $\int_t^{t+\Delta t} \mathfrak q(\tau) \; \text{d}\tau$ through the `reaction_term` output variable.
+Consequently, the integrators in ASPECT only require material models to provide an *integrated* value $\int_t^{t+\Delta t} \mathfrak q(\tau) \; \text{d}\tau$ through the `reaction_term` output variable.
 Implementations often approximate this as $\triangle t \cdot \mathfrak q(t)$, or similar formulas.
 
 A second application for only providing integrated right hand sides comes from the fact that modeling reactions between different compositional fields often involves finding an equilibrium state between different fields because chemical reactions happen on a much faster time scale than transport.
