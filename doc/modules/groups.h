@@ -183,7 +183,7 @@
  */
 
 /**
- * @defgroup BoundaryFluidPressures Describing fluid pressure boundary conditions 
+ * @defgroup BoundaryFluidPressures Describing fluid pressure boundary conditions
  * for the fluid velocity field
  *
  * A module for the definition of functions and classes that have to do with

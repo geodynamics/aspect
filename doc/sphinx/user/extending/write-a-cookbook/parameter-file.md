@@ -12,4 +12,4 @@ each section or important parameter used in the file, explaining what this
 input option accomplishes and why it is needed for the model setup.
 
 Once you have finalized your input file, you can put it into the [cookbooks][]
-folder. 
+folder.

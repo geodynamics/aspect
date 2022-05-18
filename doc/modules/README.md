@@ -1,12 +1,12 @@
 This folder contains changelog entries
 ======================================
 
-Changes between different releases in ASPECT are documented in the file 
-"to-VERSION.h" that for the current release is automatically created from the 
+Changes between different releases in ASPECT are documented in the file
+"to-VERSION.h" that for the current release is automatically created from the
 files in the directory "changes".
 
 Each of these files contain a short description of a change, the authors' names
-and the date where the latter two a separated by "<br>" from the first one. 
+and the date where the latter two a separated by "<br>" from the first one.
 A typical file could look like this:
 
     New: We can do fancy stuff now.

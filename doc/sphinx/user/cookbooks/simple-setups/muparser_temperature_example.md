@@ -1,6 +1,6 @@
 #### Using lazy expression syntax for if-else-statements in function expressions
 
-*This section was contributed by Magali Billen*  
+*This section was contributed by Magali Billen*
 This cookbook provides an example to illustrate how to use the lazy-expression
 syntax for multiple, nested, if-else-statements in function expressions in the
 parameter file. It also shows how to set parameters in the input file so you
@@ -51,8 +51,8 @@ described above, it is necessary to use the lazy expression syntax to avoid
 evaluating the full temperature equation at mesh points where $x=0$ because
 this will create a floating-point exception. The function expression shown in
 the snippet from the parameter file below uses nested if-else-statements with
-this structure:  
-`if ((x>0.0) && (x<=xtr)) then T-sub else (if (x>xtr) then T-ov else Tm)`  
+this structure:
+`if ((x>0.0) && (x<=xtr)) then T-sub else (if (x>xtr) then T-ov else Tm)`
 where T-sub is the function for the temperature of the subducting plate and
 T-ov is the function for the temperature of the overriding plate.
 

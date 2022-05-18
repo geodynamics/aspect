@@ -25,11 +25,11 @@ following format (this example is S20RTS):
 
 The first number in the first line denotes the maximum degree. This is
 followed in the next line by the spherical harmonic coefficients from the
-surface down to the CMB. The coefficients are arranged in the following way:  
-$a_{00}$  
-$a_{10}$ $a_{11}$ $b_{11}$  
-$a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$  
-...  
+surface down to the CMB. The coefficients are arranged in the following way:
+$a_{00}$
+$a_{10}$ $a_{11}$ $b_{11}$
+$a_{20}$ $a_{21}$ $b_{21}$ $a_{22}$ $b_{22}$
+...
 $a_{yz}$ is the cosine coefficient of degree $y$ and order $z$; $b_{yz}$ is
 the sine coefficient of degree $y$ and order $z$. The depth layers are
 specified in the file `Spline_knots.txt` by a normalized depth value ranging

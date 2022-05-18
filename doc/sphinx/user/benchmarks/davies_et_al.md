@@ -219,7 +219,7 @@ transient stage and, in cases 2.2 and 2.3, a sudden jolt to the system at the
 time where we switch from the model used to compute up to time $t=2$ to the
 different models used after that.
 
-  
+
 
 These runs also produce quantitative data that will be published along with
 the concise descriptions of the benchmarks and a comparison with other codes.

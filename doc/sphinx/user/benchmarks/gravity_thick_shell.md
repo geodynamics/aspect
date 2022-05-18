@@ -31,7 +31,7 @@ $$g=\frac{\partial U}{\partial r} = \frac{4 \pi}{3} G \rho_0 r + \frac{A}{r^2},$
 where $A$ is another integration constant. At the inner boundary,
 $r=R\textsubscript{inner}$ and $g=0$, allowing $A$ to be computed.
 Substituting in the value of $A$,
-$$g=\frac{\partial U}{\partial r} = \frac{4 \pi}{3} G \rho_0 
+$$g=\frac{\partial U}{\partial r} = \frac{4 \pi}{3} G \rho_0
 \left(r - \frac{R\textsubscript{inner}^3}{r^2} \right). \label{eqgin}$$ When
 $r\geq R\textsubscript{outer}$, the gravitational potential is given by Eq.
 ([\[eq:app1\]][1]). Requiring the gravity field to be continuous at

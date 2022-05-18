@@ -31,7 +31,7 @@ and `rand_seed()`. For more detailed information, see
 
 A common need for function expression is an if-else-statement, for example
 "if $1<x<4$ then output 1, else output 0." The muparser uses
-lazy-expression syntax `(if-condition ? true-expression : false-expression )`
+lazy-expression syntax `(if-condition ? true-expression : false-expression)`
 for if-else statements. This lazy-expression only evaluates the expression
 that meets the if-condition, rather than evaluating both expressions, which
 can be useful if one of the expressions is not defined (e.g., has a divide by
@@ -46,10 +46,10 @@ Therefore, the lazy-expression syntax is recommended.
 
 As a simple example using the lazy-expression syntax, the statement "if
 $1<x<4$ then output 1, else output 0" can be expressed as
-`(1<x && x<4 ? 1 : 0)`. Multiple, nested if-else expressions can also be used.
+`(1<x && x<4 ? 1 : 0)`. Multiple, nested if-else expressions can also be used.
 To extend the simple example, the statement "if $1<x<4$ then, if
 2\<y\<3, then output 2, else output 1, else output 0" can be expressed
-as `((1<x && x<4) ? ((2<y && y<3) ? 2 : 1) : (0))`.
+as `((1<x && x<4) ? ((2<y && y<3) ? 2 : 1) : (0))`.
 
 An example for how to translate nested if-else statements into the
 lazy-expression syntax is given in the cookbook example found in

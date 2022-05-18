@@ -38,7 +38,7 @@ temperature $T_0=1023~\si{\kelvin}$, reference density
 $\rho_0=3250~\si{\kg\per\cubic\meter}$, and viscosity
 $\eta_0=1.25\times 10^{23}$. Gravity is constant throughout the mantle with
 $g=9.81~\si{\meter\per\square\second}$. With these parameters we find that the
-dimensionless Rayleigh number is $$Ra 
+dimensionless Rayleigh number is $$Ra
 =\frac{\rho_0 g \alpha \Delta T (R\textsubscript{outer}-R\textsubscript{inner})^3}{\kappa \eta_0}
 =10^6.$$ In Kellogg & King (1997), the dimensionless viscosity is
 temperature-dependent and defined as: $$\eta'(T')
@@ -50,7 +50,7 @@ across the shell $\Delta T$. Assuming that the authors used the common
 relationship
 $$T'=\frac{T-T\textsubscript{surf}}{T\textsubscript{patch}-T\textsubscript{surf}}= \frac{T-T\textsubscript{surf}}{\Delta T}.$$
 then multiplying the equation above by $\eta_0$, it follows that: $$\eta(T)
-=\eta_0 \exp\left[ \frac{E}{R} \left( \frac{1}{T-T\textsubscript{surf}  + T\textsubscript{surf}} 
+=\eta_0 \exp\left[ \frac{E}{R} \left( \frac{1}{T-T\textsubscript{surf}  + T\textsubscript{surf}}
 -\frac{1}{T\textsubscript{patch}-T\textsubscript{surf} + T\textsubscript{surf}}  \right)   \right]
 =\eta_0 \exp\left[ \frac{E}{R} \left( \frac{1}{T} -\frac{1}{T\textsubscript{patch}}\right) \right]$$
 so that $\eta(T_{patch})=\eta_0$.
@@ -62,7 +62,7 @@ activation energy becomes $E=\{ 0, 6317.6 , 74829.6 \}\si{\joule\per\mole}$,
 lower than typical values (above 200&nbsp;kJ, see for example Karato & Wu
 (Karato and Wu 1993)).
 
-The viscosity expression can be written as $$\eta(T)  
+The viscosity expression can be written as $$\eta(T)
 = \frac12 \underbrace{2 \eta_0  \exp\left( -\frac{E}{R T\textsubscript{patch}} \right) }_{A^{-1}} \exp \frac{E}{R T}$$
 which is effectively a diffusion creep-type viscosity. We find that
 $A^{-1} = \{ 2.5\times 10^{22}, 1.98\times 10^{22} , 1.6\times 10^{21} \}\si{\pascal\second}$,
@@ -88,10 +88,10 @@ raising the temperature within it.
 
 <img src="cookbooks/plume_2D_chunk/doc/vel1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/vel2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/vel3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />  
+<img src="cookbooks/plume_2D_chunk/doc/vel3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/T1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/T2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
-<img src="cookbooks/plume_2D_chunk/doc/T3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />  
+<img src="cookbooks/plume_2D_chunk/doc/T3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/eta1.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/eta2.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
 <img src="cookbooks/plume_2D_chunk/doc/eta3.*" title="fig:" id="fig:plume-diff-creep" style="width:5cm" alt="Plume in a 2D chunk. Columns from left to right: isoviscous case, weakly temperature dependent case, and strongly temperature-dependent case. Rows from top to bottom: Velocity, temperature, and viscosity field at steady state. Angular opening of \pi/8." />
