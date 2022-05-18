@@ -208,7 +208,6 @@ namespace aspect
         unsigned int per_idx;
         unsigned int femelt_idx;
         unsigned int mgmelt_idx;
-        unsigned int simelt_idx;
 
 
         // Parameter describing if an endmember in the equation of state is solid or molten.
@@ -304,11 +303,10 @@ namespace aspect
         virtual
         void
         convert_to_fraction_of_endmembers_in_solid (const double temperature,
-                                                    const double pressure,
                                                     const double molar_Fe_in_solid,
+                                                    const double molar_Fe_in_melt,
                                                     const std::vector<double> &endmember_gibbs_energies,
-                                                    double &molar_FeSiO3_in_bridgmanite,
-                                                    double &molar_FeO_in_ferropericlase,
+                                                    std::vector<double> &endmember_mole_fractions_per_phase,
                                                     double &molar_bridgmanite_in_solid) const;
 
 
