@@ -101,7 +101,9 @@ second equation by ```{math}\begin{align}
   &\quad
   - K_D \mathbf g \cdot \nabla \rho_f .
   \notag\end{align}``` The melt velocity is computed as
-```{math}\mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),```
+```{math}
+\mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),
+```
 but is only used for postprocessing purposes and for computing the time step
 length.
 
