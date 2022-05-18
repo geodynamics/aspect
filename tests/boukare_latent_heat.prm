@@ -1,13 +1,13 @@
 # This is a test for the latent heat release and consumption
-# in the melt boukare material model. The initial temperature 
+# in the melt boukare material model. The initial temperature
 # is set to a value that is out of equilibrium with the initial
-# porosity in the model, specifically, it is set so high that 
-# the energy released by reducing the temperature to the solidus 
-# allows for melting of approximately 10% of the material. This 
-# means that the steady-state melt fraction at the end of the 
-# model run should be 0.1. 
+# porosity in the model, specifically, it is set so high that
+# the energy released by reducing the temperature to the solidus
+# allows for melting of approximately 10% of the material. This
+# means that the steady-state melt fraction at the end of the
+# model run should be 0.1.
 # The test also outputs the bulk composition to make sure it is
-# conserved (it should be 0.001). 
+# conserved (it should be 0.001).
 
 set Dimension                              = 2
 
@@ -109,7 +109,7 @@ subsection Heating model
   subsection Latent heat melt
     set Melting entropy change = 0
     set Retrieve entropy change from material model = true
-  end 
+  end
 end
 
 
@@ -163,4 +163,3 @@ subsection Postprocess
     end
   end
 end
-

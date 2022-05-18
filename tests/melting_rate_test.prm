@@ -94,7 +94,7 @@ end
 
 
 subsection Heating model
-  set List of model names = 
+  set List of model names =
 end
 
 
@@ -163,5 +163,3 @@ subsection Postprocess
     end
   end
 end
-
-

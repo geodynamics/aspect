@@ -67,7 +67,7 @@ end
 subsection Boundary velocity model
   set Zero velocity boundary indicators       = left, right, top, bottom
   set Prescribed velocity boundary indicators =
-  set Tangential velocity boundary indicators = 
+  set Tangential velocity boundary indicators =
 end
 
 subsection Boundary temperature model
@@ -151,4 +151,3 @@ subsection Postprocess
     end
   end
 end
-

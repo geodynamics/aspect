@@ -511,7 +511,7 @@ namespace aspect
           double eq_melt_molar_fraction = this->melt_fraction(in.temperature[q],
                                                               this->get_adiabatic_conditions().pressure(in.position[q]),
                                                               bulk_composition,
-															  molar_volatiles_in_melt,
+                                                              molar_volatiles_in_melt,
                                                               solid_composition,
                                                               melt_composition);
 
@@ -554,10 +554,10 @@ namespace aspect
     MeltBoukare<dim>::
     evaluate(const typename Interface<dim>::MaterialModelInputs &in, typename Interface<dim>::MaterialModelOutputs &out) const
     {
-      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim> >();
-      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim> >();
-      BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim> >();
-      EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim> >();
+      ReactionRateOutputs<dim> *reaction_rate_out = out.template get_additional_output<ReactionRateOutputs<dim>>();
+      MeltOutputs<dim> *melt_out = out.template get_additional_output<MeltOutputs<dim>>();
+      BoukareOutputs<dim> *boukare_out = out.template get_additional_output<BoukareOutputs<dim>>();
+      EnthalpyOutputs<dim> *enthalpy_out = out.template get_additional_output<EnthalpyOutputs<dim>>();
 
       // If the temperature or pressure are zero, this model does not work.
       // This should only happen when setting the melt constraints before we have the initial temperature.
@@ -748,15 +748,15 @@ namespace aspect
               melt_molar_fraction = melt_fraction(in.temperature[q],
                                                   this->get_adiabatic_conditions().pressure(in.position[q]),
                                                   bulk_composition,
-												  molar_volatiles_in_melt,
+                                                  molar_volatiles_in_melt,
                                                   solid_composition,
                                                   melt_composition);
 
               if (boukare_out != nullptr)
-              {
-                boukare_out->bulk_composition[q] = bulk_composition;
-                boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
-              }
+                {
+                  boukare_out->bulk_composition[q] = bulk_composition;
+                  boukare_out->molar_volatiles_in_melt[q] = molar_volatiles_in_melt;
+                }
 
               // We have to compute the update to the melt fraction in such a way that the bulk composition is conserved.
               const double change_of_melt_composition = reaction_fraction * limit_update_to_0_and_1(old_melt_composition, melt_composition - old_melt_composition);
@@ -1233,18 +1233,18 @@ namespace aspect
     MeltBoukare<dim>::create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const
     {
       if (this->get_parameters().use_operator_splitting
-          && out.template get_additional_output<ReactionRateOutputs<dim> >() == nullptr)
+          && out.template get_additional_output<ReactionRateOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::ReactionRateOutputs<dim> > (n_points, this->n_compositional_fields()));
+            std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points, this->n_compositional_fields()));
         }
 
-      if (out.template get_additional_output<BoukareOutputs<dim> >() == nullptr)
+      if (out.template get_additional_output<BoukareOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = out.viscosities.size();
           out.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::BoukareOutputs<dim>> (n_points));
+            std::make_unique<MaterialModel::BoukareOutputs<dim>> (n_points));
         }
     }
   }

@@ -18,8 +18,8 @@
   <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _aspect_material_model_melt_global_h
-#define _aspect_material_model_melt_global_h
+#ifndef _aspect_material_model_melt_boukare_h
+#define _aspect_material_model_melt_boukare_h
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>

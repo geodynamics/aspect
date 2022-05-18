@@ -1,8 +1,8 @@
 # Simplified setup of convection in the lowermost mantle
-# on a small scale, but melt is not allowed to move. 
-# That means that the bulk composition should be conserved 
-# everywhere in the domain at 0.07 
-# (except maybe at the inflow boundary). 
+# on a small scale, but melt is not allowed to move.
+# That means that the bulk composition should be conserved
+# everywhere in the domain at 0.07
+# (except maybe at the inflow boundary).
 
 set Dimension                              = 2
 
@@ -120,7 +120,7 @@ subsection Heating model
   subsection Latent heat melt
     set Melting entropy change = 0
     set Retrieve entropy change from material model = true
-  end 
+  end
 end
 
 
@@ -214,4 +214,3 @@ subsection Postprocess
     end
   end
 end
-

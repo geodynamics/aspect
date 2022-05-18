@@ -43,7 +43,7 @@ namespace aspect
         = material_model_outputs.template get_additional_output<MaterialModel::ReactionRateOutputs<dim>>();
 
       const MaterialModel::EnthalpyOutputs<dim> *enthalpy_out
-        = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim> >();
+        = material_model_outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>();
 
       double enthalpy_change;
 
@@ -160,11 +160,11 @@ namespace aspect
     LatentHeatMelt<dim>::create_additional_material_model_outputs(MaterialModel::MaterialModelOutputs<dim> &outputs) const
     {
       if (this->include_melt_transport() && retrieve_entropy_change_from_material_model
-          && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim> >() == nullptr)
+          && outputs.template get_additional_output<MaterialModel::EnthalpyOutputs<dim>>() == nullptr)
         {
           const unsigned int n_points = outputs.densities.size();
           outputs.additional_outputs.push_back(
-            std_cxx14::make_unique<MaterialModel::EnthalpyOutputs<dim> > (n_points));
+            std::make_unique<MaterialModel::EnthalpyOutputs<dim>> (n_points));
         }
     }
   }

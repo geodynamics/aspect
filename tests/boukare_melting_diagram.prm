@@ -1,7 +1,7 @@
 # This is a test for the melt fraction computation.
 # The gnuplot output of time step zero should show the binary loop
-# melting model, with a zero melt fraction below the solidus, 
-# and a melt fraction of 1 above the solidus. 
+# melting model, with a zero melt fraction below the solidus,
+# and a melt fraction of 1 above the solidus.
 
 # At the top, we define the number of space dimensions we would like to
 # work in:
@@ -99,7 +99,7 @@ end
 
 
 subsection Heating model
-  set List of model names = 
+  set List of model names =
 end
 
 
@@ -174,5 +174,3 @@ subsection Checkpointing
   # checkpoint step frequency instead. Units: Seconds.
   set Time between checkpoint  = 900
 end
-
-
