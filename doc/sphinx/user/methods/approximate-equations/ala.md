@@ -45,6 +45,6 @@ For the temperature equation, using the definition of the hydrostatic pressure g
 ```
 
 :::{note}
-Our energy equation is formed in terms of $T$, while in the literature, the equation has sometimes been formulated in terms of $T'$, which yeilds additional terms containing $\bar{T}$ on the right-hand side.
+Our energy equation is formed in terms of $T$, while in the literature, the equation has sometimes been formulated in terms of $T'$, which yields additional terms containing $\bar{T}$ on the right-hand side.
 Both ways of writing the equation are equivalent.
 :::
