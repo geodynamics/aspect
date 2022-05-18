@@ -15,7 +15,8 @@ melt present at any given time (the porosity $\phi$), and also a change of the
 mechanical part of the system. The latter is implemented using the approach of
 (Keller, May, and Kaus 2013) and changes the Stokes system to
 
-```{math}\begin{align}
+```{math}
+\begin{align}
   \label{eq:stokes-1-melt}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf{u}_s)
                                   - \frac{1}{3}(\nabla \cdot \mathbf{u}_s)\mathbf 1\right)
@@ -48,7 +49,9 @@ mechanical part of the system. The latter is implemented using the approach of
   \label{eq:stokes-3-melt}
   \nabla \cdot \mathbf{u}_s + \frac{p_c}{\xi}
   &=
-  0.\end{align}```
+  0.
+\end{align}
+```
 
 We use the indices $s$ to indicate properties of the solid and $f$ for the
 properties of the fluid. The equations are solved for the solid velocity
@@ -83,7 +86,9 @@ For the fluid pressure, choosing a good approximation depends on the model
 parameters and setup (see (Dannberg and Heister 2016)). Hence, we make
 $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the
 forces that are expected to be dominant in the model. We can then replace the
-second equation by ```{math}\begin{align}
+second equation by
+```{math}
+\begin{align}
 \nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f
   - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
   &=
@@ -100,7 +105,10 @@ second equation by ```{math}\begin{align}
   \\
   &\quad
   - K_D \mathbf g \cdot \nabla \rho_f .
-  \notag\end{align}``` The melt velocity is computed as
+  \notag
+\end{align}
+```
+The melt velocity is computed as
 ```{math}\mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),```
 but is only used for postprocessing purposes and for computing the time step
 length.
@@ -110,14 +118,18 @@ length.
 </div>
 
 Moreover, melt transport requires an advection equation for the porosity field
-$\phi$: ```{math}\begin{align}
+$\phi$:
+```{math}
+\begin{align}
   \label{eq:porosity}
   \rho_s \frac{\partial (1 - \phi)}{\partial t} + \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
   &=
   - \Gamma
   & \quad
   & \textrm{in $\Omega$},
-  i=1\ldots C\end{align}```
+  i=1\ldots C
+\end{align}
+```
 
 In order to solve this equation in the same way as the other advection
 equations, we replace the second term of the equation by:
