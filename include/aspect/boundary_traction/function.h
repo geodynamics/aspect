@@ -100,7 +100,7 @@ namespace aspect
         Utilities::Coordinates::CoordinateSystem coordinate_system;
 
         /**
-         * Whether to specify velocity in x, y, z components, or
+         * Whether to specify traction in x, y, z components, or
          * r, phi, theta components.
          */
         bool use_spherical_unit_vectors;
