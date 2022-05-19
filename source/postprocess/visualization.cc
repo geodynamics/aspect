@@ -879,7 +879,7 @@ namespace aspect
 
       // now write and then move the tmp file to its final destination
       // if necessary
-      out << file_contents;
+      out.write (file_contents.data(), file_contents.size());
       out.close ();
 
       if (tmp_filename != filename)
