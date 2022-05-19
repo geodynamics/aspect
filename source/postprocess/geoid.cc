@@ -39,7 +39,7 @@ namespace aspect
   {
     template <int dim>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
+    Geoid<dim>::to_spherical_harmonic_coefficients(const std::vector<std::vector<double>> &spherical_function) const
     {
       std::vector<double> cosi(spherical_function.size(),0);
       std::vector<double> sini(spherical_function.size(),0);
@@ -82,7 +82,7 @@ namespace aspect
 
     template <int dim>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
+    Geoid<dim>::density_contribution (const double &/*outer_radius*/) const
     {
       Assert(false, ExcNotImplemented());
       return std::make_pair(std::vector<double>(), std::vector<double>());
@@ -91,7 +91,7 @@ namespace aspect
 
     template <>
     std::pair<std::vector<double>,std::vector<double>>
-                                                    Geoid<3>::density_contribution (const double &outer_radius) const
+    Geoid<3>::density_contribution (const double &outer_radius) const
     {
       const unsigned int quadrature_degree = this->introspection().polynomial_degree.temperature;
 

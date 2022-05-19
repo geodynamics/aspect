@@ -63,7 +63,7 @@ namespace aspect
                         this->get_solution(), true);
               // Also get velocity gradients
               std::vector<Tensor<2, dim>> velocity_gradient(n_q_points,
-                                                            Tensor<2, dim>());
+                                                             Tensor<2, dim>());
               fe_values[this->introspection().extractors.velocities].get_function_gradients(
                 this->get_solution(), velocity_gradient);
 

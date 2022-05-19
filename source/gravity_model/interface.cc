@@ -152,10 +152,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<GravityModel::Interface<2>>::PluginInfo> *
-                                                                       internal::Plugins::PluginList<GravityModel::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<GravityModel::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<GravityModel::Interface<3>>::PluginInfo> *
-                                                                       internal::Plugins::PluginList<GravityModel::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<GravityModel::Interface<3>>::plugins = nullptr;
     }
   }
 

@@ -21,6 +21,14 @@
 ##
 ## ---------------------------------------------------------------------
 
+
+#
+# Mac OSX's mktemp doesn't know the --tmpdir option without argument. So,
+# let's do all of that by hand:
+#
+export TMPDIR="${TMPDIR:-/tmp}"
+
+
 find_astyle() {
   # Split $PATH variable into an array
   IFS=':' PATHS=(${PATH})
@@ -35,6 +43,7 @@ find_astyle() {
   done
 }
 
+
 if test ! -d source -o ! -d include ; then
   echo "*** This script must be run from the top-level directory of ASPECT."
   exit 1
@@ -47,6 +56,7 @@ fi
 
 astyle="$(find_astyle)"
 astyle="${astyle:-`which astyle`}" # Fallback to `which astyle`
+export astyle
 
 if test -z "${astyle}"; then
   echo "*** No astyle program found."
@@ -61,11 +71,74 @@ fi
 echo "--- Found astyle 2.04 at ${astyle}"
 
 
-# collect all header and source files and process them in batches of 50 files
-# with up to 10 in parallel
+# Indent a file.
+#
+# We use astyle 2.04 for indentation, which is a tool that predates C++11
+# and that consequently has trouble with things such as
+#   std::vector<Point<dim>>
+# where it interprets the closing `>>` as a right shift operator. It then
+# gets its template closing angle bracket counter all out of whack and
+# produces awkward indentations. To avoid this, we first convert all closing
+# `>>` into `> >`, run astyle, and then change it back. This leads to reasonable
+# results.
+#
+# One might think that a regex substitution such as
+#   s/>>/> >/g;
+# would work (and putting the space on the left hand side for the way back).
+# But this is not true because Perl does not go back to look at the substitution
+# again, even with the /g modifier. As a consequence, the regex above
+# replaces *triple* closing angle brackets as
+#   ">>>"  ->  "> >>"
+# and it does not look at the ">>" on the right hand side because the 'point'
+# within the string where the regex matcher starts looking again with /g
+# is now the last ">", having replaced the initial ">>" by "> >". Clearly,
+# strings such as ">>>>" with four or more closing brackets encounter
+# similar issues.
+#
+# The way to work around this is to replace "a '>' preceded by another
+# '>' by ' >'". This is expressed with positive look-behind, and leads to
+# the regex substitution
+#   s/(?<=>)>/ >/g
+# where "(?<=" starts the positive look-behind expression. Note that the
+# look-behind expression is not part of the match itself (which is only ">"
+# in the expression above) and is only used to restrict which occurrences
+# of ">" are actually matches (and consequently substituted).
+#
+# For unclear reasons, astyle insists on appending a separate empty line
+# at the end of the file. Fix this up using the last two 'sed' commands,
+# using the same logic as in the 'ensure_single_trailing_newline()'
+# function below.
+indent_file() {
+  file="${1}"
+  tmpfile="$(mktemp "${TMPDIR}/$(basename "$1").tmp.XXXXXXXX")"
+
+  cat ${file} \
+      | perl -p -e 's/(?<=>)>/ >/g;' \
+      | "${astyle}" --options=contrib/utilities/astyle.rc \
+      | perl -p -e 's/(?<=>) >/>/g;' \
+      | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba' \
+      | sed -e '$a\' \
+      > ${tmpfile}
+
+  if ! diff -q "${file}" "${tmpfile}" >/dev/null; then
+    mv "${tmpfile}" "${file}"
+  else
+    rm "${tmpfile}"
+  fi
+}
+export -f indent_file
+
+
+
+# Collect all header and source files and process them 
+# with up to 10 processes in parallel.
+#
 echo "--- Indenting all ASPECT header and source files"
 
-find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print | xargs -n 50 -P 10 "${astyle}" --options=contrib/utilities/astyle.rc
+find tests include source benchmarks cookbooks unit_tests \
+     \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' \) -print \
+  | xargs -P 10 -I {} bash -c "indent_file {}"
+
 
 # remove execute permission on source files:
 find tests include source benchmarks cookbooks unit_tests \( -name '*.cc' -o -name '*.h' -o -name '*.prm' \) -print | xargs -n 50 -P 10 chmod -x
@@ -76,8 +149,11 @@ dos_to_unix()
 {
     f=$1
     tr -d '\015' <$f >$f.tmp
-    diff -q $f $f.tmp >/dev/null || mv $f.tmp $f
-    rm -f $f.tmp
+    if ! diff -q $f $f.tmp >/dev/null ; then
+      mv $f.tmp $f
+    else
+      rm $f.tmp
+    fi
 }
 export -f dos_to_unix
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
@@ -107,6 +183,7 @@ remove_trailing_whitespace()
 }
 export -f remove_trailing_whitespace
 find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+
 
 # Ensure only a single newline at end of files
 ensure_single_trailing_newline()

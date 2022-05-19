@@ -121,7 +121,7 @@ namespace aspect
              * Return a copy of this manifold.
              */
             std::unique_ptr<Manifold<dim,3>>
-                                          clone() const override;
+            clone() const override;
 
           private:
             /**
@@ -297,7 +297,7 @@ namespace aspect
          * North-West, South-West and South-East.
          */
         const std::vector<Point<2>> &
-                                 get_corners() const;
+        get_corners() const;
 
 
         /**

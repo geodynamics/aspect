@@ -469,7 +469,7 @@ namespace aspect
            */
           virtual
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const = 0;
+          get_property_information() const = 0;
 
 
           /**
@@ -530,7 +530,7 @@ namespace aspect
            * number of components this property plugin defines.
            */
           std::vector<std::pair<std::string, unsigned int>>
-                                                         get_property_information() const override;
+          get_property_information() const override;
 
           /**
            * Read the parameters this class needs to determine which integrator is used,
@@ -779,11 +779,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_PROPERTY_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Property::Manager<2>::register_particle_property, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Property::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Property::Manager<3>::register_particle_property, \
+                                name, description); \
   }
 
     }

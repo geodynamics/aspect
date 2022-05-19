@@ -223,7 +223,7 @@ namespace aspect
             {
               // Tell p4est about the periodicity of the mesh.
               std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
-                  matched_pairs;
+              matched_pairs;
               FullMatrix<double> rotation_matrix(dim);
               rotation_matrix[0][1] = 1.;
               rotation_matrix[1][0] = -1.;
@@ -359,8 +359,8 @@ namespace aspect
 
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-        SphericalShell<dim>::
-        get_periodic_boundary_pairs () const
+    SphericalShell<dim>::
+    get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       if (periodic)
@@ -577,7 +577,7 @@ namespace aspect
       if (periodic)
         {
           std::vector<GridTools::PeriodicFacePair<typename DoFHandler<dim>::cell_iterator>>
-                                                                                         matched_pairs;
+          matched_pairs;
           FullMatrix<double> rotation_matrix(dim);
           rotation_matrix[0][1] = 1.;
           rotation_matrix[1][0] = -1.;

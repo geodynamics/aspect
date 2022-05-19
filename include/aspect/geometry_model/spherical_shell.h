@@ -134,7 +134,7 @@ namespace aspect
          * file.
          */
         std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-            get_periodic_boundary_pairs () const override;
+        get_periodic_boundary_pairs () const override;
 
         /**
          * @copydoc Interface::adjust_positions_for_periodicity

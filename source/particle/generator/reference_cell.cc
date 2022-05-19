@@ -43,7 +43,7 @@ namespace aspect
 
       template <int dim>
       std::vector<Point<dim>>
-                           ReferenceCell<dim>::generate_particle_positions_in_unit_cell()
+      ReferenceCell<dim>::generate_particle_positions_in_unit_cell()
       {
         std::vector<Point<dim>> particle_positions;
         std::array<double, dim> spacing;

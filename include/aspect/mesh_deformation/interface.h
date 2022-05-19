@@ -223,7 +223,7 @@ namespace aspect
          * used in the computation, as specified in the input file.
          */
         const std::map<types::boundary_id, std::vector<std::string>> &
-                                                                  get_active_mesh_deformation_names () const;
+        get_active_mesh_deformation_names () const;
 
         /**
          * Return a map of boundary indicators to vectors of pointers to all mesh deformation models
@@ -599,11 +599,11 @@ namespace aspect
   namespace ASPECT_REGISTER_MESH_DEFORMATION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::MeshDeformation::MeshDeformationHandler<2>::register_mesh_deformation, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::MeshDeformation::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::MeshDeformation::MeshDeformationHandler<3>::register_mesh_deformation, \
+                                name, description); \
   }
   }
 }

@@ -232,7 +232,7 @@ namespace aspect
         // the index j corresponds to the jth compositional field
         // the index k corresponds to the kth phase in the lookup
         std::vector<std::vector<double>> phase_volume_fractions(unique_phase_names.size(),
-                                                                std::vector<double>(in.n_evaluation_points(), 0.));
+                                                                 std::vector<double>(in.n_evaluation_points(), 0.));
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           for (unsigned j = 0; j < material_lookup.size(); ++j)
             for (unsigned int k = 0; k < unique_phase_indices[j].size(); ++k)
@@ -261,7 +261,7 @@ namespace aspect
         // the index i corresponds to the ith evaluation point
         // the index j corresponds to the jth compositional field
         std::vector<std::vector<double>> dominant_phase_indices(1, std::vector<double>(in.n_evaluation_points(),
-                                                                                       std::numeric_limits<double>::quiet_NaN()));
+                                                                                        std::numeric_limits<double>::quiet_NaN()));
         for (unsigned int i = 0; i < in.n_evaluation_points(); ++i)
           {
             const unsigned int dominant_material_index = std::distance(volume_fractions[i].begin(), std::max_element(volume_fractions[i].begin(), volume_fractions[i].end()));

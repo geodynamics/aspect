@@ -249,10 +249,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<InitialTemperature::Interface<2>>::PluginInfo> *
-                                                                             internal::Plugins::PluginList<InitialTemperature::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<InitialTemperature::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<InitialTemperature::Interface<3>>::PluginInfo> *
-                                                                             internal::Plugins::PluginList<InitialTemperature::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<InitialTemperature::Interface<3>>::plugins = nullptr;
     }
   }
 

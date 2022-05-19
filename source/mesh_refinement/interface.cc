@@ -151,7 +151,7 @@ namespace aspect
       // here in turns. then normalize the output vector and
       // verify that its values are non-negative numbers
       std::vector<Vector<float>> all_error_indicators (mesh_refinement_objects.size(),
-                                                       Vector<float>(error_indicators.size()));
+                                                        Vector<float>(error_indicators.size()));
       unsigned int index = 0;
       for (typename std::list<std::unique_ptr<Interface<dim>>>::const_iterator
            p = mesh_refinement_objects.begin();
@@ -524,10 +524,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<MeshRefinement::Interface<2>>::PluginInfo> *
-                                                                         internal::Plugins::PluginList<MeshRefinement::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<MeshRefinement::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<MeshRefinement::Interface<3>>::PluginInfo> *
-                                                                         internal::Plugins::PluginList<MeshRefinement::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<MeshRefinement::Interface<3>>::plugins = nullptr;
     }
   }
 

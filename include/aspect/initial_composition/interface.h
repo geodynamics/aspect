@@ -346,11 +346,11 @@ namespace aspect
   namespace ASPECT_REGISTER_INITIAL_COMPOSITION_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::InitialComposition::Manager<2>::register_initial_composition, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::InitialComposition::Manager<2>::register_initial_composition, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::InitialComposition::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::InitialComposition::Manager<3>::register_initial_composition, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::InitialComposition::Manager<3>::register_initial_composition, \
+                                name, description); \
   }
   }
 }

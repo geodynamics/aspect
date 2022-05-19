@@ -146,7 +146,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     ElasticStress<dim>::get_property_information() const
+      ElasticStress<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information;
 

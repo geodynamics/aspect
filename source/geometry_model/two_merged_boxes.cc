@@ -109,7 +109,7 @@ namespace aspect
 
       // tell p4est about the periodicity of the mesh.
       std::vector<GridTools::PeriodicFacePair<typename parallel::distributed::Triangulation<dim>::cell_iterator>>
-          periodicity_vector;
+      periodicity_vector;
       for (int i=0; i<dim+dim-1; ++i)
         {
           if (periodic[i])
@@ -194,8 +194,8 @@ namespace aspect
 
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-        TwoMergedBoxes<dim>::
-        get_periodic_boundary_pairs () const
+    TwoMergedBoxes<dim>::
+    get_periodic_boundary_pairs () const
     {
       std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>> periodic_boundaries;
       for ( unsigned int i=0; i<dim+dim-1; ++i)

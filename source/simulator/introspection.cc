@@ -156,8 +156,8 @@ namespace aspect
 
     template <int dim>
     std::shared_ptr<FiniteElement<dim>>
-                                     new_FE_Q_or_DGP(const bool discontinuous,
-                                                     const unsigned int degree)
+    new_FE_Q_or_DGP(const bool discontinuous,
+                    const unsigned int degree)
     {
       if (discontinuous)
         return std::make_shared<FE_DGP<dim>>(degree);
@@ -169,8 +169,8 @@ namespace aspect
 
     template <int dim>
     std::shared_ptr<FiniteElement<dim>>
-                                     new_FE_Q_or_DGQ(const bool discontinuous,
-                                                     const unsigned int degree)
+    new_FE_Q_or_DGQ(const bool discontinuous,
+                    const unsigned int degree)
     {
       if (discontinuous)
         return std::make_shared<FE_DGQ<dim>>(degree);
@@ -184,7 +184,7 @@ namespace aspect
 
   template <int dim>
   std::vector<VariableDeclaration<dim>>
-                                     construct_default_variables (const Parameters<dim> &parameters)
+  construct_default_variables (const Parameters<dim> &parameters)
   {
     std::vector<VariableDeclaration<dim>> variables;
 

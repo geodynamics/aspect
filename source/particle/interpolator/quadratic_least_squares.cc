@@ -36,10 +36,10 @@ namespace aspect
     {
       template <int dim>
       std::vector<std::vector<double>>
-                                    QuadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
-                                                                                     const std::vector<Point<dim>> &positions,
-                                                                                     const ComponentMask &selected_properties,
-                                                                                     const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
+      QuadraticLeastSquares<dim>::properties_at_points(const ParticleHandler<dim> &particle_handler,
+                                                       const std::vector<Point<dim>> &positions,
+                                                       const ComponentMask &selected_properties,
+                                                       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         const unsigned int n_particle_properties = particle_handler.n_properties_per_particle();
 
@@ -77,8 +77,8 @@ namespace aspect
 
 
         std::vector<std::vector<double>> cell_properties(positions.size(),
-                                                         std::vector<double>(n_particle_properties,
-                                                                             numbers::signaling_nan<double>()));
+                                                          std::vector<double>(n_particle_properties,
+                                                                              numbers::signaling_nan<double>()));
 
         const unsigned int n_particles = std::distance(particle_range.begin(), particle_range.end());
 

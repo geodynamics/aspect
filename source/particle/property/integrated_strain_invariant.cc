@@ -88,7 +88,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     IntegratedStrainInvariant<dim>::get_property_information() const
+      IntegratedStrainInvariant<dim>::get_property_information() const
       {
         const std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("integrated strain invariant",1));
         return property_information;

@@ -42,7 +42,7 @@ namespace aspect
    */
   template <int dim>
   std::vector<VariableDeclaration<dim>>
-                                     construct_default_variables (const Parameters<dim> &parameters);
+  construct_default_variables (const Parameters<dim> &parameters);
 
 
 

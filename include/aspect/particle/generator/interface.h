@@ -129,8 +129,8 @@ namespace aspect
            * to generate the initial particle distribution.
            */
           std::pair<Particles::internal::LevelInd,Particle<dim>>
-                                                              generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
-                                                                                 const types::particle_index id);
+          generate_particle (const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell,
+                             const types::particle_index id);
 
 
           /**
@@ -167,8 +167,8 @@ namespace aspect
            */
           DEAL_II_DEPRECATED
           std::pair<Particles::internal::LevelInd,Particle<dim>>
-                                                              generate_particle(const Point<dim> &position,
-                                                                                const types::particle_index id) const;
+          generate_particle(const Point<dim> &position,
+                            const types::particle_index id) const;
 
           /**
            * Generate a particle at the specified position and with the
@@ -275,11 +275,11 @@ namespace aspect
   namespace ASPECT_REGISTER_PARTICLE_GENERATOR_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<2>,classname<2 >> \
-        dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::Particle::Generator::register_particle_generator<2>, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::Particle::Generator::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::Particle::Generator::register_particle_generator<3>, \
+                                name, description); \
   }
     }
   }

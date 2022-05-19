@@ -753,7 +753,7 @@ namespace aspect
               viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-                                                          velocity.get_symmetric_gradient (q);
+              velocity.get_symmetric_gradient (q);
             const VectorizedArray<number> pres = pressure.get_value(q);
             const VectorizedArray<number> div = trace(sym_grad_u);
 
@@ -784,8 +784,8 @@ namespace aspect
                 const SymmetricTensor<2,dim,VectorizedArray<number>> grads_phi_u_i = velocity.get_symmetric_gradient (q);
 
                 SymmetricTensor<2,dim,VectorizedArray<number>> newton_velocity_term =
-                                                              (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
-                                                              * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
+                  (grads_phi_u_i * cell_data->strain_rate_table(cell,q))
+                  * cell_data->newton_factor_wrt_strain_rate_table(cell,q);
 
                 if (cell_data->symmetrize_newton_system)
                   newton_velocity_term +=
@@ -863,19 +863,19 @@ namespace aspect
   {
     if (cell_data->apply_stabilization_free_surface_faces)
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
-          data->loop(&StokesOperator::local_apply,
-                     &StokesOperator::local_apply_face,
-                     &StokesOperator::local_apply_boundary_face,
-                     this,
-                     dst,
-                     src,
-                     false, /*zero_dst_vector*/
-                     MatrixFree<dim, number>::DataAccessOnFaces::values,
-                     MatrixFree<dim, number>::DataAccessOnFaces::values);
+      data->loop(&StokesOperator::local_apply,
+                 &StokesOperator::local_apply_face,
+                 &StokesOperator::local_apply_boundary_face,
+                 this,
+                 dst,
+                 src,
+                 false, /*zero_dst_vector*/
+                 MatrixFree<dim, number>::DataAccessOnFaces::values,
+                 MatrixFree<dim, number>::DataAccessOnFaces::values);
 
     else
       MatrixFreeOperators::Base<dim, dealii::LinearAlgebra::distributed::BlockVector<number>>::
-          data->cell_loop(&StokesOperator::local_apply, this, dst, src);
+      data->cell_loop(&StokesOperator::local_apply, this, dst, src);
   }
 
   /**
@@ -967,7 +967,7 @@ namespace aspect
                const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
-                                                                                   data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
+    data->cell_loop(&MassMatrixOperator::local_apply, this, dst, src);
   }
 
 
@@ -1137,7 +1137,7 @@ namespace aspect
               viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-                                                          velocity.get_symmetric_gradient (q);
+              velocity.get_symmetric_gradient (q);
             sym_grad_u *= viscosity_x_2;
 
             if (cell_data->is_compressible)
@@ -1163,7 +1163,7 @@ namespace aspect
                const dealii::LinearAlgebra::distributed::Vector<number> &src) const
   {
     MatrixFreeOperators::Base<dim,dealii::LinearAlgebra::distributed::Vector<number>>::
-                                                                                   data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
+    data->cell_loop(&ABlockOperator::local_apply, this, dst, src);
   }
 
 
@@ -1234,7 +1234,7 @@ namespace aspect
                   viscosity_x_2 = 2.0*cell_data->viscosity(cell, q);
 
                 SymmetricTensor<2,dim,VectorizedArray<number>> sym_grad_u =
-                                                              velocity.get_symmetric_gradient (q);
+                  velocity.get_symmetric_gradient (q);
 
                 sym_grad_u *= viscosity_x_2;
 
@@ -1946,7 +1946,7 @@ namespace aspect
               viscosity_x_2 = 2.0*active_cell_data.viscosity(cell, q);
 
             SymmetricTensor<2,dim,VectorizedArray<double>> sym_grad_u =
-                                                          velocity.get_symmetric_gradient (q);
+              velocity.get_symmetric_gradient (q);
             const VectorizedArray<double> pres = pressure.get_value(q);
             const VectorizedArray<double> div = trace(sym_grad_u);
             pressure.submit_value(sim.pressure_scaling*div, q);
@@ -2473,10 +2473,10 @@ namespace aspect
         if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::gmres)
           {
             SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
-                                                                              solver(solver_control_cheap, mem,
-                                                                                     SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
-                                                                                     AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
-                                                                                         true));
+            solver(solver_control_cheap, mem,
+                   SolverGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+                   AdditionalData(sim.parameters.stokes_gmres_restart_length+2,
+                                  true));
 
             solver.solve (stokes_matrix,
                           solution_copy,
@@ -2486,9 +2486,9 @@ namespace aspect
         else if (sim.parameters.stokes_krylov_type == Parameters<dim>::StokesKrylovType::idr_s)
           {
             SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>
-                                                                            solver(solver_control_cheap, mem,
-                                                                                   SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
-                                                                                   AdditionalData(sim.parameters.idr_s_parameter));
+            solver(solver_control_cheap, mem,
+                   SolverIDR<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+                   AdditionalData(sim.parameters.idr_s_parameter));
 
             solver.solve (stokes_matrix,
                           solution_copy,
@@ -2527,9 +2527,9 @@ namespace aspect
                                                           std::max(sim.parameters.stokes_gmres_restart_length, 100U));
 
         SolverFGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>
-                                                                           solver(solver_control_expensive, mem,
-                                                                                  SolverFGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
-                                                                                  AdditionalData(number_of_temporary_vectors));
+        solver(solver_control_expensive, mem,
+               SolverFGMRES<dealii::LinearAlgebra::distributed::BlockVector<double>>::
+               AdditionalData(number_of_temporary_vectors));
 
         try
           {
@@ -2780,7 +2780,7 @@ namespace aspect
       stokes_constraints.push_back(&constraints_p);
 
       std::shared_ptr<MatrixFree<dim,double>>
-                                           stokes_mf_storage(new MatrixFree<dim,double>());
+      stokes_mf_storage(new MatrixFree<dim,double>());
       stokes_mf_storage->reinit(*sim.mapping,stokes_dofs, stokes_constraints,
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
       stokes_matrix.clear();
@@ -2796,7 +2796,7 @@ namespace aspect
       additional_data.mapping_update_flags = (update_values | update_gradients |
                                               update_JxW_values | update_quadrature_points);
       std::shared_ptr<MatrixFree<dim,double>>
-                                           ablock_mf_storage(new MatrixFree<dim,double>());
+      ablock_mf_storage(new MatrixFree<dim,double>());
       ablock_mf_storage->reinit(*sim.mapping,dof_handler_v, constraints_v,
                                 QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
 
@@ -2813,7 +2813,7 @@ namespace aspect
       additional_data.mapping_update_flags = (update_values | update_JxW_values |
                                               update_quadrature_points);
       std::shared_ptr<MatrixFree<dim,double>>
-                                           Schur_mf_storage(new MatrixFree<dim,double>());
+      Schur_mf_storage(new MatrixFree<dim,double>());
       Schur_mf_storage->reinit(*sim.mapping,dof_handler_p, constraints_p,
                                QGauss<1>(sim.parameters.stokes_velocity_degree+1), additional_data);
 
@@ -2872,7 +2872,7 @@ namespace aspect
                                                     update_quadrature_points);
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
-                                                        mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
 
             mg_mf_storage_level->reinit(mapping, dof_handler_v, level_constraints,
                                         QGauss<1>(sim.parameters.stokes_velocity_degree+1),
@@ -2905,7 +2905,7 @@ namespace aspect
                                                     update_quadrature_points);
             additional_data.mg_level = level;
             std::shared_ptr<MatrixFree<dim,GMGNumberType>>
-                                                        mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
+            mg_mf_storage_level(new MatrixFree<dim,GMGNumberType>());
 
             const Mapping<dim> &mapping =
               (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;

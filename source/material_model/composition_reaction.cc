@@ -236,7 +236,7 @@ namespace aspect
           const unsigned int n_points = out.n_evaluation_points();
           out.additional_outputs.push_back(
             std::make_unique<MaterialModel::ReactionRateOutputs<dim>> (n_points,
-                                                                       this->n_compositional_fields()));
+                                                                        this->n_compositional_fields()));
         }
     }
   }

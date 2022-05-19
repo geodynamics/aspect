@@ -278,11 +278,11 @@ namespace aspect
   namespace ASPECT_REGISTER_TERMINATION_CRITERION_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::TerminationCriteria::Manager<2>::register_termination_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::TerminationCriteria::Manager<2>::register_termination_criterion, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::TerminationCriteria::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::TerminationCriteria::Manager<3>::register_termination_criterion, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::TerminationCriteria::Manager<3>::register_termination_criterion, \
+                                name, description); \
   }
   }
 }

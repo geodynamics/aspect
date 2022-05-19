@@ -297,7 +297,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     IntegratorProperties<dim>::get_property_information() const
+      IntegratorProperties<dim>::get_property_information() const
       {
         return {{"internal: integrator properties", n_integrator_properties}};
       }
@@ -516,9 +516,9 @@ namespace aspect
                   if (cell_at_fixed_boundary == false)
                     {
                       const std::vector<std::vector<double>> interpolated_properties = interpolator.properties_at_points(particle_handler,
-                                                                                       std::vector<Point<dim>> (1,particle_location),
-                                                                                       ComponentMask(property_information.n_components(),true),
-                                                                                       found_cell);
+                                                                                        std::vector<Point<dim>> (1,particle_location),
+                                                                                        ComponentMask(property_information.n_components(),true),
+                                                                                        found_cell);
                       for (unsigned int property_component = 0; property_component < property_information.get_components_by_plugin_index(property_index); ++property_component)
                         particle_properties.push_back(interpolated_properties[0][property_information.get_position_by_plugin_index(property_index)+property_component]);
                     }
@@ -821,10 +821,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<2>>::PluginInfo> *
-                                                                             internal::Plugins::PluginList<Particle::Property::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<Particle::Property::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<3>>::PluginInfo> *
-                                                                             internal::Plugins::PluginList<Particle::Property::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<Particle::Property::Interface<3>>::plugins = nullptr;
     }
   }
 

@@ -71,7 +71,7 @@ namespace aspect
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
-                                                     MeltParticle<dim>::get_property_information() const
+      MeltParticle<dim>::get_property_information() const
       {
         std::vector<std::pair<std::string,unsigned int>> property_information (1,std::make_pair("melt_presence",1));
         return property_information;

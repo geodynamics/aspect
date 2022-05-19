@@ -147,7 +147,7 @@ namespace aspect
                                    "model you use does not actually compute a melt fraction."));
 
             Plugins::get_plugin_as_type<const MaterialModel::MeltFractionModel<dim>> (this->get_material_model()).
-                                                                                  melt_fractions(in, melt_fractions);
+            melt_fractions(in, melt_fractions);
           }
 
         for (unsigned int q=0; q<n_quadrature_points; ++q)

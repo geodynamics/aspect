@@ -490,11 +490,11 @@ namespace aspect
   namespace ASPECT_REGISTER_HEATING_MODEL_ ## classname \
   { \
     aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<2>,classname<2>> \
-        dummy_ ## classname ## _2d (&aspect::HeatingModel::Manager<2>::register_heating_model, \
-                                    name, description); \
+    dummy_ ## classname ## _2d (&aspect::HeatingModel::Manager<2>::register_heating_model, \
+                                name, description); \
     aspect::internal::Plugins::RegisterHelper<aspect::HeatingModel::Interface<3>,classname<3>> \
-        dummy_ ## classname ## _3d (&aspect::HeatingModel::Manager<3>::register_heating_model, \
-                                    name, description); \
+    dummy_ ## classname ## _3d (&aspect::HeatingModel::Manager<3>::register_heating_model, \
+                                name, description); \
   }
   }
 }

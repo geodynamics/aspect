@@ -389,8 +389,8 @@ namespace aspect
             {
               boundary_velocity_objects[boundary_id.first].push_back(
                 std::unique_ptr<Interface<dim>> (std::get<dim>(registered_plugins)
-                                                 .create_plugin (name,
-                                                                 "Boundary velocity::Model names")));
+                                                  .create_plugin (name,
+                                                                  "Boundary velocity::Model names")));
 
               if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(boundary_velocity_objects[boundary_id.first].back().get()))
                 sim->initialize_simulator (this->get_simulator());
@@ -422,10 +422,10 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<2>>::PluginInfo> *
-                                                                           internal::Plugins::PluginList<BoundaryVelocity::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<2>>::plugins = nullptr;
       template <>
       std::list<internal::Plugins::PluginList<BoundaryVelocity::Interface<3>>::PluginInfo> *
-                                                                           internal::Plugins::PluginList<BoundaryVelocity::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<BoundaryVelocity::Interface<3>>::plugins = nullptr;
     }
   }
 

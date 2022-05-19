@@ -49,7 +49,7 @@ namespace aspect
 
     template <int dim>
     std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>
-        Interface<dim>::get_periodic_boundary_pairs() const
+    Interface<dim>::get_periodic_boundary_pairs() const
     {
       // return an empty set in the base class
       return std::set<std::pair<std::pair<types::boundary_id, types::boundary_id>, unsigned int>>();
@@ -367,11 +367,11 @@ namespace aspect
     {
       template <>
       std::list<internal::Plugins::PluginList<GeometryModel::Interface<2>>::PluginInfo> *
-                                                                        internal::Plugins::PluginList<GeometryModel::Interface<2>>::plugins = nullptr;
+      internal::Plugins::PluginList<GeometryModel::Interface<2>>::plugins = nullptr;
 
       template <>
       std::list<internal::Plugins::PluginList<GeometryModel::Interface<3>>::PluginInfo> *
-                                                                        internal::Plugins::PluginList<GeometryModel::Interface<3>>::plugins = nullptr;
+      internal::Plugins::PluginList<GeometryModel::Interface<3>>::plugins = nullptr;
     }
   }
 

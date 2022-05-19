@@ -68,8 +68,8 @@ namespace aspect
       // If we restarted from a checkpoint we will fill this particle handler
       // later with its serialized variables and stored particles
       particle_handler = std::make_unique<ParticleHandler<dim>>(this->get_triangulation(),
-                                                                this->get_mapping(),
-                                                                property_manager->get_n_property_components());
+                                                                 this->get_mapping(),
+                                                                 property_manager->get_n_property_components());
 
       particle_handler_backup.initialize(this->get_triangulation(),
                                          this->get_mapping(),
@@ -968,17 +968,17 @@ namespace aspect
             melt_component_indices[2] = simulator_access.introspection().variable("compaction pressure").first_component_index;
 
             fluid_velocity = std::make_unique<FEPointEvaluation<dim, dim>>(simulator_access.get_mapping(),
-                                                                           simulator_access.get_fe(),
-                                                                           update_flags,
-                                                                           melt_component_indices[0]);
+                                                                            simulator_access.get_fe(),
+                                                                            update_flags,
+                                                                            melt_component_indices[0]);
             fluid_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                         simulator_access.get_fe(),
-                                                                         update_flags,
-                                                                         melt_component_indices[1]);
+                                                                          simulator_access.get_fe(),
+                                                                          update_flags,
+                                                                          melt_component_indices[1]);
             compaction_pressure = std::make_unique<FEPointEvaluation<1, dim>>(simulator_access.get_mapping(),
-                                                                              simulator_access.get_fe(),
-                                                                              update_flags,
-                                                                              melt_component_indices[2]);
+                                                                               simulator_access.get_fe(),
+                                                                               update_flags,
+                                                                               melt_component_indices[2]);
 
           }
       }
@@ -1154,8 +1154,8 @@ namespace aspect
       // A function to create a pointer to a SolutionEvaluators object.
       template <int dim>
       std::unique_ptr<internal::SolutionEvaluators<dim>>
-                                                      construct_solution_evaluators (const SimulatorAccess<dim> &simulator_access,
-                                                                                     const UpdateFlags update_flags)
+      construct_solution_evaluators (const SimulatorAccess<dim> &simulator_access,
+                                     const UpdateFlags update_flags)
       {
         switch (simulator_access.n_compositional_fields())
           {
@@ -1279,8 +1279,8 @@ namespace aspect
         TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Advect");
 
         std::unique_ptr<internal::SolutionEvaluators<dim>> evaluators =
-                                                          std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 0>>(*this,
-                                                              update_values);
+          std::make_unique<internal::SolutionEvaluatorsImplementation<dim, 0>>(*this,
+                                                                                update_values);
 
         // Loop over all cells and advect the particles cell-wise
         for (const auto &cell : this->get_dof_handler().active_cell_iterators())
