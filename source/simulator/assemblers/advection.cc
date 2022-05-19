@@ -548,6 +548,9 @@ namespace aspect
           // rho_f = fluid density
           // rhos_s = solid density
           // g = gravity
+          // The second term on the rhs of Darcy's Law only contributes to the component of the 
+          // fluid velocity parallel to the gravity vector, which is proportional to the 
+          // buoyancy of the fluid phase.
           const double rho_s = scratch.material_model_outputs.densities[q];
           const double rho_f = melt_outputs->fluid_densities[q];
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));

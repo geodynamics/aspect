@@ -1268,7 +1268,7 @@ namespace aspect
                          "fluid velocity prescribed by Darcy's Law, and applying reaction rates "
                          "to it. In other words this corresponds to the usual notion of a composition "
                          "field as mentioned in Section~\\ref{sec:compositional}, except that it is "
-                         "advected with the Darcy velocity instead of the solid velocity. "
+                         "advected with the Darcy velocity instead of the solid velocity."
                          "\n"
                          "\\item ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
