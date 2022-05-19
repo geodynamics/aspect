@@ -482,7 +482,6 @@ namespace aspect
     {
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       internal::Assembly::CopyData::AdvectionSystem<dim> &data = dynamic_cast<internal::Assembly::CopyData::AdvectionSystem<dim>& > (data_base);
-
       const Introspection<dim> &introspection = this->introspection();
       const FiniteElement<dim> &fe = this->get_fe();
 
@@ -491,13 +490,13 @@ namespace aspect
           != Parameters<dim>::AdvectionFieldMethod::fem_darcy_field)
         return;
 
-
-
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
       const unsigned int advection_dofs_per_cell = data.local_dof_indices.size();
 
       const bool use_supg = (this->get_parameters().advection_stabilization_method
                              == Parameters<dim>::AdvectionStabilizationMethod::supg);
+      AssertThrow(use_supg == false,
+                  ExcMessage("The Darcy field advection method does not support the use of SUPG"));
 
       const bool   use_bdf2_scheme = (this->get_timestep_number() > 1);
       const double time_step = this->get_timestep();
@@ -505,7 +504,6 @@ namespace aspect
 
       const double bdf2_factor = (use_bdf2_scheme)? ((2*time_step + old_time_step) /
                                                      (time_step + old_time_step)) : 1.0;
-      const bool advection_field_is_temperature = advection_field.is_temperature();
       const unsigned int solution_component = advection_field.component_index(introspection);
       const FEValuesExtractors::Scalar solution_field = advection_field.scalar_extractor(introspection);
       MaterialModel::MeltOutputs<dim> *melt_outputs = scratch.material_model_outputs.template get_additional_output<MaterialModel::MeltOutputs<dim>>();
@@ -520,9 +518,6 @@ namespace aspect
             {
               if (fe.system_to_component_index(i).first == solution_component)
                 {
-                  if (use_supg)
-                    scratch.laplacian_phi_field[i_advection] = trace(scratch.finite_element_values[solution_field].hessian (i,q));
-
                   scratch.grad_phi_field[i_advection] = scratch.finite_element_values[solution_field].gradient (i,q);
                   scratch.phi_field[i_advection]      = scratch.finite_element_values[solution_field].value (i,q);
                   ++i_advection;
@@ -530,24 +525,7 @@ namespace aspect
               ++i;
             }
 
-          const double density_c_P              =
-            ((advection_field_is_temperature)
-             ?
-             scratch.material_model_outputs.densities[q] *
-             scratch.material_model_outputs.specific_heat[q]
-             :
-             1.0);
-
-          Assert (density_c_P >= 0,
-                  ExcMessage ("The product of density and c_P needs to be a "
-                              "non-negative quantity."));
-
-          const double reaction_term =
-            ((advection_field_is_temperature)
-             ?
-             0.0
-             :
-             scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable]);
+          const double reaction_term = scratch.material_model_outputs.reaction_terms[q][advection_field.compositional_variable];
 
           const double field_term_for_rhs
             = (use_bdf2_scheme ?
@@ -561,37 +539,28 @@ namespace aspect
                scratch.old_field_values[q]);
 
 
+          // We calculate the fluid velocity current_u_f using an approximation of Darcy's Law:
+          // u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)
+          // u_f = fluid velocity
+          // u_s = solid velocity
+          // K_D = Darcy Coefficient
+          // phi = porosity
+          // rho_f = fluid density
+          // rhos_s = solid density
+          // g = gravity
           const double rho_s = scratch.material_model_outputs.densities[q];
           const double rho_f = melt_outputs->fluid_densities[q];
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
           const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
-          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-20);
+          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index],1e-10);
           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q] / porosity;
-          Tensor<1,dim> current_u = scratch.current_velocity_values[q];
-          Tensor<1,dim> current_u_f = current_u - K_D * (rho_s * gravity - rho_f * gravity);
+          const Tensor<1,dim> current_u = scratch.current_velocity_values[q];
+          Tensor<1,dim> current_u_f = current_u - K_D * (rho_s - rho_f) * gravity;
 
           // Subtract off the mesh velocity for ALE corrections if necessary
           if (this->get_parameters().mesh_deformation_enabled)
             current_u_f -= scratch.mesh_velocity_values[q];
           const double JxW = scratch.finite_element_values.JxW(q);
-
-          // For the diffusion constant, use the larger of the physical
-          // and the artificial viscosity/conductivity/diffusion constant.
-          // One could also choose the sum of the two, but if the
-          // physical diffusion is larger than the artificial one,
-          // then (because the latter is chosen sufficiently large to
-          // make the problem stable) one may as well stick with the
-          // physical one. And if the physical diffusion is too small to
-          // make the problem stable, then we ought to choose the smallest
-          // diffusivity value that makes the problem stable -- which is
-          // exactly the artificial viscosity.
-          const double conductivity = (advection_field_is_temperature
-                                       ?
-                                       scratch.material_model_outputs.thermal_conductivities[q]
-                                       :
-                                       0.0);
-
-          const double tau = (use_supg) ? scratch.artificial_viscosity : 0.0;
 
           // do the actual assembly. note that we only need to loop over the advection
           // shape functions because these are the only contributions we compute here
@@ -601,22 +570,7 @@ namespace aspect
               += (field_term_for_rhs * scratch.phi_field[i]
                   + scratch.phi_field[i]
                   * reaction_term)
-                 *
-                 JxW;
-
-              if (use_supg)
-                data.local_rhs(i)
-                += tau *
-                   (
-                     (current_u_f) *
-                     scratch.grad_phi_field[i] *
-                     (
-                       field_term_for_rhs
-                       +
-                       reaction_term
-                     )
-                   ) * JxW;
-
+                 * JxW;
 
               for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
                 {
@@ -628,30 +582,6 @@ namespace aspect
                           + (bdf2_factor * scratch.phi_field[i] * scratch.phi_field[j]))
                      )
                      * JxW;
-                }
-
-              if (use_supg)
-                {
-                  for (unsigned int j=0; j<advection_dofs_per_cell; ++j)
-                    {
-                      // Note that we assume that the conductivity is constant, otherwise we would need to
-                      // compute div (kappa grad T), which we don't have access to.
-                      data.local_matrix(i,j)
-                      += tau *
-                         (
-                           (current_u_f) *
-                           scratch.grad_phi_field[i] *
-                           (
-                             -time_step * conductivity * scratch.laplacian_phi_field[j]
-                             +
-                             (
-                               (time_step * current_u_f * scratch.grad_phi_field[j])
-                               +
-                               (bdf2_factor * scratch.phi_field[j])
-                             )
-                           )
-                         ) * JxW;
-                    }
                 }
             }
         }
@@ -666,6 +596,7 @@ namespace aspect
       internal::Assembly::Scratch::AdvectionSystem<dim> &scratch = dynamic_cast<internal::Assembly::Scratch::AdvectionSystem<dim>& > (scratch_base);
       const typename Simulator<dim>::AdvectionField advection_field = *scratch.advection_field;
       const unsigned int n_q_points = scratch.finite_element_values.n_quadrature_points;
+      const Introspection<dim> &introspection = this->introspection();
       std::vector<double> residuals(n_q_points);
       if (advection_field.is_temperature())
         {
@@ -680,11 +611,13 @@ namespace aspect
           const double K_D = melt_outputs->permeabilities[q] / melt_outputs->fluid_viscosities[q];
           const double rho_s = scratch.material_model_outputs.densities[q];
           const double rho_f = melt_outputs->fluid_densities[q];
+          const unsigned int porosity_index = introspection.compositional_index_for_name("porosity");
+          const double porosity         = std::max(scratch.material_model_inputs.composition[q][porosity_index], 1e-10);
           const Tensor<1,dim> gravity = this->get_gravity_model().gravity_vector (scratch.finite_element_values.quadrature_point(q));
 
           const Tensor<1,dim> u = (scratch.old_velocity_values[q] +
                                    scratch.old_old_velocity_values[q]) / 2;
-          - K_D*(rho_s * gravity - rho_f*gravity);
+          - K_D*(rho_s - rho_f)*gravity/porosity;
 
           const double dField_dt = (this->get_old_timestep() == 0.0) ? 0.0 :
                                    (
@@ -703,7 +636,7 @@ namespace aspect
     }
 
 
-    
+
     template <int dim>
     void
     AdvectionSystemBoundaryFace<dim>::execute(internal::Assembly::Scratch::ScratchBase<dim>   &scratch_base,

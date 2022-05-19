@@ -1262,22 +1262,14 @@ namespace aspect
                          "This method can only be chosen if melt transport is active in the "
                          "model."
                          "\n"
-
-
-
                          "\\item ``darcy field'': If a compositional field is marked with this "
                          "method, then its values are computed in each time step by "
                          "advecting along the values of the previous time step using the "
-                         "melt velocity, and applying reaction rates to it. In other words, "
-                         "this corresponds to the usual notion of a composition field as "
-                         "mentioned in Section~\\ref{sec:compositional}, except that it is "
-                         "advected with the melt velocity instead of the solid velocity. "
-                         "This method can only be chosen if melt transport is active in the "
-                         "model."
+                         "fluid velocity prescribed by Darcy's Law, and applying reaction rates "
+                         "to it. In other words this corresponds to the usual notion of a composition "
+                         "field as mentioned in Section~\\ref{sec:compositional}, except that it is "
+                         "advected with the Darcy velocity instead of the solid velocity. "
                          "\n"
-
-
-
                          "\\item ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
                          "marked with this method, then the value of a specific additional material "
@@ -1934,14 +1926,8 @@ namespace aspect
             compositional_field_methods[i] = AdvectionFieldMethod::static_field;
           else if (x_compositional_field_methods[i] == "melt field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_melt_field;
-
-
-
           else if (x_compositional_field_methods[i] == "darcy field")
             compositional_field_methods[i] = AdvectionFieldMethod::fem_darcy_field;
-
-
-
           else if (x_compositional_field_methods[i] == "prescribed field")
             compositional_field_methods[i] = AdvectionFieldMethod::prescribed_field;
           else if (x_compositional_field_methods[i] == "prescribed field with diffusion")
@@ -1972,6 +1958,14 @@ namespace aspect
                    || (x_mapped_particle_properties.size() == 0),
                    ExcMessage ("The list of names for the mapped particle property fields needs to either be empty or have a length equal to "
                                "the number of compositional fields that are interpolated from particle properties."));
+
+      if (std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_darcy_field)
+          != compositional_field_methods.end())
+        AssertThrow (std::find(names_of_compositional_fields.begin(),
+                               names_of_compositional_fields.end(),
+                               "porosity")
+                     != names_of_compositional_fields.end(),
+                     ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
 
       for (const auto &p : x_mapped_particle_properties)
         {

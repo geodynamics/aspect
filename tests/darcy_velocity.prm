@@ -1,20 +1,19 @@
 #########################################################
-# This is a test for the new melt solver. It checks if
-# melt transport works correctly in a model that has both
-# regions with and without melt (so only some of the cells
-# are "melt cells").
+# This is a test for the new advection method that advects a
+# compositional field with the fluid velocity prescribed by
+# Darcy's Law.
 
-# The initial porosity is zero everywhere, except for a
-# Gaussian in the center of the model (the "melt blob").
-# As there is no melting or freezing, the blob should
-# just rise, conserving the total porosity.
+# The initial porosity is uniform everywhere, and in the
+# center of the model is a blob of 'fluid' and 'solid'.
+# The solid has a prescribed x velocity, and so the fluid
+# blob should be advected horizontally with the solid and
+# vertically as it rises up due to its buoyancy.
 
 ############### Global parameters
 
 set Dimension                              = 2
 set Start time                             = 0
 set End time                               = 5000
-#set End time                               = 200
 set Use years in output instead of seconds = true
 set Adiabatic surface temperature          = 1600
 set Nonlinear solver scheme                = iterated Advection and Stokes
@@ -41,14 +40,6 @@ subsection Geometry model
   end
 end
 
-#subsection Melt settings
-#  set Include melt transport = true
-#end
-
-# The parameters below this comment were created by the update script
-# as replacement for the old 'Model settings' subsection. They can be
-# safely merged with any existing subsections with the same name.
-
 subsection Boundary temperature model
   set Fixed temperature boundary indicators   = 2, 3
 end
@@ -64,20 +55,21 @@ subsection Boundary velocity model
 end
 
 ############### Compositional fields
-# We want to use two compositional fields, the porosity and
-# an additional field, to check if the melting rate functionality
-# has the same effect as the reaction term for the other
-# compositional fields. As the porosity field is advected by
-# a different mechanism, slight differences between the fields
-# are expected.
+# We want to use three compositional fields, the porosity and
+# and two additional fields. The solid field will be advected with
+# the solid speed, and the fluid field will be advected as the sum of
+# the solid velocity and the vertical buoyancy the fluid has. The
+# porosity field is uniform to allow for a uniform fluid velocity.
 subsection Compositional fields
   set Number of fields = 3
   set Names of fields = porosity, solid, fluid
-  set Compositional field methods = field, field, darcy field
+  set Compositional field methods = darcy field, field, darcy field
+  set Types of fields = porosity, generic, generic
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
+  set Fixed composition boundary indicators = bottom, top, left, right
 end
 
 subsection Boundary temperature model
@@ -112,8 +104,8 @@ subsection Initial composition model
 
   subsection Function
     set Variable names      = x,y
-    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=10000, A=1.0
-    set Function expression = A * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); A * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c)); A * exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/(2*c*c))
+    set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=12500, A_f=0.2, A_s = 1.0
+    set Function expression = A_f; if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0); if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0)
   end
 end
 
@@ -126,8 +118,7 @@ end
 # mesh is refined and what to do with the solution once computed
 subsection Mesh refinement
   set Initial adaptive refinement        = 0
-  set Initial global refinement          = 4
-#  set Initial global refinement          = 0
+  set Initial global refinement          = 5
   set Time steps between mesh refinement = 0
 end
 

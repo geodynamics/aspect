@@ -24,7 +24,7 @@
 
 #include <aspect/simulator/assemblers/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/melt.h>
+//#include <aspect/melt.h>
 
 namespace aspect
 {
