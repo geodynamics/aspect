@@ -92,7 +92,7 @@ describes the purpose of boundary indicators as follows:
 > By default, all boundary indicators of a mesh are zero, unless you are
 > reading from a mesh file that specifically sets them to something different,
 > or unless you use one of the mesh generation functions in namespace
-> `GridGenerator` that have a &rsquo;colorize&rsquo; option. A typical piece
+> `GridGenerator` that have a 'colorize' option. A typical piece
 > of code that sets the boundary indicator on part of the boundary to
 > something else would look like this, here setting the boundary indicator to
 > 42 for all faces located at $x=-1$:
@@ -132,7 +132,7 @@ describes the purpose of boundary indicators as follows:
 > indicators is also presented in a section of the documentation of the
 > Triangulation class.
 
-Two comments are in order here. First, if a coarse triangulation&rsquo;s faces
+Two comments are in order here. First, if a coarse triangulation's faces
 already accurately represent where you want to pose which boundary condition
 (for example to set temperature values or determine which are no-flow and
 which are tangential flow boundary conditions), then it is sufficient to set

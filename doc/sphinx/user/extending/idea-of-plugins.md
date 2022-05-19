@@ -146,7 +146,7 @@ kinds of plugins.
 
 All of this information is of course part of the core of
 ASPECT, as part of the [aspect::Simulator class][].
-However, this is a rather heavy class: it&rsquo;s got dozens of member
+However, this is a rather heavy class: it's got dozens of member
 variables and functions, and it is the one that does all of the numerical
 heavy lifting. Furthermore, to access data in this class would require that
 you need to learn about the internals, the data structures, and the design of
@@ -234,7 +234,7 @@ to indicate that we want the pressure component can be accessed as
 `this->introspection().component_indices.pressure`. While this is certainly
 not shorter than just writing `dim`, it may in fact be easier to remember. It
 is most definitely less prone to errors and makes it simpler to extend the
-code in the future because we don&rsquo;t litter the sources with "magic
+code in the future because we don't litter the sources with "magic
 constants" like the one above.
 
 This [aspect::Introspection][] class has a significant number of variables

@@ -1,6 +1,6 @@
 # Test properties
 
-ASPECT&rsquo;s test parameter files can contain
+ASPECT's test parameter files can contain
 certain special markers that indicate how this test should be executed.
 Placing such a marker at any point in the test parameter file will indicate to
 the test system what to do with this test. The following properties are
