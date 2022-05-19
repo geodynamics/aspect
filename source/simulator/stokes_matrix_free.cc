@@ -2963,10 +2963,13 @@ namespace aspect
                                    sim.mpi_communicator);
 
             const Quadrature<dim> &quadrature_formula = sim.introspection.quadratures.velocities;
-            FEValues<dim> fe_values (*(sim.mapping), fe_v, quadrature_formula,
+            const Mapping<dim> &mapping =
+              (sim.mesh_deformation) ? sim.mesh_deformation->get_level_mapping(level) : *sim.mapping;
+
+            FEValues<dim> fe_values (mapping, fe_v, quadrature_formula,
                                      update_values   | update_gradients |
                                      update_quadrature_points | update_JxW_values);
-            FEValues<dim> fe_values_projection (*(sim.mapping),
+            FEValues<dim> fe_values_projection (mapping,
                                                 fe_projection,
                                                 quadrature_formula,
                                                 update_values);
