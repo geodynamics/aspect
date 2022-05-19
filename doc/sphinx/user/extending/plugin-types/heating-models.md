@@ -102,7 +102,7 @@ documentation page just mentioned.
 Just like for material models, the functions `initialize()` and `update()` can
 be implemented if desired (the default implementation does nothing) and are
 useful if the heating model has an internal state. The function `initialize()`
-is called once during the initialization of 
+is called once during the initialization of
 ASPECT and can be used to allocate memory for the
 heating model, initialize state, or read information from an external file.
 The function `update()` is called at the beginning of every time step.

@@ -12,7 +12,7 @@ line like the following into the parameter file (see
 ```
 
 Internally, dealing with the dimension builds on a feature in <span
-class="smallcaps">deal.II</span>, upon which 
+class="smallcaps">deal.II</span>, upon which
 ASPECT is based, that is called
 *dimension-independent programming*. In essence, what this does is that you
 write your code only once in a way so that the space dimension is a variable
@@ -24,7 +24,7 @@ expensive for finding bugs; it is also a useful feature when scoping out
 whether certain parameter settings will have the desired effect by testing
 them in 2d first, before running them in 3d. This feature is discussed in
 detail in the [DEAL.II tutorial program
-step-4][]. Like there, all the functions and classes in 
+step-4][]. Like there, all the functions and classes in
 ASPECT are compiled for both 2d and 3d. Which
 dimension is actually called internally depends on what you have set in the
 input file, but in either case, the machine code generated for 2d and 3d

@@ -22,7 +22,7 @@ file can then be used to start an ASPECT model
 as usual. Note that it is possible to prepare and execute the parameter file
 with different versions of ASPECT, e.g. if you
 prepare parameter files on a local machine, and execute the model on a remote
-compute cluster. Note however that if the two 
+compute cluster. Note however that if the two
 ASPECT versions contain different default values or
 parameter names have changed, this can lead to unexpected model behavior or
 even unusable parameter files.

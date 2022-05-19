@@ -87,7 +87,7 @@ input files that <span class="smallcaps">ASPECT</span> uses physical units,
 rather than non-dimensionalizing everything. The advantage, of course, is that
 we can immediately compare outputs with actual measurements. The disadvantage
 is that we need to work a bit when asked for, say, the Rayleigh number of a
-simulation. 
+simulation.
 
 :::{toctree}
 cookbooks/shell_simple_2d/doc/shell_simple_2d.md

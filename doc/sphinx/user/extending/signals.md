@@ -3,11 +3,11 @@
 Not all things you may want to do fit neatly into the list of plugins of the
 previous sections. Rather, there are cases where you may want to change things
 that are more of the one-off kind and that require code that is at a lower
-level and requires more knowledge about 
+level and requires more knowledge about
 ASPECT&rsquo;s internal workings. For such changes,
 we still want to stick with the general principle outlined at the beginning of
 {ref}`sec:1][22]: You should be able to make all of your changes and
-extensions in your own files, without having to modify 
+extensions in your own files, without having to modify
 ASPECT&rsquo;s own sources.
 
 To support this, ASPECT uses a
@@ -163,7 +163,7 @@ As a final note, it is generally true that writing functions that can connect
 to signals require significantly more internal knowledge of the workings of
 ASPECT than writing plugins through the
 mechanisms outlined above. It also allows to affect the course of a simulation
-by working on the internal data structures of 
+by working on the internal data structures of
 ASPECT in ways that are not available to the largely
 passive and reactive plugins discussed in previous sections. With this
 obviously also comes the potential for trouble. On the other hand, it also
