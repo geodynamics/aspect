@@ -32,12 +32,6 @@ subsection Mesh deformation
   end
 end
 
-subsection Nullspace removal
-  # net rotation|net translation|angular momentum|translational momentum
-  set Remove nullspace = net rotation
-end
-
-
 subsection Geometry model
   set Model name = rebound box
   subsection Rebound Box
