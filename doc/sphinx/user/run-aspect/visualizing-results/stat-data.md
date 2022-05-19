@@ -6,11 +6,10 @@ In addition to the graphical output discussed above,
 ASPECT produces a statistics file that collects
 information produced during each time step. For the remainder of this section,
 let us assume that we have run ASPECT with the
-input file discussed in {ref}`5.2.1][], simulating convection in a
+input file discussed in {ref}`5.2.1`[], simulating convection in a
 box. After running ASPECT, you will find a file
 called `statistics` in the output directory that, at the time of writing this,
-looked like this: This file has a structure that looks (at the time of writing
-this section) like this:
+looked like this: 
 
 ``` ksh
 # 1: Time step number
@@ -44,7 +43,7 @@ this section) like this:
 
 In other words, it first lists what the individual columns mean with a hash
 mark at the beginning of the line and then has one line for each time step in
-which the individual columns list what has been explained above.[16]
+which the individual columns list what has been explained above.[^footnote1]
 
 This file is easy to visualize. For example, one can import it as a whitespace
 separated file into a spreadsheet such as Microsoft Excel or
@@ -109,10 +108,10 @@ above. This is rarely used on the command line but useful when writing the
 commands above into a script file, see below. We have done it here to get the
 entire command into the width of the page.
 
-.
+```{figure-md} fig:viz-gnuplot-1
 <img src="viz/statistics/1.png" title="fig:" id="fig:viz-gnuplot-1" style="width:40.0%" alt="Visualizing the statistics file obtained from the example in Section&#xA0;5.2.1 using Gnuplot: Output using simple commands." />
-<img src="viz/statistics/2.png" title="fig:" id="fig:viz-gnuplot-1" style="width:40.0%" alt="Visualizing the statistics file obtained from the example in Section&#xA0;5.2.1 using Gnuplot: Output using simple commands." />
-.
+Visualizing the statistics file obtained from the example in Section&#xA0;5.2.1 using Gnuplot: Output using simple commands.
+```
 
 For those who are lazy, `Gnuplot` allows to abbreviate things in many
 different ways. For example, one can abbreviate most commands. Furthermore,
@@ -143,11 +142,14 @@ set terminal png
 
 The last command will simply generate the same plot again but this time into
 the given file. The result is a graphics file similar to the one shown in
-Fig.&nbsp;[9][] on page .
+Fig.&nbsp;[9][] on page `insert page number`.
 
-<div class="center">
-
-</div>
+:::{note}
+After setting output to a file, all following plot commands will want to write to this file.
+Thus, if you want to create more plots after the one just created, you need to reset output back to
+the screen. On Linux, this is done using the command set terminal X11. You can then continue
+experimenting with plots and when you have the next plot ready, switch back to output to a file.
+:::
 
 What makes `Gnuplot` so useful is that it doesn't just allow entering
 all these commands at the prompt. Rather, one can write them all into a file,
@@ -162,7 +164,7 @@ create the same plot for multiple simulations while playing with parameters of
 the physical setup. It is also a very useful tool if one wants to generate the
 same kind of plot again later with a different data set, for example when a
 reviewer requested additional computations to be made for a paper or if one
-realizes that one has forgotten or misspelled an axis label in a plot.[17]
+realizes that one has forgotten or misspelled an axis label in a plot.[^footnote2]
 
 `Gnuplot` has many many more features we have not even touched upon. For
 example, it is equally happy to produce three-dimensional graphics, and it
@@ -172,3 +174,12 @@ an input file. We will not try to cover them here but instead refer to the
 manual at <http://www.gnuplot.info/>. You can also get a good amount of
 information by typing `help` at the prompt, or a command like `help plot` to
 get help on the `plot` command.
+
+[^footnote1]: With input files that ask for initial adaptive refinement, the first time step may appear twice because we solve on a mesh that
+is globally refined and we then start the entire computation over again on a once adaptively refined mesh (see the parameters
+in Section `A.127` for how to do that).
+[^footnote2]: In my own work, I usually save the ASPECT input file, the statistics output file and the Gnuplot script along with the
+actual figure I want to include in a paper. This way, it is easy to either re-run an entire simulation, or just tweak the graphic
+at a later time. Speaking from experience, you will not believe how often one wants to tweak a figure long after it was first
+created. In such situations it is outstandingly helpful if one still has both the actual data as well as the script that generated
+the graphic.
