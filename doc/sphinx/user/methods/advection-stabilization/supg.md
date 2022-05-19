@@ -26,7 +26,8 @@ the right-hand side of the PDE.
 
 We use the parameter design presented in (John and Knobloch 2006) for
 $\delta_K$:
-```{math}\delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
+```{math}
+\delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
 ```
 where the Peclet number is given by
 ```Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
