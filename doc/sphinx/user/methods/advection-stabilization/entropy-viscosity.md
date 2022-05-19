@@ -7,11 +7,17 @@ The entropy viscosity method ((Guermond, Pasquetti, and Popov 2011;
 Kronbichler, Heister, and Bangerth 2012)) adds an artificial diffusion $\nu_h$
 to the weak form [\[eqn:weak-form-for-advection`35], where the diffusion
 term $\left (k\nabla T, \nabla \varphi \right)$ is replaced by
-```{math}\left(\max (k, \nu_h) \nabla T, \nabla \varphi \right).``` The parameter
+```{math}
+\left(\max (k, \nu_h) \nabla T, \nabla \varphi \right).
+```
+The parameter
 $\nu_h$ is chosen as a constant per cell as
-```v_h \vert_K = \min \left( v_h^\text{max} \vert_K, v_h^E \vert_K \right),```
+```{math}
+v_h \vert_K = \min \left( v_h^\text{max} \vert_K, v_h^E \vert_K \right),
+```
 where $v_h^\text{max}$ is the maximum dissipation defined as
-```v_h^\text{max} \vert_K = \alpha_\text{max} h \| \mathbf u \|_{\infty,K}
+```{math}
+v_h^\text{max} \vert_K = \alpha_\text{max} h \| \mathbf u \|_{\infty,K}
 ```
  on
 each cell $K$ with parameter $\alpha_\text{max}$ (known as "beta"
@@ -22,7 +28,8 @@ scheme, which is effective at stabilization, but too diffusive to be used by
 itself. In fact, one can show that this reduces the convergence order of
 smooth solutions to be only first order. This is avoided by taking the minimum
 with the entropy viscosity $v_h^E|_K$ above. It is defined as
-```v_h^E \vert_K = \alpha_E \frac{h^2 \| r_E \|_{\infty, K}}{\| E - E_\text{avg} \|_{\infty, \Omega}}.
+```{math}
+v_h^E \vert_K = \alpha_E \frac{h^2 \| r_E \|_{\infty, K}}{\| E - E_\text{avg} \|_{\infty, \Omega}}.
 ```
 The constant $\alpha_E$ is given by "cR" in the parameter files,
 see {ref}`parameters:Discretization/Stabilization_20parameters/cR`37]. In the
@@ -31,7 +38,8 @@ the temperature entropy $E=\frac{1}{2}(T-T_m)^2$ with
 $T_m = \frac{1}{2}(T_\text{min}+T_\text{max})$ from the spatial average
 $E_\text{avg} = \frac{1}{| \Omega |}\int E \;\text{d}x$. The residual $r_E$ of
 the entropy equation for $E$ is defined as
-```r_E = \frac{\partial E}{\partial t} + (T-T_m)(\mathbf{u}\cdot \nabla T - k\triangle T - F).
+```{math}
+r_E = \frac{\partial E}{\partial t} + (T-T_m)(\mathbf{u}\cdot \nabla T - k\triangle T - F).
 ```
 This residual is defined in such a way, that it is zero for the exact
 solution, large where the numerical approximation is poor (for example in
@@ -43,7 +51,8 @@ The above definition assumes the entropy residual exponent
 {ref}`parameters:Discretization/Stabilization_20parameters/alpha`38]) is set
 to 2 (the default and recommended). For the choice of 1 for
 "alpha," the entropy viscosity is defined as
-```v_h^E \vert_K = \alpha_E \frac{h |\Omega| \cdot \| \mathbf u \|_{\infty,K} \cdot \| r_E \|_{\infty, K}}
+```{math}
+v_h^E \vert_K = \alpha_E \frac{h |\Omega| \cdot \| \mathbf u \|_{\infty,K} \cdot \| r_E \|_{\infty, K}}
  {\| \mathbf u \|_{\infty,\Omega} \cdot (T_\text{max} - T_\text{min})}.
  ```
 instead.
@@ -51,7 +60,8 @@ instead.
 An additional parameter is the strain rate scaling factor "gamma"
 (see {ref}`parameters:Discretization/Stabilization_20parameters/gamma`39]),
 which changes the definition of the maximum dissipation $\nu_h^\text{max}$ to
-```v_h^\text{max} \vert_K = \alpha_\text{max} h \|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K},
+```{math}
+v_h^\text{max} \vert_K = \alpha_\text{max} h \|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K},
 ```
 where $\gamma\geq 0$ is the aforementioned parameter in front of the strain
 rate.

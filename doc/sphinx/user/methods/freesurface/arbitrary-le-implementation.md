@@ -33,10 +33,11 @@ advection system with the mesh velocity (see, e.g. (Donea et al. 2004)). For
 instance, the temperature equation {math:numref}`eq:temperature-Boussinesq-linear`27]
 becomes
 
-```{math}\rho C_p \left(\frac{\partial T}{\partial t} + \left(\mathbf u - \mathbf u_m \right) \cdot\nabla T\right)
+```{math}
+\rho C_p \left(\frac{\partial T}{\partial t} + \left(\mathbf u - \mathbf u_m \right) \cdot\nabla T\right)
   - \nabla\cdot k\nabla T
   =
   \rho H
    \quad
    \textrm{in $\Omega$}.
-   ```
+```

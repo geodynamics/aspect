@@ -14,7 +14,6 @@ the advection of a compositional field representing the volume fraction of
 melt present at any given time (the porosity $\phi$), and also a change of the
 mechanical part of the system. The latter is implemented using the approach of
 (Keller, May, and Kaus 2013) and changes the Stokes system to
-
 ```{math}
 \begin{align}
   \label{eq:stokes-1-melt}
@@ -73,11 +72,15 @@ user, we can use the same method as for the mass conservation (described in
 {ref}`2.10.3][]) and assume the change in solid density is dominated
 by the change in static pressure, which can be written as
 $\nabla p_s \approx \nabla p_{\text{static}} \approx \rho_s \textbf{g}$. This
-finally allows us to write ```{math}\frac{1}{\rho_s} \nabla \rho_s
+finally allows us to write
+```{math}
+\frac{1}{\rho_s} \nabla \rho_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \rho_s \textbf{g}
-\approx \beta_s \rho_s \textbf{g}.``` where $\beta_s$ is the compressibility of
+\approx \beta_s \rho_s \textbf{g}.
+```
+where $\beta_s$ is the compressibility of
 the solid. In the paper that describes the implementation (Dannberg and
 Heister 2016), $\kappa$ is used for the compressibility. We change the
 variable here to be consistent throughout the manual.
@@ -109,7 +112,9 @@ second equation by
 \end{align}
 ```
 The melt velocity is computed as
-```{math}\mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),```
+```{math}
+\mathbf{u}_f =  \mathbf{u}_s - \frac{K_D}{\phi} (\nabla p_f - \rho_f g),
+```
 but is only used for postprocessing purposes and for computing the time step
 length.
 
@@ -134,17 +139,25 @@ $\phi$:
 In order to solve this equation in the same way as the other advection
 equations, we replace the second term of the equation by:
 
-```{math}\nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
+```{math}
+\nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
 = \left( 1-\phi \right) \left( \rho_s \nabla \cdot \mathbf{u}_s
 + \nabla \rho_s \cdot \mathbf{u}_s \right)
-- \nabla \phi \cdot \rho_s \mathbf{u}_s``` Then we use the same method as
+- \nabla \phi \cdot \rho_s \mathbf{u}_s
+```
+Then we use the same method as
 described above and assume again that the change in density is dominated by
 the change in static pressure
-```{math}\frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u}_s
-\approx \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s``` so we get
-```{math}\frac{\partial \phi}{\partial t} + \mathbf{u}_s \cdot \nabla \phi
+```{math}
+\frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u}_s
+\approx \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s
+```
+so we get
+```{math}
+\frac{\partial \phi}{\partial t} + \mathbf{u}_s \cdot \nabla \phi
 = \frac{\Gamma}{\rho_s}
-+ (1 - \phi) (\nabla \cdot \mathbf{u}_s + \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).```
++ (1 - \phi) (\nabla \cdot \mathbf{u}_s + \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
+```
 
 More details on the implementation can be found in (Dannberg and Heister
 2016). A benchmark case demonstrating the propagation of solitary waves can be
