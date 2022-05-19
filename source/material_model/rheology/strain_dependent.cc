@@ -274,12 +274,16 @@ namespace aspect
                          Parameters<dim>::NonlinearSolver::single_Advection_iterated_Newton_Stokes
                          ||
                          this->get_parameters().nonlinear_solver ==
-                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes),
+                         Parameters<dim>::NonlinearSolver::single_Advection_iterated_defect_correction_Stokes
+                         ||
+                         this->get_parameters().nonlinear_solver ==
+                         Parameters<dim>::NonlinearSolver::no_Advection_no_Stokes),
                         ExcMessage("The material model will only work with the nonlinear "
                                    "solver schemes 'single Advection, single Stokes', "
                                    "'single Advection, iterated Stokes', "
-                                   "'single Advection, iterated Newton Stokes', and "
-                                   "'single Advection, iterated defect correction Stokes' "
+                                   "'single Advection, iterated Newton Stokes', "
+                                   "'single Advection, iterated defect correction Stokes', and "
+                                   "'no Advection, no Stokes' "
                                    "when strain weakening is enabled, because more than one nonlinear "
                                    "advection iteration will result in the incorrect value of strain."));
           }

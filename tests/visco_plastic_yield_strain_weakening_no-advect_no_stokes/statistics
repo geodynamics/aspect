@@ -1,0 +1,17 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: RMS velocity (m/year)
+# 10: Max. velocity (m/year)
+# 11: Outward mass flux through boundary with indicator 0 ("left") (kg/yr)
+# 12: Outward mass flux through boundary with indicator 1 ("right") (kg/yr)
+# 13: Outward mass flux through boundary with indicator 2 ("bottom") (kg/yr)
+# 14: Outward mass flux through boundary with indicator 3 ("top") (kg/yr)
+# 15: Visualization file name
+0 0.000000000000e+00 0.000000000000e+00 100 1003 441 441 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 output-visco_plastic_yield_strain_weakening_no-advect_no_stokes/solution/solution-00000 
+1 1.000000000000e+00 1.000000000000e+00 100 1003 441 441 0 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00                                                                                      "" 
