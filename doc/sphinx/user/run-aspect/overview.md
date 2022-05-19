@@ -262,9 +262,11 @@ The purpose of these files is as follows:
     these columns as time series. Alternatively, the data can be imported into
     a spreadsheet and plotted there.
 
-    <div class="center">
-
-    </div>
+:::{note}
+As noted in Section 2.3, ASPECT can be thought of as using the meter-kilogramsecond
+(MKS, or SI) system. Unless otherwise noted, the quantities in the output file are
+therefore also in MKS units.
+:::
 
     A simple way to plot the contents of this file is shown in
     {ref}`4.5.2][].
