@@ -68,7 +68,7 @@ Figure~\ref{fig:exponential-decay} shows the convergence behavior of these model
 Errors are the same for both composition and temperature, as both fields have identical initial conditions and reactions, and we use the same methods to solve for these variables.
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.65\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.pdf}
+    \includesvg[width=0.65\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_exponential_decay.svg}
   \end{center}
   \caption{\it Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.}
   \label{fig:exponential-decay}
@@ -85,8 +85,8 @@ $v_0$ is the constant velocity, which we set to 0.01 m/s.
 The parameter file for this setup can be found in \url{benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm}.
 \begin{figure}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction.pdf}
-    \includegraphics[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction2.pdf}
+    \includesvg[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction.svg}
+    \includesvg[width=0.48\textwidth]{cookbooks/benchmarks/operator_splitting/doc/error_advection_reaction2.svg}
   \end{center}
   \caption{\it Error for both compositional field and temperature compared to the analytical solution, varying the time steps of advection (blue data points and and top/blue x axis) and reactions (red data points and and bottom/red x axis), while keeping the other one constant, respectively.}
   \label{fig:advection-reaction}
