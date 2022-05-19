@@ -26,14 +26,14 @@ the program with a detailed message that shows the failed check, the location
 in the source code, and a stacktrace how the program got there. The downside
 of debug mode is, of course, that it makes the program much slower -
 depending on application by a factor of 4-10. An example of the speedup
-one can get is shown in {ref}`5.2.1][].
+one can get is shown in {ref}`5.2.1`[].
 
 ASPECT by default uses debug mode because most
 users will want to play with the source code, and because it is also a way to
 verify that the compilation process worked correctly. If you have verified
 that the program runs correctly with your input parameters, for example by
 letting it run for the first 10 time steps, then you can switch to optimized
-mode by compiling ASPECT with the command[14]
+mode by compiling ASPECT with the command[^footnote1]
 
      make release
 
@@ -45,6 +45,9 @@ To switch back to debug mode type:
 
      make debug
 
-<div class="center">
+:::{note}
+It goes without saying that if you make significant modifications to the program, you
+should do the first runs in debug mode to verify that your program still works as expected.
+:::
 
-</div>
+[^footnote1]: Note that this procedure also changed with the switch to cmake.
