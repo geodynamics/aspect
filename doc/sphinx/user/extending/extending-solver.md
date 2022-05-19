@@ -57,7 +57,7 @@ DEAL.II tutorial:
     of the consequences of making things run with realistic geometries,
     material models, etc.
 
-Neither of these two programs is nearly as modular as 
+Neither of these two programs is nearly as modular as
 ASPECT, but that was also not the goal in creating
 them. They will, however, serve as good introductions to the general approach
 for solving thermal convection problems.

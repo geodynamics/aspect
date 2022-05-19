@@ -18,6 +18,6 @@ image from Docker Hub is as simple as typing in a terminal:
 docker pull geodynamics/aspect
 ```
 
-Note that the transfer size of the compressed image containing 
+Note that the transfer size of the compressed image containing
 ASPECT and all its dependencies is about 900&nbsp;MB.
 When extracted the image requires about 3.2&nbsp;GB of disk space.

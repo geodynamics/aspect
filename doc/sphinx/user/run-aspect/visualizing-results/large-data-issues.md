@@ -12,7 +12,7 @@ single time step can run into the range of gigabytes that somehow have to get
 from compute nodes to disk. This stresses both the cluster interconnect as
 well as the data storage array.
 
-There are essentially two strategies supported by 
+There are essentially two strategies supported by
 ASPECT for this scenario:
 
 -   If your cluster has a fast interconnect, for example Infiniband, and if

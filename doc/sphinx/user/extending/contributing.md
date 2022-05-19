@@ -13,7 +13,7 @@ Do something about it! No matter whether you are a C++ expert or first-time
 user, there are no such things as too-unimportant contributions, and if you
 struggled with something, it is most likely somebody else will as well. The
 process of contributing to a new project can be daunting, but we appreciate
-every contribution and are happy to work with you on improving 
+every contribution and are happy to work with you on improving
 ASPECT. To get you started we have collected a set of
 guidelines and advice on how to get involved in the community. To avoid
 duplication we store these guidelines in a separate file [CONTRIBUTING.md][]

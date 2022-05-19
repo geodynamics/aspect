@@ -131,5 +131,5 @@ Visualization plugins can come in two flavors:
     `CellDataVectorCreator` class for more information.
 
 If all of this sounds confusing, we recommend consulting the implementation of
-the various visualization plugins that already exist in the 
+the various visualization plugins that already exist in the
 ASPECT sources, and using them as a template.

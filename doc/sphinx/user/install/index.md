@@ -22,7 +22,7 @@ guide users to an informed decision about the best option for their purpose.
 |        Modifying ASPECT         |     Possible      |          Possible          |     Possible     |
 |    Configuring dependencies     |     Possible      |             No             |        No        |
 
-*Features of the different installation options of 
+*Features of the different installation options of
 ASPECT.*
 
 </div>

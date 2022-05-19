@@ -9,11 +9,11 @@ libraries it builds on, you can compile it by typing
       make
 
 on the command line (or `make -jN` if you have multiple processors in your
-machine, where `N` is the number of processors). This builds the 
+machine, where `N` is the number of processors). This builds the
 ASPECT executable which will reside in the `build`
-directory and will be named `aspect`. To run 
+directory and will be named `aspect`. To run
 ASPECT from the main source directory you would need
-to reference it as `./build/aspect`. If you intend to modify 
+to reference it as `./build/aspect`. If you intend to modify
 ASPECT for your own experiments, you may want to also
 generate documentation about the source code. This can be done using the
 command

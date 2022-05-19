@@ -1,7 +1,7 @@
 
 # The idea of plugins and the `SimulatorAccess` and `Introspection` classes
 
-The most common modification you will probably want to do to 
+The most common modification you will probably want to do to
 ASPECT are to switch to a different material model
 (i.e., have different values of functional dependencies for the coefficients
 $\eta,\rho,C_p, \ldots$ discussed in {ref}`sec:coefficients`8]);
@@ -144,7 +144,7 @@ is defined on. Furthermore, you may need to know what the current simulation
 time is. A variety of other pieces of information enters computations in these
 kinds of plugins.
 
-All of this information is of course part of the core of 
+All of this information is of course part of the core of
 ASPECT, as part of the [aspect::Simulator class][].
 However, this is a rather heavy class: it&rsquo;s got dozens of member
 variables and functions, and it is the one that does all of the numerical

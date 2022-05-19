@@ -3,7 +3,7 @@
 
 #### A note on the syntax of formulas in input files
 
-Input files have different ways of describing certain things to 
+Input files have different ways of describing certain things to
 ASPECT. For example, you could select a plugin for
 the temperature initial values that prescribes a constant temperature, or a
 plugin that implements a particular formula for these initial conditions in
@@ -62,7 +62,7 @@ way, however, using something like python to debug these expressions before
 defining them in the parameter file is recommended. For more examples of
 functions used in parameter files, go to the `cookbooks` directory and use
 grep to search for "Function expression" in the parameters files.
-You can also search "Function expression" on the 
+You can also search "Function expression" on the
 ASPECT github page. For more examples of the syntax
 understood, reference the documentation of the muparser library linked to
 above.

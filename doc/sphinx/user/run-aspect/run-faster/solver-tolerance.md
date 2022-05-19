@@ -18,7 +18,7 @@ Obviously, the smaller we choose $\varepsilon$, the more accurate the
 approximation $x^{(k)}$ will be. On the other hand, it will also take more
 iterations and, consequently, more CPU time to reach the stopping criterion
 with a smaller tolerance. The default value of these tolerances are chosen so
-that the approximation is typically sufficient. You can make 
+that the approximation is typically sufficient. You can make
 ASPECT run faster if you choose these tolerances
 larger. The parameters you can adjust are all listed in
 {ref}`parameters:Solver_20parameters`64] and are located in the

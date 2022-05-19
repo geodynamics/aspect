@@ -14,7 +14,7 @@ or, if you want to run the program in parallel, using something like
       mpirun -np 4 ./aspect parameter-file.prm
 
 to run with 4 processors. In either case, the argument denotes the (path and)
-name of a file that contains input parameters.[7] When you download 
+name of a file that contains input parameters.[7] When you download
 ASPECT, there are a number of sample input files in
 the `cookbooks` directory, corresponding to the examples discussed in
 {ref}`5][], and input files for some of the benchmarks discussed in
@@ -87,12 +87,12 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 ...
 ```
 
-The output starts with a header that lists the used 
+The output starts with a header that lists the used
 ASPECT, DEAL.II, <span
 class="smallcaps">Trilinos</span> and <span class="smallcaps">p4est</span>
-versions as well as the mode you compiled 
+versions as well as the mode you compiled
 ASPECT in (see [4.4][]), and the number of parallel
-processes used[9]. With this information we strive to make 
+processes used[9]. With this information we strive to make
 ASPECT models as reproducible as possible.
 
 The following output depends on the model, and in this case was produced by a
@@ -118,7 +118,7 @@ Within each time step, the output indicates the number of iterations performed
 by the linear solvers, and we generate a number of lines of output by the
 postprocessors that were selected (see
 {ref}`parameters:Postprocess`50]). Here, we have selected to run
-all postprocessors that are currently implemented in 
+all postprocessors that are currently implemented in
 ASPECT which includes the ones that evaluate
 properties of the velocity, temperature, and heat flux as well as a
 postprocessor that generates graphical output for visualization.
