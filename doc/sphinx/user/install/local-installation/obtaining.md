@@ -8,7 +8,7 @@ downloaded by executing the command
 
      git clone https://github.com/geodynamics/aspect.git
 
-If `$DEAL_II_DIR` points to your DEAL.II
+If `$DEAL_II_DIR` points to your deal.II
 installation, you can configure ASPECT by
 running
 

@@ -116,7 +116,7 @@ Primarily, this difficulty results from two facts:
     information about the `SimulatorAccess` class.
 
 -   Writing a new postprocessor typically requires a fair amount of knowledge
-    how to leverage the DEAL.II library to
+    how to leverage the deal.II library to
     extract information from the solution. The existing postprocessors are
     certainly good examples to start from in trying to understand how to do
     this.
