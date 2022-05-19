@@ -16,7 +16,7 @@ the vtu format, the output files are compressed, and can not be compared using
 Numdiff). An easy way to create all of the files you need is to copy the
 folder of an existing test and rename it to the name of your parameter file.
 
-To actually run the test, you have to go to your <span
+To actually run the test, you have to go to your 
 ASPECT build directory and run
 
 ``` ksh

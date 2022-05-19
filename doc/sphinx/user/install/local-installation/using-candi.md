@@ -4,7 +4,7 @@
 #### Using candi to compile dependencies
 
 In its default configuration `candi` downloads and compiles a <span
-class="smallcaps">deal.II</span> configuration that is able to run <span
+class="smallcaps">deal.II</span> configuration that is able to run 
 ASPECT, but it also contains a number of packages
 that are not required (and that can be safely disabled if problems occur
 during the installation). We require at least the packages <span
@@ -56,5 +56,5 @@ class="smallcaps">p4est</span> and TRILINOS.
     `$DEAL_II_DIR/examples/step-32`. Prepare and compile by running
     `cmake . && make` and run with `mpirun -n 2 ./step-32`.
 
-Congratulations, you are now set up for compiling <span
+Congratulations, you are now set up for compiling 
 ASPECT itself.

@@ -2,9 +2,9 @@
 # Developing ASPECT within a container
 
 
-The above given workflow does not include advice on how to modify <span
+The above given workflow does not include advice on how to modify 
 ASPECT inside the container. We recommend a slightly
-different workflow for advanced users that want to modify parts of <span
+different workflow for advanced users that want to modify parts of 
 ASPECT. The ASPECT
 docker container itself is build on top of a <span
 class="smallcaps">deal.II</span> container that contains all dependencies for
@@ -21,7 +21,7 @@ docker run -it -v "$(pwd):/home/dealii/aspect:ro" \
   tjhei/dealii:v9.2.0-full-v9.2.0-r2-gcc5 bash
 ```
 
-Inside of the container you now find a read-only <span
+Inside of the container you now find a read-only 
 ASPECT directory that contains your modified source
 code. You can compile and run a model inside the container, e.g. in the
 following way:

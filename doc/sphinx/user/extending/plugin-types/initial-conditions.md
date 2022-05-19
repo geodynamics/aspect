@@ -6,7 +6,7 @@ a function that for each point can return the initial temperature. Note that
 the model {math:numref}`eq:stokes-1`2]&ndash;{math:numref}`eq:temperature`3] does not require
 initial values for the pressure or velocity. However, if coefficients are
 nonlinear, one can significantly reduce the number of initial nonlinear
-iterations if a good guess for them is available; consequently, <span
+iterations if a good guess for them is available; consequently, 
 ASPECT initializes the pressure with the
 adiabatically computed hydrostatic pressure, and a zero velocity. Neither of
 these two has to be provided by the objects considered in this section.

@@ -1,7 +1,7 @@
 (cha:extending)=
 # Extending and contributing to ASPECT
 
-After you have familiarized yourself with <span
+After you have familiarized yourself with 
 ASPECT using the examples of
 {ref}`sec:cookbooks`1] you will invariably want to set up your
 own models. During this process you might experience that not all of your

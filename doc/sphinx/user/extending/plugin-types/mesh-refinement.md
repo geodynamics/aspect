@@ -1,7 +1,7 @@
 # Mesh refinement criteria
 
 Despite research since the mid-1980s, it isn&rsquo;t completely clear how to
-refine meshes for complex situations like the ones modeled by <span
+refine meshes for complex situations like the ones modeled by 
 ASPECT. The basic problem is that mesh refinement
 criteria either can refine based on some variable such as the temperature, the
 pressure, the velocity, or a compositional field, but that oftentimes this by

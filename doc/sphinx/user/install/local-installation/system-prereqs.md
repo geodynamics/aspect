@@ -11,11 +11,11 @@ zlib, which is used for compressing the output data. To use more than one
 process for your computations you will need to install a MPI library, its
 headers and the necessary executables to run MPI programs. There are some
 optional packages for additional features, like the HDF5 libraries for
-additional output formats and Numdiff for checking <span
+additional output formats and Numdiff for checking 
 ASPECT's test results with reasonable accuracy,
 but these are not strictly required, and in some operating systems they are
 not available as packages but need to be compiled from scratch. Finally, for
-obtaining a recent development version of <span
+obtaining a recent development version of 
 ASPECT you will need the git version control system.
 
 An exemplary command to obtain all required packages on Ubuntu 14.04 would be:

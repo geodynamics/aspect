@@ -8,7 +8,7 @@ ASPECT uses debug mode, i.e., it calls a
 version of the DEAL.II library that contain
 lots of checks for the correctness of function arguments, the consistency of
 the internal state of data structure, etc. If you program with <span
-class="smallcaps">deal.II</span>, for example to extend <span
+class="smallcaps">deal.II</span>, for example to extend 
 ASPECT, it has been our experience over the years
 that, by number, most programming errors are of the kind where one forgets to
 initialize a vector, one accesses data that has not been updated, one tries to
