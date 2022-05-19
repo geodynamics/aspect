@@ -156,7 +156,7 @@ dos_to_unix()
     fi
 }
 export -f dos_to_unix
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
+find tests include source unit_tests cookbooks benchmarks doc \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name '*.md' \) -print | xargs -n 1 -P 10 -I {} bash -c 'dos_to_unix "$@"' _ {}
 
 # convert tabs to two spaces:
 tab_to_space()
@@ -169,7 +169,7 @@ tab_to_space()
     rm -f $f.tmp
 }
 export -f tab_to_space
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
+find tests include source unit_tests cookbooks benchmarks doc \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' -o -name '*.md' \) -print | xargs -n 1 -P 10 -I {} bash -c 'tab_to_space "$@"' _ {}
 
 # Remove trailing whitespace from files
 remove_trailing_whitespace()
@@ -182,7 +182,7 @@ remove_trailing_whitespace()
     rm -f $f.tmp
 }
 export -f remove_trailing_whitespace
-find tests include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
+find tests include source unit_tests cookbooks benchmarks doc \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' -o -name '*.md' \) -print | xargs -n 1 -P 10 -I {} bash -c 'remove_trailing_whitespace "$@"' _ {}
 
 
 # Ensure only a single newline at end of files
@@ -209,7 +209,7 @@ ensure_single_trailing_newline()
   rm -f $f.tmp $f.tmpi
 }
 export -f ensure_single_trailing_newline
-find include source unit_tests cookbooks benchmarks \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
+find include source unit_tests cookbooks benchmarks doc \( -name '*.cc' -o -name '*.h' -o -name '*.prm' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' -o -name '*.md' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
 
 # Do not recursively search the tests directory for prm files, otherwise the output prms will be changed
 find tests \( -name '*.cc' -o -name '*.h' -o -name '*.h.in' -o -name 'CMakeLists.txt' -o -name '*.cmake' \) -print | xargs -n 1 -P 10 -I {} bash -c 'ensure_single_trailing_newline "$@"' _ {}
