@@ -20,7 +20,7 @@ In order to visualize one time step, follow these steps:[15]
 -   *Selecting input files:* As mentioned above, in parallel computations we
     usually generate one output file per processor in each time step for which
     visualization data is produced (see, however, {ref}`4.5.3][]). To
-    tell Visit which files together make up one time step, <span
+    tell Visit which files together make up one time step,
     ASPECT creates a
     `output/solution/solution-XXXXX.visit` file in the output directory. To
     open it, start Visit, click on the "Open" button in the

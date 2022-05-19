@@ -16,10 +16,10 @@ There are essentially two strategies supported by
 ASPECT for this scenario:
 
 -   If your cluster has a fast interconnect, for example Infiniband, and if
-    your cluster has a fast, distributed file system, then <span
+    your cluster has a fast, distributed file system, then
     ASPECT can produce output files that are already
     located in the correct output directory (see the options in
-    {ref}`parameters:global`17]) on the global file system. <span
+    {ref}`parameters:global`17]) on the global file system.
     ASPECT uses MPI I/O calls to this end, ensuring
     that the local machines do not have to access these files using slow
     NFS-mounted global file systems.

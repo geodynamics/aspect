@@ -89,7 +89,7 @@ The way this is achieved is through the following two steps:
     This little piece of code ensures several things: (i) That the parameters
     this class declares are known when reading the parameter file. (ii) That
     you can select this model (by the name "grace") via the
-    run-time parameter `Gravity model/Model name`. (iii) That <span
+    run-time parameter `Gravity model/Model name`. (iii) That
     ASPECT can create an object of this kind when
     selected in the parameter file.
 

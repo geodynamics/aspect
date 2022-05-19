@@ -4,7 +4,7 @@ If you have questions that go beyond this manual, there are a number of
 resources:
 
 -   For questions on the source code of ASPECT,
-    portability, installation, new or existing features, etc., use the <span
+    portability, installation, new or existing features, etc., use the
     ASPECT forum at
     <https://community.geodynamics.org/c/aspect>. This forum is where the
     ASPECT developers all hang out. Archived
@@ -13,7 +13,7 @@ resources:
 
 -   ASPECT is primarily based on the deal.II
     library (the dependency on Trilinos and p4est is primarily through
-    deal.II, and not directly visible in the <span
+    deal.II, and not directly visible in the
     ASPECT source code). If you have particular
     questions about deal.II, contact the mailing lists described at
     <https://www.dealii.org/mail.html>.
