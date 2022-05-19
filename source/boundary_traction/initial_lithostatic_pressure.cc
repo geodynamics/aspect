@@ -33,6 +33,7 @@
 #include <aspect/geometry_model/ellipsoidal_chunk.h>
 #include <aspect/geometry_model/box.h>
 #include <aspect/geometry_model/two_merged_boxes.h>
+#include <aspect/geometry_model/two_merged_chunks.h>
 
 namespace aspect
 {
@@ -93,6 +94,8 @@ namespace aspect
         spherical_representative_point[0] = Plugins::get_plugin_as_type<const GeometryModel::SphericalShell<dim>>(this->get_geometry_model()).outer_radius();
       else if (Plugins::plugin_type_matches<const GeometryModel::Chunk<dim>> (this->get_geometry_model()))
         spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::Chunk<dim>>(this->get_geometry_model()).outer_radius();
+      else if (Plugins::plugin_type_matches<const GeometryModel::TwoMergedChunks<dim>> (this->get_geometry_model()))
+        spherical_representative_point[0] =  Plugins::get_plugin_as_type<const GeometryModel::TwoMergedChunks<dim>>(this->get_geometry_model()).outer_radius();
       else if (Plugins::plugin_type_matches<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model()))
         {
           const GeometryModel::EllipsoidalChunk<dim> &gm = Plugins::get_plugin_as_type<const GeometryModel::EllipsoidalChunk<dim>> (this->get_geometry_model());
