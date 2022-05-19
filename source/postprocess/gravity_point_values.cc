@@ -376,7 +376,7 @@ namespace aspect
       // on process zero and, for now, also only computed on process zero.
       std::vector<double> g_theory(n_satellites);
       std::vector<double> g_potential_theory(n_satellites);
-      std::vector<Tensor<2,dim>> g_gradient_theory(n_satellites);
+      std::vector<SymmetricTensor<2,dim>> g_gradient_theory(n_satellites);
 
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
         {
