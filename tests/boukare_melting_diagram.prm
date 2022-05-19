@@ -6,7 +6,7 @@
 # To plot the output:
 # gnuplot
 # set view map
-# splot "solution-00000.0000.gnuplot" using 1:2:25 palette
+# splot "solution-00000.0000.gnuplot" using 1:2:20 palette
 
 # At the top, we define the number of space dimensions we would like to
 # work in:

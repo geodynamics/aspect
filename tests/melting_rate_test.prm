@@ -1,4 +1,13 @@
 # Fractionation example.
+# This test is similar to the boukare_melting_diagram, 
+# but evolves over time. Consequently, the melt and solid 
+# composition in the two-phase region should reflect the
+# melting diagram at the end of the model run. 
+
+# To plot the output:
+# gnuplot
+# set view map
+# splot "solution-00000.0000.gnuplot" using 1:2:11 palette
 
 
 # At the top, we define the number of space dimensions we would like to
@@ -79,20 +88,6 @@ subsection Boundary velocity model
   set Tangential velocity boundary indicators = left, right, top, bottom
 end
 
-subsection Boundary temperature model
-  set Allow fixed temperature on outflow boundaries = false
-  set List of model names = initial temperature
-  subsection Initial temperature
-    set Maximal temperature = 5000
-  end
-end
-
-subsection Boundary composition model
-  set Allow fixed composition on outflow boundaries = false
-  set Model name = initial composition
-end
-
-
 subsection Heating model
   set List of model names =
 end
@@ -128,7 +123,7 @@ end
 # on. We here use a globally refined mesh without
 # adaptive mesh refinement.
 subsection Mesh refinement
-  set Initial global refinement                = 6
+  set Initial global refinement                = 5
   set Initial adaptive refinement              = 0
   set Time steps between mesh refinement       = 0
   set Strategy                                 = composition threshold

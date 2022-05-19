@@ -188,8 +188,8 @@ namespace aspect
         // Parameters describing the melting properties of the two endmembers of the melting model.
         const double melting_reference_pressure = 120.e9;
 
-        double Fe_mantle_melting_temperature = 3424.5;          // reference melting temperature for Fe mantle endmember at the reference pressure
-        double Mg_mantle_melting_temperature = 4821.2;          // reference melting temperature for Mg mantle endmember at the reference pressure
+        double Fe_mantle_melting_temperature;                   // reference melting temperature for Fe mantle endmember at the reference pressure
+        double Mg_mantle_melting_temperature;                   // reference melting temperature for Mg mantle endmember at the reference pressure
 
         const double Fe_mantle_melting_entropy = 33.77;         // molar entropy change of melting in J/mol K
         const double Mg_mantle_melting_entropy = 34.33;         // molar entropy change of melting in J/mol K
@@ -296,18 +296,18 @@ namespace aspect
 
 
         /**
-         * Convert from the mole fraction of iron in the solid to the mole fraction of iron in the
-         * two solid phases, bridgmanite and ferropericlase, and the molar fraction of bridgmanite
-         * in the solid.
+         * Convert from the mole fraction of iron in the solid and melt to the mole fraction of iron
+         * and magnesium in each of the two solid phases, bridgmanite and ferropericlase, and the melt
+         * phase. In addition, compute the molar fraction of bridgmanite in the solid.
          */
         virtual
         void
-        convert_to_fraction_of_endmembers_in_solid (const double temperature,
-                                                    const double molar_Fe_in_solid,
-                                                    const double molar_Fe_in_melt,
-                                                    const std::vector<double> &endmember_gibbs_energies,
-                                                    std::vector<double> &endmember_mole_fractions_per_phase,
-                                                    double &molar_bridgmanite_in_solid) const;
+        convert_composition_to_fraction_of_endmembers (const double temperature,
+                                                       const double molar_Fe_in_solid,
+                                                       const double molar_Fe_in_melt,
+                                                       const std::vector<double> &endmember_gibbs_energies,
+                                                       std::vector<double> &endmember_mole_fractions_per_phase,
+                                                       double &molar_bridgmanite_in_solid) const;
 
 
         /**

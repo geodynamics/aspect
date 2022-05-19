@@ -292,12 +292,12 @@ namespace aspect
     template <int dim>
     void
     MeltBoukare<dim>::
-    convert_to_fraction_of_endmembers_in_solid (const double temperature,
-                                                const double molar_Fe_in_solid,
-                                                const double molar_Fe_in_melt,
-                                                const std::vector<double> &endmember_gibbs_energies,
-												std::vector<double> &endmember_mole_fractions_per_phase,
-                                                double &f_pv) const
+    convert_composition_to_fraction_of_endmembers (const double temperature,
+                                                   const double molar_Fe_in_solid,
+                                                   const double molar_Fe_in_melt,
+                                                   const std::vector<double> &endmember_gibbs_energies,
+                                                   std::vector<double> &endmember_mole_fractions_per_phase,
+                                                   double &f_pv) const
     {
       const double x_FeO = molar_Fe_in_solid * molar_FeO_in_Fe_mantle_endmember;
       const double x_MgO = (1. - molar_Fe_in_solid) * molar_MgO_in_Mg_mantle_endmember;
@@ -317,7 +317,7 @@ namespace aspect
                                  + std::pow(1. + (molar_fraction_FeO + molar_fraction_SiO2) * (partition_coefficient - 1.0), 2.);
 
       endmember_mole_fractions_per_phase[febdg_idx] = (-1. + molar_fraction_FeO - (molar_fraction_FeO * partition_coefficient) + molar_fraction_SiO2 - (molar_fraction_SiO2 * partition_coefficient) + std::sqrt(num_to_sqrt)) /
-                                    (2. * molar_fraction_SiO2 * (1. - partition_coefficient));
+                                                      (2. * molar_fraction_SiO2 * (1. - partition_coefficient));
 
       endmember_mole_fractions_per_phase[wus_idx] = endmember_mole_fractions_per_phase[febdg_idx] / (((1. - endmember_mole_fractions_per_phase[febdg_idx]) * partition_coefficient) + endmember_mole_fractions_per_phase[febdg_idx]);
 
@@ -436,7 +436,13 @@ namespace aspect
 
         double melt_molar_fraction;
 
-        if (Xls <= molar_composition_of_bulk
+        if (molar_composition_of_bulk < std::numeric_limits<double>::min())
+          {
+        	melt_molar_fraction = 0 > T_Mg_mantle ? 1.0 : molar_volatiles_in_bulk;
+        	new_molar_composition_of_melt = 0;
+        	new_molar_composition_of_solid = 0;
+          }
+        else if (Xls <= molar_composition_of_bulk
             && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
           {
             melt_molar_fraction = 1.0;
@@ -451,9 +457,15 @@ namespace aspect
 
             new_molar_composition_of_solid = std::max(std::min(Xss, molar_composition_of_bulk), 0.0);
             new_molar_composition_of_melt = std::min(std::max(Xls, molar_composition_of_bulk), 1.0);
-            melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - Xss) / (Xls - Xss), 0.0), 1.0);
 
-            if (molar_volatiles_in_bulk > 0)
+            if (std::abs(Xls - Xss) > std::numeric_limits<double>::min())
+              melt_molar_fraction = std::min(std::max((molar_composition_of_bulk - Xss) / (Xls - Xss), 0.0), 1.0);
+            // If solid and melt composition are the same, there is no two-phase region.
+            // If we are not above the liquidus, we are below the solidus.
+            else
+              melt_molar_fraction = molar_volatiles_in_bulk;
+
+            if (molar_volatiles_in_bulk > 0 && std::abs(molar_composition_of_bulk - Xss) > std::numeric_limits<double>::min())
               molar_volatiles_in_melt = molar_volatiles_in_bulk*(Xls - Xss)/(molar_composition_of_bulk - Xss);
           }
 
@@ -489,12 +501,12 @@ namespace aspect
               melt_composition = in.composition[q][Fe_melt_idx];
             }
 
-          convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
-                                                     solid_composition,
-													 melt_composition,
-                                                     endmembers.gibbs_energies,
-                                                     endmember_mole_fractions_per_phase,
-                                                     bridgmanite_molar_fraction_in_solid);
+          convert_composition_to_fraction_of_endmembers(in.temperature[q],
+                                                        solid_composition,
+                                                        melt_composition,
+                                                        endmembers.gibbs_energies,
+                                                        endmember_mole_fractions_per_phase,
+                                                        bridgmanite_molar_fraction_in_solid);
 
 
           if (this->include_melt_transport())
@@ -519,12 +531,12 @@ namespace aspect
                                                               melt_composition);
 
           // We have to compute the endmember fractions again here because the porosity is now different.
-          convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
-                                                     solid_composition,
-													 melt_composition,
-                                                     endmembers.gibbs_energies,
-                                                     endmember_mole_fractions_per_phase,
-                                                     bridgmanite_molar_fraction_in_solid);
+          convert_composition_to_fraction_of_endmembers(in.temperature[q],
+                                                        solid_composition,
+                                                        melt_composition,
+                                                        endmembers.gibbs_energies,
+                                                        endmember_mole_fractions_per_phase,
+                                                        bridgmanite_molar_fraction_in_solid);
 
 
           // convert from melt molar fraction to porosity
@@ -573,7 +585,7 @@ namespace aspect
             }
         }
 
-      // TODO: We need the reaction step here to conserve bulk composition. Is there a better way to do this?
+      // We need the reaction step here to conserve bulk composition.
       double reaction_time_step_size = 1.0;
       double reaction_fraction = 0.0;
       if (this->simulator_is_past_initialization())
@@ -591,7 +603,6 @@ namespace aspect
 
       for (unsigned int q=0; q<in.temperature.size(); ++q)
         {
-          // TODO: get a vector of endmember phases?
           std::vector<double> endmember_mole_fractions_per_phase(n_endmembers);
           std::vector<double> endmember_mole_fractions_in_composite(n_endmembers);
 
@@ -608,12 +619,12 @@ namespace aspect
               melt_composition = in.composition[q][Fe_melt_idx];
             }
 
-          convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
-                                                     solid_composition,
-													 melt_composition,
-                                                     endmembers.gibbs_energies,
-                                                     endmember_mole_fractions_per_phase,
-													 bridgmanite_molar_fraction_in_solid);
+          convert_composition_to_fraction_of_endmembers(in.temperature[q],
+                                                        solid_composition,
+                                                        melt_composition,
+                                                        endmembers.gibbs_energies,
+                                                        endmember_mole_fractions_per_phase,
+                                                        bridgmanite_molar_fraction_in_solid);
 
           if (this->include_melt_transport())
             {
@@ -705,7 +716,7 @@ namespace aspect
                   melt_out->fluid_densities[q] = mass/volume;
                 }
 
-              // TODO: this does not take into account the volume change due to thermal expansion of melt
+              // This does not take into account the volume change due to thermal expansion of melt
               melt_out->fluid_density_gradients[q] = melt_out->fluid_densities[q] * melt_out->fluid_densities[q]
                                                      * melt_compressiblity
                                                      * this->get_gravity_model().gravity_vector(in.position[q]);
@@ -760,12 +771,12 @@ namespace aspect
 
 
               // We have to compute the endmember fractions again here because the porosity is now different.
-              convert_to_fraction_of_endmembers_in_solid(in.temperature[q],
-                                                         solid_composition,
-														 melt_composition,
-                                                         endmembers.gibbs_energies,
-                                                         endmember_mole_fractions_per_phase,
-                                                         bridgmanite_molar_fraction_in_solid);
+              convert_composition_to_fraction_of_endmembers(in.temperature[q],
+                                                            solid_composition,
+                                                            melt_composition,
+                                                            endmembers.gibbs_energies,
+                                                            endmember_mole_fractions_per_phase,
+                                                            bridgmanite_molar_fraction_in_solid);
 
 
               // convert from melt molar fraction to porosity
@@ -781,7 +792,6 @@ namespace aspect
               const double porosity_change = new_porosity - old_porosity;
 
               // For this simple model, we only track the iron in the solid (bridgmanite) and the iron in the melt
-              // TODO: make this more general to work with the full equation of state
               for (unsigned int c=0; c<in.composition[q].size(); ++c)
                 {
                   // fill reaction rate outputs
@@ -1058,7 +1068,7 @@ namespace aspect
                              "The third of three coefficients that are used to compute the specific heat capacities for each "
                              "different endmember at the reference temperature and reference pressure. This coefficient describes "
                              "the part of the temperature dependence that scales as the inverse of the square root of the temperature"
-                             "Units: TODO.");
+                             "Units: J/kg/sqrt(K).");
         }
         prm.leave_subsection();
       }
@@ -1177,7 +1187,7 @@ namespace aspect
                                                                                      n_endmembers,
                                                                                      "Third coefficients for specific heat polynomial");
 
-          //TODO: check all lists have the correct length
+          //Check all lists have the correct length
           AssertThrow(endmember_names.size() == endmember_states.size(),
                       ExcMessage("One of the lists that define the endmember parameters does not have the "
                                  "correct size.  Please check your parameter file."));
