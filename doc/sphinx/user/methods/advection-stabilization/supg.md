@@ -6,10 +6,11 @@
 For streamline upwind/Petrov-Galerkin (SUPG) (see for example (John and
 Knobloch 2006; Clevenger and Heister 2019)), we add to the weak form
 $a(\cdot,\cdot)$ the cell-wise defined weak form
-```a_{\text{SUPG}} (T, \varphi) =
+```{math}
+a_{\text{SUPG}} (T, \varphi) =
  \sum_{K \in \mathcal{T}_h}
   \delta_K \left( \rho C_p \frac{\partial T}{\partial t} - k \triangle T + \mathbf{\beta} \cdot \nabla T - F, \mathbf{\beta} \cdot \nabla \varphi \right)_K,
-  ```
+```
 where $K \in \mathcal{T}_h$ are the cells in the computation,
 $\delta_K \geq 0$ is a stabilization coefficient defined on each cell,
 $\mathbf{\beta} = \rho C_p \mathbf{u}$ is the effective advection velocity.
@@ -30,7 +31,8 @@ $\delta_K$:
 \delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
 ```
 where the Peclet number is given by
-```Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
+```{math}
+Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
 ```
 $d$ is
 the polynomial degree of the temperature or composition element (typically 2),

@@ -150,7 +150,9 @@ described above and assume again that the change in density is dominated by
 the change in static pressure
 ```{math}
 \frac{1}{\rho_s} \nabla \rho_s \cdot \mathbf{u}_s
-\approx \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s``` so we get
+\approx \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s
+```
+so we get
 ```{math}
 \frac{\partial \phi}{\partial t} + \mathbf{u}_s \cdot \nabla \phi
 = \frac{\Gamma}{\rho_s}
