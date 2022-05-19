@@ -4,11 +4,11 @@ Not all things you may want to do fit neatly into the list of plugins of the
 previous sections. Rather, there are cases where you may want to change things
 that are more of the one-off kind and that require code that is at a lower
 level and requires more knowledge about
-ASPECT&rsquo;s internal workings. For such changes,
+ASPECT's internal workings. For such changes,
 we still want to stick with the general principle outlined at the beginning of
 {ref}`sec:1][22]: You should be able to make all of your changes and
 extensions in your own files, without having to modify
-ASPECT&rsquo;s own sources.
+ASPECT's own sources.
 
 To support this, ASPECT uses a
 "signals" mechanism. Signals are, in essence, objects that

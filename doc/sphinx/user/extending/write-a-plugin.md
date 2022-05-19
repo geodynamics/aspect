@@ -95,7 +95,7 @@ to do:
     shell environment variable `ASPECT_DIR`, or just one directory up. It then
     sets up compiler paths and similar, and the following lines simply define
     the name of a plugin, list the source files for it, and define everything
-    that&rsquo;s necessary to compile them into a shared library. Calling
+    that's necessary to compile them into a shared library. Calling
     `make` on the command line then simply compiles everything.
 
 <div class="center">

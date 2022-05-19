@@ -36,7 +36,7 @@ temperature and location of each visualization point (implemented in the
 other hand, a hypothetical plugin that simply outputs the norm of the strain
 rate $\sqrt{\varepsilon(\mathbf
   u):\varepsilon(\mathbf u)}$ would not need access to anything but the
-solution vector (which the plugin&rsquo;s main function is given as an
+solution vector (which the plugin's main function is given as an
 argument) and consequently is not derived from the
 [aspect::Postprocess::SimulatorAccess][] class.[7]
 
