@@ -100,9 +100,15 @@ namespace aspect
           double evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const;
 
           /**
-           * Update the bounds of where the plane reaches by checking whether a point is in the cell and what its value is.
+           * Update the bounds of where the plane reaches by checking whether each of the critical points
+           * are in the cell and evauating their value.
            */
-          void update_bounds(const Vector<double> &coefficents, const Point<dim> &position, double &interpolation_min, double &interpolation_max) const;
+          std::pair<double, double> get_interpolation_bounds(const dealii::Vector<double> &coefficients) const;
+
+          /*
+           * Find all points that may contain the minimum or maximum values of the interpolation in the cell
+           */
+          std::vector<dealii::Point<dim>> get_critical_points(const dealii::Vector<double> &coefficients) const;
       };
     }
   }

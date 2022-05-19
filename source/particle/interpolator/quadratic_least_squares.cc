@@ -36,44 +36,243 @@ namespace aspect
     namespace Interpolator
     {
       template <int dim>
-      double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficients, const Point<dim> &position) const
+      double QuadraticLeastSquares<dim>::evaluate_interpolation_function(const Vector<double> &coefficents, const Point<dim> &position) const
       {
         if (dim == 2)
           {
-            return coefficients[0] +
-                   coefficients[1] * position[0] +
-                   coefficients[2] * position[1] +
-                   coefficients[3] * position[0] * position[1] +
-                   coefficients[4] * position[0] * position[0] +
-                   coefficients[5] * position[1] * position[1];
+            return coefficents[0] +
+                   coefficents[1] * position[0] +
+                   coefficents[2] * position[1] +
+                   coefficents[3] * position[0] * position[1] +
+                   coefficents[4] * position[0] * position[0] +
+                   coefficents[5] * position[1] * position[1];
           }
         else
           {
-            return coefficients[0] +
-                   coefficients[1] * position[0] +
-                   coefficients[2] * position[1] +
-                   coefficients[3] * position[2] +
-                   coefficients[4] * position[0] * position[1] +
-                   coefficients[5] * position[0] * position[2] +
-                   coefficients[6] * position[1] * position[2] +
-                   coefficients[7] * position[0] * position[0] +
-                   coefficients[8] * position[1] * position[1] +
-                   coefficients[9] * position[2] * position[2];
+            return coefficents[0] +
+                   coefficents[1] * position[0] +
+                   coefficents[2] * position[1] +
+                   coefficents[3] * position[2] +
+                   coefficents[4] * position[0] * position[1] +
+                   coefficents[5] * position[0] * position[2] +
+                   coefficents[6] * position[1] * position[2] +
+                   coefficents[7] * position[0] * position[0] +
+                   coefficents[8] * position[1] * position[1] +
+                   coefficents[9] * position[2] * position[2];
           }
+      }
+
+
+      template<int dim>
+      std::pair<double, double> QuadraticLeastSquares<dim>::get_interpolation_bounds(const Vector<double> &coefficents) const
+      {
+        double interpolation_min = std::numeric_limits<double>::max();
+        double interpolation_max = std::numeric_limits<double>::lowest();
+        for (const auto &critical_point : get_critical_points(coefficents))
+          {
+            bool critical_point_in_cell = true;
+            for (unsigned int d = 0; d < dim; ++d)
+              {
+                critical_point_in_cell &= (critical_point[d] >= -0.5 && critical_point[d] <= 0.5);
+              }
+            if (critical_point_in_cell)
+              {
+                const double value_at_critical_point = evaluate_interpolation_function(coefficents, critical_point);
+                interpolation_min = std::min(interpolation_min, value_at_critical_point);
+                interpolation_max = std::max(interpolation_max, value_at_critical_point);
+              }
+          }
+        return {interpolation_min, interpolation_max};
       }
 
 
       template <int dim>
-      void QuadraticLeastSquares<dim>::update_bounds(const Vector<double> &coefficients, const Point<dim> &position, double &interpolation_min, double &interpolation_max) const
+      std::vector<Point<dim>> QuadraticLeastSquares<dim>::get_critical_points(const Vector<double> &coefficents) const
       {
-        for (unsigned int d = 0; d < dim; ++d)
-          if (position[d] < -0.5 - 1e-15 || position[d] > 0.5 + 1e-15)
-            return;
-        const double value_at_position = evaluate_interpolation_function(coefficients, position);
-        interpolation_min = std::min(interpolation_min, value_at_position);
-        interpolation_max = std::max(interpolation_max, value_at_position);
-      }
+        std::vector<Point<dim>> critical_points;
+        if (dim == 2)
+          {
+            // If finding the critical point of the function (or along a cell edge) would
+            // require division by 0, or the solve of a singular matrix, then there is not
+            // a unique critical point. There cannot be two critical points to this function,
+            // so there must be infinitely many points with the same value, so it should be
+            // caught by one of the other checks of the value of the interpolation
 
+            // compute the location of the global critical point
+            Tensor<2, dim, double> critical_point_A;
+            critical_point_A[0][0] = 2 * coefficents[4];
+            critical_point_A[0][1] = coefficents[3];
+            critical_point_A[1][0] = coefficents[3];
+            critical_point_A[1][1] = 2 * coefficents[5];
+            Tensor<1, dim, double> critical_point_b;
+            critical_point_b[0] = -coefficents[1];
+            critical_point_b[1] = -coefficents[2];
+            if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
+              {
+                critical_points.emplace_back(invert(critical_point_A) * critical_point_b);
+              }
+
+            // Compute the critical value for each of the edges. This is necessary even if we found the
+            // critical point inside the unit cell, because the value at the edges can be a minimum, while
+            // the critical point inside the cell is a maximum, or vice-versa. Additionally the critical
+            // point could be a saddle point, in which case we would still need to find a minimum and maximum over the cell.
+            if (std::abs(coefficents[5]) > std::numeric_limits<double>::epsilon())
+              {
+                critical_points.emplace_back(-0.5, -(2 * coefficents[2] - coefficents[3])/(4 * coefficents[5]));
+                critical_points.emplace_back( 0.5, -(2 * coefficents[2] - coefficents[3])/(4 * coefficents[5]));
+              }
+            if (std::abs(coefficents[4]) > std::numeric_limits<double>::epsilon())
+              {
+                critical_points.emplace_back(-(2 * coefficents[1] - coefficents[3])/(4 * coefficents[4]), -0.5);
+                critical_points.emplace_back(-(2 * coefficents[1] + coefficents[3])/(4 * coefficents[4]),  0.5);
+              }
+            // Compute the critical value for each of the corners. This is neccessary even if we
+            // have found critical points in previous steps, as the
+            for (double x = -0.5; x <= 0.5; ++x)
+              {
+                for (double y = -0.5; y <= 0.5; ++y)
+                  {
+                    critical_points.emplace_back(x,y);
+                  }
+              }
+          }
+        else
+          {
+            // If finding the critical point of the function (or along a cell edge) would
+            // require division by 0, then there is not a unique critical point. There
+            // cannot be two critical points to this function, so there must be infinitely
+            // many with the same value, so it should be caught by one of the other checks
+            // of the value of the function
+            Point<dim> critical_point;
+            {
+              Tensor<2, dim, double> critical_point_A;
+              critical_point_A[0][0] = 2 * coefficents[7];
+              critical_point_A[0][1] = coefficents[4];
+              critical_point_A[0][2] = coefficents[5];
+              critical_point_A[1][0] = coefficents[4];
+              critical_point_A[1][1] = 2 * coefficents[8];
+              critical_point_A[1][2] = coefficents[6];
+              critical_point_A[2][0] = coefficents[5];
+              critical_point_A[2][1] = coefficents[6];
+              critical_point_A[2][2] = 2 * coefficents[9];
+              Tensor<1, dim, double> critical_point_b;
+              critical_point_b[0] = -coefficents[1];
+              critical_point_b[1] = -coefficents[2];
+              critical_point_b[2] = -coefficents[3];
+              if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
+                {
+                  critical_points.emplace_back(invert(critical_point_A) * critical_point_b);
+                }
+            }
+            // Faces
+
+            Tensor<2, 2, double> critical_point_A;
+            Tensor<1, 2, double> critical_point_b;
+            Tensor<1, 2, double> critical_point_X;
+            // The columns of this critical_point_A correspond to Y and Z.
+            critical_point_A[0][0] = 2 * coefficents[8];
+            critical_point_A[0][1] = coefficents[6];
+            critical_point_A[1][0] = coefficents[6];
+            critical_point_A[1][1] = 2 * coefficents[9];
+            if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
+              {
+                const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
+                double x = -0.5;
+                critical_point_b[0] = -(coefficents[2] + coefficents[4] * x);
+                critical_point_b[1] = -(coefficents[3] + coefficents[5] * x);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(x, critical_point_X[0], critical_point_X[1]);
+                x = 0.5;
+                critical_point_b[0] = -(coefficents[2] + coefficents[4] * x);
+                critical_point_b[1] = -(coefficents[3] + coefficents[5] * x);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(x, critical_point_X[0], critical_point_X[1]);
+
+              }
+            // The columns of this critical_point_A correspond to X and Z.
+            critical_point_A[0][0] = 2 * coefficents[7];
+            critical_point_A[0][1] = coefficents[5];
+            critical_point_A[1][0] = coefficents[5];
+            critical_point_A[1][1] = 2 * coefficents[9];
+            if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
+              {
+                const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
+                double y = -0.5;
+                critical_point_b[0] = -(coefficents[1] + coefficents[4] * y);
+                critical_point_b[1] = -(coefficents[3] + coefficents[6] * y);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(critical_point_X[0], y, critical_point_X[1]);
+                y = 0.5;
+                critical_point_b[0] = -(coefficents[1] + coefficents[4] * y);
+                critical_point_b[1] = -(coefficents[3] + coefficents[6] * y);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(critical_point_X[0], y, critical_point_X[1]);
+              }
+            // The columns of this critical_point_A correspond to X and Y.
+            critical_point_A[0][0] = 2 * coefficents[7];
+            critical_point_A[0][1] = coefficents[4];
+            critical_point_A[1][0] = coefficents[4];
+            critical_point_A[1][1] = 2 * coefficents[8];
+            if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
+              {
+                const Tensor<2, 2, double> critical_point_A_inv = invert(critical_point_A);
+                double z = -0.5;
+                critical_point_b[0] = -(coefficents[1] + coefficents[5] * z);
+                critical_point_b[1] = -(coefficents[2] + coefficents[6] * z);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(critical_point_X[0], critical_point_X[1], z);
+                z = 0.5;
+                critical_point_b[0] = -(coefficents[1] + coefficents[5] * z);
+                critical_point_b[1] = -(coefficents[2] + coefficents[6] * z);
+                critical_point_X = critical_point_A_inv * critical_point_b;
+                critical_points.emplace_back(critical_point_X[0], critical_point_X[1], z);
+              }
+
+            // Edges
+            if (std::abs(coefficents[9]) > std::numeric_limits<double>::epsilon())
+              {
+                for (double x = -0.5; x <= 0.5; ++x)
+                  {
+                    for (double y = -0.5; y <= 0.5; ++y)
+                      {
+                        critical_points.emplace_back(x,y, -(coefficents[3] + coefficents[5] * x + coefficents[6] * y)/(2 * coefficents[9]));
+                      }
+                  }
+              }
+            if (std::abs(coefficents[8]) > std::numeric_limits<double>::epsilon())
+              {
+                for (double x = -0.5; x <= 0.5; ++x)
+                  {
+                    for (double z = -0.5; z <= 0.5; ++z)
+                      {
+                        critical_points.emplace_back(x, -(coefficents[2] + coefficents[4] * x + coefficents[6] * z) / (2 * coefficents[8]), z);
+                      }
+                  }
+              }
+            if (std::abs(coefficents[7]) > std::numeric_limits<double>::epsilon())
+              {
+                for (double y = -0.5; y <= 0.5; ++y)
+                  {
+                    for (double z = -0.5; z <= 0.5; ++z)
+                      {
+                        critical_points.emplace_back(-(coefficents[1] + coefficents[4] * y + coefficents[5] * z)/(2*coefficents[7]), y, z);
+                      }
+                  }
+              }
+            // Corners
+            for (double x = -0.5; x <= 0.5; ++x)
+              {
+                for (double y = -0.5; y <= 0.5; ++y)
+                  {
+                    for (double z = -0.5; z <= 0.5; ++z)
+                      {
+                        critical_points.emplace_back(x, y, z);
+                      }
+                  }
+              }
+          }
+        return critical_points;
+      }
 
       template <int dim>
       std::vector<std::vector<double>>
@@ -220,19 +419,19 @@ namespace aspect
                   {
                     const unsigned int opposing_face_id = GeometryInfo<dim>::opposite_face[face_id];
                     const auto &opposing_cell = found_cell->neighbor(opposing_face_id);
-                    if (!opposing_cell->is_locally_owned())
+                    if (opposing_cell->is_active() && opposing_cell->is_locally_owned())
                       {
-                        continue;
-                      }
-                    const auto neighbor_cell_average = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, opposing_cell)[0];
-                    for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
-                      {
-                        if (selected_properties[property_index] == true && use_boundary_extrapolation[property_index] == true)
+
+                        const auto neighbor_cell_average = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, opposing_cell)[0];
+                        for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
                           {
-                            Assert(found_cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
-                            const double expected_boundary_value = 1.5 * cell_average_values[property_index] - 0.5 * neighbor_cell_average[property_index];
-                            property_minimums[property_index] = std::min(property_minimums[property_index], expected_boundary_value);
-                            property_maximums[property_index] = std::max(property_maximums[property_index], expected_boundary_value);
+                            if (selected_properties[property_index] == true && use_boundary_extrapolation[property_index] == true)
+                              {
+                                Assert(found_cell->reference_cell().is_hyper_cube() == true, ExcNotImplemented());
+                                const double expected_boundary_value = 1.5 * cell_average_values[property_index] - 0.5 * neighbor_cell_average[property_index];
+                                property_minimums[property_index] = std::min(property_minimums[property_index], expected_boundary_value);
+                                property_maximums[property_index] = std::max(property_maximums[property_index], expected_boundary_value);
+                              }
                           }
                       }
                   }
@@ -260,227 +459,10 @@ namespace aspect
                 qr.solve(c[property_index], QTb[property_index]);
                 if (use_quadratic_least_squares_limiter[property_index])
                   {
-                    double interpolation_min = std::numeric_limits<double>::max();
-                    double interpolation_max = std::numeric_limits<double>::lowest();
-                    if (dim == 2)
-                      {
-                        // If finding the critical point of the function (or along a cell edge) would
-                        // require division by 0, then there is not a unique critical point or it is a
-                        // saddle point. There cannot be two critical points to this function, so there
-                        // must be infinitely many with the same value, so it should be caught by one of
-                        // the other checks of the value of the function
 
-                        // compute the location of the critical point
-                        Point<dim> critical_point;
-                        Tensor<2, dim, double> critical_point_A;
-                        critical_point_A[0][0] = 2 * c[property_index][4];
-                        critical_point_A[0][1] = c[property_index][3];
-                        critical_point_A[1][0] = c[property_index][3];
-                        critical_point_A[1][1] = 2 * c[property_index][5];
-                        Tensor<1, dim, double> critical_point_b;
-                        critical_point_b[0] = -c[property_index][1];
-                        critical_point_b[1] = -c[property_index][2];
-                        if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point = invert(critical_point_A) * critical_point_b;
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-
-                        // Compute the critical value for each of the edges. This is necessary even if we found the
-                        // critical point inside the unit cell, because the value at the edges can be a minimum, while
-                        // the critical point inside the cell is a maximum, or vice-versa. Additionally the critical
-                        // point could be a saddle point, in which case we would still need to find a minimum and maximum over the cell.
-                        if (std::abs(c[property_index][5]) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point[0] = -0.5;
-                            critical_point[1] = -(2 * c[property_index][2] - c[property_index][3])/(4 * c[property_index][5]);
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-
-                            critical_point[0] = 0.5;
-                            critical_point[1] = -(2 * c[property_index][2] + c[property_index][3])/(4 * c[property_index][5]);
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-                        if (std::abs(c[property_index][4]) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point[0] = -(2 * c[property_index][1] - c[property_index][3])/(4 * c[property_index][4]);
-                            critical_point[1] = -0.5;
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-
-                            critical_point[0] = -(2 * c[property_index][1] + c[property_index][3])/(4 * c[property_index][4]);
-                            critical_point[1] = 0.5;
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-                        // Compute the critical value for each of the corners. This is neccessary even if we
-                        // have found critical points in previous steps, as the
-                        for (double x = -0.5; x <= 0.5; ++x)
-                          {
-                            for (double y = -0.5; y <= 0.5; ++y)
-                              {
-                                critical_point[0] = x;
-                                critical_point[1] = y;
-                                // update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                const double value_at_position = evaluate_interpolation_function(c[property_index], critical_point);
-                                interpolation_min = std::min(interpolation_min, value_at_position);
-                                interpolation_max = std::max(interpolation_max, value_at_position);
-                              }
-                          }
-                      }
-                    else
-                      {
-                        // If finding the critical point of the function (or along a cell edge) would
-                        // require division by 0, then there is not a unique critical point. There
-                        // cannot be two critical points to this function, so there must be infinitely
-                        // many with the same value, so it should be caught by one of the other checks
-                        // of the value of the function
-                        Point<dim> critical_point;
-                        {
-                          Tensor<2, dim, double> critical_point_A;
-                          critical_point_A[0][0] = 2*c[property_index][7];
-                          critical_point_A[0][1] = c[property_index][4];
-                          critical_point_A[0][2] = c[property_index][5];
-                          critical_point_A[1][0] = c[property_index][4];
-                          critical_point_A[1][1] = 2 * c[property_index][8];
-                          critical_point_A[1][2] = c[property_index][6];
-                          critical_point_A[2][0] = c[property_index][5];
-                          critical_point_A[2][1] = c[property_index][6];
-                          critical_point_A[2][2] = 2 * c[property_index][9];
-                          Tensor<1, dim, double> critical_point_b;
-                          critical_point_b[0] = -c[property_index][1];
-                          critical_point_b[1] = -c[property_index][2];
-                          critical_point_b[2] = -c[property_index][3];
-                          if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
-                            {
-                              critical_point = invert(critical_point_A) * critical_point_b;
-                              update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                            }
-                        }
-                        // Faces
-
-                        Tensor<2, 2, double> critical_point_A;
-                        Tensor<1, 2, double> critical_point_b;
-                        Tensor<1, 2, double> critical_point_X;
-                        // The columns of this critical_point_A correspond to Y and Z.
-                        critical_point_A[0][0] = 2 * c[property_index][8];
-                        critical_point_A[0][1] = c[property_index][6];
-                        critical_point_A[1][0] = c[property_index][6];
-                        critical_point_A[1][1] = 2 * c[property_index][9];
-                        if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point[0] = -0.5;
-                            critical_point_b[0] = -(c[property_index][2] + c[property_index][4] * critical_point[0]);
-                            critical_point_b[1] = -(c[property_index][3] + c[property_index][5] * critical_point[0]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[1] = critical_point_X[0];
-                            critical_point[2] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                            critical_point[0] = 0.5;
-                            critical_point_b[0] = -(c[property_index][2] + c[property_index][4] * critical_point[0]);
-                            critical_point_b[1] = -(c[property_index][3] + c[property_index][5] * critical_point[0]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[1] = critical_point_X[0];
-                            critical_point[2] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-                        // The columns of this critical_point_A correspond to X and Z.
-                        critical_point_A[0][0] = 2 * c[property_index][7];
-                        critical_point_A[0][1] = c[property_index][5];
-                        critical_point_A[1][0] = c[property_index][5];
-                        critical_point_A[1][1] = 2 * c[property_index][9];
-                        if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point[1] = -0.5;
-                            critical_point_b[0] = -(c[property_index][1] + c[property_index][4] * critical_point[1]);
-                            critical_point_b[1] = -(c[property_index][3] + c[property_index][6] * critical_point[1]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[0] = critical_point_X[0];
-                            critical_point[2] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                            critical_point[1] = 0.5;
-                            critical_point_b[0] = -(c[property_index][1] + c[property_index][4] * critical_point[1]);
-                            critical_point_b[1] = -(c[property_index][3] + c[property_index][6] * critical_point[1]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[0] = critical_point_X[0];
-                            critical_point[2] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-                        // The columns of this critical_point_A correspond to X and Y.
-                        critical_point_A[0][0] = 2 * c[property_index][7];
-                        critical_point_A[0][1] = c[property_index][4];
-                        critical_point_A[1][0] = c[property_index][4];
-                        critical_point_A[1][1] = 2 * c[property_index][8];
-                        if (std::abs(determinant(critical_point_A)) > std::numeric_limits<double>::epsilon())
-                          {
-                            critical_point[2] = -0.5;
-                            critical_point_b[0] = -(c[property_index][1] + c[property_index][5] * critical_point[2]);
-                            critical_point_b[1] = -(c[property_index][2] + c[property_index][6] * critical_point[2]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[0] = critical_point_X[0];
-                            critical_point[1] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                            critical_point[2] = 0.5;
-                            critical_point_b[0] = -(c[property_index][1] + c[property_index][5] * critical_point[2]);
-                            critical_point_b[1] = -(c[property_index][2] + c[property_index][6] * critical_point[2]);
-                            critical_point_X = invert(critical_point_A) * critical_point_b;
-                            critical_point[0] = critical_point_X[0];
-                            critical_point[1] = critical_point_X[1];
-                            update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                          }
-
-                        // Edges
-                        if (std::abs(c[property_index][9]) > std::numeric_limits<double>::epsilon())
-                          {
-                            for (double x = -0.5; x <= 0.5; ++x)
-                              {
-                                for (double y = -0.5; y <= 0.5; ++y)
-                                  {
-                                    critical_point[0] = x;
-                                    critical_point[1] = y;
-                                    critical_point[2] = -(c[property_index][3] + c[property_index][5] * critical_point[0] + c[property_index][6] * critical_point[1])/(2 * c[property_index][9]);
-                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                  }
-                              }
-                          }
-                        if (std::abs(c[property_index][8]) > std::numeric_limits<double>::epsilon())
-                          {
-                            for (double x = -0.5; x <= 0.5; ++x)
-                              {
-                                for (double z = -0.5; z <= 0.5; ++z)
-                                  {
-                                    critical_point[0] = x;
-                                    critical_point[2] = z;
-                                    critical_point[1] = -(c[property_index][2] + c[property_index][4] * critical_point[0] + c[property_index][6] * critical_point[2]) / (2 * c[property_index][8]);
-                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                  }
-                              }
-                          }
-                        if (std::abs(c[property_index][7]) > std::numeric_limits<double>::epsilon())
-                          {
-                            for (double y = -0.5; y <= 0.5; ++y)
-                              {
-                                for (double z = -0.5; z <= 0.5; ++z)
-                                  {
-                                    critical_point[1] = y;
-                                    critical_point[2] = z;
-                                    critical_point[0] = -(c[property_index][1] + c[property_index][4] * critical_point[1] + c[property_index][5] * critical_point[2])/(2*c[property_index][7]);
-                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                  }
-                              }
-                          }
-                        // Corners
-                        for (double x = -0.5; x <= 0.5; ++x)
-                          {
-                            for (double y = -0.5; y <= 0.5; ++y)
-                              {
-                                for (double z = -0.5; z <= 0.5; ++z)
-                                  {
-                                    critical_point[0] = x;
-                                    critical_point[1] = y;
-                                    critical_point[2] = z;
-                                    update_bounds(c[property_index], critical_point, interpolation_min, interpolation_max);
-                                  }
-                              }
-                          }
-                      }
+                    const std::pair<double, double> interpolation_bounds = get_interpolation_bounds(c[property_index]);
+                    const double interpolation_min = interpolation_bounds.first;
+                    const double interpolation_max = interpolation_bounds.second;
                     if ((interpolation_max - cell_average_values[property_index]) > std::numeric_limits<double>::epsilon() &&
                         (cell_average_values[property_index] - interpolation_min) > std::numeric_limits<double>::epsilon())
                       {
@@ -504,18 +486,21 @@ namespace aspect
               relative_support_point_location[d] -= unit_offset;
             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
               {
-                double interpolated_value = evaluate_interpolation_function(c[property_index], relative_support_point_location);
-                // Overshoot and undershoot correction of interpolated particle property.
-                if (use_quadratic_least_squares_limiter[property_index])
+                if (selected_properties[property_index] == true)
                   {
-                    Assert(interpolated_value >= property_minimums[property_index] - std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
-                    Assert(interpolated_value <= property_maximums[property_index] + std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                    double interpolated_value = evaluate_interpolation_function(c[property_index], relative_support_point_location);
+                    // Overshoot and undershoot correction of interpolated particle property.
+                    if (use_quadratic_least_squares_limiter[property_index])
+                      {
+                        Assert(interpolated_value >= property_minimums[property_index] - std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
+                        Assert(interpolated_value <= property_maximums[property_index] + std::max(std::abs(property_minimums[property_index]), std::abs(property_maximums[property_index])) * 10. * std::numeric_limits<double>::epsilon(), ExcInternalError());
 
-                    interpolated_value = std::min(interpolated_value, property_maximums[property_index]);
-                    interpolated_value = std::max(interpolated_value, property_minimums[property_index]);
+                        interpolated_value = std::min(interpolated_value, property_maximums[property_index]);
+                        interpolated_value = std::max(interpolated_value, property_minimums[property_index]);
+                      }
+                    cell_properties[index_positions][property_index] = interpolated_value;
                   }
 
-                cell_properties[index_positions][property_index] = interpolated_value;
               }
           }
         return cell_properties;
