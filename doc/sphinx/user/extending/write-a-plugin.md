@@ -34,14 +34,14 @@ to do:
 -   You need to compile the file. There are two ways by which this can be
     achieved:
 
-    -   Put the `my_plugin.cc` into one of the <span
+    -   Put the `my_plugin.cc` into one of the
         ASPECT source directories and call `cmake .`
         followed by `make` to ensure that it actually gets compiled. This
         approach has the advantage that you do not need to worry much about
         how the file actually gets compiled. On the other hand, every time you
         modify the file, calling `make` requires not only compiling this one
         file, but also link ASPECT.
-        Furthermore, when you upgrade from one version of <span
+        Furthermore, when you upgrade from one version of
         ASPECT to another, you need to remember to
         copy the `my_plugin.cc` file.
 
@@ -86,7 +86,7 @@ to do:
     choose different names for the source files `source_1.cc`, `source_2.cc`
     or the name of the plugin `my_plugin`.
 
-    In essence, what these few lines do is that they find an <span
+    In essence, what these few lines do is that they find an
     ASPECT installation (i.e., the directory where
     you configured and compiled it, which may be the same directory as where
     you keep your sources, or a different one, as discussed in

@@ -109,7 +109,7 @@ Primarily, this difficulty results from two facts:
     [aspect::Postprocess::Interface][] base class, postprocessors also derive
     from the [SimulatorAccess][aspect::SimulatorAccess class] class that has a
     number of member functions postprocessors can call to obtain read-only
-    access to some of the information stored in the main class of <span
+    access to some of the information stored in the main class of
     ASPECT. See [the documentation of this
     class][aspect::SimulatorAccess class] to see what kind of information is
     available to postprocessors. See also {ref}`sec:1.1][] for more

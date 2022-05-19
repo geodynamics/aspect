@@ -27,7 +27,7 @@ categorized into the following groups:
     {ref}`parameters:Formulation`29] for the list of parameters
     in this category.
 
--   Parameters that characterize plugins: Certain behaviors of <span
+-   Parameters that characterize plugins: Certain behaviors of
     ASPECT are described by what we call *plugins*
     - self-contained parts of the code that describe one particular
     aspect of the simulation. An example would be which of the implemented

@@ -22,31 +22,31 @@ arguably more involved. We will discuss this in Section [1.7][].
 There are several ways to add new functionality in plugins, and we want to
 highlight advantages and disadvantages of each of them:
 
-1.  Modify existing files: The simplest way to start modifying <span
+1.  Modify existing files: The simplest way to start modifying
     ASPECT is to modify one of the existing source
     files and then recompile the program as described in
     {ref}`sec:compiling`4]. This process does not require any
     additional setup, and is therefore ideal for learning how to make simple
     modifications. However, it comes with several severe disadvantages. If you
-    modify files the history of your local copy of <span
+    modify files the history of your local copy of
     ASPECT diverges from the official development
     version. You will therefore run into conflicts if you want to update your
     version later, for example, because there are new features or bug fixes
     available in the development version. Also these modifications make your
     results less reproducible. If you used your results in a publication, you
-    could no longer say *which* version of <span
+    could no longer say *which* version of
     ASPECT was used to produce these results, because
     you modified it yourself. Therefore, we discourage this form of
     modification for productive use (it can still be helpful for teaching).
 
 2.  Create a feature branch: If you are familiar with the version control
-    system `git` that we use to organize the development of <span
+    system `git` that we use to organize the development of
     ASPECT (an excellent tutorial is available at:
     <http://swcarpentry.github.io/git-novice/>) you might think of creating a
     separate branch inside your ASPECT
     repository and making your changes in this branch. This way you keep the
     history of your local modifications separate from the changes made to the
-    main version. You can also uniquely describe the <span
+    main version. You can also uniquely describe the
     ASPECT version you used for a set of models, and
     you can upload your branch to make your changes reproducible. This
     approach is also the ideal starting point if you intend to contribute your
@@ -57,7 +57,7 @@ highlight advantages and disadvantages of each of them:
     this approach is not ideal, as you will still run into conflicts when you
     want to update your ASPECT version, and you
     need to merge the main version into your branch, or rebase the branch
-    every time you want to update. Thus, while ideal for contributing to <span
+    every time you want to update. Thus, while ideal for contributing to
     ASPECT we do not recommend this approach for
     keeping model-specific functionality around.
 
@@ -65,9 +65,9 @@ highlight advantages and disadvantages of each of them:
     the plugin architecture described in the paragraph above is that if you
     want to extend ASPECT for your own
     purposes, you can do this in a separate set of files that describe your
-    situation, rather than by modifying the <span
+    situation, rather than by modifying the
     ASPECT source files themselves. This is
-    advantageous, because (i) it makes it possible for you to update <span
+    advantageous, because (i) it makes it possible for you to update
     ASPECT itself to a newer version without losing
     the functionality you added (because you did not make any changes to the
     ASPECT files themselves), (ii) because it

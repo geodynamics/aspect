@@ -17,7 +17,7 @@ its functionalities by following these steps:
 4.  If you want to use some existing functionality that is not discussed in
     these resources, search in the extensive tests directory. For example, to
     search for an initial temperature condition called "spherical
-    gaussian perturbation" while in the <span
+    gaussian perturbation" while in the
     ASPECT directory, type:
 
           grep 'spherical gaussian perturbation' tests/*.prm
@@ -34,7 +34,7 @@ its functionalities by following these steps:
     (<https://github.com/geodynamics/aspect/pulls>).
 
 6.  Have a look at our discussion forum when your model behaves unexpectedly
-    or you need functionality that does not exist yet. The <span
+    or you need functionality that does not exist yet. The
     ASPECT community can tell you whether they
     experienced something similar or are already working on the topic.
 

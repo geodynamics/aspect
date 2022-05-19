@@ -43,7 +43,7 @@ recommend the following workflow:
     intermediate results) copy the model output out of the container into your
     current directory. For this you need to find the name or ID of the docker
     container by running `docker ps -a` in a separate terminal first. Look for
-    the most recently started container to identify your current <span
+    the most recently started container to identify your current
     ASPECT container.
 
     Commands that copy the model output to the current directory could be:

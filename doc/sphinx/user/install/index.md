@@ -31,7 +31,7 @@ The available options can be best presented in form of typical use cases:
 
 1.  Virtual Machine (ASPECT beginner and
     tutorial participant): The virtual machine image provides a fully prepared
-    user environment that contains installations of <span
+    user environment that contains installations of
     ASPECT, all required libraries, and visualization
     software on top of a full Linux environment. This way beginning users and
     tutorial participants can work in a unified environment, thus minimizing
@@ -45,11 +45,11 @@ The available options can be best presented in form of typical use cases:
     MacOS, Microsoft Windows).
 
 2.  Docker Container (advanced user with no need to configure/change the
-    underlying libraries, possibly changing parts of <span
+    underlying libraries, possibly changing parts of
     ASPECT): Docker containers are lightweight
     packages that only encapsulate the minimal dependencies to run an
     application like ASPECT on top of the host
-    operating system. They allow easy installation and usage of <span
+    operating system. They allow easy installation and usage of
     ASPECT in a unified environment, while relying on
     the user's operating system to provide visualization software and
     model input data. When compared to the virtual machine it is simple to
@@ -63,7 +63,7 @@ The available options can be best presented in form of typical use cases:
 
 3.  Compile & Install (advanced users and developers with the need to
     reconfigure underlying libraries or running massively parallel models):
-    The most advanced option is to compile and install <span
+    The most advanced option is to compile and install
     ASPECT from source. This allows maximal control
     over the underlying libraries like TRILINOS
     and DEAL.II, as well as easy modifications
