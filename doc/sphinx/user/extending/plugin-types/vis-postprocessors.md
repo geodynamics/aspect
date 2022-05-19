@@ -71,7 +71,7 @@ Visualization plugins can come in two flavors:
         nothing in the base class but can be overridden in a plugin.
         Specifically, the following functions exist:
 
-        ``` c++
+        ```{code-block} c++
         class Interface
             {
               public:
@@ -97,7 +97,7 @@ Visualization plugins can come in two flavors:
         the second of these classes, the following interface functions has to
         be implemented:
 
-        ``` c++
+        ```{code-block} c++
         class dealii::DataPostprocessorScalar
             {
               public:

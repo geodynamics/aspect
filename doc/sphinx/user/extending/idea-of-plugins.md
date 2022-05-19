@@ -35,7 +35,7 @@ The way this is achieved is through the following two steps:
     the [aspect::GravityModel::Interface][] class (documentation comments have
     been removed):
 
-    ``` c++
+    ```{code-block} c++
     class Interface
         {
           public:
@@ -71,7 +71,7 @@ The way this is achieved is through the following two steps:
     necessary into a class `aspect::GravityModel::GRACE`. Then you need a
     statement like this at the bottom of the file:
 
-    ``` c++
+    ```{code-block} c++
     ASPECT_REGISTER_GRAVITY_MODEL
         (GRACE,
          "grace",
@@ -118,7 +118,7 @@ consider things like postprocessors that can compute things like boundary heat
 fluxes. Taking this as an example (see {ref}`sec:1.4.8][]), you are
 required to write a function with the following interface
 
-``` c++
+```{code-block} c++
 template <int dim>
     class MyPostprocessor : public aspect::Postprocess::Interface
     {
@@ -156,7 +156,7 @@ classes that wish to access information about the state of the simulation
 inherit from the [aspect::SimulatorAccess class][]. This class has an
 interface that looks like this:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class SimulatorAccess
     {
@@ -193,7 +193,7 @@ function of the following kind (a nonsensical but instructive example; see
 {ref}`sec:1.4.8][] for more details on what postprocessors do and how they
 are implemented):[3]
 
-``` c++
+```{code-block} c++
 template <int dim>
     std::pair<std::string,std::string>
     MyPostprocessor<dim>::execute (TableHandler &statistics)

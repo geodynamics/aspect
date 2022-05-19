@@ -43,7 +43,7 @@ respective signals.
 In the first case, code that registers slots with global signals would look
 like this:
 
-``` c++
+```{code-block} c++
 // A function that will be called at the time when parameters are declared.
 // It receives the dimension in which ASPECT will be run as the first argument,
 // and the ParameterHandler object that holds the runtime parameter
@@ -96,7 +96,7 @@ The second kind of signal can be connected to once a simulator object has been
 created. As above, one needs to define the slots, define a connector function,
 and register the connector function. The following gives an example:
 
-``` c++
+```{code-block} c++
 // A function that is called at the end of creating the current constraints
 // on degrees of freedom (i.e., the constraints that describe, for example,
 // hanging nodes, boundary conditions, etc).
@@ -134,7 +134,7 @@ So what could one do in a place like this? One option would be to just monitor
 what is going on, e.g., in code like this that simply outputs into the
 statistics file (see {ref}`sec:viz-stat`10]):
 
-``` c++
+```{code-block} c++
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
                                 ConstraintMatrix &current_constraints)

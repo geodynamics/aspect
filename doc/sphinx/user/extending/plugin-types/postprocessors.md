@@ -124,7 +124,7 @@ Primarily, this difficulty results from two facts:
 Given these comments, the interface a postprocessor class has to implement is
 rather basic:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::Postprocess::Interface
     {
