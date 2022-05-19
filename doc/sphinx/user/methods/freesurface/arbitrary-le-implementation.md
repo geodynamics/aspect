@@ -18,12 +18,13 @@ to keep the mesh as well behaved as possible.
 
 ASPECT uses a Laplacian scheme for calculating
 the mesh velocity. The mesh velocity is calculated by solving
-
-```{math}\begin{align}
+```{math}
+\begin{align}
 -\Delta \textbf{u}_m &= 0 & \qquad & \textrm{in } \Omega, \\
 \textbf{u}_m &= \left( \textbf{u} \cdot \textbf{n} \right) \textbf{n} & \qquad & \textrm{on } \partial \Omega_{\textrm{free surface}}, \\
 \textbf{u}_m \cdot \textbf{n} &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{free slip}}, \\
-\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}}.\end{align}```
+\textbf{u}_m &= 0 & \qquad & \textrm{on } \partial \Omega_{\textrm{Dirichlet}}.\end{align}
+```
 After this mesh velocity is calculated, the mesh vertices are time-stepped
 explicitly. This scheme has the effect of choosing a minimally distorting
 perturbation to the mesh. Because the mesh velocity is no longer zero in the
