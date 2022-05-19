@@ -22,7 +22,6 @@ Description here
 ```{toctree}
 ---
 caption: Table of Contents
-hidden: True
 ---
 user/index.md
 references.md

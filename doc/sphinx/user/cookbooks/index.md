@@ -35,6 +35,7 @@ setting up computations in Section&nbsp;[1.1][].
 
 :::{toctree}
 cookbooks-overview.md
-simple-setups/index.md
-geophysical-setups/index.md
+simple-setups.md
+geophysical-setups.md
+teaching-setups.md
 :::

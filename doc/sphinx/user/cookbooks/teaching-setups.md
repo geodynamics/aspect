@@ -96,8 +96,8 @@ model is correct. Obviously, much of the aim of computational geodynamics is
 to validate the models that we have.
 
 :::{toctree}
-convection-box-particles.md
-heat-flow.md
-onsert_of_convection.md
-magnetic_stripes.md
+cookbooks/convection-box-particles/doc/convection-box-particles.md
+cookbooks/heat_flow/doc/heat-flow.md
+cookbooks/onset_of_convection/doc/onset_of_convection.md
+cookbooks/magnetic_stripes/doc/magnetic_stripes.md
 :::

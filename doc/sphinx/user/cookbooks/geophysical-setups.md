@@ -87,21 +87,21 @@ input files that <span class="smallcaps">ASPECT</span> uses physical units,
 rather than non-dimensionalizing everything. The advantage, of course, is that
 we can immediately compare outputs with actual measurements. The disadvantage
 is that we need to work a bit when asked for, say, the Rayleigh number of a
-simulation.
+simulation. 
 
 :::{toctree}
-shell_simple_2d.md
-shell_simple_3d.md
-shell_3d_postprocess.md
-initial-condition-S20RTS.md
-gplates.md
-burnman.md
-steinberger.md
-morency_doin_2004.md
-crustal_deformation.md
-continental_extension.md
-inner_core_convection.md
-global_melt.md
-mid_ocean_ridge.md
-kinematically_driven_subduction_2d.md
+cookbooks/shell_simple_2d/doc/shell_simple_2d.md
+cookbooks/shell_simple_3d/doc/shell_simple_3d.md
+cookbooks/shell_3d_postprocess/doc/shell_3d_postprocess.md
+cookbooks/initial-condition-S20RTS/doc/initial-condition-S20RTS.md
+cookbooks/gplates/doc/gplates.md
+cookbooks/burnman/doc/burnman.md
+cookbooks/steinberger/doc/steinberger.md
+cookbooks/morency_doin_2004/doc/morency_doin_2004.md
+cookbooks/crustal_deformation/doc/crustal_deformation.md
+cookbooks/continental_extension/doc/continental_extension.md
+cookbooks/inner_core_convection/doc/inner_core_convection.md
+cookbooks/global_melt/doc/global_melt.md
+cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.md
+cookbooks/kinematically_driven_subduction_2d/doc/kinematically_driven_subduction_2d.md
 :::

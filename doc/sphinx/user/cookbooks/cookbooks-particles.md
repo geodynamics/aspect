@@ -17,3 +17,8 @@ only requires an ODE integrator rather than the stabilization techniques
 necessary to advect fields. They also provide the appearance of no diffusion,
 though this is arguable. Leaving aside the debate whether fields or particles are the
 way to go, \aspect{} supports both: using fields and using particles.
+
+:::{toctree}
+cookbooks/composition_passive_particles/doc/composition_passive_particles.md
+cookbooks/composition_active_particles/doc/composition_active_particles.md
+:::

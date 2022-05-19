@@ -1,4 +1,3 @@
-(sec:cookbooks:benchmarks:solcx)=
 #### The SolCx Stokes benchmark
 
 The SolCx benchmark is intended to test the accuracy of the solution to a
