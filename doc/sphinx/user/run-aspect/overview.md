@@ -88,7 +88,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 ```
 
 The output starts with a header that lists the used
-ASPECT, DEAL.II, <span
+ASPECT, deal.II, <span
 class="smallcaps">Trilinos</span> and <span class="smallcaps">p4est</span>
 versions as well as the mode you compiled
 ASPECT in (see [4.4][]), and the number of parallel

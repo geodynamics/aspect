@@ -23,7 +23,7 @@ and executed in 3d where simulations would otherwise be prohibitively
 expensive for finding bugs; it is also a useful feature when scoping out
 whether certain parameter settings will have the desired effect by testing
 them in 2d first, before running them in 3d. This feature is discussed in
-detail in the [DEAL.II tutorial program
+detail in the [deal.II tutorial program
 step-4][]. Like there, all the functions and classes in
 ASPECT are compiled for both 2d and 3d. Which
 dimension is actually called internally depends on what you have set in the

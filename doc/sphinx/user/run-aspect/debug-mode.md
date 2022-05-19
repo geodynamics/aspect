@@ -5,7 +5,7 @@
 ASPECT utilizes a <span
 class="smallcaps">deal.II</span> feature called *debug mode*. By default,
 ASPECT uses debug mode, i.e., it calls a
-version of the DEAL.II library that contain
+version of the deal.II library that contain
 lots of checks for the correctness of function arguments, the consistency of
 the internal state of data structure, etc. If you program with <span
 class="smallcaps">deal.II</span>, for example to extend
@@ -20,7 +20,7 @@ corrupted (writing past the end of an array) or, in rare and fortunate cases,
 that the program simply crashes.
 
 Debug mode is designed to catch most of these errors: It enables some 7,300
-assertions (as of late 2011) in DEAL.II where
+assertions (as of late 2011) in deal.II where
 we check for errors like the above and, if the condition is violated, abort
 the program with a detailed message that shows the failed check, the location
 in the source code, and a stacktrace how the program got there. The downside

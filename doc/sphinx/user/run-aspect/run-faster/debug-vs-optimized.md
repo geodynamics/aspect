@@ -2,12 +2,12 @@
 
 #### Debug vs.&nbsp;optimized mode
 
-Both DEAL.II and
+Both deal.II and
 ASPECT by default have a great deal of internal
 checking to make sure that the code's state is valid. For example, if
 you write a new postprocessing plugin (see
 {ref}`sec:plugins`63])) in which you need to access the solution
-vector, then DEAL.II's `Vector` class
+vector, then deal.II's `Vector` class
 will make sure that you are only accessing elements of the vector that
 actually exist and are available on the current machine if this is a parallel
 computation. We do so because it turns out that by far the most bugs one

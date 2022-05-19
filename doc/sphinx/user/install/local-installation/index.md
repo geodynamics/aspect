@@ -9,7 +9,7 @@ installation procedure guarantees fastest runtimes, and largest flexibility,
 but usually requires more work than the options mentioned in the previous
 sections. While it is possible to install ASPECT's dependencies in
 particular <span class="smallcaps">p4est</span>, <span
-class="smallcaps">Trilinos</span>, and DEAL.II
+class="smallcaps">Trilinos</span>, and deal.II
 manually, we recommend to use the `candi` software (see
 <https://github.com/dealii/candi>). `candi` was written as an installation
 program for deal.II, and includes a number of system specific instructions

@@ -35,7 +35,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
 
 To avoid repeated recompilations of the ASPECT
 source folder we recommend to reuse the so prepared container instead of
-starting new containers based on the DEAL.II
+starting new containers based on the deal.II
 image. This can be achieved by the following commands outside of the
 container:
 

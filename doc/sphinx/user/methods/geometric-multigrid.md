@@ -40,7 +40,7 @@ To take advantage of the GMG solver, you need to:
 
 4.  Enable vectorization optimizations. The GMG solver takes advantage of
     special instructions (AVX2, AVX512) in modern CPUs and requires these do
-    be enabled when compiling DEAL.II. This can
+    be enabled when compiling deal.II. This can
     be achieved by passing the compiler flag `CMAKE_CXX_FLAGS="-march=native"`
     to CMake or setting `NATIVE_OPTIMIZATIONS=true` in `candi.cfg` when using
     candi (see&nbsp;[3][] for more information). When you have vectorization
