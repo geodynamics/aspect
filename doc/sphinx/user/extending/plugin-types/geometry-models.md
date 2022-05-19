@@ -30,7 +30,7 @@ implementation of the new class should be in namespace
 
 Specifically, your new class needs to implement the following basic interface:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::GeometryModel::Interface
     {
@@ -97,7 +97,7 @@ describes the purpose of boundary indicators as follows:
 > something else would look like this, here setting the boundary indicator to
 > 42 for all faces located at $x=-1$:
 >
-> ``` c++
+> ```{code-block} c++
 > for (typename Triangulation<dim>::active_cell_iterator
 >          cell = triangulation.begin_active();
 >        cell != triangulation.end();
@@ -160,7 +160,7 @@ provide a pointer to itself to the function being called, nor any other
 information, so the trick is to get this information into the function. C++
 provides a nice mechanism for this that is best explained using an example:
 
-``` c++
+```{code-block} c++
 #include <deal.II/base/std_cxx1x/bind.h>
 
     template <int dim>
@@ -199,7 +199,7 @@ achieved as follows: assuming the `set_boundary_indicators()` function has
 been declared as a (non-static, but possibly private) member function of the
 `MyGeometry` class, then the following will work:
 
-``` c++
+```{code-block} c++
 #include <deal.II/base/std_cxx1x/bind.h>
 
     template <int dim>
