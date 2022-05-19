@@ -1,8 +1,6 @@
 
 # Geometric Multigrid
 
-### Geometric Multigrid
-
 ASPECT can optionally use a Geometric Multigrid
 Solver (GMG) for the efficient solution of the Stokes system (velocity and
 pressure). When used correctly, this can reduce the compute time spent in the

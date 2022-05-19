@@ -1,8 +1,6 @@
 
 # Advection Stabilization
 
-### Advection Stabilization
-
 ASPECT implements several advection schemes for
 the temperature and compositional field equations. Specifically, the parameter
 {ref}`parameters:Discretization/Stabilization_20parameters/Stabilization_20method`34]

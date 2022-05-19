@@ -1,8 +1,6 @@
 (sec:run-aspect:2d-vs-3d)=
 # Selecting between 2d and 3d runs
 
-### Selecting between 2d and 3d runs
-
 ASPECT can solve both two- and
 three-dimensional problems.[13] You select which one you want by putting a
 line like the following into the parameter file (see

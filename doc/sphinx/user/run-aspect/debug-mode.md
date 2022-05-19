@@ -1,7 +1,5 @@
 # Debug or optimized mode
 
-### Debug or optimized mode
-
 ASPECT utilizes a <span
 class="smallcaps">deal.II</span> feature called *debug mode*. By default,
 ASPECT uses debug mode, i.e., it calls a

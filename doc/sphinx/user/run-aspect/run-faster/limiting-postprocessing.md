@@ -1,7 +1,5 @@
 # Limiting postprocessing
 
-#### Limiting postprocessing
-
 ASPECT has a lot of postprocessing
 capabilities, from generating graphical output to computing average
 temperatures or temperature fluxes. To see what all is possible, take a look

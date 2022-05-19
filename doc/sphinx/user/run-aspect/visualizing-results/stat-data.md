@@ -1,7 +1,5 @@
 # Visualizing statistical data
 
-#### Visualizing statistical data
-
 In addition to the graphical output discussed above,
 ASPECT produces a statistics file that collects
 information produced during each time step. For the remainder of this section,

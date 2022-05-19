@@ -1,7 +1,5 @@
 # Using multithreading
 
-#### Using multithreading
-
 In most cases using as many MPI processes as possible is the optimal
 parallelization strategy for ASPECT models, but
 if you are limited by the amount of MPI communication it can be beneficial to

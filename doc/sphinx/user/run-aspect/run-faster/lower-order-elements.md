@@ -1,7 +1,5 @@
 # Using lower order elements for the temperature/compositional discretization
 
-#### Using lower order elements for the temperature/compositional discretization
-
 The default settings of ASPECT use quadratic
 finite elements for the velocity. Given that the temperature and compositional
 fields essentially (up to material parameters) satisfy advection equations of

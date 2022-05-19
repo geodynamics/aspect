@@ -1,7 +1,5 @@
 # Large data issues for parallel computations
 
-#### Large data issues for parallel computations
-
 Among the challenges in visualizing the results of parallel computations is
 dealing with the large amount of data. The first bottleneck this presents is
 during run-time when ASPECT wants to write the

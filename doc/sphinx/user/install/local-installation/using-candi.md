@@ -1,8 +1,6 @@
 
 # Using candi to compile dependencies
 
-#### Using candi to compile dependencies
-
 In its default configuration `candi` downloads and compiles a <span
 class="smallcaps">deal.II</span> configuration that is able to run
 ASPECT, but it also contains a number of packages
