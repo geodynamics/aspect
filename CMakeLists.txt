@@ -673,6 +673,16 @@ ELSE()
 ENDIF()
 
 
+###########################################################
+# Having configured most of the compilation phase, now also
+# deal with other parts of the system.
+###########################################################
+
+# Start with the documentation
+
+ADD_SUBDIRECTORY(doc)
+
+
 # Find the deal.II parameter GUI and install helper script
 FIND_PROGRAM(PARAMETER_GUI_EXECUTABLE
         parameter_gui
@@ -680,7 +690,7 @@ FIND_PROGRAM(PARAMETER_GUI_EXECUTABLE
         PATH bin)
 MARK_AS_ADVANCED(CLEAR PARAMETER_GUI_EXECUTABLE)
 
-# did the user specify something that doesn't exist?
+# Did the user specify something that doesn't exist?
 IF (PARAMETER_GUI_EXECUTABLE
         AND
     (NOT EXISTS ${PARAMETER_GUI_EXECUTABLE} OR IS_DIRECTORY ${PARAMETER_GUI_EXECUTABLE}))
