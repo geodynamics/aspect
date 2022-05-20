@@ -7,9 +7,9 @@ the temperature initial values that prescribes a constant temperature, or a
 plugin that implements a particular formula for these initial conditions in
 C++ in the code of the plugin, or a plugin that allows you to describe this
 formula in a symbolic way in the input file (see
-{ref}`parameters:Initial_20temperature_20model`19]). An example
+{ref}`parameters:Initial_20temperature_20model`). An example
 of this latter case is this snippet of code discussed in
-{ref}`5.2.2][]:
+{ref}`5.2.2`:
 
 ``` prmfile
 ```
@@ -17,7 +17,7 @@ of this latter case is this snippet of code discussed in
 The formulas you can enter here need to use a syntax that is understood by the
 functions and classes that interpret what you write. Internally, this is done
 using the muparser library, see <http://muparser.beltoforion.de/>. The syntax
-is mostly self-explanatory in that it allows to use the usual symbols `x`, `y`
+is mostly self-explanatory in that it allows you to use the usual symbols `x`, `y`
 and `z` to reference coordinates (unless a particular plugin uses different
 variables, such as the depth), the symbol `t` for time in many situations, and
 allows you to use all of the typical mathematical functions such as sine and
@@ -51,7 +51,7 @@ as `((1<x && x<4) ? ((2<y && y<3) ? 2 : 1) : (0))`.
 
 An example for how to translate nested if-else statements into the
 lazy-expression syntax is given in the cookbook example found in
-{ref}`5.2.14][]. This cookbook includes a python script that defines
+{ref}`5.2.14`. This cookbook includes a python script that defines
 the initial temperature structure using nested if-else statements and shows
 how this is then rewritten using the lazy-expression. The cookbook runs a
 single time-step to show the outcome of using the function option for the
