@@ -197,7 +197,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 
 
 (user_methods_nonlinear_solvers_sin_1)=
-```{tikz} Continuation from figure , with starting guess $x=1$ and the derivative of that $x$ plotted.
+```{tikz} Solving $sin(x)=0$ through with the Newton method, with starting guess $x=1$ and the derivative of that $x$ plotted.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -209,7 +209,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 ```
 
 (user_methods_nonlinear_solvers_sin_2)=
-```{tikz} Continuation from figure a, with the blue and gray lines showing  one more iteration.
+:::{tikz} Continuation from figure {numref}`user_methods_nonlinear_solvers_sin_1`, with the blue and gray lines showing  one more iteration.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -220,10 +220,10 @@ Some strategies to achieve this, also called globalization, will be discussed in
     \draw[red, thick, ->, domain=-pi:pi] (-0.5574,0) -- (-0.5574,-0.5290);
     \draw[blue, thick,domain=-0.5574:0.0659] plot (\x,0.8486*\x-0.06);
     \draw[blue, thick,->, domain=-pi:pi] (0.0659,0) -- (0.0659,0.0658);
-```
+:::
 
 (user_methods_nonlinear_solvers_sin_3)=
-```{tikz} Same as figure a, but now showing the case where the initial guess leads to a derivative which is zero. This situation will cause a division by zero in the update, and the solution will be undefined. For a system of equations, the linear solver will fail.
+:::{tikz} Same as figure {numref}`user_methods_nonlinear_solvers_sin_1`, but now showing the case where the initial guess leads to a derivative which is zero. This situation will cause a division by zero in the update, and the solution will be undefined. For a system of equations, the linear solver will fail.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -231,10 +231,10 @@ Some strategies to achieve this, also called globalization, will be discussed in
     \draw[green, ultra thick,domain=-2.5:2.5] plot (\x, {sin(deg(\x))});
     \draw[blue, thick, ->, domain=-pi:pi] (pi/2,0) -- (pi/2,1);
     \draw[red,thick,<<->>, domain=-1.4:1] (-2.5,1) -- (2.5,1);
-```
+:::
 
 (user_methods_nonlinear_solvers_sin_4)=
-```{tikz} Same as figure a, but now showing the case where the initial guess is further away. In this case the direction of the next update will be further away from the solution and the iteration will diverge.
+:::{tikz} Same as figure {numref}`user_methods_nonlinear_solvers_sin_1`, but now showing the case where the initial guess is further away. In this case the direction of the next update will be further away from the solution and the iteration will diverge.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -242,7 +242,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
     \draw[green, ultra thick,domain=-2.5:2.5] plot (\x, {sin(deg(\x))});
     \draw[blue, thick, ->, domain=-pi:pi] (2,0) -- (2,0.909);
     \draw[red,thick, ->>, domain=2:2.5] plot (\x,-0.41*\x+1.73);
-```
+:::
 
 ### solving $\frac{1}{sqrt(1+x^2)}x = 0.5$
 
@@ -267,7 +267,7 @@ Now that we have a general understanding of how the Newton solver works, let's a
 
 ```
 
-Where the final resiual is $0.000567$ in three Newton iteration, starting from the result of the first Picard iteration. This means that with 1 Picard iteration and 3 Newton iteration we got almost 14 times closer to the solution than with 4 Picard iterations.
+The final residual after 3 Newton iterations, as shown in {numref}`user_methods_nonlinear_solvers_newton_1` is $0.000567$ in three Newton iteration, starting from the result of the first Picard iteration. This means that with 1 Picard iteration and 3 Newton iteration we got almost 14 times closer to the solution than with 4 Picard iterations.
 
 
 ### Solving the Stokes equations in ASPECT
@@ -280,7 +280,7 @@ For the Newton iteration, the equation is usually written as
 ```
 . In this equation, the right hand side (rhs) ($A(x)x-b$ or $-F$) will be exactly
 zero when $x$ is the exact solution to the nonlinear problem. Therefore this is also called the
-residual. $J$ is called the Jacobian, which is a derivative matrix. In our simple example,
+residual. $J$ is called the Jacobian, which is a derivative matrix for $A$. In our simple example,
 this would just be the derivative. So we now solve for $\delta x$ instead of $x$:
 
 ```{math}
@@ -350,9 +350,12 @@ after switching to the Newton method. This option allows to more gradually switc
 Newton interation and also gradually switch back if the iteration diverges.
 
 ### Line search
-The idea behind the line search is to check whether when applying the update to the
+A newton update can be seen as a hint in which direction to go with a suggestion for
+how much to go in that direction. But as we have seen, the size of the step can be much
+to big, which will lead the Newton iteration do diverge. The idea behind the line search
+is to use the direction, but check whether when applying the update to the
 solution, the residual has gotten smaller. If the residual has not gotten sufficiently
-smaller, then it scales the update such that it is smaller until the next residual is
+smaller, then it scales this update step such that it is smaller until the next residual is
 sufficiently smaller than the current residual.
 
 ## Some practical tips
