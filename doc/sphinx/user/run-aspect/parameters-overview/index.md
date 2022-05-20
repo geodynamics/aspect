@@ -6,7 +6,7 @@ What ASPECT computes is driven by two things:
 -   The models implemented in ASPECT. This
     includes the geometries, the material laws, or the initial conditions
     currently supported. Which of these models are currently implemented is
-    discussed below; {ref}`sec:extending`9] discusses in great
+    discussed below; {ref}`sec:extending` discusses in great
     detail the process of implementing additional models.
 
 -   The run-time parameters of the selected model. For example, you could select a model that prescribes
@@ -14,7 +14,7 @@ What ASPECT computes is driven by two things:
     currently implemented; you could then select appropriate values for all of
     these constants. Both of these selections happen from a parameter file
     that is read at run time and whose name is specified on the command line.
-    (See also {ref}`4.2`[].)
+    (See also {ref}`4.2`.)
 
 In this section, let us give an overview of what can be selected in the
 parameter file. Specific parameters, their default values, and allowed values
