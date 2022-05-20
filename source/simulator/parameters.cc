@@ -1968,15 +1968,15 @@ namespace aspect
                      != names_of_compositional_fields.end(),
                      ExcMessage ("The Darcy advection field method only works if there is a compositional field named 'porosity'"));
       if ((std::find(compositional_field_methods.begin(), compositional_field_methods.end(), AdvectionFieldMethod::fem_darcy_field)
-          != compositional_field_methods.end()) && (std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "porosity") != names_of_compositional_fields.end()) )
-          for (unsigned int i=0; i<n_compositional_fields; ++i)
+           != compositional_field_methods.end()) && (std::find(names_of_compositional_fields.begin(), names_of_compositional_fields.end(), "porosity") != names_of_compositional_fields.end()) )
+        for (unsigned int i=0; i<n_compositional_fields; ++i)
 
           {
-            AssertThrow ((((compositional_field_methods[i] != AdvectionFieldMethod::fem_darcy_field) && 
-                         (names_of_compositional_fields[i] == "porosity")) == false),
-                          ExcMessage ("When using the darcy field method, the porosity field must be advected with the darcy method."));
+            AssertThrow ((((compositional_field_methods[i] != AdvectionFieldMethod::fem_darcy_field) &&
+                           (names_of_compositional_fields[i] == "porosity")) == false),
+                         ExcMessage ("When using the darcy field method, the porosity field must be advected with the darcy method."));
           }
-        
+
       for (const auto &p : x_mapped_particle_properties)
         {
           // each entry has the format (white space is optional):
