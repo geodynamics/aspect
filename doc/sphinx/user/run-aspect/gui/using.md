@@ -1,7 +1,5 @@
 # Using ASPECT-GUI
 
-#### Using ASPECT-GUI
-
 When configuring ASPECT after executing the
 above steps, it should automatically pick up the location of the
 parameter-GUI, and will create a new script named `aspect-gui` within the

@@ -1,7 +1,5 @@
 # Compatibility of input files with newer ASPECT versions
 
-#### Compatibility of input files with newer ASPECT versions
-
 We strive to maintain compatibility for options in input files as long as
 possible. However, occasionally we have to reorder, rename, or remove options
 from parameter files to improve ASPECT further.

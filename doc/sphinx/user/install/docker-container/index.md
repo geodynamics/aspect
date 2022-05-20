@@ -2,8 +2,6 @@
 # Docker Container
 
 
-
-
 :::{toctree}
 installing-docker.md
 running-models.md

@@ -1,8 +1,6 @@
 
 # Obtaining ASPECT and initial configuration
 
-#### Obtaining ASPECT and initial configuration
-
 The development version of ASPECT can be
 downloaded by executing the command
 

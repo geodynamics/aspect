@@ -1,7 +1,5 @@
 # Categories of parameters
 
-#### Categories of parameters
-
 The parameters that can be provided in the input file can roughly be
 categorized into the following groups:
 

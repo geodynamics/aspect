@@ -1,8 +1,6 @@
 
 # Local installation
 
-### Local installation
-
 This is a brief explanation of how to compile and install the required
 dependencies and ASPECT itself. This
 installation procedure guarantees fastest runtimes, and largest flexibility,

@@ -1,7 +1,5 @@
 # Switching off pressure normalization
 
-#### Switching off pressure normalization
-
 In most practically relevant cases, the Stokes equations
 {math:numref}`eq:stokes-1-{math:numref}`eq:stokes-2 only determine the pressure up
 to a constant because only the pressure gradient appears in the equations, not

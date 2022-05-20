@@ -1,8 +1,6 @@
 
 # Compiling ASPECT and generating documentation
 
-#### Compiling ASPECT and generating documentation
-
 After downloading ASPECT and having built the
 libraries it builds on, you can compile it by typing
 

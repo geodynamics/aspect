@@ -1,7 +1,5 @@
 # Installing parameter-GUI
 
-#### Installing parameter-GUI
-
 The deal.II parameter-GUI program can be
 downloaded at <https://github.com/dealii/parameter_gui>, and is compiled using
 the `cmake` program just like ASPECT itself.

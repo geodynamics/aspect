@@ -1,8 +1,6 @@
 (sec:run-aspect:overview)=
 # Overview
 
-### Overview
-
 After compiling ASPECT as described above, you
 should have an executable file in the build directory. It can be called in the
 build directory as follows:

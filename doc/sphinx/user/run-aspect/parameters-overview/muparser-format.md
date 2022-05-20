@@ -1,8 +1,6 @@
 (sec:run-aspect:parameters-overview:muparser-format)=
 # A note on the syntax of formulas in input files
 
-#### A note on the syntax of formulas in input files
-
 Input files have different ways of describing certain things to
 ASPECT. For example, you could select a plugin for
 the temperature initial values that prescribes a constant temperature, or a

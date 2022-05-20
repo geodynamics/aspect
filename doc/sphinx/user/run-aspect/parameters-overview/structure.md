@@ -1,7 +1,5 @@
 # The structure of parameter files
 
-#### The structure of parameter files
-
 Most of the run-time behavior of ASPECT is
 driven by a parameter file that looks in essence like this:
 
