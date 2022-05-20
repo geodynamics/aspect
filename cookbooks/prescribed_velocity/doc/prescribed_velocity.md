@@ -9,7 +9,7 @@ capture, such as corner flow in subduction zones, it may be useful to force
 the desired behavior in some parts of the model domain and solve for the
 resulting flow everywhere else. This is possible through the use of &rsquo;s
 &ldquo;signal&rdquo; mechanism, as documented in
-Section&nbsp;[\[sec:extending-signals\]][1].
+{ref}`sec:extending-signals`.
 
 Internally, adds &ldquo;constraints&rdquo; to the finite element system for
 boundary conditions and hanging nodes. These are places in the finite element
@@ -35,15 +35,15 @@ The above plugin can be compiled with `cmake . && make` in the
 [cookbooks/prescribed_velocity][] directory. It can be loaded in a parameter
 file as an &ldquo;Additional shared library.&rdquo; By setting parameters like
 those shown below, it is possible to produce many interesting flow fields such
-as the ones visualized in (Figure&nbsp;[\[fig:prescribed-velocity\]][2]).
+as the ones visualized in {numref}`fig:prescribed_velocity`.
 
 ```{literalinclude} corner_flow.prm
 ```
 
-```{figure-md} fig:quickref
-<img src="_static/images/aspect_logo.*" alt="Screenshot"  width="100%"/>
+```{figure-md} fig:prescribed_velocity
+<img src="prescribed_velocity.*" alt="Screenshot"  width="100%"/>
 
-This is the figure caption.
+Examples of flows with prescribed internal velocities, as described in Section 5.2.9
 ```
 
 &nbsp;
