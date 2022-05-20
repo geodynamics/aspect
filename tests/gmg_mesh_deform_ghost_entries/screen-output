@@ -47,13 +47,13 @@ Number of mesh deformation degrees of freedom: 1156
    Solving ve_stress_xx system ... 18 iterations.
    Solving ve_stress_yy system ... 18 iterations.
    Solving ve_stress_xy system ... 18 iterations.
-   Solving Stokes system... 34+0 iterations.
+   Solving Stokes system... 43+0 iterations.
 
    Postprocessing:
      Compositions min/max/mass: -1.533e+05/2.687e+05/-2.453e+10 // -2.687e+05/1.533e+05/2.453e+10 // -6.333e+04/3.277e+05/1.178e+16
      Temperature min/avg/max:   293 K, 293 K, 293 K
      Topography min/max:        -0.04 m, 0.01 m
-     RMS, max velocity:         0.142 m/year, 0.448 m/year
+     RMS, max velocity:         0.129 m/year, 0.408 m/year
 
 Number of active cells: 505 (on 3 levels)
 Number of degrees of freedom: 12,017 (4,354+566+566+2,177+2,177+2,177)
