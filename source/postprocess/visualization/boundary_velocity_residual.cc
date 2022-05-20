@@ -34,8 +34,21 @@ namespace aspect
         :
         DataPostprocessorVector<dim> ("boundary_velocity_residual",
                                       update_values | update_quadrature_points | update_gradients),
-        Interface<dim>("m/s")
+        Interface<dim>()  // unknown units at construction time, will be filled by a separate function
       {}
+
+
+
+      template <int dim>
+      std::string
+      BoundaryVelocityResidual<dim>::
+      get_physical_units () const
+      {
+        if (this->convert_output_to_years())
+          return "m/year";
+        else
+          return "m/s";
+      }
 
 
 
@@ -107,7 +120,8 @@ namespace aspect
                                                   "or a velocity field computed from the GPlates program as described in the gplates "
                                                   "boundary velocity plugin."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter\\per\\second}.")
+                                                  "Physical units: \\si{\\meter\\per\\second} or "
+                                                  "\\si{\\meter\\per\\year}, depending on settings in the input file.")
     }
   }
 }

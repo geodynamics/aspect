@@ -134,7 +134,14 @@ namespace aspect
           std::vector<std::string>
           get_physical_units () const
           {
-            std::vector<std::string> solution_units (dim, "m/s");
+            std::vector<std::string> solution_units;
+
+            if (this->convert_output_to_years())
+              for (unsigned int d=0; d<dim; ++d)
+                solution_units.emplace_back("m/year");
+            else
+              for (unsigned int d=0; d<dim; ++d)
+                solution_units.emplace_back("m/s");
 
             if (this->include_melt_transport())
               {
@@ -186,7 +193,10 @@ namespace aspect
           std::string
           get_physical_units () const
           {
-            return "m/s";
+            if (this->convert_output_to_years())
+              return "m/year";
+            else
+              return "m/s";
           }
       };
     }
