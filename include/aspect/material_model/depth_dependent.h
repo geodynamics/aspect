@@ -27,6 +27,8 @@
 #include <deal.II/base/parsed_function.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace MaterialModel
