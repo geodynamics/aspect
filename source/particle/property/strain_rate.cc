@@ -96,8 +96,8 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_PROPERTY(StrainRate,
                                         "strain rate",
                                         "Implementation of a plugin in which the particle "
-                                        "property is defined as the recent strainrate at "
-                                        "this position.")
+                                        "property is defined as the strain rate solution from the previous time step"
+                                        "at the position of the particle.")
     }
   }
 }
