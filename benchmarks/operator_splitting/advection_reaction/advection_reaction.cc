@@ -45,7 +45,6 @@ namespace aspect
         virtual void parse_parameters(ParameterHandler &prm);
 
         virtual bool is_compressible () const;
-        virtual double reference_viscosity () const;
 
         virtual void create_additional_named_outputs (MaterialModel::MaterialModelOutputs<dim> &out) const;
 
@@ -98,14 +97,6 @@ namespace aspect
     is_compressible () const
     {
       return base_model->is_compressible();
-    }
-
-    template <int dim>
-    double
-    ExponentialDecay<dim>::
-    reference_viscosity() const
-    {
-      return base_model->reference_viscosity();
     }
 
 

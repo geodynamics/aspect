@@ -134,15 +134,6 @@ namespace aspect
     {
       return base_model->is_compressible();
     }
-
-    template <int dim>
-    double
-    ReplaceLithosphereViscosity<dim>::
-    reference_viscosity() const
-    {
-      /* Return reference viscosity from base model*/
-      return base_model->reference_viscosity();
-    }
   }
 }
 

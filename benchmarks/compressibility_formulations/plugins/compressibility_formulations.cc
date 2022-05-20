@@ -52,9 +52,6 @@ namespace aspect
         bool is_compressible () const;
 
         virtual
-        double reference_viscosity () const;
-
-        virtual
         void
         evaluate (const MaterialModelInputs<dim> &in,
                   MaterialModelOutputs<dim> &out) const;
@@ -114,16 +111,6 @@ namespace aspect
     CompressibilityFormulations<dim>::update()
     {
       base_model->update();
-    }
-
-
-
-    template <int dim>
-    double
-    CompressibilityFormulations<dim>::
-    reference_viscosity () const
-    {
-      return base_model->reference_viscosity();
     }
 
 

@@ -418,14 +418,6 @@ namespace aspect
     {
       return base_model->is_compressible();
     }
-
-    template <int dim>
-    double
-    Averaging<dim>::
-    reference_viscosity() const
-    {
-      return base_model->reference_viscosity();
-    }
   }
 }
 
