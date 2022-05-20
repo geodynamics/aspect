@@ -1,0 +1,35 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for composition solver 3
+# 13: Iterations for Stokes solver
+# 14: Velocity iterations in Stokes preconditioner
+# 15: Schur complement iterations in Stokes preconditioner
+# 16: Minimal value for composition ve_stress_xx
+# 17: Maximal value for composition ve_stress_xx
+# 18: Global mass for composition ve_stress_xx
+# 19: Minimal value for composition ve_stress_yy
+# 20: Maximal value for composition ve_stress_yy
+# 21: Global mass for composition ve_stress_yy
+# 22: Minimal value for composition ve_stress_xy
+# 23: Maximal value for composition ve_stress_xy
+# 24: Global mass for composition ve_stress_xy
+# 25: Minimal temperature (K)
+# 26: Average temperature (K)
+# 27: Maximal temperature (K)
+# 28: Average nondimensional temperature (K)
+# 29: Minimum topography (m)
+# 30: Maximum topography (m)
+# 31: RMS velocity (m/year)
+# 32: Max. velocity (m/year)
+0 0.000000000000e+00 0.000000000000e+00 63060 574508 64094 765621 2 0  0  0  0 88 93 1072  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00  0.00000000e+00 0.00000000e+00  0.00000000e+00 2.93000000e+02 2.93000000e+02 2.93000000e+02  1.20526730e-16 -9.31322575e-10  2.79396772e-09 3.30536987e-05 2.69794494e-04 
+1 2.500000000000e+00 2.500000000000e+00 63060 574508 64094 765621 2 0 21 21 21 66 71  828 -3.73501206e+04 3.73501204e+04 -5.34999786e+07 -3.73501204e+04 3.73501206e+04  5.34999786e+07 -1.20481688e+04 1.46948476e+04  3.42970051e+12 2.93000000e+02 2.93000000e+02 2.93000000e+02 -3.01316824e-16 -4.65661287e-09 -9.31322575e-10 1.08910509e-02 3.76888998e-02 
+2 5.000000000000e+00 2.500000000000e+00 63060 574508 64094 765621 2 0 20 20 20 67 72  836 -1.24278594e+05 1.24278580e+05  1.91528619e+06 -1.24278580e+05 1.24278594e+05 -1.91528612e+06 -1.18173287e+05 4.08313426e+04 -5.45953311e+14 2.93000000e+02 2.93000000e+02 2.93000000e+02 -9.64213837e-16 -9.42379804e-02  2.02719234e-02 7.54511640e-03 2.61952897e-02 
