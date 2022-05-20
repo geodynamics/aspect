@@ -17,7 +17,7 @@ to run with 4 processors. In either case, the argument denotes the (path and)
 name of a file that contains input parameters.[^footnote1] When you download
 ASPECT, there are a number of sample input files in
 the `cookbooks` directory, corresponding to the examples discussed in
-{ref}`5`][], and input files for some of the benchmarks discussed in
+{ref}`5`[], and input files for some of the benchmarks discussed in
 {ref}`sec:cookbooks-benchmarks`47] are located in the
 `benchmarks` directory. A full description of all parameters one can specify
 in these files is given in {ref}`sec:parameters`.
@@ -103,7 +103,7 @@ will discuss many such input files in {ref}`5`[]:
 
 In other words, these run-time parameters specify that we should start with a
 geometry that represents a spherical shell (see
-Sections&nbsp;{ref}`parameters:Geometry_20model`] and
+Sections {ref}`parameters:Geometry_20model` and
 {ref}`parameters:Geometry_20model/Spherical_20shell` for details). The
 coarsest mesh is refined 4 times globally, i.e., every cell is refined into
 four children (or eight, in 3d) 4 times. This yields the initial number of
@@ -140,7 +140,7 @@ total 932
 -rw-rw-r-- 1 bangerth bangerth 577138 Dec 11 10:07 parameters.tex
 drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 -rw-rw-r-- 1 bangerth bangerth    484 Dec 11 10:08 solution.pvd
--rw-rw-r-- 1 bangerth bangerth    451 Dec 11 10:08 solution.
+-rw-rw-r-- 1 bangerth bangerth    451 Dec 11 10:08 solution.visit
 
 -rw-rw-r-- 1 bangerth bangerth   8267 Dec 11 10:08 statistics
 ```
