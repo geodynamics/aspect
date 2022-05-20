@@ -28,7 +28,7 @@ regular model constraints are set, but before they are
 As an example of this functionality, below is a plugin which allows the user
 to prescribe internal velocities with functions in a parameter file:
 
-``` c++
+```{literalinclude} prescribed_velocity.cc
 ```
 
 The above plugin can be compiled with `cmake . && make` in the
@@ -37,7 +37,13 @@ file as an &ldquo;Additional shared library.&rdquo; By setting parameters like
 those shown below, it is possible to produce many interesting flow fields such
 as the ones visualized in (Figure&nbsp;[\[fig:prescribed-velocity\]][2]).
 
-``` prmfile
+```{literalinclude} corner_flow.prm
+```
+
+```{figure-md} fig:quickref
+<img src="_static/images/aspect_logo.*" alt="Screenshot"  width="100%"/>
+
+This is the figure caption.
 ```
 
 &nbsp;
