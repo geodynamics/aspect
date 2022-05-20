@@ -3,7 +3,7 @@
 The parameters that can be provided in the input file can roughly be
 categorized into the following groups:
 
--   Global parameters (see {ref}`parameters:global`17]): These
+-   Global parameters (see {ref}`parameters:global`): These
     parameters determine the overall behavior of the program. Primarily they
     describe things like the output directory, the end time of the simulation,
     or whether the computation should be resumed from a previously saved
@@ -13,16 +13,16 @@ categorized into the following groups:
     for example, the specifics of the spatial discretization. In particular,
     this is the case for parameters concerning the polynomial degree of the
     finite element approximation
-    ({ref}`parameters:Discretization`65]), some details about the
+    ({ref}`parameters:Discretization`), some details about the
     stabilization
-    ({ref}`parameters:Discretization/Stabilization_20parameters`66]),
+    ({ref}`parameters:Discretization/Stabilization_20parameters`),
     and how adaptive mesh refinement is supposed to work
-    ({ref}`parameters:Mesh_20refinement`67]).
+    ({ref}`parameters:Mesh_20refinement`).
 
 -   Parameters that describe certain global aspects of the equations to be
     solved: This includes, for example, a description if certain terms in the
     model should be omitted or not. See
-    {ref}`parameters:Formulation`29] for the list of parameters
+    {ref}`parameters:Formulation` for the list of parameters
     in this category.
 
 -   Parameters that characterize plugins: Certain behaviors of
@@ -42,27 +42,27 @@ categorized into the following groups:
     which their parameters are declared, are the following:
 
     -   The material model:
-        Sections&nbsp;{ref}`parameters:Material_20model`68] and following.
+        Sections&nbsp;{ref}`parameters:Material_20model` and following.
 
-    -   The geometry: Sections&nbsp;{ref}`parameters:Geometry_20model`48] and
+    -   The geometry: Sections&nbsp;{ref}`parameters:Geometry_20model` and
         following.
 
     -   The gravity description:
-        Sections&nbsp;{ref}`parameters:Gravity_20model`69] and following.
+        Sections&nbsp;{ref}`parameters:Gravity_20model` and following.
 
     -   Initial conditions for the temperature:
-        Sections&nbsp;{ref}`parameters:Initial_20temperature_20model`19] and
+        Sections&nbsp;{ref}`parameters:Initial_20temperature_20model` and
         following.
 
     -   Temperature boundary conditions:
-        Sections&nbsp;{ref}`parameters:Boundary_20temperature_20model`70] and
+        Sections&nbsp;{ref}`parameters:Boundary_20temperature_20model` and
         following.
 
-    -   Postprocessors: Sections&nbsp;{ref}`parameters:Postprocess`50] and
+    -   Postprocessors: Sections&nbsp;{ref}`parameters:Postprocess` and
         following for most postprocessors, section
-        {ref}`parameters:Postprocess/Visualization`52] and following for
+        {ref}`parameters:Postprocess/Visualization` and following for
         postprocessors related to visualization.
 
 The details of parameters in each of these categories can be found in the
 sections linked to above. Some of them will also be used in the cookbooks in
-{ref}`5][].
+{ref}`5`.
