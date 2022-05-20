@@ -50,9 +50,17 @@ jobs:
         cd
         rm -rf astyle*
         astyle --version
-    - name: indent
+    - name: make indent
       run: |
         ./contrib/utilities/indent
+        git diff > changes-astyle.diff
+    - name: archive indent results
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-astyle.diff
+        path: changes-astyle.diff
+    - name: check indentation
+      run: |
         git diff --exit-code
     - name: compile
       run: |
