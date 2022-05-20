@@ -13,13 +13,13 @@ As a consequence, the default in ASPECT is to
 normalize the computed "mathematical" pressure in such a way that
 either the mean pressure at the surface is zero (where the geometry model
 describes where the "surface" is, see
-{ref}`sec:geometry-models`18]), or that the mean pressure in the
+{ref}`sec:geometry-models`), or that the mean pressure in the
 domain is zero. This normalization is important if your model describes
 densities, viscosities and other quantities in dependence of the pressure
-- because you almost certainly had the "physical" pressure
+because you almost certainly had the "physical" pressure
 in mind, not some unspecified "mathematical" one. On the other
 hand, if you have a material model in which the pressure does not enter, then
 you don't need to normalize the pressure at all - simply go with
 whatever the solver provides. In that case, you can switch off pressure
 normalization by looking at the `Pressure normalization` parameter at the top
-level of the input file, see {ref}`parameters:global`17].
+level of the input file, see {ref}`parameters:global`].
