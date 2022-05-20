@@ -34,6 +34,8 @@ show the advantages of using the artificial viscosity smoothing feature.
 By applying the following changes shown below to the parameters of the already
 existing file
 
+cookbooks/shell_simple_2d/shell_simple_2d.prm
+
 ```{literalinclude} cookbooks/shell_simple_2d/shell_simple_2d.prm
 ```
 
@@ -42,6 +44,9 @@ it is possible to produce pictures of the simple convection in a quarter of a
 
 ```{figure-md} fig:smoothing
 <img src="artificial_viscosity_smoothing.*" style="width:100.0%" />
+
+Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section {ref}`sec:cookbooks:artificial-viscosity-smoothing`.
+```
 
 :::{admonition} TODO
 Add references in paramter
