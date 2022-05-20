@@ -122,13 +122,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * Method to calculate reference viscosity for the depth-dependent model. The reference
-         * viscosity is determined by evaluating the depth-dependent part of the viscosity at
-         * the mean depth of the model.
-         */
-        double reference_viscosity () const override;
-
 
 
       private:

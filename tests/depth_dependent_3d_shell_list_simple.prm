@@ -18,6 +18,7 @@ subsection Material model
     set Depth dependence method = List
     set Depth list = 6.7e5, 3.481e6
     set Viscosity list = 1.0e21, 3.0e22
+    set Reference viscosity = 1e22
   end
 
   subsection Simple model

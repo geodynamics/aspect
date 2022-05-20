@@ -1188,7 +1188,7 @@ namespace aspect
      * argument struct instead of implementing the functions viscosity(),
      * density(), etc.. In this case, all other functions are being ignored.
      *
-     * In all cases, model_dependence values, is_compressible(), reference_viscosity()
+     * In all cases, model_dependence values, is_compressible()
      * need to be implemented.
      *
      * @ingroup MaterialModels
@@ -1257,33 +1257,6 @@ namespace aspect
          * (incompressible Stokes).
          */
         virtual bool is_compressible () const = 0;
-        /**
-         * @}
-         */
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        /**
-         * Return a reference value typical of the viscosities that appear in
-         * this model. This value is not actually used in the material
-         * description itself, but is used in scaling variables to the same
-         * numerical order of magnitude when solving linear systems.
-         * Specifically, the reference viscosity appears in the factor scaling
-         * the pressure against the velocity. It is also used in computing
-         * dimension-less quantities. You may want to take a look at the
-         * Kronbichler, Heister, Bangerth 2012 paper that describes the
-         * design of ASPECT for a description of this pressure scaling.
-         *
-         * @note The reference viscosity should take into account the complete
-         * constitutive relationship, defined as the scalar viscosity times the
-         * constitutive tensor. In most cases, the constitutive tensor will simply
-         * be the identity tensor (this is the default case), but this may become
-         * important for material models with anisotropic viscosities, if the
-         * constitutive tensor is not normalized.
-         */
-        virtual double reference_viscosity () const = 0;
         /**
          * @}
          */

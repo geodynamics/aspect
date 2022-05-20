@@ -85,7 +85,6 @@ namespace aspect
     {
       /* The depth dependent prefactor is the multiplicative factor by which the
        * viscosity computed by the base model's evaluate method will be scaled */
-      const double reference_viscosity = base_model->reference_viscosity();
       if ( viscosity_source == File )
         {
           return viscosity_from_file(depth)/reference_viscosity;
@@ -166,6 +165,12 @@ namespace aspect
                             "A comma-separated list of viscosity values, corresponding to the depth values "
                             "provided in ``Depth list''. The number of viscosity values specified here must "
                             "be the same as the number of depths provided in ``Depth list''.");
+          prm.declare_entry ("Reference viscosity",
+                             boost::lexical_cast<std::string>(std::numeric_limits<double>::max()),
+                             Patterns::Double (0.),
+                             "The value of the constant reference viscosity $\\eta_r$ that is used to scale "
+                             "the non-dimenional depth-dependent viscosity prefactor. "
+                             "Units: \\si{\\pascal\\second}.");
 
 
           prm.declare_alias ("Data file name","Viscosity depth file");
@@ -249,6 +254,11 @@ namespace aspect
               }
           }
           prm.leave_subsection();
+
+          reference_viscosity = prm.get_double ("Reference viscosity");
+
+          AssertThrow(reference_viscosity != std::numeric_limits<double>::max(),
+                      ExcMessage("You have to set a reference viscosity for the depth dependent model."));
         }
         prm.leave_subsection();
 
@@ -275,20 +285,6 @@ namespace aspect
     {
       return base_model->is_compressible();
     }
-
-    template <int dim>
-    double
-    DepthDependent<dim>::
-    reference_viscosity() const
-    {
-      /* The viscosity returned by the base model is normalized by the base model's
-       * reference viscosity and then scaled by the depth-dependency,
-       * so the reference viscosity returned by the depth-dependent
-       * model should be representative of the product of the depth dependent contribution
-       * and the base model contribution to the total viscosity */
-      const double mean_depth = 0.5*this->get_geometry_model().maximal_depth();
-      return calculate_depth_dependent_prefactor( mean_depth )*base_model->reference_viscosity();
-    }
   }
 }
 
@@ -310,11 +306,11 @@ namespace aspect
                                    "viscosity - other material properties are taken from the ``Base model''. "
                                    "Viscosity $\\eta$ at depth $z$ is calculated according to:"
                                    "\\begin{equation}"
-                                   "\\eta(z,p,T,X,...) = \\eta(z) \\eta_b(p,T,X,..)/\\eta_{rb}"
+                                   "\\eta(z,p,T,X,...) = \\eta(z) \\eta_b(p,T,X,..)/\\eta_{r}"
                                    "\\end{equation}"
                                    "where $\\eta(z)$ is the depth-dependence specified by the depth dependent "
                                    "model, $\\eta_b(p,T,X,...)$ is the viscosity calculated from the base model, "
-                                   "and $\\eta_{rb}$ is the reference viscosity of the ``Base model''. "
+                                   "and $\\eta_{r}$ is the reference viscosity. "
                                    "In addition to the specification of the ``Base model'', the user must specify "
                                    "the method to be used to calculate the depth-dependent viscosity $\\eta(z)$ as "
                                    "``Material model/Depth dependent model/Depth dependence method'', which can be "

@@ -1,0 +1,8 @@
+Changed: The reference viscosity function is no longer part
+of the material model interface (because we do not require 
+it anymore for the pressure scaling or anywhere else). The
+One material model affected by this is the depth-dependent
+model, which now has its own reference viscosity parameter
+rather than use the reference viscosity of the base model.
+<br>
+(Juliane Dannberg, 2022/05/20)
