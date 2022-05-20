@@ -1,0 +1,33 @@
+
+Vectorization over 2 doubles = 128 bits (SSE2), VECTORIZATION_LEVEL=1
+Number of active cells: 150 (on 1 levels)
+Number of degrees of freedom: 7,054 (1,302+176+176+1,350+1,350+1,350+1,350)
+
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving temperature system... 0 iterations.
+   Skipping ve_stress_xx composition solve because RHS is zero.
+   Skipping ve_stress_yy composition solve because RHS is zero.
+   Skipping ve_stress_xy composition solve because RHS is zero.
+   Solving beam system ... 0 iterations.
+   Solving Stokes system... 452+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:     0.0051 m/year, 0.0108 m/year
+     Writing depth average: output-viscoelastic_bending_beam_gmg/depth_average
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving temperature system... 0 iterations.
+   Solving ve_stress_xx system ... 3 iterations.
+   Solving ve_stress_yy system ... 3 iterations.
+   Solving ve_stress_xy system ... 3 iterations.
+   Solving beam system ... 3 iterations.
+   Solving Stokes system... 317+0 iterations.
+
+   Postprocessing:
+     RMS, max velocity:     0.00583 m/year, 0.0105 m/year
+     Writing depth average: output-viscoelastic_bending_beam_gmg/depth_average
+
+Termination requested by criterion: end time
+
+
+
