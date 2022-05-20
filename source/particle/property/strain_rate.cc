@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/property/strainrate.h>
+#include <aspect/particle/property/strain_rate.h>
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
 
@@ -30,7 +30,7 @@ namespace aspect
     {
       template <int dim>
       void
-      Strainrate<dim>::initialize_one_particle_property(const Point<dim> &,
+      StrainRate<dim>::initialize_one_particle_property(const Point<dim> &,
                                                       std::vector<double> &data) const
       {
        const static Tensor<2,dim> identity = unit_symmetric_tensor<dim>();
@@ -41,7 +41,7 @@ namespace aspect
 
       template <int dim>
       void
-      Strainrate<dim>::update_particle_property(const unsigned int data_position,
+      StrainRate<dim>::update_particle_property(const unsigned int data_position,
                                                       const Vector<double> &/*solution*/,
                                                       const std::vector<Tensor<1,dim> > &gradients,
                                                       typename ParticleHandler<dim>::particle_iterator &particle) const
@@ -51,34 +51,32 @@ namespace aspect
         Tensor<2,dim> grad_u;
         for (unsigned int d=0; d<dim; ++d)
           grad_u[d] = gradients[d];
-        //std::cout<<"grad_u: "<<grad_u<<std::endl;
+        
         // Calculate strain rate from velocity gradients
         const SymmetricTensor<2,dim> strain_rate = symmetrize (grad_u);
-        //std::cout<<"strainrate: "<<strain_rate<<std::endl;
 
         for (unsigned int i = 0; i < Tensor<2,dim>::n_independent_components ; ++i) 
           data[data_position + i] = strain_rate[Tensor<2,dim>::unrolled_to_component_indices(i)];
-        
        
       }
 
       template <int dim>
       UpdateTimeFlags
-      Strainrate<dim>::need_update() const
+      StrainRate<dim>::need_update() const
       {
         return update_time_step;
       }
 
       template <int dim>
       UpdateFlags
-      Strainrate<dim>::get_needed_update_flags () const
+      StrainRate<dim>::get_needed_update_flags () const
       {
         return update_gradients;
       }
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int> >
-      Strainrate<dim>::get_property_information() const
+      StrainRate<dim>::get_property_information() const
       {
         const unsigned int n_components = Tensor<2,dim>::n_independent_components;
         const std::vector<std::pair<std::string,unsigned int> > property_information (1,std::make_pair("strainrate",n_components));
@@ -95,8 +93,8 @@ namespace aspect
   {
     namespace Property
     {
-      ASPECT_REGISTER_PARTICLE_PROPERTY(Strainrate,
-                                        "strainrate",
+      ASPECT_REGISTER_PARTICLE_PROPERTY(StrainRate,
+                                        "strain rate",
                                         "Implementation of a plugin in which the particle "
                                         "property is defined as the recent strainrate at "
                                         "this position.")

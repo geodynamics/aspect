@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2015 - 2021 by the authors of the ASPECT code.
+ Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _aspect_particle_property_strainrate_h
-#define _aspect_particle_property_strainrate_h
+#ifndef _aspect_particle_property_strain_rate_h
+#define _aspect_particle_property_strain_rate_h
 
 #include <aspect/particle/property/interface.h>
 #include <aspect/simulator_access.h>
@@ -31,12 +31,12 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that sets particle properties to the current velocity.
+       * A class that sets particle properties to the current strain rate.
        *
        * @ingroup ParticleProperties
        */
       template <int dim>
-      class Strainrate : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
+      class StrainRate : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
       {
         public:
           /**
