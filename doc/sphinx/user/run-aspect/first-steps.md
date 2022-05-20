@@ -9,10 +9,10 @@ its functionalities by following these steps:
     that will show you how to run ASPECT and
     construct new setups yourself.
 
-2.  Go through the cookbooks in this manual, see {ref}`5][].
+2.  Go through the cookbooks in this manual, see {ref}`cha:cookbooks`.
 
 3.  Go through the benchmarks in this manual, see
-    {ref}`sec:cookbooks-benchmarks`47].
+    {ref}`cha:benchmarks`.
 
 4.  If you want to use some existing functionality that is not discussed in
     these resources, search in the extensive tests directory. For example, to

@@ -1,3 +1,4 @@
+(sec:methods:2d-models)=
 # Two-dimensional models
 
 ASPECT allows solving both two- and three-dimensional models via a parameter in the input files, see also {ref}`sec:run-aspect:2d-vs-3d`.

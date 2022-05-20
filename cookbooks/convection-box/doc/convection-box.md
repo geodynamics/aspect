@@ -1,4 +1,5 @@
-#### Convection in a 2d box
+(sec:cookbooks:convection-box)=
+# Convection in a 2d box
 
 In this first example, let us consider a simple situation: a 2d box of
 dimensions $[0,1]\times [0,1]$ that is heated from below, insulated at the

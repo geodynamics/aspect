@@ -1,3 +1,4 @@
+(sec:run-aspect:debug-mode)=
 # Debug or optimized mode
 
 ASPECT utilizes a <span
@@ -24,7 +25,7 @@ the program with a detailed message that shows the failed check, the location
 in the source code, and a stacktrace how the program got there. The downside
 of debug mode is, of course, that it makes the program much slower -
 depending on application by a factor of 4-10. An example of the speedup
-one can get is shown in {ref}`5.2.1`[].
+one can get is shown in {ref}`sec:cookbooks:convection-box`.
 
 ASPECT by default uses debug mode because most
 users will want to play with the source code, and because it is also a way to

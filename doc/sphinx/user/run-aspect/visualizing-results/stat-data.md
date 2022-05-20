@@ -1,3 +1,4 @@
+(sec:run-aspect:visualize:stat-data)=
 # Visualizing statistical data
 
 In addition to the graphical output discussed above,
