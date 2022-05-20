@@ -1271,7 +1271,7 @@ namespace aspect
                          "advected with the Darcy velocity instead of the solid velocity. This method "
                          "requires there to be a compositional field named porosity that is advected "
                          "the darcy field method. We calculate the fluid velocity current_u_f using "
-                         "an approximation of Darcy's Law: u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)."
+                         "an approximation of Darcy's Law: $u_f = u_s - K_D / phi * (rho_s * g - rho_f * g)$."
                          "\n"
                          "\\item ``prescribed field'': The value of these fields is determined "
                          "in each time step from the material model. If a compositional field is "
