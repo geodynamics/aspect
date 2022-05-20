@@ -78,6 +78,7 @@ namespace aspect
         FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points);
         typename DoFHandler<dim>::active_cell_iterator cell;
         MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), simulator_access.introspection().n_compositional_fields);
+        double num_constraints = 0;
         // Loop over all cells
         //       const unsigned int fixed_idx = simulator_access.introspection().compositional_index_for_name("Lithosphere");
 
@@ -99,22 +100,20 @@ namespace aspect
                     {
 
                     //  if (in.composition[fixed_idx][q] >= 0.5)
-        //                {
-
-                      // Get the velocity component index
+                      // Get the temperature component index
                       const unsigned int c_idx = simulator_access.get_fe().system_to_component_index(q).first;
-                      // If we're on one of the velocity DOFs
+                      // If we're on one of the temperature DOFs
                       if ((c_idx == simulator_access.introspection().component_indices.temperature))
                         {
-
                           const double fixed_temp = 2500;
                           current_constraints.add_line (local_dof_indices[q]);
                           current_constraints.set_inhomogeneity (local_dof_indices[q], fixed_temp);
+                          num_constraints += 1;
                         }
-         //               }
                     }
                 }
             }
+      std::cout << num_constraints << std::endl;
       }
   }
 
