@@ -1,4 +1,4 @@
-(sec:cookbooks-particles)=
+(sec:cookbooks:using-particles)=
 # Using particles
 
 Using compositional fields to trace where material has come from or is going to

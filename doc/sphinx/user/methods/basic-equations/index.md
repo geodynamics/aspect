@@ -1,3 +1,4 @@
+(sec:methods:basic-equations)=
 # Basic equations
 
 ASPECT solves a system of equations in a $d=2$- or $d=3$-dimensional domain $\Omega$ that describes the motion of a highly viscous fluid driven by differences in the gravitational force due to a density that depends on the temperature.

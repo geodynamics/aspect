@@ -19,27 +19,45 @@ ASPECT allows the user to specify if their model has a nullspace.
 If so, any power in the nullspace is calculated and removed from the solution after every timestep.
 There are two varieties of nullspace removal implemented: removing net linear/angular momentum, and removing net translations/rotations.
 
-For removing linear momentum we search for a constant velocity vector $\bf c$ such that $$\int_\Omega \rho ({\bf u - c}) = 0$$
+For removing linear momentum we search for a constant velocity vector $\bf c$ such that
+```{math}
+\int_\Omega \rho ({\bf u - c}) = 0
+```
 
 This may be solved by realizing that $\int_\Omega \rho {\bf u} = {\bf p}$, the linear momentum, and $\int_\Omega \rho = M$, the total mass of the model.
-Then we find $${\bf c} = {\bf p}/M$$ which is subtracted off of the velocity solution.
+Then we find
+```{math}
+{\bf c} = {\bf p}/M
+```
+which is subtracted off of the velocity solution.
 
 Removing the angular momentum is similar, though a bit more complicated.
 We search for a rotation vector $\mathbf \omega$ such that
-$$\int_\Omega \rho ( {\bf x \times (u - {\mathbf \omega} \times x) } ) = 0$$
+```{math}
+\int_\Omega \rho ( {\bf x \times (u - {\mathbf \omega} \times x) } ) = 0
+```
 
 Recognizing that $\int_\Omega \rho {\bf x \times u} = {\bf H}$, the angular momentum, and $\int_\Omega \rho {\bf x \times {\mathbf \omega} \times x} = {\bf I \cdot {\mathbf \omega} }$, the moment of inertia dotted into the sought-after vector, we can solve for ${\mathbf \omega}$:
-$${\mathbf \omega} = {\bf I^{-1} \cdot H}$$
+```{math}
+{\mathbf \omega} = {\bf I^{-1} \cdot H}
+```
 A rotation about the rotation vector $\omega$ is then subtracted from the velocity solution.
 
 Removing the net translations/rotations are identical to their momentum counterparts, but for those the density is dropped from the formulae.
 For most applications the density should not vary so wildly that there will be an appreciable difference between the two varieties, though removing linear/angular momentum is more physically motivated.
 
-The user can flag the nullspace for removal by setting the `Remove nullspace`
-option, as described in Section&nbsp;[\[parameters:Nullspace_20removal\]][43].
-Figure&nbsp;[1][] shows the result of removing angular momentum from a
-convection model in a 2D annulus with free-slip velocity boundary conditions.
+The user can flag the nullspace for removal by setting the `Remove nullspace` option, as described in {ref}`parameters:Nullspace_20removal`.
+{ref}`fig:rigid_rotation` shows the result of removing angular momentum from a convection model in a 2D annulus with free-slip velocity boundary conditions.
 
-<figure>
-<img src="rigid_rotation.png" id="fig:rigid_rotation" style="width:80.0%" alt="Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see. " /><figcaption aria-hidden="true"><em>Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see.</em> </figcaption>
-</figure>
+
+```{figure-md} fig:rigid_rotation
+<img src="../../_static/images/rigid_rotation.*" alt="Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see."  width="80%"/>
+
+Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see.
+```
+
+:::{admonition} TODO
+:class: error
+
+{ref}`parameters:Nullspace_20removal` not setup yet so reference doesn't go anywhere
+:::

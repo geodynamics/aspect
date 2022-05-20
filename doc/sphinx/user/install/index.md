@@ -1,3 +1,4 @@
+(cha:installation)=
 # Installation
 
 There are three distinct ways to install ASPECT - compilation from

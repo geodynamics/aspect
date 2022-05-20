@@ -3,8 +3,14 @@
 
 ASPECT implements several advection schemes for
 the temperature and compositional field equations. Specifically, the parameter
-{ref}`parameters:Discretization/Stabilization_20parameters/Stabilization_20method`34]
+{ref}`parameters:Discretization/Stabilization_20parameters/Stabilization_20method`
 allows using one of the following methods:
+
+:::{admonition} TODO
+:class: error
+
+{ref}`parameters:Discretization/Stabilization_20parameters/Stabilization_20method` not setup yet, so reference doesn't go anywhere
+:::
 
 -   Entropy Viscosity Stabilization
 
@@ -21,11 +27,11 @@ equation reads
 where $F$ is the combination of source and reaction terms, while the weak
 form - with test function $\varphi$ and L2 inner product $(\cdot,\cdot)$ - is
 ```{math}
+:label: eqn:weak-form-for-advection
 a(T,\varphi) =
  \left(\rho C_p \frac{\partial T}{\partial t}, \varphi \right)
  + \left(\rho C_p \mathbf{u} \cdot \nabla T, \varphi \right)
  + \left( k \nabla T, \nabla \varphi \right) = (F,\varphi) = f(\varphi).
- \label{eqn:weak-form-for-advection}
 ```
 
 :::{toctree}
