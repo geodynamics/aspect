@@ -572,16 +572,6 @@ namespace aspect
     template <int dim>
     double
     GrainSize<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
-
-
-    template <int dim>
-    double
-    GrainSize<dim>::
     density (const double temperature,
              const double pressure,
              const std::vector<double> &compositional_fields, /*composition*/

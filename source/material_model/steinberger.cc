@@ -201,16 +201,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    Steinberger<dim>::
-    reference_viscosity () const
-    {
-      return reference_eta;
-    }
-
-
-
-    template <int dim>
     bool
     Steinberger<dim>::
     is_compressible () const

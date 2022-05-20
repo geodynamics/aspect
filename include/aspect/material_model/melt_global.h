@@ -75,8 +75,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        double reference_viscosity () const;
-
         double reference_darcy_coefficient () const override;
 
 

@@ -98,8 +98,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        double reference_viscosity () const;
-
         static
         void
         declare_parameters (ParameterHandler &prm);

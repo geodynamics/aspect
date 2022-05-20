@@ -165,16 +165,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    DruckerPrager<dim>::
-    reference_viscosity () const
-    {
-      return reference_eta;
-    }
-
-
-
-    template <int dim>
     bool
     DruckerPrager<dim>::
     is_compressible () const

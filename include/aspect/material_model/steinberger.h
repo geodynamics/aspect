@@ -172,15 +172,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const;
-        /**
-         * @}
-         */
-
-        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.

@@ -117,16 +117,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    ModifiedTait<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
-
-
-    template <int dim>
     bool
     ModifiedTait<dim>::
     is_compressible () const

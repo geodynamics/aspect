@@ -35,14 +35,6 @@ namespace aspect
     template <int dim>
     double
     MeltSimple<dim>::
-    reference_viscosity () const
-    {
-      return eta_0;
-    }
-
-    template <int dim>
-    double
-    MeltSimple<dim>::
     reference_darcy_coefficient () const
     {
       // 0.01 = 1% melt

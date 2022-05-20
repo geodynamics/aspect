@@ -58,14 +58,6 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    double
-    SimpleCompressible<dim>::
-    reference_viscosity () const
-    {
-      return constant_rheology.compute_viscosity();
-    }
-
 
 
     template <int dim>

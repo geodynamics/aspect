@@ -108,8 +108,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        double reference_viscosity () const;
-
         void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                       typename Interface<dim>::MaterialModelOutputs &out) const override;
 

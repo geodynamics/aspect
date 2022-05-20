@@ -246,14 +246,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    DiffusionDislocation<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
-    }
-
-    template <int dim>
     bool
     DiffusionDislocation<dim>::
     is_compressible () const

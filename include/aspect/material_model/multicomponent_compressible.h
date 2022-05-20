@@ -89,15 +89,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const;
-        /**
-         * @}
-         */
-
-        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */
