@@ -97,9 +97,9 @@ namespace aspect
             unsigned int non_empty_neighbors = 0;
             for (unsigned int i=0; i<neighbors.size(); ++i)
               {
-                // Only recursively call this function if the neighbor cell contains
-                // particles (else we end up in an endless recursion)
-                if (particle_handler.n_particles_in_cell(neighbors[i]) == 0)
+                // Only recursively call this function if the neighbor cell is locally
+                // owned and contains particles (else we end up in an endless recursion)
+                if (!neighbors[i]->is_locally_owned() || particle_handler.n_particles_in_cell(neighbors[i]) == 0)
                   continue;
 
                 const std::vector<double> neighbor_properties = properties_at_points(particle_handler,
