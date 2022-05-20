@@ -17,8 +17,8 @@ subsection Geometry model
   subsection Chunk
     set Chunk inner radius = 5871.e3
     set Chunk outer radius = 6371.e3
-	  set Chunk minimum longitude = 35.0
-	  set Chunk maximum longitude = 55.0
+    set Chunk minimum longitude = 35.0
+    set Chunk maximum longitude = 55.0
     set Longitude repetitions = 60
     set Radius repetitions = 10
   end
@@ -32,8 +32,8 @@ subsection Mesh refinement
   set Strategy                           = minimum refinement function
   subsection Minimum refinement function
     set Coordinate system   = spherical
-	  set Variable names      = r,phi
-	  set Function expression = r>=6169.e3 ? 4 : 0
+    set Variable names      = r,phi
+    set Function expression = r>=6169.e3 ? 4 : 0
   end
 end
 
