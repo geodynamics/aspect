@@ -438,12 +438,12 @@ namespace aspect
 
         if (molar_composition_of_bulk < std::numeric_limits<double>::min())
           {
-        	melt_molar_fraction = 0 > T_Mg_mantle ? 1.0 : molar_volatiles_in_bulk;
-        	new_molar_composition_of_melt = 0;
-        	new_molar_composition_of_solid = 0;
+            melt_molar_fraction = 0 > T_Mg_mantle ? 1.0 : molar_volatiles_in_bulk;
+            new_molar_composition_of_melt = 0;
+            new_molar_composition_of_solid = 0;
           }
         else if (Xls <= molar_composition_of_bulk
-            && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
+                 && 0 > std::min(T_Fe_mantle, T_Mg_mantle)) // above the liquidus
           {
             melt_molar_fraction = 1.0;
             new_molar_composition_of_melt = molar_composition_of_bulk;

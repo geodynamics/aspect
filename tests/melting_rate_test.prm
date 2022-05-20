@@ -1,8 +1,8 @@
 # Fractionation example.
-# This test is similar to the boukare_melting_diagram, 
-# but evolves over time. Consequently, the melt and solid 
+# This test is similar to the boukare_melting_diagram,
+# but evolves over time. Consequently, the melt and solid
 # composition in the two-phase region should reflect the
-# melting diagram at the end of the model run. 
+# melting diagram at the end of the model run.
 
 # To plot the output:
 # gnuplot
