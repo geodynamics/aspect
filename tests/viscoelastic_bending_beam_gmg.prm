@@ -1,5 +1,5 @@
 # This test checks whether the viscoelastic bending beam benchmark
-# run successfully. In particular, this benchmark is a good test to
+# runs successfully. In particular, this benchmark is a good test to
 # ensure that a model with compositional fields that affect material
 # properties works. This test is identical to the test
 # tests/viscoelastic_bending_beam.prm, except that the GMG Stokes solver
