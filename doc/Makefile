@@ -96,12 +96,12 @@ manual.pdf: manual/manual.tex manual/manual.bib manual/parameters.tex \
                  -a -x "`which makeindex`" ; then \
 	   (cd manual ; \
 		rm -f manual.{aux,bbl,blg,log,out,pdf,toc} prm*.{idx,ilg,ind} ; \
-		pdflatex --interaction=batchmode manual.tex;      \
+		pdflatex --shell-escape --interaction=batchmode manual.tex;      \
 		bibtex manual                                  && \
 		makeindex prmindex                             && \
-		pdflatex --interaction=batchmode manual.tex    && \
-		pdflatex --interaction=batchmode manual.tex    && \
-		pdflatex --interaction=batchmode manual.tex)   && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex    && \
+		pdflatex --shell-escape --interaction=batchmode manual.tex)   && \
 	   mv manual/manual.pdf . || \
 	   (echo                                                      && \
 	    echo "    Error: There were errors compiling manual.tex." && \

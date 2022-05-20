@@ -112,8 +112,8 @@ The default data directory already contains two radial viscosity files, one for 
 The file \url{data/material-model/steinberger/radial-visc.txt} is the original Steinberger and Calderwood \cite{stca06} profile (with an interpolation between the original discrete layers) and for use with the laterally averaged temperature. The file \url{data/material-model/steinberger/radial-visc-simple.txt} is for use with the adiabatic profile. To illustrate the difference, the content of both files is plotted in Figure~\ref{fig:steinberger-viscosity}. 
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc.pdf}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc-simple.pdf}
+  \includesvg[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc.svg}
+  \includesvg[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc-simple.svg}
   \caption{\it Left: Viscosity profile based on the original \cite{stca06} formulation, intended for use with a temperature-dependence of viscosity based on the laterally averaged temperature. Right: Modified viscosity profile without boundary layers, intended for use with a temperature-dependence of viscosity based on an adiabatic temperature profile.}
   \label{fig:steinberger-viscosity}
 \end{figure}
