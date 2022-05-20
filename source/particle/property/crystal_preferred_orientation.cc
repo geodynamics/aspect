@@ -64,7 +64,7 @@ namespace aspect
                                                              std::vector<unsigned int> &deformation_type,
                                                              std::vector<double> &volume_fraction_mineral,
                                                              std::vector<std::vector<double>> &volume_fractions_grains,
-                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains)
+                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains)
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -114,9 +114,9 @@ namespace aspect
                                                              std::vector<unsigned int> &deformation_type,
                                                              std::vector<double> &volume_fraction_mineral,
                                                              std::vector<std::vector<double>> &volume_fractions_grains,
-                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains,
-                                                             std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
-                                                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains_derivatives) const
+                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
+                                                             std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
+                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
       {
         /**
         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -174,7 +174,7 @@ namespace aspect
                                                            std::vector<unsigned int> &deformation_type,
                                                            std::vector<double> &volume_fraction_mineral,
                                                            std::vector<std::vector<double>> &volume_fractions_grains,
-                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains)
+                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains)
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -223,9 +223,9 @@ namespace aspect
                                                            std::vector<unsigned int> &deformation_type,
                                                            std::vector<double> &volume_fraction_mineral,
                                                            std::vector<std::vector<double>> &volume_fractions_grains,
-                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains,
-                                                           std::vector<std::vector<double> > &volume_fractions_grains_derivatives,
-                                                           std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_grains_derivatives) const
+                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
+                                                           std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
+                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -308,8 +308,8 @@ namespace aspect
 
         // fabric. This is determined in the computations, so set it to -1 for now.
         std::vector<double> deformation_type(n_minerals, -1.0);
-        std::vector<std::vector<double > >volume_fractions_grains(n_minerals);
-        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains(n_minerals);
+        std::vector<std::vector<double >>volume_fractions_grains(n_minerals);
+        std::vector<std::vector<Tensor<2,3>>> rotation_matrices_grains(n_minerals);
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
@@ -439,7 +439,7 @@ namespace aspect
       CrystalPreferredOrientation<dim>::update_one_particle_property(const unsigned int data_position,
                                                                      const Point<dim> &,
                                                                      const Vector<double> &solution,
-                                                                     const std::vector<Tensor<1,dim> > &gradients,
+                                                                     const std::vector<Tensor<1,dim>> &gradients,
                                                                      const ArrayView<double> &data) const
       {
         // STEP 1: Load data and preprocess it.
@@ -493,9 +493,9 @@ namespace aspect
         std::vector<unsigned int> deformation_types;
         std::vector<double> volume_fraction_mineral;
         std::vector<std::vector<double>> volume_fractions_grains;
-        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains;
-        std::vector<std::vector<double> > volume_fractions_grains_derivatives;
-        std::vector<std::vector<Tensor<2,3> > > rotation_matrices_grains_derivatives;
+        std::vector<std::vector<Tensor<2,3>>> rotation_matrices_grains;
+        std::vector<std::vector<double>> volume_fractions_grains_derivatives;
+        std::vector<std::vector<Tensor<2,3>>> rotation_matrices_grains_derivatives;
 
         unpack_particle_data(data_position,
                              data,
@@ -558,7 +558,7 @@ namespace aspect
             * derivatives are used to advect the particle properties.
             */
             double sum_volume_mineral = 0;
-            std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives_grains = this->compute_derivatives(volume_fractions_grains[mineral_i],
+            std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives_grains = this->compute_derivatives(volume_fractions_grains[mineral_i],
                                                                                             rotation_matrices_grains[mineral_i],
                                                                                             strain_rate_3d,
                                                                                             velocity_gradient_3d,
@@ -707,7 +707,7 @@ namespace aspect
       InitializationModeForLateParticles
       CrystalPreferredOrientation<dim>::late_initialization_mode () const
       {
-        return InitializationModeForLateParticles::initialize;
+        return InitializationModeForLateParticles::interpolate;
       }
 
       template <int dim>
@@ -718,10 +718,10 @@ namespace aspect
       }
 
       template <int dim>
-      std::vector<std::pair<std::string, unsigned int> >
+      std::vector<std::pair<std::string, unsigned int>>
       CrystalPreferredOrientation<dim>::get_property_information() const
       {
-        std::vector<std::pair<std::string,unsigned int> > property_information;
+        std::vector<std::pair<std::string,unsigned int>> property_information;
 
         for (unsigned int mineral_i = 0; mineral_i < n_minerals; ++mineral_i)
           {
@@ -761,9 +761,9 @@ namespace aspect
       template <int dim>
       double
       CrystalPreferredOrientation<dim>::advect_forward_euler(const double dt,
-                                                             const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                             const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                                              std::vector<double> &volume_fractions,
-                                                             std::vector<Tensor<2,3> > &rotation_matrices) const
+                                                             std::vector<Tensor<2,3>> &rotation_matrices) const
       {
         double sum_volume_fractions = 0;
         for (unsigned int grain_i = 0; grain_i < rotation_matrices.size(); ++grain_i)
@@ -791,9 +791,9 @@ namespace aspect
       template <int dim>
       double
       CrystalPreferredOrientation<dim>::advect_backward_euler(const double dt,
-                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                                               std::vector<double> &volume_fractions,
-                                                              std::vector<Tensor<2,3> > &rotation_matrices) const
+                                                              std::vector<Tensor<2,3>> &rotation_matrices) const
       {
         double sum_volume_fractions = 0;
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
@@ -852,11 +852,11 @@ namespace aspect
       template <int dim>
       double
       CrystalPreferredOrientation<dim>::advect_Crank_Nicolson(const double dt,
-                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                                              const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                                               std::vector<double> &volume_fractions,
-                                                              std::vector<Tensor<2,3> > &rotation_matrices,
+                                                              std::vector<Tensor<2,3>> &rotation_matrices,
                                                               std::vector<double> &previous_volume_fraction_derivatives,
-                                                              std::vector<Tensor<2,3> > &previous_rotation_matrices_derivatives) const
+                                                              std::vector<Tensor<2,3>> &previous_rotation_matrices_derivatives) const
       {
         double sum_volume_fractions = 0;
         for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
@@ -908,15 +908,15 @@ namespace aspect
       }
 
       template <int dim>
-      std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
+      std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives(const std::vector<double> &,
-                                                            const std::vector<Tensor<2,3> > &,
+                                                            const std::vector<Tensor<2,3>> &,
                                                             const SymmetricTensor<2,3> &,
                                                             const Tensor<2,3> &velocity_gradient_tensor,
                                                             const double,
                                                             const std::array<double,4> &) const
       {
-        std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
+        std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
         switch (cpo_derivative_algorithm)
           {
             case CPODerivativeAlgorithm::spin_tensor:
@@ -933,14 +933,14 @@ namespace aspect
       }
 
       template <int dim>
-      std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
+      std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const
       {
         // dA/dt = W * A, where W is the spin tensor and A is the rotation matrix
         // The spin tensor is defined as W = 0.5 * ( L - L^T ), where L is the velocity gradient tensor.
         const Tensor<2,3> spin_tensor = -0.5 *(velocity_gradient_tensor - dealii::transpose(velocity_gradient_tensor));
 
-        return std::pair<std::vector<double>, std::vector<Tensor<2,3> > >(std::vector<double>(n_grains,0.0), std::vector<Tensor<2,3>>(n_grains, spin_tensor));
+        return std::pair<std::vector<double>, std::vector<Tensor<2,3>>>(std::vector<double>(n_grains,0.0), std::vector<Tensor<2,3>>(n_grains, spin_tensor));
       }
 
       template<int dim>

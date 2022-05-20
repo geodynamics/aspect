@@ -160,10 +160,10 @@ TEST_CASE("CPO core: Store and Load")
   cpo.initialize();
 
   std::vector<double> volume_fraction_mineral_ref = {0.7,0.3};
-  std::vector<std::vector<double> > volume_fractions_grains_ref(2,std::vector<double>(3));
-  std::vector<std::vector<dealii::Tensor<2,3> > > a_cosine_matrices_grains_ref(2,std::vector<dealii::Tensor<2,3> >(3));
-  std::vector<std::vector<double> > volume_fractions_grains_derivatives_ref(2,std::vector<double>(3));
-  std::vector<std::vector<dealii::Tensor<2,3> > > a_cosine_matrices_grains_derivatives_ref(2,std::vector<dealii::Tensor<2,3> >(3));
+  std::vector<std::vector<double>> volume_fractions_grains_ref(2,std::vector<double>(3));
+  std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains_ref(2,std::vector<dealii::Tensor<2,3>>(3));
+  std::vector<std::vector<double>> volume_fractions_grains_derivatives_ref(2,std::vector<double>(3));
+  std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains_derivatives_ref(2,std::vector<dealii::Tensor<2,3>>(3));
 
   a_cosine_matrices_grains_ref[0][0][0][0] = 0;
   a_cosine_matrices_grains_ref[0][0][0][1] = 1;
@@ -402,10 +402,10 @@ TEST_CASE("CPO core: Store and Load")
 
   std::vector<unsigned int> deformation_types_load;
   std::vector<double> volume_fraction_mineral_load;
-  std::vector<std::vector<double> > volume_fractions_grains_load;
-  std::vector<std::vector<dealii::Tensor<2,3> > > a_cosine_matrices_grains_load;
-  std::vector<std::vector<double> > volume_fractions_grains_derivatives_load;
-  std::vector<std::vector<dealii::Tensor<2,3> > > a_cosine_matrices_grains_derivatives_load;
+  std::vector<std::vector<double>> volume_fractions_grains_load;
+  std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains_load;
+  std::vector<std::vector<double>> volume_fractions_grains_derivatives_load;
+  std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains_derivatives_load;
 
   cpo.unpack_particle_data(cpo_data_position,
                            data,
@@ -517,7 +517,7 @@ TEST_CASE("CPO core: Spin tensor")
     CHECK(data[103] == Approx(-0.816855));
 
     std::vector<double> volume_fractions(5,0.2);
-    std::vector<dealii::Tensor<2,3> > a_cosine_matrices(5);
+    std::vector<dealii::Tensor<2,3>> a_cosine_matrices(5);
     a_cosine_matrices[0][0][0] = 0.5;
     a_cosine_matrices[0][0][1] = 0.5;
     a_cosine_matrices[0][0][2] = 0.5;
@@ -581,7 +581,7 @@ TEST_CASE("CPO core: Spin tensor")
     ref_resolved_shear_stress[2] = 3;
     ref_resolved_shear_stress[3] = 1e60; // can't really use numerical limits max or infinite, because need to be able to square it without becoming infinite. This is the value fortran D-Rex uses.
 
-    std::pair<std::vector<double>, std::vector<Tensor<2,3> > > derivatives;
+    std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
     derivatives = cpo_3d.compute_derivatives(volume_fractions, a_cosine_matrices,
                                              strain_rate_nondimensional, velocity_gradient_tensor_nondimensional,
                                              0.5, ref_resolved_shear_stress);

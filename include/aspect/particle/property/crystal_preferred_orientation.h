@@ -146,7 +146,7 @@ namespace aspect
           update_one_particle_property (const unsigned int data_position,
                                         const Point<dim> &position,
                                         const Vector<double> &solution,
-                                        const std::vector<Tensor<1,dim> > &gradients,
+                                        const std::vector<Tensor<1,dim>> &gradients,
                                         const ArrayView<double> &particle_properties) const;
 
           /**
@@ -157,19 +157,7 @@ namespace aspect
           need_update () const;
 
           /**
-           * Returns an enum, which determines how this particle property is
-           * initialized for particles that are created later than the initial
-           * particle generation, e.g. to balance the particle load or prevent
-           * empty cells. The default implementation returns
-           * initialize_to_zero, which signals that particle properties should
-           * be set to zero.
-           * See the documentation of InitializationModeForLateParticles for a
-           * list of possible values and examples for their use. Every
-           * plugin that implements this function should return the value
-           * appropriate for its purpose, unless it does not need any
-           * initialization, which is the default. This function is never
-           * called if no particles are generated later than the initial
-           * particle generation call.
+           * The CPO of late particles is initialized by interpolating from existing pariticles.
            */
           InitializationModeForLateParticles
           late_initialization_mode () const;
@@ -190,7 +178,7 @@ namespace aspect
            * number of components this property plugin defines.
            */
           virtual
-          std::vector<std::pair<std::string, unsigned int> >
+          std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const;
 
           /**
@@ -204,7 +192,7 @@ namespace aspect
                                std::vector<unsigned int> &deformation_type,
                                std::vector<double> &volume_fraction_mineral,
                                std::vector<std::vector<double>> &volume_fractions_mineral,
-                               std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral);
+                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral);
 
 
           /**
@@ -218,9 +206,9 @@ namespace aspect
                                std::vector<unsigned int> &deformation_type,
                                std::vector<double> &volume_fraction_mineral,
                                std::vector<std::vector<double>> &volume_fractions_mineral,
-                               std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral,
-                               std::vector<std::vector<double> > &volume_fractions_mineral_derivatives,
-                               std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral_derivatives) const;
+                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
+                               std::vector<std::vector<double>> &volume_fractions_mineral_derivatives,
+                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives) const;
 
           /**
            * Packs information from variables into the global particle data array. Intended for use by other parts of ASPECT.
@@ -233,7 +221,7 @@ namespace aspect
                              std::vector<unsigned int> &deformation_type,
                              std::vector<double> &volume_fraction_mineral,
                              std::vector<std::vector<double>> &volume_fractions_mineral,
-                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral);
+                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral);
 
 
           /**
@@ -247,9 +235,9 @@ namespace aspect
                              std::vector<unsigned int> &deformation_type,
                              std::vector<double> &volume_fraction_mineral,
                              std::vector<std::vector<double>> &volume_fractions_mineral,
-                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral,
-                             std::vector<std::vector<double> > &volume_fractions_mineral_derivatives,
-                             std::vector<std::vector<Tensor<2,3> > > &rotation_matrices_mineral_derivatives) const;
+                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
+                             std::vector<std::vector<double>> &volume_fractions_mineral_derivatives,
+                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives) const;
 
           /**
            * Updates the volume fractions and rotation matrices with a Forward Euler scheme:
@@ -263,9 +251,9 @@ namespace aspect
            */
           double
           advect_forward_euler(const double dt,
-                               const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                               const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                std::vector<double> &volume_fractions,
-                               std::vector<Tensor<2,3> > &rotation_matrices) const;
+                               std::vector<Tensor<2,3>> &rotation_matrices) const;
           /**
            * Updates the volume fractions and rotation matrices with a Backward Euler scheme:
            * $x_{t,n} = x_{t-1} + dt x_{t,n-1}  \frac{\partial x_t}{\partial t}$, where $n$ is
@@ -278,9 +266,9 @@ namespace aspect
            */
           double
           advect_backward_euler(const double dt,
-                                const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                 std::vector<double> &volume_fractions,
-                                std::vector<Tensor<2,3> > &rotation_matrices) const;
+                                std::vector<Tensor<2,3>> &rotation_matrices) const;
 
           /**
            * Updates the volume fractions and rotation matrices with a Crank-Nicolson scheme.
@@ -299,11 +287,11 @@ namespace aspect
            */
           double
           advect_Crank_Nicolson(const double dt,
-                                const std::pair<std::vector<double>, std::vector<Tensor<2,3> > > &derivatives,
+                                const std::pair<std::vector<double>, std::vector<Tensor<2,3>>> &derivatives,
                                 std::vector<double> &volume_fractions,
-                                std::vector<Tensor<2,3> > &rotation_matrices,
+                                std::vector<Tensor<2,3>> &rotation_matrices,
                                 std::vector<double> &previous_volume_fraction_derivatives,
-                                std::vector<Tensor<2,3> > &previous_rotation_matrices_derivatives) const;
+                                std::vector<Tensor<2,3>> &previous_rotation_matrices_derivatives) const;
 
 
           /**
@@ -317,9 +305,9 @@ namespace aspect
            * the other minerals in the particle.
            * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
            */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
           compute_derivatives(const std::vector<double> &volume_fractions,
-                              const std::vector<Tensor<2,3> > &rotation_matrices,
+                              const std::vector<Tensor<2,3>> &rotation_matrices,
                               const SymmetricTensor<2,3> &strain_rate,
                               const Tensor<2,3> &velocity_gradient_tensor,
                               const double volume_fraction_mineral,
@@ -331,7 +319,7 @@ namespace aspect
            *
            * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
            */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3> > >
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
           compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const;
 
 
