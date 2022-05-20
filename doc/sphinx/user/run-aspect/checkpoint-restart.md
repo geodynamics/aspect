@@ -35,7 +35,7 @@ when resuming a program from a saved state than what they were at the time when 
 was saved. For example, one may want to choose a different parameterization of the material law,
 or add or remove postprocessors that should be run at the end of each time step. Likewise, the
 end time, the times at which some additional mesh refinement steps should happen, etc., can be
-different.<br>
+different.
 Yet, it is clear that some other things can’t be changed: For example, the geometry model that
 was used to generate the coarse mesh and describe the boundary must be the same before and
 after resuming a computation. Likewise, you can not currently restart a computation with a
