@@ -12,7 +12,7 @@ set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 set CFL number                             = 0.1
 set Maximum time step                      = 750
-# set Output directory                       = /Users/danieldouglas/software/aspect/cookbooks/infill_density/noinfill_test
+set Output directory                       = /Users/danieldouglas/software/aspect/cookbooks/infill_density/noinfill_test
 set Timing output frequency                = 1
 set Pressure normalization                 = no
 set Resume computation                     = false
@@ -84,14 +84,16 @@ subsection Boundary traction model
 end
 
 subsection Boundary traction model
-  # set Data directory = /Users/danieldouglas/software/aspect/cookbooks/infill_density/
-  # set First data file model time = 0
-  # set Data file name = triangle_load.txt
-  # set Data file time step = 0
+  subsection Ascii data model
+    set Data directory = /Users/danieldouglas/software/aspect/cookbooks/infill_density/data/
+    set First data file model time = 0
+    set Data file name = box_2d_%s.%d.txt
+    set Data file time step = 750
+  end
   subsection Infill ascii
-    set Rock density = 30000
-    set Sediment density = 30000
-    set Crustal density = 30000
+    set Rock density = 0
+    set Sediment density = 0
+    set Crustal density = 0
     set Height for specifying rock infill = 0
   end
   subsection Initial lithostatic pressure

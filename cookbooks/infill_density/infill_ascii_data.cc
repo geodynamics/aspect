@@ -165,7 +165,7 @@ namespace aspect
       prm.enter_subsection("Boundary traction model");
       {
         Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                              "$ASPECT_SOURCE_DIR/cookbooks/infill_density/",
+                                                              "$ASPECT_SOURCE_DIR/tests/infill_density/",
                                                               "triangle_load.txt");
         prm.enter_subsection("Infill ascii");
         {
@@ -204,6 +204,7 @@ namespace aspect
           crustal_density = prm.get_double("Crustal density");
           infill_height = prm.get_double("Height for specifying rock infill");
         }
+        prm.leave_subsection();
       }
       prm.leave_subsection();
     }
