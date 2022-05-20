@@ -108,8 +108,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const override;
-
         virtual double reference_darcy_coefficient () const override;
 
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
@@ -299,14 +297,6 @@ namespace aspect
         }
       // We will never get here, so just return something
       return cohesions;
-    }
-
-    template <int dim>
-    double
-    MeltViscoPlastic<dim>::
-    reference_viscosity () const
-    {
-      return ref_viscosity;
     }
 
     template <int dim>
