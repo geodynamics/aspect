@@ -546,11 +546,12 @@ namespace aspect
                                   "it will be treated as a list with one component per particle property.");
                 prm.declare_entry("Use boundary extrapolation", "false",
                                   Patterns::List(Patterns::Bool()),
-                                  "Extends the range used by 'Use quadratic limiter' by linearly "
-                                  "interpolating values at cell boundaries from neighboring cells. "
-                                  "If more than one value is given, it will be treated as a list with one component per particle property. "
-                                  "Enabling 'Use boundary extrapolation' without also enabling "
-                                  "'Use quadratic least squares limiter' does nothing.");
+                                  "Extends the range used by 'Use quadratic least squares limiter' "
+                                  "by linearly interpolating values at cell boundaries from neighboring "
+                                  "cells. If more than one value is given, it will be treated as a list "
+                                  "with one component per particle property. Enabling 'Use boundary "
+                                  "extrapolation' requires enabling 'Use quadratic least squares "
+                                  "limiter'.");
               }
               prm.leave_subsection();
             }
