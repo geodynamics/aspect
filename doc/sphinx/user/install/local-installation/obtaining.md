@@ -20,7 +20,12 @@ supply cmake with the location:
 
 This will create an "out-of-source" build, where the build
 directory is different from the source directory. While in-source builds
-(where you run `cmake .` in your source directory), are supported, we strongly
+(where you run `cmake .` in your source directory) are supported, we strongly
 recommend an out-of-source build as described above. Specifically, running the
-whole test suite (see {ref}`sec:running_tests`46]) is only
+whole test suite (see {ref}`sec:running_tests`) is only
 supported this way.
+
+:::{admonition} TODO
+:class: error
+Fix reference to section on running tests
+:::
