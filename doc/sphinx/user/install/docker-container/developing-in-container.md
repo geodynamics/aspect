@@ -1,7 +1,6 @@
 
 # Developing ASPECT within a container
 
-
 The above given workflow does not include advice on how to modify
 ASPECT inside the container. We recommend a slightly
 different workflow for advanced users that want to modify parts of

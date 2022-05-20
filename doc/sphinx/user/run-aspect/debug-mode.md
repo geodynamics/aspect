@@ -1,3 +1,4 @@
+(sec:run-aspect:debug-mode)=
 # Debug or optimized mode
 
 ASPECT utilizes a <span

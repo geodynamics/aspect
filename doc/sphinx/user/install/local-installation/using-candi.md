@@ -45,7 +45,7 @@ class="smallcaps">p4est</span> and Trilinos.
 3.  You may now want to configure your environment to make it aware of the
     newly installed packages. This can be achieved by adding the line
     `source INSTALL_PATH/configuration/enable.sh` to the file responsible for
-    setting up your shell environment[6] (again we assume you replace
+    setting up your shell environment[^footnote1] (again we assume you replace
     `INSTALL_PATH` by the patch chosen in the previous step). Then close the
     terminal and open it again to activate the change.
 
@@ -56,3 +56,5 @@ class="smallcaps">p4est</span> and Trilinos.
 
 Congratulations, you are now set up for compiling
 ASPECT itself.
+
+[^footnote1]: For bash this would be the file `˜/.bashrc.`

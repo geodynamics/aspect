@@ -1,3 +1,4 @@
+(sec:extending:running-tests)=
 # Running tests
 
 In order to run the tests, it is necessary to have either Diff or Numdiff to
