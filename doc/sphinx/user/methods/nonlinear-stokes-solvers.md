@@ -3,14 +3,14 @@ When the problem to solve in ASPECT is nonlinear, choosing the right nonlinear
 solver scheme can be crucial to get fast convergence to the correct solution or
 even to converge at all. This section is aimed at explaining the differences between
 the three approaches available in ASPECT: iterated Stokes, iterated defect correction
-Stokes and Newton Stokes. The actual nonlinear Stokes solver you choose also will dictate
-which advection solver you choose, but we won't discuss that in this section.
+Stokes and Newton Stokes. The actual nonlinear Stokes solver you choose will also dictate
+which advection solver you choose, but we won't discuss this choice in this section.
 
-This section is structured as follows: first the terms that will be used are explained  by looking
+This section is structured as follows: first we will define the necessary terms by looking
 at a linear system and then the three solver options are explained very
-generically through looking at solving for $\sin(x)=0$. Then the options for the Newton
+generically by looking at solving for $\sin(x)=0$. Next, the options for the Newton
 solver will be explained, including how the stabilization works, and we end with
-the results to some simple test cases.
+the results of some simple test cases.
 
 ## Solving a linear system
 
@@ -19,7 +19,7 @@ When we try to solve a system of equations, we can write it down as:
     A x = b
 ```
 , where $A$ is a known value or matrix, $x$ is a unknown scalar or vector of
- unknowns, and $b$ is the known right hand side scalar/vector. Now if we want to know what $x$ is
+ unknowns, and $b$ is the known right hand side scalar/vector. If we now want to know what $x$ is
  for a given $A$ and $b$, we can rearrange the equation to:
 ```{math}
     x = A^{-1} b
@@ -58,7 +58,7 @@ the solution and the location of the initial guess are shown in {numref}`user_me
 
 ```
 
-As a basis for the next discussion we will zoom in a bit on the region where we know the solution will be.
+As a basis for the next discussion we will zoom in a bit on the known solution.
 
 (user_methods_nonlinear_solvers_original_function_zoom)=
 ```{tikz} Zoom of the previous figure.
@@ -72,10 +72,10 @@ As a basis for the next discussion we will zoom in a bit on the region where we 
 
 ```
 
-Seeing the graph in {numref}`user_methods_nonlinear_solvers_original_function_zoom`, it is easy to see where the solution is. Now imagine that you cannot see the whole graph at once, but you can only ask for the values of one $x$ at a time. You could just try every possible $x$ value, but that would take a lot of tries to get close to the solution. Another approach would be a bisect algorithm. A more robust way of solving the problem is called the Picard iteration, which we will discuss in the next section. An algorithm which converges faster when it is close the the solution is the Newton iteration, which we will discuss after the Picard iteration.
+Looking at the graph in {numref}`user_methods_nonlinear_solvers_original_function_zoom`, it is easy to see where the solution must be. Now imagine that you cannot see the whole graph at once, but you can only ask for the values of one $x$ at a time. You could try every possible $x$ value, but that would take a lot of attempts to get close to the solution. Another approach would be a bisect algorithm. A more robust way of solving the problem is called the Picard iteration, which we will discuss in the next section. An algorithm which converges much faster when it is close to the solution is the Newton iteration, which we will discuss after the Picard iteration.
 
 ## The full Picard iteration
-To solve this nonlinear equation using the Picard iteration, we need to rewrite our equation in the form $x = f(x)$. With the equation we have, it is actually quite easy for the equation we have here:
+To solve this nonlinear equation using Picard iterations, we need to rewrite our equation in the form $x = f(x)$. With the equation we have, this is actually quite easy:
 
 ```{math}
     :label: user_methods_nonlinear_solvers_eq_picard_1
@@ -169,18 +169,18 @@ the current solution as the new guess.
 
 
 
-## The Newton iteration
+## Newton's method
 
-The Newton iteration can be written down as $x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$. This means
+Each Newton iteration can be written as $x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$. This means
 that we are mostly interested in computing an update to the current solution. To compute the
 update we not only need to calculate $f(x_n)$, but also the derivative $f'(x_n)$. The iteration
 can be visualized in the same way as the Picard iteration, but we won't need the line $x=y$
-anymore. To better show some of the different caviats with the Newton iteration, we will start with
+anymore. To better show some of the benefits and caveats of the Newton iteration, we will start with
 the equation $\sin(x)=0$ and then go back to our current equation.
 
 ### Solving $\sin(x)=0$
 We will start from a slightly different starting guess: $x=1$. The
-deriative at $x=1$ is $\cos(1)$, so the new $x_{n+1}$ becomes $1-\frac{\sin(1)}{\cos(1)}=-0.557$.
+derivative at $x=1$ is $\cos(1)$, so the new $x_{n+1}$ becomes $1-\frac{\sin(1)}{\cos(1)}=-0.557$.
 
 There are a few things that are important to notice in {numref}`user_methods_nonlinear_solvers_sin_1`.
 First, in practice each iteration can be represented as a vector with
@@ -188,7 +188,7 @@ the origin at the solution of $(x,\sin(x))$ pointing in the direction of the der
 means that this vector has a certain length, which we will get back to later.
 Second, when the iteration converges, it can do so much faster than the Picard
 iteration. Third, when the initial guess
-is too far from the solution, the updated guess maybe further away from the solution ({numref}`user_methods_nonlinear_solvers_sin_4`).
+is too far from the solution, the updated guess may be further away from the solution ({numref}`user_methods_nonlinear_solvers_sin_4`).
 A special case of this is when the derivative is zero
 ({numref}`user_methods_nonlinear_solvers_sin_3`). Both {numref}`user_methods_nonlinear_solvers_sin_3` and {numref}`user_methods_nonlinear_solvers_sin_4`
 visually show why it is important for the Newton iteration to have a good starting guess.
@@ -223,7 +223,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 ```
 
 (user_methods_nonlinear_solvers_sin_3)=
-```{tikz} Same as figure a, but now showing the case where the initial guess leads to a derivative which is zero. This will lead to a division by zero, in the update and the solution will be undefined. For a system of equations, the linear solver should fail.
+```{tikz} Same as figure a, but now showing the case where the initial guess leads to a derivative which is zero. This situation will cause a division by zero in the update, and the solution will be undefined. For a system of equations, the linear solver will fail.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -246,7 +246,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 
 ### solving $\frac{1}{sqrt(1+x^2)}x = 0.5$
 
-Now that we have a general understanding of how the Newton solver works, lets apply it to the equation we also solved with the Picard iteration. The method is going to be the same, but now we are stopping the derivative at the line $y = 0.5$ instead of $y = 0$. If we would take the initial guess at $x=2$ the iteration would diverge, so we are taking the result from the first iteration of the Picard iteration, which is $x = 1.11803$. This is actually a common tactic to get the Newton iteration to converge and will be discussed further in the section {ref}`user_methods_nonlinear_solvers_globalization`.
+Now that we have a general understanding of how the Newton solver works, let's apply it to the equation we solved above with the Picard iteration. The method is going to be the same, but now we are stopping the derivative at the line $y = 0.5$ instead of $y = 0$. If we would take the initial guess at $x=2$ the iteration would diverge, so we are taking the result from the first iteration of the Picard iteration, which is $x = 1.11803$. This is a common tactic to achieve convergence in the Newton iteration and will be discussed further in the section {ref}`user_methods_nonlinear_solvers_globalization`.
 
 (user_methods_nonlinear_solvers_newton_1)=
 ```{tikz} The green line is the function $\frac{1}{sqrt(1+x^2)}x = 0.5$, the red line is at $y = 0.5$ and the red circle indicates where the solution is going to be located.
@@ -281,7 +281,7 @@ For the Newton iteration, the equation is usually written as
 . In this equation, the right hand side (rhs) ($A(x)x-b$ or $-F$) will be exactly
 zero when $x$ is the exact solution to the nonlinear problem. Therefore this is also called the
 residual. $J$ is called the Jacobian, which is a derivative matrix. In our simple example,
-this would just be the derivative. So we solve for $\delta x$ now instead of $x$:
+this would just be the derivative. So we now solve for $\delta x$ instead of $x$:
 
 ```{math}
     \delta x_n = J^{-1}\left(A(x_n) x_n - b\right)
@@ -329,9 +329,9 @@ in some cases.
 One of the easiest globalization strategies for the Newton solver is to first do a few
 Picard iterations. Remember that the Picard iteration will practically always converge
 (although for single iterations the residual may go up, the trend is usually down). Once
-you are close enough to the solution, switching to the Newton solver should than make
+you are close enough to the solution, switching to the Newton solver should then make
 the iteration converge quickly. The main issue is knowing when you are close enough to
-the solution so that the Newton solver works well. Unfortunately this is problem dependent,
+the solution so that the Newton solver works well. Unfortunately this threshold is problem dependent,
 but a combination between the different globalization options in this section should help.
 
 ### Transition between the Picard and Newton iteration
@@ -343,7 +343,7 @@ and multiply it with $A'(x)$:
 ```
 . When $c_k$ is zero, the iteration behaves like a Picard iteration and when
 it is one, it behaves like a Newton iteration. In ASPECT we have implemented an option,
-which we refer to as the Residual Scaling Method(RSM). If enabled, this automatically
+which we refer to as the Residual Scaling Method (RSM). If enabled, this automatically
 computes $c_k = \max\left(0.0,1.0-\frac{r_k}{r_{N_{DC}}}\right)$, where $r_k$
 is the current nonlinear residual and $r_{N_{DC}}$ is the residual in the first iteration
 after switching to the Newton method. This option allows to more gradually switch to the
