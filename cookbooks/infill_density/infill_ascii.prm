@@ -91,10 +91,9 @@ subsection Boundary traction model
     set Data file time step = 750
   end
   subsection Infill ascii
-    set Rock density = 0
+    set Rock density = 2e3
     set Sediment density = 0
-    set Crustal density = 0
-    set Height for specifying rock infill = 0
+    set Height for specifying rock infill = 10e3
   end
   subsection Initial lithostatic pressure
     set Representative point = 1000e3, 0

@@ -175,9 +175,6 @@ namespace aspect
           prm.declare_entry ("Sediment density", "2300",
                              Patterns::List(Patterns::Double(0.)),
                              "Density of the sediment that infills the flexural moat.");
-          prm.declare_entry ("Crustal density", "2800",
-                             Patterns::List(Patterns::Double(0.)),
-                             "Density of the volcanic edifice that infills the flexural moat.");
           prm.declare_entry ("Height for specifying rock infill", "500",
                              Patterns::List(Patterns::Double(0.)),
                              "If the load defined in the ASCII file has a height equal to or greater than "
@@ -201,7 +198,6 @@ namespace aspect
         {
           rock_density = prm.get_double("Rock density");
           sediment_density = prm.get_double("Sediment density");
-          crustal_density = prm.get_double("Crustal density");
           infill_height = prm.get_double("Height for specifying rock infill");
         }
         prm.leave_subsection();
