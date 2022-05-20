@@ -1,0 +1,70 @@
+## First we set up a unit length box model with uniform everything.
+set Dimension   = 2
+set End time    = 100
+
+# Load the signal library.
+set Additional shared libraries = /Users/danieldouglas/software/aspect/cookbooks/prescribed_temperature/./libprescribed_temperature.so
+
+set Output directory = output-fix_temp
+
+subsection Geometry model
+  set Model name = box
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = if(x<=0.5, 1000, 0)
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
+  end
+end
+
+subsection Compositional fields
+  set Number of fields = 1
+  set Names of fields = Lithosphere
+end
+
+subsection Initial composition model
+  set List of model names = function
+  subsection Function
+    set Coordinate system = cartesian
+    set Variable names = x,y
+    set Function expression = 1
+  end
+end
+
+subsection Material model
+  set Model name = simple
+end
+
+subsection Mesh refinement
+  set Initial global refinement = 4
+  set Initial adaptive refinement = 0
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization
+  subsection Visualization
+    set Interpolate output = true
+    set Time steps between graphical output = 0
+  end
+end
+
+## Turn prescribed velocities on
+set Prescribe internal temperature = true
+#subsection Prescribed temperature
+#  subsection Temperature function
+#    set Variable names = x,y,t
+#    set Function expression = if(x<=0.5, 10000000, 0)
+#  end
+#end
