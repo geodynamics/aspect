@@ -1,0 +1,22 @@
+-----------------------------------------------------------------------------
+-- This is ASPECT, the Advanced Solver for Problems in Earth's ConvecTion.
+--     . version 2.4.0-pre (darcy_flow, cdd1885bb)
+--     . using deal.II 9.3.3
+--     .       with 32 bit indices and vectorization level 0 (64 bits)
+--     . using Trilinos 12.18.1
+--     . using p4est 2.3.2
+--     . running in DEBUG mode
+--     . running with 1 MPI process
+-----------------------------------------------------------------------------
+
+
+   Loading Ascii data boundary file /Users/danieldouglas/software/aspect/cookbooks/infill_density/triangle_load.txt.
+
+
+   From this timestep onwards, ASPECT will not attempt to load new Ascii data files.
+   This is either because ASPECT has already read all the files necessary to impose
+   the requested boundary condition, or that the last available file has been read.
+   If the Ascii data represented a time-dependent boundary condition,
+   that time-dependence ends at this timestep  (i.e. the boundary condition
+   will continue unchanged from the last known state into the future).
+

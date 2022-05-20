@@ -1,0 +1,193 @@
+# This model applies a surface load (using the traction
+# boundary condition) on a free surface overlying
+# a viscoelastic box. It approximates the analytical solution
+# of Nakiboglu and Lambeck (1982) for an applied/removed
+# axisymmetric cylindrical load over a viscoelastic half-space.
+
+#  Global parameters
+set Dimension                              = 2
+set Start time                             = 0
+set End time                               = 1e6
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme                = single Advection, single Stokes
+set CFL number                             = 0.1
+set Maximum time step                      = 750
+# set Output directory                       = /Users/danieldouglas/software/aspect/cookbooks/infill_density/noinfill_test
+set Timing output frequency                = 1
+set Pressure normalization                 = no
+set Resume computation                     = false
+set Additional shared libraries            = /Users/danieldouglas/software/aspect/cookbooks/infill_density/./libinfill_density.so
+
+# Model geometry (500x500 km, 50 km spacing)
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 6
+    set X extent      = 2000e3
+    set Y extent      = 1200e3
+  end
+end
+
+# Mesh refinement specifications
+# # Mesh refinement does not seem to affect
+# # deformation of free surface (at least in 2-D).
+subsection Mesh refinement
+  set Initial adaptive refinement              = 4
+  set Initial global refinement                = 1
+  set Time steps between mesh refinement       = 1
+  set Minimum refinement level                 = 0
+  set Strategy                                 = minimum refinement function, strain rate
+  subsection Minimum refinement function
+    set Coordinate system                      = cartesian
+    set Variable names                         = x,y,t
+    set Function expression                    = if(y>=1050e3, 5, 0)
+  end
+end
+
+# Element types
+subsection Discretization
+  set Composition polynomial degree           = 2
+  set Stokes velocity polynomial degree       = 2
+  set Temperature polynomial degree           = 1
+  set Use locally conservative discretization = true
+  set Use discontinuous temperature discretization = false
+  set Use discontinuous composition discretization = true
+  subsection Stabilization parameters
+      set Use limiter for discontinuous composition solution = true
+      set Global composition maximum =  1.e13,  1.e13,  1.e13, 1.0
+      set Global composition minimum = -1.e13, -1.e13, -1.e13, 0.0
+  end
+end
+# Formulation classification
+subsection Formulation
+  set Enable elasticity = true
+end
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left, right
+  subsection Free surface
+    set Surface velocity projection = vertical
+  end
+end
+
+# Velocity boundary conditions
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = bottom
+end
+
+# Prescribe a fixed vertical traction on the top boundary
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure, left: initial lithostatic pressure
+end
+
+subsection Boundary traction model
+  # set Data directory = /Users/danieldouglas/software/aspect/cookbooks/infill_density/
+  # set First data file model time = 0
+  # set Data file name = triangle_load.txt
+  # set Data file time step = 0
+  subsection Infill ascii
+    set Rock density = 30000
+    set Sediment density = 30000
+    set Crustal density = 30000
+    set Height for specifying rock infill = 0
+  end
+  subsection Initial lithostatic pressure
+    set Representative point = 1000e3, 0
+  end
+end
+
+# Number and name of compositional fields
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields  = ve_stress_xx, ve_stress_yy, ve_stress_xy, lithosphere
+end
+
+#Spatial domain of different compositional fields
+subsection Initial composition model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function constants  =
+    set Function expression = 0; 0; 0; if(y>=1125e3, 1, 0)
+  end
+end
+
+#Composition boundary conditions
+subsection Boundary composition model
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names = initial composition
+end
+
+# Temperature boundary conditions
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top, left, right
+  set List of model names = initial temperature
+end
+
+# Temperature initial conditions
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = 293
+  end
+end
+
+# Material model
+subsection Material model
+
+  set Model name = viscoelastic
+
+  subsection Viscoelastic
+  # First 4 Parameters Dictate Mantle, Last the Lithosphere
+    set Densities                   = 3300
+    set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
+    set Elastic shear moduli        = 1.e10
+    set Use fixed elastic time step = false
+    set Fixed elastic time step     = 750
+    set Use stress averaging        = false
+    set Viscosity averaging scheme  = harmonic
+  end
+
+end
+
+# Gravity model
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+# Post processing
+subsection Postprocess
+  set List of postprocessors = basic statistics, temperature statistics, topography, velocity statistics, visualization
+
+  subsection Visualization
+    set List of output variables = material properties, strain rate, shear stress, stress, boundary indicators
+    set Number of grouped files = 1
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+
+    set Time between graphical output = 1e2
+    set Interpolate output = true
+  end
+
+  subsection Topography
+     set Output to file = true
+     set Time between text output = 100
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+# Termination criteria
+subsection Termination criteria
+ set Termination criteria = end time
+end
