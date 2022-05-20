@@ -49,58 +49,6 @@
 
 namespace aspect
 {
-  template <int dim>
-  void
-  Simulator<dim>::
-  compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                       const FEValuesBase<dim>                                     &input_finite_element_values,
-                                       const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                       const bool                                                   compute_strainrate,
-                                       MaterialModel::MaterialModelInputs<dim>                     &material_model_inputs) const
-  {
-    const unsigned int n_q_points = material_model_inputs.temperature.size();
-
-    material_model_inputs.position = input_finite_element_values.get_quadrature_points();
-
-    input_finite_element_values[introspection.extractors.temperature].get_function_values (input_solution,
-        material_model_inputs.temperature);
-    input_finite_element_values[introspection.extractors.pressure].get_function_values(input_solution,
-        material_model_inputs.pressure);
-    input_finite_element_values[introspection.extractors.velocities].get_function_values(input_solution,
-        material_model_inputs.velocity);
-    input_finite_element_values[introspection.extractors.pressure].get_function_gradients (input_solution,
-        material_model_inputs.pressure_gradient);
-
-    // only the viscosity in the material can depend on the strain_rate
-    // if this is not needed, we can save some time here. By setting the
-    // length of the strain_rate vector to 0, we signal to evaluate()
-    // that we do not need to access the viscosity.
-    if (compute_strainrate)
-      input_finite_element_values[introspection.extractors.velocities].get_function_symmetric_gradients(input_solution,
-          material_model_inputs.strain_rate);
-    else
-      material_model_inputs.strain_rate.resize(0);
-
-    // the values of the compositional fields are stored as block vectors for each field
-    // we have to extract them in this structure
-    std::vector<std::vector<double>> composition_values (introspection.n_compositional_fields,
-                                                          std::vector<double> (n_q_points));
-
-    for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-      input_finite_element_values[introspection.extractors.compositional_fields[c]].get_function_values(input_solution,
-          composition_values[c]);
-
-    // then we copy these values to exchange the inner and outer vector, because for the material
-    // model we need a vector with values of all the compositional fields for every quadrature point
-    for (unsigned int q=0; q<n_q_points; ++q)
-      for (unsigned int c=0; c<introspection.n_compositional_fields; ++c)
-        material_model_inputs.composition[q][c] = composition_values[c][q];
-
-    material_model_inputs.current_cell = cell;
-  }
-
-
-
   namespace
   {
     // This function initializes the simulator access for all assemblers
@@ -116,6 +64,8 @@ namespace aspect
           p->initialize_simulator(simulator);
     }
   }
+
+
 
   template <int dim>
   void
@@ -328,11 +278,11 @@ namespace aspect
     scratch.reinit(cell);
     data.local_matrix = 0;
 
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         true,
-                                         scratch.material_model_inputs);
+    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
+                                           cell,
+                                           this->introspection,
+                                           current_linearization_point,
+                                           true);
 
     for (unsigned int i=0; i<assemblers->stokes_preconditioner.size(); ++i)
       assemblers->stokes_preconditioner[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
@@ -570,11 +520,12 @@ namespace aspect
     // initialize the material model data on the cell
     const bool update_strain_rate =
       assemble_newton_stokes_system || this->parameters.enable_prescribed_dilation || rebuild_stokes_matrix;
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         update_strain_rate,
-                                         scratch.material_model_inputs);
+
+    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
+                                           cell,
+                                           this->introspection,
+                                           current_linearization_point,
+                                           update_strain_rate);
 
     for (unsigned int i=0; i<assemblers->stokes_system.size(); ++i)
       assemblers->stokes_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
@@ -626,11 +577,11 @@ namespace aspect
                   const bool need_viscosity = rebuild_stokes_matrix |
                                               assemblers->stokes_system_assembler_on_boundary_face_properties.need_viscosity;
 
-                  compute_material_model_input_values (current_linearization_point,
-                                                       scratch.face_finite_element_values,
-                                                       cell,
-                                                       need_viscosity,
-                                                       scratch.face_material_model_inputs);
+                  scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
+                                                              cell,
+                                                              this->introspection,
+                                                              current_linearization_point,
+                                                              need_viscosity);
 
                   for (unsigned int i=0; i<assemblers->stokes_system_on_boundary_face.size(); ++i)
                     assemblers->stokes_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
@@ -910,11 +861,11 @@ namespace aspect
           scratch.mesh_velocity_values);
 
     // compute material properties and heating terms
-    compute_material_model_input_values (current_linearization_point,
-                                         scratch.finite_element_values,
-                                         cell,
-                                         true,
-                                         scratch.material_model_inputs);
+    scratch.material_model_inputs.reinit  (scratch.finite_element_values,
+                                           cell,
+                                           this->introspection,
+                                           current_linearization_point,
+                                           true);
 
     for (unsigned int i=0; i<assemblers->advection_system.size(); ++i)
       assemblers->advection_system[i]->create_additional_material_model_outputs(scratch.material_model_outputs);
@@ -1024,11 +975,11 @@ namespace aspect
 
             if (assemblers->advection_system_assembler_on_face_properties[advection_field.field_index()].need_face_material_model_data)
               {
-                compute_material_model_input_values (current_linearization_point,
-                                                     *scratch.face_finite_element_values,
-                                                     cell,
-                                                     true,
-                                                     scratch.face_material_model_inputs);
+                scratch.face_material_model_inputs.reinit  (*scratch.face_finite_element_values,
+                                                            cell,
+                                                            this->introspection,
+                                                            current_linearization_point,
+                                                            true);
 
                 for (unsigned int i=0; i<assemblers->advection_system_on_boundary_face.size(); ++i)
                   assemblers->advection_system_on_boundary_face[i]->create_additional_material_model_outputs(scratch.face_material_model_outputs);
@@ -1269,14 +1220,7 @@ namespace aspect
   template void Simulator<dim>::copy_local_to_global_advection_system ( \
                                                                         const AdvectionField          &advection_field, \
                                                                         const internal::Assembly::CopyData::AdvectionSystem<dim> &data); \
-  template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field); \
-  template void Simulator<dim>::compute_material_model_input_values ( \
-                                                                      const LinearAlgebra::BlockVector                      &input_solution, \
-                                                                      const FEValuesBase<dim,dim>                           &input_finite_element_values, \
-                                                                      const DoFHandler<dim>::active_cell_iterator  &cell, \
-                                                                      const bool                                             compute_strainrate, \
-                                                                      MaterialModel::MaterialModelInputs<dim>               &material_model_inputs) const;
-
+  template void Simulator<dim>::assemble_advection_system (const AdvectionField     &advection_field);
 
 
   ASPECT_INSTANTIATE(INSTANTIATE)
