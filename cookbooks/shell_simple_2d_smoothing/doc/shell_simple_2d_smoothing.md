@@ -7,7 +7,7 @@ Standard finite element discretizations of advection-diffusion equations
 introduce unphysical oscillations around steep gradients. Therefore,
 stabilization must be added to the discrete formulation to obtain correct
 solutions. In ASPECT, we use the Entropy Viscosity scheme developed by
-Guermond et al.&nbsp;in the paper {cite:t}`guer11`. 
+Guermond et al.&nbsp;in the paper {cite:t}`guer11`.
 In this scheme, an artificial viscosity is calculated on
 every cell and used to try to combat these oscillations that cause unwanted
 overshoot and undershoot. More information about how does this is located at
@@ -19,11 +19,11 @@ Smoothing is the act of finding the maximum artificial viscosity taken over a
 cell $T$ and the neighboring cells across the faces of $T$, i.e.,
 ```{math}
 \bar{v_h}(T) = \max_{K \in N(T)} v_h(K)
-``` 
+```
 where $N(T)$ is the set containing $T$ and the neighbors across the faces of $T$.
 
-This feature can be turned on by setting the `Use artificial viscosity smoothing` 
-flag inside the `Stabilization` subsection inside the `Discretization` 
+This feature can be turned on by setting the `Use artificial viscosity smoothing`
+flag inside the `Stabilization` subsection inside the `Discretization`
 subsection in your parameter file.
 
 To show how this can be used in practice, let us consider the simple
