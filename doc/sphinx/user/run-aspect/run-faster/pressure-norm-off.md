@@ -17,7 +17,7 @@ either the mean pressure at the surface is zero (where the geometry model
 describes where the "surface" is, see
 {ref}`sec:geometry-models`), or that the mean pressure in the
 domain is zero. This normalization is important if your model describes
-densities, viscosities and other quantities in dependence of the pressure 
+densities, viscosities and other quantities in dependence of the pressure
 because you almost certainly had the "physical" pressure
 in mind, not some unspecified "mathematical" one. On the other
 hand, if you have a material model in which the pressure does not enter, then
