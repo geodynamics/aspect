@@ -24,15 +24,15 @@
 
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 5000
+set End time                               = 500
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = iterated Advection and Stokes
 set Max nonlinear iterations               = 5
-set CFL number                             = 0.2
+set CFL number                             = 0.5
 set Output directory                       = darcy_velocity
 set Pressure normalization                 = surface
 set Surface pressure                       = 0
-set Maximum time step                      = 1000
+set Maximum time step                      = 500
 
 subsection Geometry model
   set Model name = box
@@ -80,13 +80,13 @@ end
 # and two additional fields. The solid field will be advected with
 # the solid speed prescribed above, and the fluid field will be advected
 # as the sum of the solid velocity and the vertical buoyancy the fluid has.
-# The porosity field is uniform to allow for a uniform fluid velocity. The 
+# The porosity field is uniform to allow for a uniform fluid velocity. The
 # fluid field is a circle of radius 12.5km at the center of the model domain.
 subsection Compositional fields
-  set Number of fields = 3
-  set Names of fields = porosity, solid, fluid
-  set Compositional field methods = darcy field, field, darcy field
-  set Types of fields = porosity, generic, generic
+  set Number of fields = 2
+  set Names of fields = porosity, fluid
+  set Compositional field methods = darcy field, darcy field
+  set Types of fields = porosity, generic
 end
 
 subsection Initial composition model
@@ -94,13 +94,14 @@ subsection Initial composition model
   subsection Function
     set Variable names      = x,y
     set Function constants  = pi=3.1415926,x0=100000,y0=50000,c=12500, A_f=0.2, A_s = 1.0
-    set Function expression = A_f; if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0); if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0)
+    set Function expression = A_f; if((x - x0)*(x - x0) + (y - y0)*(y - y0) <= c*c, A_s, 0)
   end
 end
 
 subsection Boundary composition model
   set List of model names = initial composition
   set Fixed composition boundary indicators = bottom, top, left, right
+  set Allow fixed composition on outflow boundaries = true
 end
 
 # We then choose a vertical gravity model and describe the
@@ -114,7 +115,7 @@ end
 
 # The 'melting rate' material model from rising_melt_blob.cc is being
 # used since it provides terms for the fluid phase in this test. Melt
-# is not actually turned on, but the structure of the material model is 
+# is not actually turned on, but the structure of the material model is
 # being used to fill fluid related parameters.
 subsection Material model
   set Model name = melting rate
@@ -130,14 +131,7 @@ subsection Mesh refinement
 end
 
 subsection Postprocess
-  set List of postprocessors = composition statistics, visualization
-  subsection Visualization
-    set Interpolate output = false
-    set List of output variables      = density, viscosity, thermal expansivity
-    set Number of grouped files       = 0
-    set Output format                 = vtu
-    set Time between graphical output = 0
-  end
+  set List of postprocessors = composition statistics, maximum depth of field
 end
 
 subsection Solver parameters

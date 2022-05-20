@@ -206,19 +206,11 @@ namespace aspect
       assemblers->advection_system.push_back(
         std::make_unique<aspect::Assemblers::DiffusionSystem<dim>>());
 
-
-
-
     // add the darcy assemblers if we have fields that use this method
     if (std::find(parameters.compositional_field_methods.begin(), parameters.compositional_field_methods.end(),
                   Parameters<dim>::AdvectionFieldMethod::fem_darcy_field) != parameters.compositional_field_methods.end())
       assemblers->advection_system.push_back(
         std::make_unique<aspect::Assemblers::DarcySystem<dim>>());
-
-
-
-
-
 
     if (parameters.use_discontinuous_temperature_discretization ||
         parameters.use_discontinuous_composition_discretization)
