@@ -6,7 +6,7 @@ The above given workflow does not include advice on how to modify
 ASPECT inside the container. We recommend a slightly
 different workflow for advanced users that want to modify parts of
 ASPECT. The ASPECT
-docker container itself is build on top of a <span
+docker container itself is built on top of a <span
 class="smallcaps">deal.II</span> container that contains all dependencies for
 compiling ASPECT. Therefore it is possible to
 run the deal.II container, mount an ASPECT
@@ -35,7 +35,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DDEAL_II_DIR=$HOME/deal.II-install $HOME/aspect
 
 To avoid repeated recompilations of the ASPECT
 source folder we recommend to reuse the so prepared container instead of
-starting new containers based on the DEAL.II
+starting new containers based on the deal.II
 image. This can be achieved by the following commands outside of the
 container:
 

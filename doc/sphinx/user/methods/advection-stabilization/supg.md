@@ -1,8 +1,6 @@
 
 # SUPG Stabilization
 
-#### SUPG Stabilization
-
 For streamline upwind/Petrov-Galerkin (SUPG) (see for example (John and
 Knobloch 2006; Clevenger and Heister 2019)), we add to the weak form
 $a(\cdot,\cdot)$ the cell-wise defined weak form

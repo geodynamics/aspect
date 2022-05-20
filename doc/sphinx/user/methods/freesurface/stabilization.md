@@ -1,8 +1,6 @@
 
 # Free surface stabilization
 
-#### Free surface stabilization
-
 Small disequilibria in the location of a free surface can cause instabilities
 in the surface position and result in a "sloshing" instability.
 This may be countered with a quasi-implicit free surface integration scheme

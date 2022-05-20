@@ -1,9 +1,6 @@
 (sec:methods:particles)=
 # Particles
 
-
-### Particles
-
 ASPECT can, optionally, also deal with
 particles (sometimes called "tracers"). Particles can be thought
 of as point-like objects that are simply advected along with the flow. In

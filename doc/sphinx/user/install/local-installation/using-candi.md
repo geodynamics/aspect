@@ -1,24 +1,22 @@
 
 # Using candi to compile dependencies
 
-#### Using candi to compile dependencies
-
 In its default configuration `candi` downloads and compiles a <span
 class="smallcaps">deal.II</span> configuration that is able to run
 ASPECT, but it also contains a number of packages
 that are not required (and that can be safely disabled if problems occur
 during the installation). We require at least the packages <span
-class="smallcaps">p4est</span>, TRILINOS, and
-finally DEAL.II.
+class="smallcaps">p4est</span>, Trilinos, and
+finally deal.II.
 
 At the time of this writing `candi` will install <span
-class="smallcaps">p4est</span> 2.2, TRILINOS
-12.18.1, and DEAL.II 9.3.0. We strive to keep
+class="smallcaps">p4est</span> 2.2, Trilinos
+12.18.1, and deal.II 9.3.0. We strive to keep
 the development version of ASPECT compatible
-with the latest release of DEAL.II and the
-current DEAL.II development version at any
+with the latest release of deal.II and the
+current deal.II development version at any
 time, and we usually support several older versions of <span
-class="smallcaps">p4est</span> and TRILINOS.
+class="smallcaps">p4est</span> and Trilinos.
 
 1.  *Obtaining candi:* Download `candi` by running
 
@@ -26,14 +24,14 @@ class="smallcaps">p4est</span> and TRILINOS.
 
     in a directory of your choice.
 
-2.  *Installing DEAL.II and its dependencies:*
+2.  *Installing deal.II and its dependencies:*
     Execute `candi` by running
 
             cd candi
             ./candi.sh -p INSTALL_PATH
 
     (here we assume you replace `INSTALL_PATH` by the path were you want to
-    install all dependencies and DEAL.II,
+    install all dependencies and deal.II,
     typically a directory inside `$HOME/bin` or a similar place). This step
     might take a long time, but can be parallelized by adding `-jN`, where `N`
     is the number of CPU cores available on your computer. Further

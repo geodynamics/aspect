@@ -1,8 +1,6 @@
 
 # Arbitrary Lagrangian-Eulerian implementation
 
-#### Arbitrary Lagrangian-Eulerian implementation
-
 The question of how to handle the motion of the mesh with a free surface is
 challenging. Eulerian meshes are well behaved, but they do not move with the
 fluid motions, which makes them difficult for use with free surfaces.

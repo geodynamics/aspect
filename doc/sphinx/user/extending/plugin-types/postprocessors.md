@@ -90,7 +90,7 @@ written in a particular time step.
 ##### Implementing a postprocessor.
 
 Ultimately, implementing a new postprocessor is no different than any of the
-other plugins. Specifically, you&rsquo;ll have to write a class that overloads
+other plugins. Specifically, you'll have to write a class that overloads
 the [aspect::Postprocess::Interface][] base class and use the
 `ASPECT_REGISTER_POSTPROCESSOR` macro to register your new class. The
 implementation of the new class should be in namespace `aspect::Postprocess`.
@@ -116,7 +116,7 @@ Primarily, this difficulty results from two facts:
     information about the `SimulatorAccess` class.
 
 -   Writing a new postprocessor typically requires a fair amount of knowledge
-    how to leverage the DEAL.II library to
+    how to leverage the deal.II library to
     extract information from the solution. The existing postprocessors are
     certainly good examples to start from in trying to understand how to do
     this.

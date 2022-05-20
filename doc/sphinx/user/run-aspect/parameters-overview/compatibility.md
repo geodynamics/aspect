@@ -1,7 +1,5 @@
 # Compatibility of input files with newer ASPECT versions
 
-#### Compatibility of input files with newer ASPECT versions
-
 We strive to maintain compatibility for options in input files as long as
 possible. However, occasionally we have to reorder, rename, or remove options
 from parameter files to improve ASPECT further.
@@ -18,6 +16,10 @@ this script would look like this:
 bash contrib/utilities/update_prm_files.sh cookbooks/convection_box.prm
 ```
 
-<div class="center">
-
-</div>
+:::{note}
+Not all text replacements are unique, and the structure of input files allows for constructions
+the script can not properly parse. Also we can not guarantee to preserve the structure and
+position of comments, as it is not always clear to which part of the input file they refer. Thus, it
+is important that you check your updated input file for errors. That being said, all input files in
+the main ASPECT repository are updated successfully using this script.
+:::

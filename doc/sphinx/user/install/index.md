@@ -65,8 +65,8 @@ The available options can be best presented in form of typical use cases:
     reconfigure underlying libraries or running massively parallel models):
     The most advanced option is to compile and install
     ASPECT from source. This allows maximal control
-    over the underlying libraries like TRILINOS
-    and DEAL.II, as well as easy modifications
+    over the underlying libraries like Trilinos
+    and deal.II, as well as easy modifications
     to ASPECT by recompiling a modified source
     directory. Our installation instructions cover most Linux and MacOS
     operating systems, but incompatibilities on individual systems can always

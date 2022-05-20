@@ -1,8 +1,6 @@
 
 # Running ASPECT models
 
-#### Running ASPECT models
-
 Although it is possible to use the downloaded
 ASPECT docker image in a number of different ways, we
 recommend the following workflow:

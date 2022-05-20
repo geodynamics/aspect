@@ -1,8 +1,6 @@
 
 # Entropy viscosity
 
-#### Entropy viscosity
-
 The entropy viscosity method ((Guermond, Pasquetti, and Popov 2011;
 Kronbichler, Heister, and Bangerth 2012)) adds an artificial diffusion $\nu_h$
 to the weak form [\[eqn:weak-form-for-advection`35], where the diffusion

@@ -1,7 +1,5 @@
 # Checkpoint/restart support
 
-### Checkpoint/restart support
-
 If you do long runs, especially when using parallel computations, there are a
 number of reasons to periodically save the state of the program:
 

@@ -85,25 +85,25 @@ highlight advantages and disadvantages of each of them:
     in {ref}`sec:1.2][].
 
 Since ASPECT is written in C++ using the <span
-DEAL.II library, you will have to be proficient in
+deal.II library, you will have to be proficient in
 C++. You will also likely have to familiarize yourself with this library for
 which there is an extensive amount of documentation:
 
 -   The manual at
     <https://www.dealii.org/developer/doxygen/deal.II/index.html> that
     describes in detail what every class, function and variable in <span
-    DEAL.II does.
+    deal.II does.
 
 -   A collection of modules at
     <https://www.dealii.org/developer/doxygen/deal.II/modules.html> that give
     an overview of whole groups of classes and functions and how they work
     together to achieve their goal.
 
--   The DEAL.II tutorial at
+-   The deal.II tutorial at
     <https://www.dealii.org/developer/doxygen/tutorial/index.html> that
     provides a step-by-step introduction to the library using a sequence of
     several dozen programs that introduce gradually more complex topics. In
-    particular, you will learn DEAL.II&rsquo;s
+    particular, you will learn deal.II's
     way of *dimension independent programming* that allows you to write the
     program once, test it in 2d, and run the exact same code in 3d without
     having to debug it a second time.
@@ -114,26 +114,26 @@ which there is an extensive amount of documentation:
     ASPECT directly descends.
 
 -   An overview of many general approaches to numerical methods, but also a
-    discussion of DEAL.II and tools we use in
+    discussion of deal.II and tools we use in
     programming, debugging and visualizing data are given in Wolfgang
-    Bangerth&rsquo;s video lectures. These are linked from the <span
-    DEAL.II website at <https://www.dealii.org/> and
+    Bangerth's video lectures. These are linked from the
+    deal.II website at <https://www.dealii.org/> and
     directly available at
     <http://www.math.colostate.edu/~bangerth/videos.html>.
 
--   The DEAL.II Frequently Asked Questions at
+-   The deal.II Frequently Asked Questions at
     <https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions> that
     also have extensive sections on developing code with <span
-    DEAL.II as well as on debugging. It also answers
+    deal.II as well as on debugging. It also answers
     a number of questions we frequently get about the use of C++ in <span
-    DEAL.II.
+    deal.II.
 
--   Several other parts of the DEAL.II website
+-   Several other parts of the deal.II website
     at <https://www.dealii.org/> also have information that may be relevant if
     you dive deeper into developing code. If you have questions, the mailing
     lists at <https://www.dealii.org/mail.html> are also of general help.
 
--   A general overview of DEAL.II is also
+-   A general overview of deal.II is also
     provided in the paper (Bangerth, Hartmann, and Kanschat 2007).
 
 As described in {ref}`sec:debug-mode`7] you should always compile
@@ -148,7 +148,7 @@ these are actual bugs in your code that have to be fixed anyway and that are
 much easier to find if the program aborts than if you have to go by their more
 indirect results such as wrong answers. The Frequently Asked Questions at
 <https://github.com/dealii/dealii/wiki/Frequently-Asked-Questions> contain a
-section on how to debug DEAL.II programs.
+section on how to debug deal.II programs.
 
 
 :::{toctree}
