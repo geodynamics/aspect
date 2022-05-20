@@ -135,6 +135,13 @@ namespace aspect
            * physical units, then they should be separated by commas. If
            * the different components have the same physical units, these units
            * need to be specified only once and will apply to all components.
+           *
+           * There are cases where the physical units can only be determined
+           * at a time later than when this constructor is called. An example
+           * is when a velocity is output as either `m/s` or `m/year`,
+           * depending on some run-time parameter. In those cases, derived
+           * classes should simply pass in an empty string to this constructor
+           * and instead overload the get_physical_units() function.
            */
           explicit Interface (const std::string &physical_units = "");
 
@@ -157,8 +164,16 @@ namespace aspect
           /**
            * Return the string representation of the physical units that a
            * derived class has provided to the constructor of this class.
+           *
+           * As mentioned in the documentation of the constructor, there are
+           * cases where a derived class doesn't know the physical units yet
+           * that correspond to what is being output at the time the
+           * constructor is called. In that case, the derived class can
+           * overload this function and return the correct units when the
+           * visualization postprocessor is executed.
            */
-          const std::string &
+          virtual
+          std::string
           get_physical_units () const;
 
           /**
