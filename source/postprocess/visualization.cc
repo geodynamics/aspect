@@ -145,12 +145,12 @@ namespace aspect
 
             if (this->include_melt_transport())
               {
-                solution_units.emplace_back("kg/m/s/s"); // fluid pressure
-                solution_units.emplace_back("kg/m/s/s"); // scaled pressure
+                solution_units.emplace_back("Pa"); // fluid pressure
+                solution_units.emplace_back("Pa"); // scaled pressure
                 for (unsigned int i=0; i<dim; ++i)
                   solution_units.emplace_back("m/s");
               }
-            solution_units.emplace_back("kg/m/s/s");
+            solution_units.emplace_back("Pa");
 
             solution_units.emplace_back("K");
             for (unsigned int c=0; c<this->n_compositional_fields(); ++c)

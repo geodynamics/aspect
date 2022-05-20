@@ -35,7 +35,7 @@ namespace aspect
         :
         DataPostprocessorTensor<dim> ("surface_stress",
                                       update_values | update_gradients | update_quadrature_points),
-        Interface<dim>("kg/m/s/s")
+        Interface<dim>("Pa")
       {}
 
 
@@ -130,7 +130,7 @@ namespace aspect
                                                   "its contribution is accounted for. Note that the convention of positive "
                                                   "compressive stress is followed."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

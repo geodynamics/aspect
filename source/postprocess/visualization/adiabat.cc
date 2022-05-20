@@ -34,7 +34,7 @@ namespace aspect
       Adiabat ()
         :
         DataPostprocessor<dim> (),
-        Interface<dim>("K,kg/s/s/m,kg/m/m/m,kg/m/m/m/m")
+        Interface<dim>("K,Pa,kg/m/m/m,kg/m/m/m/m")
       {}
 
 

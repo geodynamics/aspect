@@ -33,7 +33,7 @@ namespace aspect
       PrincipalStress ()
         :
         DataPostprocessor<dim> (),
-        Interface<dim>("kg/m/s/s")
+        Interface<dim>("Pa")
       {}
 
 
@@ -222,7 +222,7 @@ namespace aspect
                                                   "stress tensor or only on the deviatoric stress tensor, "
                                                   "depending on what run-time parameters are set."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }

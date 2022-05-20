@@ -34,7 +34,7 @@ namespace aspect
       MaximumHorizontalCompressiveStress<dim>::
       MaximumHorizontalCompressiveStress ()
         :
-        Interface<dim>("kg/m/s/s")
+        Interface<dim>("Pa")
       {}
 
 
@@ -356,7 +356,7 @@ namespace aspect
                                                   "  \\label{fig:max-horizontal-compressive-stress}"
                                                   "\\end{figure}"
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}."
+                                                  "Physical units: \\si{\\pascal}."
                                                  )
     }
   }

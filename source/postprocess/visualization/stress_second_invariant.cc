@@ -36,7 +36,7 @@ namespace aspect
         :
         DataPostprocessorScalar<dim> ("stress_second_invariant",
                                       update_values | update_gradients | update_quadrature_points),
-        Interface<dim>("kg/m/s/s")
+        Interface<dim>("Pa")
       {}
 
 
@@ -132,7 +132,7 @@ namespace aspect
                                                   "A visualization output object that outputs "
                                                   "the second moment invariant of the deviatoric stress tensor."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\kilo\\gram\\per\\meter\\per\\second\\squared}.")
+                                                  "Physical units: \\si{\\pascal}.")
     }
   }
 }
