@@ -115,7 +115,8 @@ subsection Postprocess
 
     subsection Interpolator
       subsection Bilinear least squares
-        set Use linear least squares limiter = true
+        set Use linear least squares limiter = true, true
+        set Use boundary extrapolation = false, true
       end
     end
   end

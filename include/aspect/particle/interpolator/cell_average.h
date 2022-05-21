@@ -71,7 +71,7 @@ namespace aspect
            * plugin. If this parameter is set to true, cells are allowed to have no particles,
            * in which case the interpolator will return 0 for the cell's properties.
            */
-          bool allow_cells_without_particles;
+          bool allow_cells_without_particles = false;
       };
     }
   }
