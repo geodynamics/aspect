@@ -1,4 +1,5 @@
-#### Inner core convection
+(sec:cookbooks:inner_core_convection)=
+# Inner core convection
 
 *This section was contributed by Juliane Dannberg, and the model setup was
 inspired by discussions with John Rudge. Additional materials and comments by

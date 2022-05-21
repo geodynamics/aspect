@@ -3,7 +3,7 @@
 The initial conditions model is responsible for describing the initial
 temperature distribution throughout the domain. It essentially has to provide
 a function that for each point can return the initial temperature. Note that
-the model {math:numref}`eq:stokes-1`2]&ndash;{math:numref}`eq:temperature`3] does not require
+the model {math:numref}`eq:stokes-1`&ndash;{math:numref}`eq:temperature` does not require
 initial values for the pressure or velocity. However, if coefficients are
 nonlinear, one can significantly reduce the number of initial nonlinear
 iterations if a good guess for them is available; consequently,
@@ -12,7 +12,7 @@ adiabatically computed hydrostatic pressure, and a zero velocity. Neither of
 these two has to be provided by the objects considered in this section.
 
 To implement a new initial conditions model, you need to overload the
-[aspect::InitialConditions::Interface][] class and use the
+`aspect::InitialConditions::Interface` class and use the
 `ASPECT_REGISTER_INITIAL_CONDITIONS` macro to register your new class. The
 implementation of the new class should be in namespace
 `aspect::InitialConditions`.

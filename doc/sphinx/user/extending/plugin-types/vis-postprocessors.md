@@ -3,9 +3,9 @@
 
 As mentioned in the previous section, one of the postprocessors that are
 already implemented in ASPECT is the
-[aspect::Postprocess::Visualization][] class that takes the solution and
+`aspect::Postprocess::Visualization` class that takes the solution and
 outputs it as a collection of files that can then be visualized graphically,
-see {ref}`sec:viz`21]. The question is which variables to output:
+see {ref}`sec:run-aspect:visualizing-results`. The question is which variables to output:
 the solution of the basic equations we solve here is characterized by the
 velocity, pressure and temperature; on the other hand, we are frequently
 interested in derived, spatially and temporally variable quantities such as
@@ -18,7 +18,11 @@ outputting *all* of them would yield very large output files, and would
 furthermore not scale very well as the list continues to grow. Consequently,
 as with the postprocessors described in the previous section, what *can* be
 computed is implemented in a number of plugins and what *is* computed is
-selected in the input parameter file (see {ref}`sec:3.167][]).
+selected in the input parameter file (see {ref}`sec:3.167`).
+
+:::{note}
+Reference to sec;3.167 is a reference to a parameter file which is not currently set up.
+:::
 
 Defining visualization postprocessors works in much the same way as for the
 other plugins discussed in this section. Specifically, an implementation of
@@ -27,9 +31,9 @@ by convention be in namespace
 `aspect::Postprocess::VisualizationPostprocessors`, and is registered using a
 macro, here called `ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR`. Like the
 postprocessor plugins, visualization postprocessors can derive from class
-[aspect::Postprocess::SimulatorAccess][] if they need to know specifics of the
+`aspect::Postprocess::SimulatorAccess` if they need to know specifics of the
 simulation such as access to the material models and to get access to the
-introspection facility outlined in {ref}`sec:1.1][]. A typical example is
+introspection facility outlined in {ref}`sec:extending:idea-of-plugins`. A typical example is
 the plugin that produces the viscosity as a spatially variable field by
 evaluating the viscosity function of the material model using the pressure,
 temperature and location of each visualization point (implemented in the
@@ -39,7 +43,7 @@ rate $\sqrt{\varepsilon(\mathbf
   u):\varepsilon(\mathbf u)}$ would not need access to anything but the
 solution vector (which the plugin's main function is given as an
 argument) and consequently is not derived from the
-[aspect::Postprocess::SimulatorAccess][] class.[7]
+`aspect::Postprocess::SimulatorAccess` class.[^footnote1]
 
 Visualization plugins can come in two flavors:
 
@@ -64,10 +68,10 @@ Visualization plugins can come in two flavors:
     postprocessors do the following:
 
     -   If necessary, they derive from
-        [aspect::Postprocess::SimulatorAccess][].
+        `aspect::Postprocess::SimulatorAccess`.
 
     -   They derive from
-        [aspect::Postprocess::VisualizationPostprocessors::Interface][]. The
+        `aspect::Postprocess::VisualizationPostprocessors::Interface`. The
         functions of this interface class are all already implemented as doing
         nothing in the base class but can be overridden in a plugin.
         Specifically, the following functions exist:
@@ -134,3 +138,15 @@ Visualization plugins can come in two flavors:
 If all of this sounds confusing, we recommend consulting the implementation of
 the various visualization plugins that already exist in the
 ASPECT sources, and using them as a template.
+
+[^footnote1]: The actual plugin `aspect::Postprocess::VisualizationPostprocessors::StrainRate`
+  only computes $\sqrt{\varepsilon(\mathbf
+    u):\varepsilon(\mathbf u)}$ in the incompressible case. In the compressible
+  case, it computes
+  $\sqrt{[\varepsilon(\mathbf u)-\tfrac 13(\textrm{tr}\;\varepsilon(\mathbf
+    u))\mathbf I]:[\varepsilon(\mathbf u)-\tfrac
+    13(\textrm{tr}\;\varepsilon(\mathbf u))\mathbf I]}$ instead. To test whether
+  the model is compressible or not, the plugin needs access to the material
+  model object, which the class gains by deriving from
+  `aspect::Postprocess::SimulatorAccess`
+  and then calling `this->get\_material\_model().is\_compressible()`.

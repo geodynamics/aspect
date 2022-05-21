@@ -1,3 +1,4 @@
+(sec:extending:plugin-types:postprocessors)=
 # Postprocessors: Evaluating the solution after each time step
 
 Postprocessors are arguably the most complex and powerful of the plugins
@@ -9,7 +10,7 @@ of active postprocessors in the same program (for the plugins discussed in
 previous sections it was clear that there is always exactly one material
 model, geometry model, etc.).
 
-##### Motivation.
+## Motivation.
 
 The original motivation for postprocessors is that the goal of a simulation is
 of course not the simulation itself, but that we want to do something with the
@@ -17,22 +18,22 @@ solution. Examples for already existing postprocessors are:
 
 -   Generating output in file formats that are understood by visualization
     programs. This is facilitated by the
-    [aspect::Postprocess::Visualization][] class and a separate class of
-    visualization postprocessors, see {ref}`sec:1.4.9][].
+    `aspect::Postprocess::Visualization` class and a separate class of
+    visualization postprocessors, see {ref}`sec:extending:plugin-types:viz-postprocessors`.
 
 -   Computing statistics about the velocity field (e.g., computing minimal,
     maximal, and average velocities), temperature field (minimal, maximal, and
     average temperatures), or about the heat fluxes across boundaries of the
     domain. This is provided by the
-    [aspect::Postprocess::VelocityStatistics][],
-    [aspect::Postprocess::TemperatureStatistics][],
-    [aspect::Postprocess::HeatFluxStatistics][] classes, respectively.
+    `aspect::Postprocess::VelocityStatistics`,
+    `aspect::Postprocess::TemperatureStatistics`,
+    `aspect::Postprocess::HeatFluxStatistics` classes, respectively.
 
 Since writing this text, there may have been other additions as well.
 
 However, postprocessors can be more powerful than this. For example, while the
 ones listed above are by and large stateless, i.e., they do not carry
-information from one invocation at one timestep to the next invocation,[6]
+information from one invocation at one timestep to the next invocation,[^footnote1]
 there is nothing that prohibits postprocessors from doing so. For example, the
 following ideas would fit nicely into the postprocessor framework:
 
@@ -62,7 +63,7 @@ following ideas would fit nicely into the postprocessor framework:
 In all of these cases, the essential limitation is that postprocessors are
 *passive*, i.e., that they do not affect the simulation but only observe it.
 
-##### The statistics file.
+## The statistics file.
 
 Postprocessors fall into two categories: ones that produce lots of output
 every time they run (e.g., the visualization postprocessor), and ones that
@@ -87,11 +88,11 @@ type, though it often is. An example of text-based entries in this table is
 the visualization class that stores the name of the graphical output file
 written in a particular time step.
 
-##### Implementing a postprocessor.
+## Implementing a postprocessor.
 
 Ultimately, implementing a new postprocessor is no different than any of the
 other plugins. Specifically, you'll have to write a class that overloads
-the [aspect::Postprocess::Interface][] base class and use the
+the `aspect::Postprocess::Interface` base class and use the
 `ASPECT_REGISTER_POSTPROCESSOR` macro to register your new class. The
 implementation of the new class should be in namespace `aspect::Postprocess`.
 
@@ -106,13 +107,13 @@ Primarily, this difficulty results from two facts:
     structures. To alleviate this somewhat, and to insulate the two worlds
     from each other, postprocessors do not directly access the data structures
     of the simulator class. Rather, in addition to deriving from the
-    [aspect::Postprocess::Interface][] base class, postprocessors also derive
-    from the [SimulatorAccess][aspect::SimulatorAccess class] class that has a
+    `aspect::Postprocess::Interface` base class, postprocessors also derive
+    from the `SimulatorAccess` class that has a
     number of member functions postprocessors can call to obtain read-only
     access to some of the information stored in the main class of
-    ASPECT. See [the documentation of this
-    class][aspect::SimulatorAccess class] to see what kind of information is
-    available to postprocessors. See also {ref}`sec:1.1][] for more
+    ASPECT. See the documentation of the `aspect::SimulatorAccess class` to see
+    what kind of information is
+    available to postprocessors. See also {ref}`sec:extending:idea-of-plugins` for more
     information about the `SimulatorAccess` class.
 
 -   Writing a new postprocessor typically requires a fair amount of knowledge
@@ -152,7 +153,7 @@ template <int dim>
 ```
 
 The purpose of these functions is described in detail in the documentation of
-the [aspect::Postprocess::Interface][] class. While the first one is
+the `aspect::Postprocess::Interface` class. While the first one is
 responsible for evaluating the solution at the end of a time step, the
 `save/load` functions are used in checkpointing the program and restarting it
 at a previously saved point during the simulation. The first of these
@@ -167,7 +168,7 @@ There are numerous postprocessors already implemented. If you want to
 implement a new one, it would be helpful to look at the existing ones to see
 how they implement their functionality.
 
-##### Postprocessors and checkpoint/restart.
+## Postprocessors and checkpoint/restart.
 
 Postprocessors have `save()` and `load()` functions that are used to write the
 data a postprocessor has into a checkpoint file, and to load it again upon
@@ -206,3 +207,6 @@ Note that this approach requires that ASPECT
 actually calls the `save()` function on all processors. This in fact happens
 &ndash; though ASPECT also discards the result
 on all but processor zero.
+
+[^footnote1]: This is not entirely true. The visualization plugin keeps track of how many output files it has already generated, so that
+they can be numbered consecutively.

@@ -1,4 +1,5 @@
-#### Prescribed internal velocity constraints
+(sec:cookbooks:prescribed_velocity)=
+# Prescribed internal velocity constraints
 
 *This section was contributed by Jonathan Perry-Houts*
 

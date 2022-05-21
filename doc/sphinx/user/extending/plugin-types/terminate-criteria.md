@@ -7,10 +7,14 @@ simulation when it has reached a steady state (or, rather, some criterion
 determines that it is close enough to steady state), or by an external action
 such as placing a specially named file in the output directory. The criteria
 determining termination of a simulation are all implemented in plugins. The
-parameters describing these criteria are listed in {ref}`sec:3.195][].
+parameters describing these criteria are listed in {ref}`sec:3.195`.
+
+:::{admonition} TODO
+sec:3.195 refers to a parameter file which is not set up yet.
+:::
 
 To implement a termination criterion, you need to overload the
-[aspect::TerminationCriteria::Interface][] class and use the
+`aspect::TerminationCriteria::Interface` class and use the
 `ASPECT_REGISTER_TERMINATION_CRITERION` macro to register your new class. The
 implementation of the new class should be in namespace
 `aspect::TerminationCriteria`.
@@ -44,5 +48,5 @@ termination criterion implementation will likely need to be derived from the
 
 The remaining functions are obvious, and are also discussed in the
 documentation of this interface class at
-[aspect::TerminationCriteria::Interface][]. The purpose of the last two
+`aspect::TerminationCriteria::Interface`. The purpose of the last two
 functions has been discussed in the general overview of plugins above.
