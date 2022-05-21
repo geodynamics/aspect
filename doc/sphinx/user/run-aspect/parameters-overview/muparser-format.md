@@ -11,7 +11,7 @@ formula in a symbolic way in the input file (see
 of this latter case is this snippet of code discussed in
 {ref}`sec:cookbooks:convection_box_3d`:
 
-```{literalinclude} ../../../../manual//cookbooks/convection_box_3d/doc/initial.part.prm
+```{literalinclude} ../../cookbooks/cookbooks/convection_box_3d/doc/initial.part.prm
 ```
 
 The formulas you can enter here need to use a syntax that is understood by the

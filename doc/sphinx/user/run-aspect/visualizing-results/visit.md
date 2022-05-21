@@ -34,12 +34,12 @@ In order to visualize one time step, follow these steps:[^footnote1]
     backward, and play buttons that allow you to move between time steps.
 
     ```{figure-md} fig:visit-1
-    <img src="../../../_static/images/visit-1.*" alt="Main window of Visit, illustrating the different steps of adding content to a visualization."  width="72%"/>
+    <img src="../../../../manual/viz/visit/visit-1.*" alt="Main window of Visit, illustrating the different steps of adding content to a visualization."  width="72%"/>
 
     Main window of Visit, illustrating the different steps of adding content to a visualization
     ```
     ```{figure-md} fig:visit-2
-    <img src="../../../_static/images/visit-2.*" alt="Display window of Visit, showing a single plot and one where different data is overlaid."  width="98%"/>
+    <img src="../../../../manual/viz/visit/visit-2.*" alt="Display window of Visit, showing a single plot and one where different data is overlaid."  width="98%"/>
 
     Display window of Visit, showing a single plot and one where different data is overlaid.
     ```
