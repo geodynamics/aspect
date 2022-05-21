@@ -382,8 +382,8 @@ namespace aspect
         }
 
       // Make sure the data file actually has as many columns as we think it has
-      // (either based on the header, or based on what was passed to the constructor).
-      const std::streampos position = in.tellg();
+      // (either based on the header, or based on what was passed to the reinit function).
+      const unsigned int position = in.tellg();
       std::string first_data_row;
       std::getline(in, first_data_row);
       std::stringstream linestream(first_data_row);
