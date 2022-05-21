@@ -19,8 +19,14 @@ fi
 # documents all parameters and that we can use for the manual
 echo Creating parameters.tex
 rm -f output/parameters.tex
+rm -f output/parameters.json
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
     || { echo "Running ASPECT for parameters.tex failed"; exit 1; }
+
+echo Creating parameters.md
+./contrib/utilities/jsontomarkdown.py output/parameters.json > doc/sphinx/parameters.md \
+    || { echo "Conversion of parameters to markdown failed"; exit 1; }
+
 cp output/parameters.tex doc/manual/ \
     || { echo "ERROR: could not copy parameters.tex"; exit 1; }
 
