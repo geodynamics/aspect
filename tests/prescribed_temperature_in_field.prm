@@ -1,37 +1,22 @@
 ## First we set up a unit length box model with uniform everything.
 set Dimension   = 2
-set End time    = 100
-
+set End time    = 10000
 # Load the signal library.
 set Additional shared libraries = /Users/danieldouglas/software/aspect/cookbooks/prescribed_temperature/./libprescribed_temperature.so
-
 set Output directory = output-fix_temp
 
 subsection Geometry model
   set Model name = box
 end
 
-subsection Initial temperature model
-  set Model name = function
-  subsection Function
-    set Function expression = if(x<=0.5, 1000, 0)
-  end
-end
-
-subsection Boundary velocity model
-  set Zero velocity boundary indicators = top
-end
-
-subsection Gravity model
-  set Model name = vertical
-  subsection Vertical
-    set Magnitude = 0
-  end
-end
+## Enable the fixing of temperature for 
+## composition field 0
+set Prescribe internal temperature = true
+set Index of fixed compositional field = 0
 
 subsection Compositional fields
-  set Number of fields = 1
-  set Names of fields = Lithosphere
+  set Number of fields = 2
+  set Names of fields = Fixed, Not_fixed
 end
 
 subsection Initial composition model
@@ -39,7 +24,25 @@ subsection Initial composition model
   subsection Function
     set Coordinate system = cartesian
     set Variable names = x,y
-    set Function expression = 1
+    set Function expression = if(x<=0.5, 1, 0); if(x>=0.5, 1, 0)
+  end
+end
+
+subsection Initial temperature model
+  set Model name = function
+  subsection Function
+    set Function expression = if(x<=0.4, 1000, 100)
+  end
+end
+
+subsection Boundary velocity model
+  set Zero velocity boundary indicators = top, bottom, right, left
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 0
   end
 end
 
@@ -55,16 +58,7 @@ end
 subsection Postprocess
   set List of postprocessors = visualization
   subsection Visualization
-    set Interpolate output = true
+    set Interpolate output = false
     set Time steps between graphical output = 0
   end
 end
-
-## Turn prescribed velocities on
-set Prescribe internal temperature = true
-#subsection Prescribed temperature
-#  subsection Temperature function
-#    set Variable names = x,y,t
-#    set Function expression = if(x<=0.5, 10000000, 0)
-#  end
-#end
