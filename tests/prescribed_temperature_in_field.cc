@@ -97,7 +97,7 @@ namespace aspect
                   if (current_constraints.can_store_line(local_dof_indices[q]) &&
                       !current_constraints.is_constrained(local_dof_indices[q]))
                     {
-
+                      // Make sure we're in the desired compositional field
                       if (in.composition[q][fixed_composition_idx] >= 0.5)
                         {
                           // Get the temperature component index
@@ -105,7 +105,9 @@ namespace aspect
                           // If we're on one of the temperature DOFs
                           if (c_idx == simulator_access.introspection().component_indices.temperature)
                             {
+                              // Set the temperature to be equal to the initial temperature
                               in.temperature[q] = simulator_access.get_initial_temperature_manager().initial_temperature(in.position[q]);
+                              // Update the constraints
                               current_constraints.add_line (local_dof_indices[q]);
                               current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);
                             }
