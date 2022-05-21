@@ -23,10 +23,6 @@ rm -f output/parameters.json
 $ASPECT doc/manual/empty.prm >/dev/null 2>/dev/null \
     || { echo "Running ASPECT for parameters.tex failed"; exit 1; }
 
-echo Creating parameters.md
-./contrib/utilities/jsontomarkdown.py output/parameters.json > doc/sphinx/parameters.md \
-    || { echo "Conversion of parameters to markdown failed"; exit 1; }
-
 cp output/parameters.tex doc/manual/ \
     || { echo "ERROR: could not copy parameters.tex"; exit 1; }
 
@@ -69,6 +65,14 @@ done
 grep '[^\\]%' parameters.tex && echo "Error, please remove '%'!" && exit 1
 
 cd ../..
+
+echo Creating parameters.md
+./contrib/utilities/jsontomarkdown.py output/parameters.json > doc/sphinx/parameters.md \
+    || { echo "Conversion of parameters to markdown failed"; exit 1; }
+
+# The jsontomarkdown script currently can leave spaces at the ends of lines.  
+./contrib/utilities/indent
+
 
 
 # next, run ASPECT so that it produces the parameters.xml file that

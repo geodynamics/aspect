@@ -391,7 +391,7 @@ This is likely a bug.
 
 ## Parameter file referencing
 
-Parameter files can be referenced like a link. You can leave the link name out to get the heading information, or choose your own. This should look like the LaTeX referencing. Spaces in parameter and subsection names should be replaced by "\_20". Subsections should be seperated with colons.  
+Parameter files can be referenced like a link. You can leave the link name out to get the heading information, or choose your own. This should look like the LaTeX referencing. Spaces in parameter and subsection names should be replaced by "\_20". Subsections should be seperated with colons.
 
 ```md
 [](parameters:CFL_20number)
