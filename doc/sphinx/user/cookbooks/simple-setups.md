@@ -1,3 +1,4 @@
+(sec:cookbooks:simple-setups)=
 # Simple setups
 
 

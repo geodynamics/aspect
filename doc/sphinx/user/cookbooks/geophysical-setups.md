@@ -1,4 +1,5 @@
-### Geophysical setups
+(sec:cookbooks:geophysical-setups)=
+# Geophysical setups
 
 Having gone through the ways in which one can set up problems in rectangular
 geometries, let us now move on to situations that are directed more towards
@@ -7,7 +8,7 @@ the simulation of convection in the rocky mantles of planets or other
 celestial bodies.
 
 To this end, we need to go through the list of issues that have to be
-described and that were outlined in Section&nbsp;[1.1][], and address them one
+described and that were outlined in {ref}`sec:cookbooks:overview`, and address them one
 by one:
 
 -   *What internal forces act on the medium (the equation)?* This may in fact

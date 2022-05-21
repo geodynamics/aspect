@@ -1,4 +1,5 @@
-#### Onset of convection
+(sec:cookbooks:onset_of_convection)=
+# Onset of convection
 
 *This section was contributed by Juliane Dannberg.*
 

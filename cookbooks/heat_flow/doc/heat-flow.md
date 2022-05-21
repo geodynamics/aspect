@@ -1,4 +1,5 @@
-#### Convective and conductive heat flow: Cooling of oceanic lithosphere
+(sec:cookbooks:heat-flow)=
+# Convective and conductive heat flow: Cooling of oceanic lithosphere
 
 *This section was contributed by Juliane Dannberg.*
 
