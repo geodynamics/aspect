@@ -1,0 +1,9 @@
+New: The `read_and_distribute_file_content` utility function can now also read
+binary files compressed with gzip, which allows for example the StructuredData
+class (and therefore all ascii data plugins) to read gzip compressed data.
+Compressed files are detected based on their file ending '.gz'. I.e. if you want
+to read a compressed file, make sure its name ends in '.gz', and if you want to
+read a plain text file, make sure its name does not end in '.gz'. Compressed
+files can save around 75% to 80% of disk space for typical ascii data files.
+<br>
+(Rene Gassmoeller, 2022/05/20)
