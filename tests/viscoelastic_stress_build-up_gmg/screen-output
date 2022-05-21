@@ -24,10 +24,10 @@ Number of degrees of freedom: 56,207 (20,402+2,601+2,601+10,201+10,201+10,201)
    Solving ve_stress_xx system ... 6 iterations.
    Solving ve_stress_yy system ... 6 iterations.
    Solving ve_stress_xy system ... 12 iterations.
-   Solving Stokes system... 0+0 iterations.
+   Solving Stokes system... 6+0 iterations.
 
    Postprocessing:
-     Compositions min/max/mass: 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // -14.83/15.47/-8.94e+06
+     Compositions min/max/mass: 1.999e+08/1.999e+08/1.999e+18 // -1.999e+08/-1.999e+08/-1.999e+18 // -14.76/15.56/-4.657e+06
      Temperature min/avg/max:   293 K, 293 K, 293 K
      RMS, max velocity:         0.0258 m/year, 0.0445 m/year
      Writing graphical output:  output-viscoelastic_stress_build-up_gmg/solution/solution-00001
