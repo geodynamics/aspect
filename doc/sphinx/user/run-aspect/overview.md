@@ -284,7 +284,6 @@ therefore also in MKS units.
     visualized, see for example Figure&nbsp;[2][51]. The plot shows how an
     initially linear temperature profile forms upper and lower boundary
     layers.
-    
 ```{figure-md} fig:depthavg2
 <img src="depthaverage2.png" alt="" width="60%"/>
 
