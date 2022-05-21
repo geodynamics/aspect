@@ -138,6 +138,7 @@ namespace aspect
         volume_of_fluid,
         static_field,
         fem_melt_field,
+        fem_darcy_field,
         prescribed_field,
         prescribed_field_with_diffusion
       };
