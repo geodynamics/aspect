@@ -1,31 +1,42 @@
-# This model applies a surface load (using the traction
-# boundary condition) on a free surface overlying
-# a viscoelastic box. It approximates the analytical solution
-# of Nakiboglu and Lambeck (1982) for an applied/removed
-# axisymmetric cylindrical load over a viscoelastic half-space.
+# This model demonstrates ASPECT's ability to be used to
+# model load induced flexure from a topographic feature
+# on top of the lithosphere. The model uses the viscoelastic
+# material model and is composed of an 'elastic' high viscosity
+# lithosphere and a low viscosity mantle beneath the elastic
+# lithosphere. An time dependent axisymmetric box load is applied
+# to the top boundary using ASCII files, with the center of the load
+# at the left boundary of the 2D cartesian model domain. The model
+# is run for 120'000 years, which is equivalent to 40*tm:
+# tm = eta_m / mu
+# eta_m = mantle viscosity
+# mu = elastic shear modulus
+# tm is the time scale of viscous stress relaxation for the mantle.
+# This allows for virtually all stresses in the mantle to be relaxed
+# and for the elastic lithosphere to be fully compensating the load.
+# The analytic solution for this setup is outlined in the Generic
+# Mapping Tools function grdflexure:
+# https://docs.generic-mapping-tools.org/6.1/supplements/potential/grdflexure.html
 
 #  Global parameters
+set Additional shared libraries            = ./libinfill_density.so
 set Dimension                              = 2
 set Start time                             = 0
-set End time                               = 1e6
+set End time                               = 120e3
 set Use years in output instead of seconds = true
 set Nonlinear solver scheme                = single Advection, single Stokes
 set CFL number                             = 0.1
 set Maximum time step                      = 750
-set Output directory                       = /Users/danieldouglas/software/aspect/cookbooks/infill_density/noinfill_test
-set Timing output frequency                = 1
+set Output directory                       = output
 set Pressure normalization                 = no
-set Resume computation                     = false
-set Additional shared libraries            = /Users/danieldouglas/software/aspect/cookbooks/infill_density/./libinfill_density.so
 
 # Model geometry (500x500 km, 50 km spacing)
 subsection Geometry model
   set Model name = box
 
   subsection Box
-    set X repetitions = 10
-    set Y repetitions = 6
-    set X extent      = 2000e3
+    set X repetitions = 15
+    set Y repetitions = 30
+    set X extent      = 1200e3
     set Y extent      = 1200e3
   end
 end
@@ -34,7 +45,7 @@ end
 # # Mesh refinement does not seem to affect
 # # deformation of free surface (at least in 2-D).
 subsection Mesh refinement
-  set Initial adaptive refinement              = 3
+  set Initial adaptive refinement              = 2
   set Initial global refinement                = 1
   set Time steps between mesh refinement       = 1
   set Minimum refinement level                 = 0
@@ -42,7 +53,7 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system                      = cartesian
     set Variable names                         = x,y,t
-    set Function expression                    = if(y>=1050e3, 4, 0)
+    set Function expression                    = if(y>=1050e3, 3, 0)
   end
 end
 
@@ -75,12 +86,12 @@ end
 
 # Velocity boundary conditions
 subsection Boundary velocity model
-  set Zero velocity boundary indicators = bottom
+  set Tangential velocity boundary indicators = bottom, left
 end
 
 # Prescribe a fixed vertical traction on the top boundary
 subsection Boundary traction model
-  set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure, left: initial lithostatic pressure
+  set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure
 end
 
 subsection Boundary traction model
@@ -91,12 +102,12 @@ subsection Boundary traction model
     set Data file time step = 750
   end
   subsection Infill ascii
-    set Rock density = 0
-    set Sediment density = 0
+    set Rock density = 2000
+    set Sediment density = 2000
     set Height for specifying rock infill = 0
   end
   subsection Initial lithostatic pressure
-    set Representative point = 1000e3, 0
+    set Representative point = 1200e3, 0
   end
 end
 
@@ -138,17 +149,15 @@ end
 
 # Material model
 subsection Material model
-
   set Model name = viscoelastic
-
   subsection Viscoelastic
   # First 4 Parameters Dictate Mantle, Last the Lithosphere
     set Densities                   = 3300
     set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
     set Elastic shear moduli        = 1.e10
-    set Use fixed elastic time step = false
-    set Fixed elastic time step     = 750
-    set Use stress averaging        = false
+    set Use fixed elastic time step = true
+    set Fixed elastic time step     = 7500
+    set Use stress averaging        = true
     set Viscosity averaging scheme  = harmonic
   end
 
@@ -167,14 +176,14 @@ subsection Postprocess
   set List of postprocessors = basic statistics, temperature statistics, topography, velocity statistics, visualization
 
   subsection Visualization
-    set List of output variables = material properties, strain rate, shear stress, stress, boundary indicators
+    set List of output variables = material properties, strain rate, shear stress, boundary indicators
     set Number of grouped files = 1
 
     subsection Material properties
-      set List of material properties = density, viscosity
+      set List of material properties = viscosity
     end
 
-    set Time between graphical output = 1e2
+    set Time between graphical output = 7500
     set Interpolate output = true
   end
 
@@ -182,10 +191,6 @@ subsection Postprocess
      set Output to file = true
      set Time between text output = 7500
   end
-end
-
-subsection Checkpointing
-  set Steps between checkpoint = 50
 end
 
 # Termination criteria

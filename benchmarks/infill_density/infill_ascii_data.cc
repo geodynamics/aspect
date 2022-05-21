@@ -99,7 +99,7 @@ namespace aspect
         double rock_density;
         double sediment_density;
         double crustal_density;
-        double infill_height;
+        double rock_infill_height;
     };
 
     template <int dim>
@@ -134,10 +134,16 @@ namespace aspect
                                                                                 position,
                                                                                 0);
       Tensor<1, dim> traction = normal_vector;
-      //const double depth = this->get_geometry_model().depth(position);
-      const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();\
+      const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();
+      \
       const double elevation = this->get_geometry_model().height_above_reference_surface(position);
-      if (load >= infill_height * gravity_norm * rock_density)
+
+      // Check if the load at the current point has a height which exceeds the
+      // 'infill height'. This is useful for more complicated topographic loads
+      // when its harder to define the precise location of a volcanic edifice,
+      // for example. If the load does exceed the rock_infill_height, the infill
+      // material has the density of rock, otherwise it has sediment density.
+      if (load >= rock_infill_height*gravity_norm*rock_density)
         {
           traction = (-load + elevation*gravity_norm*rock_density) * normal_vector;
         }
@@ -198,7 +204,7 @@ namespace aspect
         {
           rock_density = prm.get_double("Rock density");
           sediment_density = prm.get_double("Sediment density");
-          infill_height = prm.get_double("Height for specifying rock infill");
+          rock_infill_height = prm.get_double("Height for specifying rock infill");
         }
         prm.leave_subsection();
       }
