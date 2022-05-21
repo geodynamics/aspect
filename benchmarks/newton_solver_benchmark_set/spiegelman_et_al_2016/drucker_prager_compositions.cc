@@ -107,8 +107,6 @@ namespace aspect
          */
         virtual bool is_compressible () const;
 
-        virtual double reference_viscosity () const;
-
         virtual double reference_density () const;
 
         static
@@ -446,14 +444,6 @@ namespace aspect
           for (unsigned int c=0; c < in.composition[i].size(); ++c)
             out.reaction_terms[i][c] = 0.0;
         }
-    }
-
-    template <int dim>
-    double
-    DruckerPragerCompositions<dim>::
-    reference_viscosity () const
-    {
-      return ref_visc;
     }
 
     template <int dim>

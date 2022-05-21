@@ -213,8 +213,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        virtual double reference_viscosity () const;
-
         double get_eta () const;
 
         /**
@@ -223,15 +221,6 @@ namespace aspect
         double eta;
     };
 
-
-
-    template <int dim>
-    double
-    MyMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>

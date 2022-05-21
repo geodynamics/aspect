@@ -10,7 +10,6 @@ subsection Material model
     set Lateral viscosity file name      = test-viscosity-prefactor.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
   end
 end
 subsection Postprocess

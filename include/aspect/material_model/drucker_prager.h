@@ -133,7 +133,6 @@ namespace aspect
       private:
 
         double reference_T;
-        double reference_eta;
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;

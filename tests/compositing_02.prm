@@ -59,7 +59,6 @@ subsection Material model
     set Material file names              = pyr-ringwood88.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
   end
  subsection Compositing
       set Viscosity = simple

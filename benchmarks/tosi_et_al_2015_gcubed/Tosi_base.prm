@@ -122,7 +122,6 @@ subsection Material model
     set Reference temperature         = 0
     set Thermal conductivity          = 1
     set Thermal expansion coefficient = 1e-06
-    set Reference viscosity           = 1e-1
     set Thermal viscosity parameter   = 1e5
     set Initial viscosity        = 1e-1
     set Minimum viscosity        = 1e-6

@@ -50,12 +50,6 @@ namespace aspect
                             this->get_mpi_communicator());
         }
 
-        double
-        reference_viscosity () const
-        {
-          return 8.44e21;
-        }
-
         bool
         is_compressible () const
         {

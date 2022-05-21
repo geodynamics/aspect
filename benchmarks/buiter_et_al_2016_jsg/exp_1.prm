@@ -124,7 +124,6 @@ subsection Material model
     set Thermal diffusivities                       = 1e-6
     set Thermal expansivities                       = 0.
 
-    set Reference viscosity                         = 1e8
     set Minimum viscosity                           = 1e4
     set Maximum viscosity                           = 1e12
 

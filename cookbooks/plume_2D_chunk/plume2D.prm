@@ -13,7 +13,6 @@ subsection Material model
 
     # Reference temperature and viscosity
     set Reference temperature = 273
-    set Reference viscosity = 1e23
 
     # Limit the viscosity with maximum=1000*eta0
     set Minimum viscosity = 1.25e23

@@ -48,7 +48,6 @@ subsection Material model
   subsection Drucker Prager
     set Thermal conductivity          = 0.0
     set Reference density             = 2700.0
-    set Reference viscosity           = 1.0e24
     set Reference temperature         = 0.0
     set Thermal expansion coefficient = 0.0
     set Reference specific heat       = 1

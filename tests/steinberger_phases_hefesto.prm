@@ -63,7 +63,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
     set Thermal conductivity             = 1.5
     set Material file format             = hefesto
     set Derivatives file names           = constant_material_small_hefesto_derivatives.txt

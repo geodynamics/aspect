@@ -501,7 +501,6 @@ namespace aspect
         static void declare_parameters (ParameterHandler &prm);
         virtual void parse_parameters (ParameterHandler &prm);
         virtual bool is_compressible () const;
-        virtual double reference_viscosity () const;
         virtual double reference_density () const;
         virtual void create_additional_named_outputs(MaterialModel::MaterialModelOutputs<dim> &out) const;
       private:
@@ -738,15 +737,6 @@ namespace aspect
     template <int dim>
     double
     AV<dim>::reference_density () const
-    {
-      return 1.0;
-    }
-
-
-
-    template <int dim>
-    double
-    AV<dim>::reference_viscosity () const
     {
       return 1.0;
     }

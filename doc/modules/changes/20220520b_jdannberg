@@ -1,0 +1,6 @@
+Changed: Removed the reference viscosity functions from all
+plugins. In plugins that did not use the "Reference
+viscosity" input parameter, this parameter was removed as
+well and can no longer be used in input files.
+<br>
+(Juliane Dannberg, 2022/05/20)

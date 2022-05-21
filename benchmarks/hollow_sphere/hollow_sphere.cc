@@ -362,14 +362,6 @@ namespace aspect
 
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_mmm() const;
@@ -379,15 +371,6 @@ namespace aspect
          */
         double mmm;
     };
-
-
-    template <int dim>
-    double
-    HollowSphereMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
     template <int dim>
     bool

@@ -122,7 +122,6 @@ namespace aspect
         double minimum_viscosity;
         double maximum_viscosity;
         double veff_coefficient;
-        double ref_visc;
 
         double strain_rate_residual_threshold;
         unsigned int stress_max_iteration_number;

@@ -265,15 +265,6 @@ namespace aspect
         }
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const
-        {
-          return 1;
-        }
-
-        /**
          * Returns the analytic solutions of this model. See the
          * corresponding member variable of this class for more information.
          */

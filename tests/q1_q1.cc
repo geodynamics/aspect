@@ -164,14 +164,6 @@ namespace aspect
 
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_beta() const;
@@ -181,15 +173,6 @@ namespace aspect
          */
         double beta;
     };
-
-
-    template <int dim>
-    double
-    DoneaHuertaMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1;
-    }
 
 
     template <int dim>

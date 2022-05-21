@@ -54,16 +54,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    EntropyModel<dim>::
-    reference_viscosity () const
-    {
-      return reference_eta;
-    }
-
-
-
-    template <int dim>
     bool
     EntropyModel<dim>::
     is_compressible () const
@@ -176,11 +166,6 @@ namespace aspect
           prm.declare_entry ("Material file name", "material_table.txt",
                              Patterns::List (Patterns::Anything()),
                              "The file name of the material data.");
-          prm.declare_entry ("Reference viscosity", "1e22",
-                             Patterns::Double(0),
-                             "The viscosity that is used in this model. "
-                             "\n\n"
-                             "Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Lateral viscosity prefactor", "0.0",
                              Patterns::Double(0),
                              "The lateral viscosity prefactor used for computing the temperature"
@@ -226,7 +211,6 @@ namespace aspect
         {
           data_directory              = Utilities::expand_ASPECT_SOURCE_DIR(prm.get ("Data directory"));
           material_file_name          = prm.get ("Material file name");
-          reference_eta               = prm.get_double ("Reference viscosity");
           lateral_viscosity_prefactor = prm.get_double ("Lateral viscosity prefactor");
           min_eta                     = prm.get_double ("Minimum viscosity");
           max_eta                     = prm.get_double ("Maximum viscosity");

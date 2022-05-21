@@ -24,11 +24,6 @@ namespace aspect
         return false;
       }
 
-      virtual double reference_viscosity () const
-      {
-        return 1.0;
-      }
-
       virtual double reference_darcy_coefficient () const
       {
         const double permeability = 1.0 + std::pow(0.5, 2.0);

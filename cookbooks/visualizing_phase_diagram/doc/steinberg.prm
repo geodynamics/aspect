@@ -13,7 +13,6 @@ subsection Material model
     set Use lateral average temperature for viscosity = true
     set Number lateral average bands                  = 10
 
-    set Reference viscosity                           = 1e21
     set Bilinear interpolation                        = true
     set Latent heat                                   = false
   end

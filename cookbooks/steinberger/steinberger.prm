@@ -107,7 +107,6 @@ subsection Material model
     set Maximum lateral viscosity variation           = 1e3
     set Maximum viscosity                             = 5e23
     set Minimum viscosity                             = 1e20
-    set Reference viscosity                           = 1e22
 
     # We base our viscosity profile on the adiabat computed based on the
     # material porperties used in the model rather than the laterally

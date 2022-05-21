@@ -372,28 +372,6 @@ namespace aspect
           prm.declare_entry ("Number lateral average bands", "10",
                              Patterns::Integer (1),
                              "Number of bands to compute laterally averaged temperature within.");
-          prm.declare_entry ("Reference viscosity", "1e23",
-                             Patterns::Double (0.),
-                             "The reference viscosity that is used for pressure scaling. "
-                             "To understand how pressure scaling works, take a look at "
-                             "\\cite{KHB12}. In particular, the value of this parameter "
-                             "would not affect the solution computed by \\aspect{} if "
-                             "we could do arithmetic exactly; however, computers do "
-                             "arithmetic in finite precision, and consequently we need to "
-                             "scale quantities in ways so that their magnitudes are "
-                             "roughly the same. As explained in \\cite{KHB12}, we scale "
-                             "the pressure during some computations (never visible by "
-                             "users) by a factor that involves a reference viscosity. This "
-                             "parameter describes this reference viscosity."
-                             "\n\n"
-                             "For problems with a constant viscosity, you will generally want "
-                             "to choose the reference viscosity equal to the actual viscosity. "
-                             "For problems with a variable viscosity, the reference viscosity "
-                             "should be a value that adequately represents the order of "
-                             "magnitude of the viscosities that appear, such as an average "
-                             "value or the value one would use to compute a Rayleigh number."
-                             "\n\n"
-                             "Units: \\si{\\pascal\\second}.");
           prm.declare_entry ("Minimum viscosity", "1e19",
                              Patterns::Double (0.),
                              "The minimum viscosity that is allowed in the viscosity "
@@ -503,7 +481,6 @@ namespace aspect
           lateral_viscosity_file_name  = prm.get ("Lateral viscosity file name");
           use_lateral_average_temperature = prm.get_bool ("Use lateral average temperature for viscosity");
           n_lateral_slices = prm.get_integer("Number lateral average bands");
-          reference_eta        = prm.get_double ("Reference viscosity");
           min_eta              = prm.get_double ("Minimum viscosity");
           max_eta              = prm.get_double ("Maximum viscosity");
           max_lateral_eta_variation    = prm.get_double ("Maximum lateral viscosity variation");

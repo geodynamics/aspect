@@ -58,7 +58,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
     set Use lateral average temperature for viscosity = true
     set Number lateral average bands = 100
   end

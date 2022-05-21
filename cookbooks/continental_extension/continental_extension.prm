@@ -222,7 +222,6 @@ subsection Material model
 
     # Reference temperature and viscosity
     set Reference temperature = 273
-    set Reference viscosity = 1e22
 
     # The minimum strain-rate helps limit large viscosities values that arise
     # as the strain-rate approaches zero.

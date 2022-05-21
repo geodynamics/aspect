@@ -95,8 +95,6 @@ namespace aspect
          */
         virtual bool is_compressible () const;
 
-        virtual double reference_viscosity () const;
-
         static
         void
         declare_parameters (ParameterHandler &prm);
@@ -120,8 +118,6 @@ namespace aspect
         double tau_0; // cohesive strength of rocks at the surface
         double reference_T;
         double min_strain_rate;
-
-        double ref_visc;
     };
 
   }

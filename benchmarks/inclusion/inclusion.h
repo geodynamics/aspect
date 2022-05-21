@@ -247,17 +247,6 @@ namespace aspect
 
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const
-        {
-          return 1;
-        }
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_eta_B() const

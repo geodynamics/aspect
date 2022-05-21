@@ -167,27 +167,7 @@ namespace aspect
         virtual
         void
         parse_parameters (ParameterHandler &prm);
-
-
-
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
     };
-
-
-    template <int dim>
-    double
-    DoneaHuertaMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>

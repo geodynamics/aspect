@@ -119,7 +119,6 @@ do
                      -e "$CohesionLine" \
                      -e "s/    set Function expression = if(x<60e3,.*/    set Function expression = if(x<60e3,$U,-$U);0/g" \
                      -e "s/    set Nonlinear Newton solver switch tolerance.*/     set Nonlinear Newton solver switch tolerance = $i_ST/g" \
-                     -e "s/set Reference viscosity =.*/    set Reference viscosity = $i_BV/g" \
                      -e "s/set Output directory .*/set Output directory = results\/$dirname_clean/g" \
                      -e "s/    set Model name = .*/    set Model name = $materialmodelname/g" \
                      -e "s/set Nonlinear solver scheme.*/set Nonlinear solver scheme = $SOLVER/g" \

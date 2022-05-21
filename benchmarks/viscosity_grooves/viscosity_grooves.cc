@@ -192,29 +192,11 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-
         double get_epsilon() const;
 
         double epsilon;
 
     };
-
-
-    template <int dim>
-    double
-    ViscosityGroovesMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
     template <int dim>

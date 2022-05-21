@@ -251,12 +251,6 @@ namespace aspect
         bool use_lateral_average_temperature;
 
         /**
-         * Reference viscosity. Only used for pressure scaling purposes
-         * and returned by the reference_viscosity() function.
-         */
-        double reference_eta;
-
-        /**
          * The value of the thermal conductivity if a constant thermal
          * conductivity is used for the whole domain.
          */

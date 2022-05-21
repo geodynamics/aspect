@@ -27,11 +27,6 @@ namespace aspect
         return false;
       }
 
-      virtual double reference_viscosity () const
-      {
-        return 1.0;
-      }
-
       virtual double reference_darcy_coefficient () const
       {
         const double porosity = 0.01;
