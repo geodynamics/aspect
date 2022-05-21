@@ -1,4 +1,0 @@
-myst-parser
-pydata-sphinx-theme
-sphinxcontrib-bibtex
-sphinxcontrib-tikz

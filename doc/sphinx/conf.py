@@ -58,7 +58,7 @@ exclude_patterns = [
 # a list of builtin themes.
 #
 html_logo = "../logo/unlabeled_logo_small.png"
-html_theme = 'pydata_sphinx_theme'
+html_theme = 'sphinx_book_theme'
 html_theme_options = {
     "collapse_navigation": True,
     "navigation_depth": 3,
@@ -73,9 +73,11 @@ html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "footer_items": ["last-updated"],
     "use_edit_page_button": True,
+    "repository_url": "https://github.com/geodynamics/aspect/",
+    "repository_branch": "main",
 }
 html_sidebars = {
-    "**": ["search-field", "sidebar-nav-bs", "sidebar-ethical-ads", "sidebar-cig"]
+    "**": ["search-field", "sidebar-nav-bs", "sidebar-cig"]
 }
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "alpha"
