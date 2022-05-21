@@ -58,20 +58,26 @@ class="smallcaps">ASPECT</span>.
 
 Using the chain rule to combine {math:numref}`eq:mm_density`, {math:numref}`eq:mm_alpha_g` and {math:numref}`eq:mm_betaT_g` yields the more familiar definitions of $\alpha$ and $\beta_T$:
 ```{math}
-\begin{align}
-  \alpha &=& -\frac{1}{\rho} \left( \frac{\partial \rho}{\partial T} \right)_{p}, \label{eq:mm_thermal_expansivity} \\
-  \beta_T &=& \frac{1}{\rho} \left( \frac{\partial \rho}{\partial p} \right)_{T}. \label{eq:mm_isothermal_compressibility}
-\end{align}
+:label: eq:mm_thermal_expansivity
+\begin{aligned}
+  \alpha &=& -\frac{1}{\rho} \left( \frac{\partial \rho}{\partial T} \right)_{p},
+\end{aligned}
+```
+```{math}
+:label: eq:mm_isothermal_compressibility
+\begin{aligned}
+  \beta_T &=& \frac{1}{\rho} \left( \frac{\partial \rho}{\partial p} \right)_{T}.
+\end{aligned}
 ```
 ## Isobaric heat capacity
 
 We start by taking the partial derivative of the isobaric heat capacity {math:numref}`eq:mm_isobaric_heat_capacity` with respect to pressure at constant temperature:
 ```{math}
 :label: eq:heat_capacity_p_dependence
-\begin{align}
+\begin{aligned}
   \left( \frac{\partial C_{p}}{\partial p} \right)_{T} &=& -T \frac{\partial^3 \mathcal{G}}{\partial {T}^2 \, \partial {p}} \\
   &=& -T \left( \frac{\partial \left(\alpha / \rho \right)}{\partial T} \right)_{p}.
-\end{align}
+\end{aligned}
 ```
 From this expression it becomes clear that if $\alpha / \rho$ has any temperature dependence, the heat capacity $C_p$ *cannot* be globally constant.
 One way to solve this issue is to define heat capacity at constant pressure, and then integrate {math:numref}`eq:heat_capacity_p_dependence` with respect
@@ -86,11 +92,11 @@ There is no guarantee that this expression will have a form for which the integr
 The material properties also define the slope of the adiabat (the change in temperature with pressure at constant entropy) at all pressures and temperatures.
 Using the cyclic relation, we can define this slope in terms of partial differentials of the entropy with respect to pressure and temperature:
 ```{math}
-\begin{align}
+\begin{aligned}
   \left( \frac{\partial T}{\partial p} \right)_{S} &=& - \left( \frac{\partial T}{\partial S} \right)_{p} \left( \frac{\partial S}{\partial p} \right)_{T} \\
   &=& - \left( \frac{T}{C_p} \right) \left( - \frac{\alpha}{\rho} \right) \\
   &=& \frac{\alpha T}{\rho C_p} \label{eq:mm_isentropic_gradient}
-\end{align}
+\end{aligned}
 ```
 This expression does not pose a constraint on the material properties, but in order to be self-consistent, the adiabat must be computed following this relation.
 

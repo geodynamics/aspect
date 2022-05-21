@@ -9,14 +9,14 @@ Several of the cookbooks in {ref}`cha:cookbooks` consider compositional fields i
 
 These equations are augmented by boundary conditions that can either be of Dirichlet, Neumann, or tangential type on subsets of the boundary $\Gamma=\partial\Omega$:
 ```{math}
-\begin{align}
+\begin{aligned}
   \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{0,\mathbf u}$}, \\
   \mathbf u &= \mathbf u_{\text{prescribed}} & \qquad &\textrm{on $\Gamma_{\text{prescribed},\mathbf u}$}, \\
   \mathbf n \cdot \mathbf u &= 0 & \qquad &\textrm{on $\Gamma_{\parallel,\mathbf u}$}, \\
   (2\eta \varepsilon(\mathbf u) -p I)\mathbf n  &= \mathbf t & \qquad &\textrm{on $\Gamma_{\text{traction},\mathbf u}$}, \\
   T &= T_{\text{prescribed}} & \qquad &\textrm{on $\Gamma_{D,T}$}, \\
   \mathbf n \cdot k\nabla T &= 0  & \qquad &\textrm{on $\Gamma_{N,T}$}. \\
-\end{align}
+\end{aligned}
 ```
 ```{math}
 :label: eq:gamma-in-composition

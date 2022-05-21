@@ -2,11 +2,15 @@
 
 To solve the Stokes equations it is necessary to lower the condition number of
 the Stokes matrix by preconditioning it. In
-ASPECT a right preconditioner $Y^{-1} =
+ASPECT a right preconditioner 
+```{math}
+Y^{-1} =
 \begin{pmatrix}
 \widetilde{A^{-1}} & -\widetilde{A^{-1}}B^{T}\widetilde{S^{-1}} \\
 0 & \widetilde{S^{-1}}
-\end{pmatrix}$ is used to precondition the system, where $\widetilde{A^{-1}}$
+\end{pmatrix}
+```
+ is used to precondition the system, where $\widetilde{A^{-1}}$
 is the approximate inverse of the A block and $\widetilde{S^{-1}}$ is the
 approximate inverse of the Schur complement matrix. Matrix
 $\widetilde{A^{-1}}$ and $\widetilde{S^{-1}}$ are calculated through a CG

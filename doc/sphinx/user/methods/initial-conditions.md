@@ -14,7 +14,7 @@ Nevertheless, a nonlinear solver will have difficulty converging to the correct 
 To this end, ASPECT uses pressure and temperature fields $p_{\textrm{ad}}(z), T_{\textrm{ad}}(z)$ computed in the adiabatic conditions model (see {ref}`parameters:Adiabatic_20conditions_20model`).
 By default, these fields satisfy adiabatic conditions:
 ```{math}
-\begin{align}
+\begin{aligned}
   \rho C_p \frac{\textrm{d}}{\textrm{d}z} T_{\textrm{ad}}(z)
   &=
   \frac{\partial\rho}{\partial T} T_{\textrm{ad}}(z) g_z,
@@ -22,7 +22,7 @@ By default, these fields satisfy adiabatic conditions:
   \frac{\textrm{d}}{\textrm{d}z} p_{\textrm{ad}}(z)
   &=
   \rho g_z,
-\end{align}
+\end{aligned}
 ```
 where strictly speaking $g_z$ is the magnitude of the vertical component of the gravity vector field, but in practice we take the magnitude of the entire gravity vector.
 

@@ -10,18 +10,18 @@ In the case of density, thermal expansivity, heat capacity and bulk compressibil
 Here we must consider conservation of mass and composition in a multicomponent rock $r$.
 If component $i$ has masses $M_i$ and densities $\rho_i$, we can consider the summation of volume fractions:
 ```{math}
-\begin{align}
+\begin{aligned}
 V_r &=& \frac{M_r}{\rho_r} = \sum_i \frac{M_i}{\rho_i} \\
 \frac{1}{\rho_r} &=& \sum_i \frac{x_i}{\rho_i}
-\end{align}
+\end{aligned}
 ```
 where $x_i$ are mass fractions of the components in the rock.
 
 Similarly, we can obtain averaging formulae for the other thermodynamic properties:
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\alpha}{\rho} &=& \sum_i x_i \frac{\alpha_i}{\rho_{i}} \\
   \frac{\beta_T}{\rho} &=& \sum_i x_i \frac{\beta_{Ti}}{\rho_{i}} \\
   C_p &=& \sum_i x_i C_{pi}
-\end{align}
+\end{aligned}
 ```

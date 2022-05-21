@@ -15,17 +15,13 @@ Specifically, we consider the following set of equations for velocity $\mathbf{u
 ```
 ```{math}
 :label: eq:temperature
-\begin{align}
+\begin{aligned}
   \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right) - \nabla\cdot k\nabla T &= \rho H \notag \\
   &\quad + 2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right): \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right) \\
   & \quad +\alpha T \left( \mathbf u \cdot \nabla p \right) \notag \\
-<<<<<<< HEAD
-  &\quad + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right) & & \textrm{in $\Omega$}, \notag \\
-\end{align}
-=======
   &\quad + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right) \textrm{in $\Omega$}, \notag \\
->>>>>>> 4e114a6a1 (Remove duplicated alignment characters)
 ```
+
 ```{math}
 :label: eq:compositional
   \frac{\partial c_i}{\partial t} + \mathbf u\cdot\nabla c_i = q_i \textrm{  in $\Omega$}, i=1\ldots C
@@ -50,24 +46,19 @@ This process applies both to solid-state phase transitions and to melting/solidi
 Here, $\Delta S$ is positive for exothermic phase transitions.
 As the phase of the material, for a given composition, depends on the temperature and pressure, the latent heat term can be reformulated:
 ```{math}
-\begin{gather}
+\begin{aligned}
 \frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X = \frac{DX}{Dt} = \frac{\partial X}{\partial T} \frac{DT}{Dt} + \frac{\partial X}{\partial p} \frac{Dp}{Dt} = \frac{\partial X}{\partial T} \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T \right) + \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p.
-\end{gather}
+\end{aligned}
 ```
 The last transformation results from the assumption that the flow field is always in equilibrium and consequently $\partial p/\partial t=0$ (this is the same assumption that underlies the fact that equation {math:numref}`eq:stokes-1` does not have a term $\partial \mathbf u / \partial t$).
 With this reformulation, we can rewrite {math:numref}`eq:temperature` in the following way in which it is in fact implemented:
 ```{math}
 :label: eq:temperature-reformulated
-\begin{align}
+\begin{aligned}
   \left(\rho C_p - \rho T \Delta S \frac{\partial X}{\partial T}\right) \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right) - \nabla\cdot k\nabla T &= \rho H \notag \\
   &\quad +  2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right): \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right) \\
   &\quad +\alpha T \left( \mathbf u \cdot \nabla p \right) \notag  \\
-<<<<<<< HEAD
-  &\quad  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p & \quad & \textrm{in $\Omega$}.  \notag
-\end{align}
-=======
   &\quad  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p \quad \textrm{in $\Omega$}.  \notag
->>>>>>> 4e114a6a1 (Remove duplicated alignment characters)
 ```
 
 The last of the equations above, equation {math:numref}`eq:compositional`, describes the evolution of additional fields that are transported along with the velocity field $\mathbf u$ and may react with each other and react to other features of the solution, but that do not diffuse.

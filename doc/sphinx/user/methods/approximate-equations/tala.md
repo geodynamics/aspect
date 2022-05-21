@@ -3,9 +3,9 @@
 
 The *truncated anelastic liquid approximation (TALA)* further simplifies the ALA by assuming that the variation of the density due to pressure variations is small, i.e., that
 ```{math}
-\begin{align}
+\begin{aligned}
   \rho(p,T) \approx  \bar\rho (1 - \bar \alpha T').
-\end{align}
+\end{aligned}
 ```
 This does not mean that the density is not pressure dependent - it will, for example, continue to be
 depth dependent because the hydrostatic pressure grows with depth.
@@ -14,12 +14,12 @@ Because the pressure variation $p'$ is induced by the flow field (the static com
 
 This further assumption then transforms{math:numref}`eq:stokes-ALA-1`-{math:numref}`eq:stokes-ALA-2` into the following equations:
 ```{math}
-\begin{align}
+\begin{aligned}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g
                 & \qquad  & \textrm{in $\Omega$},  \\
   \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
-\end{align}
+\end{aligned}
 ```
 The energy equation is the same as in the ALA case.
