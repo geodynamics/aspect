@@ -15,7 +15,7 @@ visco-plastic material model is designed to take into account both brittle
 modeling complex lithospheric processes. Such a material model can be used in
 using the following set of input parameters:
 
-``` prmfile
+```{literalinclude} continental_extension_material_model.prm
 ```
 
 This cookbook provides one such example where the continental lithosphere
@@ -29,11 +29,10 @@ The 2D Cartesian model spans 200 ($x$) by 100 ($y$) km and has a finite
 element grid with 1.25 and 2.5 km grid spacing, respectively, above and below
 50 km depth. This variation in grid spacing is achieved with a single initial
 adaptive refinement step using the minimum refinement function strategy.
-Unlike the crustal deformation cookbook (see
-Section&nbsp;[\[sec:cookbooks-crustal-deformation\]][1], the mesh is not
-refined with time.
+Unlike the crustal deformation cookbook (see {ref}`cookbooks-crustal-deformation`), 
+the mesh is notvrefined with time.
 
-``` prmfile
+```{literalinclude} continental_extension_geometry_mesh.prm
 ```
 
 Similar to the crustal deformation examples above, this model contains a free
@@ -48,7 +47,7 @@ lateral outflow. The top, and bottom boundaries have fixed temperatures, while
 the sides are insulating. The bottom boundary is also assigned a fixed
 composition, while the top and sides are unconstrained.
 
-``` prmfile
+```{literalinclude} continental_extension_boundary_conditions.prm
 ```
 
 Sections of the lithosphere with distinct properties are represented by
@@ -67,30 +66,34 @@ cohesion through time based on user-specified bounds and magnitudes. The
 initial randomized values of plastic strain in the model center localize
 distributed deformation in this region.
 
-``` prmfile
+```{literalinclude} continental_extension_composition.prm
 ```
 
 The initial thermal structure, radiogenic heating model and associated thermal
 properties are consistent with the prescribed thermal boundary conditions and
 produce a geotherm characteristic of the continental lithosphere. The
 equations defining the initial geotherm (Chapman 1986) follow the form
-$$\begin{aligned}
+```{math}
+\begin{aligned}
   \label{eq:continental-geotherm-1}
-  T(z) &= T_T + \frac{q_T}{k}z - \frac{Az^2}{2k}\end{aligned}$$ where $T$ is
-temperature, $z$ is depth, $T_T$ is the temperature at the layer surface
+  T(z) = T_T + \frac{q_T}{k}z - \frac{Az^2}{2k}
+\end{aligned}
+```
+where $T$ is temperature, $z$ is depth, $T_T$ is the temperature at the layer surface
 (top), $q_T$ is surface heat flux, $k$ is thermal conductivity, and $A$ is
 radiogenic heat production.
 
 For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux
-($q_B$) are $$\begin{aligned}
-  \label{eq:continental-geotherm-2}
-  T_B &= T_T + \frac{q_T}{k} \Delta z - \frac{A \Delta z^2}{2k},
-  \\
-  \label{eq:continental-geotherm-3}
-  q_B &= q_T - A \Delta z.\end{aligned}$$
+($q_B$) are
+```{math}
+\begin{aligned}
+  T_B = T_T + \frac{q_T}{k} \Delta z - \frac{A \Delta z^2}{2k}
+  q_B = q_T - A \Delta z.
+\end{aligned}
+```
 
-In this example, specifying the top (273&nbsp;K) temperature, surface heat
-flow (55&nbsp;mW&nbsp;m<sup>&minus;2</sup>), and thermal conductivity and
+In this example, specifying the top (273 $K$) temperature, surface heat
+flow (55 $mW / m^2$), and thermal conductivity and
 radiogenic heat production of each layer provides enough constraints to
 successively solve for the temperature and heat flux at the top of the lower
 crust and mantle.
@@ -98,17 +101,18 @@ crust and mantle.
 As noted above, the initial zone of randomized plastic strain within the model
 center and strain softening of the friction and cohesion produces an initial
 pattern of distributed and unlocalized deformation across the zone of initial
-plastic strain (Fig.&nbsp;[1][]). After 5 million years of extension,
-distributed faulting is clearly evident in both the active and finite
-deformation fields and surface topography over an approximately 100 km wide
-region (Fig.&nbsp;[2][]). While deformation is distributed within this region,
-the fault system is clearly asymmetric as the rate of deformation and
-accumulated brittle strain varies between faults. Localization onto the two
-conjugate rift-bounding border faults is evident from the active deformation
-field. Notably, deformation of the free surface near the fixed left and right
-walls is evident at 5 Myr. Continued distortion of the surface mesh near the
-lateral boundaries may lead to solver issues, which can be overcome by either
-widening the model or allowing the mesh to deform along these boundaries.
+plastic strain ({numref}`fig:continental_extension_cookbook_0myr`). 
+After 5 million years of extension, distributed faulting is clearly evident 
+in both the active and finite deformation fields and surface topography over 
+an approximately 100 km wide region ({numref}`fig:continental_extension_cookbook_5myr`). 
+While deformation is distributed within this region, the fault system is clearly
+asymmetric as the rate of deformation and accumulated brittle strain varies between faults. 
+Localization onto the two conjugate rift-bounding border faults is evident 
+from the active deformation field. Notably, deformation of the free surface 
+near the fixed left and right walls is evident at 5 Myr. Continued distortion
+of the surface mesh near the lateral boundaries may lead to solver issues, 
+which can be overcome by either widening the model or allowing the mesh to 
+deform along these boundaries.
 
 With further extension for millions of years, significant crustal thinning and
 surface topography development should occur in response to displacement along
@@ -123,13 +127,20 @@ lithospheric thinning exert a first-order influence on the deformation
 patterns. As noted below, numerous additional parameters may also affect the
 temporal evolution of deformation patterns.
 
-<figure>
-<img src="cookbooks/continental_extension/doc/continental_extension_cookbook_0myr.png" id="fig:continental_extension_cookbook_0myr" alt="Initial active deformation field (strain rate second invariant in units of \si{s}^{-1}) and distribution of plastic strain. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature)." /><figcaption aria-hidden="true"><em>Initial active deformation field (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and distribution of plastic strain. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).</em></figcaption>
-</figure>
+```{figure-md} fig:continental_extension_cookbook_0myr
+<img src="continental_extension_cookbook_0myr" alt=""  width="100%"/>
 
-<figure>
-<img src="cookbooks/continental_extension/doc/continental_extension_cookbook_5myr.png" id="fig:continental_extension_cookbook_5myr" alt="Active (strain rate second invariant in units of \si{s}^{-1}) and finite (plastic) deformation after 5&#xA0;&#xD7;&#xA0;106 years of extension. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature)." /><figcaption aria-hidden="true"><em>Active (strain rate second invariant in units of <span class="math inline"><em>s</em><sup>&#x2212;1</sup></span>) and finite (plastic) deformation after 5&#xA0;&#xD7;&#xA0;10<sup>6</sup> years of extension. The white line marks the (893&#xA0;K) isotherm (initial Moho temperature).</em></figcaption>
-</figure>
+Initial active deformation field (strain rate second invariant in units of $s^{-1}$) 
+and distribution of plastic strain. The white line marks the (893 $K$) isotherm 
+(initial Moho temperature).
+```
+```{figure-md} fig:continental_extension_cookbook_5myr
+<img src="continental_extension_cookbook_5myr" alt=""  width="100%"/>
+
+Active (strain rate second invariant in units of $s^{−1}) and finite (plastic) 
+deformation after 50 millior years of extension. The white line marks the (893 $K$) 
+isotherm (initial Moho temperature).
+```
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
