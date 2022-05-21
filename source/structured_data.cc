@@ -327,14 +327,13 @@ namespace aspect
               if (components == numbers::invalid_unsigned_int)
                 components = name_column_index - dim;
               else if (name_column_index != 0)
-                AssertThrow (components+dim == name_column_index,
+                AssertThrow (components == name_column_index,
                              ExcMessage("The number of expected data columns and the "
                                         "list of column names at the beginning of the data file "
                                         + filename + " do not match. The file should contain "
-                                        + Utilities::int_to_string(name_column_index) + " column "
-                                        "names (one for each dimension and one per data column), "
-                                        "but it only has " + Utilities::int_to_string(components+dim) +
-                                        " column names."));
+                                        "one column name per column (one for each dimension "
+                                        "and one per data column)."));
+
               break;
             }
           catch (const boost::bad_lexical_cast &e)
@@ -381,29 +380,6 @@ namespace aspect
             column_names.push_back("column " + Utilities::int_to_string(c,2));
         }
 
-      // Make sure the data file actually has as many columns as we think it has
-      // (either based on the header, or based on what was passed to the reinit function).
-      const unsigned int position = in.tellg();
-      std::string first_data_row;
-      std::getline(in, first_data_row);
-      std::stringstream linestream(first_data_row);
-      std::string column_entry;
-
-      // We have already read in the first data entry above in the try/catch block,
-      // so there's one more column in the file than in the line we just read in.
-      unsigned int number_of_entries = 1;
-      while (linestream >> column_entry)
-        number_of_entries += 1;
-
-      AssertThrow ((number_of_entries) == column_names.size()+dim,
-                   ExcMessage("ERROR: The number of columns in the data file " + filename +
-                              " is incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
-                              " columns, but the first row has " + Utilities::int_to_string(number_of_entries) +
-                              " columns."));
-
-      // Go back to the position in the file where we started the check for the column numbers.
-      in.seekg (position);
-
       // Finally read data lines:
       unsigned int read_data_entries = 0;
       do
@@ -420,14 +396,13 @@ namespace aspect
 
               AssertThrow(old_value == 0. ||
                           (std::abs(old_value-temp_data) < 1e-8*std::abs(old_value)),
-                          ExcMessage("Invalid coordinate in column "
+                          ExcMessage("Invalid coordinate "
                                      + Utilities::int_to_string(column_num) + " in row "
                                      + Utilities::int_to_string(row_num)
                                      + " in file " + filename +
                                      "\nThis class expects the coordinates to be structured, meaning "
                                      "the coordinate values in each coordinate direction repeat exactly "
-                                     "each time. This also means each row in the data file has to have "
-                                     "the same number of columns as the first row containing data."));
+                                     "each time."));
 
               coordinate_values[column_num][idx[column_num]] = temp_data;
             }
