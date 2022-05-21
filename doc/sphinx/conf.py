@@ -57,12 +57,15 @@ exclude_patterns = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_logo = "../logo/unlabeled_logo_small.png"
+html_logo = "_static/images/aspect_logo.png"
+html_title = "ASPECT " + release
 html_theme = 'sphinx_book_theme'
 html_theme_options = {
     "collapse_navigation": True,
     "navigation_depth": 3,
     "show_toc_level": 3,
+    "repository_url": "https://github.com/geodynamics/aspect/",
+    "repository_branch": "main",
     "icon_links": [
         {
             "name": "GitHub",
@@ -70,15 +73,14 @@ html_theme_options = {
             "icon": "fab fa-github-square",
         },
     ],
-    "navbar_start": ["navbar-logo"],
-    "footer_items": ["last-updated"],
+    "show_navbar_depth": 2,
+    "use_repository_button": True,
     "use_edit_page_button": True,
-    "repository_url": "https://github.com/geodynamics/aspect/",
-    "repository_branch": "main",
+    "use_issues_button": True,
+    "extra_navbar": "<p><img src='/_static/images/cig_logo_dots.png' alt=\"CIG Logo\" height=\"80px\"  style=\"padding: 5px;\"/></p>",
+    "home_page_in_toc": True,
 }
-html_sidebars = {
-    "**": ["search-field", "sidebar-nav-bs", "sidebar-cig"]
-}
+
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "alpha"
 bibtex_reference_style = "author_year"
