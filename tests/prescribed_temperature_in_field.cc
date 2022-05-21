@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2020 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -32,13 +32,13 @@ namespace aspect
 
   // Declare and parse additional parameters
   bool prescribe_internal_temperature;
-  unsigned int fixed_composition_idx;
-  void declare_parameters(const unsigned int dim,
+  std::vector <int> fixed_composition_indices;
+  void declare_parameters(const unsigned int /*dim*/,
                           ParameterHandler &prm)
   {
     prm.declare_entry ("Prescribe internal temperature", "false",
                        Patterns::Bool (),
-                       "Whether or not to use any prescribed internal temperature. "
+                       "Whether or not to use any prescribed internal temperatures. "
                        "Locations in which to prescribe temperature are defined "
                        "in section ``Prescribed temperature/Indicator function'' "
                        "and the temperature are defined in section ``Prescribed "
@@ -47,8 +47,8 @@ namespace aspect
                        "the specified temperature at the indicated cells "
                        "are constrained."
                       );
-    prm.declare_entry ("Index of fixed compositional field", "0",
-                       Patterns::Integer (0),
+    prm.declare_entry ("Indices of fixed compositional fields", "0",
+                       Patterns::List(Patterns::Integer (0)),
                        "The index of the compositional field that will have its "
                        "temperature fixed to the values it was initialized with."
                       );
@@ -59,7 +59,7 @@ namespace aspect
                         ParameterHandler &prm)
   {
     prescribe_internal_temperature = prm.get_bool ("Prescribe internal temperature");
-    fixed_composition_idx = prm.get_integer ("Index of fixed compositional field");
+    fixed_composition_indices = Utilities::string_to_int(Utilities::split_string_list(prm.get("Indices of fixed compositional fields")));
   }
 
   /**
@@ -75,7 +75,8 @@ namespace aspect
       {
         const std::vector<Point<dim>> points = aspect::Utilities::get_unit_support_points(simulator_access);
         const Quadrature<dim> quadrature (points);
-        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points | update_values | update_gradients); // update_values
+        // update_values
+        FEValues<dim> fe_values (simulator_access.get_fe(), quadrature, update_quadrature_points | update_values | update_gradients);
         typename DoFHandler<dim>::active_cell_iterator cell;
         MaterialModel::MaterialModelInputs<dim> in(quadrature.size(), simulator_access.introspection().n_compositional_fields);
 
@@ -93,23 +94,32 @@ namespace aspect
               cell->get_dof_indices (local_dof_indices);
               for (unsigned int q=0; q<quadrature.size(); q++)
                 {
+
                   // If it's okay to constrain this DOF
                   if (current_constraints.can_store_line(local_dof_indices[q]) &&
                       !current_constraints.is_constrained(local_dof_indices[q]))
                     {
-                      // Make sure we're in the desired compositional field
-                      if (in.composition[q][fixed_composition_idx] >= 0.5)
+                      for (unsigned int c=0; c < simulator_access.n_compositional_fields(); ++c)
                         {
-                          // Get the temperature component index
-                          const unsigned int c_idx = simulator_access.get_fe().system_to_component_index(q).first;
-                          // If we're on one of the temperature DOFs
-                          if (c_idx == simulator_access.introspection().component_indices.temperature)
+
+                          // Make sure we're in the desired compositional field (in.composition[q][c] >= 0.5) &&
+                          if ( (in.composition[q][c] >= 0.5) &&
+                               (std::find(fixed_composition_indices.begin(), fixed_composition_indices.end(), c) != fixed_composition_indices.end() ))
                             {
-                              // Set the temperature to be equal to the initial temperature
-                              in.temperature[q] = simulator_access.get_initial_temperature_manager().initial_temperature(in.position[q]);
-                              // Update the constraints
-                              current_constraints.add_line (local_dof_indices[q]);
-                              current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);
+
+                              // Get the temperature component index
+                              const unsigned int c_idx = simulator_access.get_fe().system_to_component_index(q).first;
+
+                              // If we're on one of the temperature DOFs
+                              if (c_idx == simulator_access.introspection().component_indices.temperature)
+                                {
+
+                                  // Set the temperature to be equal to the initial temperature
+                                  in.temperature[q] = simulator_access.get_initial_temperature_manager().initial_temperature(in.position[q]);
+                                  // Update the constraints
+                                  current_constraints.add_line (local_dof_indices[q]);
+                                  current_constraints.set_inhomogeneity (local_dof_indices[q], in.temperature[q]);
+                                }
                             }
                         }
                     }
