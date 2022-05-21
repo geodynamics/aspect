@@ -171,7 +171,7 @@ subsection Postprocess
     set Particle generator name = ascii file
     subsection Generator
       subsection Ascii file
-        set  Data directory = ../tests
+        set  Data directory = $ASPECT_SOURCE_DIR/data/particle/generator/ascii/
         set Data file name = shearbox_particle_strain_rate.dat
       end
     end
