@@ -41,7 +41,7 @@ benchmarks/solcx/doc/solcx.md
 benchmarks/solkz/doc/solkz.md
 benchmarks/inclusion/doc/inclusion.md
 benchmarks/burstedde/doc/burstedde.md
-benchmarks/slab_detacahment/doc/slab_detacahment.md
+benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
 benchmarks/annulus/doc/annulus.md
 cookbooks/stokes/doc/stokes.md
