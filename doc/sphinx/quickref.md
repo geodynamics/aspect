@@ -392,6 +392,19 @@ This is likely a bug.
 
 Sphinx does not support the use of subfigures. Combine any sub-figures you want to include into one file. We recommend inkscape for this purpose.
 
+Figures need to have a caption or they will not be rendered.
+If you want to include figures without captions you can instead do:
+
+````md
+```{image} _static/images/aspect_logo.png
+:alt: ASPECT Logo
+:width: 80%
+:align: center
+```
+````
+
+## Math
+
 ## Parameter file referencing
 
 Parameter files can be referenced like a link. You can leave the link name out to get the heading information, or choose your own. This should look like the LaTeX referencing. Spaces in parameter and subsection names should be replaced by "\_20". Subsections should be seperated with colons.
