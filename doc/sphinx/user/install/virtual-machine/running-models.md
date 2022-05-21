@@ -23,7 +23,7 @@ recommend the following workflow:
 
 5.  After you have verified that your model setup is correct, you might want
     to consider recompiling ASPECT in release
-    mode to increase the speed of the computation. See {ref}`4.4][]
+    mode to increase the speed of the computation. See {ref}`sec:run-aspect:debug-mode`
     for a discussion of debug and release mode.
 
 6.  Visualize your model output either inside of the virtual machine (ParaView
