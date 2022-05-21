@@ -19,8 +19,12 @@ Specifically, we consider the following set of equations for velocity $\mathbf{u
   \rho C_p \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right) - \nabla\cdot k\nabla T &= \rho H \notag \\
   &\quad + 2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right): \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right) \\
   & \quad +\alpha T \left( \mathbf u \cdot \nabla p \right) \notag \\
+<<<<<<< HEAD
   &\quad + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right) & & \textrm{in $\Omega$}, \notag \\
 \end{align}
+=======
+  &\quad + \rho T \Delta S \left(\frac{\partial X}{\partial t} + \mathbf u\cdot\nabla X\right) \textrm{in $\Omega$}, \notag \\
+>>>>>>> 4e114a6a1 (Remove duplicated alignment characters)
 ```
 ```{math}
 :label: eq:compositional
@@ -58,8 +62,12 @@ With this reformulation, we can rewrite {math:numref}`eq:temperature` in the fol
   \left(\rho C_p - \rho T \Delta S \frac{\partial X}{\partial T}\right) \left(\frac{\partial T}{\partial t} + \mathbf u\cdot\nabla T\right) - \nabla\cdot k\nabla T &= \rho H \notag \\
   &\quad +  2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right): \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right) \\
   &\quad +\alpha T \left( \mathbf u \cdot \nabla p \right) \notag  \\
+<<<<<<< HEAD
   &\quad  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p & \quad & \textrm{in $\Omega$}.  \notag
 \end{align}
+=======
+  &\quad  + \rho T \Delta S \frac{\partial X}{\partial p} \mathbf u\cdot\nabla p \quad \textrm{in $\Omega$}.  \notag
+>>>>>>> 4e114a6a1 (Remove duplicated alignment characters)
 ```
 
 The last of the equations above, equation {math:numref}`eq:compositional`, describes the evolution of additional fields that are transported along with the velocity field $\mathbf u$ and may react with each other and react to other features of the solution, but that do not diffuse.
