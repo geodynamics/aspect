@@ -166,64 +166,64 @@ TEST_CASE("CPO core: Store and Load")
   std::vector<std::vector<dealii::Tensor<2,3>>> a_cosine_matrices_grains_derivatives_ref(2,std::vector<dealii::Tensor<2,3>>(3));
 
   a_cosine_matrices_grains_ref[0][0][0][0] = 0;
-  a_cosine_matrices_grains_ref[0][0][0][1] = 1;
-  a_cosine_matrices_grains_ref[0][0][0][2] = 2;
-  a_cosine_matrices_grains_ref[0][0][1][0] = 3;
-  a_cosine_matrices_grains_ref[0][0][1][1] = 4;
-  a_cosine_matrices_grains_ref[0][0][1][2] = 5;
-  a_cosine_matrices_grains_ref[0][0][2][0] = 6;
-  a_cosine_matrices_grains_ref[0][0][2][1] = 7;
-  a_cosine_matrices_grains_ref[0][0][2][2] = 8;
-  a_cosine_matrices_grains_ref[0][1][0][0] = 9;
-  a_cosine_matrices_grains_ref[0][1][0][1] = 10;
-  a_cosine_matrices_grains_ref[0][1][0][2] = 11;
-  a_cosine_matrices_grains_ref[0][1][1][0] = 12;
-  a_cosine_matrices_grains_ref[0][1][1][1] = 13;
-  a_cosine_matrices_grains_ref[0][1][1][2] = 14;
-  a_cosine_matrices_grains_ref[0][1][2][0] = 15;
-  a_cosine_matrices_grains_ref[0][1][2][1] = 16;
-  a_cosine_matrices_grains_ref[0][1][2][2] = 17;
-  a_cosine_matrices_grains_ref[0][2][0][0] = 18;
-  a_cosine_matrices_grains_ref[0][2][0][1] = 19;
-  a_cosine_matrices_grains_ref[0][2][0][2] = 20;
-  a_cosine_matrices_grains_ref[0][2][1][0] = 21;
-  a_cosine_matrices_grains_ref[0][2][1][1] = 22;
-  a_cosine_matrices_grains_ref[0][2][1][2] = 23;
-  a_cosine_matrices_grains_ref[0][2][2][0] = 24;
-  a_cosine_matrices_grains_ref[0][2][2][1] = 25;
-  a_cosine_matrices_grains_ref[0][2][2][2] = 26;
+  a_cosine_matrices_grains_ref[0][0][0][1] = 1./1000.;
+  a_cosine_matrices_grains_ref[0][0][0][2] = 2./1000.;
+  a_cosine_matrices_grains_ref[0][0][1][0] = 3./1000.;
+  a_cosine_matrices_grains_ref[0][0][1][1] = 4./1000.;
+  a_cosine_matrices_grains_ref[0][0][1][2] = 5./1000.;
+  a_cosine_matrices_grains_ref[0][0][2][0] = 6./1000.;
+  a_cosine_matrices_grains_ref[0][0][2][1] = 7./1000.;
+  a_cosine_matrices_grains_ref[0][0][2][2] = 8./1000.;
+  a_cosine_matrices_grains_ref[0][1][0][0] = 9./1000.;
+  a_cosine_matrices_grains_ref[0][1][0][1] = 10./1000.;
+  a_cosine_matrices_grains_ref[0][1][0][2] = 11./1000.;
+  a_cosine_matrices_grains_ref[0][1][1][0] = 12./1000.;
+  a_cosine_matrices_grains_ref[0][1][1][1] = 13./1000.;
+  a_cosine_matrices_grains_ref[0][1][1][2] = 14./1000.;
+  a_cosine_matrices_grains_ref[0][1][2][0] = 15./1000.;
+  a_cosine_matrices_grains_ref[0][1][2][1] = 16./1000.;
+  a_cosine_matrices_grains_ref[0][1][2][2] = 17./1000.;
+  a_cosine_matrices_grains_ref[0][2][0][0] = 18./1000.;
+  a_cosine_matrices_grains_ref[0][2][0][1] = 19./1000.;
+  a_cosine_matrices_grains_ref[0][2][0][2] = 20./1000.;
+  a_cosine_matrices_grains_ref[0][2][1][0] = 21./1000.;
+  a_cosine_matrices_grains_ref[0][2][1][1] = 22./1000.;
+  a_cosine_matrices_grains_ref[0][2][1][2] = 23./1000.;
+  a_cosine_matrices_grains_ref[0][2][2][0] = 24./1000.;
+  a_cosine_matrices_grains_ref[0][2][2][1] = 25./1000.;
+  a_cosine_matrices_grains_ref[0][2][2][2] = 26./1000.;
 
   volume_fractions_grains_ref[0][0] = 0.1;
   volume_fractions_grains_ref[0][1] = 0.2;
   volume_fractions_grains_ref[0][2] = 0.3;
 
-  a_cosine_matrices_grains_ref[1][0][0][0] = 27;
-  a_cosine_matrices_grains_ref[1][0][0][1] = 28;
-  a_cosine_matrices_grains_ref[1][0][0][2] = 29;
-  a_cosine_matrices_grains_ref[1][0][1][0] = 30;
-  a_cosine_matrices_grains_ref[1][0][1][1] = 31;
-  a_cosine_matrices_grains_ref[1][0][1][2] = 32;
-  a_cosine_matrices_grains_ref[1][0][2][0] = 33;
-  a_cosine_matrices_grains_ref[1][0][2][1] = 34;
-  a_cosine_matrices_grains_ref[1][0][2][2] = 35;
-  a_cosine_matrices_grains_ref[1][1][0][0] = 36;
-  a_cosine_matrices_grains_ref[1][1][0][1] = 37;
-  a_cosine_matrices_grains_ref[1][1][0][2] = 38;
-  a_cosine_matrices_grains_ref[1][1][1][0] = 39;
-  a_cosine_matrices_grains_ref[1][1][1][1] = 40;
-  a_cosine_matrices_grains_ref[1][1][1][2] = 41;
-  a_cosine_matrices_grains_ref[1][1][2][0] = 42;
-  a_cosine_matrices_grains_ref[1][1][2][1] = 43;
-  a_cosine_matrices_grains_ref[1][1][2][2] = 44;
-  a_cosine_matrices_grains_ref[1][2][0][0] = 45;
-  a_cosine_matrices_grains_ref[1][2][0][1] = 46;
-  a_cosine_matrices_grains_ref[1][2][0][2] = 47;
-  a_cosine_matrices_grains_ref[1][2][1][0] = 48;
-  a_cosine_matrices_grains_ref[1][2][1][1] = 49;
-  a_cosine_matrices_grains_ref[1][2][1][2] = 50;
-  a_cosine_matrices_grains_ref[1][2][2][0] = 51;
-  a_cosine_matrices_grains_ref[1][2][2][1] = 52;
-  a_cosine_matrices_grains_ref[1][2][2][2] = 53;
+  a_cosine_matrices_grains_ref[1][0][0][0] = 27./1000.;
+  a_cosine_matrices_grains_ref[1][0][0][1] = 28./1000.;
+  a_cosine_matrices_grains_ref[1][0][0][2] = 29./1000.;
+  a_cosine_matrices_grains_ref[1][0][1][0] = 30./1000.;
+  a_cosine_matrices_grains_ref[1][0][1][1] = 31./1000.;
+  a_cosine_matrices_grains_ref[1][0][1][2] = 32./1000.;
+  a_cosine_matrices_grains_ref[1][0][2][0] = 33./1000.;
+  a_cosine_matrices_grains_ref[1][0][2][1] = 34./1000.;
+  a_cosine_matrices_grains_ref[1][0][2][2] = 35./1000.;
+  a_cosine_matrices_grains_ref[1][1][0][0] = 36./1000.;
+  a_cosine_matrices_grains_ref[1][1][0][1] = 37./1000.;
+  a_cosine_matrices_grains_ref[1][1][0][2] = 38./1000.;
+  a_cosine_matrices_grains_ref[1][1][1][0] = 39./1000.;
+  a_cosine_matrices_grains_ref[1][1][1][1] = 40./1000.;
+  a_cosine_matrices_grains_ref[1][1][1][2] = 41./1000.;
+  a_cosine_matrices_grains_ref[1][1][2][0] = 42./1000.;
+  a_cosine_matrices_grains_ref[1][1][2][1] = 43./1000.;
+  a_cosine_matrices_grains_ref[1][1][2][2] = 44./1000.;
+  a_cosine_matrices_grains_ref[1][2][0][0] = 45./1000.;
+  a_cosine_matrices_grains_ref[1][2][0][1] = 46./1000.;
+  a_cosine_matrices_grains_ref[1][2][0][2] = 47./1000.;
+  a_cosine_matrices_grains_ref[1][2][1][0] = 48./1000.;
+  a_cosine_matrices_grains_ref[1][2][1][1] = 49./1000.;
+  a_cosine_matrices_grains_ref[1][2][1][2] = 50./1000.;
+  a_cosine_matrices_grains_ref[1][2][2][0] = 51./1000.;
+  a_cosine_matrices_grains_ref[1][2][2][1] = 52./1000.;
+  a_cosine_matrices_grains_ref[1][2][2][2] = 53./1000.;
 
   volume_fractions_grains_ref[1][0] = 0.4;
   volume_fractions_grains_ref[1][1] = 0.5;
@@ -233,65 +233,65 @@ TEST_CASE("CPO core: Store and Load")
   volume_fractions_grains_derivatives_ref[0][1] = 0.8;
   volume_fractions_grains_derivatives_ref[0][2] = 0.9;
 
-  a_cosine_matrices_grains_derivatives_ref[0][0][0][0] = 54;
-  a_cosine_matrices_grains_derivatives_ref[0][0][0][1] = 55;
-  a_cosine_matrices_grains_derivatives_ref[0][0][0][2] = 56;
-  a_cosine_matrices_grains_derivatives_ref[0][0][1][0] = 57;
-  a_cosine_matrices_grains_derivatives_ref[0][0][1][1] = 58;
-  a_cosine_matrices_grains_derivatives_ref[0][0][1][2] = 59;
-  a_cosine_matrices_grains_derivatives_ref[0][0][2][0] = 60;
-  a_cosine_matrices_grains_derivatives_ref[0][0][2][1] = 61;
-  a_cosine_matrices_grains_derivatives_ref[0][0][2][2] = 62;
-  a_cosine_matrices_grains_derivatives_ref[0][1][0][0] = 63;
-  a_cosine_matrices_grains_derivatives_ref[0][1][0][1] = 64;
-  a_cosine_matrices_grains_derivatives_ref[0][1][0][2] = 65;
-  a_cosine_matrices_grains_derivatives_ref[0][1][1][0] = 66;
-  a_cosine_matrices_grains_derivatives_ref[0][1][1][1] = 67;
-  a_cosine_matrices_grains_derivatives_ref[0][1][1][2] = 68;
-  a_cosine_matrices_grains_derivatives_ref[0][1][2][0] = 69;
-  a_cosine_matrices_grains_derivatives_ref[0][1][2][1] = 70;
-  a_cosine_matrices_grains_derivatives_ref[0][1][2][2] = 71;
-  a_cosine_matrices_grains_derivatives_ref[0][2][0][0] = 72;
-  a_cosine_matrices_grains_derivatives_ref[0][2][0][1] = 73;
-  a_cosine_matrices_grains_derivatives_ref[0][2][0][2] = 74;
-  a_cosine_matrices_grains_derivatives_ref[0][2][1][0] = 75;
-  a_cosine_matrices_grains_derivatives_ref[0][2][1][1] = 76;
-  a_cosine_matrices_grains_derivatives_ref[0][2][1][2] = 77;
-  a_cosine_matrices_grains_derivatives_ref[0][2][2][0] = 78;
-  a_cosine_matrices_grains_derivatives_ref[0][2][2][1] = 79;
-  a_cosine_matrices_grains_derivatives_ref[0][2][2][2] = 80;
+  a_cosine_matrices_grains_derivatives_ref[0][0][0][0] = 54./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][0][1] = 55./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][0][2] = 56./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][1][0] = 57./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][1][1] = 58./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][1][2] = 59./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][2][0] = 60./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][2][1] = 61./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][0][2][2] = 62./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][0][0] = 63./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][0][1] = 64./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][0][2] = 65./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][1][0] = 66./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][1][1] = 67./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][1][2] = 68./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][2][0] = 69./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][2][1] = 70./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][1][2][2] = 71./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][0][0] = 72./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][0][1] = 73./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][0][2] = 74./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][1][0] = 75./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][1][1] = 76./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][1][2] = 77./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][2][0] = 78./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][2][1] = 79./1000.;
+  a_cosine_matrices_grains_derivatives_ref[0][2][2][2] = 80./1000.;
 
   volume_fractions_grains_derivatives_ref[1][0] = 1.0;
   volume_fractions_grains_derivatives_ref[1][1] = 1.1;
   volume_fractions_grains_derivatives_ref[1][2] = 1.2;
 
-  a_cosine_matrices_grains_derivatives_ref[1][0][0][0] = 81;
-  a_cosine_matrices_grains_derivatives_ref[1][0][0][1] = 82;
-  a_cosine_matrices_grains_derivatives_ref[1][0][0][2] = 83;
-  a_cosine_matrices_grains_derivatives_ref[1][0][1][0] = 84;
-  a_cosine_matrices_grains_derivatives_ref[1][0][1][1] = 85;
-  a_cosine_matrices_grains_derivatives_ref[1][0][1][2] = 86;
-  a_cosine_matrices_grains_derivatives_ref[1][0][2][0] = 87;
-  a_cosine_matrices_grains_derivatives_ref[1][0][2][1] = 88;
-  a_cosine_matrices_grains_derivatives_ref[1][0][2][2] = 89;
-  a_cosine_matrices_grains_derivatives_ref[1][1][0][0] = 90;
-  a_cosine_matrices_grains_derivatives_ref[1][1][0][1] = 91;
-  a_cosine_matrices_grains_derivatives_ref[1][1][0][2] = 92;
-  a_cosine_matrices_grains_derivatives_ref[1][1][1][0] = 93;
-  a_cosine_matrices_grains_derivatives_ref[1][1][1][1] = 94;
-  a_cosine_matrices_grains_derivatives_ref[1][1][1][2] = 95;
-  a_cosine_matrices_grains_derivatives_ref[1][1][2][0] = 96;
-  a_cosine_matrices_grains_derivatives_ref[1][1][2][1] = 97;
-  a_cosine_matrices_grains_derivatives_ref[1][1][2][2] = 98;
-  a_cosine_matrices_grains_derivatives_ref[1][2][0][0] = 99;
-  a_cosine_matrices_grains_derivatives_ref[1][2][0][1] = 100;
-  a_cosine_matrices_grains_derivatives_ref[1][2][0][2] = 101;
-  a_cosine_matrices_grains_derivatives_ref[1][2][1][0] = 102;
-  a_cosine_matrices_grains_derivatives_ref[1][2][1][1] = 103;
-  a_cosine_matrices_grains_derivatives_ref[1][2][1][2] = 104;
-  a_cosine_matrices_grains_derivatives_ref[1][2][2][0] = 105;
-  a_cosine_matrices_grains_derivatives_ref[1][2][2][1] = 106;
-  a_cosine_matrices_grains_derivatives_ref[1][2][2][2] = 107;
+  a_cosine_matrices_grains_derivatives_ref[1][0][0][0] = 81./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][0][1] = 82./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][0][2] = 83./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][1][0] = 84./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][1][1] = 85./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][1][2] = 86./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][2][0] = 87./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][2][1] = 88./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][0][2][2] = 89./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][0][0] = 90./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][0][1] = 91./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][0][2] = 92./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][1][0] = 93./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][1][1] = 94./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][1][2] = 95./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][2][0] = 96./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][2][1] = 97./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][1][2][2] = 98./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][0][0] = 99./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][0][1] = 100./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][0][2] = 101./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][1][0] = 102./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][1][1] = 103./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][1][2] = 104./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][2][0] = 105./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][2][1] = 106./1000.;
+  a_cosine_matrices_grains_derivatives_ref[1][2][2][2] = 107./1000.;
 
   std::vector<unsigned int> deformation_types_ref = {(unsigned int)aspect::Particle::Property::DeformationType::passive,
                                                      (unsigned int)aspect::Particle::Property::DeformationType::passive
@@ -322,19 +322,19 @@ TEST_CASE("CPO core: Store and Load")
   for (size_t iii = 4; iii < 13; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[13] ==  Approx(0.2)); // grain 1 volume fraction
   for (size_t iii = 14; iii < 23; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[23] ==  Approx(0.3)); // grain 2 volume fraction
   for (size_t iii = 24; iii < 33; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   // mineral 2
   CHECK(data[33] ==  Approx(0.0)); // deformation type
@@ -343,19 +343,19 @@ TEST_CASE("CPO core: Store and Load")
   for (size_t iii = 36; iii < 45; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[45] ==  Approx(0.5)); // grain 1 volume fraction
   for (size_t iii = 46; iii < 55; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[55] ==  Approx(0.6)); // grain 2 volume fraction
   for (size_t iii = 56; iii < 65; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   // derivatives
   // mineral 1
@@ -363,38 +363,38 @@ TEST_CASE("CPO core: Store and Load")
   for (size_t iii = 66; iii < 75; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[75] ==  Approx(0.8)); // grain 1 volume fraction
   for (size_t iii = 76; iii < 85; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[85] ==  Approx(0.9)); // grain 2 volume fraction
   for (size_t iii = 86; iii < 95; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   // mineral 2
   CHECK(data[95] ==  Approx(1.0)); // grain 0 volume fraction
   for (size_t iii = 96; iii < 105; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[105] ==  Approx(1.1)); // grain 1 volume fraction
   for (size_t iii = 106; iii < 115; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[115] ==  Approx(1.2)); // grain 2 volume fraction
   for (size_t iii = 116; iii < 125; iii++)
     {
       CHECK(data[iii] == Approx(counter_rotation));
-      counter_rotation += 1.;
+      counter_rotation += 1./1000.;
     }
   CHECK(data[125] == Approx(6541684.3)); // after data position
   CHECK(data[126] == Approx(0.0)); // after data position

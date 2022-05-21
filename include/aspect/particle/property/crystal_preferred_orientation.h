@@ -181,23 +181,9 @@ namespace aspect
           std::vector<std::pair<std::string, unsigned int>>
           get_property_information() const;
 
+
           /**
            * Unpacks data from the global particle data into variables. Intended for use by other parts of aspect.
-           * The parameters are explained in the general class documentation.
-           */
-          static
-          void
-          unpack_particle_data(const unsigned int cpo_index,
-                               const ArrayView<double> &data,
-                               std::vector<unsigned int> &deformation_type,
-                               std::vector<double> &volume_fraction_mineral,
-                               std::vector<std::vector<double>> &volume_fractions_mineral,
-                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral);
-
-
-          /**
-           * Unpacks data from the global particle data into variables. This is an extension of unpack_particle_data which
-           * includes the grain derivatives. Intended mostly for use in this plugin.
            * The parameters are explained in the general class documentation.
            */
           void
@@ -207,26 +193,12 @@ namespace aspect
                                std::vector<double> &volume_fraction_mineral,
                                std::vector<std::vector<double>> &volume_fractions_mineral,
                                std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
-                               std::vector<std::vector<double>> &volume_fractions_mineral_derivatives,
-                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives) const;
+                               std::vector<std::vector<double>> &volume_fractions_mineral_derivatives = {},
+                               std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives = {}) const;
 
           /**
            * Packs information from variables into the global particle data array. Intended for use by other parts of ASPECT.
            * The parameters are explained in the general class documentation.
-           */
-          static
-          void
-          pack_particle_data(const unsigned int cpo_data_position,
-                             const ArrayView<double> &data,
-                             std::vector<unsigned int> &deformation_type,
-                             std::vector<double> &volume_fraction_mineral,
-                             std::vector<std::vector<double>> &volume_fractions_mineral,
-                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral);
-
-
-          /**
-           * Packs information from variables into the global particle data array. An extension of unpack_particle_data which
-           * includes the grain derivatives. Intended mostly for use in this plugin.
            * The parameters are explained in the general class documentation.
            */
           void
@@ -236,8 +208,61 @@ namespace aspect
                              std::vector<double> &volume_fraction_mineral,
                              std::vector<std::vector<double>> &volume_fractions_mineral,
                              std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral,
-                             std::vector<std::vector<double>> &volume_fractions_mineral_derivatives,
-                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives) const;
+                             std::vector<std::vector<double>> &volume_fractions_mineral_derivatives = {},
+                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_mineral_derivatives = {}) const;
+
+
+          /**
+           * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
+           *
+           * @param volume_fractions are the current volume fractions of the grains in a mineral.
+           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
+           * @param strain_rate is the strain-rate at the location of the particle.
+           * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
+           * @param volume_fraction_mineral is the volume fraction of the current mineral with respect to
+           * the other minerals in the particle.
+           * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
+           */
+          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
+          compute_derivatives(const std::vector<double> &volume_fractions,
+                              const std::vector<Tensor<2,3>> &rotation_matrices,
+                              const SymmetricTensor<2,3> &strain_rate,
+                              const Tensor<2,3> &velocity_gradient_tensor,
+                              const double volume_fraction_mineral,
+                              const std::array<double,4> &ref_resolved_shear_stress) const;
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          void
+          parse_parameters (ParameterHandler &prm) override;
+
+          /**
+           * Return the number of grains per particle
+           */
+          unsigned int
+          get_number_of_grains();
+
+          /**
+           * Return the number of minerals per particle
+           */
+          unsigned int
+          get_number_of_minerals();
+
+        private:
+
+          /**
+           * Computes a random rotation matrix.
+           */
+          void
+          compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const;
 
           /**
            * Updates the volume fractions and rotation matrices with a Forward Euler scheme:
@@ -294,24 +319,6 @@ namespace aspect
                                 std::vector<Tensor<2,3>> &previous_rotation_matrices_derivatives) const;
 
 
-          /**
-           * Computes the volume fraction and grain orientation derivatives of all the grains of a mineral.
-           *
-           * @param volume_fractions are the current volume fractions of the grains in a mineral.
-           * @param rotation_matrices are the current rotation matrices of the grains in a mineral.
-           * @param strain_rate is the strain-rate at the location of the particle.
-           * @param velocity_gradient_tensor is the velocity gradient tensor at the location of the particle.
-           * @param volume_fraction_mineral is the volume fraction of the current mineral with respect to
-           * the other minerals in the particle.
-           * @param ref_resolved_shear_stress is the reference resolved shear stress of the mineral.
-           */
-          std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-          compute_derivatives(const std::vector<double> &volume_fractions,
-                              const std::vector<Tensor<2,3>> &rotation_matrices,
-                              const SymmetricTensor<2,3> &strain_rate,
-                              const Tensor<2,3> &velocity_gradient_tensor,
-                              const double volume_fraction_mineral,
-                              const std::array<double,4> &ref_resolved_shear_stress) const;
 
           /**
            * Computes and returns the volume fraction and grain orientation derivatives such that
@@ -322,49 +329,27 @@ namespace aspect
           std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
           compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const;
 
-
-          /**
-           * Declare the parameters this class takes through input files.
-           */
-          static
-          void
-          declare_parameters (ParameterHandler &prm);
-
-          /**
-           * Read the parameters this class declares from the parameter file.
-           */
-          void
-          parse_parameters (ParameterHandler &prm) override;
-
-          /**
-           * Return the number of grains per particle
-           */
-          static
-          unsigned int
-          get_number_of_grains();
-
-          /**
-           * Return the number of minerals per particle
-           */
-          static
-          unsigned int
-          get_number_of_minerals();
-
-        private:
           /**
            * Random number generator used for initalization of particles
            */
           mutable boost::lagged_fibonacci44497 random_number_generator;
           unsigned int random_number_seed;
 
-          static
           unsigned int n_grains;
 
-          static
           unsigned int n_minerals;
 
+          /**
+           * A vector containing the deformatation type selectors provided by the user.
+           * Should be one of the following: "Olivine: Karato 2008", "Olivine: A-fabric",
+           * "Olivine: B-fabric", "Olivine: C-fabric", "Olivine: D-fabric", "Olivine: E-fabric",
+           * "Enstatite" or "Passive".
+           */
           std::vector<DeformationTypeSelector> deformation_type_selector;
 
+          /**
+           * Store the volume fraction for each mineral.
+           */
           std::vector<double> volume_fractions_minerals;
 
           /**

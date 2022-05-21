@@ -19,8 +19,8 @@
  */
 
 #include <aspect/particle/property/crystal_preferred_orientation.h>
-#include <world_builder/grains.h>
 #include <aspect/geometry_model/interface.h>
+#include <world_builder/grains.h>
 #include <world_builder/world.h>
 
 #include <aspect/utilities.h>
@@ -31,12 +31,6 @@ namespace aspect
   {
     namespace Property
     {
-
-      template <int dim>
-      unsigned int CrystalPreferredOrientation<dim>::n_grains = 0;
-
-      template <int dim>
-      unsigned int CrystalPreferredOrientation<dim>::n_minerals = 0;
 
       template <int dim>
       CrystalPreferredOrientation<dim>::CrystalPreferredOrientation ()
@@ -57,6 +51,8 @@ namespace aspect
         this->random_number_generator.seed(random_number_seed+my_rank);
       }
 
+
+
       template <int dim>
       void
       CrystalPreferredOrientation<dim>::unpack_particle_data(const unsigned int cpo_data_position,
@@ -64,8 +60,11 @@ namespace aspect
                                                              std::vector<unsigned int> &deformation_type,
                                                              std::vector<double> &volume_fraction_mineral,
                                                              std::vector<std::vector<double>> &volume_fractions_grains,
-                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains)
+                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
+                                                             std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
+                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
       {
+
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
          * 1. M mineral times
@@ -80,6 +79,7 @@ namespace aspect
          *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
          * See class header information for more layout information
          */
+
         deformation_type.resize(n_minerals);
         volume_fraction_mineral.resize(n_minerals);
         volume_fractions_grains.resize(n_minerals);
@@ -96,48 +96,41 @@ namespace aspect
                 // store volume fraction for olivine grains
                 volume_fractions_grains[mineral_i][grain_i] = data[cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)];
 
+
+                Assert(isfinite(volume_fractions_grains[mineral_i][grain_i]),
+                       ExcMessage("volume_fractions_grains[" + std::to_string(grain_i) + "] is not finite directly after loading: "
+                                  + std::to_string(volume_fractions_grains[mineral_i][grain_i]) + "."));
+
                 // store a_{ij} for mineral grains
                 for (unsigned int i = 0; i < Tensor<2,3>::n_independent_components ; ++i)
                   {
                     const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(i);
                     rotation_matrices_grains[mineral_i][grain_i][index] = data[cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2) + i];
+
+                  }
+
+                for (unsigned int j = 0; j < 3; j++)
+                  {
+                    for (size_t k = 0; k < 3; k++)
+                      {
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][grain_i][j][k]), ExcMessage("rotation_matrices_grains[mineral_i] is NaN directly after loading."));
+
+                        Assert(abs(rotation_matrices_grains[mineral_i][grain_i][j][k]) <= 1.0,
+                               ExcMessage("1. rotation_matrices_grains[[" + std::to_string(j) + "][" + std::to_string(k) +
+                                          "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][j][k]) + ". rotation_matrix = \n"
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " "
+                                          + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
+                      }
                   }
               }
           }
-      }
-
-
-      template <int dim>
-      void
-      CrystalPreferredOrientation<dim>::unpack_particle_data(const unsigned int cpo_data_position,
-                                                             const ArrayView<double> &data,
-                                                             std::vector<unsigned int> &deformation_type,
-                                                             std::vector<double> &volume_fraction_mineral,
-                                                             std::vector<std::vector<double>> &volume_fractions_grains,
-                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
-                                                             std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
-                                                             std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
-      {
-        /**
-        * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
-        * 1. M mineral times
-        *    1.1  Mineral deformation type   -> 1 double, at location
-        *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
-        *    2.1. Mineral volume fraction    -> 1 double, at location
-        *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
-        *    2.2. N grains times:
-        *         2.1. volume fraction grain -> 1 double, at location:
-        *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-        *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
-        *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-        * See class header information for more layout information
-        */
-        unpack_particle_data(cpo_data_position,
-                             data,
-                             deformation_type,
-                             volume_fraction_mineral,
-                             volume_fractions_grains,
-                             rotation_matrices_grains);
 
         // now store the derivatives if needed
         if (this->advection_method == AdvectionMethod::crank_nicolson)
@@ -156,15 +149,16 @@ namespace aspect
                     volume_fractions_grains_derivatives[mineral_i][grain_i] = data[cpo_data_position  + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10];
 
                     // store a_{ij} for olivine grains
-                    for (unsigned int iii = 0; iii < Tensor<2,3>::n_independent_components ; ++iii)
+                    for (unsigned int tensor_element_i = 0; tensor_element_i < Tensor<2,3>::n_independent_components ; ++tensor_element_i)
                       {
-                        const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(iii);
-                        rotation_matrices_grains_derivatives[mineral_i][grain_i][index] = data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + iii];
+                        const dealii::TableIndices<2> index = Tensor<2,3>::unrolled_to_component_indices(tensor_element_i);
+                        rotation_matrices_grains_derivatives[mineral_i][grain_i][index] = data[cpo_data_position + n_minerals * (n_grains * 10 + 2) + mineral_i * (n_grains * 10)  + grain_i * 10  + 1 + tensor_element_i];
                       }
                   }
               }
           }
       }
+
 
 
       template <int dim>
@@ -174,7 +168,9 @@ namespace aspect
                                                            std::vector<unsigned int> &deformation_type,
                                                            std::vector<double> &volume_fraction_mineral,
                                                            std::vector<std::vector<double>> &volume_fractions_grains,
-                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains)
+                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
+                                                           std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
+                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
       {
         /**
          * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
@@ -212,41 +208,6 @@ namespace aspect
                   }
               }
           }
-      }
-
-
-
-      template <int dim>
-      void
-      CrystalPreferredOrientation<dim>::pack_particle_data(const unsigned int cpo_data_position,
-                                                           const ArrayView<double> &data,
-                                                           std::vector<unsigned int> &deformation_type,
-                                                           std::vector<double> &volume_fraction_mineral,
-                                                           std::vector<std::vector<double>> &volume_fractions_grains,
-                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains,
-                                                           std::vector<std::vector<double>> &volume_fractions_grains_derivatives,
-                                                           std::vector<std::vector<Tensor<2,3>>> &rotation_matrices_grains_derivatives) const
-      {
-        /**
-         * The layout of the data vector per particle is the following (note that for this plugin the following dims are always 3):
-         * 1. M mineral times
-         *    1.1  Mineral deformation type   -> 1 double, at location
-         *                                      => cpo_data_position + 0 + mineral_i * (n_grains * 10 + 2)
-         *    2.1. Mineral volume fraction    -> 1 double, at location
-         *                                      => cpo_data_position + 1 + mineral_i * (n_grains * 10 + 2)
-         *    2.2. N grains times:
-         *         2.1. volume fraction grain -> 1 double, at location:
-         *                                      => cpo_data_position + 2 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-         *         2.2. rotation_matrix grain -> 9 (Tensor<2,dim>::n_independent_components) doubles, starts at:
-         *                                      => cpo_data_position + 3 + grain_i * 10 + mineral_i * (n_grains * 10 + 2)
-         * See class header information for more layout information
-         */
-        pack_particle_data(cpo_data_position,
-                           data,
-                           deformation_type,
-                           volume_fraction_mineral,
-                           volume_fractions_grains,
-                           rotation_matrices_grains);
 
         // now store the derivatives if needed. They are added after all the other data.
         if (this->advection_method == AdvectionMethod::crank_nicolson)
@@ -278,6 +239,73 @@ namespace aspect
           }
       }
 
+
+
+      template <int dim>
+      void
+      CrystalPreferredOrientation<dim>::compute_random_rotation_matrix(Tensor<2,3> &rotation_matrix) const
+      {
+
+        // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
+        // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
+        // and is licenced according to this website with the following licence:
+        //
+        // "The Graphics Gems code is copyright-protected. In other words, you cannot claim the text of the code as your own and
+        // resell it. Using the code is permitted in any program, product, or library, non-commercial or commercial. Giving credit
+        // is not required, though is a nice gesture. The code comes as-is, and if there are any flaws or problems with any Gems
+        // code, nobody involved with Gems - authors, editors, publishers, or webmasters - are to be held responsible. Basically,
+        // don't be a jerk, and remember that anything free comes with no guarantee.""
+        //
+        // The book states in the preface the following: "As in the first two volumes, all of the C and C++ code in this book is in
+        // the public domain, and is yours to study, modify, and use."
+
+        // first generate three random numbers between 0 and 1 and multiply them with 2 PI or 2 for z. Note that these are not the same as phi_1, theta and phi_2.
+
+        boost::random::uniform_real_distribution<double> uniform_distribution(0,1);
+        double one = uniform_distribution(this->random_number_generator);
+        double two = uniform_distribution(this->random_number_generator);
+        double three = uniform_distribution(this->random_number_generator);
+
+        double theta = 2.0 * M_PI * one; // Rotation about the pole (Z)
+        double phi = 2.0 * M_PI * two; // For direction of pole deflection.
+        double z = 2.0* three; //For magnitude of pole deflection.
+
+        // Compute a vector V used for distributing points over the sphere
+        // via the reflection I - V Transpose(V).  This formulation of V
+        // will guarantee that if x[1] and x[2] are uniformly distributed,
+        // the reflected points will be uniform on the sphere.  Note that V
+        // has length sqrt(2) to eliminate the 2 in the Householder matrix.
+
+        double r  = std::sqrt( z );
+        double Vx = std::sin( phi ) * r;
+        double Vy = std::cos( phi ) * r;
+        double Vz = std::sqrt( 2.f - z );
+
+        // Compute the row vector S = Transpose(V) * R, where R is a simple
+        // rotation by theta about the z-axis.  No need to compute Sz since
+        // it's just Vz.
+
+        double st = std::sin( theta );
+        double ct = std::cos( theta );
+        double Sx = Vx * ct - Vy * st;
+        double Sy = Vx * st + Vy * ct;
+
+        // Construct the rotation matrix  ( V Transpose(V) - I ) R, which
+        // is equivalent to V S - R.
+
+        rotation_matrix[0][0] = Vx * Sx - ct;
+        rotation_matrix[0][1] = Vx * Sy - st;
+        rotation_matrix[0][2] = Vx * Vz;
+        rotation_matrix[1][0] = Vy * Sx + st;
+        rotation_matrix[1][1] = Vy * Sy - ct;
+        rotation_matrix[1][2] = Vy * Vz;
+        rotation_matrix[2][0] = Vz * Sx;
+        rotation_matrix[2][1] = Vz * Sy;
+        rotation_matrix[2][2] = 1.0 - z;   // This equals Vz * Vz - 1.0
+      }
+
+
+
       template <int dim>
       void
       CrystalPreferredOrientation<dim>::initialize_one_particle_property(const Point<dim> &,
@@ -306,7 +334,7 @@ namespace aspect
         //
         // The rotation matrix is a direction cosine matrix, representing the orientation of the grain in the domain.
 
-        // fabric. This is determined in the computations, so set it to -1 for now.
+        // The fabric is determined in the computations, so set it to -1 for now.
         std::vector<double> deformation_type(n_minerals, -1.0);
         std::vector<std::vector<double >>volume_fractions_grains(n_minerals);
         std::vector<std::vector<Tensor<2,3>>> rotation_matrices_grains(n_minerals);
@@ -333,7 +361,6 @@ namespace aspect
               {
                 // set volume fraction
                 const double initial_volume_fraction = 1.0/n_grains;
-                boost::random::uniform_real_distribution<double> uniform_distribution(0,1);
 
                 for (unsigned int grain_i = 0; grain_i < n_grains ; ++grain_i)
                   {
@@ -341,63 +368,7 @@ namespace aspect
                     volume_fractions_grains[mineral_i][grain_i] = initial_volume_fraction;
 
                     // set a uniform random rotation_matrix per grain
-                    // This function is based on an article in Graphic Gems III, written by James Arvo, Cornell University (p 116-120).
-                    // The original code can be found on  http://www.realtimerendering.com/resources/GraphicsGems/gemsiii/rand_rotation.c
-                    // and is licenced according to this website with the following licence:
-                    //
-                    // "The Graphics Gems code is copyright-protected. In other words, you cannot claim the text of the code as your own and
-                    // resell it. Using the code is permitted in any program, product, or library, non-commercial or commercial. Giving credit
-                    // is not required, though is a nice gesture. The code comes as-is, and if there are any flaws or problems with any Gems
-                    // code, nobody involved with Gems - authors, editors, publishers, or webmasters - are to be held responsible. Basically,
-                    // don't be a jerk, and remember that anything free comes with no guarantee.""
-                    //
-                    // The book states in the preface the following: "As in the first two volumes, all of the C and C++ code in this book is in
-                    // the public domain, and is yours to study, modify, and use."
-
-                    // first generate three random numbers between 0 and 1 and multiply them with 2 PI or 2 for z. Note that these are not the same as phi_1, theta and phi_2.
-                    double one = uniform_distribution(this->random_number_generator);
-                    double two = uniform_distribution(this->random_number_generator);
-                    double three = uniform_distribution(this->random_number_generator);
-
-                    double theta = 2.0 * M_PI * one; // Rotation about the pole (Z)
-                    double phi = 2.0 * M_PI * two; // For direction of pole deflection.
-                    double z = 2.0* three; //For magnitude of pole deflection.
-
-                    // Compute a vector V used for distributing points over the sphere
-                    // via the reflection I - V Transpose(V).  This formulation of V
-                    // will guarantee that if x[1] and x[2] are uniformly distributed,
-                    // the reflected points will be uniform on the sphere.  Note that V
-                    // has length sqrt(2) to eliminate the 2 in the Householder matrix.
-
-                    double r  = std::sqrt( z );
-                    double Vx = std::sin( phi ) * r;
-                    double Vy = std::cos( phi ) * r;
-                    double Vz = std::sqrt( 2.f - z );
-
-                    // Compute the row vector S = Transpose(V) * R, where R is a simple
-                    // rotation by theta about the z-axis.  No need to compute Sz since
-                    // it's just Vz.
-
-                    double st = std::sin( theta );
-                    double ct = std::cos( theta );
-                    double Sx = Vx * ct - Vy * st;
-                    double Sy = Vx * st + Vy * ct;
-
-                    // Construct the rotation matrix  ( V Transpose(V) - I ) R, which
-                    // is equivalent to V S - R.
-
-                    rotation_matrices_grains[mineral_i][grain_i][0][0] = Vx * Sx - ct;
-                    rotation_matrices_grains[mineral_i][grain_i][0][1] = Vx * Sy - st;
-                    rotation_matrices_grains[mineral_i][grain_i][0][2] = Vx * Vz;
-
-                    rotation_matrices_grains[mineral_i][grain_i][1][0] = Vy * Sx + st;
-                    rotation_matrices_grains[mineral_i][grain_i][1][1] = Vy * Sy - ct;
-                    rotation_matrices_grains[mineral_i][grain_i][1][2] = Vy * Vz;
-
-                    rotation_matrices_grains[mineral_i][grain_i][2][0] = Vz * Sx;
-                    rotation_matrices_grains[mineral_i][grain_i][2][1] = Vz * Sy;
-                    rotation_matrices_grains[mineral_i][grain_i][2][2] = 1.0 - z;   // This equals Vz * Vz - 1.0
-
+                    this->compute_random_rotation_matrix(rotation_matrices_grains[mineral_i][grain_i]);
                   }
               }
           }
@@ -433,6 +404,8 @@ namespace aspect
               }
           }
       }
+
+
 
       template <int dim>
       void
@@ -514,42 +487,6 @@ namespace aspect
 
             const std::array<double,4> ref_resolved_shear_stress = {{1e60,1e60,1e60,1e60}};
 
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-              {
-                Assert(isfinite(volume_fractions_grains[mineral_i][grain_i]),
-                       ExcMessage("volume_fractions_grains[" + std::to_string(grain_i) + "] is not finite directly after loading: "
-                                  + std::to_string(volume_fractions_grains[mineral_i][grain_i]) + "."));
-              }
-
-            for (unsigned int i = 0; i < n_grains; ++i)
-              {
-                for (unsigned int j = 0; j < 3; j++)
-                  {
-                    for (size_t k = 0; k < 3; k++)
-                      {
-                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage("rotation_matrices_grains[mineral_i] is NaN directly after loading."));
-                      }
-                  }
-              }
-
-
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-              {
-                for (size_t i = 0; i < 3; i++)
-                  for (size_t j = 0; j < 3; j++)
-                    Assert(abs(rotation_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
-                           ExcMessage("1. rotation_matrices_grains[[" + std::to_string(i) + "][" + std::to_string(j) +
-                                      "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]) + ". rotation_matrix = \n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " "
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
-              }
 
             /**
             * Now we have loaded all the data and can do the actual computation.
@@ -610,20 +547,18 @@ namespace aspect
                        ExcMessage("volume_fractions_grains[mineral_i]" + std::to_string(grain_i) + "] is not finite: "
                                   + std::to_string(volume_fractions_grains[mineral_i][grain_i]) + ", inv_sum_volume_mineral = "
                                   + std::to_string(inv_sum_volume_mineral) + "."));
-              }
 
-            for (unsigned int i = 0; i < n_grains; ++i)
-              {
+
                 for (size_t j = 0; j < 3; j++)
                   {
                     for (size_t k = 0; k < 3; k++)
                       {
-                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]), ExcMessage(" rotation_matrices_grains is nan before orthoganalization."));
+                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][grain_i][j][k]), ExcMessage(" rotation_matrices_grains is nan before orthoganalization."));
                       }
 
                   }
-
               }
+
 
             /**
              * Correct direction cosine matrices numerical error (orthnormality) after integration
@@ -644,42 +579,30 @@ namespace aspect
                     }
               }
 
-            for (unsigned int i = 0; i < n_grains; ++i)
-              {
-                for (size_t j = 0; j < 3; j++)
-                  {
-                    for (size_t k = 0; k < 3; k++)
-                      {
-                        Assert(!std::isnan(rotation_matrices_grains[mineral_i][i][j][k]),
-                               ExcMessage(" rotation_matrices_grains[mineral_i] is nan after orthoganalization: "
-                                          + std::to_string(rotation_matrices_grains[mineral_i][i][j][k])));
-                      }
-
-                  }
-
-              }
-
-
             for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
               {
-                for (size_t i = 0; i < 3; i++)
-                  for (size_t j = 0; j < 3; j++)
-                    Assert(abs(rotation_matrices_grains[mineral_i][grain_i][i][j]) <= 1.0,
-                           ExcMessage("3. rotation_matrices_grains[mineral_i][" + std::to_string(i) + "][" + std::to_string(j) +
-                                      "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]) + " (" + std::to_string(rotation_matrices_grains[mineral_i][grain_i][i][j]-1.0) + "). rotation_matrix = \n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
-                                      + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
-              }
 
-            for (unsigned int grain_i = 0; grain_i < n_grains; ++grain_i)
-              {
                 Assert(isfinite(volume_fractions_grains[mineral_i][grain_i]),
                        ExcMessage("volume_fractions_grains[mineral_i][" + std::to_string(grain_i) + "] is not finite: "
                                   + std::to_string(volume_fractions_grains[mineral_i][grain_i]) + ", inv_sum_volume_grains[mineral_i] = "
                                   + std::to_string(inv_sum_volume_mineral) + "."));
-              }
 
+                for (size_t j = 0; j < 3; j++)
+                  for (size_t k = 0; k < 3; k++)
+                    {
+
+                      Assert(!std::isnan(rotation_matrices_grains[mineral_i][grain_i][j][k]),
+                             ExcMessage(" rotation_matrices_grains[mineral_i] is nan after orthoganalization: "
+                                        + std::to_string(rotation_matrices_grains[mineral_i][grain_i][j][k])));
+
+                      Assert(abs(rotation_matrices_grains[mineral_i][grain_i][j][k]) <= 1.0,
+                             ExcMessage("3. rotation_matrices_grains[mineral_i][" + std::to_string(j) + "][" + std::to_string(k) +
+                                        "] is larger than one: " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][j][k]) + " (" + std::to_string(rotation_matrices_grains[mineral_i][grain_i][j][k]-1.0) + "). rotation_matrix = \n"
+                                        + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][0][2]) + "\n"
+                                        + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][1][2]) + "\n"
+                                        + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][0]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][1]) + " " + std::to_string(rotation_matrices_grains[mineral_i][grain_i][2][2])));
+                    }
+              }
           }
 
         pack_particle_data(data_position,
@@ -696,12 +619,15 @@ namespace aspect
       }
 
 
+
       template <int dim>
       UpdateTimeFlags
       CrystalPreferredOrientation<dim>::need_update() const
       {
         return update_time_step;
       }
+
+
 
       template <int dim>
       InitializationModeForLateParticles
@@ -710,12 +636,16 @@ namespace aspect
         return InitializationModeForLateParticles::interpolate;
       }
 
+
+
       template <int dim>
       UpdateFlags
       CrystalPreferredOrientation<dim>::get_needed_update_flags () const
       {
         return update_values | update_gradients;
       }
+
+
 
       template <int dim>
       std::vector<std::pair<std::string, unsigned int>>
@@ -758,6 +688,8 @@ namespace aspect
         return property_information;
       }
 
+
+
       template <int dim>
       double
       CrystalPreferredOrientation<dim>::advect_forward_euler(const double dt,
@@ -786,6 +718,7 @@ namespace aspect
         Assert(sum_volume_fractions != 0, ExcMessage("The sum of all grain volume fractions of a mineral is equal to zero. This should not happen."));
         return sum_volume_fractions;
       }
+
 
 
       template <int dim>
@@ -848,7 +781,6 @@ namespace aspect
 
 
 
-
       template <int dim>
       double
       CrystalPreferredOrientation<dim>::advect_Crank_Nicolson(const double dt,
@@ -907,14 +839,16 @@ namespace aspect
         return sum_volume_fractions;
       }
 
+
+
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
-      CrystalPreferredOrientation<dim>::compute_derivatives(const std::vector<double> &,
-                                                            const std::vector<Tensor<2,3>> &,
-                                                            const SymmetricTensor<2,3> &,
+      CrystalPreferredOrientation<dim>::compute_derivatives(const std::vector<double> & /*volume_fractions_grains*/,
+                                                            const std::vector<Tensor<2,3>> & /*rotation_matrices_grains*/,
+                                                            const SymmetricTensor<2,3> & /*strain_rate_3d*/,
                                                             const Tensor<2,3> &velocity_gradient_tensor,
-                                                            const double,
-                                                            const std::array<double,4> &) const
+                                                            const double /*volume_fraction_mineral*/,
+                                                            const std::array<double,4> & /*ref_resolved_shear_stress*/) const
       {
         std::pair<std::vector<double>, std::vector<Tensor<2,3>>> derivatives;
         switch (cpo_derivative_algorithm)
@@ -932,6 +866,8 @@ namespace aspect
         return derivatives;
       }
 
+
+
       template <int dim>
       std::pair<std::vector<double>, std::vector<Tensor<2,3>>>
       CrystalPreferredOrientation<dim>::compute_derivatives_spin_tensor(const Tensor<2,3> &velocity_gradient_tensor) const
@@ -943,6 +879,8 @@ namespace aspect
         return std::pair<std::vector<double>, std::vector<Tensor<2,3>>>(std::vector<double>(n_grains,0.0), std::vector<Tensor<2,3>>(n_grains, spin_tensor));
       }
 
+
+
       template<int dim>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_grains()
@@ -950,12 +888,15 @@ namespace aspect
         return n_grains;
       }
 
+
+
       template<int dim>
       unsigned int
       CrystalPreferredOrientation<dim>::get_number_of_minerals()
       {
         return n_minerals;
       }
+
 
 
       template <int dim>
@@ -976,7 +917,7 @@ namespace aspect
                                  "user seed + MPI Rank. ");
 
               prm.declare_entry ("Number of grains per particle", "50",
-                                 Patterns::Integer (0),
+                                 Patterns::Integer (1),
                                  "The number of grains of each different mineral "
                                  "each particle contains.");
 
@@ -996,7 +937,7 @@ namespace aspect
                                  "This option allows for setting the maximum number of iterations. Note that when the iteration "
                                  "is ended by the max iteration amount an assert is thrown.");
 
-              prm.declare_entry ("CPO derivatives algorithm", "D-Rex 2004",
+              prm.declare_entry ("CPO derivatives algorithm", "Spin tensor",
                                  Patterns::List(Patterns::Anything()),
                                  "Options: Spin tensor, D-Rex 2004 (not implemented yet)");
 
@@ -1033,6 +974,7 @@ namespace aspect
         }
         prm.leave_subsection ();
       }
+
 
 
       template <int dim>
