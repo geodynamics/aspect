@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg898"
+   width="357"
+   height="265"
+   viewBox="0 0 357 265"
+   sodipodi:docname="convection_box_stats.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata904">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs902" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview900"
+     showgrid="false"
+     inkscape:zoom="1.2594506"
+     inkscape:cx="180.81336"
+     inkscape:cy="134.14442"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg898" />
+  <image
+     sodipodi:absref="/home/asaxena/opt/Aspect2.0/aspect/doc/manual/cookbooks/convection-box/doc/velocity.png"
+     xlink:href="velocity.png"
+     y="0"
+     x="0"
+     id="image906"
+     style="image-rendering:optimizeQuality"
+     preserveAspectRatio="none"
+     height="265"
+     width="357" />
+  <image
+     sodipodi:absref="/home/asaxena/opt/Aspect2.0/aspect/doc/manual/cookbooks/convection-box/doc/heatflux.png"
+     xlink:href="heatflux.png"
+     y="0"
+     x="383"
+     id="image896"
+     style="image-rendering:optimizeQuality"
+     preserveAspectRatio="none"
+     height="265"
+     width="357" />
+</svg>
