@@ -34,7 +34,7 @@ end
 # # Mesh refinement does not seem to affect
 # # deformation of free surface (at least in 2-D).
 subsection Mesh refinement
-  set Initial adaptive refinement              = 4
+  set Initial adaptive refinement              = 3
   set Initial global refinement                = 1
   set Time steps between mesh refinement       = 1
   set Minimum refinement level                 = 0
@@ -42,7 +42,7 @@ subsection Mesh refinement
   subsection Minimum refinement function
     set Coordinate system                      = cartesian
     set Variable names                         = x,y,t
-    set Function expression                    = if(y>=1050e3, 5, 0)
+    set Function expression                    = if(y>=1050e3, 4, 0)
   end
 end
 
@@ -91,9 +91,9 @@ subsection Boundary traction model
     set Data file time step = 750
   end
   subsection Infill ascii
-    set Rock density = 2e3
+    set Rock density = 0
     set Sediment density = 0
-    set Height for specifying rock infill = 10e3
+    set Height for specifying rock infill = 0
   end
   subsection Initial lithostatic pressure
     set Representative point = 1000e3, 0
@@ -180,7 +180,7 @@ subsection Postprocess
 
   subsection Topography
      set Output to file = true
-     set Time between text output = 100
+     set Time between text output = 7500
   end
 end
 

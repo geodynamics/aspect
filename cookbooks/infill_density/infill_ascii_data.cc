@@ -134,16 +134,16 @@ namespace aspect
                                                                                 position,
                                                                                 0);
       Tensor<1, dim> traction = normal_vector;
-      const double depth = this->get_geometry_model().depth(position);
-      const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();
-
+      //const double depth = this->get_geometry_model().depth(position);
+      const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();\
+      const double elevation = this->get_geometry_model().height_above_reference_surface(position);
       if (load >= infill_height * gravity_norm * rock_density)
         {
-          traction = (-load - depth*gravity_norm*rock_density) * normal_vector;
+          traction = (-load + elevation*gravity_norm*rock_density) * normal_vector;
         }
       else
         {
-          traction = (-load - depth*gravity_norm*sediment_density) * normal_vector;
+          traction = (-load + elevation*gravity_norm*sediment_density) * normal_vector;
         }
       return traction;
     }
