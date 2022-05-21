@@ -2,11 +2,15 @@
 # Visualizing results
 
 Among the postprocessors that can be selected in the input parameter file (see
-Sections&nbsp;[4.2][] and {ref}`parameters:Postprocess/Visualization`52]) are
+{ref}`sec:run-aspect:overview` and {ref}`parameters:Postprocess/Visualization`) are
 some that can produce files in a format that can later be used to generate a
 graphical visualization of the solution variables $\mathbf u, p$ and $T$ at
 select time steps, or of quantities derived from these variables (for the
-latter, see {ref}`sec:viz-postpostprocessors`53]).
+latter, see {ref}`sec:extending:vis-postprocessors`).
+
+:::{admonition} TODO
+{ref}`parameters:Postprocess/Visualization` is a dead reference as its not yet setup. Same with reference to A.165 in note below.
+:::
 
 By default, the files that are generated are in VTU format, i.e., the
 XML-based, compressed format defined by the VTK library, see
@@ -33,12 +37,15 @@ being widely distributed:
     both ParaView and Visit have defined a format that each of these programs
     understand and that requires placing a file with ending `.pvtu` or
     `.visit` into the same directory as the output files from each processor.
-    {ref}`4.2][] gives an example of what can be found in the output
+    {ref}`sec:run-aspect:overview` gives an example of what can be found in the output
     directory.
 
-<div class="center">
-
-</div>
+:::{note}
+You can select other formats for output than VTU, see the run-time parameters in Section A.165. However, none of the numerous formats currently implemented in deal.II other than
+the VTK/VTU formats allows for splitting up data over multiple files in case of parallel computattions, thus making subsequent visualization of the entire volume impossible. Furthermore, given
+the amount of data ASPECT can produce, the compression that is part of the VTU format is
+an important part of keeping data manageable.
+:::
 
 :::{toctree}
 visit.md

@@ -1,3 +1,4 @@
+(sec:extending:vis-postprocessors)=
 # Visualization postprocessors
 
 As mentioned in the previous section, one of the postprocessors that are
