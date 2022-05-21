@@ -10,10 +10,17 @@ Everything in this file will look like garbage in a regular markdown viewer, lik
 Also: numref will not work in this file since its not part of the main filetree. But it will work in anything thats a part of a toctree.
 :::
 
+## Text
+
+````md
+Put single asterisks around text you *want to italicize*, but double asterisks around text you **want to bold**.
+````
+
+Put single asterisks around text you *want to italicize*, but double asterisks around text you **want to bold**.
 
 ## Headings
 
-```{code-block}
+```md
 # Heading 1
 ## Heading 2
 ### Heading 3
@@ -30,14 +37,14 @@ All standalone .md files must start with a level 1 header, regardless of whether
 
 To refer to a section, place this header tag before it:
 
-```{code-block}
+```md
 (sec:myst-quickref)=
 # MyST Quick reference
 ```
 
 To refer to the section:
 
-```{code-block}
+```md
 Include a section reference to {ref}`sec:myst-quickref` in a sentence like so.
 ```
 
@@ -141,7 +148,7 @@ This is a custom `TODO` admonition.
 
 ### Itemized lists
 
-```{code-block}
+```md
 * Level 1
   * Level 2
     * Level 3
@@ -153,7 +160,7 @@ This is a custom `TODO` admonition.
 
 ### Definition lists
 
-```{code-block}
+```md
 Term 1
 : Definition of term 1
 
@@ -384,10 +391,10 @@ This is likely a bug.
 
 ## Math
 
-Inline math works just like in latex; use dollar signs to put stuff like $\eta_r(z)$ in a sentence. That's:
+Inline math works just like in latex. Use dollar signs to put stuff like $\eta_r(z)$ in a sentence. That's:
 
 ```md
-Inline math works just like in latex; use dollar signs to put stuff like $\eta_r(z)$ in a sentence.
+Use dollar signs to put stuff like $\eta_r(z)$ in a sentence.
 ```
 
 ````md
@@ -412,24 +419,25 @@ F = ma
 ```
 ````
 
-Environments are cool too:
+The aligned environment is built into the math directive; be sure to add the same number of align operators (`&`) to each line and use `\\` to denote a new line.
+
 ````md
 ```{math}
 :label: eq:aligned
-\begin{align}
-  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right] + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
+  -\nabla \cdot \left[2\eta
+   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
+   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
   \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
-\end{align}
 ```
 ````
 
 becomes:
 ```{math}
 :label: eq:aligned
-\begin{align}
-  -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right] + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
+  -\nabla \cdot \left[2\eta
+   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
+   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
   \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
-\end{align}
 ```
 
 ## Links
@@ -449,13 +457,13 @@ becomes:
 
 ```md
 Traditional citation {cite}`kronbichler:etal:2012`.
-Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister_aspect_methods2`.
+Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister:etal:2017`.
 ```
 
 becomes
 
 Traditional citation {cite}`kronbichler:etal:2012`.
-Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister_aspect_methods2`.
+Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister:etal:2017`.
 
 ## Footnotes
 ```md
