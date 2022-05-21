@@ -11,9 +11,9 @@ during the installation). We require at least the packages <span
 class="smallcaps">p4est</span>, TRILINOS, and
 finally DEAL.II.
 
-At the time of this writing (2019), `candi` will install <span
-class="smallcaps">p4est</span> 2.2, TRILINOS
-12.18.1, and DEAL.II 9.3.0. We strive to keep
+At the time of this writing (2022), `candi` will install 
+p4est 2.3.2, Trilinos 12.18.1, and deal.II 9.3.3. 
+We strive to keep
 the development version of ASPECT compatible
 with the latest release of DEAL.II and the
 current DEAL.II development version at any
