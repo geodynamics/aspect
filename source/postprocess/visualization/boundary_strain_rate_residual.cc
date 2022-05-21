@@ -138,8 +138,8 @@ namespace aspect
                                                   "the input data as ascii data files with coordinate columns and column corresponding "
                                                   "to the surface strain rate norm."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\per\\second} or "
-                                                  "\\si{\\per\\year}, depending on settings in the input file.")
+                                                  "Physical units: $\\frac{1}{\\text{s}}$ or "
+                                                  "$\\frac{1}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

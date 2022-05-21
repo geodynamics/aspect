@@ -138,8 +138,8 @@ namespace aspect
                                                   "spherical coordinates components $v_r$, $v_{\\phi}$ and $v_{\\theta}$ "
                                                   "of the velocity field in 3D."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter\\per\\second} or "
-                                                  "\\si{\\meter\\per\\year}, depending on settings in the input file.")
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
+                                                  "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

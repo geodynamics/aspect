@@ -120,8 +120,8 @@ namespace aspect
                                                   "or a velocity field computed from the GPlates program as described in the gplates "
                                                   "boundary velocity plugin."
                                                   "\n\n"
-                                                  "Physical units: \\si{\\meter\\per\\second} or "
-                                                  "\\si{\\meter\\per\\year}, depending on settings in the input file.")
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
+                                                  "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }
