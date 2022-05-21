@@ -9,7 +9,7 @@ subsection Geometry model
   set Model name = box
 end
 
-## Enable the fixing of temperature for 
+## Enable the fixing of temperature for
 ## composition field 0
 set Prescribe internal temperature = true
 set Index of fixed compositional field = 0

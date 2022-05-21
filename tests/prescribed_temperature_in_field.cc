@@ -81,14 +81,14 @@ namespace aspect
 
         // Loop over all cells
         for (cell = simulator_access.get_dof_handler().begin_active();
-            cell != simulator_access.get_dof_handler().end();
-            ++cell)
+             cell != simulator_access.get_dof_handler().end();
+             ++cell)
 
           if (! cell->is_artificial())
             {
               fe_values.reinit (cell);
               in.reinit(fe_values, cell, simulator_access.introspection(), simulator_access.get_solution(), false);
-              
+
               std::vector<types::global_dof_index> local_dof_indices(simulator_access.get_fe().dofs_per_cell);
               cell->get_dof_indices (local_dof_indices);
               for (unsigned int q=0; q<quadrature.size(); q++)
