@@ -11,12 +11,16 @@ However, this is not mandatory. If you do not care about high accuracy in
 these fields and are mostly interested in the velocity or pressure field, you
 can select lower-order finite elements in the input file. The polynomial
 degrees are controlled with the parameters in the *discretization* section of
-the input file, see {ref}`parameters:Discretization`65], in
+the input file, see {ref}`parameters:Discretization`, in
 particular by `Temperature polynomial degree` and
 `Composition polynomial degree`.
+
+:::{admonition} TODO
+{ref}`parameters:Discretization` links to a file that is not yet set up
+:::
 
 As with the other parameters discussed above and below, it is worthwhile
 comparing the results you get with different values of these parameters when
 making a decision whether you want to save on accuracy in order to reduce
 compute time. An example of how this choice affects the accuracy you get is
-discussed in {ref}`5.2.1][].
+discussed in {ref}`sec:cookbooks:convection-box`.

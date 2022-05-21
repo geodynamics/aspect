@@ -1,12 +1,10 @@
 # Debug vs. optimized mode
 
-#### Debug vs.&nbsp;optimized mode
-
 Both deal.II and
 ASPECT by default have a great deal of internal
 checking to make sure that the code's state is valid. For example, if
 you write a new postprocessing plugin (see
-{ref}`sec:plugins`63])) in which you need to access the solution
+{ref}`sec:extending:idea-of-plugins`) in which you need to access the solution
 vector, then deal.II's `Vector` class
 will make sure that you are only accessing elements of the vector that
 actually exist and are available on the current machine if this is a parallel
@@ -26,4 +24,4 @@ switching from debug to optimized mode. This means re-compiling
 ASPECT and linking against a version of the <span
 class="smallcaps">deal.II</span> library without all of these internal checks.
 Because this is the first thing you will likely want to do, we have already
-discussed how to do all of this in {ref}`4.4][].
+discussed how to do all of this in {ref}`sec:run-aspect:debug-mode`.

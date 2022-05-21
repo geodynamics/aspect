@@ -1,4 +1,4 @@
-
+(sec:extending:idea-of-plugins)=
 # The idea of plugins and the `SimulatorAccess` and `Introspection` classes
 
 The most common modification you will probably want to do to

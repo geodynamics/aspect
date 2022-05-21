@@ -1,4 +1,5 @@
-#### Crustal deformation
+(sec:cookbooks:crustal-deformation)=
+# Crustal deformation
 
 *This section was contributed by Cedric Thieulot, and makes use of the
 Drucker-Prager material model written by Anne Glerum and the free surface

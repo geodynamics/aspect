@@ -42,3 +42,7 @@ combinations are easy to detect, and ASPECT may not always realize immediate wha
 if you change a setting that can’t be changed. However, you will almost invariably get nonsensical
 results after some time.
 :::
+
+:::{admonition} TODO
+{ref}`parameters:Checkpointing`and {ref}`parameters:Resume computation` refer to parameter files, which have not yet been set up.
+:::

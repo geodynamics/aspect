@@ -22,7 +22,7 @@ computation of $\widetilde{A^{-1}}$ is controlled by the parameter
 this tolerance to a less strict value will result in more outer iterations,
 since the preconditioner is not as good, but the amount of time to compute
 $\widetilde{A^{-1}}$ can drop significantly resulting in a reduced total solve
-time. The cookbook crustal deformation (Section [5.3.8][]) for example can be
+time. The cookbook {ref}`sec:cookbooks:crustal-deformation` for example can be
 computed much faster by setting the `Linear solver A block tolerance` to
 $5e-1$. The calculation of $\widetilde{S^{-1}}$ is usually much faster and the
 conditioning of the system is less sensitive to the parameter
