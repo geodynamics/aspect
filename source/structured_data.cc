@@ -302,8 +302,8 @@ namespace aspect
 
               data[c]
                 = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (std::move(grid_extent),
-                                                                                 std::move(table_intervals),
-                                                                                 std::move(data_table[c]));
+                                                                                  std::move(table_intervals),
+                                                                                  std::move(data_table[c]));
             }
           else
             // Create the object and move the big objects. Due to an old design flaw,
@@ -341,7 +341,7 @@ namespace aspect
 #endif
 
       std::vector<std::string> column_names;
-      std::vector<Table<dim,double> > data_tables;
+      std::vector<Table<dim,double>> data_tables;
       std::vector<std::vector<double>> coordinate_values(dim);
 
       // If this is the root process, or if we don't support data sharing,
@@ -1209,7 +1209,7 @@ namespace aspect
                                   "> not found!"));
 
           lookups.push_back(std::make_unique<Utilities::StructuredDataLookup<dim-1>> (components,
-                                                                                      this->scale_factor));
+                                                                                       this->scale_factor));
           lookups[i]->load_file(filename,this->get_mpi_communicator());
         }
     }
@@ -1366,7 +1366,7 @@ namespace aspect
                                "a spherical shell, chunk, or box geometry."));
 
       lookup = std::make_unique<Utilities::StructuredDataLookup<spacedim>> (components,
-                                                                            this->scale_factor);
+                                                                             this->scale_factor);
 
       const std::string filename = this->data_directory + this->data_file_name;
 
