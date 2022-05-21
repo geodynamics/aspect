@@ -1,9 +1,6 @@
 
 # Docker Container
 
-### Docker Container
-
-
 
 :::{toctree}
 installing-docker.md

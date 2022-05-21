@@ -1,6 +1,6 @@
 ### How to set up computations
 
-<span class="smallcaps">ASPECT</span>&rsquo;s computations are controlled by
+<span class="smallcaps">ASPECT</span>'s computations are controlled by
 input parameter files such as those we will discuss in the following
 sections.[1] Basically, these are just regular text files you can edit with
 programs like `gedit`, `kwrite` or `kate` when working on Linux, or something

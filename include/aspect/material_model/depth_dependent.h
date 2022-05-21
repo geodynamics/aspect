@@ -27,6 +27,8 @@
 #include <deal.II/base/parsed_function.h>
 #include <aspect/material_model/rheology/ascii_depth_profile.h>
 
+#include <boost/lexical_cast.hpp>
+
 namespace aspect
 {
   namespace MaterialModel
@@ -82,13 +84,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * Method to calculate reference viscosity for the depth-dependent model. The reference
-         * viscosity is determined by evaluating the depth-dependent part of the viscosity at
-         * the mean depth of the model.
-         */
-        double reference_viscosity () const override;
-
       private:
 
         /**
@@ -101,6 +96,10 @@ namespace aspect
           List,
           None
         };
+
+        // The viscosity that will be used as a reference for scaling the depth-dependent
+        // prefactor.
+        double reference_viscosity;
 
         /**
          * Currently chosen source for the viscosity.
@@ -137,6 +136,7 @@ namespace aspect
          */
         std::vector<double> depth_values;
         std::vector<double> viscosity_values;
+
         /**
          * Parsed function that specifies viscosity depth-dependence when using the Function
          * method.

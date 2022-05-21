@@ -11,9 +11,6 @@ across the boundary with this boundary condition. To conserve mass we must
 then advect the boundary of the domain in the direction of fluid flow. Thus,
 using a free surface necessitates that the mesh be dynamically deformable.
 
-
-
-
 :::{toctree}
 arbitrary-le-implementation.md
 stabilization.md

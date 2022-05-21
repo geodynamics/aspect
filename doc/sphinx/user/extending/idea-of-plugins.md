@@ -35,7 +35,7 @@ The way this is achieved is through the following two steps:
     the [aspect::GravityModel::Interface][] class (documentation comments have
     been removed):
 
-    ``` c++
+    ```{code-block} c++
     class Interface
         {
           public:
@@ -71,7 +71,7 @@ The way this is achieved is through the following two steps:
     necessary into a class `aspect::GravityModel::GRACE`. Then you need a
     statement like this at the bottom of the file:
 
-    ``` c++
+    ```{code-block} c++
     ASPECT_REGISTER_GRAVITY_MODEL
         (GRACE,
          "grace",
@@ -118,7 +118,7 @@ consider things like postprocessors that can compute things like boundary heat
 fluxes. Taking this as an example (see {ref}`sec:1.4.8][]), you are
 required to write a function with the following interface
 
-``` c++
+```{code-block} c++
 template <int dim>
     class MyPostprocessor : public aspect::Postprocess::Interface
     {
@@ -146,7 +146,7 @@ kinds of plugins.
 
 All of this information is of course part of the core of
 ASPECT, as part of the [aspect::Simulator class][].
-However, this is a rather heavy class: it&rsquo;s got dozens of member
+However, this is a rather heavy class: it's got dozens of member
 variables and functions, and it is the one that does all of the numerical
 heavy lifting. Furthermore, to access data in this class would require that
 you need to learn about the internals, the data structures, and the design of
@@ -156,7 +156,7 @@ classes that wish to access information about the state of the simulation
 inherit from the [aspect::SimulatorAccess class][]. This class has an
 interface that looks like this:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class SimulatorAccess
     {
@@ -193,7 +193,7 @@ function of the following kind (a nonsensical but instructive example; see
 {ref}`sec:1.4.8][] for more details on what postprocessors do and how they
 are implemented):[3]
 
-``` c++
+```{code-block} c++
 template <int dim>
     std::pair<std::string,std::string>
     MyPostprocessor<dim>::execute (TableHandler &statistics)
@@ -234,7 +234,7 @@ to indicate that we want the pressure component can be accessed as
 `this->introspection().component_indices.pressure`. While this is certainly
 not shorter than just writing `dim`, it may in fact be easier to remember. It
 is most definitely less prone to errors and makes it simpler to extend the
-code in the future because we don&rsquo;t litter the sources with "magic
+code in the future because we don't litter the sources with "magic
 constants" like the one above.
 
 This [aspect::Introspection][] class has a significant number of variables

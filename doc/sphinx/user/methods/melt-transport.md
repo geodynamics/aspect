@@ -1,7 +1,8 @@
 (sec:methods:melt-transport)=
 # Calculations with melt transport
 
-The original formulation of the equations in {ref}`2.1][] describes
+The original formulation of the equations in
+{ref}`sec:methods:basic-equations` describes
 the movement of solid mantle material. These computations also allow for
 taking into account how partially molten material changes the material
 properties and the energy balance through the release of latent heat. However,
@@ -13,10 +14,9 @@ through and interacting with a viscously deforming host rock. This requires
 the advection of a compositional field representing the volume fraction of
 melt present at any given time (the porosity $\phi$), and also a change of the
 mechanical part of the system. The latter is implemented using the approach of
-(Keller, May, and Kaus 2013) and changes the Stokes system to
+{cite:t}`keller:etal:2013` and changes the Stokes system to
 ```{math}
-\begin{align}
-  \label{eq:stokes-1-melt}
+:label: eq:stokes-1-melt
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf{u}_s)
                                   - \frac{1}{3}(\nabla \cdot \mathbf{u}_s)\mathbf 1\right)
                 \right] + \nabla p_f + \nabla p_c  &=
@@ -24,7 +24,10 @@ mechanical part of the system. The latter is implemented using the approach of
   & \qquad
   & \textrm{in $\Omega$},
   \\
-  \label{eq:stokes-2-melt}
+```
+```{math}
+:label: eq:stokes-2-melt
+\begin{align}
   \nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f
   - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
   &=
@@ -45,11 +48,13 @@ mechanical part of the system. The latter is implemented using the approach of
   & \textrm{in $\Omega$},
   \notag
   \\
-  \label{eq:stokes-3-melt}
+  \end{align}
+```
+```{math}
+:label: eq:stokes-3-melt
   \nabla \cdot \mathbf{u}_s + \frac{p_c}{\xi}
-  &=
+  =
   0.
-\end{align}
 ```
 
 We use the indices $s$ to indicate properties of the solid and $f$ for the
@@ -66,13 +71,13 @@ formulations for the dependence on porosity are
 $\eta = (1-\phi) \eta_0 e^{-\alpha_\phi \phi}$ with
 $\alpha_\phi \approx 25...30$ and $\xi = \eta_0 \phi^{-n}$ with $n \approx 1$.
 
-To avoid the density gradients in Equation{math:numref}`eq::stokes-2-melt`40],
+To avoid the density gradients in Equation {math:numref}`eq:stokes-2-melt`,
 which would have to be specified individually for each material model by the
 user, we can use the same method as for the mass conservation (described in
-{ref}`2.10.3][]) and assume the change in solid density is dominated
-by the change in static pressure, which can be written as
-$\nabla p_s \approx \nabla p_{\text{static}} \approx \rho_s \textbf{g}$. This
-finally allows us to write
+{ref}`sec:methods:approximate-equations:ba`) and assume the change in solid
+density is dominated by the change in static pressure, which can be written as
+$\nabla p_s \approx \nabla p_{\text{static}} \approx \rho_s \textbf{g}$.
+This finally allows us to write
 ```{math}
 \frac{1}{\rho_s} \nabla \rho_s
 \approx \frac{1}{\rho_s} \frac{\partial \rho_s}{\partial p_s} \nabla p_s
@@ -81,12 +86,13 @@ finally allows us to write
 \approx \beta_s \rho_s \textbf{g}.
 ```
 where $\beta_s$ is the compressibility of
-the solid. In the paper that describes the implementation (Dannberg and
-Heister 2016), $\kappa$ is used for the compressibility. We change the
+the solid. In the paper that describes the implementation
+{cite}`dannberg:heister:2016`, $\kappa$ is used for the compressibility.
+We change the
 variable here to be consistent throughout the manual.
 
 For the fluid pressure, choosing a good approximation depends on the model
-parameters and setup (see (Dannberg and Heister 2016)). Hence, we make
+parameters and setup (see {cite:t}`dannberg:heister:2016`). Hence, we make
 $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the
 forces that are expected to be dominant in the model. We can then replace the
 second equation by
@@ -118,15 +124,24 @@ The melt velocity is computed as
 but is only used for postprocessing purposes and for computing the time step
 length.
 
-<div class="center">
-
-</div>
+:::{note}
+Here, we do not use the visco-elasto-plastic rheology of the
+{cite:t}`keller:etal:2013` formulation. Hence, we do not consider the elastic
+deformation terms that would appear on the right hand side of Equations
+{math:numref}`eq:stokes-1-melt` and {math:numref}`eq:stokes-3-melt` and that
+include the elastic and compaction stress evolution parameters $\xi_{\tau}$ and
+$\xi_p$. Moreover, our viscosity parameters $\eta$ and $\xi$ only cover viscous
+deformation instead of combining visco-elasticity and plastic failure. This
+would require a modification of the rheologic law using effective shear and
+compaction viscosities $\eta_{\text{eff}}$ and $\xi_{\text{eff}}$ combining a failure
+criterion and shear and compaction visco-elasticities.
+:::
 
 Moreover, melt transport requires an advection equation for the porosity field
 $\phi$:
 ```{math}
+:label: eq:porosity
 \begin{align}
-  \label{eq:porosity}
   \rho_s \frac{\partial (1 - \phi)}{\partial t} + \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
   &=
   - \Gamma
@@ -138,7 +153,6 @@ $\phi$:
 
 In order to solve this equation in the same way as the other advection
 equations, we replace the second term of the equation by:
-
 ```{math}
 \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
 = \left( 1-\phi \right) \left( \rho_s \nabla \cdot \mathbf{u}_s
@@ -159,6 +173,6 @@ so we get
 + (1 - \phi) (\nabla \cdot \mathbf{u}_s + \beta_s \rho_s \textbf{g} \cdot \mathbf{u}_s ).
 ```
 
-More details on the implementation can be found in (Dannberg and Heister
-2016). A benchmark case demonstrating the propagation of solitary waves can be
-found in {ref}`sec:benchmark-solitary_wave`41].
+More details on the implementation can be found in {cite:t}`dannberg:heister:2016`.
+A benchmark case demonstrating the propagation of solitary waves can be
+found in {ref}`sec:benchmarks:solitary_wave`.

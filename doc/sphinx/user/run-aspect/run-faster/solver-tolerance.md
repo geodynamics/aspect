@@ -1,7 +1,5 @@
 # Adjusting solver tolerances
 
-#### Adjusting solver tolerances
-
 At the heart of every time step lies the solution of linear systems for the
 Stokes equations, the temperature field, and possibly for compositional
 fields. In essence, each of these steps requires us to solve a linear system

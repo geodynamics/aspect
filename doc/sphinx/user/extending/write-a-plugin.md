@@ -68,7 +68,7 @@ to do:
 
         In practice, the compiler line above can become tedious because it
         includes paths to the ASPECT and <span
-        DEAL.II header files, but possibly also other
+        deal.II header files, but possibly also other
         things such as Trilinos headers, etc. Having to remember all of these
         pieces is a hassle, and a much easier way is in fact to set up a
         mini-CMake project for this. To this end, simply copy the file
@@ -95,7 +95,7 @@ to do:
     shell environment variable `ASPECT_DIR`, or just one directory up. It then
     sets up compiler paths and similar, and the following lines simply define
     the name of a plugin, list the source files for it, and define everything
-    that&rsquo;s necessary to compile them into a shared library. Calling
+    that's necessary to compile them into a shared library. Calling
     `make` on the command line then simply compiles everything.
 
 <div class="center">

@@ -1,6 +1,6 @@
 # Mesh refinement criteria
 
-Despite research since the mid-1980s, it isn&rsquo;t completely clear how to
+Despite research since the mid-1980s, it isn't completely clear how to
 refine meshes for complex situations like the ones modeled by
 ASPECT. The basic problem is that mesh refinement
 criteria either can refine based on some variable such as the temperature, the
@@ -35,7 +35,7 @@ The implementation of the new class should be in namespace
 
 Specifically, your new class needs to implement the following basic interface:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::MeshRefinement::Interface
     {

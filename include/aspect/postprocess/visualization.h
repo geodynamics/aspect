@@ -558,8 +558,8 @@ namespace aspect
          * writing data is still continuing.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
                      const std::string &file_contents);
 
         /**

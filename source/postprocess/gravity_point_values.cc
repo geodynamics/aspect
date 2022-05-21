@@ -376,62 +376,80 @@ namespace aspect
       // on process zero and, for now, also only computed on process zero.
       std::vector<double> g_theory(n_satellites);
       std::vector<double> g_potential_theory(n_satellites);
-      std::vector<Tensor<2,dim>> g_gradient_theory(n_satellites);
+      std::vector<SymmetricTensor<2,dim>> g_gradient_theory(n_satellites);
 
-      if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)
-        {
-          for (unsigned int p=0; p < n_satellites; ++p)
-            {
-              const Point<dim> satellite_position = satellite_positions_cartesian[p];
+      const unsigned int my_rank
+        = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      const unsigned int n_ranks
+        = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
-              // analytical solution to calculate the theoretical gravity and its derivatives
-              // from a uniform density model. Can only be used if concentric density profile.
-              if (satellite_positions_spherical[p][0] <= model_inner_radius)
-                {
-                  // We are inside the inner radius
-                  g_theory[p] = 0;
-                  g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
-                                          (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
-                }
-              else if ((satellite_positions_spherical[p][0] > model_inner_radius)
-                       && (satellite_positions_spherical[p][0] < model_outer_radius))
-                {
-                  // We are in the spherical shell
-                  g_theory[p] = G * numbers::PI * 4./3. * reference_density *
-                                (satellite_positions_spherical[p][0] -
-                                 (std::pow(model_inner_radius,3)
-                                  /  std::pow(satellite_positions_spherical[p][0],2)));
-                  g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
-                                          ((std::pow(satellite_positions_spherical[p][0],2)/2.0) +
-                                           (std::pow(model_inner_radius,3) / satellite_positions_spherical[p][0]))
-                                          -
-                                          G * numbers::PI * 2.0 * reference_density *
-                                          std::pow(model_outer_radius,2);
-                }
-              else
-                {
-                  const double common_factor = G * numbers::PI * 4./3. * reference_density
-                                               * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3));
-                  const double r = satellite_positions_spherical[p][0];
+      for (unsigned int p=0; p < n_satellites; ++p)
+        if (p % n_ranks == my_rank)
+          {
+            const Point<dim> satellite_position = satellite_positions_cartesian[p];
 
-                  g_theory[p] = common_factor / std::pow(r,2);
-                  g_potential_theory[p] = - common_factor / r;
+            // analytical solution to calculate the theoretical gravity and its derivatives
+            // from a uniform density model. Can only be used if concentric density profile.
+            if (satellite_positions_spherical[p][0] <= model_inner_radius)
+              {
+                // We are inside the inner radius
+                g_theory[p] = 0;
+                g_potential_theory[p] = 2.0 * G * numbers::PI * reference_density *
+                                        (std::pow(model_inner_radius,2) - std::pow(model_outer_radius,2));
+              }
+            else if ((satellite_positions_spherical[p][0] > model_inner_radius)
+                     && (satellite_positions_spherical[p][0] < model_outer_radius))
+              {
+                // We are in the spherical shell
+                g_theory[p] = G * numbers::PI * 4./3. * reference_density *
+                              (satellite_positions_spherical[p][0] -
+                               (std::pow(model_inner_radius,3)
+                                /  std::pow(satellite_positions_spherical[p][0],2)));
+                g_potential_theory[p] = G * numbers::PI * 4./3. * reference_density *
+                                        ((std::pow(satellite_positions_spherical[p][0],2)/2.0) +
+                                         (std::pow(model_inner_radius,3) / satellite_positions_spherical[p][0]))
+                                        -
+                                        G * numbers::PI * 2.0 * reference_density *
+                                        std::pow(model_outer_radius,2);
+              }
+            else
+              {
+                const double common_factor = G * numbers::PI * 4./3. * reference_density
+                                             * (std::pow(model_outer_radius,3) - std::pow(model_inner_radius,3));
+                const double r = satellite_positions_spherical[p][0];
 
-                  // For the gradient of g, start with the common part of
-                  // the diagonal elements:
-                  g_gradient_theory[p][0][0] =
-                    g_gradient_theory[p][1][1] =
-                      g_gradient_theory[p][2][2] = -1./std::pow(r,3);
+                g_theory[p] = common_factor / std::pow(r,2);
+                g_potential_theory[p] = - common_factor / r;
 
-                  // Then do the off-diagonal elements:
-                  for (unsigned int e=0; e<dim; ++e)
-                    for (unsigned int f=e; f<dim; ++f)
-                      g_gradient_theory[p][e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
-                                                    /  std::pow(r,5);
-                  g_gradient_theory[p] *= common_factor;
-                }
-            }
-        }
+                // For the gradient of g, start with the common part of
+                // the diagonal elements:
+                g_gradient_theory[p][0][0] =
+                  g_gradient_theory[p][1][1] =
+                    g_gradient_theory[p][2][2] = -1./std::pow(r,3);
+
+                // Then do the off-diagonal elements:
+                for (unsigned int e=0; e<dim; ++e)
+                  for (unsigned int f=e; f<dim; ++f)
+                    g_gradient_theory[p][e][f] += -(- 3.0 * satellite_position[e] * satellite_position[f])
+                                                  /  std::pow(r,5);
+                g_gradient_theory[p] *= common_factor;
+              }
+          }
+
+      g_theory = Utilities::MPI::all_reduce<decltype(g_theory)>
+                 (g_theory,
+                  this->get_mpi_communicator(),
+                  tensor_sum);
+
+      g_potential_theory = Utilities::MPI::all_reduce<decltype(g_potential_theory)>
+                           (g_potential_theory,
+                            this->get_mpi_communicator(),
+                            tensor_sum);
+
+      g_gradient_theory = Utilities::MPI::all_reduce<decltype(g_gradient_theory)>
+                          (g_gradient_theory,
+                           this->get_mpi_communicator(),
+                           tensor_sum);
 
       // open the file on rank 0 and write the headers
       if (Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) == 0)

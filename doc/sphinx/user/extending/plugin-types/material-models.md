@@ -12,7 +12,7 @@ is given in {ref}`sec:davies-case23_BA`16].
 
 Specifically, your new class needs to implement the following interface:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::MaterialModel::Interface
     {
@@ -49,7 +49,7 @@ handling lookups at an arbitrary number of positions, so for each variable
 (for example viscosity), a std::vector is returned. The following members of
 MaterialModelOutputs need to be filled:
 
-``` c++
+```{code-block} c++
 struct MaterialModelOutputs
 {
           std::vector<double> viscosities;

@@ -4,11 +4,11 @@ Not all things you may want to do fit neatly into the list of plugins of the
 previous sections. Rather, there are cases where you may want to change things
 that are more of the one-off kind and that require code that is at a lower
 level and requires more knowledge about
-ASPECT&rsquo;s internal workings. For such changes,
+ASPECT's internal workings. For such changes,
 we still want to stick with the general principle outlined at the beginning of
 {ref}`sec:1][22]: You should be able to make all of your changes and
 extensions in your own files, without having to modify
-ASPECT&rsquo;s own sources.
+ASPECT's own sources.
 
 To support this, ASPECT uses a
 "signals" mechanism. Signals are, in essence, objects that
@@ -43,7 +43,7 @@ respective signals.
 In the first case, code that registers slots with global signals would look
 like this:
 
-``` c++
+```{code-block} c++
 // A function that will be called at the time when parameters are declared.
 // It receives the dimension in which ASPECT will be run as the first argument,
 // and the ParameterHandler object that holds the runtime parameter
@@ -96,7 +96,7 @@ The second kind of signal can be connected to once a simulator object has been
 created. As above, one needs to define the slots, define a connector function,
 and register the connector function. The following gives an example:
 
-``` c++
+```{code-block} c++
 // A function that is called at the end of creating the current constraints
 // on degrees of freedom (i.e., the constraints that describe, for example,
 // hanging nodes, boundary conditions, etc).
@@ -134,7 +134,7 @@ So what could one do in a place like this? One option would be to just monitor
 what is going on, e.g., in code like this that simply outputs into the
 statistics file (see {ref}`sec:viz-stat`10]):
 
-``` c++
+```{code-block} c++
 template <int dim>
 void post_constraints_creation (const SimulatorAccess<dim> &simulator_access,
                                 ConstraintMatrix &current_constraints)

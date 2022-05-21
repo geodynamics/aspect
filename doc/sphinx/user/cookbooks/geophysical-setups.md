@@ -12,7 +12,7 @@ by one:
 
 -   *What internal forces act on the medium (the equation)?* This may in fact
     be the most difficult to answer part of it all. The real material in
-    Earth&rsquo;s mantle is certainly no Newtonian fluid where the stress is a
+    Earth's mantle is certainly no Newtonian fluid where the stress is a
     linear function of the strain with a proportionality constant (the
     viscosity) $\eta$ that only depends on the temperature. Rather, the real
     viscosity almost surely also depends on the pressure and the strain rate.

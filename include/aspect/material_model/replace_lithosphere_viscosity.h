@@ -77,12 +77,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * Method to calculate reference viscosity for the model. The reference
-         * viscosity is simply the reference  viscosity from the base model.
-         */
-        double reference_viscosity () const override;
-
       private:
 
         /**

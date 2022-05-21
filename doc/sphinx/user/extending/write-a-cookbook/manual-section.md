@@ -81,7 +81,7 @@ follow this general structure:
     extend on these ideas by adding subsections that illustrate how these
     modifications influence the model results.
 
-And that&rsquo;s it, you have just created your first cookbook! Make a [pull
+And that's it, you have just created your first cookbook! Make a [pull
 request][] to contribute it to the main repository! You can find more
 information on how to do that on [our github page][].
 

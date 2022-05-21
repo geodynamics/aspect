@@ -1,4 +1,5 @@
-#### Averaging material properties
+(sec:cookbooks:sinker-with-averaging)=
+# Averaging material properties
 
 *The original motivation for the functionality discussed here, as well as the
 setup of the input file, were provided by Cedric Thieulot.*

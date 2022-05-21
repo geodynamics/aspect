@@ -40,7 +40,7 @@ jobs:
         sudo apt-get install -y software-properties-common
         sudo add-apt-repository ppa:ginggs/deal.ii-9.3.2-backports
         sudo apt-get update
-        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen
+        sudo apt-get install -yq --no-install-recommends texlive-plain-generic texlive-base texlive-latex-recommended texlive-latex-base texlive-fonts-recommended texlive-bibtex-extra lmodern texlive-latex-extra texlive-science graphviz python3-pip python-setuptools libdeal.ii-dev doxygen inkscape
         doxygen --version
 
         wget https://github.com/tjhei/astyle/releases/download/v2.04/astyle_2.04_linux.tar.gz
@@ -50,9 +50,17 @@ jobs:
         cd
         rm -rf astyle*
         astyle --version
-    - name: indent
+    - name: make indent
       run: |
         ./contrib/utilities/indent
+        git diff > changes-astyle.diff
+    - name: archive indent results
+      uses: actions/upload-artifact@v2
+      with:
+        name: changes-astyle.diff
+        path: changes-astyle.diff
+    - name: check indentation
+      run: |
         git diff --exit-code
     - name: compile
       run: |

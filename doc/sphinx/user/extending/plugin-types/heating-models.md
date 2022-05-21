@@ -23,7 +23,7 @@ implementation of the new class should be in namespace `aspect::HeatingModel`.
 
 Specifically, your new class needs to implement the following basic interface:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::HeatingModel::Interface
     {
@@ -69,7 +69,7 @@ positions, so for each heating term (for example the heating source terms), a
 `std::vector` is returned. The following members of `HeatingModelOutputs` need
 to be filled:
 
-``` c++
+```{code-block} c++
 struct HeatingModelOutputs
 {
        std::vector<double> heating_source_terms;

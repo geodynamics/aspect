@@ -1,8 +1,6 @@
 (sec:run-aspect:overview)=
 # Overview
 
-### Overview
-
 After compiling ASPECT as described above, you
 should have an executable file in the build directory. It can be called in the
 build directory as follows:
@@ -88,7 +86,7 @@ Number of degrees of freedom: 33,859 (20,786+2,680+10,393)
 ```
 
 The output starts with a header that lists the used
-ASPECT, DEAL.II, <span
+ASPECT, deal.II, <span
 class="smallcaps">Trilinos</span> and <span class="smallcaps">p4est</span>
 versions as well as the mode you compiled
 ASPECT in (see [4.4][]), and the number of parallel
@@ -262,9 +260,11 @@ The purpose of these files is as follows:
     these columns as time series. Alternatively, the data can be imported into
     a spreadsheet and plotted there.
 
-    <div class="center">
-
-    </div>
+:::{note}
+As noted in Section 2.3, ASPECT can be thought of as using the meter-kilogramsecond
+(MKS, or SI) system. Unless otherwise noted, the quantities in the output file are
+therefore also in MKS units.
+:::
 
     A simple way to plot the contents of this file is shown in
     {ref}`4.5.2][].

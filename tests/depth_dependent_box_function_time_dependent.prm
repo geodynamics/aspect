@@ -122,6 +122,7 @@ subsection Material model
       set Variable names = d,t
       set Function expression = if(d>6.70e5,3.0e22*(1.0+t/1e8),1.0e21*(1.0+t/1e8));
     end
+    set Reference viscosity = 1e25
   end
   subsection Simple model
     set Reference density             = 3300.0

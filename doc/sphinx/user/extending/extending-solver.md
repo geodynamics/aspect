@@ -41,7 +41,7 @@ Heister, and Bangerth 2012). Further, there are two predecessor programs whose
 extensive documentation is at a much higher level than the one typically found
 inside ASPECT itself, since they are meant to
 teach the basic components of convection simulators as part of the <span
-DEAL.II tutorial:
+deal.II tutorial:
 
 -   The step-31 program at
     <https://www.dealii.org/developer/doxygen/deal.II/step_31.html>: This

@@ -1,8 +1,6 @@
 
 # Installing Docker and downloading the ASPECT image
 
-#### Installing Docker and downloading the ASPECT image
-
 Docker is a lightweight virtualization software that allows to ship
 applications with all their dependencies in a simple way. It is outside of the
 scope of this manual to explain all possible applications of Docker, and we
@@ -11,7 +9,7 @@ installation and quickstart guides (<https://www.docker.com/products/docker>)
 on the Docker website for more detailed descriptions of how to set up and use
 the docker engine. More importantly Docker provides a marketplace for
 exchanging prepared docker images (called Docker Hub). After setting up the
-docker engine downloading a precompiled ASPECT
+docker engine, downloading a precompiled ASPECT
 image from Docker Hub is as simple as typing in a terminal:
 
 ``` ksh

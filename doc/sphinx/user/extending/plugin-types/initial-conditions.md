@@ -19,7 +19,7 @@ implementation of the new class should be in namespace
 
 Specifically, your new class needs to implement the following basic interface:
 
-``` c++
+```{code-block} c++
 template <int dim>
     class aspect::InitialConditions::Interface
     {
