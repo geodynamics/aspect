@@ -16,6 +16,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
+     Temperature min/avg/max:  100 K, 446.9 K, 1000 K
      Writing graphical output: output-prescribed_temperature_in_field/solution/solution-00000
 
 *** Timestep 1:  t=10000 years, dt=10000 years
@@ -25,6 +26,7 @@ Number of degrees of freedom: 5,734 (2,178+289+1,089+1,089+1,089)
    Solving Stokes system... 0+0 iterations.
 
    Postprocessing:
+     Temperature min/avg/max:  100 K, 446.9 K, 1000 K
      Writing graphical output: output-prescribed_temperature_in_field/solution/solution-00001
 
 Termination requested by criterion: end time
