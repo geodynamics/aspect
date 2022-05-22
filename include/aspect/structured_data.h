@@ -93,7 +93,7 @@ namespace aspect
          * second and third arguments may be empty or otherwise altered.
          *
         #if DEAL_II_VERSION_GTE(9,4,0)
-         * If ASPECT is built on deal.II version 10.0 or higher, this class
+         * If ASPECT is built on deal.II version 9.4 or higher, this class
          * is able to share data between processes located on the same
          * machine. In this case, if the last argument, `root_process` is
          * set to anything other than `numbers::invalid_unsigned_int`, then only the
