@@ -6,10 +6,10 @@ In addition to the graphical output discussed above,
 ASPECT produces a statistics file that collects
 information produced during each time step. For the remainder of this section,
 let us assume that we have run ASPECT with the
-input file discussed in {ref}`5.2.1`[], simulating convection in a
+input file discussed in {ref}`5.2.1`, simulating convection in a
 box. After running ASPECT, you will find a file
 called `statistics` in the output directory that, at the time of writing this,
-looked like this: 
+looked like this:
 
 ``` ksh
 # 1: Time step number
