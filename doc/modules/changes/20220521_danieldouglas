@@ -1,0 +1,6 @@
+New: Add a test case for fixing the temperature in a user 
+specified compositional field to the temperature that the 
+field was initialized with.
+
+<br>
+(Daniel Douglas, 2022/05/21)
