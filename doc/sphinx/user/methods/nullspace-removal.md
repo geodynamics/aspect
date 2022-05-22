@@ -1,6 +1,6 @@
 # Nullspace removal
 
-The Stokes equation ({math:numref}`eq:stokes-1`) only involves symmetric gradients of the velocity, and as such the velocity is determined only up to rigid-body motions (that is to say, translations and rotations).
+The Stokes equation {math:numref}`eq:stokes-1` only involves symmetric gradients of the velocity, and as such the velocity is determined only up to rigid-body motions (that is to say, translations and rotations).
 For many simulations the boundary conditions will fully specify the velocity solution, but for some combinations of geometries and boundary conditions the solution will still be underdetermined.
 In the language of linear algebra, the Stokes system may have a nullspace.
 
@@ -47,7 +47,7 @@ Removing the net translations/rotations are identical to their momentum counterp
 For most applications the density should not vary so wildly that there will be an appreciable difference between the two varieties, though removing linear/angular momentum is more physically motivated.
 
 The user can flag the nullspace for removal by setting the `Remove nullspace` option, as described in {ref}`parameters:Nullspace_20removal`.
-{ref}`fig:rigid_rotation` shows the result of removing angular momentum from a convection model in a 2D annulus with free-slip velocity boundary conditions.
+{numref}`fig:rigid_rotation` shows the result of removing angular momentum from a convection model in a 2D annulus with free-slip velocity boundary conditions.
 
 
 ```{figure-md} fig:rigid_rotation
