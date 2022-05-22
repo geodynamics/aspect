@@ -1,7 +1,7 @@
 # This is a copy of the grain size strain test. The test imposes simple shear
 # across a 100 km square domain with a rheology derived from experiments on
 # olivine. The model domain is isobaric and initially isothermal.
-# The addinital named output prescribed_field_output_C0 represents the
+# The additonal named output prescribed_field_output_C0 represents the
 # equilibrium grain size, which should be close to 9.35850647e-04 m
 # (the value from the grain size strain test).
 

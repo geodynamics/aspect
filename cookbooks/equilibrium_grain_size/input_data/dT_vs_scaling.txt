@@ -2,7 +2,7 @@
 # profile given by Steinberger and Calderwood (2006) in their Fig. 5.
 # The profile represents the scaling of temperature anomalies with vs 
 # anomalies.
-# Only next line is parsed in format: [nx.] because of keyword "POINTS:"
+# Only next line is parsed in format: [nx] because of keyword "POINTS:"
 # POINTS: 61
 # Columns: depth (m), temperature_scaling (K)
 depth temperature_scaling

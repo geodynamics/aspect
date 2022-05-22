@@ -1,5 +1,5 @@
 # Header for the PREM reference profile data
-# Only next line is parsed in format: [nx] [ny] [nz] because of keyword "POINTS:"
+# Only next line is parsed in format: [nx] [ny] [nz], with [ny] and [nz] omitted because the data set is one-dimensional, because of keyword "POINTS:"
 # POINTS: 97
 radius density vp vs vphi Qkappa Qmu eta shearmod bulkmod
 0.00000000 13088.48000000 11218.18000000 3594.69000000 10422.02000178 1328.00000000 85.00000000 1.00000000 1.69126671e+11 1.42165108e+12

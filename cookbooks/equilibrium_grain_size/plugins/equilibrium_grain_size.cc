@@ -167,13 +167,13 @@ namespace aspect
         {
           if (material_file_format == perplex)
             material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::PerplexReader(datadirectory+material_file_names[i],
+                                      (new MaterialUtilities::Lookup::PerplexReader(data_directory+material_file_names[i],
                                                                                     /*use_bilinear_interpolation*/ true,
                                                                                     this->get_mpi_communicator())));
           else if (material_file_format == hefesto)
             material_lookup.push_back(std::shared_ptr<MaterialUtilities::Lookup::MaterialLookup>
-                                      (new MaterialUtilities::Lookup::HeFESToReader(datadirectory+material_file_names[i],
-                                                                                    datadirectory+derivatives_file_names[i],
+                                      (new MaterialUtilities::Lookup::HeFESToReader(data_directory+material_file_names[i],
+                                                                                    data_directory+derivatives_file_names[i],
                                                                                     /*use_bilinear_interpolation*/ true,
                                                                                     this->get_mpi_communicator())));
           else
@@ -255,16 +255,6 @@ namespace aspect
 
       return std::make_pair (reference_viscosity, depth_index);
 
-    }
-
-
-
-    template <int dim>
-    double
-    EquilibriumGrainSize<dim>:: reference_viscosity () const
-    {
-      // We do not use this function so just return a reasonable value.
-      return 2*min_eta*max_eta/(min_eta + max_eta);
     }
 
 
@@ -1526,13 +1516,13 @@ namespace aspect
                                  "(which is defined by the length of the lists of phase transition depths, ...)!"));
 
           // parameters for reading in tables with material properties
-          datadirectory        = prm.get ("Data directory");
+          data_directory        = prm.get ("Data directory");
           {
             const std::string subst_text = "$ASPECT_SOURCE_DIR";
             std::string::size_type position;
-            while (position = datadirectory.find (subst_text),  position!=std::string::npos)
-              datadirectory.replace (datadirectory.begin()+position,
-                                     datadirectory.begin()+position+subst_text.size(),
+            while (position = data_directory.find (subst_text),  position!=std::string::npos)
+              data_directory.replace (data_directory.begin()+position,
+                                     data_directory.begin()+position+subst_text.size(),
                                      ASPECT_SOURCE_DIR);
           }
           material_file_names  = Utilities::split_string_list
