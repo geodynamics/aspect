@@ -3,7 +3,7 @@
 
 After you have familiarized yourself with
 ASPECT using the examples of
-{ref}`sec:cookbooks` you will invariably want to set up your
+{ref}`cha:cookbooks` you will invariably want to set up your
 own models. During this process you might experience that not all of your
 ideas are already possible with existing functionality, and you will need to
 make changes to the source code.
@@ -16,8 +16,8 @@ model geometry, the gravity field, the initial conditions, the boundary
 conditions, the functions that postprocess the solution, and the behavior of
 the adaptive mesh refinement. This list may also have grown since this section
 was written. Changing the core functionality, i.e., the basic equations
-{math:numref}`eq:stokes-1`]&ndash;{math:numref}`eq:temperature`], and how they are solved is
-arguably more involved. We will discuss this in Section `[1.7]`.
+{math:numref}`eq:stokes-1`&ndash;{math:numref}`eq:temperature`, and how they are solved is
+arguably more involved. We will discuss this in {ref}`sec:extending:solver`.
 
 There are several ways to add new functionality in plugins, and we want to
 highlight advantages and disadvantages of each of them:
@@ -25,7 +25,7 @@ highlight advantages and disadvantages of each of them:
 1.  Modify existing files: The simplest way to start modifying
     ASPECT is to modify one of the existing source
     files and then recompile the program as described in
-    {ref}`sec:compiling`. This process does not require any
+    {ref}`sec:install:local-installation:compiling`. This process does not require any
     additional setup, and is therefore ideal for learning how to make simple
     modifications. However, it comes with several severe disadvantages. If you
     modify files the history of your local copy of
@@ -51,7 +51,7 @@ highlight advantages and disadvantages of each of them:
     you can upload your branch to make your changes reproducible. This
     approach is also the ideal starting point if you intend to contribute your
     changes back, as it already is the first step of our guide to contributing
-    back (see also {ref}`sec:1.9`). However, for projects with
+    back (see also {ref}`sec:extending:contributing`). However, for projects with
     functionality that is not intended to be merged into the main version
     (e.g. because it is too specific to be of general use), we have found that
     this approach is not ideal, as you will still run into conflicts when you
@@ -79,10 +79,10 @@ highlight advantages and disadvantages of each of them:
     on your separate set of files to keep track of which version of files was
     used for a given set of models. Two examples for keeping a separate shared
     library for model specific changes are discussed in
-    {ref}`sec:prescribed-velocities`, and in
-    {ref}`sec:cookbooks-inner-core-convection`. We will discuss
-    the concept of plugins in {ref}`sec:1.1`, and how to write a plugin
-    in {ref}`sec:1.2`.
+    {ref}`sec:cookbooks:prescribed_velocity`, and in
+    {ref}`sec:cookbooks:inner_core_convection`. We will discuss
+    the concept of plugins in {ref}`sec:extending:idea-of-plugins`, and how to write a plugin
+    in {ref}`sec:extending:write-a-plugin`.
 
 Since ASPECT is written in C++ using the
 deal.II library, you will have to be proficient in
@@ -100,7 +100,7 @@ which there is an extensive amount of documentation:
     together to achieve their goal.
 
 -   The deal.II tutorial at
-    <[https://www.dealii.org/developer/doxygen/deal.II/Tutorial.html]> that
+    <https://dealii.org/developer/doxygen/deal.II/Tutorial.html> that
     provides a step-by-step introduction to the library using a sequence of
     several dozen programs that introduce gradually more complex topics. In
     particular, you will learn deal.II's
@@ -136,7 +136,7 @@ which there is an extensive amount of documentation:
 -   A general overview of deal.II is also
     provided in the paper {cite:t}`bangerth:etal:2007`.
 
-As described in {ref}`sec:debug-mode` you should always compile
+As described in {ref}`sec:run-aspect:debug-mode` you should always compile
 and run ASPECT in *debug mode* when you are
 making changes to the source code, as it will capture the vast majority of
 bugs everyone invariably introduces in the code.

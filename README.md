@@ -1,6 +1,7 @@
 ASPECT - Advanced Solver for Problems in Earth's ConvecTion
 ===========================================================
 [![License GPL2+:](https://img.shields.io/badge/License-GPL%202%2B-red)](https://github.com/geodynamics/aspect/blob/main/LICENSE)
+[![Online Documentation](https://readthedocs.org/projects/aspect-documentation/badge/?version=latest)](https://aspect-documentation.readthedocs.io/en/latest/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5131909.svg)](https://doi.org/10.5281/zenodo.5131909)
 [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
 
@@ -66,7 +67,8 @@ More information
 
 For more information see:
  - The official website at https://aspect.geodynamics.org
- - The current [manual](http://www.math.clemson.edu/~heister/manual.pdf)
+ - The current [Online Documentation](https://aspect-documentation.readthedocs.io/en/latest/)
+ - The current [PDF Manual](http://www.math.clemson.edu/~heister/manual.pdf)
  - [How to cite ASPECT](https://aspect.geodynamics.org/cite.html)
  - For questions on the source code of ASPECT, portability, installation, new or existing features, etc., use the [ASPECT forum](https://community.geodynamics.org/c/aspect). This forum is where the ASPECT users and developers all hang out. Archived discussions from the inactive aspect-devel mailing list can be downloaded at [aspect-devel archives](http://lists.geodynamics.org/pipermail/aspect-devel).
  - See the [Future Plan Board](https://github.com/geodynamics/aspect/projects/2) for a high level overview of items in development.

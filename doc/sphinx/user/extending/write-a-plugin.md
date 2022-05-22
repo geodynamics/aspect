@@ -1,3 +1,4 @@
+(sec:extending:write-a-plugin)=
 # How to write a plugin
 
 Before discussing what each kind of plugin actually has to implement (see the
@@ -58,7 +59,7 @@ to do:
         shared library at startup so that the plugin becomes available at run
         time and can be selected from the input parameter file. This is done
         using the `Additional shared libraries` parameter in the input file,
-        see {ref}`sec:3.1][]. This approach has the upside that you can
+        see {ref}`parameters:Additional_20shared_20libraries`. This approach has the upside that you can
         keep all files that define new plugins in your own directories where
         you also run the simulations, also making it easier to keep around
         your plugins as you upgrade your ASPECT
@@ -67,12 +68,13 @@ to do:
         is the preferred approach.
 
         In practice, the compiler line above can become tedious because it
-        includes paths to the ASPECT and <span
+        includes paths to the ASPECT and
         deal.II header files, but possibly also other
         things such as Trilinos headers, etc. Having to remember all of these
         pieces is a hassle, and a much easier way is in fact to set up a
         mini-CMake project for this. To this end, simply copy the file
-        [doc/plugin-CMakeLists.txt][] to the directory where you have your
+        [doc/plugin-CMakeLists.txt](https://github.com/geodynamics/aspect/blob/main/doc/plugin-CMakeLists.txt)
+        to the directory where you have your
         plugin source files and rename it to `CMakeLists.txt`.
 
     You can then just run the commands
@@ -82,7 +84,7 @@ to do:
 
     and it should compile your plugin files into a shared library
     `my_plugin.so`. A concrete example of this process is discussed in
-    {ref}`sec:benchmark-run`11]. Of course, you may want to
+    {ref}`sec:benchmark-run`. Of course, you may want to
     choose different names for the source files `source_1.cc`, `source_2.cc`
     or the name of the plugin `my_plugin`.
 
@@ -90,7 +92,7 @@ to do:
     ASPECT installation (i.e., the directory where
     you configured and compiled it, which may be the same directory as where
     you keep your sources, or a different one, as discussed in
-    {ref}`sec:installation`12]) in either the directory
+    {ref}`cha:installation`) in either the directory
     explicitly specified in the `Aspect_DIR` variable passed to `cmake`, the
     shell environment variable `ASPECT_DIR`, or just one directory up. It then
     sets up compiler paths and similar, and the following lines simply define
@@ -98,10 +100,23 @@ to do:
     that's necessary to compile them into a shared library. Calling
     `make` on the command line then simply compiles everything.
 
-<div class="center">
+:::{note}
+Complex projects built on ASPECT often require plugins of more than just one kind. For
+example, they may have plugins for the geometry, the material model, and for postprocessing.
+In such cases, you can either define multiple shared libraries by repeating the calls to `PROJECT`,
+`ADD_LIBRARY` and `ASPECT_SETUP_PLUGIN` for each shared library in your `CMakeLists.txt` file
+above, or you can just compile all of your source files into a single shared library. In the latter
+case, you only need to list a single library in your input file, but each plugin will still be selectable
+in the various sections of your input file as long as each of your classes has a corresponding
+`ASPECT_REGISTER_*` statement somewhere in the file where you have its definition. An even
+simpler approach is to just put everything into a single file – there is no requirement that different
+plugins are in separate files, though this is often convenient from a code organization point of
+view.
+:::
 
-</div>
-
-<div class="center">
-
-</div>
+:::{note}
+If you choose to compile your plugins into a shared library yourself, you will need to
+recompile them every time you upgrade your ASPECT installation since we do not guarantee
+that the ASPECT application binary interface (ABI) will remain stable, even if it may not be
+necessary to actually change anything in the *implementation* of your plugin
+:::

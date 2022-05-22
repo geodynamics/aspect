@@ -108,7 +108,7 @@ commands above into a script file, see below. We have done it here to get the
 entire command into the width of the page.
 
 ```{figure-md} fig:viz-gnuplot
-<img src="../../../../manual/viz/statistics/viz-gnuplot.*" alt="Figure" width="80%"/>
+<img src="images/viz-gnuplot.*" alt="Figure" width="80%"/>
 
 Visualizing the statistics file obtained from the example in {ref}`sec:cookbooks:convection-box` using Gnuplot: Output using simple commands.
 ```

@@ -11,5 +11,5 @@ understand for other users, it is a good practice to add a short comment to
 each section or important parameter used in the file, explaining what this
 input option accomplishes and why it is needed for the model setup.
 
-Once you have finalized your input file, you can put it into the [cookbooks][]
+Once you have finalized your input file, you can put it into the [cookbooks](https://github.com/geodynamics/aspect/tree/main/cookbooks)
 folder.
