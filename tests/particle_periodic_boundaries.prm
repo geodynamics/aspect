@@ -100,7 +100,7 @@ end
 ############### Parameters describing what to do with the solution
 
 subsection Postprocess
-  set List of postprocessors = velocity statistics, composition statistics,particles
+  set List of postprocessors = velocity statistics, composition statistics, particles
 
   subsection Particles
     set Number of particles = 10

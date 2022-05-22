@@ -3,29 +3,26 @@
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
-Number of active cells: 512 (on 4 levels)
-Number of degrees of freedom: 48,029 (14,739+729+4,913+13,824+13,824)
+Number of active cells: 64 (on 4 levels)
+Number of degrees of freedom: 1,524 (578+81+289+576)
 
 *** Timestep 0:  t=0 seconds, dt=0 seconds
-   Solving temperature system... 0 iterations.
+   Skipping temperature solve because RHS is zero.
    Rebuilding Stokes preconditioner...
-   Solving Stokes system... 43+0 iterations.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 13824
-     RMS, max velocity:            0.00995 m/s, 0.0252 m/s
-     Compositions min/max/mass:    0/1/0.3991 // 0/1/0.4122
-     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+     Writing graphical output:  output-particle_interpolator_quadratic_least_squares_2d_periodic/solution/solution-00000
+     Writing particle output:   output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00000
+     Compositions min/max/mass: 0/1/0.1826
 
-*** Timestep 1:  t=0.1 seconds, dt=0.1 seconds
-   Solving temperature system... 9 iterations.
-   Solving Stokes system... 22+0 iterations.
+*** Timestep 1:  t=70 seconds, dt=70 seconds
+   Skipping temperature solve because RHS is zero.
+   Solving Stokes system... 17+0 iterations.
 
    Postprocessing:
-     Number of advected particles: 13824
-     RMS, max velocity:            0.00995 m/s, 0.0252 m/s
-     Compositions min/max/mass:    0/1/0.3991 // 0/1/0.4122
-     Temperature min/avg/max:      0 K, 0.5 K, 1 K
+     Writing particle output:   output-particle_interpolator_quadratic_least_squares_2d_periodic/particles/particles-00001
+     Compositions min/max/mass: 0/1/0.1813
 
 Termination requested by criterion: end time
 

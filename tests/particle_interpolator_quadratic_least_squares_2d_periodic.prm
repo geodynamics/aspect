@@ -1,0 +1,34 @@
+# A test for quadratic least squares interpolation with periodic boundaries
+
+# MPI: 2
+
+include $ASPECT_SOURCE_DIR/tests/particle_periodic_boundaries.prm
+
+subsection Discretization
+  set Use discontinuous composition discretization = true
+end
+
+subsection Compositional fields
+  set Compositional field methods = particles
+  set Mapped particle properties = C_1:initial C_1
+end
+
+subsection Mesh refinement
+  set Initial adaptive refinement        = 0
+  set Initial global refinement          = 3
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, particles, composition statistics
+
+  subsection Particles
+    set Number of particles = 10000
+    set Interpolation scheme = quadratic least squares
+    set Update ghost particles = true
+    subsection Interpolator
+      subsection Quadratic least squares
+        set Use quadratic least squares limiter = true
+      end
+    end
+  end
+end
