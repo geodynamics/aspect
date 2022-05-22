@@ -67,22 +67,20 @@ through the different parts of this file in more detail:
     The last parameter of this section, `Pressure normalization`, is set in
     such a way that the pressure is chosen so that its *domain* average is
     zero, rather than the pressure along the surface, see
-    Section {ref}`sec:methods:pressure-norm`.
+    Section [](sec:methods:pressure-norm).
 
 -   The next part of the input file describes the setup of the benchmark.
     Specifically, we have to say how the geometry should look like (a box of
     size $1\times 1$) and what the velocity boundary conditions shall be
     (tangential flow all around - the box geometry defines four boundary
     indicators for the left, right, bottom and top boundaries, see also
-    Section&nbsp;[\[parameters:Geometry_20model\]][3]). This is followed by
+    [](parameters:Geometry_20model)). This is followed by
     subsections choosing the material model (where we choose a particular
     model implemented in that describes the spatially variable density and
     viscosity fields, along with the size of the viscosity jump) and finally
     the chosen gravity model (a gravity field that is the constant vector
-    $(0,-1)^T$, see Section&nbsp;[\[parameters:Gravity_20model\]][4]).
-:::{admonition}
-TODO parameter reference not set up
-:::
+    $(0,-1)^T$, see [](parameters:Gravity_20model)).
+
 -   The part that follows this describes the boundary and initial values for
     the temperature. While we are not interested in the evolution of the
     temperature field in this benchmark, we nevertheless need to set
@@ -90,13 +88,10 @@ TODO parameter reference not set up
 
 -   The second-to-last part sets discretization parameters. Specifically, it
     determines what kind of Stokes element to choose (see
-    Section&nbsp;[\[parameters:Discretization\]][5] and the extensive
+    [](parameters:Discretization) and the extensive
     discussion in {cite}`kronbichler:etal:2012`). We do not
     adaptively refine the mesh but only do four global refinement steps at the
     very beginning. This is obviously a parameter worth playing with.
-:::{admonition}
-TODO parameter reference not set up
-:::
 -   The final section on postprocessors determines what to do with the
     solution once computed. Here, we do two things: we ask to compute the
     error in the solution using the setup described in the Duretz et
