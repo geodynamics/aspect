@@ -31,7 +31,7 @@ namespace aspect
     namespace Property
     {
       /**
-       * A class that sets particle properties to the current strain rate.
+       * A class that saves the time evolution of strain rate onto the particles.
        *
        * @ingroup ParticleProperties
        */
