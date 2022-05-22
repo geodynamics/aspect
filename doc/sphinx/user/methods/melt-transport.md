@@ -195,5 +195,5 @@ the fluid phase will only be advected parallel to the gravity vector based on bu
 additional limitation is that solid compaction with varying porosity is not calculated with the
 current implementation, and so mass is not conserved as fluid leaves the solid matrix at a given
 point. For small porosities, this does not pose too much of an issue, but this approximation would
-break down at high porosities. The advantages of this method is that it is relatively cheap, and for
-scenarios where porosities are small and fluid pressures it is a good approximation for $\rho_s \mathbf{g}$.
+break down at high porosities. The advantage of this method is that it is relatively cheap, and it can be used in
+scenarios where porosities are small and fluid pressures can be approximated by $\rho_s \mathbf{g}$.
