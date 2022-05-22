@@ -1,5 +1,5 @@
 (parameters:Termination_20criteria)=
-# **Termination criteria**
+# Termination criteria
 
 
 ## **Parameters in section** Termination criteria

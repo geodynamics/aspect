@@ -1,5 +1,5 @@
 (parameters:Melt_20settings)=
-# **Melt settings**
+# Melt settings
 
 
 ## **Parameters in section** Melt settings

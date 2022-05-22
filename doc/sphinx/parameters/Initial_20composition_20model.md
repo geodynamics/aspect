@@ -1,5 +1,5 @@
 (parameters:Initial_20composition_20model)=
-# **Initial composition model**
+# Initial composition model
 
 
 ## **Parameters in section** Initial composition model

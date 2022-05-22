@@ -1,5 +1,5 @@
 (parameters:Boundary_20heat_20flux_20model)=
-# **Boundary heat flux model**
+# Boundary heat flux model
 
 
 ## **Parameters in section** Boundary heat flux model

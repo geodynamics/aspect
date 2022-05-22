@@ -1,5 +1,5 @@
 (parameters:Boundary_20composition_20model)=
-# **Boundary composition model**
+# Boundary composition model
 
 
 ## **Parameters in section** Boundary composition model

@@ -1,5 +1,5 @@
 (parameters:Checkpointing)=
-# **Checkpointing**
+# Checkpointing
 
 
 ## **Parameters in section** Checkpointing

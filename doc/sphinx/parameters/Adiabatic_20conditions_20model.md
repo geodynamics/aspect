@@ -1,5 +1,5 @@
 (parameters:Adiabatic_20conditions_20model)=
-# **Adiabatic conditions model**
+# Adiabatic conditions model
 
 
 ## **Parameters in section** Adiabatic conditions model

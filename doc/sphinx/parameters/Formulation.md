@@ -1,5 +1,5 @@
 (parameters:Formulation)=
-# **Formulation**
+# Formulation
 
 
 ## **Parameters in section** Formulation

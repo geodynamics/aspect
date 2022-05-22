@@ -1,5 +1,5 @@
 (parameters:Boundary_20velocity_20model)=
-# **Boundary velocity model**
+# Boundary velocity model
 
 
 ## **Parameters in section** Boundary velocity model

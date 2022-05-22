@@ -1,5 +1,5 @@
 (parameters:Gravity_20model)=
-# **Gravity model**
+# Gravity model
 
 
 ## **Parameters in section** Gravity model

@@ -1,5 +1,5 @@
 (parameters:Heating_20model)=
-# **Heating model**
+# Heating model
 
 
 ## **Parameters in section** Heating model
