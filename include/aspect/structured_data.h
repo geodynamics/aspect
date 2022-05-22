@@ -261,10 +261,10 @@ namespace aspect
 
         /**
          * Computes the table indices given the size @p sizes of the
-         * i-th entry.
+         * entry with index @p idx.
          */
         TableIndices<dim>
-        compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const;
+        compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const;
 
     };
 
