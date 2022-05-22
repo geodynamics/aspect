@@ -1,5 +1,5 @@
 # 2D version of the model with the same viscosity we use
-# in the 3D case. The model also includes faults. 
+# in the 3D case. The model also includes faults.
 
 set Additional shared libraries            = ../../plugins/libequilibrium_grain_size.so
 
@@ -51,7 +51,7 @@ subsection Mesh refinement
   set Initial global refinement = 5
   set Strategy = minimum refinement function
   set Skip solvers on initial refinement = true
-  
+
   subsection Minimum refinement function
     set Variable names = depth, y
     set Function expression = if (depth < 350000, 10, 5)
@@ -74,7 +74,7 @@ subsection Initial composition model
     set Data file name = LLNL_model_cropped_cratons_faults.txt
     set Slice dataset in 2D plane = true
   end
-  
+
   subsection World builder
     set List of relevant compositions = faults, continents
   end
@@ -109,8 +109,8 @@ subsection Initial temperature model
     set Data directory = ../../input_data/
     set Data file name = upper_mantle_TM1_2D.txt
   end
-  
-  subsection Adiabatic boundary 
+
+  subsection Adiabatic boundary
     set Data directory = ../../input_data/
     set Data file name = LAB_CAM2016_2D.txt
     set Adiabatic temperature gradient = 0
@@ -137,7 +137,7 @@ subsection Material model
   set Model name         = equilibrium grain size
   set Material averaging = harmonic average only viscosity
 
-  subsection Equilibrium grain size model   
+  subsection Equilibrium grain size model
     set Average specific grain boundary energy      = 1.0,1.0,1.0,1.0
     set Use equilibrium grain size                  = false
 
@@ -153,7 +153,7 @@ subsection Material model
    set Dislocation activation energy               = 530000,530000,530000,530000
    set Dislocation activation volume               = 1.40E-005,1.70E-005,1.70E-005,0.0
    set Dislocation creep exponent                  = 3.5,3.5,3.5,3.5
-   set Dislocation creep prefactor                 = 8.33E-015,2.05e-12,2.05e-19,1.e-40 #1e-100, 1e-100, 1e-100, 1e-100 
+   set Dislocation creep prefactor                 = 8.33E-015,2.05e-12,2.05e-19,1.e-40 #1e-100, 1e-100, 1e-100, 1e-100
 
    set Geometric constant                          = 3,3,3,3
    set Grain growth activation energy              = 400000,662000,414000,299000
@@ -176,31 +176,31 @@ subsection Material model
    set Phase transition widths                     = 0,0,0
    set Reciprocal required strain                  = 10
    set Recrystallized grain size                   = 0.0,0.0,1e-4
-   
+
    set Use depth dependent viscosity               = true
    set Use depth dependent density scaling         = true
    set Use depth dependent temperature scaling     = true
    set Use faults                                  = true
    set Use cratons                                 = true
-   
+
    set Asthenosphere viscosity                     = 1e20
    set Fault viscosity                             = 1e20
 
    subsection Ascii data model
      set Data directory                            = ../../input_data/viscosity_profiles/
-     set Data file name                            = steinberger_source-1.txt 
+     set Data file name                            = steinberger_source-1.txt
    end
 
    subsection Density velocity scaling
      set Data directory                            = ../../input_data/
      set Data file name                            = rho_vs_scaling.txt
    end
-   
+
    subsection Thermal expansivity profile
      set Data directory                            = ../../input_data/
      set Data file name                            = thermal_expansivity_steinberger_calderwood.txt
    end
-   
+
    subsection Crustal depths
      set Data directory                            = ../../input_data/
      set Data file name                            = crustal_structure_2D.txt
@@ -216,12 +216,12 @@ end
 
 subsection Postprocess
   set List of postprocessors         = velocity statistics, visualization
-  
+
   subsection Visualization
     set List of output variables      = adiabat, material properties, gravity, nonadiabatic temperature, nonadiabatic pressure, named additional outputs
-    set Output format  = vtu  
+    set Output format  = vtu
   end
-  
+
   subsection Depth average
     set List of output variables = viscosity
     set Time between graphical output = 0

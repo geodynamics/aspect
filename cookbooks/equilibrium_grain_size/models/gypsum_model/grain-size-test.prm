@@ -1,7 +1,7 @@
 # This is a copy of the grain size strain test. The test imposes simple shear
 # across a 100 km square domain with a rheology derived from experiments on
 # olivine. The model domain is isobaric and initially isothermal.
-# The addinital named output prescribed_field_output_C0 represents the 
+# The addinital named output prescribed_field_output_C0 represents the
 # equilibrium grain size, which should be close to 9.35850647e-04 m
 # (the value from the grain size strain test).
 
@@ -89,7 +89,7 @@ subsection Material model
     set Dislocation creep exponent           =3.5
     set Dislocation activation energy        =530000 # J/mol
     set Dislocation activation volume        =1.40E-005 # m^3/mol
-    
+
     subsection Crustal depths
       set Data directory                            = ../../input_data/
       set Data file name                            = crust_2D_zero_thickness.txt
@@ -136,8 +136,8 @@ subsection Initial temperature model
   subsection Function
     set Function expression = 1600
   end
-  
-  subsection Adiabatic boundary 
+
+  subsection Adiabatic boundary
     set Data directory = ../../input_data/
     set Data file name = crust_2D_zero_thickness.txt
     set Adiabatic temperature gradient = 0
@@ -183,4 +183,3 @@ subsection Postprocess
     set Also output the gravity anomaly  = true
   end
 end
-

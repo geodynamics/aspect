@@ -193,8 +193,8 @@ namespace aspect
           lateral_averaging_properties.push_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
 
           std::vector<std::vector<double>> averages =
-                                          this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
-                                              lateral_averaging_properties);
+            this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
+                                                                   lateral_averaging_properties);
 
           average_viscosity_profile.swap(averages[0]);
 
