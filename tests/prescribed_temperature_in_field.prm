@@ -6,10 +6,12 @@ subsection Geometry model
   set Model name = box
 end
 
-## The temperature will be fixed in the first listed
-## (i.e., index 0) compositional field.
-set Prescribe internal temperature = true
-set Indices of fixed compositional fields = 0
+## The temperature will be fixed in the 'Fixed'
+## compositional field
+subsection Prescribed internal temperature model
+  set Prescribe internal temperature = true
+  set Names of compositional fields with fixed temperature = Fixed
+end
 
 subsection Compositional fields
   set Number of fields = 2
