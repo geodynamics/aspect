@@ -184,8 +184,8 @@ namespace aspect
         prm.enter_subsection("Infill ascii data");
         {
           Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                      "$ASPECT_SOURCE_DIR/tests/infill_density/",
-                                                      "box_2d_%s.%d.txt");
+                                                                "$ASPECT_SOURCE_DIR/tests/infill_density/",
+                                                                "box_2d_%s.%d.txt");
           prm.declare_entry ("Rock density", "2800",
                              Patterns::Double(0.),
                              "Density of the volcanic edifice that infills the flexural moat.");
