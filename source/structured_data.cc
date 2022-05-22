@@ -169,42 +169,109 @@ namespace aspect
     void
     StructuredDataLookup<dim>::reinit(const std::vector<std::string> &column_names,
                                       std::vector<std::vector<double>> &&coordinate_values_,
-                                      std::vector<Table<dim,double>> &&data_table)
+                                      std::vector<Table<dim,double>> &&data_table,
+                                      const MPI_Comm &mpi_communicator,
+                                      const unsigned int root_process)
     {
-      Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
-      for (unsigned int d=0; d<dim; ++d)
+#if DEAL_II_VERSION_GTE(9,4,0)
+      const bool supports_shared_data = true;
+#else
+      const bool supports_shared_data = false;
+#endif
+
+      // If this is the root process, or if the user did not request
+      // sharing, or if we don't support data sharing,
+      // then set up the various member variables we need to compute
+      // from the input data
+      if ((supports_shared_data == false)
+          ||
+          (root_process == numbers::invalid_unsigned_int)
+          ||
+          ((supports_shared_data == true)
+           &&
+           (root_process != numbers::invalid_unsigned_int)
+           &&
+           (Utilities::MPI::this_mpi_process(mpi_communicator) == root_process)))
         {
-          this->coordinate_values[d] = std::move(coordinate_values_[d]);
-          AssertThrow(this->coordinate_values[d].size()>1,
-                      ExcMessage("Error: At least 2 entries per coordinate direction are required."));
-          table_points[d] = this->coordinate_values[d].size();
+          Assert(coordinate_values_.size()==dim, ExcMessage("Invalid size of coordinate_values."));
+          for (unsigned int d=0; d<dim; ++d)
+            {
+              this->coordinate_values[d] = std::move(coordinate_values_[d]);
+              AssertThrow(this->coordinate_values[d].size()>1,
+                          ExcMessage("Error: At least 2 entries per coordinate direction are required."));
+              table_points[d] = this->coordinate_values[d].size();
+            }
+
+          components = column_names.size();
+          data_component_names = column_names;
+          Assert(data_table.size() == components,
+                 ExcMessage("Error: Incorrect number of columns specified."));
+          for (unsigned int c=0; c<components; ++c)
+            Assert(data_table[c].size() == table_points,
+                   ExcMessage("Error: One of the data tables has an incorrect size."));
+
+          // compute maximum_component_value for each component:
+          maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
+          for (unsigned int c=0; c<components; ++c)
+            {
+              const unsigned int n_elements = data_table[c].n_elements();
+              for (unsigned int idx=0; idx<n_elements; ++idx)
+                maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
+                                                        compute_table_indices(table_points, idx)));
+            }
+
+          // In case the data is specified on a grid that is equidistant
+          // in each coordinate direction, we only need to store
+          // (besides the data) the number of intervals in each direction and
+          // the begin- and end-points of the coordinates.
+          // In case the grid is not equidistant, we need to keep
+          // all the coordinates in each direction, which is more costly.
+          coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
         }
 
-      components = column_names.size();
-      data_component_names = column_names;
+      // If deal.II is new enough to support sharing data, and if the
+      // caller of this function has actually requested this, then we have
+      // set up member variables on the root process, but not on any of
+      // the other processes. Broadcast the data to the remaining
+      // processes
+      if ((supports_shared_data == true)
+          &&
+          (root_process != numbers::invalid_unsigned_int))
+        {
+#if DEAL_II_VERSION_GTE(9,4,0)
+          coordinate_values                 = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         coordinate_values,
+                                                                         root_process);
+          components                        = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         components,
+                                                                         root_process);
+          data_component_names              = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         data_component_names,
+                                                                         root_process);
+          maximum_component_value           = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         maximum_component_value,
+                                                                         root_process);
+          coordinate_values_are_equidistant = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         coordinate_values_are_equidistant,
+                                                                         root_process);
+          table_points                      = Utilities::MPI::broadcast (mpi_communicator,
+                                                                         table_points,
+                                                                         root_process);
+
+          // We can then also prepare the data tables for sharing between
+          // processes
+          for (unsigned int c = 0; c < components; ++c)
+            data_table[c].replicate_across_communicator (mpi_communicator,
+                                                         root_process);
+#endif
+        }
+
       Assert(data_table.size() == components,
              ExcMessage("Error: Incorrect number of columns specified."));
       for (unsigned int c=0; c<components; ++c)
         Assert(data_table[c].size() == table_points,
                ExcMessage("Error: One of the data tables has an incorrect size."));
 
-      // compute maximum_component_value for each component:
-      maximum_component_value = std::vector<double>(components,std::numeric_limits<double>::lowest());
-      for (unsigned int c=0; c<components; ++c)
-        {
-          const unsigned int n_elements = data_table[c].n_elements();
-          for (unsigned int idx=0; idx<n_elements; ++idx)
-            maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
-                                                    compute_table_indices(table_points, idx)));
-        }
-
-      // In case the data is specified on a grid that is equidistant
-      // in each coordinate direction, we only need to store
-      // (besides the data) the number of intervals in each direction and
-      // the begin- and end-points of the coordinates.
-      // In case the grid is not equidistant, we need to keep
-      // all the coordinates in each direction, which is more costly.
-      coordinate_values_are_equidistant = data_is_equidistant<dim> (coordinate_values);
 
       // For each data component, set up a GridData,
       // its type depending on the read-in grid.
@@ -223,11 +290,19 @@ namespace aspect
                 {
                   grid_extent[d].first = coordinate_values[d][0];
                   grid_extent[d].second = coordinate_values[d][table_points[d]-1];
+
+                  Assert(table_intervals[d] >= 1,
+                         ExcMessage("There needs to be at least one subinterval in each "
+                                    "coordinate direction."));
+                  Assert(grid_extent[d].first <
+                         grid_extent[d].second,
+                         ExcMessage("The interval in each coordinate direction needs "
+                                    "to have positive size"));
                 }
 
               data[c]
-                = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (grid_extent,
-                                                                                  table_intervals,
+                = std::make_unique<Functions::InterpolatedUniformGridData<dim>> (std::move(grid_extent),
+                                                                                  std::move(table_intervals),
                                                                                   std::move(data_table[c]));
             }
           else
@@ -257,212 +332,275 @@ namespace aspect
     StructuredDataLookup<dim>::load_file(const std::string &filename,
                                          const MPI_Comm &comm)
     {
-      // Grab the values already stored in this class (if they exist), this way we can
-      // check if somebody changes the size of the table over time and error out (see below)
-      TableIndices<dim> new_table_points = this->table_points;
+#if DEAL_II_VERSION_GTE(9,4,0)
+      const bool supports_shared_data = true;
+      const unsigned int root_process = 0;
+#else
+      const bool supports_shared_data = false;
+      const unsigned int root_process = numbers::invalid_unsigned_int;
+#endif
+
       std::vector<std::string> column_names;
-
-      // Read data from disk and distribute among processes
-      std::stringstream in(read_and_distribute_file_content(filename, comm));
-
-      // Read header lines and table size
-      while (in.peek() == '#')
-        {
-          std::string line;
-          std::getline(in,line);
-          std::stringstream linestream(line);
-          std::string word;
-          while (linestream >> word)
-            if (word == "POINTS:")
-              for (unsigned int i = 0; i < dim; i++)
-                {
-                  unsigned int temp_index;
-                  linestream >> temp_index;
-
-                  if (new_table_points[i] == 0)
-                    new_table_points[i] = temp_index;
-                  else
-                    AssertThrow (new_table_points[i] == temp_index,
-                                 ExcMessage("The file grid must not change over model runtime. "
-                                            "Either you prescribed a conflicting number of points in "
-                                            "the input file, or the POINTS comment in your data files "
-                                            "is changing between following files."));
-                }
-        }
-
-      for (unsigned int i = 0; i < dim; i++)
-        {
-          AssertThrow(new_table_points[i] != 0,
-                      ExcMessage("Could not successfully read in the file header of the "
-                                 "ascii data file <" + filename + ">. One header line has to "
-                                 "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
-                                 "potentially N2 and N3 have to be the number of data points "
-                                 "in their respective dimension. Check for typos in this line "
-                                 "(e.g. a missing space character)."));
-        }
-
-      // Read column lines if present
-      unsigned int name_column_index = 0;
-      double temp_data;
-
-      while (true)
-        {
-          AssertThrow (name_column_index < 100,
-                       ExcMessage("The program found more than 100 columns in the first line of the data file. "
-                                  "This is unlikely intentional. Check your data file and make sure the data can be "
-                                  "interpreted as floating point numbers. If you do want to read a data file with more "
-                                  "than 100 columns, please remove this assertion."));
-
-          std::string column_name_or_data;
-          in >> column_name_or_data;
-          try
-            {
-              // If the data field contains a name this will throw an exception
-              temp_data = boost::lexical_cast<double>(column_name_or_data);
-
-              // If there was no exception we have left the line containing names
-              // and have read the first data field. Save number of components, and
-              // make sure there is no contradiction if the components were already given to
-              // the constructor of this class.
-              if (components == numbers::invalid_unsigned_int)
-                components = name_column_index - dim;
-              else if (name_column_index != 0)
-                AssertThrow (components+dim == name_column_index,
-                             ExcMessage("The number of expected data columns and the "
-                                        "list of column names at the beginning of the data file "
-                                        + filename + " do not match. The file should contain "
-                                        + Utilities::int_to_string(name_column_index) + " column "
-                                        "names (one for each dimension and one per data column), "
-                                        "but it only has " + Utilities::int_to_string(components+dim) +
-                                        " column names."));
-              break;
-            }
-          catch (const boost::bad_lexical_cast &e)
-            {
-              // The first dim columns are coordinates and contain no data
-              if (name_column_index >= dim)
-                {
-                  // Transform name to lower case to prevent confusion with capital letters
-                  // Note: only ASCII characters allowed
-                  std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
-
-                  AssertThrow(std::find(column_names.begin(),column_names.end(),column_name_or_data)
-                              == column_names.end(),
-                              ExcMessage("There are multiple fields named " + column_name_or_data +
-                                         " in the data file " + filename + ". Please remove duplication to "
-                                         "allow for unique association between column and name."));
-
-                  column_names.push_back(column_name_or_data);
-                }
-              ++name_column_index;
-            }
-        }
-
-      // Create table for the data. This peculiar reinit is necessary, because
-      // there is no constructor for Table, which takes TableIndices as
-      // argument.
-      Table<dim,double> data_table;
-      data_table.TableBase<dim,double>::reinit(new_table_points);
-      AssertThrow (components != numbers::invalid_unsigned_int,
-                   ExcMessage("ERROR: number of components in " + filename + " could not be "
-                              "determined automatically. Either add a header with column "
-                              "names or pass the number of columns in the StructuredData "
-                              "constructor."));
-      std::vector<Table<dim,double>> data_tables(components, data_table);
-
+      std::vector<Table<dim,double>> data_tables;
       std::vector<std::vector<double>> coordinate_values(dim);
-      for (unsigned int d=0; d<dim; ++d)
-        coordinate_values[d].resize(new_table_points[d]);
 
-      if (column_names.size()==0)
+      // If this is the root process, or if we don't support data sharing,
+      // then set up the various member variables we need to compute
+      // from the input data
+      if ((supports_shared_data == false)
+          ||
+          ((supports_shared_data == true)
+           &&
+           (Utilities::MPI::this_mpi_process(comm) == root_process)))
         {
-          // set default column names:
-          for (unsigned int c=0; c<components; ++c)
-            column_names.push_back("column " + Utilities::int_to_string(c,2));
-        }
+          // Grab the values already stored in this class (if they exist), this way we can
+          // check if somebody changes the size of the table over time and error out (see below)
+          TableIndices<dim> new_table_points = this->table_points;
 
-      // Make sure the data file actually has as many columns as we think it has
-      // (either based on the header, or based on what was passed to the constructor).
-      const std::streampos position = in.tellg();
-      std::string first_data_row;
-      std::getline(in, first_data_row);
-      std::stringstream linestream(first_data_row);
-      std::string column_entry;
+          // Read data from disk and distribute among processes. We only have to
+          // do the distributing if every process is supposed to read and parse
+          // the data (namely, if supports_shared_data==false), and so we only
+          // have to pass the 'real' communicator in that case; if we want
+          // to do the data sharing later on, just pass MPI_COMM_SELF (i.e.,
+          // a communicator with just a single MPI process) and in that case
+          // no sharing will happen.
+          std::stringstream in(read_and_distribute_file_content(filename,
+                                                                (supports_shared_data==false ?
+                                                                 comm :
+                                                                 MPI_COMM_SELF)));
 
-      // We have already read in the first data entry above in the try/catch block,
-      // so there's one more column in the file than in the line we just read in.
-      unsigned int number_of_entries = 1;
-      while (linestream >> column_entry)
-        number_of_entries += 1;
-
-      AssertThrow ((number_of_entries) == column_names.size()+dim,
-                   ExcMessage("ERROR: The number of columns in the data file " + filename +
-                              " is incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
-                              " columns, but the first row has " + Utilities::int_to_string(number_of_entries) +
-                              " columns."));
-
-      // Go back to the position in the file where we started the check for the column numbers.
-      in.seekg (position);
-
-      // Finally read data lines:
-      unsigned int read_data_entries = 0;
-      do
-        {
-          // what row and column of the file are we in?
-          const unsigned int column_num = read_data_entries%(components+dim);
-          const unsigned int row_num = read_data_entries/(components+dim);
-          TableIndices<dim> idx = compute_table_indices(new_table_points, row_num);
-
-          if (column_num < dim)
+          // Read header lines and table size
+          while (in.peek() == '#')
             {
-              // This is a coordinate. Store (and check that they are consistent)
-              const double old_value = coordinate_values[column_num][idx[column_num]];
+              std::string line;
+              std::getline(in,line);
+              std::stringstream linestream(line);
+              std::string word;
+              while (linestream >> word)
+                if (word == "POINTS:")
+                  for (unsigned int i = 0; i < dim; i++)
+                    {
+                      unsigned int temp_index;
+                      linestream >> temp_index;
 
-              AssertThrow(old_value == 0. ||
-                          (std::abs(old_value-temp_data) < 1e-8*std::abs(old_value)),
-                          ExcMessage("Invalid coordinate in column "
-                                     + Utilities::int_to_string(column_num) + " in row "
-                                     + Utilities::int_to_string(row_num)
-                                     + " in file " + filename +
-                                     "\nThis class expects the coordinates to be structured, meaning "
-                                     "the coordinate values in each coordinate direction repeat exactly "
-                                     "each time. This also means each row in the data file has to have "
-                                     "the same number of columns as the first row containing data."));
-
-              coordinate_values[column_num][idx[column_num]] = temp_data;
-            }
-          else
-            {
-              // This is a data value, so scale and store:
-              const unsigned int component = column_num - dim;
-              data_tables[component](idx) = temp_data * scale_factor;
+                      if (new_table_points[i] == 0)
+                        new_table_points[i] = temp_index;
+                      else
+                        AssertThrow (new_table_points[i] == temp_index,
+                                     ExcMessage("The file grid must not change over model runtime. "
+                                                "Either you prescribed a conflicting number of points in "
+                                                "the input file, or the POINTS comment in your data files "
+                                                "is changing between following files."));
+                    }
             }
 
-          ++read_data_entries;
+          for (unsigned int i = 0; i < dim; i++)
+            {
+              AssertThrow(new_table_points[i] != 0,
+                          ExcMessage("Could not successfully read in the file header of the "
+                                     "ascii data file <" + filename + ">. One header line has to "
+                                     "be of the format: '#POINTS: N1 [N2] [N3]', where N1 and "
+                                     "potentially N2 and N3 have to be the number of data points "
+                                     "in their respective dimension. Check for typos in this line "
+                                     "(e.g. a missing space character)."));
+            }
+
+          // Read column lines if present
+          unsigned int name_column_index = 0;
+          double temp_data;
+
+          while (true)
+            {
+              AssertThrow (name_column_index < 100,
+                           ExcMessage("The program found more than 100 columns in the first line of the data file. "
+                                      "This is unlikely intentional. Check your data file and make sure the data can be "
+                                      "interpreted as floating point numbers. If you do want to read a data file with more "
+                                      "than 100 columns, please remove this assertion."));
+
+              std::string column_name_or_data;
+              in >> column_name_or_data;
+              try
+                {
+                  // If the data field contains a name this will throw an exception
+                  temp_data = boost::lexical_cast<double>(column_name_or_data);
+
+                  // If there was no exception we have left the line containing names
+                  // and have read the first data field. Save number of components, and
+                  // make sure there is no contradiction if the components were already given to
+                  // the constructor of this class.
+                  if (components == numbers::invalid_unsigned_int)
+                    components = name_column_index - dim;
+                  else if (name_column_index != 0)
+                    AssertThrow (components+dim == name_column_index,
+                                 ExcMessage("The number of expected data columns and the "
+                                            "list of column names at the beginning of the data file "
+                                            + filename + " do not match. The file should contain "
+                                            + Utilities::int_to_string(name_column_index) + " column "
+                                            "names (one for each dimension and one per data column), "
+                                            "but it only has " + Utilities::int_to_string(components+dim) +
+                                            " column names."));
+                  break;
+                }
+              catch (const boost::bad_lexical_cast &e)
+                {
+                  // The first dim columns are coordinates and contain no data
+                  if (name_column_index >= dim)
+                    {
+                      // Transform name to lower case to prevent confusion with capital letters
+                      // Note: only ASCII characters allowed
+                      std::transform(column_name_or_data.begin(), column_name_or_data.end(), column_name_or_data.begin(), ::tolower);
+
+                      AssertThrow(std::find(column_names.begin(),column_names.end(),column_name_or_data)
+                                  == column_names.end(),
+                                  ExcMessage("There are multiple fields named " + column_name_or_data +
+                                             " in the data file " + filename + ". Please remove duplication to "
+                                             "allow for unique association between column and name."));
+
+                      column_names.push_back(column_name_or_data);
+                    }
+                  ++name_column_index;
+                }
+            }
+
+          // Create table for the data. This peculiar reinit is necessary, because
+          // there is no constructor for Table, which takes TableIndices as
+          // argument.
+          Table<dim,double> data_table;
+          data_table.TableBase<dim,double>::reinit(new_table_points);
+          AssertThrow (components != numbers::invalid_unsigned_int,
+                       ExcMessage("ERROR: number of components in " + filename + " could not be "
+                                  "determined automatically. Either add a header with column "
+                                  "names or pass the number of columns in the StructuredData "
+                                  "constructor."));
+          data_tables.resize(components, data_table);
+
+          for (unsigned int d=0; d<dim; ++d)
+            coordinate_values[d].resize(new_table_points[d]);
+
+          if (column_names.size()==0)
+            {
+              // set default column names:
+              for (unsigned int c=0; c<components; ++c)
+                column_names.push_back("column " + Utilities::int_to_string(c,2));
+            }
+
+          // Make sure the data file actually has as many columns as we think it has
+          // (either based on the header, or based on what was passed to the constructor).
+          const std::streampos position = in.tellg();
+          std::string first_data_row;
+          std::getline(in, first_data_row);
+          std::stringstream linestream(first_data_row);
+          std::string column_entry;
+
+          // We have already read in the first data entry above in the try/catch block,
+          // so there's one more column in the file than in the line we just read in.
+          unsigned int number_of_entries = 1;
+          while (linestream >> column_entry)
+            number_of_entries += 1;
+
+          AssertThrow ((number_of_entries) == column_names.size()+dim,
+                       ExcMessage("ERROR: The number of columns in the data file " + filename +
+                                  " is incorrect. It needs to have " + Utilities::int_to_string(column_names.size()+dim) +
+                                  " columns, but the first row has " + Utilities::int_to_string(number_of_entries) +
+                                  " columns."));
+
+          // Go back to the position in the file where we started the check for the column numbers.
+          in.seekg (position);
+
+          // Finally read data lines:
+          unsigned int read_data_entries = 0;
+          do
+            {
+              // what row and column of the file are we in?
+              const unsigned int column_num = read_data_entries%(components+dim);
+              const unsigned int row_num = read_data_entries/(components+dim);
+              const TableIndices<dim> idx = compute_table_indices(new_table_points, row_num);
+
+              if (column_num < dim)
+                {
+                  // This is a coordinate. Store (and check that they are consistent)
+                  const double old_value = coordinate_values[column_num][idx[column_num]];
+
+                  AssertThrow(old_value == 0. ||
+                              (std::abs(old_value-temp_data) < 1e-8*std::abs(old_value)),
+                              ExcMessage("Invalid coordinate in column "
+                                         + Utilities::int_to_string(column_num) + " in row "
+                                         + Utilities::int_to_string(row_num)
+                                         + " in file " + filename +
+                                         "\nThis class expects the coordinates to be structured, meaning "
+                                         "the coordinate values in each coordinate direction repeat exactly "
+                                         "each time. This also means each row in the data file has to have "
+                                         "the same number of columns as the first row containing data."));
+
+                  coordinate_values[column_num][idx[column_num]] = temp_data;
+                }
+              else
+                {
+                  // This is a data value, so scale and store:
+                  const unsigned int component = column_num - dim;
+                  data_tables[component](idx) = temp_data * scale_factor;
+                }
+
+              ++read_data_entries;
+            }
+          while (in >> temp_data);
+
+          AssertThrow(in.eof(),
+                      ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                                  "plugin has encountered an error before the end of the file. "
+                                  "Please check for malformed data values (e.g. NaN) or superfluous "
+                                  "lines at the end of the data file."));
+
+          const unsigned int n_expected_data_entries = (components + dim) * data_table.n_elements();
+          AssertThrow(read_data_entries == n_expected_data_entries,
+                      ExcMessage ("While reading the data file '" + filename + "' the ascii data "
+                                  "plugin has reached the end of the file, but has not found the "
+                                  "expected number of data values considering the spatial dimension, "
+                                  "data columns, and number of lines prescribed by the POINTS header "
+                                  "of the file. Please check the number of data "
+                                  "lines against the POINTS header in the file."));
         }
-      while (in >> temp_data);
 
-      AssertThrow(in.eof(),
-                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
-                              "plugin has encountered an error before the end of the file. "
-                              "Please check for malformed data values (e.g. NaN) or superfluous "
-                              "lines at the end of the data file."));
+      // If deal.II is new enough to support sharing data, then we have
+      // set up member variables on the root process, but not on any of
+      // the other processes. So broadcast the data to the remaining
+      // processes -- the code above really only wrote into one
+      // member variable ('components'), so that is the only one we
+      // have to broadcast.
+      //
+      // If data sharing is possible (deal.II version >= 9.3), then
+      // the first three arguments to the call to reinit() below will
+      // only be read on the root process, and so it is totally ok
+      // that we are passing empty tables on all other processes. In
+      // the case of 'data_table', we do have to make sure that it is
+      // an array of the right size, though, even though the array
+      // contains only empty tables.
+      if (supports_shared_data == true)
+        {
+#if DEAL_II_VERSION_GTE(9,4,0)
+          components = Utilities::MPI::broadcast (comm,
+                                                  components,
+                                                  root_process);
+          coordinate_values = Utilities::MPI::broadcast (comm,
+                                                         coordinate_values,
+                                                         root_process);
+          column_names = Utilities::MPI::broadcast (comm,
+                                                    column_names,
+                                                    root_process);
 
-      const unsigned int n_expected_data_entries = (components + dim) * data_table.n_elements();
-      AssertThrow(read_data_entries == n_expected_data_entries,
-                  ExcMessage ("While reading the data file '" + filename + "' the ascii data "
-                              "plugin has reached the end of the file, but has not found the "
-                              "expected number of data values considering the spatial dimension, "
-                              "data columns, and number of lines prescribed by the POINTS header "
-                              "of the file. Please check the number of data "
-                              "lines against the POINTS header in the file."));
+          if (Utilities::MPI::this_mpi_process(comm) != root_process)
+            data_tables.resize (components);
+#endif
+        }
 
       // Finally create the data. We want to call the move-version of reinit() so
       // that the data doesn't have to be copied, so use std::move on all big
       // objects.
       this->reinit(column_names,
                    std::move(coordinate_values),
-                   std::move(data_tables));
+                   std::move(data_tables),
+                   comm,
+                   root_process);
     }
 
 

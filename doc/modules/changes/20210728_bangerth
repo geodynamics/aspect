@@ -1,0 +1,6 @@
+New: Where possible, when using large data tables as input (e.g., for
+initial conditions specified as tables), these data are now stored
+only once on each node in memory areas that is accessible by all MPI
+processes on that node.
+<br>
+(Wolfgang Bangerth, 2021/07/28)
