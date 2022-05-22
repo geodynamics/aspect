@@ -58,7 +58,7 @@ to do:
         shared library at startup so that the plugin becomes available at run
         time and can be selected from the input parameter file. This is done
         using the `Additional shared libraries` parameter in the input file,
-        see {ref}`sec:3.1][]. This approach has the upside that you can
+        see {ref}`sec:3.1`. This approach has the upside that you can
         keep all files that define new plugins in your own directories where
         you also run the simulations, also making it easier to keep around
         your plugins as you upgrade your ASPECT
@@ -67,12 +67,12 @@ to do:
         is the preferred approach.
 
         In practice, the compiler line above can become tedious because it
-        includes paths to the ASPECT and <span
+        includes paths to the ASPECT and
         deal.II header files, but possibly also other
         things such as Trilinos headers, etc. Having to remember all of these
         pieces is a hassle, and a much easier way is in fact to set up a
         mini-CMake project for this. To this end, simply copy the file
-        [doc/plugin-CMakeLists.txt][] to the directory where you have your
+        [doc/plugin-CMakeLists.txt] to the directory where you have your
         plugin source files and rename it to `CMakeLists.txt`.
 
     You can then just run the commands
@@ -82,7 +82,7 @@ to do:
 
     and it should compile your plugin files into a shared library
     `my_plugin.so`. A concrete example of this process is discussed in
-    {ref}`sec:benchmark-run`11]. Of course, you may want to
+    {ref}`sec:benchmark-run`. Of course, you may want to
     choose different names for the source files `source_1.cc`, `source_2.cc`
     or the name of the plugin `my_plugin`.
 
@@ -90,18 +90,10 @@ to do:
     ASPECT installation (i.e., the directory where
     you configured and compiled it, which may be the same directory as where
     you keep your sources, or a different one, as discussed in
-    {ref}`sec:installation`12]) in either the directory
+    {ref}`sec:installation`) in either the directory
     explicitly specified in the `Aspect_DIR` variable passed to `cmake`, the
     shell environment variable `ASPECT_DIR`, or just one directory up. It then
     sets up compiler paths and similar, and the following lines simply define
     the name of a plugin, list the source files for it, and define everything
     that's necessary to compile them into a shared library. Calling
     `make` on the command line then simply compiles everything.
-
-<div class="center">
-
-</div>
-
-<div class="center">
-
-</div>
