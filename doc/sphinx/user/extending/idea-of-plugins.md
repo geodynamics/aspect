@@ -16,7 +16,7 @@ are *a lot* of plugins already, see {numref}`fig:plugins`, that will often be us
 starting points and examples if you want to implement plugins yourself.
 
 ```{figure-md} fig:plugins
-<img src="../../../manual/plugin_graph.*" alt="The graph of all current plugins of ASPECT. The yellow octagon and square represent the `Simulator` and [SimulatorAccess](doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT."  width="95%"/>
+<img src="images/plugin_graph.*" alt="The graph of all current plugins of ASPECT. The yellow octagon and square represent the `Simulator` and [SimulatorAccess](doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT."  width="95%"/>
 
 The graph of all current plugins of ASPECT. The yellow octagon and square represent the `Simulator` and [SimulatorAccess](doc/doxygen/classaspect_1_1SimulatorAccess.html) classes. The green boxes are interface classes for everything that can be changed by plugins. Blue circles correspond to plugins that implement particular behavior. The graph is of course too large to allow reading individual plugin names (unless you zoom far into the page), but is intended to illustrate the architecture of ASPECT.
 ```
@@ -85,14 +85,8 @@ The way this is achieved is through the following two steps:
     Here, the first argument to the macro is the name of the class. The second
     is the name by which this model can be selected in the parameter file. And
     the third one is a documentation string that describes the purpose of the
-    class (see, for example, {ref}`sec:3.55` for an example of how
+    class (see, for example, {ref}`parameters:Gravity_20model` for an example of how
     existing models describe themselves).
-
-    :::{admonition} TODO
-    :class: error
-
-    {ref}`sec:3.55` refers to a parameter file; these have not yet been set up
-    :::
 
     This little piece of code ensures several things: (i) That the parameters
     this class declares are known when reading the parameter file. (ii) That

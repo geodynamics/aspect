@@ -7,11 +7,7 @@ simulation when it has reached a steady state (or, rather, some criterion
 determines that it is close enough to steady state), or by an external action
 such as placing a specially named file in the output directory. The criteria
 determining termination of a simulation are all implemented in plugins. The
-parameters describing these criteria are listed in {ref}`sec:3.195`.
-
-:::{admonition} TODO
-sec:3.195 refers to a parameter file which is not set up yet.
-:::
+parameters describing these criteria are listed in {ref}`parameters:Termination_20criteria`.
 
 To implement a termination criterion, you need to overload the
 `aspect::TerminationCriteria::Interface` class and use the

@@ -111,8 +111,9 @@ Primarily, this difficulty results from two facts:
     from the `SimulatorAccess` class that has a
     number of member functions postprocessors can call to obtain read-only
     access to some of the information stored in the main class of
-    ASPECT. See the documentation of the `aspect::SimulatorAccess class` to see
-    what kind of information is
+    ASPECT. See the documentation of the
+    [aspect::SimulatorAccess class](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1SimulatorAccess.html)
+    to see what kind of information is
     available to postprocessors. See also {ref}`sec:extending:idea-of-plugins` for more
     information about the `SimulatorAccess` class.
 

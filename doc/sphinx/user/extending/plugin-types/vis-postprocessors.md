@@ -18,11 +18,7 @@ outputting *all* of them would yield very large output files, and would
 furthermore not scale very well as the list continues to grow. Consequently,
 as with the postprocessors described in the previous section, what *can* be
 computed is implemented in a number of plugins and what *is* computed is
-selected in the input parameter file (see {ref}`sec:3.167`).
-
-:::{note}
-Reference to sec;3.167 is a reference to a parameter file which is not currently set up.
-:::
+selected in the input parameter file (see {ref}`parameters:Postprocess/Visualization`).
 
 Defining visualization postprocessors works in much the same way as for the
 other plugins discussed in this section. Specifically, an implementation of
@@ -31,7 +27,7 @@ by convention be in namespace
 `aspect::Postprocess::VisualizationPostprocessors`, and is registered using a
 macro, here called `ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR`. Like the
 postprocessor plugins, visualization postprocessors can derive from class
-`aspect::Postprocess::SimulatorAccess` if they need to know specifics of the
+`aspect::SimulatorAccess` if they need to know specifics of the
 simulation such as access to the material models and to get access to the
 introspection facility outlined in {ref}`sec:extending:idea-of-plugins`. A typical example is
 the plugin that produces the viscosity as a spatially variable field by

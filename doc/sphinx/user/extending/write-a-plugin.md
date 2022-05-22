@@ -59,7 +59,7 @@ to do:
         shared library at startup so that the plugin becomes available at run
         time and can be selected from the input parameter file. This is done
         using the `Additional shared libraries` parameter in the input file,
-        see {ref}`sec:3.1`. This approach has the upside that you can
+        see {ref}`parameters:Additional_20shared_20libraries`. This approach has the upside that you can
         keep all files that define new plugins in your own directories where
         you also run the simulations, also making it easier to keep around
         your plugins as you upgrade your ASPECT
@@ -119,8 +119,4 @@ If you choose to compile your plugins into a shared library yourself, you will n
 recompile them every time you upgrade your ASPECT installation since we do not guarantee
 that the ASPECT application binary interface (ABI) will remain stable, even if it may not be
 necessary to actually change anything in the *implementation* of your plugin
-:::
-
-:::{admonition} TODO
-{ref}`sec:3.1` refers to a parameter file, which is not set up yet.
 :::

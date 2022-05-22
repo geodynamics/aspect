@@ -99,7 +99,7 @@ which there is an extensive amount of documentation:
     together to achieve their goal.
 
 -   The deal.II tutorial at
-    <https://www.dealii.org/developer/doxygen/tutorial/index.html> that
+    <https://dealii.org/developer/doxygen/deal.II/Tutorial.html> that
     provides a step-by-step introduction to the library using a sequence of
     several dozen programs that introduce gradually more complex topics. In
     particular, you will learn deal.II's
@@ -134,10 +134,6 @@ which there is an extensive amount of documentation:
 
 -   A general overview of deal.II is also
     provided in the paper {cite:t}`bangerth:etal:2007`.
-
-:::{admonition} TODO
-<https://www.dealii.org/developer/doxygen/tutorial/index.html> no longer seems to go anywhere.
-:::
 
 As described in {ref}`sec:run-aspect:debug-mode` you should always compile
 and run ASPECT in *debug mode* when you are
