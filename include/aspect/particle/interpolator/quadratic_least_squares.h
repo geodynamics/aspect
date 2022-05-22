@@ -90,15 +90,6 @@ namespace aspect
           ComponentMask use_quadratic_least_squares_limiter;
 
           /**
-           * Stores whether at least one property is limited, which means
-           * that ghost particles will be updated, and that the algorithm
-           * can find the cell averages of neighboring cells without
-           * confirming that the cell is not a ghost cell.
-           */
-          bool limiter_enabled_for_at_least_one_property;
-
-
-          /**
            * Enables a linear extrapolation of boundary values for the limiting scheme
            */
           ComponentMask use_boundary_extrapolation;
@@ -115,7 +106,7 @@ namespace aspect
           std::pair<double, double> get_interpolation_bounds(const dealii::Vector<double> &coefficients) const;
 
           /*
-           * Find all points that may contain the minimum or maximum values of the interpolation in the cell
+           * Find all points that may contain the minimum or maximum values of the interpolation in the cell.
            */
           std::vector<dealii::Point<dim>> get_critical_points(const dealii::Vector<double> &coefficients) const;
 
