@@ -33,6 +33,6 @@ ASPECT is published under the GNU GPL v2 or newer license.
 maxdepth: 2
 ---
 user/index.md
-Input parameters <https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>
+parameters/index.md
 references.md
 ```
