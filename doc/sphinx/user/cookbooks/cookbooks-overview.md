@@ -9,9 +9,9 @@ as simple as `NotePad` on Windows. When setting up these input files for a
 model you have in mind, you have to describe everything that characterizes the
 situation you are considering. In particular, this includes the following:
 
--   What internal forces act on the medium (the equation)?
+-   What internal forces act on the medium (the left-hand side of the equation)?
 
--   What external forces do we have (the right hand side)
+-   What external forces act on the mediume (the right-hand of the equation side)?
 
 -   What is the domain (geometry)?
 
@@ -29,7 +29,7 @@ file:
 ```
 
 This indicates that you want to do a computation in 2d, using a rectangular
-geometry (a &ldquo;box&rdquo;) with edge length equal to one in both the $x$-
+geometry (a &ldquo;box&rdquo;) with the edge length ("extent") equal to one in both the $x$-
 and $y$-directions. Of course, there are other geometries you can choose from
 for the `Model name` parameter, and consequently other subsections that
 specify the details of these geometries.
@@ -70,7 +70,7 @@ References to parameter files in footnote [^footnote2] are dead; parameter file 
 
 [^footnote2]: Internally, the geometry models ASPECT uses label every part of the boundary with what is called a *boundary indicator*
 – a number that identifies pieces of the boundary. If you know which number each piece has, you can list these numbers on
-the right hand sides of the assignments of boundary types above. For example, the left boundary of the box has boundary
+the right-hand sides of the assignments of boundary types above. For example, the left boundary of the box has boundary
 indicator zero (see Section A.43), and using this number instead of the `left` would have been equally valid. However, numbers
 are far more difficult to remember than names, and consequently every geometry model provides string aliases such as “`left`”
 for each boundary indicator describing parts of the boundary. These symbolic aliases are specific to the geometry – for the box,
