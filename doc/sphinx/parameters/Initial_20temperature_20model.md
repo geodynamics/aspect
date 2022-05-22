@@ -2,7 +2,7 @@
 # Initial temperature model
 
 
-## **Parameters in section** Initial temperature model
+## **Subsection:** Initial temperature model
 
 
 (parameters:Initial_20temperature_20model/List_20of_20model_20names)=
@@ -124,7 +124,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 \textbf{Warning}: This parameter provides an old and deprecated way of specifying initial temperature models and shouldn't be used. Please use 'List of model names' instead.
 
 (parameters:Initial_20temperature_20model/Adiabatic)=
-## **Parameters in section** Initial temperature model/Adiabatic
+## **Subsection:** Initial temperature model / Adiabatic
 (parameters:Initial_20temperature_20model/Adiabatic/Age_20bottom_20boundary_20layer)=
 ### __Parameter name:__ Age bottom boundary layer
 **Default value:** 0.
@@ -176,7 +176,7 @@ Make sure the top and bottom temperatures of the lithosphere agree with temperat
 The function object in the Function subsection represents the compositional fields that will be used as a reference profile for calculating the thermal diffusivity. This function is one-dimensional and depends only on depth. The format of this functions follows the syntax understood by the muparser library, see Section~\ref{sec:muparser-format}.
 
 (parameters:Initial_20temperature_20model/Adiabatic/Function)=
-## **Parameters in section** Initial temperature model/Adiabatic/Function
+## **Subsection:** Initial temperature model / Adiabatic / Function
 (parameters:Initial_20temperature_20model/Adiabatic/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -206,7 +206,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Initial_20temperature_20model/Adiabatic_20boundary)=
-## **Parameters in section** Initial temperature model/Adiabatic boundary
+## **Subsection:** Initial temperature model / Adiabatic boundary
 (parameters:Initial_20temperature_20model/Adiabatic_20boundary/Adiabatic_20temperature_20gradient)=
 ### __Parameter name:__ Adiabatic temperature gradient
 **Default value:** 0.0005
@@ -256,7 +256,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The value of the surface temperature. Units: \si{\kelvin}.
 
 (parameters:Initial_20temperature_20model/Ascii_20data_20model)=
-## **Parameters in section** Initial temperature model/Ascii data model
+## **Subsection:** Initial temperature model / Ascii data model
 (parameters:Initial_20temperature_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-data/test/
@@ -298,7 +298,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20temperature_20model/Ascii_20profile)=
-## **Parameters in section** Initial temperature model/Ascii profile
+## **Subsection:** Initial temperature model / Ascii profile
 (parameters:Initial_20temperature_20model/Ascii_20profile/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/ascii-profile/tests/
@@ -324,7 +324,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20temperature_20model/Continental_20geotherm)=
-## **Parameters in section** Initial temperature model/Continental geotherm
+## **Subsection:** Initial temperature model / Continental geotherm
 (parameters:Initial_20temperature_20model/Continental_20geotherm/Layer_20thicknesses)=
 ### __Parameter name:__ Layer thicknesses
 **Default value:** 30000.
@@ -350,7 +350,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The value of the surface temperature. Units: \si{\kelvin}.
 
 (parameters:Initial_20temperature_20model/Function)=
-## **Parameters in section** Initial temperature model/Function
+## **Subsection:** Initial temperature model / Function
 (parameters:Initial_20temperature_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -388,7 +388,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Initial_20temperature_20model/Harmonic_20perturbation)=
-## **Parameters in section** Initial temperature model/Harmonic perturbation
+## **Subsection:** Initial temperature model / Harmonic perturbation
 (parameters:Initial_20temperature_20model/Harmonic_20perturbation/Lateral_20wave_20number_20one)=
 ### __Parameter name:__ Lateral wave number one
 **Default value:** 3
@@ -430,7 +430,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Doubled radial wave number of the harmonic perturbation.  One equals half of a sine period over the model domain.  This allows for single up-/downswings. Negative numbers  reverse the sign of the perturbation.
 
 (parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation)=
-## **Parameters in section** Initial temperature model/Inclusion shape perturbation
+## **Subsection:** Initial temperature model / Inclusion shape perturbation
 (parameters:Initial_20temperature_20model/Inclusion_20shape_20perturbation/Ambient_20temperature)=
 ### __Parameter name:__ Ambient temperature
 **Default value:** 1.0
@@ -496,7 +496,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The radius of the inclusion to be generated. For shapes with no radius (e.g. square), this will be the width, and for shapes with no width, this gives a general guideline for the size of the shape.
 
 (parameters:Initial_20temperature_20model/Lithosphere_20Mask)=
-## **Parameters in section** Initial temperature model/Lithosphere Mask
+## **Subsection:** Initial temperature model / Lithosphere Mask
 (parameters:Initial_20temperature_20model/Lithosphere_20Mask/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/lithosphere-mask/
@@ -538,7 +538,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Units: \si{\meter}.The maximum depth of the lithosphere. The model will be NaNs below this depth.
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS)=
-## **Parameters in section** Initial temperature model/Patch on S40RTS
+## **Subsection:** Initial temperature model / Patch on S40RTS
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Maximum_20grid_20depth)=
 ### __Parameter name:__ Maximum grid depth
 **Default value:** 700000.0
@@ -564,7 +564,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The depth range (above maximum grid depth) over which to smooth. The boundary is smoothed using a depth weighted combination of Vs values from the ascii grid and S40RTS at each point in the region of smoothing.
 
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model)=
-## **Parameters in section** Initial temperature model/Patch on S40RTS/Ascii data model
+## **Subsection:** Initial temperature model / Patch on S40RTS / Ascii data model
 (parameters:Initial_20temperature_20model/Patch_20on_20S40RTS/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/patch-on-S40RTS/test/
@@ -590,7 +590,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation)=
-## **Parameters in section** Initial temperature model/S40RTS perturbation
+## **Subsection:** Initial temperature model / S40RTS perturbation
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
@@ -688,7 +688,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Method that is used to specify how the vs-to-density scaling varies with depth.
 
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model)=
-## **Parameters in section** Initial temperature model/S40RTS perturbation/Ascii data vs to density model
+## **Subsection:** Initial temperature model / S40RTS perturbation / Ascii data vs to density model
 (parameters:Initial_20temperature_20model/S40RTS_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
@@ -714,7 +714,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation)=
-## **Parameters in section** Initial temperature model/SAVANI perturbation
+## **Subsection:** Initial temperature model / SAVANI perturbation
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/SAVANI/
@@ -812,7 +812,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Method that is used to specify how the vs-to-density scaling varies with depth.
 
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model)=
-## **Parameters in section** Initial temperature model/SAVANI perturbation/Ascii data vs to density model
+## **Subsection:** Initial temperature model / SAVANI perturbation / Ascii data vs to density model
 (parameters:Initial_20temperature_20model/SAVANI_20perturbation/Ascii_20data_20vs_20to_20density_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/initial-temperature/S40RTS/
@@ -838,7 +838,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation)=
-## **Parameters in section** Initial temperature model/Spherical gaussian perturbation
+## **Subsection:** Initial temperature model / Spherical gaussian perturbation
 (parameters:Initial_20temperature_20model/Spherical_20gaussian_20perturbation/Amplitude)=
 ### __Parameter name:__ Amplitude
 **Default value:** 0.01
@@ -888,7 +888,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The sign of the perturbation.
 
 (parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation)=
-## **Parameters in section** Initial temperature model/Spherical hexagonal perturbation
+## **Subsection:** Initial temperature model / Spherical hexagonal perturbation
 (parameters:Initial_20temperature_20model/Spherical_20hexagonal_20perturbation/Angular_20mode)=
 ### __Parameter name:__ Angular mode
 **Default value:** 6

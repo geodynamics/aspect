@@ -38,7 +38,8 @@ def handle_subsection(data, cur_path, output_file):
             print("(parameters:" + path_str + ")=", file=output_file)
             new_path = cur_path + [key]
             section_name = path_str.replace("_20", " ")
-            print("## **Parameters in section** " + section_name, file=output_file)
+            section_name = section_name.replace("/"," / ")
+            print("## **Subsection:** " + section_name, file=output_file)
             handle_subsection(data[key], new_path, output_file)
 
 def handle_parameters(data):
@@ -58,8 +59,8 @@ def handle_parameters(data):
                              "---\n"
                              "global.md\n")
     global_parameters = open("doc/sphinx/parameters/global.md", "w")
-    print("# Global \n\n", file=global_parameters)
-    print("## **Parameters in section** global \n\n", file=global_parameters)
+    print("(parameters:global)=", file=global_parameters)
+    print("# Global parameters\n\n", file=global_parameters)
 
     cur_path = []
     keys = list(data.keys())
@@ -100,7 +101,7 @@ def handle_parameters(data):
             new_path = cur_path + [key]
             section_name = path_str.replace("_20", " ").replace(":", "/")
             print("# " + section_name + "\n\n", file=subfile)
-            print("## **Parameters in section** " + section_name + "\n\n", file=subfile)
+            print("## **Subsection:** " + section_name + "\n\n", file=subfile)
             handle_subsection(data[key], new_path, subfile)
             subfile.close()
     global_output_file.write(":::\n")
