@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -183,13 +183,13 @@ namespace aspect
         prm.enter_subsection("Infill ascii");
         {
           prm.declare_entry ("Rock density", "2800",
-                             Patterns::List(Patterns::Double(0.)),
+                             Patterns::Double(0.),
                              "Density of the volcanic edifice that infills the flexural moat.");
           prm.declare_entry ("Sediment density", "2300",
-                             Patterns::List(Patterns::Double(0.)),
+                             Patterns::Double(0.),
                              "Density of the sediment that infills the flexural moat.");
           prm.declare_entry ("Height for specifying rock infill", "500",
-                             Patterns::List(Patterns::Double(0.)),
+                             Patterns::Double(0.),
                              "If the load defined in the ASCII file has a height equal to or greater than "
                              "the Height for specifying rock infill, then the infill material will be rock, "
                              "otherwise it will be sediment");

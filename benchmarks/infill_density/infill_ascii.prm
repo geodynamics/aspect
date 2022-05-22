@@ -15,7 +15,7 @@
 # and for the elastic lithosphere to be fully compensating the load.
 # The analytic solution for this setup is outlined in the Generic
 # Mapping Tools function grdflexure:
-# https://docs.generic-mapping-tools.org/6.1/supplements/potential/grdflexure.html
+# <https://docs.generic-mapping-tools.org/6.1/supplements/potential/grdflexure.html>
 
 #  Global parameters
 set Additional shared libraries            = ./libinfill_density.so
@@ -64,6 +64,8 @@ subsection Discretization
   set Temperature polynomial degree           = 1
   set Use locally conservative discretization = true
   set Use discontinuous temperature discretization = false
+  # Discontinuous (DG) elements are used for compositional fields to more accurately track
+  # the lithosphere-asthenosphere boundary.
   set Use discontinuous composition discretization = true
   subsection Stabilization parameters
       set Use limiter for discontinuous composition solution = true
@@ -80,16 +82,21 @@ subsection Mesh deformation
   set Mesh deformation boundary indicators = top: free surface
   set Additional tangential mesh velocity boundary indicators = left, right
   subsection Free surface
-    set Surface velocity projection = vertical
+    set Surface velocity projection = normal
   end
 end
 
 # Velocity boundary conditions
+# The left boundary is set to free slip to allow the lithosphere
+# to vertically deform along this boundary and act as mirror plane
+# for the other 'half' of the load.
 subsection Boundary velocity model
   set Tangential velocity boundary indicators = bottom, left
 end
 
 # Prescribe a fixed vertical traction on the top boundary
+# The right boundary is open in order to allow outflow of the
+# mantle as lithospheric flexure pushes the mantle to the right.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure
 end
@@ -151,8 +158,11 @@ end
 subsection Material model
   set Model name = viscoelastic
   subsection Viscoelastic
-  # First 3 Parameters Dictate ve_stresses, 4th the mantle, 5th the Lithosphere
     set Densities                   = 3300
+    # The first three values are assigned to the compositional fields representing viscoelastic
+    # stresses, but significantly these values are not used in the viscosity calculation (i.e., only
+    # values representing lithologies are used). Respectively, the fourth and fifth values are
+    # assigned to the compositional fields representing the mantle and lithosphere.
     set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = true
