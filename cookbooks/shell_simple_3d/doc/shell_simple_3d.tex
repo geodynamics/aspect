@@ -10,7 +10,7 @@ corresponding movie can be found at \url{http://youtu.be/j63MkEc0RRw}.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.7\textwidth]{cookbooks/shell_simple_3d/doc/x-movie0700.png}
+\includegraphics[width=0.7\textwidth]{x-movie0700.png}
 \caption{\it Convection in a spherical shell: Snapshot of
 isosurfaces of the temperature field at time $t\approx \num{1.06e9}$ years
 with a quarter of the geometry cut away. The surface shows
@@ -27,7 +27,7 @@ with comments (the full input file can also be found in
 \url{cookbooks/shell_simple_3d/shell_simple_3d.prm}). Let us start from the top where everything
 looks the same except that we set the dimension to 3:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part1.part.prm.out}
+\lstinputlisting[language=prmfile]{part1.part.prm.out}
 
 The next section concerns the geometry. The geometry model remains unchanged at
 ``spherical shell'' but we omit the opening angle of 90 degrees as we would like
@@ -36,7 +36,7 @@ boundaries (the inner one has indicator zero, the outer one indicator one) and
 consequently these are the only ones we need to list in the ``Boundary velocity model''
 section:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part2.part.prm.out}
+\lstinputlisting[language=prmfile]{part2.part.prm.out}
 
 Next, since we convinced ourselves that the temperature range from 973 to 4273
 was too large given that we do not take into account adiabatic effects in this
@@ -50,7 +50,7 @@ core mantle boundary than at the surface). What the real value for this
 temperature difference is, is unclear from current research, but it is thought
 to be around 1000 Kelvin, so let us choose these values.
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part3.part.prm.out}
+\lstinputlisting[language=prmfile]{part3.part.prm.out}
 
 The second component to this is that we found that without adiabatic effects, an
 initial temperature profile that decreases the temperature from the inner to the
@@ -61,14 +61,14 @@ we opt to just assume a constant temperature in the middle between the inner and
 outer temperature boundary values and let the simulation find the exact shape of
 the boundary layers itself:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/part4.part.prm.out}
+\lstinputlisting[language=prmfile]{part4.part.prm.out}
 
 As before, we need to determine how many mesh refinement steps we want. In 3d,
 it is simply not possible to have as much mesh refinement as in 2d, so we choose
 the following values that lead to meshes that have, after an initial transitory
 phase, between 1.5 and 2.2 million cells and 50--75 million unknowns:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/amr.part.prm.out}
+\lstinputlisting[language=prmfile]{amr.part.prm.out}
 
 Second to last, we specify what we want \aspect{} to do with the solutions it
 computes. Here, we compute the same statistics as before, and we again generate
@@ -79,7 +79,7 @@ all of these into a single file to keep file systems reasonably happy. Likewise,
 to accommodate the large amount of data, we output depth averaged fields in VTU
 format since it is easier to visualize:
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/postprocess.part.prm.out}
+\lstinputlisting[language=prmfile]{postprocess.part.prm.out}
 
 Finally, we realize that when we run very large parallel computations, nodes go
 down or the scheduler aborts programs because they ran out of time. With
@@ -87,7 +87,7 @@ computations this big, we cannot afford to just lose the results, so we
 checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see Section~\ref{sec:checkpoint-restart}):
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_3d/doc/checkpoint.part.prm.out}
+\lstinputlisting[language=prmfile]{checkpoint.part.prm.out}
 
 
 
@@ -133,9 +133,9 @@ TW for the core-mantle boundary, and an estimated heat loss due to cooling of
 the mantle of 7--15 TW (values again taken from Wikipedia).
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/doc/heatflux.png}
+  \includegraphics[width=0.48\textwidth]{heatflux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_3d/doc/velocities.png}
+  \includegraphics[width=0.48\textwidth]{velocities.png}
   \caption{\it Evaluating the 3d spherical shell model. Left: Outward heat
   fluxes through the inner and outer boundaries of the shell. Right: Average
   and maximal velocities in the mantle.}

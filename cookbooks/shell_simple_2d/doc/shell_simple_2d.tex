@@ -15,11 +15,11 @@ player window to select the highest resolution to see all the details of this
 video.}
 
 \begin{figure}[tb]
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie0000.png}
+\includegraphics[width=0.32\textwidth]{x-movie0000.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie0008.png}
+\includegraphics[width=0.32\textwidth]{x-movie0008.png}
 \hfill
-\includegraphics[width=0.32\textwidth]{cookbooks/shell_simple_2d/doc/x-movie1000.png}
+\includegraphics[width=0.32\textwidth]{x-movie1000.png}
 \caption{\it Simple convection in a quarter of an annulus: Snapshots of the
 temperature field at times $t=0$, $t=\num{1.2e7}$ years (time step 2135), and
 $t=10^9$ years (time step 25,662). The bottom right part of each figure shows an
@@ -30,7 +30,7 @@ overlay of the mesh used during that time step.}
 Let us just start by showing the input file (which you can find in
 \url{cookbooks/shell_simple_2d/shell_simple_2d.prm}):
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/doc/shell.prm.out}
+\lstinputlisting[language=prmfile]{shell.prm.out}
 
 In the following, let us pick apart this input file:
 \begin{enumerate}
@@ -179,9 +179,9 @@ overturning has been mixed sufficiently to allow plumes to rise or sink through
 the entire depth of the mantle.
 
 \begin{figure}[tb]
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/rms.png}
+\includegraphics[width=0.48\textwidth]{rms.png}
 \hfill
-\includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/depth_average_temperature.png}
+\includegraphics[width=0.48\textwidth]{depth_average_temperature.png}
 \caption{\it Simple convection in a quarter of an annulus. Left: Root mean
 square values of the velocity field. The initial spike (off the scale) is due to
 the overturning of the unstable layering of the temperature. Convection is suppressed for the
@@ -263,9 +263,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/doc/heat-flux.png}
+  \includegraphics[width=.48\textwidth]{heat-flux.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/heat-flux-noshear.png}
+  \includegraphics[width=0.48\textwidth]{heat-flux-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Heat flux
   through the core-mantle and mantle-air boundaries of the domain for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -274,9 +274,9 @@ other.
 
 
 \begin{figure}[tb]
-  \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d/doc/avg-temperature.png}
+  \includegraphics[width=.48\textwidth]{avg-temperature.png}
   \hfill
-  \includegraphics[width=0.48\textwidth]{cookbooks/shell_simple_2d/doc/avg-temperature-noshear.png}
+  \includegraphics[width=0.48\textwidth]{avg-temperature-noshear.png}
   \caption{\it Simple convection in a quarter of an annulus. Left: Average
   temperature throughout the model for the
   model with shear heating. Right: Same for a model without shear heating.}
@@ -310,7 +310,7 @@ of Figs.~\ref{fig:simple-shell-2d-heatflux}
 and \ref{fig:simple-shell-2d-temperature} show heat fluxes and average
 temperatures for a model where we have switched off the shear heating by setting
 
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d/doc/shearheat.part.prm.out}
+\lstinputlisting[language=prmfile]{shearheat.part.prm.out}
 
 Indeed, doing so leads to a model where the heat flux from core to mantle is
 always positive, and where the average temperature strictly drops!
