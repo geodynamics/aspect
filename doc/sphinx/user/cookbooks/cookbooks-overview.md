@@ -11,7 +11,7 @@ situation you are considering. In particular, this includes the following:
 
 -   What internal forces act on the medium (the left-hand side of the equation)?
 
--   What external forces act on the mediume (the right-hand of the equation side)?
+-   What external forces act on the medium (the right-hand of the equation side)?
 
 -   What is the domain (geometry)?
 
