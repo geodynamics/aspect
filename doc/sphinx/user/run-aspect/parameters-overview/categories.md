@@ -26,8 +26,8 @@ categorized into the following groups:
     in this category.
 
 -   Parameters that characterize plugins: Certain behaviors of
-    ASPECT are described by what we call *plugins*
-    - self-contained parts of the code that describe one particular
+    ASPECT are described by what we call *plugins* - self-contained parts of
+    the code that describe one particular
     aspect of the simulation. An example would be which of the implemented
     material models to use, and the specifics of this material model. The
     sample parameter file above gives an indication of how this works: within
@@ -65,4 +65,8 @@ categorized into the following groups:
 
 The details of parameters in each of these categories can be found in the
 sections linked to above. Some of them will also be used in the cookbooks in
-{ref}`5`.
+{ref}`cha:cookbooks`.
+
+:::{admonition} TODO
+Parameter documentation is not yet setup, so the many references to parameter files in this section are useless.
+:::

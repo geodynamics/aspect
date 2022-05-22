@@ -4,9 +4,9 @@
 ASPECT can solve both two- and
 three-dimensional problems.[^footnote1] You select which one you want by putting a
 line like the following into the parameter file (see
-{ref}`sec:parameters`):
+<https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>):
 
-``` prmfile
+```{literalinclude} ../../../manual/cookbooks/overview/doc/dim.part.prm
 ```
 
 Internally, dealing with the dimension builds on a feature in deal.II, upon which
@@ -30,4 +30,4 @@ features and bugs. Running in 2d and 3d should therefore yield comparable
 results. Be prepared to wait much longer for computations to finish in the
 latter case, however.
 
-[^footnote1]: For a description of what exactly we mean when we consider two-dimensional models, see Section `2.1.3.`
+[^footnote1]: For a description of what exactly we mean when we consider two-dimensional models, see {ref}`sec:methods:2d-models`

@@ -1,4 +1,4 @@
-
+(cha:benchmarks)=
 # Benchmarks
 
 Benchmarks are used to verify that a solver solves the problem correctly,

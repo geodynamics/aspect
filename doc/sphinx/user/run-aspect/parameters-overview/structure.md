@@ -3,7 +3,7 @@
 Most of the run-time behavior of ASPECT is
 driven by a parameter file that looks in essence like this:
 
-``` prmfile
+```{literalinclude} ../../../../manual/cookbooks/overview/doc/structure.part.prm
 ```
 
 Some parameters live at the top level, but most parameters are grouped into

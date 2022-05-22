@@ -1,31 +1,29 @@
 # Visualization the graphical output using *VisIt*
 
-
 In the following, let us discuss the process of visualizing a 2d computation
 using Visit. The steps necessary for other visualization programs will
 obviously differ but are, in principle, similar.
 
 To this end, let us consider a simulation of convection in a box-shaped, 2d
-region (see the "cookbooks" section, {ref}`5`[], and in
-particular {ref}`5.2.1`[] for the input file for this particular
+region (see the "cookbooks" section, {ref}`cha:cookbooks`, and in
+particular {ref}`sec:cookbooks:convection-box` for the input file for this particular
 model). We can run the program with 4 processors using
 
       mpirun -np 4 ./aspect cookbooks/convection-box/convection-box.prm
 
 Letting the program run for a while will result in several output files as
-discussed in {ref}`4.2`[] above.
+discussed in {ref}`sec:run-aspect:overview`.
 
 In order to visualize one time step, follow these steps:[^footnote1]
 
 -   *Selecting input files:* As mentioned above, in parallel computations we
     usually generate one output file per processor in each time step for which
-    visualization data is produced (see, however, {ref}`4.5.3`[]). To
-    tell Visit which files together make up one time step,
+    visualization data is produced (see, however, {ref}`sec:run-aspect:large-data-issues`). To tell Visit which files together make up one time step,
     ASPECT creates a
     `output/solution/solution-XXXXX.visit` file in the output directory. To
     open it, start VisIt, click on the "Open" button in the
     "Sources" area of its main window (see
-    {numref}`fig:visit-1:a`54]) and select the file you want.
+    {numref}`fig:visit-1`a) and select the file you want.
     Alternatively, you can also select files using the "File $>$
     Open" menu item, or hit the corresponding keyboard short-cut. After
     adding an input source, the "Sources" area of the main window
@@ -34,6 +32,17 @@ In order to visualize one time step, follow these steps:[^footnote1]
     steps. If you open this, VisIt will display a slider that allows you to
     select which time step you want to visualize, along with forward,
     backward, and play buttons that allow you to move between time steps.
+
+    ```{figure-md} fig:visit-1
+    <img src="../../../../manual/viz/visit/visit-1.*" alt="Main window of Visit, illustrating the different steps of adding content to a visualization."  width="72%"/>
+
+    Main window of Visit, illustrating the different steps of adding content to a visualization
+    ```
+    ```{figure-md} fig:visit-2
+    <img src="../../../../manual/viz/visit/visit-2.*" alt="Display window of Visit, showing a single plot and one where different data is overlaid."  width="98%"/>
+
+    Display window of Visit, showing a single plot and one where different data is overlaid.
+    ```
 
 -   *Selecting what to plot:* ASPECT outputs
     all sorts of quantities that characterize the solution, such as
@@ -52,18 +61,18 @@ In order to visualize one time step, follow these steps:[^footnote1]
 
     Let us choose the "Pseudocolor" item and select the
     temperature field as the quantity to plot. Your main window should now
-    look as shown in {numref}`fig:visit-1:b`. Then hit the
+    look as shown in {numref}`fig:visit-1`b. Then hit the
     "Draw" button to make Visit generate data for the selected
     plots. This will yield a picture such as shown in
-    {numref}`fig:visit-2:a` in the display window of VisIt.
+    {numref}`fig:visit-2`a in the display window of VisIt.
 
 -   *Overlaying data:* VisIt can overlay multiple plots in the same view. To
     this end, add another plot to the view using again the "Add"
     button to obtain the menu of possible plots, then the "Draw"
     button to actually draw things. For example, if we add velocity vectors
     and the mesh, the main window looks as in
-    {numref}`fig:visit-1:c` and the main view as in
-    {numref}`fig:visit-2:b`.
+    {numref}`fig:visit-1`c and the main view as in
+    {numref}`fig:visit-2`b.
 
 -   *Adjusting how data is displayed:* Without going into too much detail, if
     you double click onto the name of a plot in the "Plots"

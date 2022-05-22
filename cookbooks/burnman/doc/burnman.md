@@ -62,7 +62,7 @@ In addition, the density derivative in the mass conservation equation (see {ref}
 ## Visualizing the model output
 
 If we look at the output of our model (for example in `ParaView`), we can see how cold, highly viscous slabs are subducted and hot plumes rise from the core-mantle boundary.
-The final time step of the model is shown in {numref}`fig:burnman-conversion`, and the full model evolution can be found at <https://youtu.be/nRBOpw5kp-4>.
+The final time step of the model is shown in {numref}`fig:burnman-convection`, and the full model evolution can be found at <https://youtu.be/nRBOpw5kp-4>.
 Visualizing material properties such as density, thermal expansivity or specific heat shows how they change with depth, and reveals abrupt jumps at the phase transitions, where properties change from one mineral phase to the next.
 We can also visualize the gravity and the adiabatic profile, to ensure that the data we provided in the `data/adiabatic-conditions/ascii-data/isentrope_properties.txt` file is used in our model.
 
