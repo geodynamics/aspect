@@ -142,14 +142,14 @@ namespace aspect
       // ASCII file are specifying the part of the load that is above the undeformed
       // reference surface. If we consider a seamount as the load, the ASCII
       // file takes the bathymetry of the seamount and provides it as a traction.
-      // However, the volcanic rock comprising the seamount also fills in the 
+      // However, the volcanic rock comprising the seamount also fills in the
       // flexural moat, providing an additional traction. Since it is much harder to
       // specify this traction, 'rock_infill_height' determines where the rock_density
-      // that the seamount is made of will infill the flexural moat, and where 
+      // that the seamount is made of will infill the flexural moat, and where
       // sediment_density will infill the flexural moat. For this test, this
       // variable is not that important given the idealized load, but this is useful
-      // when using more complicated bathymetry maps where small scale seafloor 
-      // features makes it unrealistic to set rock_infill_height=0,
+      // when using more complicated bathymetry maps where small scale seafloor
+      // features makes it unrealistic to set rock_infill_height=0.
       if (load >= rock_infill_height*gravity_norm*rock_density)
         {
           traction = (-load + elevation*gravity_norm*rock_density) * normal_vector;
