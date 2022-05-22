@@ -16,13 +16,13 @@ the results of some simple test cases.
 
 When we try to solve a system of equations, we can write it down as:
 ```{math}
-    A x = b, 
+    A x = b,
 ```
 where $A$ is a known value or matrix, $x$ is a unknown scalar or vector of
  unknowns, and $b$ is the known right hand side scalar/vector. If we now want to know what $x$ is
  for a given $A$ and $b$, we can rearrange the equation to:
 ```{math}
-    x = A^{-1} b, 
+    x = A^{-1} b,
 ```
 where $A^{-1}$ is the inverse of $A$. In 1D a concrete example would be $A=2$,
 $b=5$, we would get:
@@ -196,7 +196,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 
 
 (user_methods_nonlinear_solvers_sin_1)=
-```{tikz} Solving $sin(x)=0$ through with the Newton method with starting guess $x=1$ and its the derivative is plotted.
+```{tikz} Solving $sin(x)=0$ through the Newton method with starting guess $x=1$ and its derivative is plotted.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
