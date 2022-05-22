@@ -14,7 +14,7 @@ For details, see {ref}`sec:methods:dimensionalize:years-or-seconds`.
 
 That said, in reality, ASPECT has no preferred system of units as long as every material constant, geometry, time, etc., are all expressed in the same system.
 In other words, it is entirely legitimate to implement geometry and material models in which the dimension of the domain is one, density and viscosity are one, and the density variation as a function of temperature is scaled by the Rayleigh number - i.e., to use the usual non-dimensionalization of the equations {math:numref}`eq:stokes-1` - {math:numref}`eq:temperature`.
-Some of the cookbooks in {ref}`cha:cookbooks` use this non-dimensional form; for example, the simplest cookbook in {ref}`sec:cookbooks:simple-setups:2d-box-convection` as well as the SolCx, SolKz and inclusion benchmarks in {ref}`sec:cookbooks:benchmarks:solcx`, are such cases.
+Some of the cookbooks in {ref}`cha:cookbooks` use this non-dimensional form; for example, the simplest cookbook in {ref}`sec:cookbooks:convection-box` as well as the SolCx, SolKz and inclusion benchmarks in {ref}`sec:benchmarks:solcx`, are such cases.
 Whenever this is the case, output showing units `m/s` or `W/m^2` clearly no longer have a literal meaning.
 Rather, the unit postfix must in this case simply be interpreted to mean that the number that precedes the first is a velocity and a heat flux in the second case.
 
