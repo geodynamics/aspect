@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2015 - 2019 by the authors of the ASPECT code.
+  Copyright (C) 2015 - 2022 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -25,7 +25,6 @@
 #include <aspect/simulator.h>
 
 #include <deal.II/base/parameter_handler.h>
-#include <deal.II/numerics/fe_field_function.h>
 
 
 namespace aspect
@@ -43,6 +42,8 @@ namespace aspect
       }
     }
 
+
+
     template <int dim>
     BoukareOutputs<dim>::BoukareOutputs (const unsigned int n_points)
       :
@@ -50,6 +51,8 @@ namespace aspect
       bulk_composition(n_points, numbers::signaling_nan<double>()),
       molar_volatiles_in_melt(n_points, numbers::signaling_nan<double>())
     {}
+
+
 
     template <int dim>
     std::vector<double>
@@ -61,6 +64,7 @@ namespace aspect
       else
         return molar_volatiles_in_melt;
     }
+
 
 
     template <int dim>
@@ -88,21 +92,15 @@ namespace aspect
                                   - reference_bulk_moduli[i] * bulk_modulus_second_pressure_derivatives[i]);
         }
 
-      febdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
-      mgbdg_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
-      wus_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
-      per_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
-      femelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
-      mgmelt_idx = distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
+      febdg_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeSiO3_bridgmanite"));
+      mgbdg_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgSiO3_bridgmanite"));
+      wus_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_periclase"));
+      per_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_periclase"));
+      femelt_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "FeO_melt"));
+      mgmelt_idx = std::distance(endmember_names.begin(), find(endmember_names.begin(), endmember_names.end(), "MgO_melt"));
     }
 
-    template <int dim>
-    double
-    MeltBoukare<dim>::
-    reference_viscosity () const
-    {
-      return eta_0;
-    }
+
 
     template <int dim>
     double
@@ -133,6 +131,7 @@ namespace aspect
       bulk_moduli(n_endmembers, numbers::signaling_nan<double>()),
       heat_capacities(n_endmembers, numbers::signaling_nan<double>())
     {}
+
 
 
     template <int dim>
@@ -203,52 +202,57 @@ namespace aspect
     }
 
 
+
     template <int dim>
     double
     MeltBoukare<dim>::
     endmember_thermal_energy (const double temperature,
-                              const unsigned int i) const
+                              const unsigned int endmember_index) const
     {
       AssertThrow(temperature > 0.0,
                   ExcMessage("The temperature has to be larger than 0, but it is "
-                             + std::to_string(temperature) + " for endmember " + std::to_string(i) + "."));
+                             + std::to_string(temperature) + " for endmember " + std::to_string(endmember_index) + "."));
 
-      const double energy = 3. * number_of_atoms[i] * constants::gas_constant * Einstein_temperatures[i]
-                            * (0.5 + 1. / (std::exp(Einstein_temperatures[i] / temperature) - 1.0));
+      const double relative_T = Einstein_temperatures[endmember_index] / temperature;
+      const double energy = 3. * number_of_atoms[endmember_index] * constants::gas_constant * Einstein_temperatures[endmember_index]
+                            * (0.5 + 1. / (std::exp(relative_T) - 1.0));
 
       return energy;
     }
+
 
 
     template <int dim>
     double
     MeltBoukare<dim>::
     endmember_molar_heat_capacity (const double temperature,
-                                   const unsigned int i) const
+                                   const unsigned int endmember_index) const
     {
       AssertThrow(temperature > 0.0,
                   ExcMessage("The temperature has to be larger than 0!"));
 
-      const double relative_T = Einstein_temperatures[i] / temperature;
-      const double heat_capacity = 3. * number_of_atoms[i] * constants::gas_constant * std::pow(relative_T, 2)
+      const double relative_T = Einstein_temperatures[endmember_index] / temperature;
+      const double heat_capacity = 3. * number_of_atoms[endmember_index] * constants::gas_constant * std::pow(relative_T, 2)
                                    * std::exp(relative_T) / std::pow(std::exp(relative_T) - 1.0, 2);
 
       return heat_capacity;
     }
 
 
+
     template <int dim>
     double
     MeltBoukare<dim>::
     endmember_thermal_pressure (const double temperature,
-                                const unsigned int i) const
+                                const unsigned int endmember_index) const
     {
-      const double thermal_energy = endmember_thermal_energy(temperature, i);
-      const double heat_capacity = endmember_molar_heat_capacity(reference_temperature, i);
-      const double thermal_pressure = reference_thermal_expansivities[i] * reference_bulk_moduli[i] / heat_capacity * thermal_energy;
+      const double thermal_energy = endmember_thermal_energy(temperature, endmember_index);
+      const double heat_capacity = endmember_molar_heat_capacity(reference_temperature, endmember_index);
+      const double thermal_pressure = reference_thermal_expansivities[endmember_index] * reference_bulk_moduli[endmember_index] / heat_capacity * thermal_energy;
 
       return thermal_pressure;
     }
+
 
 
     template <int dim>
@@ -260,14 +264,15 @@ namespace aspect
       const double addition = reference_specific_heats[i] * temperature
                               + 0.5 * specific_heat_linear_coefficients[i] * std::pow(temperature, 2.)
                               - specific_heat_second_coefficients[i] / temperature
-                              + 2. * specific_heat_third_coefficients[i] * sqrt(temperature)
+                              + 2. * specific_heat_third_coefficients[i] * std::sqrt(temperature)
                               - (reference_specific_heats[i] * reference_temperature
                                  + 0.5 * specific_heat_linear_coefficients[i] * std::pow(reference_temperature, 2.)
                                  - specific_heat_second_coefficients[i] / reference_temperature
-                                 + 2.0 * specific_heat_third_coefficients[i] * sqrt(reference_temperature));
+                                 + 2.0 * specific_heat_third_coefficients[i] * std::sqrt(reference_temperature));
 
       return addition;
     }
+
 
 
     template <int dim>
@@ -279,14 +284,15 @@ namespace aspect
       const double addition = reference_specific_heats[i] * std::log(temperature)
                               + specific_heat_linear_coefficients[i] * temperature
                               - 0.5 * specific_heat_second_coefficients[i] / std::pow(temperature, 2.)
-                              - 2.0 * specific_heat_third_coefficients[i] / sqrt(temperature)
+                              - 2.0 * specific_heat_third_coefficients[i] / std::sqrt(temperature)
                               - (reference_specific_heats[i] * std::log(reference_temperature)
                                  + specific_heat_linear_coefficients[i] * reference_temperature
                                  - 0.5 * specific_heat_second_coefficients[i] / std::pow(reference_temperature, 2.)
-                                 - 2.0 * specific_heat_third_coefficients[i] / sqrt(reference_temperature));
+                                 - 2.0 * specific_heat_third_coefficients[i] / std::sqrt(reference_temperature));
 
       return addition;
     }
+
 
 
     template <int dim>
@@ -297,7 +303,7 @@ namespace aspect
                                                    const double molar_Fe_in_melt,
                                                    const std::vector<double> &endmember_gibbs_energies,
                                                    std::vector<double> &endmember_mole_fractions_per_phase,
-                                                   double &f_pv) const
+                                                   double &molar_bridgmanite_in_solid) const
     {
       const double x_FeO = molar_Fe_in_solid * molar_FeO_in_Fe_mantle_endmember;
       const double x_MgO = (1. - molar_Fe_in_solid) * molar_MgO_in_Mg_mantle_endmember;
@@ -305,6 +311,7 @@ namespace aspect
 
       const double molar_fraction_FeO = x_FeO/(x_MgO + x_FeO);
       const double molar_fraction_SiO2 = x_SiO2/(x_MgO + x_FeO);
+      molar_bridgmanite_in_solid = molar_fraction_SiO2;
 
       const double gibbs_energy_of_reaction = endmember_gibbs_energies[mgbdg_idx] + endmember_gibbs_energies[wus_idx]
                                               - endmember_gibbs_energies[febdg_idx] - endmember_gibbs_energies[per_idx];
@@ -320,8 +327,6 @@ namespace aspect
                                                       (2. * molar_fraction_SiO2 * (1. - partition_coefficient));
 
       endmember_mole_fractions_per_phase[wus_idx] = endmember_mole_fractions_per_phase[febdg_idx] / (((1. - endmember_mole_fractions_per_phase[febdg_idx]) * partition_coefficient) + endmember_mole_fractions_per_phase[febdg_idx]);
-
-      f_pv = molar_fraction_SiO2; // molar fraction of bridgmanite in the solid
 
       endmember_mole_fractions_per_phase[mgbdg_idx] = 1.0 - endmember_mole_fractions_per_phase[febdg_idx];
       endmember_mole_fractions_per_phase[per_idx] = 1.0 - endmember_mole_fractions_per_phase[wus_idx];
@@ -474,6 +479,7 @@ namespace aspect
     }
 
 
+
     template <int dim>
     void
     MeltBoukare<dim>::
@@ -552,6 +558,7 @@ namespace aspect
         }
       return;
     }
+
 
 
     template <int dim>
@@ -1213,6 +1220,7 @@ namespace aspect
       }
       prm.leave_subsection();
     }
+
 
 
     template <int dim>

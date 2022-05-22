@@ -23,7 +23,6 @@
 
 #include <aspect/material_model/interface.h>
 #include <aspect/simulator_access.h>
-#include <aspect/postprocess/melt_statistics.h>
 #include <aspect/melt.h>
 
 namespace aspect
@@ -100,8 +99,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
-
         virtual double reference_darcy_coefficient () const;
 
         /**
@@ -188,14 +185,17 @@ namespace aspect
         // Parameters describing the melting properties of the two endmembers of the melting model.
         const double melting_reference_pressure = 120.e9;
 
-        double Fe_mantle_melting_temperature;                   // reference melting temperature for Fe mantle endmember at the reference pressure
-        double Mg_mantle_melting_temperature;                   // reference melting temperature for Mg mantle endmember at the reference pressure
+        // reference melting temperature for Fe and Mg mantle endmember at the reference pressure
+        double Fe_mantle_melting_temperature;
+        double Mg_mantle_melting_temperature;
 
-        const double Fe_mantle_melting_entropy = 33.77;         // molar entropy change of melting in J/mol K
-        const double Mg_mantle_melting_entropy = 34.33;         // molar entropy change of melting in J/mol K
+        // molar entropy change of melting in J/mol K
+        const double Fe_mantle_melting_entropy = 33.77;
+        const double Mg_mantle_melting_entropy = 34.33;
 
-        const double Fe_mantle_melting_volume = 1.51e-07;       // molar volume change of melting of solid Fe mantle endmember in m3/mol
-        const double Mg_mantle_melting_volume = 9.29e-08;       // molar volume change of melting volume of solid Mg mantle endmember in m3/mol
+        // molar volume change of melting of solid Fe and Mg mantle endmember in m3/mol
+        const double Fe_mantle_melting_volume = 1.51e-07;
+        const double Mg_mantle_melting_volume = 9.29e-08;
 
         // Number of moles of atoms mixing on pseudosite in mantle lattice (empirical model fitting the full Boukare model).
         double Fe_number_of_moles;

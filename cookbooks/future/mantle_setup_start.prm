@@ -12,10 +12,13 @@ set Nonlinear solver scheme                = iterated IMPES
 set Max nonlinear iterations               = 20
 #set Resume computation = true
 set Pressure normalization                 = surface
-set Surface pressure                       = 1.25e11  # CMB pressure should be 1.36e11
+
+# The top of the model is 200 km above the CMB, so we have to choose the surface pressure
+# accordingly. With this value, the CMB pressure should be 136 GPa.
+set Surface pressure                       = 1.25e11
 set Adiabatic surface temperature          = 2510
 set Use conduction timestep                = true
-set Use operator splitting = true
+set Use operator splitting                 = true
 set Maximum time step                      = 1e6
 
 subsection Compositional fields
@@ -23,6 +26,10 @@ subsection Compositional fields
   set Names of fields  = porosity, molar_Fe_in_solid, molar_Fe_in_melt
 end
 
+# The melt scaling factor threshold controls the porosity above which melt is transported
+# in a given cell of the model. Since the value of 1e20 is never reached anywhere in the
+# model, setting the parameter to this value disables melt trasport. For the restart, this
+# value is decreased to enable melt transport.
 subsection Melt settings
   set Include melt transport               = true
   set Melt scaling factor threshold        = 1e20
@@ -35,7 +42,7 @@ subsection Solver parameters
   end
 
   subsection Operator splitting parameters
-    set Reaction time step                     = 4e3 #2e2
+    set Reaction time step                     = 4e3 #2e2 for the restart
   end
 end
 
