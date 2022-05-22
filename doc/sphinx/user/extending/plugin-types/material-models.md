@@ -4,11 +4,11 @@
 The material model is responsible for describing the various coefficients in
 the equations that ASPECT solves. To implement
 a new material model, you need to overload the
-[aspect::MaterialModel::Interface][] class and use the
+[aspect::MaterialModel::Interface] class and use the
 `ASPECT_REGISTER_MATERIAL_MODEL` macro to register your new class. The
 implementation of the new class should be in namespace
 `aspect::MaterialModel`. An example of a material model implemented this way
-is given in {ref}`sec:davies-case23_BA`16].
+is given in {ref}`sec:davies-case23_BA`.
 
 Specifically, your new class needs to implement the following interface:
 
@@ -62,13 +62,13 @@ struct MaterialModelOutputs
 ```
 
 The variables refer to the coefficients $\eta,C_p,k,\rho$ in equations
-{math:numref}`eq:stokes-1`2]&ndash;{math:numref}`eq:temperature`3], each as a function of
+{math:numref}`eq:stokes-1`&ndash;{math:numref}`eq:temperature`, each as a function of
 temperature, pressure, position, compositional fields and, in the case of the
 viscosity, the strain rate (all handed in by MaterialModelInputs).
 Implementations of evaluate() may of course choose to ignore dependencies on
 any of these arguments. In writing a new material model, you should consider
 coefficient self-consistency
-({ref}`sec:coefficient_self_consistency`17]).
+({ref}`sec:coefficient_self_consistency`).
 
 The remaining functions are used in postprocessing as well as handling
 run-time parameters. The exact meaning of these member functions is documented
@@ -78,7 +78,7 @@ functions listed above have a default implementation, as discussed on the
 documentation page just mentioned.
 
 The function `is_compressible` returns whether we should consider the material
-as compressible or not, see {ref}`sec:Boussinesq`18] on the
+as compressible or not, see {ref}`sec:Boussinesq` on the
 Boussinesq model. As discussed there, incompressibility as described by this
 function does not necessarily imply that the density is constant; rather, it
 may still depend on temperature or pressure. In the current context,
@@ -98,7 +98,7 @@ The function update() is called at the beginning of every time step.
 
 Additionally, every material model has a member variable
 "modeldependence," declared in the Interface class, which can be
-accessed from the plugin as "this$\rightarrow$modeldependence."
+accessed from the plugin as `this$\rightarrow$modeldependence`.
 This structure describes the nonlinear dependence of the various coefficients
 on pressure, temperature, composition or strain rate. This information will be
 used in future versions of ASPECT to implement
