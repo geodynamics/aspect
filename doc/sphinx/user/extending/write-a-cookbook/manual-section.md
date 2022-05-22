@@ -1,16 +1,16 @@
-# Section in the manual
+# Adding a section to the manual
 
-Then you have to decide if the cookbook you want to contribute is a *Simple
+Next, you have to decide if the cookbook you want to contribute is a *Simple
 setup* (that explains how to use one specific feature, but does not try to
 reproduce any earth-like setting, see
-{ref}`sec:cookbooks-simple`13]), a *Geophysical setup* (that
+{ref}`sec:cookbooks-simple`), a *Geophysical setup* (that
 teaches how to setup a specific type of geodynamic model like a global
 convection model, a subduction zone or a mid-ocean ridge, see
-{ref}`sec:cookbooks-geophysical`14]) or a *Benchmark* (see
-{ref}`sec:cookbooks-benchmarks`15]). Depending on that choice,
+{ref}`sec:cookbooks-geophysical`) or a *Benchmark* (see
+{ref}`sec:cookbooks-benchmarks`]). Depending on that choice,
 you will then start a new `\subsubsection` in the [manual.tex][] file at the
-end of the corresponding subsection (Simple setups, Geophysical setups or
-Benchmarks). This is where your description of the model will go.
+end of the corresponding subsection (*Simple setups*, *Geophysical setups* or
+*Benchmarks*). This is where your description of the model will go.
 
 In addition to the text in the manual, you also have to create a subfolder in
 the [doc/manual/cookbooks][] directory. This is the place where all figures
@@ -58,10 +58,10 @@ follow this general structure:
     YouTube. When creating figures or animations, you should think about the
     color scale that you use. Some colormaps &ndash; like the rainbow color
     palette that is still the default in some visualization tools &ndash; can
-    obscure features present in the data and introduce artifacts, because the
+    obscure features present in the data and introduce artifacts because the
     rainbow color scale is not perceptually uniform. For more background on
-    this topic, there is a great summary on
-    <https://matplotlib.org/users/colormaps.html>. To state some of their
+    this topic, start here
+    <https://matplotlib.org/2.0.2/users/colormaps.html>. To state some of their
     recommendations here, in most cases it is best to choose a perceptually
     uniform color palette. For representing information that has ordering,
     they recommend sequential color palettes that change in lightness/color
@@ -82,9 +82,16 @@ follow this general structure:
     modifications influence the model results.
 
 And that's it, you have just created your first cookbook! Make a [pull
-request][] to contribute it to the main repository! You can find more
-information on how to do that on [our github page][].
+request](https://docs.github.com/en/get-started/quickstart/github-flow) to contribute it to the main repository! You can find more
+information on how to do that on [our github page](https://github.com/geodynamics/aspect/blob/main/CONTRIBUTING.md).
 
 You will get bonus points if you also create a test (see
-{ref}`sec:1.8.2][]) that only runs the first time step (or a lower
+{ref}`sec:1.8.2`) that only runs the first time step (or a lower
 resolution version) of your cookbook.
+
+:::{admonition} TODO
+:class: error
+
+This section needs substantial updating by C. Mills to update the process on how to add a section to the manual.
+A number of relative links also need to be added.
+:::
