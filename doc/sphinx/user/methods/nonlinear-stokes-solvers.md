@@ -87,7 +87,7 @@ To solve this nonlinear equation using Picard iterations, we need to rewrite our
 This means that we need to find the point where $x$ is equal to $0.5*sqrt(1+x^2)$. The resulting $x$ is a the same time the solution to our original question (see the gray lines in {numref}`user_methods_nonlinear_solvers_new_and_original_function`).
 
 (user_methods_nonlinear_solvers_new_and_original_function)=
-```{tikz} A plot of the rewritten equation: $x = 0.5*sqrt(1+x^2)$. The green line the original equation and the gray lines cross at the solution for reference.
+```{tikz} A plot of the rewritten equation (cyan): $x = 0.5*sqrt(1+x^2)$. The green line is the original equation, the black line is where x=y, and the gray lines cross at the solution for reference.
 [xscale=8,yscale=8]
 \node[draw] at (0.3,1.4) {find $x = 0.5sqrt(1+x^2)$};
     \draw[thick,->] (-0.01,0) -- (2.025,0) node[right]{x};
@@ -104,7 +104,7 @@ This means that we need to find the point where $x$ is equal to $0.5*sqrt(1+x^2)
 The Picard iteration transforms $x = 0.5*sqrt(1+x^2)$ into $x_{k+1} = 0.5*sqrt(1+x_k^2)$. This means to start the iteration, we will need an initial guess where the solution is. Let's pick $x_0 = 2$.
 
 
-```{tikz} The blue line is the location of our initial guess
+```{tikz} The blue line is the location of our initial guess, $x_0 = 2$.
 [xscale=8,yscale=8]
 \node[draw] at (0.3,1.4) {find $x = 0.5sqrt(1+x^2)$};
     \draw[thick,->] (-0.01,0) -- (2.025,0) node[right]{x};
@@ -120,7 +120,7 @@ The Picard iteration transforms $x = 0.5*sqrt(1+x^2)$ into $x_{k+1} = 0.5*sqrt(1
 Following the iteration, we set our next x ($x_1$) equal to our $y = 0.5*sqrt(1+(2^2)) \approx 1.11803$
 
 
-```{tikz} The blue line is the location of our initial guess and the $x=y$ step.
+```{tikz} The blue line is the location of our initial guess and the $x=y$ step (red).
 [xscale=8,yscale=8]
 \node[draw] at (0.3,1.4) {find $x = 0.5sqrt(1+x^2)$};
     \draw[thick,->] (-0.01,0) -- (2.025,0) node[right]{x};
@@ -137,7 +137,7 @@ Following the iteration, we set our next x ($x_1$) equal to our $y = 0.5*sqrt(1+
 We then use the new $x$ location to compute a new $y$ and set $x_2$ to that new $y$. We keep repeating this until we are close enough to the solution:
 
 
-```{tikz} Several Picard iterations colored blue and red for each other iteration.
+```{tikz} Several Picard iterations colored blue and red for every other iteration.
 [xscale=8,yscale=8]
 \node[draw] at (0.3,1.4) {find $x = 0.5sqrt(1+x^2)$};
     \draw[thick,->] (-0.01,0) -- (2.025,0) node[right]{x};
@@ -209,7 +209,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 ```
 
 (user_methods_nonlinear_solvers_sin_2)=
-:::{tikz} Continuation from figure {numref}`user_methods_nonlinear_solvers_sin_1`, with the blue and gray lines showing  one more iteration.
+:::{tikz} Continuation from figure {numref}`user_methods_nonlinear_solvers_sin_1`, with the blue lines showing one more iteration.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -264,6 +264,7 @@ Now that we have a general understanding of how the Newton solver works, let's a
     \draw [blue, thick, ->] (0.539987,0.5) -- (0.539987,0.475140);
     \draw [red, thick] (0.539987,0.475140) -- (0.576478,0.5);
     \draw [red, thick, ->] (0.576478,0.5) -- (0.576478,0.499433);
+    \draw[red] (576478,0.499433) circle (0.05);
 
 ```
 
