@@ -17,6 +17,9 @@ this:
 bash contrib/utilities/update_source_files.sh cookbooks/finite_strain/finite_strain.cc
 ```
 
-<div class="center">
-
-</div>
+:::{note}
+Not all text replacements are unique, and the structure of plugin files allows for constructs
+the script can not properly parse. Thus, it is important that you check your updated plugin file for
+errors. That being said, all plugin files in the main ASPECT repository are updated successfully
+using this script.
+:::

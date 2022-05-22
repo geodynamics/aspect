@@ -1,4 +1,4 @@
-
+(sec:install:local-installation:compiling)=
 # Compiling ASPECT and generating documentation
 
 After downloading ASPECT and having built the

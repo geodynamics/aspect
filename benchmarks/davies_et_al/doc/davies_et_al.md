@@ -1,4 +1,4 @@
-#### The 2D cylindrical shell benchmarks by Davies et al.
+# The 2D cylindrical shell benchmarks by Davies et al.
 
 *This section was contributed by William Durkin and Wolfgang Bangerth.*
 
@@ -46,7 +46,7 @@ The series of benchmarks is then defined by a number of cases relating to the
 exact equations chosen to model the fluid. We will discuss these in the
 following.
 
-##### Case 1.1: BA_Ra104_Iso_ZS.
+## Case 1.1: BA_Ra104_Iso_ZS.
 
 This case is run with the following settings:
 
@@ -82,7 +82,7 @@ Rayleigh number by choosing a correspondingly large gravity.
 
 Results for this and the other cases are shown below.
 
-##### Case 2.1: BA_Ra104_Iso_FS.
+## Case 2.1: BA_Ra104_Iso_FS.
 
 Case 2.1 uses the following setup, differing only in the boundary conditions:
 
@@ -110,7 +110,7 @@ input file that is relevant is then as follows (the full input file resides at
 
 Again, results are shown below.
 
-##### Case 2.2: BA_Ra105_Iso_FS.
+## Case 2.2: BA_Ra105_Iso_FS.
 
 Case 2.2 is described as follows:
 
@@ -140,7 +140,8 @@ We increase the Rayleigh number to $10^5$ by increasing the magnitude of
 gravity in the input file. The full script for case 2.2 is located in
 [benchmarks/davies_et_al/case-2.2.prm][]
 
-##### Case 2.3: BA_Ra103_vv_FS.
+(sec:benchmarks:davies_et_al:case2.3)=
+## Case 2.3: BA_Ra103_vv_FS.
 
 Case 2.3 is a variation on the previous one:
 
@@ -198,7 +199,7 @@ following parts:
 ``` prmfile
 ```
 
-##### Results.
+## Results.
 
 In the following, let us discuss some of the results of the benchmark setups
 discussed above. First, the final steady state temperature fields are shown in

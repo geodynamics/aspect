@@ -16,15 +16,15 @@ the results of some simple test cases.
 
 When we try to solve a system of equations, we can write it down as:
 ```{math}
-    A x = b
+    A x = b,
 ```
-, where $A$ is a known value or matrix, $x$ is a unknown scalar or vector of
+where $A$ is a known value or matrix, $x$ is a unknown scalar or vector of
  unknowns, and $b$ is the known right hand side scalar/vector. If we now want to know what $x$ is
  for a given $A$ and $b$, we can rearrange the equation to:
 ```{math}
-    x = A^{-1} b
+    x = A^{-1} b,
 ```
-, where $A^{-1}$ is the inverse of $A$. In 1D a concrete example would be $A=2$,
+where $A^{-1}$ is the inverse of $A$. In 1D a concrete example would be $A=2$,
 $b=5$, we would get:
 ```{math}
     2 x &= 6 \\
@@ -39,14 +39,14 @@ $b=5$, we would get:
 Making the problem non-linear in our context means that $A$ becomes dependent on $x$. We
 can write this down as $A(x)$. So our equation becomes:
 ```{math}
-    A(x) x = b
+    A(x) x = b.
 ```
-. To solve this nonlinear equation we need to iterate. To illustrate this we are going
+To solve this nonlinear equation, we need to iterate. To illustrate this we are going
 to try to find $x$ for $\frac{1}{sqrt(1+x^2)}x = 0.5$. The function, the location of
 the solution and the location of the initial guess are shown in {numref}`user_methods_nonlinear_solvers_original_function`.
 
 (user_methods_nonlinear_solvers_original_function)=
-```{tikz} The green line is the function $\frac{1}{sqrt(1+x^2)}x = 0.5$, the red line is at $y = 0.5$ and the red circle indicates where the solution is going to be located.
+```{tikz} The green line is the function $\frac{1}{sqrt(1+x^2)}x = 0.5$, the gray line is at $y = 0.5$ and the red circle indicates where the solution is going to be located.
 
 [xscale=2,yscale=2]
 \node[draw] at (-1.4,1.4) {find $\frac{1}{sqrt(1+x^2)}x = 0.5$};
@@ -58,7 +58,7 @@ the solution and the location of the initial guess are shown in {numref}`user_me
 
 ```
 
-As a basis for the next discussion we will zoom in a bit on the known solution.
+As a basis for the next discussion, we will zoom in a bit on the known solution.
 
 (user_methods_nonlinear_solvers_original_function_zoom)=
 ```{tikz} Zoom of the previous figure.
@@ -72,7 +72,7 @@ As a basis for the next discussion we will zoom in a bit on the known solution.
 
 ```
 
-Looking at the graph in {numref}`user_methods_nonlinear_solvers_original_function_zoom`, it is easy to see where the solution must be. Now imagine that you cannot see the whole graph at once, but you can only ask for the values of one $x$ at a time. You could try every possible $x$ value, but that would take a lot of attempts to get close to the solution. Another approach would be a bisect algorithm. A more robust way of solving the problem is called the Picard iteration, which we will discuss in the next section. An algorithm which converges much faster when it is close to the solution is the Newton iteration, which we will discuss after the Picard iteration.
+Looking at the graph in {numref}`user_methods_nonlinear_solvers_original_function_zoom`, it is easy to see where the solution must be. Now imagine that you cannot see the whole graph at once, but you can only ask for the values of one $x$ at a time. You could try every possible $x$ value, but that would take a lot of attempts to get close to the solution. Another approach would be a bisect algorithm. A more robust way of solving the problem is called the Picard iteration, which we will discuss in the next section. An algorithm which converges much faster when it is close to the solution is the Newton iteration which we will discuss after the Picard iteration.
 
 ## The full Picard iteration
 To solve this nonlinear equation using Picard iterations, we need to rewrite our equation in the form $x = f(x)$. With the equation we have, this is actually quite easy:
@@ -80,14 +80,13 @@ To solve this nonlinear equation using Picard iterations, we need to rewrite our
 ```{math}
     :label: user_methods_nonlinear_solvers_eq_picard_1
     \frac{1}{sqrt(1+x^2)}x = 0.5 \\
-    x = 0.5*sqrt(1+x^2)
+    x = 0.5*sqrt(1+x^2).
 ```
-.
 
 This means that we need to find the point where $x$ is equal to $0.5*sqrt(1+x^2)$. The resulting $x$ is a the same time the solution to our original question (see the gray lines in {numref}`user_methods_nonlinear_solvers_new_and_original_function`).
 
 (user_methods_nonlinear_solvers_new_and_original_function)=
-```{tikz} A plot of the rewritten equation: $x = 0.5*sqrt(1+x^2)$. The green line the original equation and the gray lines cross at the solution for reference.
+```{tikz} A plot of the rewritten equation: $x = 0.5*sqrt(1+x^2)$. The green line the original equation and the gray lines intersect at the solution.
 [xscale=8,yscale=8]
 \node[draw] at (0.3,1.4) {find $x = 0.5sqrt(1+x^2)$};
     \draw[thick,->] (-0.01,0) -- (2.025,0) node[right]{x};
@@ -159,12 +158,12 @@ We then use the new $x$ location to compute a new $y$ and set $x_2$ to that new 
 Note that the closer the iteration gets to the solution, the slower the iteration converges. As shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the solution to this equation is the solution to the original equation. We can check that by substituting the $x_{solution}$, which converges to $\frac{1}{sqrt(3)}$ into our original equation, and we get 0.5. In this case with the four iterations shown in {numref}`user_methods_nonlinear_solvers_new_and_original_function`, the final residual is $0.5-\frac{1}{0.589624}*0.589624 = -0.00790859$.
 
 
-In the context of ASPECT the Picard iteration is usually written as
+In the context of ASPECT, the Picard iteration is usually written as
 ```{math}
-    x_{n+1} = A(x_n)^{-1}b
+    x_{n+1} = A(x_n)^{-1}b.
 ```
-. Because it looks very much like eq. {math:numref}`user_methods_nonlinear_solvers_eq_picard_1`, it is usually
-very easy to implement. It only requires a loop over the current linear solve, feeding
+Because it looks very much like eq. {math:numref}`user_methods_nonlinear_solvers_eq_picard_1`, it is usually
+very easy to implement. It only requires a loop over the current linear solve feeding
 the current solution as the new guess.
 
 
@@ -174,7 +173,7 @@ the current solution as the new guess.
 Each Newton iteration can be written as $x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}$. This means
 that we are mostly interested in computing an update to the current solution. To compute the
 update we not only need to calculate $f(x_n)$, but also the derivative $f'(x_n)$. The iteration
-can be visualized in the same way as the Picard iteration, but we won't need the line $x=y$
+can be visualized in the same way as the Picard iteration but we won't need the line $x=y$
 anymore. To better show some of the benefits and caveats of the Newton iteration, we will start with
 the equation $\sin(x)=0$ and then go back to our current equation.
 
@@ -197,7 +196,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 
 
 (user_methods_nonlinear_solvers_sin_1)=
-```{tikz} Solving $sin(x)=0$ through with the Newton method, with starting guess $x=1$ and the derivative of that $x$ plotted.
+```{tikz} Solving $sin(x)=0$ through the Newton method with starting guess $x=1$ and its derivative is plotted.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -223,7 +222,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 :::
 
 (user_methods_nonlinear_solvers_sin_3)=
-:::{tikz} Same as figure {numref}`user_methods_nonlinear_solvers_sin_1`, but now showing the case where the initial guess leads to a derivative which is zero. This situation will cause a division by zero in the update, and the solution will be undefined. For a system of equations, the linear solver will fail.
+:::{tikz} Same as figure {numref}`user_methods_nonlinear_solvers_sin_1`, but now showing the case where the initial guess leads to a derivative which is zero. This situation will cause a division by zero in the update and the solution will be undefined. For a system of equations, the linear solver will fail.
 [xscale=3,yscale=3]
     \node[draw] at (-1.4,1.4) {find sin(x) = 0};
     \draw[thick,->] (-2.5,0) -- (2.5,0) node[right]{x};
@@ -249,7 +248,7 @@ Some strategies to achieve this, also called globalization, will be discussed in
 Now that we have a general understanding of how the Newton solver works, let's apply it to the equation we solved above with the Picard iteration. The method is going to be the same, but now we are stopping the derivative at the line $y = 0.5$ instead of $y = 0$. If we would take the initial guess at $x=2$ the iteration would diverge, so we are taking the result from the first iteration of the Picard iteration, which is $x = 1.11803$. This is a common tactic to achieve convergence in the Newton iteration and will be discussed further in the section {ref}`user_methods_nonlinear_solvers_globalization`.
 
 (user_methods_nonlinear_solvers_newton_1)=
-```{tikz} The green line is the function $\frac{1}{sqrt(1+x^2)}x = 0.5$, the red line is at $y = 0.5$ and the red circle indicates where the solution is going to be located.
+```{tikz} The green line is the function $\frac{1}{sqrt(1+x^2)}x = 0.5$, the gray line is at $y = 0.5$ and the red circle indicates where the solution is going to be located.
 
 [xscale=8,yscale=8]
 \node[draw] at (0.3,0.8) {find $\frac{1}{sqrt(1+x^2)}x = 0.5$};
@@ -267,7 +266,7 @@ Now that we have a general understanding of how the Newton solver works, let's a
 
 ```
 
-The final residual after 3 Newton iterations, as shown in {numref}`user_methods_nonlinear_solvers_newton_1` is $0.000567$ in three Newton iteration, starting from the result of the first Picard iteration. This means that with 1 Picard iteration and 3 Newton iteration we got almost 14 times closer to the solution than with 4 Picard iterations.
+The final residual after 3 Newton iterations, as shown in {numref}`user_methods_nonlinear_solvers_newton_1` is $0.000567$ in three Newton iteration, starting from the result of the first Picard iteration. This means that with 1 Picard iteration and 3 Newton iterations, we got almost 14 times closer to the solution than with 4 Picard iterations.
 
 
 ### Solving the Stokes equations in ASPECT
@@ -276,17 +275,17 @@ For the Newton iteration, the equation is usually written as
 ```{math}
     :label: user_methods_nonlinear_solvers_JdxAxx_b
     J \delta x &= A(x) x - b \\
-    &= -F
+    &= -F.
 ```
-. In this equation, the right hand side (rhs) ($A(x)x-b$ or $-F$) will be exactly
-zero when $x$ is the exact solution to the nonlinear problem. Therefore this is also called the
+In this equation, the right hand side (rhs) ($A(x)x-b$ or $-F$) will be exactly
+zero when $x$ is the exact solution to the nonlinear problem. Therefore, this is also called the
 residual. $J$ is called the Jacobian, which is a derivative matrix for $A$. In our simple example,
 this would just be the derivative. So we now solve for $\delta x$ instead of $x$:
 
 ```{math}
-    \delta x_n = J^{-1}\left(A(x_n) x_n - b\right)
+    \delta x_n = J^{-1}\left(A(x_n) x_n - b\right).
 ```
-. Next we can compute the new solution with $x_{n+1} = x_n - \delta x_n$. This
+Next we can compute the new solution with $x_{n+1} = x_n - \delta x_n$. This
 form of computing an update/correction to the solution instead of computing the full
 solution every time is called a defect correction scheme.
 
@@ -314,9 +313,9 @@ turns out that the Jacobian in equation {math:numref}`user_methods_nonlinear_sol
 of two parts:
 ```{math}
     :label: user_methods_nonlinear_solvers_JxAxApx
-    J(x) = A(x) + A'(x)
+    J(x) = A(x) + A'(x).
 ```
-. If we approximate the Jacobian by setting it
+If we approximate the Jacobian by setting it
 equal to $A(x)$, the iteration will converge like a Picard iteration. The only difference
 is that computationally this defect correction form is more precise while requiring a less strict
 linear tolerance. This can speed up your computation and may help slightly with convergence
@@ -339,9 +338,9 @@ The change between the Picard and Newton iteration does not have to be a hard sw
 When looking at equation {math:numref}`user_methods_nonlinear_solvers_JxAxApx`, we can introduce a variable $c_k$
 and multiply it with $A'(x)$:
 ```{math}
-    J(x) = A(x) + c_k A'(x)
+    J(x) = A(x) + c_k A'(x).
 ```
-. When $c_k$ is zero, the iteration behaves like a Picard iteration and when
+When $c_k$ is zero, the iteration behaves like a Picard iteration and when
 it is one, it behaves like a Newton iteration. In ASPECT we have implemented an option,
 which we refer to as the Residual Scaling Method (RSM). If enabled, this automatically
 computes $c_k = \max\left(0.0,1.0-\frac{r_k}{r_{N_{DC}}}\right)$, where $r_k$
@@ -350,7 +349,7 @@ after switching to the Newton method. This option allows to more gradually switc
 Newton interation and also gradually switch back if the iteration diverges.
 
 ### Line search
-A newton update can be seen as a hint in which direction to go with a suggestion for
+A Newton update can be seen as a hint in which direction to go with a suggestion for
 how much to go in that direction. But as we have seen, the size of the step can be much
 to big, which will lead the Newton iteration do diverge. The idea behind the line search
 is to use the direction, but check whether when applying the update to the
@@ -370,7 +369,7 @@ even use $1e-1$.
 If the nonlinear residual doesn't converge quickly enough or at all to the desired nonlinear
 tolerance, then it is time to consider using the full Newton solver. It is strongly
 recommended to start by plotting the convergence behavior of the defect correction Picard
-method, with number of nonlinear iterations on the x axis and the nonlinear residual on a
+method, with the number of nonlinear iterations on the x axis and the nonlinear residual on a
 logscale y axis. This will allow you to see the convergence behavior much more clearly
 than by just looking at the numbers in the ASPECT output file. Furthermore, it allows
 for a much better comparison with the convergence behavior of the Newton solver and
