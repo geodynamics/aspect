@@ -2,7 +2,7 @@
 # Geometry models
 
 The geometry model is responsible for describing the domain in which we want
-to solve the equations. A domain is described in <span
+to solve the equations. A domain is described in
 deal.II by a coarse mesh and, if necessary, an object
 that characterizes the boundary. Together, these two suffice to reconstruct
 any domain by adaptively refining the coarse mesh and placing new nodes
@@ -140,7 +140,7 @@ already accurately represent where you want to pose which boundary condition
 which are tangential flow boundary conditions), then it is sufficient to set
 these boundary indicators only once at the beginning of the program since they
 will be inherited upon mesh refinement to the child faces. Here, *at the
-beginning of the program* is equivalent to inside the `create_coarse_mesh())`
+beginning of the program* is equivalent to inside the `create_coarse_mesh()`
 function of the geometry module shown above that generates the coarse mesh.
 
 Secondly, however, if you can only accurately determine which boundary
