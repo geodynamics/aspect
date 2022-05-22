@@ -2,7 +2,7 @@
 
 To solve the Stokes equations it is necessary to lower the condition number of
 the Stokes matrix by preconditioning it. In
-ASPECT a right preconditioner 
+ASPECT a right preconditioner
 ```{math}
 Y^{-1} =
 \begin{pmatrix}
