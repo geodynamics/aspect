@@ -1,4 +1,5 @@
-#### Magnetic lineations on the sea floor
+(sec:cookbooks:magnetic_stripes)=
+# Magnetic lineations on the sea floor
 
 *This section was contributed by Juliane Dannberg.*
 
