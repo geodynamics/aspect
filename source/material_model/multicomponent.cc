@@ -69,14 +69,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Multicomponent<dim>::
-    reference_viscosity () const
-    {
-      return viscosities[0]; // background
-    }
-
-    template <int dim>
     bool
     Multicomponent<dim>::
     is_compressible () const

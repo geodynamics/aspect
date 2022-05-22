@@ -70,7 +70,6 @@ subsection Material model
     set Stress exponent = 3
     set Viscosity averaging p = 10000
     set Viscosity prefactor = 1e-37
-    set Reference viscosity = 1e20
   end
 end
 

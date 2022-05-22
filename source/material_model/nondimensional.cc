@@ -94,15 +94,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Nondimensional<dim>::
-    reference_viscosity () const
-    {
-      return compressible ? (Di/Ra) : (1.0/Ra);
-    }
-
-
 
     template <int dim>
     bool

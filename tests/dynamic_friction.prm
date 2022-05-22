@@ -42,7 +42,6 @@ subsection Material model
     set Viscosity averaging scheme = harmonic
     set Minimum viscosity          = 1e19
     set Maximum viscosity          = 1e25
-    set Reference viscosity        = 1e20
     set Reference strain rate      = 1e-15
     set Minimum strain rate        = 1.e-50
     set Reference temperature      = 293

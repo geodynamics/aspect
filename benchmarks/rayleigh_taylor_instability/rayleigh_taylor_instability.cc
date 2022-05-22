@@ -163,15 +163,6 @@ namespace aspect
           this->model_dependence.thermal_conductivity = MaterialModel::NonlinearDependence::none;
         }
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-
       private:
         double eta1;
         double eta2;
@@ -181,15 +172,6 @@ namespace aspect
         double lambda;
 
     };
-
-
-    template <int dim>
-    double
-    RTinstabilityMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.e21;
-    }
 
 
     template <int dim>

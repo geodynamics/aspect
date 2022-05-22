@@ -32,11 +32,6 @@ namespace aspect
         return true;
       }
 
-      virtual double reference_viscosity () const
-      {
-        return 1.5;
-      }
-
       virtual double reference_darcy_coefficient () const
       {
         return 1.0;

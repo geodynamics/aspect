@@ -92,14 +92,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Viscoelastic<dim>::
-    reference_viscosity () const
-    {
-      return viscosities[0]; //background
-    }
-
-    template <int dim>
     bool
     Viscoelastic<dim>::
     is_compressible () const

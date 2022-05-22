@@ -111,15 +111,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const;
-        /**
-         * @}
-         */
-
-        /**
          * @name Functions used in dealing with run-time parameters
          * @{
          */
@@ -142,7 +133,6 @@ namespace aspect
       private:
 
         double reference_T;
-        double reference_eta;
         double thermal_conductivities;
 
         EquationOfState::LinearizedIncompressible<dim> equation_of_state;

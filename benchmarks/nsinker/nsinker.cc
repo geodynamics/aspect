@@ -137,16 +137,6 @@ namespace aspect
 
 
 
-        /**
-         * The reference viscosity was chosen to coincide with the reference length scale of
-         * a box of size 1 (0.01) so that the resulting pressure scaling is equal to one, and
-         * therefore does not influence the scaling of the equations.
-         */
-        virtual double reference_viscosity () const
-        {
-          return 0.01;
-        }
-
       private:
         /**
          * Ratio of viscosities between sinkers and background material.

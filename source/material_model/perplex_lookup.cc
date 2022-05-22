@@ -55,14 +55,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    PerpleXLookup<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
-    template <int dim>
     void
     PerpleXLookup<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

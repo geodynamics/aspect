@@ -379,11 +379,6 @@ namespace aspect
           return false;
         }
 
-        virtual double reference_viscosity () const
-        {
-          return eta_0;
-        }
-
         virtual double reference_darcy_coefficient () const
         {
           // Note that this number is based on the background porosity in the

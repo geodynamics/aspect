@@ -267,14 +267,6 @@ namespace aspect
         parse_parameters (ParameterHandler &prm);
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-        /**
          * Returns the viscosity value in the inclusion
          */
         double get_beta() const;
@@ -284,16 +276,6 @@ namespace aspect
          */
         double beta;
     };
-
-
-
-    template <int dim>
-    double
-    BursteddeMaterial<dim>::
-    reference_viscosity () const
-    {
-      return 1.;
-    }
 
 
 

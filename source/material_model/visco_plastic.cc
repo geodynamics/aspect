@@ -285,16 +285,6 @@ namespace aspect
 
 
     template <int dim>
-    double
-    ViscoPlastic<dim>::
-    reference_viscosity () const
-    {
-      return rheology->ref_visc;
-    }
-
-
-
-    template <int dim>
     bool
     ViscoPlastic<dim>::
     is_compressible () const

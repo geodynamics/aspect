@@ -119,11 +119,6 @@ namespace aspect
           return false;
         }
 
-        virtual double reference_viscosity() const
-        {
-          return 1;
-        }
-
         void
         parse_parameters(ParameterHandler &/*prm*/)
         {
@@ -162,11 +157,6 @@ namespace aspect
         virtual bool is_compressible() const
         {
           return false;
-        }
-
-        virtual double reference_viscosity() const
-        {
-          return 1;
         }
 
         void

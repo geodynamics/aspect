@@ -143,7 +143,6 @@ subsection Material model
   subsection Visco Plastic
 
     set Densities                   = 2700
-    set Reference viscosity         = 1.e21
     set Reference strain rate       = 1.e-15
     set Maximum viscosity           = 1.e25
     set Minimum viscosity           = 1.e20

@@ -62,8 +62,6 @@ namespace aspect
          */
         virtual bool is_compressible () const;
 
-        virtual double reference_viscosity () const;
-
 
         static
         void
@@ -86,8 +84,6 @@ namespace aspect
         std::vector<double> min_strain_rate;
         std::vector<double> min_viscosity;
         std::vector<double> max_viscosity;
-        // the reference viscosity returned by the reference_viscosity function.
-        double ref_viscosity;
 
         std::vector<double> thermal_diffusivity;
         std::vector<double> heat_capacity;
@@ -243,13 +239,6 @@ namespace aspect
             out.reaction_terms[i][c] = 0.0;
         }
     }
-    template <int dim>
-    double
-    SimpleNonlinear<dim>::
-    reference_viscosity () const
-    {
-      return ref_viscosity;
-    }
 
     template <int dim>
     bool
@@ -286,8 +275,6 @@ namespace aspect
                              "Upper cutoff for effective viscosity. Units: \\si{\\pascal\\second}");
           prm.declare_entry ("Effective viscosity coefficient", "1.0", Patterns::List(Patterns::Double(0.)),
                              "Scaling coefficient for effective viscosity.");
-          prm.declare_entry ("Reference viscosity", "1e22", Patterns::List(Patterns::Double(0.)),
-                             "Reference viscosity for nondimensionalization. Units: \\si{\\pascal\\second}");
 
           // Equation of state parameters
           prm.declare_entry ("Thermal diffusivity", "0.8e-6", Patterns::List(Patterns::Double(0.)),
@@ -360,7 +347,6 @@ namespace aspect
 
           // Reference and minimum/maximum values
           reference_temperature = prm.get_double("Reference temperature");
-          ref_viscosity = prm.get_double ("Reference viscosity");
           min_strain_rate =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get("Minimum strain rate"))),n_fields,"Minimum strain rate");
           min_viscosity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get ("Minimum viscosity"))),n_fields,"Minimum viscosity");
           max_viscosity =  Utilities::possibly_extend_from_1_to_N (Utilities::string_to_double(Utilities::split_string_list(prm.get ("Maximum viscosity"))),n_fields,"Maximum viscosity");

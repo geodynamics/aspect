@@ -48,8 +48,6 @@ namespace aspect
 
         virtual bool is_compressible () const;
 
-        virtual double reference_viscosity () const;
-
         virtual void evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                               typename Interface<dim>::MaterialModelOutputs &out) const;
 
@@ -93,14 +91,6 @@ namespace aspect
     is_compressible () const
     {
       return false;
-    }
-
-    template <int dim>
-    double
-    SimplerWithCrust<dim>::
-    reference_viscosity () const
-    {
-      return eta_L;
     }
 
 

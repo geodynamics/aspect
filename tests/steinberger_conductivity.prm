@@ -44,7 +44,6 @@ subsection Material model
     set Radial viscosity file name       = test-radial-visc.txt
     set Bilinear interpolation           = true
     set Latent heat                      = false
-    set Reference viscosity              = 1e21
 
     set Thermal conductivity formulation = p-T-dependent
     set Thermal conductivity transition depths =

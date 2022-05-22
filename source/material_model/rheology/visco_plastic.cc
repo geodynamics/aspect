@@ -509,27 +509,6 @@ namespace aspect
                            "List with as many components as active "
                            "compositional fields (material data is assumed to "
                            "be in order with the ordering of the fields). ");
-        prm.declare_entry ("Reference viscosity", "1e22", Patterns::Double (0.),
-                           "Reference viscosity for nondimensionalization. "
-                           "To understand how pressure scaling works, take a look at "
-                           "\\cite{KHB12}. In particular, the value of this parameter "
-                           "would not affect the solution computed by \\aspect{} if "
-                           "we could do arithmetic exactly; however, computers do "
-                           "arithmetic in finite precision, and consequently we need to "
-                           "scale quantities in ways so that their magnitudes are "
-                           "roughly the same. As explained in \\cite{KHB12}, we scale "
-                           "the pressure during some computations (never visible by "
-                           "users) by a factor that involves a reference viscosity. This "
-                           "parameter describes this reference viscosity."
-                           "\n\n"
-                           "For problems with a constant viscosity, you will generally want "
-                           "to choose the reference viscosity equal to the actual viscosity. "
-                           "For problems with a variable viscosity, the reference viscosity "
-                           "should be a value that adequately represents the order of "
-                           "magnitude of the viscosities that appear, such as an average "
-                           "value or the value one would use to compute a Rayleigh number."
-                           "\n\n"
-                           "Units: \\si{\\pascal\\second}.");
 
         // Rheological parameters
         prm.declare_entry ("Viscosity averaging scheme", "harmonic",
@@ -643,7 +622,6 @@ namespace aspect
         // Reference and minimum/maximum values
         min_strain_rate = prm.get_double("Minimum strain rate");
         ref_strain_rate = prm.get_double("Reference strain rate");
-        ref_visc = prm.get_double ("Reference viscosity");
         minimum_viscosity = Utilities::parse_map_to_double_array (prm.get("Minimum viscosity"),
                                                                   list_of_composition_names,
                                                                   has_background_field,

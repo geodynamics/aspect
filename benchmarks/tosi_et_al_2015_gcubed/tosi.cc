@@ -221,14 +221,6 @@ namespace aspect
         void
         parse_parameters (ParameterHandler &prm);
 
-        /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
       private:
 
         double viscosity (const double                  temperature,
@@ -278,11 +270,6 @@ namespace aspect
          * The thermal conductivity.
          */
         double thermal_k;
-
-        /*
-         * The reference viscosity
-         */
-        double eta;
 
         /*
          * The linear viscosity parameter pertaining to
@@ -404,14 +391,6 @@ namespace aspect
       return etaasterisk + (stressy/strainratenorm);
     }
 
-    template <int dim>
-    double
-    TosiMaterial<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
 
 
     template <int dim>
@@ -438,9 +417,6 @@ namespace aspect
                              Patterns::Double (0),
                              "The value of the reference temperature $T_0$. The reference temperature is used "
                              "in the density calculation.");
-          prm.declare_entry ("Reference viscosity", "1e-1",
-                             Patterns::Double (0),
-                             "The value of the constant reference viscosity $\\eta_0$.");
           prm.declare_entry ("Minimum viscosity", "1e-6",
                              Patterns::Double (0),
                              "The value of the minimum cut-off viscosity $\\eta_min$.");
@@ -495,7 +471,6 @@ namespace aspect
         {
           reference_rho              = prm.get_double ("Reference density");
           reference_T                = prm.get_double ("Reference temperature");
-          eta                        = prm.get_double ("Reference viscosity");
           thermal_k                  = prm.get_double ("Thermal conductivity");
           reference_specific_heat    = prm.get_double ("Reference specific heat");
           thermal_alpha              = prm.get_double ("Thermal expansion coefficient");

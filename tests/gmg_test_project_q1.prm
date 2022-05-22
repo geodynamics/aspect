@@ -67,7 +67,6 @@ subsection Material model
 
     set Latent heat                      = false
     set Use lateral average temperature for viscosity  = false
-    set Reference viscosity              = 1e21
     set Maximum viscosity                = 1.5e23
     set Minimum viscosity                = 5e19
 

@@ -184,11 +184,6 @@ namespace aspect
 
 
           /**
-           * Reference viscosity used by material models using this rheology.
-           */
-          double ref_visc;
-
-          /**
            * Minimum strain rate used to stabilize the strain rate dependent rheology.
            */
           double min_strain_rate;

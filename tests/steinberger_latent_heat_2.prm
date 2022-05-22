@@ -102,7 +102,6 @@ subsection Material model
   set Model name = Steinberger
   subsection Steinberger model
     set Thermal conductivity             = 2.38
-    set Reference viscosity              = 8.44e21
     set Minimum viscosity                = 8.44e21
     set Maximum viscosity                = 8.44e21
 

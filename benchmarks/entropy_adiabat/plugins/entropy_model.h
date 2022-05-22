@@ -70,15 +70,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        virtual double reference_viscosity () const;
-        /**
-         * @}
-         */
-
-        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in.
          */
@@ -124,9 +115,8 @@ namespace aspect
 
       private:
         /**
-         * Reference viscosity and lateral viscosity variations.
+         * Minimum/Maximum viscosity and lateral viscosity variations.
          */
-        double reference_eta;
         double lateral_viscosity_prefactor;
         double min_eta;
         double max_eta;

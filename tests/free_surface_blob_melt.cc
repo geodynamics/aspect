@@ -25,7 +25,6 @@ namespace aspect
          * @name Reference quantities
          * @{
          */
-        virtual double reference_viscosity () const;
         virtual double reference_darcy_coefficient () const;
         /**
          * @}
@@ -149,14 +148,6 @@ namespace aspect
       for (unsigned int q=0; q<in.n_evaluation_points(); ++q)
         melt_fractions[q] = 0.0;
       return;
-    }
-
-    template <int dim>
-    double
-    MeltFreeSurface<dim>::
-    reference_viscosity () const
-    {
-      return eta;
     }
 
     template <int dim>

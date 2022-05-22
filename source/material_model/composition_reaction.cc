@@ -120,14 +120,6 @@ namespace aspect
         }
     }
 
-    template <int dim>
-    double
-    CompositionReaction<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
 
 
     template <int dim>

@@ -11,7 +11,6 @@ subsection Material model
   set Model name = TosiMaterial
 
   subsection Tosi benchmark
-    set Reference viscosity           = 2e-2
     set Pressure viscosity parameter  = 10
     set Yield stress          = 1
     set Nonlinear viscosity constant  = 1e-3

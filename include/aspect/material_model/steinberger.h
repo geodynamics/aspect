@@ -172,15 +172,6 @@ namespace aspect
          */
 
         /**
-         * @name Reference quantities
-         * @{
-         */
-        double reference_viscosity () const;
-        /**
-         * @}
-         */
-
-        /**
          * Function to compute the material properties in @p out given the
          * inputs in @p in. If MaterialModelInputs.strain_rate has the length
          * 0, then the viscosity does not need to be computed.
@@ -258,12 +249,6 @@ namespace aspect
          * on the reference adiabat.
          */
         bool use_lateral_average_temperature;
-
-        /**
-         * Reference viscosity. Only used for pressure scaling purposes
-         * and returned by the reference_viscosity() function.
-         */
-        double reference_eta;
 
         /**
          * The value of the thermal conductivity if a constant thermal

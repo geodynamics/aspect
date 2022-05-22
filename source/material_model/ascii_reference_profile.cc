@@ -122,14 +122,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    AsciiReferenceProfile<dim>::
-    reference_viscosity () const
-    {
-      return viscosity;
-    }
-
 
     template <int dim>
     bool

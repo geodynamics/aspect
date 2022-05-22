@@ -90,15 +90,6 @@ namespace aspect
     }
 
 
-    template <int dim>
-    double
-    Simple<dim>::
-    reference_viscosity () const
-    {
-      return eta;
-    }
-
-
 
     template <int dim>
     bool

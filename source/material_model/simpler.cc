@@ -36,14 +36,6 @@ namespace aspect
     }
 
     template <int dim>
-    double
-    Simpler<dim>::
-    reference_viscosity () const
-    {
-      return constant_rheology.compute_viscosity();
-    }
-
-    template <int dim>
     void
     Simpler<dim>::
     evaluate(const MaterialModel::MaterialModelInputs<dim> &in,

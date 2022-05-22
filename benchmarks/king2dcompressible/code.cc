@@ -112,14 +112,6 @@ namespace aspect
         }
 
 
-        virtual double reference_viscosity () const
-        {
-          return (Di==0.0?1.0:Di)/Ra;
-        }
-        /**
-         * @}
-         */
-
         /**
          * @name Functions used in dealing with run-time parameters
          * @{

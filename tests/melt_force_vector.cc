@@ -67,11 +67,6 @@ namespace aspect
         return false;
       }
 
-      virtual double reference_viscosity () const
-      {
-        return 1.0;
-      }
-
       virtual double reference_density () const
       {
         return 1.0;
