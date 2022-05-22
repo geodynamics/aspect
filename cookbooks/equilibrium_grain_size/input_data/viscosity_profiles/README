@@ -28,3 +28,4 @@ becker_viscosity.txt : Depth-dependent viscosity structure based on Becker 2006.
 radial-visc-simple-3.txt, radial-visc-simple-2.txt, rad_viscosity-source-data.txt : These are the source files 
    using the radius fraction (rather than depth) to set the viscosity based on Steinberger and Calderwood (2006), and were  
    used to generate the depth-dependent viscosity  profiles.  
+

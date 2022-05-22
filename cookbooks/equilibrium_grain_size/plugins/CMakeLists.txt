@@ -1,4 +1,4 @@
-# Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
+# Copyright (C) 2011 - 2022 by the authors of the ASPECT code.
 #
 # This file is part of ASPECT.
 #
@@ -27,9 +27,9 @@
 # below.
 # -----------------------------------------------------------------
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
-FIND_PACKAGE(Aspect 2.1.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
+FIND_PACKAGE(Aspect 2.4.0 QUIET HINTS ${Aspect_DIR} ../ ../../ $ENV{ASPECT_DIR})
 
 IF (NOT Aspect_FOUND)
   MESSAGE(FATAL_ERROR "\n"
