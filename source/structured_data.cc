@@ -31,6 +31,9 @@
 #include <aspect/geometry_model/two_merged_chunks.h>
 
 #include <boost/lexical_cast.hpp>
+#ifdef ASPECT_WITH_NETCDF
+#include <netcdf.h>
+#endif
 
 namespace aspect
 {
@@ -606,6 +609,174 @@ namespace aspect
                    root_process);
     }
 
+
+
+    template <int dim>
+    void
+    StructuredDataLookup<dim>::load_netcdf(const std::string &filename)
+    {
+#ifndef ASPECT_WITH_NETCDF
+      (void)filename;
+      AssertThrow(false, ExcMessage("Loading NetCDF files is only supported if ASPECT is configured with the NetCDF library!"));
+#else
+      TableIndices<dim> new_table_points;
+      std::vector<std::string> coordinate_column_names(dim);
+      std::vector<std::string> data_column_names;
+      std::vector<Table<dim,double>> data_tables;
+      std::vector<std::vector<double>> coordinate_values(dim);
+
+      int ncid;
+      int status;
+
+      status = nc_open(filename.c_str(), NC_NOWRITE, &ncid);
+      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+
+      int ndims, nvars, ngatts, unlimdimid;
+      status = nc_inq(ncid, &ndims, &nvars, &ngatts, &unlimdimid);
+      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+
+
+      for (int dimid=0; dimid<ndims; ++dimid)
+        {
+          char  name[NC_MAX_NAME];
+          size_t length;
+          status = nc_inq_dim(ncid, dimid, name, &length);
+          AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+          std::cout << "dim " << dimid << "'" << name << "' has length " << length << std::endl;
+          // TODO: parse/store coordinate name?
+        }
+
+      // The number of dimensions ndims can be different in the netcdf file. In fact,
+      // each variable has a subset of those dimensions associated with it. That
+      // also means that variables can have a different number of dimensions and/or
+      // a different subset. We can only use variables with dim dimensions (our template
+      // argument) and only those that use the same dimids inside the netcdf file.
+      //
+      // Because the user can currently not specify what variables to use, we iterate over all of them,
+      // grab those with the right number of dimensions and ignore the rest.
+
+
+      int dimids_to_use[dim];
+      std::vector<int> varids_to_use;
+
+      for (int varid=0; varid<nvars; ++varid)
+        {
+          nc_type xtype;
+          int ndims;
+          int dimids[NC_MAX_VAR_DIMS];
+          char  name[NC_MAX_NAME];
+          int natts;
+
+          status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
+                               &natts);
+          AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+          std::cout << "var " << varid << "'" << name << "' has ndims = " << ndims << ": ";
+          for (int d=0; d<ndims; ++d)
+            std::cout << " " << dimids[d];
+          std::cout << std::endl;
+
+          if (varid < ndims)
+            {
+              std::cout << "\tignoring variable of dimension." << std::endl;
+            }
+          else if (ndims == dim)
+            {
+              bool use = true;
+              if (varids_to_use.size()>0)
+                {
+                  for (int i=0; i<dim; ++i)
+                    if (dimids_to_use[i]!=dimids[i])
+                      {
+                        use=false;
+                        break;
+                      }
+                }
+              else
+                {
+                  for (int i=0; i<dim; ++i)
+                    {
+                      dimids_to_use[i] = dimids[i];
+                      size_t length;
+                      status = nc_inq_dim(ncid, dimids[i], nullptr, &length);
+                      new_table_points[i] = length;
+                    }
+                }
+
+              if (use)
+                {
+                  varids_to_use.push_back(varid);
+                  data_column_names.push_back(name);
+                  std::cout << "\tusing variable." << std::endl;
+                }
+              else
+                std::cout << "\tignoring variable with different dims." << std::endl;
+
+            }
+          else
+            std::cout << "\tignoring variable with the wrong number of dims." << std::endl;
+        }
+
+
+      {
+        // Now load coordinate data
+
+        for (int d=0; d<dim; ++d)
+          {
+            int varid = dimids_to_use[d];
+
+            nc_type xtype;
+            int ndims;
+            int dimids[NC_MAX_VAR_DIMS];
+            char  name[NC_MAX_NAME];
+            int natts;
+
+            status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
+                                 &natts);
+            AssertThrow(ndims == 1, ExcMessage("a variable of a dimension should have only one dimension."));
+
+            AssertThrow(xtype == NC_DOUBLE, ExcMessage("we only support doubles for now"));
+
+            coordinate_values[d].resize(new_table_points[d]);
+            status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
+            AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+
+            std::cout << "coordinate " << d << " length= " << new_table_points[d] << " data=  " << coordinate_values[d][0] << ' ' << coordinate_values[d][1] << " ..." << std::endl;
+          }
+      }
+
+      {
+        // Finally load the data for each column
+        data_tables.resize(varids_to_use.size());
+        std::vector<double> raw_data;
+
+        for (unsigned int var = 0; var<varids_to_use.size(); ++var)
+          {
+            // Allocate space
+            data_tables[var].TableBase<dim,double>::reinit(new_table_points);
+            const std::size_t n_elements = data_tables[var].n_elements();
+            raw_data.resize(n_elements);
+
+            // Load the data
+            status = nc_get_var_double(ncid, varids_to_use[var], raw_data.data());
+            AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+
+            // .. and copy it over:
+            for (std::size_t n = 0; n < n_elements; ++n)
+              data_tables[var](compute_table_indices(new_table_points, n)) = raw_data[n];
+          }
+
+      }
+
+
+      status = nc_close(ncid);
+      AssertThrow(status == NC_NOERR, ExcMessage("NetCDF Error occured!"));
+
+      // ready to go:
+      this->reinit(data_column_names, std::move(coordinate_values),std::move(data_tables));
+
+      std::cout << "load_netcdf: OK" << std::endl;
+#endif
+    }
 
     template <int dim>
     double

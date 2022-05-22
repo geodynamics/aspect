@@ -131,6 +131,13 @@ namespace aspect
                   const MPI_Comm &communicator);
 
         /**
+         * Fill the current object with data read from a NetCDF file
+         * with filename @p filename. This call will fail if ASPECT is not
+         * configured with NetCDF support.
+         */
+        void load_netcdf(const std::string &filename);
+
+        /**
          * Returns the computed data (velocity, temperature, etc. - according
          * to the used plugin) in Cartesian coordinates.
          *
