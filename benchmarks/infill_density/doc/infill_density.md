@@ -1,3 +1,4 @@
+(sec:bechmarks:infill-density)=
 # 2D Lithosphere flexure benchmark with infill
 
 *This section was contributed by D. Douglas.*
