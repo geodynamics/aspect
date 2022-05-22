@@ -69,6 +69,7 @@ html_theme_options = {
     "show_toc_level": 3,
     "repository_url": "https://github.com/geodynamics/aspect/",
     "repository_branch": "main",
+    "path_to_docs":"doc/sphinx/",
     "icon_links": [
         {
             "name": "GitHub",
