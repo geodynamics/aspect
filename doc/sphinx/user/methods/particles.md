@@ -8,10 +8,10 @@ other words, if $\mathbf u(\mathbf x,t)$ is the flow field that results from
 solving equations {math:numref}`eq:stokes-1`-{math:numref}`eq:stokes-2`, then the
 $k$th particle's position satisfies the equations
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\partial}{\partial t} \mathbf x_k(t)
   = \mathbf u(\mathbf x_k(t),t).
-\end{align}
+\end{aligned}
 ```
 The initial positions of all
 particles also need to be given and are usually either chosen randomly, based
@@ -29,13 +29,13 @@ each time step. In other words, if we denote by $\mathbf p_{k,m}(t)$ the value
 of the $m$th property attached to the $k$th particle, then
 $\mathbf p_{k,m}(t)$ will satisfy a differential equation of the form
 ```{math}
-\begin{align}
+\begin{aligned}
 \frac{\partial}{\partial t} \mathbf p_{k,m}(t)
 = \mathbf g_m\left(\mathbf p_{k,m},
 p(\mathbf x_k(t),t)), T(\mathbf x_k(t),t)),
 \varepsilon(\mathbf u(\mathbf x_k(t),t)),
 \mathfrak c(\mathbf x_k(t),t)\right).
-\end{align}
+\end{aligned}
 ```
 The exact form of
 $\mathbf g_m$ of course depends on what exactly a particular property

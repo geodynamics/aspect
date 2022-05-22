@@ -14,19 +14,19 @@ If one adopts this point of view, the Stokes equations {math:numref}`eq:stokes-1
 
 It is interesting to realize that this compressible strain rate indeed requires a $3\times 3$ tensor. While under the assumptions above, we have
 ```{math}
-\begin{align}
+\begin{aligned}
   \varepsilon(\mathbf u) = \begin{pmatrix} \tfrac{\partial u_x}{\partial x} & \tfrac 12 \tfrac{\partial u_x}{\partial y} + \tfrac 12 \tfrac{\partial u_y}{\partial x} & 0 \\
     \tfrac 12 \tfrac{\partial u_x}{\partial y} + \tfrac 12 \tfrac{\partial u_y}{\partial x} & \tfrac{\partial u_y}{\partial y} & 0 \\
     0 & 0 & 0 \end{pmatrix}
-\end{align}
+\end{aligned}
 ```
 with the expected zeros in the last row and column, the full compressible strain rate tensor reads
 ```{math}
-\begin{align}
+\begin{aligned}
   \varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1 = \begin{pmatrix} \tfrac 23 \tfrac{\partial u_x}{\partial x}  - \tfrac 13 \tfrac{\partial u_y}{\partial y} & \tfrac 12 \tfrac{\partial u_x}{\partial y} + \tfrac 12 \tfrac{\partial u_y}{\partial x} & 0 \\
     \tfrac 12 \tfrac{\partial u_x}{\partial y} +  \tfrac 12 \tfrac{\partial u_y}{\partial x}  & \tfrac 23 \tfrac{\partial u_y}{\partial y} - \tfrac 13 \tfrac{\partial u_x}{\partial x}  & 0 \\
   0 & 0 & - \tfrac 13 \tfrac{\partial u_y}{\partial y} - \tfrac 13 \tfrac{\partial u_x}{\partial x} \end{pmatrix}.
-\end{align}
+\end{aligned}
 ```
 The entry in the $(3,3)$ position of this tensor may be surprising.
 It disappears, however, when taking the (three-dimensional) divergence of the stress, as is done in {math:numref}`eq:stokes-1`, because the divergence applies the $z$ derivative to all elements of the last row - and the assumption above was that all $z$ derivatives are zero; consequently, whatever lives in the third row of the strain rate tensor does not matter.

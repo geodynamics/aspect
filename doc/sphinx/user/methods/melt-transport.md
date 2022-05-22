@@ -21,13 +21,13 @@ mechanical part of the system. The latter is implemented using the approach of
                                   - \frac{1}{3}(\nabla \cdot \mathbf{u}_s)\mathbf 1\right)
                 \right] + \nabla p_f + \nabla p_c  &=
   \rho \mathbf g
-  & \qquad
-  & \textrm{in $\Omega$},
+  \qquad
+  \textrm{in $\Omega$},
   \\
 ```
 ```{math}
 :label: eq:stokes-2-melt
-\begin{align}
+\begin{aligned}
   \nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f
   - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
   &=
@@ -48,7 +48,7 @@ mechanical part of the system. The latter is implemented using the approach of
   & \textrm{in $\Omega$},
   \notag
   \\
-  \end{align}
+  \end{aligned}
 ```
 ```{math}
 :label: eq:stokes-3-melt
@@ -97,7 +97,7 @@ $\nabla \rho_{f}$ a model input parameter, which can be adapted based on the
 forces that are expected to be dominant in the model. We can then replace the
 second equation by
 ```{math}
-\begin{align}
+\begin{aligned}
 \nabla \cdot \mathbf{u}_s - \nabla \cdot K_D \nabla p_f
   - K_D \nabla p_f \cdot \frac{\nabla \rho_f}{\rho_f}
   &=
@@ -115,7 +115,7 @@ second equation by
   &\quad
   - K_D \mathbf g \cdot \nabla \rho_f .
   \notag
-\end{align}
+\end{aligned}
 ```
 The melt velocity is computed as
 ```{math}
@@ -141,14 +141,14 @@ Moreover, melt transport requires an advection equation for the porosity field
 $\phi$:
 ```{math}
 :label: eq:porosity
-\begin{align}
+\begin{aligned}
   \rho_s \frac{\partial (1 - \phi)}{\partial t} + \nabla \cdot \left[ \rho_s (1 - \phi) \mathbf{u}_s \right]
   &=
   - \Gamma
   & \quad
   & \textrm{in $\Omega$},
   i=1\ldots C
-\end{align}
+\end{aligned}
 ```
 
 In order to solve this equation in the same way as the other advection

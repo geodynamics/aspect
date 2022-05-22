@@ -18,31 +18,31 @@ The fact that someone else in the past used a simplified formulation does not me
 
 The three approximations mentioned all start by writing the pressure and temperature as the sum of a (possibly depth dependent) reference state plus a perturbation, i.e., we will write
 ```{math}
-\begin{align}
+\begin{aligned}
   p(\mathbf x,t) &= \bar p(z) + p'(\mathbf x,t), \\
   T(\mathbf x,t) &= \bar T(z) + T'(\mathbf x,t).
-\end{align}
+\end{aligned}
 ```
 Here, barred quantities are reference states and may depend on the depth $z$ (not necessarily the third component of $\mathbf x$) whereas primed quantities are the spatially and temporally variable deviations of the temperature and pressure fields from this reference state.
 In particular, the reference pressure is given by solving the hydrostatic equation,
 ```{math}
 :label: eq:hydrostatic-pressure
-\begin{align}
+\begin{aligned}
   \nabla \bar p = \bar\rho \mathbf g,
-\end{align}
+\end{aligned}
 ```
 where $\bar\rho=\rho(\bar p,\bar T)$ is a *reference density* that depends on depth and represents a typical change of material parameters and solution variables with depth.
 $\bar T(z)$ is chosen as an adiabatic profile accounting for the fact that the temperature increases as the pressure increases.
 With these definitions, equations {math:numref}`eq:stokes-1`-{math:numref}`eq:stokes-2` can equivalently be written as follows:
 ```{math}
-\begin{align}
+\begin{aligned}
   -\nabla \cdot \left[2\eta \left(\varepsilon(\mathbf u)
                                   - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
                 \right] + \nabla p' &=  (\rho-\bar\rho) \mathbf g  & \qquad  & \textrm{in $\Omega$},  \\
   \nabla \cdot (\rho \mathbf u) &= 0
   & \qquad
   & \textrm{in $\Omega$}.
-\end{align}
+\end{aligned}
 ```
 The temperature equation, when omitting entropic effects, still reads as
 ```{math}

@@ -419,15 +419,15 @@ F = ma
 ```
 ````
 
-The aligned environment is built into the math directive; be sure to add the same number of align operators (`&`) to each line and use `\\` to denote a new line.
+The split environment is built into the math directive; which allows you to use one align operator (`&`).
 
 ````md
 ```{math}
 :label: eq:aligned
   -\nabla \cdot \left[2\eta
    \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
-   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
-  \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
+   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g \qquad \textrm{in $\Omega$},  \\
+  \nabla \cdot (\bar\rho \mathbf u) &= 0  \qquad  \textrm{in $\Omega$}.
 ```
 ````
 
@@ -436,8 +436,33 @@ becomes:
 :label: eq:aligned
   -\nabla \cdot \left[2\eta
    \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
+   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g \qquad \textrm{in $\Omega$},  \\
+  \nabla \cdot (\bar\rho \mathbf u) &= 0  \qquad \textrm{in $\Omega$}.
+```
+
+If you require more than one alignment character you need to start and end an additional `aligned` environment. Be sure to add the same number of align operators (`&`) to each line and use `\\` to denote a new line.
+
+````md
+```{math}
+:label: eq:aligned
+\begin{aligned}
+  -\nabla \cdot \left[2\eta
+   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
    + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
   \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
+\end{aligned}
+```
+````
+
+becomes:
+```{math}
+:label: eq:multi-aligned
+\begin{aligned}
+  -\nabla \cdot \left[2\eta
+   \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)\right]
+   + \nabla p' &=  -\bar \alpha \bar\rho T' \mathbf g & \qquad  & \textrm{in $\Omega$},  \\
+  \nabla \cdot (\bar\rho \mathbf u) &= 0  & \qquad  & \textrm{in $\Omega$}.
+\end{aligned}
 ```
 
 ## Links

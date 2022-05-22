@@ -5,11 +5,11 @@ If we further assume that the reference temperature and the reference density ar
 This means that the density in all other parts of the equations is not only independent of the pressure variations $p'$ as assumed in the TALA, but also does not depend on the much larger hydrostatic pressure $\bar p$ nor on the reference temperature $\bar T$.
 We then obtain the following set of equations that also uses the incompressibility in the definition of the strain rate:
 ```{math}
-\begin{align}
+\begin{aligned}
   -\nabla \cdot \left[2\eta \varepsilon(\mathbf u) \right] + \nabla p' &=
   -\bar \alpha \bar\rho T' \mathbf g  & \qquad  & \textrm{in $\Omega$}, \\
   \nabla \cdot \mathbf u &= 0  & \qquad  & \textrm{in $\Omega$}.
-\end{align}
+\end{aligned}
 ```
 In addition, as the reference temperature is constant, one needs to neglect the adiabatic and shear heating in the energy equation
 ```{math}
