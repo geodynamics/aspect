@@ -15,17 +15,17 @@ This feature can be turned on by setting the \hyperref[parameters:Discretization
 To show how this can be used in practice, let us consider the simple convection in a quarter of a 2d annulus cookbook in Section \ref{sec:shell-simple-2d}, a radial compositional field was added to help show the advantages of using the artificial viscosity smoothing feature.
 
 By applying the following changes shown below to the parameters of the already existing file \begin{verbatim}cookbooks/shell_simple_2d/shell_simple_2d.prm, \end{verbatim}
-\lstinputlisting[language=prmfile]{cookbooks/shell_simple_2d_smoothing/doc/shell_simple_2d_smoothing.part.prm.out}
+\lstinputlisting[language=prmfile]{shell_simple_2d_smoothing.part.prm.out}
 it is possible to produce pictures of the simple convection in a quarter of a 2d annulus such as the ones visualized in
 Figure~\ref{fig:smoothing}.
 
 \begin{figure}
     \centering
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/doc/with_smoothing.png}}
+    \includegraphics[width=.48\textwidth]{with_smoothing.png}}
   ~
   \subfigure[]{
-    \includegraphics[width=.48\textwidth]{cookbooks/shell_simple_2d_smoothing/doc/without_smoothing.png}}
+    \includegraphics[width=.48\textwidth]{without_smoothing.png}}
     \caption{\it Artificial viscosity smoothing: Example of the output of two similar runs.  The run on the left has the artificial viscosity smoothing turned on and the run on the right does not, as described in Section \ref{sec:artificial-viscosity-smoothing}.}
     \label{fig:smoothing}
 \end{figure}

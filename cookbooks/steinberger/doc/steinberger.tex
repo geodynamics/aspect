@@ -11,9 +11,9 @@ In addition, this cookbook shows the use of periodic boundary conditions.
 
 \paragraph{Geometry and periodic boundaries.}
 The model setup is a quarter spherical shell with periodic side boundaries. The inner and outer radius are 3481~\si{\km} and 6371~\si{\km}, respectively, so that the mantle is 2900~\si{\km} deep. In the same section of the input file, we also need to specify that the model should have periodic boundaries in angular ($\phi$) direction:
-\lstinputlisting[language=prmfile]{cookbooks/steinberger/doc/geometry.part.prm.out}
+\lstinputlisting[language=prmfile]{geometry.part.prm.out}
 Both the top and bottom boundaries allow for free slip. Because the model has periodic side boundary conditions and free slip boundaries at top and bottom, the amount of rigid-body rotation in $\phi$ direction is not constrained. In other words: There is no unique solution. \aspect{} can remove this nullspace from the model (see Section~\ref{sec:nullspace}). Here, we do this by setting the net rotation to zero:
-\lstinputlisting[language=prmfile]{cookbooks/steinberger/doc/nullspace.part.prm.out}
+\lstinputlisting[language=prmfile]{nullspace.part.prm.out}
 The temperature is fixed to 273~\si{\K} at the top and 3773~\si{\K} at the bottom boundary.
 The initial temperature model consists of an adiabatic profile,
 thermal boundary layers at the surface and the core-mantle boundary, 
@@ -36,7 +36,7 @@ If the look-up table contains thermal expansivity and specific heat without the 
 temperature derivatives of the specific enthalpy (using the approach of \cite{nakagawa2009incorporating}).
 In our case, we simply do not include latent heat at all in our model.
 So the look-up table is computed without latent heat effects, and we set the ``Latent heat'' parameter to \texttt{false}.
-\lstinputlisting[language=prmfile]{cookbooks/steinberger/doc/lookup.part.prm.out}
+\lstinputlisting[language=prmfile]{lookup.part.prm.out}
 In an actual research application, it would be appropriate (and consistent with the projected density approximation, or any other compressible approximation) to compute latent heat instead of neglecting it as we do. This often leads to numerical instabilities that one typically addresses by ensuring that either the resolution is fine enough so that each phase transitions is resolved by several mesh cells,
 or the energy equations needs to be solved for entropy instead of pressure (which is an option available in \aspect{}; in this case, the look-up table needs to be given in terms of entropy and pressure). 
 
@@ -112,8 +112,8 @@ The default data directory already contains two radial viscosity files, one for 
 The file \url{data/material-model/steinberger/radial-visc.txt} is the original Steinberger and Calderwood \cite{stca06} profile (with an interpolation between the original discrete layers) and for use with the laterally averaged temperature. The file \url{data/material-model/steinberger/radial-visc-simple.txt} is for use with the adiabatic profile. To illustrate the difference, the content of both files is plotted in Figure~\ref{fig:steinberger-viscosity}. 
 
 \begin{figure}
-  \includesvg[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc.svg}
-  \includesvg[width=0.48\textwidth]{cookbooks/steinberger/doc/radial-visc-simple.svg}
+  \includesvg[width=0.48\textwidth]{radial-visc.svg}
+  \includesvg[width=0.48\textwidth]{radial-visc-simple.svg}
   \caption{\it Left: Viscosity profile based on the original \cite{stca06} formulation, intended for use with a temperature-dependence of viscosity based on the laterally averaged temperature. Right: Modified viscosity profile without boundary layers, intended for use with a temperature-dependence of viscosity based on an adiabatic temperature profile.}
   \label{fig:steinberger-viscosity}
 \end{figure}
@@ -123,7 +123,7 @@ Because of the resolution in this cookbook we limit the lateral viscosity variat
 three orders of magnitude in both directions (for a total of six orders of
 magnitude), and we additionally limit the overall viscosity
 between $10^{20}$~\si{\pascal\second} and $5 \times 10^{23}$~\si{\pascal\second}. This allows the features of the flow field to be resolved. 
-\lstinputlisting[language=prmfile]{cookbooks/steinberger/doc/rheology.part.prm.out}
+\lstinputlisting[language=prmfile]{rheology.part.prm.out}
 In the Earth, we would expect higher viscosities in the lithosphere and 
 lower viscosities in plumes and near the core-mantle boundaries. 
 This type of viscosity formulation is appropriate for global convection models. 
@@ -156,17 +156,17 @@ equation for this field, it only needs to interpolate the density values onto it
 This is covered by the compositional field method `prescribed field'. 
 For fields of this type, the material model provides the values that should be 
 interpolated onto the field.
-\lstinputlisting[language=prmfile]{cookbooks/steinberger/doc/projected_density.part.prm.out}
+\lstinputlisting[language=prmfile]{projected_density.part.prm.out}
 
-The complete input file can be found in \url{cookbooks/steinberger/doc/steinberger.prm}. 
+The complete input file can be found in \url{steinberger.prm}. 
 
 \paragraph{Results.} We run the model for 300 million years. Over the time of the model evolution, some plumes rise and spread beneath the base of the lithosphere, and some cold downwellings detach from the base of the lithosphere. The temperature at the end of the model run and some of the material properties are shown in Figure~\ref{fig:steinberger-end-state}. 
 
 \begin{figure}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/temperature.png}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/viscosity.png}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/density.png}
-  \includegraphics[width=0.48\textwidth]{cookbooks/steinberger/doc/specific_heat.png}
+  \includegraphics[width=0.48\textwidth]{temperature.png}
+  \includegraphics[width=0.48\textwidth]{viscosity.png}
+  \includegraphics[width=0.48\textwidth]{density.png}
+  \includegraphics[width=0.48\textwidth]{specific_heat.png}
   \caption{\it End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity.}
   \label{fig:steinberger-end-state}
 \end{figure}

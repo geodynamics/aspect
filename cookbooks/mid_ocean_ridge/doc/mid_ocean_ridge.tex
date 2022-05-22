@@ -31,7 +31,7 @@ the reaction time scale.
 The melting model we use here is the anhydrous mantle melting model of \cite{KSL2003} for a peridotitic
 rock composition, as implemented in the ``melt simple'' material model.
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/melting_and_freezing.part.prm.out}
+\lstinputlisting[language=prmfile]{melting_and_freezing.part.prm.out}
 
 To make sure we reproduce the characteristic triangular melting region of a mid-ocean ridge, we have to
 set up the boundary conditions in a way so that they will lead to corner flow. At the top boundary, we can
@@ -42,7 +42,7 @@ pressure as a boundary condition for the stress. We accomplish this by using the
 ``initial lithostatic pressure'' model. This plugin will automatically compute a 1d lithostatic pressure
 profile at a given point at the time of the model start and apply it as a boundary traction.
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/boundary_conditions.part.prm.out}
+\lstinputlisting[language=prmfile]{boundary_conditions.part.prm.out}
 
 Finally, we have to make sure that the resolution is high enough to model melt migration.
 This is particularly important in regions where the porosity is low, but still high enough that
@@ -62,7 +62,7 @@ As the length scale of melt migration is usually smaller than for mantle convect
 sure that regions where melt is present have a high resolution, and that this high resolution extends
 to all cells where the two-phase flow equations are solved.
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/mesh_refinement.part.prm.out}
+\lstinputlisting[language=prmfile]{mesh_refinement.part.prm.out}
 
 \aspect{} also supports an alternative method to make sure that regions with melt are sufficiently
 well resolved, relying directly on the compaction length, and we will discuss this method as a possible
@@ -74,7 +74,7 @@ The complete input file is located at \url{cookbooks/mid_ocean_ridge/mid_ocean_r
 
 \begin{figure}
     \centering
-    \includesvg[width=0.5\textwidth]{cookbooks/mid_ocean_ridge/doc/mid_ocean_ridge.svg}
+    \includesvg[width=0.5\textwidth]{mid_ocean_ridge.svg}
     \caption{\it Mid-ocean ridge model after 8 million years. The top panel shows the depletion
              and porosity fields (with the characteristic triangular melting region),
              the bottom panel shows the temperature distribution and the melt velocity, indicated
@@ -99,7 +99,7 @@ A vertical profile at a distance of 80 km from the ridge axis showing this compo
 
 \begin{figure}
     \centering
-    \includesvg[width=0.35\textwidth]{cookbooks/mid_ocean_ridge/doc/depletion_profile.svg}
+    \includesvg[width=0.35\textwidth]{depletion_profile.svg}
     \caption{\it Vertical profile through the model domain at a distance of 80 km from the ridge axis
              at the end of the model run, showing the distribution of depletion and enrichment as
              indicated by the peridotite field.}
@@ -111,7 +111,7 @@ Another option for making sure that melt migration is resolved properly in the m
 refinement criterion that directly relates to the compaction length. This can be done in the mesh
 refinement section of the input file:
 
-\lstinputlisting[language=prmfile]{cookbooks/mid_ocean_ridge/doc/compaction_length.part.prm.out}
+\lstinputlisting[language=prmfile]{compaction_length.part.prm.out}
 
 This will lead to a higher resolution particularly in regions with low (but not zero) porosity,
 and can be useful to resolve the strong gradients in the melt velocity and compaction pressure that
@@ -120,7 +120,7 @@ Of course it is also possible to combine both methods for refining the mesh.
 
 \begin{figure}
     \centering
-    \includesvg[width=0.6\textwidth]{cookbooks/mid_ocean_ridge/doc/refinement.svg}
+    \includesvg[width=0.6\textwidth]{refinement.svg}
     \caption{\it Mesh after a time of 3.6 million years for a model using the composition threshold
              refinement strategy (left) and the compaction length refinement strategy (right)
              Background colors indicate the melt velocity. Its sharp gradients at the interface

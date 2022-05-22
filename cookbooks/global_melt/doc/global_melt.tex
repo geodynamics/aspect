@@ -20,20 +20,20 @@ In the first model we will look at, melting and freezing is only included passiv
 The following input file (which can be found in \url{cookbooks/global_melt/global_no_melt.prm}) contains a detailed description of the
 different options required to set up such a model:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/doc/global_no_melt.prm.out}
+\lstinputlisting[language=prmfile]{global_no_melt.prm.out}
 
 When we look at visualization output of this model, we can see that over time, first upwellings, and then downwellings start to form. Both are more or less stable over time, and only change their positions slowly. As melt does not move relative to the solid, broad stable zones of melting with melt fraction of 10\% or more form in areas where material is upwelling.
 
 In the second model, melt is an active component of the model. Temperature, pressure and composition control how much of the rock melts, and as soon as that happens, melt can migrate relative to the solid rock. As material only melts partially, that means that the composition of the rock changes when it melts and melt is extracted, and we track this change in composition using a compositional field with the name \texttt{peridotite}. Positive values mark depletion (the composition of the residual host rock as more and more melt is extracted), and negative values mark enrichment (the composition of generated melt, or regions where melt freezes again). Both the fraction of melt (tracked by the compositional field with the name \texttt{porosity}) and the changes in composition influence the material properties such as density and viscosity. Moreover, there are additional material properties that describe how easily melt can move through the host rock, such as the \texttt{permeability}, or properties of the melt itself, such as the \texttt{fluid viscosity}.
 The following input file (a complete version of which can be found in \url{cookbooks/global_melt/global_melt.prm}) details the changes we have to make from the first model to set up a model with melt migration:
 
-\lstinputlisting[language=prmfile]{cookbooks/global_melt/doc/global_melt.prm.out}
+\lstinputlisting[language=prmfile]{global_melt.prm.out}
 
 In the first few tens of millions of years, this models evolves similarly to the model without melt migration. Upwellings rise in the same locations, and regions where material starts to melt are similar. However, once melt is formed, the model evolutions start to deviate. In the model with melt migration, melt moves upwards from the region where it is generated much faster than the flow of solid material, so that it reaches cold regions -- where it freezes again -- in a shorter amount of time. Because of that, the overall amount of melt is smaller in this model at any given point in time. In addition, enriched material, present in places where melt has crystallized, has a higher density than average or depleted mantle material. This means that in regions above stable upwellings, instabilities of dense, enriched material start to form, which leads to small-scale downwellings. Hence, both areas where material is partially molten and the location of the upwellings themselves have a much shorter wavelength and change much faster over time in comparison to the model without melt migration.
 
 \begin{figure}
     \centering
-    \includesvg[width=0.9\textwidth]{cookbooks/global_melt/doc/model_evolution.svg}
+    \includesvg[width=0.9\textwidth]{model_evolution.svg}
     \caption{\it Evolution of the model without (left) and with (right) melt migration.}
     \label{fig:global-melt}
 \end{figure}

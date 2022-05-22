@@ -27,7 +27,7 @@ A trick is needed to make this work: we assign the values of the density to the 
 To do this, We use the phase inputs implemented in the visco plastic plug-in.
 This serves the goal of visualizing values of reference densities of phases with the real density assigned with a constant value in the model.
 Inputs for this material model are listed here:
-\lstinputlisting[language=prmfile]{cookbooks/visualizing_phase_diagram/doc/material_model.prm.out}
+\lstinputlisting[language=prmfile]{material_model.prm.out}
 
 
 \paragraph{Results.}
@@ -42,7 +42,7 @@ The figure for $T = \SI{1173}{K}$ illustrates the buoyancy forces felt by a desc
 
 Next, we shift to harzburgite by changing the values of the initial compositional field from 0 to 1.  % harzburgite
 For this to occur, the following changes are needed:
-\lstinputlisting[language=prmfile]{cookbooks/visualizing_phase_diagram/doc/harzburgite.prm.out}
+\lstinputlisting[language=prmfile]{harzburgite.prm.out}
 With this change, we can also visualize the phase diagram of harzburgite in Figure \ref{fig:phase_diagram_ph_density}.
 
 Moreover, We tested the pyrolitic lookup table used in the Steinberg material model (Figure \ref{fig:phase_diagram_steinberg_density}).% steinberg model
@@ -51,7 +51,7 @@ The densities, however, are not assigned to the heat capacity anymore.
 Thus the vertical axis would deviate from the axis of pressure a little bit.
 This second setup serves the goal of illustrating a more complex and thus more realistic model of phase transitions.
 Modification for the material model is listed below:
-\lstinputlisting[language=prmfile]{cookbooks/visualizing_phase_diagram/doc/steinberg.prm.out}  % add 
+\lstinputlisting[language=prmfile]{steinberg.prm.out}  % add 
 
 Compared to the first example, pyrolitic phases are illustrated on a much finer scale.  % comparison 
 Meanwhile, we can still tell the phase transitions at 410, 520, and $\SI{660}{km}$ depth, respectively, marked by linear boundaries analogous to a constant Clapeyron slope.
@@ -62,7 +62,7 @@ Meanwhile, we can still tell the phase transitions at 410, 520, and $\SI{660}{km
 \begin{figure}
 \phantom.
 \hfill
-\includegraphics[width=0.9\textwidth]{cookbooks/visualizing_phase_diagram/doc/pyrolite_harzburgite.png}
+\includegraphics[width=0.9\textwidth]{pyrolite_harzburgite.png}
 \hfill
 \phantom.
 \caption{\it Visualization of phase diagrams: The field of heat capacity showing values of reference densities for pyrolitic and harzburgitic phases.}
@@ -72,14 +72,14 @@ Meanwhile, we can still tell the phase transitions at 410, 520, and $\SI{660}{km
 %%%%%%%%%% figures2: pyrolite profiles %%%%%%
 \begin{figure}
 \centering
-\includegraphics[width=0.4\textwidth]{cookbooks/visualizing_phase_diagram/doc/pyrolite_linear.png}
+\includegraphics[width=0.4\textwidth]{pyrolite_linear.png}
 \caption{\it Visualization of phase diagrams: Profiles of pyrolitic density at $T=\SI{1173}{K}$ (red) and $\SI{1673}{K}$ (blue).}
 \label{fig:phase_diagram_ph_profile}
 \end{figure}
 %%%%%%%%% figures3: lookup table %%%%%%
 \begin{figure}
 \centering
-\includegraphics[width=0.4\textwidth]{cookbooks/visualizing_phase_diagram/doc/steinberg.png}
+\includegraphics[width=0.4\textwidth]{steinberg.png}
 \caption{\it Visualization of phase diagrams: Density from lookup table of pyrolite from \cite{stixrude2011thermodynamics}.} % cite
 \label{fig:phase_diagram_steinberg_density}
 \end{figure}

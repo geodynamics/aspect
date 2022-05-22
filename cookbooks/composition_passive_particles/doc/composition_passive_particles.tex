@@ -9,7 +9,7 @@ particular, the postprocess section now looks like this:
 \index[prmindex]{Number of particles}
 \index[prmindexfull]{Postprocess!Particles!Number of particles}
 
-\lstinputlisting[language=prmfile]{cookbooks/composition_passive_particles/doc/particles.part.prm.out}
+\lstinputlisting[language=prmfile]{particles.part.prm.out}
 
 The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along with
@@ -57,7 +57,7 @@ Fig.~\ref{fig:composition_passive_particles}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{cookbooks/composition_passive_particles/doc/solution-00072.png}
+  \includegraphics[width=0.5\textwidth]{solution-00072.png}
   \caption{\it Passively advected quantities visualized through both a
   \label{fig:composition_passive_particles}
   compositional field and a set of 1,000 particles, at $t=7.2$.}
@@ -102,7 +102,7 @@ following lines to the \texttt{Particles} subsection (we also increase the numbe
 of particles compared to the previous section to make the visualizations below
 more obvious):
 
-\lstinputlisting[language=prmfile]{cookbooks/composition_passive_particles/doc/particle-properties.part.prm.out}
+\lstinputlisting[language=prmfile]{particle-properties.part.prm.out}
 
 These commands make sure that every particle will carry four different
 properties (\texttt{function}, \texttt{pT path}, \texttt{initial
@@ -177,16 +177,16 @@ Section~\ref{sec:write-plugin}.) The properties selected above do the following:
   \centering
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition_passive_particles/doc/composition-C1.png}
+  \includegraphics[width=0.45\textwidth]{composition-C1.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition_passive_particles/doc/particles-C1.png}
+  \includegraphics[width=0.45\textwidth]{particles-C1.png}
   \phantom{.}
   \\
   \phantom{.}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition_passive_particles/doc/initial-position-00000.png}
+  \includegraphics[width=0.45\textwidth]{initial-position-00000.png}
   \hfill
-  \includegraphics[width=0.45\textwidth]{cookbooks/composition_passive_particles/doc/initial-position-00199.png}
+  \includegraphics[width=0.45\textwidth]{initial-position-00199.png}
   \phantom{.}
   \caption{\it Passively advected particle properties visualized. Top row:
   Composition $C_1$ and particle property ``initial $C_1$''. The blue line in both

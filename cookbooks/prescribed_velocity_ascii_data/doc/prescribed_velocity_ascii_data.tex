@@ -6,23 +6,23 @@ Building on \ref{sec:prescribed-velocities}, the \url{cookbooks/prescribed_veloc
 directory contains a plugin which uses an ASCII data file to specify where to prescribe
 internal velocities. Velocities are prescribed wherever the field value indicated by the ASCII data file
 is greater than 0.5. As before, the plugin is loaded in parameter files as an additional shared library:
-\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.0.out}
+\lstinputlisting[language=prmfile]{prescribed_velocity_ascii_data.prm.0.out}
 
 An example parameter file using this plugin can be found at
 \url{cookbooks/prescribed_velocity_ascii_data/prescribed_velocity_ascii_data.prm}.
 In this file, the velocities are constrained to be zero within the letters ``ASPECT'' (Figure~\ref{fig:prescribed-velocity-ascii-data-init}).
 The part of this file which provides the location of the ASCII file and the
 prescribed velocity field function is:
-\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.1.out}
+\lstinputlisting[language=prmfile]{prescribed_velocity_ascii_data.prm.1.out}
 A temperature gradient is applied within the letters, while the temperature field outside the letters is set to be constant.
 This initial temperature field is specified by another ASCII data file:
-\lstinputlisting[language=prmfile]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.prm.2.out}
+\lstinputlisting[language=prmfile]{prescribed_velocity_ascii_data.prm.2.out}
 These two ASCII data files are generated from \texttt{aspect\_name.png} by the python file \texttt{make\_ascii\_files\_from\_png.py},
 both of which can be found in the same directory as the parameter file.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocities_ascii_data_initial_conditions.png}
+    \includegraphics[width=\textwidth]{prescribed_velocities_ascii_data_initial_conditions.png}
     \caption{\it Initial composition and temperature conditions for the prescribed velocity ascii data cookbook,
              as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
     \label{fig:prescribed-velocity-ascii-data-init}
@@ -34,7 +34,7 @@ part of the domain then generate convective flow. Figure~\ref{fig:prescribed-vel
 illustrates the resulting flow field.
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.png}
+    \includegraphics[width=0.8\textwidth]{prescribed_velocity_ascii_data.png}
     \caption{\it Convective flow around the letters ASPECT, within which velocities are prescribed to be zero, as described in Section \ref{sec:prescribed-velocities-ascii-data}.}
     \label{fig:prescribed-velocity-ascii-data}
 \end{figure}
