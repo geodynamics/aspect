@@ -176,3 +176,24 @@ so we get
 More details on the implementation can be found in {cite:t}`dannberg:heister:2016`.
 A benchmark case demonstrating the propagation of solitary waves can be
 found in {ref}`sec:benchmarks:solitary_wave`.
+
+(sec:methods:darcy-flow)=
+# Calculations with Darcy flow
+To calculate fluid transport, ASPECT can advect compositional fields with the fluid velocity
+computed using Darcy's Law (derived in McKenzie 1984). Currently, this method approximates the flud
+pressure gradient as the lithostatic pressure, so the expression used for the fluid velocity is:
+
+```{math}
+\bold{u_f} = \bold{u_s} - \frac{K_D}{\phi} \left(\rho_s - \rho_f \right)\bold{g}
+```
+
+Where $\bold{u_s}$ is the solid velocity, $K_D$ is the Darcy Coefficient, $\phi$ is the porosity,
+$\bold{g}$ is the gravity vector, $\rho_s$ is the solid density, and $\rho_f$ is the fluid density.
+The implementation of this method shares some similarities with the melt implementation, but is much
+simpler and as a consequence has several limitations. Currently, in the absence of solid motion,
+the fluid phase will only be advected parallel to the gravity vector based on buoyancy forces. An
+additional limitation is that solid compaction with varying porosity is not calculated with the
+current implementation, and so mass is not conserved as fluid leaves the solid matrix at a given
+point. For small porosities, this does not pose too much of an issue, but this approximation would
+break down at high porosities. The advantages of this method is that it is relatively cheap, and for
+scenarios where porosities are small and fluid pressures can be approximated by $\rho_s \bold{g}$.
