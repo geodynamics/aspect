@@ -80,7 +80,7 @@ html_theme_options = {
     "use_repository_button": True,
     "use_edit_page_button": True,
     "use_issues_button": True,
-    "extra_navbar": "<p><img src='/_static/images/cig_logo_dots.png' alt=\"CIG Logo\" height=\"80px\"  style=\"padding: 5px;\"/></p>",
+    "extra_navbar": "<p><img src=\"/en/latest/_static/images/cig_logo_dots.png\" alt=\"CIG Logo\" height=\"80px\"  style=\"padding: 5px;\"/></p>",
     "home_page_in_toc": True,
 }
 
