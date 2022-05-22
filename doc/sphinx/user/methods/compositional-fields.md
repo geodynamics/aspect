@@ -12,14 +12,14 @@ Compositional fields were originally intended to track what their name suggest, 
 However, the compositional fields may also participate in determining the values of the various coefficients as discussed in {ref}`sec:methods:coefficients`, and in this sense the equation above describes a composition that is *passively advected*, but an *active participant* in the equations.
 
 That said, over time compositional fields have shown to be a much more useful tool than originally intended.
-For example, they can be used to track where material comes from and goes to (see {ref}`sec:cookbooks:simple-setups:passive-active`) and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
+For example, they can be used to track where material comes from and goes to (see {ref}`sec:cookbooks-composition`) and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
 ```{math}
 \begin{aligned}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c = \mathfrak q,
 \end{aligned}
 ```
 then one can also model interaction between species - for example to simulate phase changes where one compositional field, indicating a particular phase, transforms into another phase depending on pressure and temperature, or where several phases combine to other phases.
-Another example of using a right hand side - quite outside what the original term *compositional field* was supposed to indicate - is to track the accumulation of finite strain, see {ref}`sec:cookbooks:simple-setups:tracking-finite-strain`.
+Another example of using a right hand side - quite outside what the original term *compositional field* was supposed to indicate - is to track the accumulation of finite strain, see {ref}`sec:cookbooks:finite_strain`.
 
 In actual practice, one finds that it is often useful to allow $\mathfrak q$ to be a function that has both a smooth (say, continuous) in time component, and one that is singular in time (i.e., contains Dirac delta, or "impulse" functions).
 Typical time integrators require the evaluation of the right hand side at specific points in time, but this would preclude the use of delta functions.
