@@ -1,5 +1,5 @@
 (parameters:Initial_20temperature_20model)=
-# **Initial temperature model**
+# Initial temperature model
 
 
 ## **Parameters in section** Initial temperature model

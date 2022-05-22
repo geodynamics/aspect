@@ -1,5 +1,5 @@
 (parameters:Postprocess)=
-# **Postprocess**
+# Postprocess
 
 
 ## **Parameters in section** Postprocess
@@ -9,7 +9,7 @@
 ### __Parameter name:__ List of postprocessors
 **Default value:**
 
-**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary strain rate residual statistics|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
+**Pattern:** [MultipleSelection Stokes residual|basic statistics|boundary densities|boundary pressures|boundary velocity residual statistics|command|composition statistics|core statistics|depth average|dynamic topography|entropy viscosity statistics|geoid|global statistics|gravity calculation|heat flux densities|heat flux map|heat flux statistics|heating statistics|load balance statistics|mass flux statistics|material statistics|matrix statistics|maximum depth of field|melt statistics|memory statistics|mobility statistics|particle count statistics|particles|point values|pressure statistics|rotation statistics|spherical velocity statistics|temperature statistics|topography|velocity boundary statistics|velocity statistics|viscous dissipation statistics|visualization|volume of fluid statistics ]
 
 **Documentation:** A comma separated list of postprocessor objects that should be run at the end of each time step. Some of these postprocessors will declare their own parameters which may, for example, include that they will actually do something only every so many time steps or years. Alternatively, the text `all' indicates that all available postprocessors should be run after each time step.
 
@@ -22,8 +22,6 @@ The following postprocessors are available:
 `boundary densities': A postprocessor that computes the laterally averaged density at the top and bottom of the domain.
 
 `boundary pressures': A postprocessor that computes the laterally averaged pressure at the top and bottom of the domain.
-
-`boundary strain rate residual statistics': A postprocessor that computes some statistics about the surface strain rate residual along the top boundary. The residual is the difference between the second invariant of the model strain rate and the second strain rate invariant read from the input data file. Currently, the strain residual statistics, i.e., min, max and the rms magnitude, are computed at the top suface.
 
 `boundary velocity residual statistics': A postprocessor that computes some statistics about the velocity residual along the top boundary. The velocity residual is the difference between the model solution velocities and the input velocities (GPlates model or ascii data). Currently, the velocity residual statistics, i.e., min, max and the rms magnitude, is computed at the top suface.
 
@@ -126,32 +124,6 @@ The file format then consists of lines with Euclidean coordinates followed by th
 **Pattern:** [Bool]
 
 **Documentation:** Whether or not the postprocessors should be executed after each of the nonlinear iterations done within one time step. As this is mainly an option for the purposes of debugging, it is not supported when the 'Time between graphical output' is larger than zero, or when the postprocessor is not intended to be run more than once per timestep.
-
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics)=
-## **Parameters in section** Postprocess/Boundary strain rate residual statistics
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20directory)=
-### __Parameter name:__ Data directory
-**Default value:** $ASPECT_SOURCE_DIR/data/postprocess/boundary-strain-rate-residual/
-
-**Pattern:** [DirectoryName]
-
-**Documentation:** The name of a directory that contains the ascii data. This path may either be absolute (if starting with a `/') or relative to the current directory. The path may also include the special text `$ASPECT_SOURCE_DIR' which will be interpreted as the path in which the ASPECT source files were located when ASPECT was compiled. This interpretation allows, for example, to reference files located in the `data/' subdirectory of ASPECT.
-
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Data_20file_20name)=
-### __Parameter name:__ Data file name
-**Default value:** box_3d_boundary_strain_rate.txt
-
-**Pattern:** [Anything]
-
-**Documentation:** The file name of the input surface strain rate an ascii data. The file has one column in addition to the coordinate columns corresponding to the second invariant of strain rate.
-
-(parameters:Postprocess/Boundary_20strain_20rate_20residual_20statistics/Scale_20factor)=
-### __Parameter name:__ Scale factor
-**Default value:** 1.
-
-**Pattern:** [Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]
-
-**Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model.
 
 (parameters:Postprocess/Boundary_20velocity_20residual_20statistics)=
 ## **Parameters in section** Postprocess/Boundary velocity residual statistics
@@ -1210,7 +1182,7 @@ Of course, activating this option also greatly increases the amount of data \asp
 ### __Parameter name:__ List of output variables
 **Default value:**
 
-**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary strain rate residual|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
+**Pattern:** [MultipleSelection ISA rotation timescale|Vp anomaly|Vs anomaly|adiabat|artificial viscosity|artificial viscosity composition|boundary indicators|boundary velocity residual|compositional vector|depth|dynamic topography|error indicator|geoid|grain lag angle|gravity|heat flux map|heating|material properties|maximum horizontal compressive stress|melt fraction|melt material properties|named additional outputs|nonadiabatic pressure|nonadiabatic temperature|particle count|partition|principal stress|shear stress|spd factor|spherical velocity components|strain rate|strain rate tensor|stress|stress second invariant|surface dynamic topography|surface stress|temperature anomaly|vertical heat flux|volume of fluid values|volumetric strain rate|density|specific heat|thermal conductivity|thermal diffusivity|thermal expansivity|viscosity ]
 
 **Documentation:** A comma separated list of visualization objects that should be run whenever writing graphical output. By default, the graphical output files will always contain the primary variables velocity, pressure, and temperature. However, one frequently wants to also visualize derived quantities, such as the thermodynamic phase that corresponds to a given temperature-pressure value, or the corresponding seismic wave speeds. The visualization objects do exactly this: they compute such derived quantities and place them into the output file. The current parameter is the place where you decide which of these additional output variables you want to have in your output file.
 
@@ -1229,8 +1201,6 @@ The following postprocessors are available:
 `artificial viscosity composition': A visualization output object that generates output showing the value of the artificial viscosity for a compositional field on each cell.
 
 `boundary indicators': A visualization output object that generates output about the used boundary indicators. In a loop over the active cells, if a cell lies at a domain boundary, the boundary indicator of the face along the boundary is requested. In case the cell does not lie along any domain boundary, the cell is assigned the value of the largest used boundary indicator plus one. When a cell is situated in one of the corners of the domain, multiple faces will have a boundary indicator. This postprocessor returns the value of the first face along a boundary that is encountered in a loop over all the faces.
-
-`boundary strain rate residual': A visualization output object that generates output for the strain rate residual at the top surface. The residual is computed at each point at the surface as the difference between the strain rate invariant in the model and the input data, where the invariant is computed like in the 'strain rate' postprocessor. The user chooses the input data as ascii data files with coordinate columns and column corresponding to the surface strain rate norm.
 
 `boundary velocity residual': A visualization output object that generates output for the velocity residual at the top surface. The residual is computed at each point at the surface as the difference between the modeled velocities and the input data velocities for each vector component. The user has an option to choose the input data as ascii data files (e.g. GPS velocities) with columns in the same format as described for the 'ascii data' initial temperature plugin or a velocity field computed from the GPlates program as described in the gplates boundary velocity plugin.
 

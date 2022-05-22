@@ -1,5 +1,5 @@
 (parameters:Solver_20parameters)=
-# **Solver parameters**
+# Solver parameters
 
 
 ## **Parameters in section** Solver parameters

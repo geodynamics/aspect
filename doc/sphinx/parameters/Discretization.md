@@ -1,5 +1,5 @@
 (parameters:Discretization)=
-# **Discretization**
+# Discretization
 
 
 ## **Parameters in section** Discretization

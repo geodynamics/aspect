@@ -1,5 +1,5 @@
 (parameters:Boundary_20traction_20model)=
-# **Boundary traction model**
+# Boundary traction model
 
 
 ## **Parameters in section** Boundary traction model

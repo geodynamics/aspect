@@ -1,5 +1,5 @@
 (parameters:Boundary_20fluid_20pressure_20model)=
-# **Boundary fluid pressure model**
+# Boundary fluid pressure model
 
 
 ## **Parameters in section** Boundary fluid pressure model

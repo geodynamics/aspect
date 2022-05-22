@@ -1,5 +1,5 @@
 (parameters:Material_20model)=
-# **Material model**
+# Material model
 
 
 ## **Parameters in section** Material model
@@ -52,7 +52,7 @@ The implementation of this material model is somewhat expensive because it has t
 
 `depth dependent': The ``depth dependent'' Material model applies a depth-dependent scaling to any of the other available material models. In other words, it is a ``compositing material model''.
 
-Parameters related to the depth dependent model are read from a subsection ``Material model/Depth dependent model''. The user must specify a ``Base model'' from which material properties are derived. Currently the depth dependent model only allows depth dependence of viscosity - other material properties are taken from the ``Base model''. Viscosity $\eta$ at depth $z$ is calculated according to:\begin{equation}\eta(z,p,T,X,...) = \eta(z) \eta_b(p,T,X,..)/\eta_{r}\end{equation}where $\eta(z)$ is the depth-dependence specified by the depth dependent model, $\eta_b(p,T,X,...)$ is the viscosity calculated from the base model, and $\eta_{r}$ is the reference viscosity. In addition to the specification of the ``Base model'', the user must specify the method to be used to calculate the depth-dependent viscosity $\eta(z)$ as ``Material model/Depth dependent model/Depth dependence method'', which can be chosen among ``None|Function|File|List''. Each method and the associated parameters are as follows:
+Parameters related to the depth dependent model are read from a subsection ``Material model/Depth dependent model''. The user must specify a ``Base model'' from which material properties are derived. Currently the depth dependent model only allows depth dependence of viscosity - other material properties are taken from the ``Base model''. Viscosity $\eta$ at depth $z$ is calculated according to:\begin{equation}\eta(z,p,T,X,...) = \eta(z) \eta_b(p,T,X,..)/\eta_{rb}\end{equation}where $\eta(z)$ is the depth-dependence specified by the depth dependent model, $\eta_b(p,T,X,...)$ is the viscosity calculated from the base model, and $\eta_{rb}$ is the reference viscosity of the ``Base model''. In addition to the specification of the ``Base model'', the user must specify the method to be used to calculate the depth-dependent viscosity $\eta(z)$ as ``Material model/Depth dependent model/Depth dependence method'', which can be chosen among ``None|Function|File|List''. Each method and the associated parameters are as follows:
 
 ``Function'': read a user-specified parsed function from the input file in a subsection ``Material model/Depth dependent model/Viscosity depth function''. By default, this function is uniformly equal to 1.0e21. Specifying a function that returns a value less than or equal to 0.0 anywhere in the model domain will produce an error.
 
@@ -528,14 +528,6 @@ Viscous stress may also be limited by a non-linear stress limiter that has a for
 **Pattern:** [List of <[Double -MAX_DOUBLE...MAX_DOUBLE (inclusive)]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma-separated list of depth values for use with the ``List'' ``Depth dependence method''. The list must be provided in order of increasing depth, and the last value must be greater than or equal to the maximal depth of the model. The depth list is interpreted as a layered viscosity structure and the depth values specify the maximum depths of each layer.
-
-(parameters:Material_20model/Depth_20dependent_20model/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
-**Default value:** 1.7976931348623157e+308
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The value of the constant reference viscosity $\eta_r$ that is used to scale the non-dimenional depth-dependent viscosity prefactor. Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Depth_20dependent_20model/Scale_20factor)=
 ### __Parameter name:__ Scale factor

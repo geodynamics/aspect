@@ -1,5 +1,5 @@
 (parameters:Boundary_20temperature_20model)=
-# **Boundary temperature model**
+# Boundary temperature model
 
 
 ## **Parameters in section** Boundary temperature model

@@ -1,5 +1,5 @@
 (parameters:Compositional_20fields)=
-# **Compositional fields**
+# Compositional fields
 
 
 ## **Parameters in section** Compositional fields
@@ -9,7 +9,7 @@
 ### __Parameter name:__ Compositional field methods
 **Default value:**
 
-**Pattern:** [List of <[Selection field|particles|volume of fluid|static|melt field|darcy field|prescribed field|prescribed field with diffusion ]> of length 0...4294967295 (inclusive)]
+**Pattern:** [List of <[Selection field|particles|volume of fluid|static|melt field|prescribed field|prescribed field with diffusion ]> of length 0...4294967295 (inclusive)]
 
 **Documentation:** A comma separated list denoting the solution method of each compositional field. Each entry of the list must be one of the currently implemented field methods.
 
@@ -18,7 +18,6 @@ These choices correspond to the following methods by which compositional fields 
 \item ``volume of fluid``: If a compositional field is marked with this method, then its values are obtained in each timestep by reconstructing a polynomial finite element approximation on each cell from a volume of fluid interface tracking method, which is used to compute the advection updates.
 \item ``static'': If a compositional field is marked this way, then it does not evolve at all. Its values are simply set to the initial conditions, and will then never change.
 \item ``melt field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the melt velocity, and applying reaction rates to it. In other words, this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}, except that it is advected with the melt velocity instead of the solid velocity. This method can only be chosen if melt transport is active in the model.
-\item ``darcy field'': If a compositional field is marked with this method, then its values are computed in each time step by advecting along the values of the previous time step using the fluid velocity prescribed by Darcy's Law, and applying reaction rates to it. In other words this corresponds to the usual notion of a composition field as mentioned in Section~\ref{sec:compositional}, except that it is advected with the Darcy velocity instead of the solid velocity. This method requires there to be a compositional field named porosity that is advected the darcy field method. We calculate the fluid velocity $u_f$ using an approximation of Darcy's Law: $u_f = u_s - K_D / \phi * (rho_s * g - rho_f * g)$.
 \item ``prescribed field'': The value of these fields is determined in each time step from the material model. If a compositional field is marked with this method, then the value of a specific additional material model output, called the `PrescribedFieldOutputs' is interpolated onto the field. This field does not change otherwise, it is not advected with the flow.
 \item ``prescribed field with diffusion'': If a compositional field is marked this way, the value of a specific additional material model output, called the `PrescribedFieldOutputs' is interpolated onto the field, as in the ``prescribed field'' method. Afterwards, the field is diffused based on a solver parameter, the diffusion length scale, smoothing the field. Specifically, the field is updated by solving the equation $(I-l^2 \Delta) C_\text{smoothed} = C_\text{prescribed}$, where $l$ is the diffusion length scale. Note that this means that the amount of diffusion is independent of the time step size, and that the field is not advected with the flow.\end{itemize}
 

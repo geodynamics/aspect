@@ -1,5 +1,5 @@
 (parameters:Nullspace_20removal)=
-# **Nullspace removal**
+# Nullspace removal
 
 
 ## **Parameters in section** Nullspace removal

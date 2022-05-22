@@ -1,5 +1,5 @@
 (parameters:Mesh_20refinement)=
-# **Mesh refinement**
+# Mesh refinement
 
 
 ## **Parameters in section** Mesh refinement

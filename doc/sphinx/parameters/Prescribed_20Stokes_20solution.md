@@ -1,5 +1,5 @@
 (parameters:Prescribed_20Stokes_20solution)=
-# **Prescribed Stokes solution**
+# Prescribed Stokes solution
 
 
 ## **Parameters in section** Prescribed Stokes solution

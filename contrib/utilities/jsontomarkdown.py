@@ -99,7 +99,7 @@ def handle_parameters(data):
             print("(parameters:" + path_str + ")=", file=subfile)
             new_path = cur_path + [key]
             section_name = path_str.replace("_20", " ").replace(":", "/")
-            print("# **" + section_name + "**\n\n", file=subfile)
+            print("# " + section_name + "\n\n", file=subfile)
             print("## **Parameters in section** " + section_name + "\n\n", file=subfile)
             handle_subsection(data[key], new_path, subfile)
             subfile.close()

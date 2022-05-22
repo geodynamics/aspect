@@ -1,5 +1,5 @@
 (parameters:Geometry_20model)=
-# **Geometry model**
+# Geometry model
 
 
 ## **Parameters in section** Geometry model
