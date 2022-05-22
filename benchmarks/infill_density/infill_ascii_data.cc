@@ -117,7 +117,8 @@ namespace aspect
       std::set<types::boundary_id> surface_boundary_set;
       surface_boundary_set.insert(surface_boundary_id);
 
-      // The input ascii table contains one data column (LAB depths(m)) in addition to the coordinate columns.
+      // The input ascii table contains one data column (Traction [Pa]) due to
+      // the load in addition to the coordinate columns.
       Utilities::AsciiDataBoundary<dim>::initialize(surface_boundary_set,
                                                     1);
     }
@@ -177,11 +178,14 @@ namespace aspect
     {
       prm.enter_subsection("Boundary traction model");
       {
-        Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
-                                                              "$ASPECT_SOURCE_DIR/tests/infill_density/",
-                                                              "triangle_load.txt");
-        prm.enter_subsection("Infill ascii");
+        // Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
+        //                                                       "$ASPECT_SOURCE_DIR/tests/infill_density/",
+        //                                                       "box_2d_%s.%d.txt");
+        prm.enter_subsection("Infill ascii data");
         {
+          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,
+                                                      "$ASPECT_SOURCE_DIR/tests/infill_density/",
+                                                      "box_2d_%s.%d.txt");
           prm.declare_entry ("Rock density", "2800",
                              Patterns::Double(0.),
                              "Density of the volcanic edifice that infills the flexural moat.");
@@ -206,9 +210,10 @@ namespace aspect
     {
       prm.enter_subsection("Boundary traction model");
       {
-        Utilities::AsciiDataBoundary<dim>::parse_parameters(prm);
-        prm.enter_subsection("Infill ascii");
+        // Utilities::AsciiDataBoundary<dim>::parse_parameters(prm);
+        prm.enter_subsection("Infill ascii data");
         {
+          Utilities::AsciiDataBoundary<dim>::parse_parameters(prm);
           rock_density = prm.get_double("Rock density");
           sediment_density = prm.get_double("Sediment density");
           rock_infill_height = prm.get_double("Height for specifying rock infill");

@@ -29,7 +29,7 @@ set Maximum time step                      = 750
 set Output directory                       = output
 set Pressure normalization                 = no
 
-# Model geometry (500x500 km, 50 km spacing)
+# Model geometry (1200x1200 km, 80 km spacing in x direction, 40km spacing in y direction)
 subsection Geometry model
   set Model name = box
 
@@ -44,6 +44,7 @@ end
 # Mesh refinement specifications
 # Refine the mesh in the uppermost part of the model
 # to better capture lithospheric response to the load.
+# (10x5km mesh in the lithosphere)
 subsection Mesh refinement
   set Initial adaptive refinement              = 2
   set Initial global refinement                = 1
@@ -99,19 +100,16 @@ end
 # mantle as lithospheric flexure pushes the mantle to the right.
 subsection Boundary traction model
   set Prescribed traction boundary indicators = top y: infill ascii data, right: initial lithostatic pressure
-end
-
-subsection Boundary traction model
-  subsection Ascii data model
-    set Data directory = $ASPECT_SOURCE_DIR/benchmarks/infill_density/data/
-    set First data file model time = 0
-    set Data file name = box_2d_%s.%d.txt
-    set Data file time step = 750
-  end
-  subsection Infill ascii
+  subsection Infill ascii data
     set Rock density = 2000
     set Sediment density = 2000
     set Height for specifying rock infill = 0
+    subsection Ascii data model
+      set Data directory = $ASPECT_SOURCE_DIR/benchmarks/infill_density/data/
+      set First data file model time = 0
+      set Data file name = box_2d_%s.%d.txt
+      set Data file time step = 750
+    end
   end
   subsection Initial lithostatic pressure
     set Representative point = 1200e3, 0
@@ -159,10 +157,10 @@ subsection Material model
   set Model name = viscoelastic
   subsection Viscoelastic
     set Densities                   = 3300
-    # The first three values are assigned to the compositional fields representing viscoelastic
-    # stresses, but significantly these values are not used in the viscosity calculation (i.e., only
-    # values representing lithologies are used). Respectively, the fourth and fifth values are
-    # assigned to the compositional fields representing the mantle and lithosphere.
+    # The first valueis assigned to the mantle and the next three are assigned to the compositional
+    # fields representing viscoelastic stresses, but significantly these values are not used in the
+    # viscosity calculation (i.e., only values representing lithologies are used). Respectively, the
+    # fourth and fifth values are assigned to the compositional fields representing the lithosphere.
     set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
     set Elastic shear moduli        = 1.e10
     set Use fixed elastic time step = true
