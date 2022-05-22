@@ -187,6 +187,3 @@ the graphic.
 :::{admonition} TODO
 Footnote: reference to A.127; parameter sections not set up so this reference does not make sense.
 :::
-
-
-
