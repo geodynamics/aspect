@@ -3,7 +3,7 @@
 # on top of the lithosphere. The model uses the viscoelastic
 # material model and is composed of an 'elastic' high viscosity
 # lithosphere and a low viscosity mantle beneath the elastic
-# lithosphere. An time dependent axisymmetric box load is applied
+# lithosphere. A time dependent axisymmetric box load is applied
 # to the top boundary using ASCII files, with the center of the load
 # at the left boundary of the 2D cartesian model domain. The model
 # is run for 120'000 years, which is equivalent to 40*tm:
@@ -42,8 +42,8 @@ subsection Geometry model
 end
 
 # Mesh refinement specifications
-# # Mesh refinement does not seem to affect
-# # deformation of free surface (at least in 2-D).
+# Refine the mesh in the uppermost part of the model
+# to better capture lithospheric response to the load.
 subsection Mesh refinement
   set Initial adaptive refinement              = 2
   set Initial global refinement                = 1
@@ -96,7 +96,7 @@ end
 
 subsection Boundary traction model
   subsection Ascii data model
-    set Data directory = /Users/danieldouglas/software/aspect/cookbooks/infill_density/data/
+    set Data directory = $ASPECT_SOURCE_DIR/benchmarks/infill_density/data/
     set First data file model time = 0
     set Data file name = box_2d_%s.%d.txt
     set Data file time step = 750
@@ -151,7 +151,7 @@ end
 subsection Material model
   set Model name = viscoelastic
   subsection Viscoelastic
-  # First 4 Parameters Dictate Mantle, Last the Lithosphere
+  # First 3 Parameters Dictate ve_stresses, 4th the mantle, 5th the Lithosphere
     set Densities                   = 3300
     set Viscosities                 = 1.e21, 1.e21, 1.e21, 1.e21, 1.e26
     set Elastic shear moduli        = 1.e10

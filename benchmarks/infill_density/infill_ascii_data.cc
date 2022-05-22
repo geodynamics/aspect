@@ -135,14 +135,21 @@ namespace aspect
                                                                                 0);
       Tensor<1, dim> traction = normal_vector;
       const double gravity_norm = this->get_gravity_model().gravity_vector(position).norm();
-      \
       const double elevation = this->get_geometry_model().height_above_reference_surface(position);
 
       // Check if the load at the current point has a height which exceeds the
-      // 'infill height'. This is useful for more complicated topographic loads
-      // when its harder to define the precise location of a volcanic edifice,
-      // for example. If the load does exceed the rock_infill_height, the infill
-      // material has the density of rock, otherwise it has sediment density.
+      // 'rock_infill height'. The assumption is that the values taken from the
+      // ASCII file are specifying the part of the load that is above the undeformed
+      // reference surface. If we consider a seamount as the load, the ASCII
+      // file takes the bathymetry of the seamount and provides it as a traction.
+      // However, the volcanic rock comprising the seamount also fills in the 
+      // flexural moat, providing an additional traction. Since it is much harder to
+      // specify this traction, 'rock_infill_height' determines where the rock_density
+      // that the seamount is made of will infill the flexural moat, and where 
+      // sediment_density will infill the flexural moat. For this test, this
+      // variable is not that important given the idealized load, but this is useful
+      // when using more complicated bathymetry maps where small scale seafloor 
+      // features makes it unrealistic to set rock_infill_height=0,
       if (load >= rock_infill_height*gravity_norm*rock_density)
         {
           traction = (-load + elevation*gravity_norm*rock_density) * normal_vector;
@@ -222,8 +229,10 @@ namespace aspect
                                             "infill ascii data",
                                             "Implementation of a model in which the boundary "
                                             "traction is derived from files containing pressure data "
-                                            "in ascii format. The pressure given in the data file is "
-                                            "applied as traction normal to the surface of a given boundary, "
+                                            "in ascii format. This model differs from the normal ascii data "
+                                            "model as the pressure given in the data file is summed with another "
+                                            "traction that depends on the current state of flexure in the model. "
+                                            "The traction sum is applied normal to the surface of a given boundary, "
                                             "pointing inwards. Note the required format of the "
                                             "input data: The first lines may contain any number of comments "
                                             "if they begin with `#', but one of these lines needs to "
