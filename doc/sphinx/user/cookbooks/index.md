@@ -4,7 +4,7 @@ In this section, let us present a number of &ldquo;cookbooks&rdquo; &ndash;
 examples of how to use <span class="smallcaps">ASPECT</span> in typical or
 less typical ways. As discussed in {ref}`cha:run-aspect`, ASPECT is driven by
 run-time parameter files, and so setting up a particular situation primarily
-comes down to creating a parameter file that has the right entries. Thus, the
+comes down to creating a parameter file that has the entries that correctly describe your model. Thus, the
 subsections below will discuss in detail what parameters to set and to what
 values. Note that parameter files need not specify *all* parameters &ndash; of
 which there is a bewildering number &ndash; but only those that are relevant
