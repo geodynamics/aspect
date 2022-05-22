@@ -32,8 +32,10 @@ namespace aspect
       VolumetricStrainRate ()
         :
         DataPostprocessorScalar<dim> ("volumetric_strain_rate",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+        Interface<dim>("1/s")
       {}
+
 
 
       template <int dim>
@@ -85,7 +87,9 @@ namespace aspect
                                                   "\\textrm{trace}\\; \\varepsilon(\\mathbf u)$. "
                                                   "This should be zero (in some average sense) in incompressible "
                                                   "convection models, but can be non-zero in compressible models and "
-                                                  "models with melt transport.")
+                                                  "models with melt transport."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\per\\second}.")
     }
   }
 }

@@ -35,7 +35,8 @@ namespace aspect
       Depth ()
         :
         DataPostprocessorScalar<dim> ("depth",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
 
 
@@ -70,7 +71,11 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Depth,
                                                   "depth",
-                                                  "A visualization output postprocessor that outputs the depth for all points inside the domain, as determined by the geometry model.")
+                                                  "A visualization output postprocessor that outputs "
+                                                  "the depth for all points inside the domain, as "
+                                                  "determined by the geometry model."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

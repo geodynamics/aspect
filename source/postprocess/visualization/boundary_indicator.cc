@@ -30,6 +30,14 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      BoundaryIndicator<dim>::
+      BoundaryIndicator ()
+        :
+        CellDataVectorCreator<dim>("") // no physical units
+      {}
+
+
 
       template <int dim>
       std::pair<std::string, Vector<float> *>
@@ -96,7 +104,9 @@ namespace aspect
                                                   "When a cell is situated in one of the corners of the domain, "
                                                   "multiple faces will have a boundary indicator. This postprocessor "
                                                   "returns the value of the first face along a boundary that is encountered "
-                                                  "in a loop over all the faces. ")
+                                                  "in a loop over all the faces."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

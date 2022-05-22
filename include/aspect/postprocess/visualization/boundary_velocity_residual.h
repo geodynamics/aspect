@@ -73,6 +73,9 @@ namespace aspect
            */
           std::list<std::string>
           required_other_postprocessors() const override;
+
+          std::string
+          get_physical_units () const override;
       };
     }
   }

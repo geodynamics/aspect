@@ -129,6 +129,35 @@ namespace aspect
           {
             return update_values;
           }
+
+
+          std::vector<std::string>
+          get_physical_units () const
+          {
+            std::vector<std::string> solution_units;
+
+            if (this->convert_output_to_years())
+              for (unsigned int d=0; d<dim; ++d)
+                solution_units.emplace_back("m/year");
+            else
+              for (unsigned int d=0; d<dim; ++d)
+                solution_units.emplace_back("m/s");
+
+            if (this->include_melt_transport())
+              {
+                solution_units.emplace_back("Pa"); // fluid pressure
+                solution_units.emplace_back("Pa"); // scaled pressure
+                for (unsigned int i=0; i<dim; ++i)
+                  solution_units.emplace_back("m/s");
+              }
+            solution_units.emplace_back("Pa");
+
+            solution_units.emplace_back("K");
+            for (unsigned int c=0; c<this->n_compositional_fields(); ++c)
+              solution_units.push_back (""); // we don't know here
+
+            return solution_units;
+          }
       };
 
       /**
@@ -140,7 +169,8 @@ namespace aspect
       {
         public:
           MeshDeformationPostprocessor ()
-            : DataPostprocessorVector<dim>( "mesh_velocity", UpdateFlags(update_values) )
+            : DataPostprocessorVector<dim>("mesh_velocity",
+                                           update_values)
           {}
 
 
@@ -158,6 +188,16 @@ namespace aspect
               for (unsigned int i=0; i<dim; ++i)
                 computed_quantities[q][i] = input_data.solution_values[q][i] * velocity_scaling_factor;
           }
+
+
+          std::string
+          get_physical_units () const
+          {
+            if (this->convert_output_to_years())
+              return "m/year";
+            else
+              return "m/s";
+          }
       };
     }
 
@@ -165,14 +205,34 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      Interface<dim>::Interface (const std::string &physical_units)
+        :
+        physical_units (physical_units)
+      {}
+
+
+
+      template <int dim>
       void
       Interface<dim>::initialize ()
       {}
+
+
 
       template <int dim>
       void
       Interface<dim>::update ()
       {}
+
+
+
+      template <int dim>
+      std::string
+      Interface<dim>::get_physical_units () const
+      {
+        return physical_units;
+      }
+
 
 
       template <int dim>
@@ -207,6 +267,14 @@ namespace aspect
       template <int dim>
       void
       Interface<dim>::load (const std::map<std::string,std::string> &)
+      {}
+
+
+
+      template <int dim>
+      CellDataVectorCreator<dim>::CellDataVectorCreator (const std::string &physical_units)
+        :
+        Interface<dim> (physical_units)
       {}
     }
 
@@ -385,7 +453,8 @@ namespace aspect
     template <typename DataOutType>
     std::string
     Visualization<dim>::write_data_out_data(DataOutType   &data_out,
-                                            OutputHistory &output_history) const
+                                            OutputHistory &output_history,
+                                            const std::map<std::string,std::string> &visualization_field_names_and_units) const
     {
       static_assert (std::is_same<DataOutType,DataOut<dim>>::value ||
                      std::is_same<DataOutType,DataOutFaces<dim>>::value,
@@ -461,14 +530,27 @@ namespace aspect
           const std::string filename = this->get_output_directory() + "solution/"
                                        + solution_file_prefix + "."
                                        + Utilities::int_to_string(my_file_id, 4) + ".vtu";
-          // pass time step number and time as metadata into the output file
+
+          // Pass time step number and time as metadata into the output file
           DataOutBase::VtkFlags vtk_flags;
           vtk_flags.cycle = this->get_timestep_number();
           vtk_flags.time = time_in_years_or_seconds;
 
+#if DEAL_II_VERSION_GTE(9,4,0)
+          // Also describe the physical units if we have them. Postprocessors do
+          // describe them, but it's a slight hassle to get at the information:
+          vtk_flags.physical_units = visualization_field_names_and_units;
+#else
+          (void)visualization_field_names_and_units;
+#endif
+
+          // Finally, set or do not set whether we want to describe cells
+          // with curved edges and faces:
           vtk_flags.write_higher_order_cells = write_higher_order_output;
 
           data_out.set_flags(vtk_flags);
+
+
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
           // into a string that is written to disk in a writer function
@@ -547,28 +629,84 @@ namespace aspect
     namespace
     {
       /**
-       * Add new output_data_names to a set output_data_names_set, and check
-       * for uniqueness of names. Multiple copies in output_data_names are
-       * collapsed into one copy before checking for uniqueness with
-       * output_data_names_set, because vector data fields are represented
-       * as multiple copies of the same name.
+       * Keep track of the names and physical units of output quantities. The
+       * number of entries in the two input arguments must be the same.
+       *
+       * This function also checks that output names are unique.
        */
-      void track_output_field_names(const std::vector<std::string> &output_data_names,
-                                    std::set<std::string> &output_data_names_set)
+      void
+      track_output_field_names_and_units(const std::vector<std::string> &output_data_names,
+                                         const std::vector<std::string> &output_units,
+                                         std::map<std::string,std::string> &output_data_names_and_units)
       {
-        // Copy the vector elements into a std::set. This discards
-        // duplicates as mentioned in the comment above.
-        const std::set<std::string> set_of_names(output_data_names.begin(),
-                                                 output_data_names.end());
+        AssertDimension (output_data_names.size(), output_units.size());
 
-        for (const auto &name: set_of_names)
+        // First check that none of the data names are already in the list:
+        for (const auto &name : output_data_names)
+          AssertThrow(output_data_names_and_units.find(name) == output_data_names_and_units.end(),
+                      ExcMessage("The output variable <" + name + "> already exists in the list of output "
+                                 "variables. Make sure there is no duplication in the names of visualization output "
+                                 "variables, otherwise output files may be corrupted."));
+
+        // Then insert the new names into the map. It is possible that
+        // some names appear multiple times (for vector-valued output)
+        // and in that case we need to make sure that the provided
+        // units are identical
+        for (unsigned int i=0; i<output_data_names.size(); ++i)
           {
-            const auto iterator_and_success = output_data_names_set.insert(name);
-            AssertThrow(iterator_and_success.second == true,
-                        ExcMessage("The output variable <" + name + "> already exists in the list of output "
-                                   "variables. Make sure there is no duplication in the names of visualization output "
-                                   "variables, otherwise output files may be corrupted."));
+            AssertThrow(
+              // either the name has not been added before...
+              (output_data_names_and_units.find(output_data_names[i])
+               == output_data_names_and_units.end())
+              ||
+              // or if it has, then the unit then added must match
+              // what we're about to add here
+              (output_data_names_and_units[output_data_names[i]]
+               == output_units[i]),
+              ExcMessage("The output variable <" + output_data_names[i]
+                         + "> had previously been added with physical units <"
+                         + output_data_names_and_units[output_data_names[i]]
+                         + "> but is now added again with units <"
+                         + output_units[i] + ">."));
+
+            // Now add the name/units. Don't worry about whether it previously
+            // had already been in the map -- if so, the assertion makes
+            // sure that we overwrite with the same value.
+            output_data_names_and_units[output_data_names[i]] = output_units[i];
           }
+      }
+
+
+
+      /**
+       * Keep track of the names and physical units of output quantities. The
+       * number of entries in the two input arguments must be the same.
+       *
+       * This variant of the function expands the single 'output_units' variable into as
+       * many components as there are in 'output_data_names'. If the single string is
+       * provided as a comma-separated list, then split it and make sure that
+       * there are as many entries as there are in 'output_data_names'. If
+       * it is not a comma-separated list, then replicate it as many times
+       * as necessary. In either case, pass things on to the other function.
+       */
+      void
+      track_output_field_names_and_units(const std::vector<std::string> &output_data_names,
+                                         const std::string              &output_units,
+                                         std::map<std::string,std::string> &output_data_names_and_units)
+      {
+        if (output_units.find(',') != output_units.npos)
+          {
+            const std::vector<std::string> split_units = Utilities::split_string_list(output_units, ",");
+            Assert (split_units.size() == output_data_names.size(),
+                    ExcMessage("The number of provided units does not match the "
+                               "number of output variables."));
+            track_output_field_names_and_units(output_data_names, split_units,
+                                               output_data_names_and_units);
+          }
+        else
+          track_output_field_names_and_units(output_data_names,
+                                             std::vector<std::string> (output_data_names.size(), output_units),
+                                             output_data_names_and_units);
       }
     }
 
@@ -613,11 +751,15 @@ namespace aspect
       internal::BaseVariablePostprocessor<dim> base_variables;
       base_variables.initialize_simulator (this->get_simulator());
 
-      // Keep a list of the names of all output variables, to ensure unique names
-      std::set<std::string> visualization_field_names;
+      // Keep a list of the names of all output variables
+      // (to ensure unique names), along with their respective
+      // physical units
+      std::map<std::string,std::string> visualization_field_names_and_units;
 
       // Insert base variable names into set of all output field names
-      track_output_field_names(base_variables.get_names(), visualization_field_names);
+      track_output_field_names_and_units(base_variables.get_names(),
+                                         base_variables.get_physical_units(),
+                                         visualization_field_names_and_units);
 
       std::unique_ptr<internal::MeshDeformationPostprocessor<dim>> mesh_deformation_variables;
 
@@ -649,7 +791,9 @@ namespace aspect
           mesh_deformation_variables->initialize_simulator(this->get_simulator());
 
           // Insert mesh deformation variable names into set of all output field names
-          track_output_field_names(mesh_deformation_variables->get_names(), visualization_field_names);
+          track_output_field_names_and_units(mesh_deformation_variables->get_names(),
+                                             mesh_deformation_variables->get_physical_units(),
+                                             visualization_field_names_and_units);
 
           data_out.add_data_vector (this->get_mesh_velocity(),
                                     *mesh_deformation_variables);
@@ -676,7 +820,9 @@ namespace aspect
               if (const DataPostprocessor<dim> *viz_postprocessor
                   = dynamic_cast<const DataPostprocessor<dim>*>(& *p))
                 {
-                  track_output_field_names(viz_postprocessor->get_names(), visualization_field_names);
+                  track_output_field_names_and_units(viz_postprocessor->get_names(),
+                                                     p->get_physical_units(),
+                                                     visualization_field_names_and_units);
 
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
                       (& *p) == nullptr)
@@ -700,7 +846,9 @@ namespace aspect
                                       "vectors that have as many entries as there are active cells "
                                       "on the current processor."));
 
-                  track_output_field_names(std::vector<std::string>(1,cell_data.first), visualization_field_names);
+                  track_output_field_names_and_units({cell_data.first},
+                                                     cell_data_creator->get_physical_units(),
+                                                     visualization_field_names_and_units);
 
                   // store the pointer, then attach the vector to the DataOut object
                   cell_data_vectors.push_back (std::unique_ptr<Vector<float>>
@@ -793,7 +941,8 @@ namespace aspect
                                 DataOut<dim>::no_curved_cells);
 
         solution_file_prefix
-          = write_data_out_data(data_out, cell_output_history);
+          = write_data_out_data(data_out, cell_output_history,
+                                visualization_field_names_and_units);
         statistics.add_value ("Visualization file name",
                               this->get_output_directory()
                               + "solution/"
@@ -809,7 +958,8 @@ namespace aspect
                                         subdivisions);
 
           const std::string face_solution_file_prefix
-            = write_data_out_data(data_out_faces, face_output_history);
+            = write_data_out_data(data_out_faces, face_output_history,
+                                  visualization_field_names_and_units);
           statistics.add_value ("Surface visualization file name",
                                 this->get_output_directory()
                                 + "solution_surface/"

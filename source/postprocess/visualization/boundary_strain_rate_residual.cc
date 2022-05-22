@@ -33,8 +33,22 @@ namespace aspect
       BoundaryStrainRateResidual ()
         :
         DataPostprocessorScalar<dim> ("boundary_strain_rate_residual",
-                                      update_quadrature_points | update_gradients)
+                                      update_quadrature_points | update_gradients),
+        Interface<dim>()    // unknown units at construction time, will be filled by a separate function
       {}
+
+
+
+      template <int dim>
+      std::string
+      BoundaryStrainRateResidual<dim>::
+      get_physical_units () const
+      {
+        if (this->convert_output_to_years())
+          return "1/year";
+        else
+          return "1/s";
+      }
 
 
 
@@ -122,7 +136,10 @@ namespace aspect
                                                   "surface as the difference between the strain rate invariant in the model and the input data, "
                                                   "where the invariant is computed like in the 'strain rate' postprocessor. The user chooses "
                                                   "the input data as ascii data files with coordinate columns and column corresponding "
-                                                  "to the surface strain rate norm.")
+                                                  "to the surface strain rate norm."
+                                                  "\n\n"
+                                                  "Physical units: $\\frac{1}{\\text{s}}$ or "
+                                                  "$\\frac{1}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

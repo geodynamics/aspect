@@ -36,7 +36,8 @@ namespace aspect
       SPD_Factor ()
         :
         DataPostprocessorScalar<dim> ("spd_factor",
-                                      update_values | update_gradients | update_quadrature_points)
+                                      update_values | update_gradients | update_quadrature_points),
+        Interface<dim>("")  // no physical units
       {}
 
 
@@ -99,7 +100,9 @@ namespace aspect
                                                   "A visualization output object that generates output "
                                                   "for the spd factor. The spd factor is a factor which "
                                                   "scales a part of the Jacobian used for the Newton solver "
-                                                  "to make sure that the Jacobian remains positive definite.")
+                                                  "to make sure that the Jacobian remains positive definite."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

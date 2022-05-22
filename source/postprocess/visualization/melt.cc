@@ -40,8 +40,13 @@ namespace aspect
       MeltMaterialProperties<dim>::
       MeltMaterialProperties ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        // What is being output depends on run-time parameters. We can not
+        // describe physical units to the base class at this point.
+        Interface<dim>("")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -264,7 +269,9 @@ namespace aspect
                                                   "for melt related properties of the material model. Note "
                                                   "that this postprocessor always outputs the compaction pressure, "
                                                   "but can output a large range of additional properties, as "
-                                                  "selected in the ``List of properties'' parameter.")
+                                                  "selected in the ``List of properties'' parameter."
+                                                  "\n\n"
+                                                  "Physical units: Various, depending on what is being output.")
 
     }
   }

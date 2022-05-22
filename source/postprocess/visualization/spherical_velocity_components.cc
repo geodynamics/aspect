@@ -34,8 +34,22 @@ namespace aspect
       SphericalVelocityComponents ()
         :
         DataPostprocessorVector<dim> ("spherical_velocity_components",
-                                      update_values | update_quadrature_points)
+                                      update_values | update_quadrature_points),
+        Interface<dim>()    // unknown units at construction time, will be filled by a separate function
       {}
+
+
+
+      template <int dim>
+      std::string
+      SphericalVelocityComponents<dim>::
+      get_physical_units () const
+      {
+        if (this->convert_output_to_years())
+          return "m/year";
+        else
+          return "m/s";
+      }
 
 
 
@@ -122,7 +136,10 @@ namespace aspect
                                                   "A visualization output object that outputs the polar coordinates "
                                                   "components $v_r$ and $v_\\phi$ of the velocity field in 2D and the "
                                                   "spherical coordinates components $v_r$, $v_{\\phi}$ and $v_{\\theta}$ "
-                                                  "of the velocity field in 3D.")
+                                                  "of the velocity field in 3D."
+                                                  "\n\n"
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
+                                                  "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

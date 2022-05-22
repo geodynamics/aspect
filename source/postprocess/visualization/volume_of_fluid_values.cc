@@ -32,7 +32,8 @@ namespace aspect
       VolumeOfFluidValues<dim>::
       VolumeOfFluidValues ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("")  // physical units of a fractional volume, so units of "1"
       {}
 
 
@@ -200,7 +201,9 @@ namespace aspect
                                                   "volume of fluid values",
                                                   "A visualization output object that outputs the volume fraction "
                                                   "and optionally a level set field and the interface normal "
-                                                  "vectors of volume of fluid fields.")
+                                                  "vectors of volume of fluid fields."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

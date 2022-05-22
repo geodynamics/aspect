@@ -34,7 +34,8 @@ namespace aspect
       StrainRate ()
         :
         DataPostprocessorScalar<dim> ("strain_rate",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+        Interface<dim>("1/s")
       {}
 
 
@@ -88,7 +89,9 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$\\sqrt{[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]:"
                                                   "[\\varepsilon(\\mathbf u)-\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I]}$ "
-                                                  "in the compressible case.")
+                                                  "in the compressible case."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\per\\second}.")
     }
   }
 }

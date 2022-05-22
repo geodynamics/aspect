@@ -35,7 +35,8 @@ namespace aspect
       Gravity ()
         :
         DataPostprocessorVector<dim> ("gravity",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m/s/s")
       {}
 
 
@@ -71,7 +72,9 @@ namespace aspect
     {
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(Gravity,
                                                   "gravity",
-                                                  "A visualization output object that outputs the gravity vector.")
+                                                  "A visualization output object that outputs the gravity vector."
+                                                  "\n\n"
+                                                  "Physical units: \\si {\\meter\\per\\second\\squared} .")
     }
   }
 }

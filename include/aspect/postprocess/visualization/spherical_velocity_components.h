@@ -65,6 +65,9 @@ namespace aspect
            */
           std::vector<DataComponentInterpretation::DataComponentInterpretation>
           get_data_component_interpretation () const override;
+
+          std::string
+          get_physical_units () const override;
       };
     }
   }

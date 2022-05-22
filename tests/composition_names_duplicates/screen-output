@@ -17,7 +17,7 @@ An exception happened on MPI process <0> while running the visualization postpro
 An error occurred in file <visualization.cc> in function
 (line in output replaced by default.sh script)
 The violated condition was: 
-    iterator_and_success.second == true
+    output_data_names_and_units.find(name) == output_data_names_and_units.end()
 Additional information: 
     The output variable <density> already exists in the list of output
     variables. Make sure there is no duplication in the names of

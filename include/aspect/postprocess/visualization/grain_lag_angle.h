@@ -60,6 +60,10 @@ namespace aspect
       class GrainLagAngle: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          GrainLagAngle();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()

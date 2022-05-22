@@ -33,8 +33,22 @@ namespace aspect
       BoundaryVelocityResidual ()
         :
         DataPostprocessorVector<dim> ("boundary_velocity_residual",
-                                      update_values | update_quadrature_points | update_gradients)
+                                      update_values | update_quadrature_points | update_gradients),
+        Interface<dim>()  // unknown units at construction time, will be filled by a separate function
       {}
+
+
+
+      template <int dim>
+      std::string
+      BoundaryVelocityResidual<dim>::
+      get_physical_units () const
+      {
+        if (this->convert_output_to_years())
+          return "m/year";
+        else
+          return "m/s";
+      }
 
 
 
@@ -104,7 +118,10 @@ namespace aspect
                                                   "the input data as ascii data files (e.g. GPS velocities) with columns "
                                                   "in the same format as described for the 'ascii data' initial temperature plugin "
                                                   "or a velocity field computed from the GPlates program as described in the gplates "
-                                                  "boundary velocity plugin. ")
+                                                  "boundary velocity plugin."
+                                                  "\n\n"
+                                                  "Physical units: $\\frac{\\text{m}}{\\text{s}}$ or "
+                                                  "$\\frac{\\text{m}}{\\text{year}}$, depending on settings in the input file.")
     }
   }
 }

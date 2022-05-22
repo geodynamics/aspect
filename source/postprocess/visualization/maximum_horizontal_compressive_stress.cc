@@ -31,6 +31,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      MaximumHorizontalCompressiveStress<dim>::
+      MaximumHorizontalCompressiveStress ()
+        :
+        Interface<dim>("Pa")
+      {}
+
+
+
+      template <int dim>
       void
       MaximumHorizontalCompressiveStress<dim>::
       evaluate_vector_field(const DataPostprocessorInputs::Vector<dim> &input_data,
@@ -346,6 +355,8 @@ namespace aspect
                                                   "    is zero at these points.}"
                                                   "  \\label{fig:max-horizontal-compressive-stress}"
                                                   "\\end{figure}"
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\pascal}."
                                                  )
     }
   }

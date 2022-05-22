@@ -43,6 +43,11 @@ namespace aspect
       {
         public:
           /**
+           * Constructor.
+           */
+          ArtificialViscosityComposition();
+
+          /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, Vector<float> *>

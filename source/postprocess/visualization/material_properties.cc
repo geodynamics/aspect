@@ -36,8 +36,13 @@ namespace aspect
       MaterialProperties<dim>::
       MaterialProperties ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        // What quantities are output depends on parameters, and so do the physical units.
+        // There is nothing useful we can provide here at this point.
+        Interface<dim>("")
       {}
+
+
 
       template <int dim>
       std::vector<std::string>
@@ -293,7 +298,9 @@ namespace aspect
                                                   "this visualization postprocessor averages in the same way "
                                                   "as is used to do the assembly, and consequently the "
                                                   "graphical output will reflect not pointwise properties, "
-                                                  "but averaged properties.")
+                                                  "but averaged properties."
+                                                  "\n\n"
+                                                  "Physical units: Various.")
     }
   }
 }
