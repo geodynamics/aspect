@@ -33,6 +33,6 @@ ASPECT is published under the GNU GPL v2 or newer license.
 maxdepth: 2
 ---
 user/index.md
-parameters.md
+parameters/index.md
 references.md
 ```
