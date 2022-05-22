@@ -75,7 +75,7 @@ namespace aspect
             for (unsigned int d = 0; d < dim; ++d)
               {
                 if (critical_point[d] < -0.5 || critical_point[d] > 0.5)
-                  critical_point_in_cell = false;                  
+                  critical_point_in_cell = false;
               }
             if (critical_point_in_cell)
               {
@@ -414,9 +414,9 @@ namespace aspect
                 A[9][particle_index] = relative_particle_position[2] * relative_particle_position[2];
               }
           }
-        
+
         // If the limiter is enabled for at least one property then we know that we can access ghost cell
-        // particles to determine the bounds of the properties on the model (due to the assert of 
+        // particles to determine the bounds of the properties on the model (due to the assert of
         // 'Exchange ghost particles' in parse_parameters). Otherwise we do not need to access those particles
         if (use_quadratic_least_squares_limiter.n_selected_components(n_particle_properties) != 0)
           {
