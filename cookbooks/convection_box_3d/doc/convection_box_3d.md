@@ -1,4 +1,5 @@
-#### Convection in a 3d box
+(sec:cookbooks:convection_box_3d)=
+# Convection in a 3d box
 
 The world is not two-dimensional. While the previous section introduced a
 number of the knobs one can play with with , things only really become

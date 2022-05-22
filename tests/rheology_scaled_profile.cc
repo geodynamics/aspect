@@ -212,11 +212,6 @@ namespace aspect
           return false;
         }
 
-        double reference_viscosity() const override
-        {
-          return 1;
-        }
-
         void
         create_additional_named_outputs (MaterialModelOutputs<dim> &outputs) const override
         {

@@ -38,8 +38,11 @@ namespace aspect
       Geoid ()
         :
         DataPostprocessorScalar<dim> ("geoid",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
+
+
 
       template <int dim>
       void
@@ -103,7 +106,8 @@ namespace aspect
                                                   "geoid",
                                                   "Visualization for the geoid solution. The geoid is given "
                                                   "by the equivalent water column height due to a gravity perturbation. "
-                                                  "Units: \\si{\\meter}.")
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

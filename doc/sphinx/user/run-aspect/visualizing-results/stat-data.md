@@ -1,12 +1,11 @@
+(sec:run-aspect:visualize:stat-data)=
 # Visualizing statistical data
-
-#### Visualizing statistical data
 
 In addition to the graphical output discussed above,
 ASPECT produces a statistics file that collects
 information produced during each time step. For the remainder of this section,
 let us assume that we have run ASPECT with the
-input file discussed in {ref}`5.2.1`, simulating convection in a
+input file discussed in {ref}`sec:cookbooks:convection-box`, simulating convection in a
 box. After running ASPECT, you will find a file
 called `statistics` in the output directory that, at the time of writing this,
 looked like this:
@@ -86,7 +85,7 @@ following command:
 plot "statistics" using 2:19
 ```
 
-The left panel of Fig.&nbsp;[4][60] shows what `Gnuplot` will display in its
+The left panel of {numref}`fig:viz-gnuplot` shows what `Gnuplot` will display in its
 output window. There are many things one can configure in these plots (see the
 `Gnuplot` manual referenced above). For example, let us assume that we want to
 add labels to the $x$- and $y$-axes, use not just points but lines and points
@@ -108,9 +107,10 @@ above. This is rarely used on the command line but useful when writing the
 commands above into a script file, see below. We have done it here to get the
 entire command into the width of the page.
 
-```{figure-md} fig:viz-gnuplot-1
-<img src="viz/statistics/1.png" title="fig:" id="fig:viz-gnuplot-1" style="width:40.0%" alt="Visualizing the statistics file obtained from the example in Section&#xA0;5.2.1 using Gnuplot: Output using simple commands." />
-Visualizing the statistics file obtained from the example in Section&#xA0;5.2.1 using Gnuplot: Output using simple commands.
+```{figure-md} fig:viz-gnuplot
+<img src="../../../../manual/viz/statistics/viz-gnuplot.*" alt="Figure" width="80%"/>
+
+Visualizing the statistics file obtained from the example in {ref}`sec:cookbooks:convection-box` using Gnuplot: Output using simple commands.
 ```
 
 For those who are lazy, `Gnuplot` allows to abbreviate things in many
@@ -142,12 +142,12 @@ set terminal png
 
 The last command will simply generate the same plot again but this time into
 the given file. The result is a graphics file similar to the one shown in
-Fig.&nbsp;[9][] on page `insert page number`.
+{numref}`fig:convection-box-stats`.
 
 :::{note}
-After setting output to a file, all following plot commands will want to write to this file.
+After setting output to a file, *all* following plot commands will want to write to this file.
 Thus, if you want to create more plots after the one just created, you need to reset output back to
-the screen. On Linux, this is done using the command set terminal X11. You can then continue
+the screen. On Linux, this is done using the command `set terminal X11`. You can then continue
 experimenting with plots and when you have the next plot ready, switch back to output to a file.
 :::
 
@@ -183,3 +183,10 @@ actual figure I want to include in a paper. This way, it is easy to either re-ru
 at a later time. Speaking from experience, you will not believe how often one wants to tweak a figure long after it was first
 created. In such situations it is outstandingly helpful if one still has both the actual data as well as the script that generated
 the graphic.
+
+:::{admonition} TODO
+Footnote: reference to A.127; parameter sections not set up so this reference does not make sense.
+:::
+
+
+

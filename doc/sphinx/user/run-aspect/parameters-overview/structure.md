@@ -1,11 +1,9 @@
 # The structure of parameter files
 
-#### The structure of parameter files
-
 Most of the run-time behavior of ASPECT is
 driven by a parameter file that looks in essence like this:
 
-``` prmfile
+```{literalinclude} ../../../../manual/cookbooks/overview/doc/structure.part.prm
 ```
 
 Some parameters live at the top level, but most parameters are grouped into
@@ -33,6 +31,20 @@ you do not *need* to specify a parameter in the input file: if a parameter
 isn't listed, then the program will simply use the default provided when
 declaring the parameter.
 
-<div class="center">
-
-</div>
+:::{note}
+In cases where a parameter requires a significant amount of text, you can end a line in the
+input file with a backslash. This indicates that the following line will simply continue to be part
+of the text of the current line, in the same way as the C/C++ preprocessor expands lines that
+end in backslashes. The underlying implementation always eats whitespace at the beginning of
+each continuing line, but not before the backslash. This means that the parameter file
+```
+set Some parameter = abc\
+def
+```
+is equivalent to
+```
+set Some parameter = abcdef
+```
+that is, with no space between `abc` and `def` despite the leading whitespace at the beginning of
+the second line. If you do want space between these two parts, you need to add it before the
+backslash in the first of the two lines.

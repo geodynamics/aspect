@@ -1,10 +1,11 @@
-
+(cha:benchmarks)=
 # Benchmarks
 
 Benchmarks are used to verify that a solver solves the problem correctly,
-i.e., to *verify* correctness of a code.[3] Over the past decades, the
-geodynamics community has come up with a large number of benchmarks. Depending
-on the goals of their original inventors, they describe stationary problems in
+i.e., to *verify* correctness of a code.[^footnote1] Over the past decades, the
+geodynamics community has come up with a large number of benchmarks.
+
+Depending on the goals of their original inventors, they describe stationary problems in
 which only the solution of the flow problem is of interest (but the flow may
 be compressible or incompressible, with constant or variable viscosity, etc),
 or they may actually model time-dependent processes. Some of them have
@@ -14,8 +15,7 @@ implemented a number of them in <span class="smallcaps">ASPECT</span> to
 convince ourselves (and our users) that <span class="smallcaps">ASPECT</span>
 indeed works as intended and advertised. Some of these benchmarks are
 discussed below. Numerical results for several of these benchmarks are also
-presented in a number of papers (such as (Kronbichler, Heister, and Bangerth
-2012; Heister et al. 2017; Tosi et al. 2015; Fraters et al. 2019)) in much
+presented in a number of papers (such as {cite:t}`kronbichler:etal:2012,heister:etal:2017,tosi:etal:2015,fraters:etal:2019`) in much
 more detail than shown here.
 
 Before going on with showing these benchmarks, let us mention that the data
@@ -29,7 +29,12 @@ benchmarks below, it is worthwhile keeping in mind that <span
 class="smallcaps">ASPECT</span> may yield different (and often better) results
 than the one shown.
 
+[^footnote1]: *Verification* is the first half of the *verification and validation* (V&V) procedure: *verification* intends to ensure that the
+mathematical model is solved correctly, while *validation* intends to ensure that the mathematical model is correct. Obviously,
+much of the aim of computational geodynamics is to validate the models that we have.
+
 :::{toctree}
+benchmark-run.md
 benchmarks/onset-of-convection/doc/onset-of-convection.md
 cookbooks/van-keken/doc/van-keken.md
 cookbooks/van-keken-vof/doc/van-keken-vof.md
@@ -41,7 +46,7 @@ benchmarks/solcx/doc/solcx.md
 benchmarks/solkz/doc/solkz.md
 benchmarks/inclusion/doc/inclusion.md
 benchmarks/burstedde/doc/burstedde.md
-benchmarks/slab_detacahment/doc/slab_detacahment.md
+benchmarks/slab_detachment/doc/slab_detachment.md
 benchmarks/hollow_sphere/doc/hollow_sphere.md
 benchmarks/annulus/doc/annulus.md
 cookbooks/stokes/doc/stokes.md

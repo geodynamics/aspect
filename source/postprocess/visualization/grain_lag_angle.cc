@@ -33,6 +33,15 @@ namespace aspect
   {
     namespace VisualizationPostprocessors
     {
+      template <int dim>
+      GrainLagAngle<dim>::
+      GrainLagAngle ()
+        :
+        CellDataVectorCreator<dim>("radian")
+      {}
+
+
+
       template<int dim>
       std::pair<std::string, Vector<float> *> GrainLagAngle<dim>::execute() const
       {
@@ -163,7 +172,9 @@ namespace aspect
                                                   "which we calculate as the first eigenvector of "
                                                   "the 'left stretch' tensor. "
                                                   "$\\Theta$ can be used to calculate the grain "
-                                                  "orientation lag parameter.")
+                                                  "orientation lag parameter."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\radian}.")
     }
   }
 }

@@ -1,10 +1,8 @@
 
 # SUPG Stabilization
 
-#### SUPG Stabilization
-
-For streamline upwind/Petrov-Galerkin (SUPG) (see for example (John and
-Knobloch 2006; Clevenger and Heister 2019)), we add to the weak form
+For streamline upwind/Petrov-Galerkin (SUPG) (see for example
+{cite:t}`john:knobloch:2006,clevenger:heister:2019`), we add to the weak form
 $a(\cdot,\cdot)$ the cell-wise defined weak form
 ```{math}
 a_{\text{SUPG}} (T, \varphi) =
@@ -25,7 +23,7 @@ For the implementation, $\frac{\partial T}{\partial t}$ is replaced by the
 BDF2 approximation, and its terms from older timesteps and $-F$, are moved to
 the right-hand side of the PDE.
 
-We use the parameter design presented in (John and Knobloch 2006) for
+We use the parameter design presented in {cite:t}`john:knobloch:2006` for
 $\delta_K$:
 ```{math}
 \delta_K = \frac{h}{2d\|\mathbf{\beta}\|_{\infty,K}} \left( \coth(Pe)-\frac{1}{Pe} \right)
@@ -34,11 +32,9 @@ where the Peclet number is given by
 ```{math}
 Pe = \frac{ h \| \mathbf{\beta} \|_{\infty,K}}{2 d k_\text{max}},
 ```
-$d$ is
-the polynomial degree of the temperature or composition element (typically 2),
+$d$ is the polynomial degree of the temperature or composition element (typically 2),
 $\coth(x) = (1+\exp(-2x)) / (1-\exp(-2x)),$ and
-$k_\text{max}=\| k \|_{\infty, K}$ is the maximum conductivity in the cell
-$K$.
+$k_\text{max}=\| k \|_{\infty, K}$ is the maximum conductivity in the cell $K$.
 
 If $Pe<1$, the equation is diffusion-dominated and no stabilization is needed,
 so we set $\delta_K=0$. Care needs to be taken in the definition if

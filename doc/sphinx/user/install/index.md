@@ -1,3 +1,4 @@
+(cha:installation)=
 # Installation
 
 There are three distinct ways to install ASPECT - compilation from
@@ -6,7 +7,8 @@ each providing distinct advantages and disadvantages. In this section we
 describe all three options and start with a summary of their properties to
 guide users to an informed decision about the best option for their purpose.
 
-<div id="tab:install-options">
+```{table} Features of the different installation options of ASPECT.
+:name: tab:install
 
 |             Feature             | Compile & Install |      Virtual Machine       | Docker Container |
 |:-------------------------------:|:-----------------:|:--------------------------:|:----------------:|
@@ -21,11 +23,7 @@ guide users to an informed decision about the best option for their purpose.
 | Massively parallel computations |        Yes        |             No             |        No        |
 |        Modifying ASPECT         |     Possible      |          Possible          |     Possible     |
 |    Configuring dependencies     |     Possible      |             No             |        No        |
-
-*Features of the different installation options of
-ASPECT.*
-
-</div>
+```
 
 The available options can be best presented in form of typical use cases:
 

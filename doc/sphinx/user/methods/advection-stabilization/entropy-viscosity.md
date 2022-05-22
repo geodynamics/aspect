@@ -1,17 +1,14 @@
 
 # Entropy viscosity
 
-#### Entropy viscosity
-
-The entropy viscosity method ((Guermond, Pasquetti, and Popov 2011;
-Kronbichler, Heister, and Bangerth 2012)) adds an artificial diffusion $\nu_h$
-to the weak form [\[eqn:weak-form-for-advection`35], where the diffusion
+The entropy viscosity method
+({cite}`guermond:etal:2011,kronbichler:etal:2012`) adds an artificial diffusion $\nu_h$
+to the weak form {math:numref}`eqn:weak-form-for-advection`, where the diffusion
 term $\left (k\nabla T, \nabla \varphi \right)$ is replaced by
 ```{math}
 \left(\max (k, \nu_h) \nabla T, \nabla \varphi \right).
 ```
-The parameter
-$\nu_h$ is chosen as a constant per cell as
+The parameter $\nu_h$ is chosen as a constant per cell as
 ```{math}
 v_h \vert_K = \min \left( v_h^\text{max} \vert_K, v_h^E \vert_K \right),
 ```
@@ -19,20 +16,18 @@ where $v_h^\text{max}$ is the maximum dissipation defined as
 ```{math}
 v_h^\text{max} \vert_K = \alpha_\text{max} h \| \mathbf u \|_{\infty,K}
 ```
- on
-each cell $K$ with parameter $\alpha_\text{max}$ (known as "beta"
+on each cell $K$ with parameter $\alpha_\text{max}$ (known as "beta"
 in the parameter files, see
-{ref}`parameters:Discretization/Stabilization_20parameters/beta`36]). By
+{ref}`parameters:Discretization/Stabilization_20parameters/beta`). By
 itself, this is commonly known as a first-order viscosity stabilization
 scheme, which is effective at stabilization, but too diffusive to be used by
 itself. In fact, one can show that this reduces the convergence order of
-smooth solutions to be only first order. This is avoided by taking the minimum
-with the entropy viscosity $v_h^E|_K$ above. It is defined as
+smooth solutions to be only first order. This is avoided by taking the minimum with the entropy viscosity $v_h^E|_K$ above. It is defined as
 ```{math}
 v_h^E \vert_K = \alpha_E \frac{h^2 \| r_E \|_{\infty, K}}{\| E - E_\text{avg} \|_{\infty, \Omega}}.
 ```
 The constant $\alpha_E$ is given by "cR" in the parameter files,
-see {ref}`parameters:Discretization/Stabilization_20parameters/cR`37]. In the
+see {ref}`parameters:Discretization/Stabilization_20parameters/cR`. In the
 denominator, the entropy viscosity above is scaled by the maximum deviation of
 the temperature entropy $E=\frac{1}{2}(T-T_m)^2$ with
 $T_m = \frac{1}{2}(T_\text{min}+T_\text{max})$ from the spatial average
@@ -49,8 +44,8 @@ approximation is good.
 The above definition assumes the entropy residual exponent
 ("alpha" in the parameter files, see
 {ref}`parameters:Discretization/Stabilization_20parameters/alpha`38]) is set
-to 2 (the default and recommended). For the choice of 1 for
-"alpha," the entropy viscosity is defined as
+to 2 (the default and recommended). For the choice of 1 for "alpha," the
+entropy viscosity is defined as
 ```{math}
 v_h^E \vert_K = \alpha_E \frac{h |\Omega| \cdot \| \mathbf u \|_{\infty,K} \cdot \| r_E \|_{\infty, K}}
  {\| \mathbf u \|_{\infty,\Omega} \cdot (T_\text{max} - T_\text{min})}.
@@ -58,10 +53,16 @@ v_h^E \vert_K = \alpha_E \frac{h |\Omega| \cdot \| \mathbf u \|_{\infty,K} \cdot
 instead.
 
 An additional parameter is the strain rate scaling factor "gamma"
-(see {ref}`parameters:Discretization/Stabilization_20parameters/gamma`39]),
+(see {ref}`parameters:Discretization/Stabilization_20parameters/gamma`),
 which changes the definition of the maximum dissipation $\nu_h^\text{max}$ to
 ```{math}
 v_h^\text{max} \vert_K = \alpha_\text{max} h \|\lvert\mathbf u\rvert + \gamma h_K \lvert\varepsilon (\mathbf u)\rvert\|_{\infty,K},
 ```
 where $\gamma\geq 0$ is the aforementioned parameter in front of the strain
 rate.
+
+:::{admonition} TODO
+:class: error
+
+{ref}`parameters:Discretization/Stabilization_20parameters/gamma` not setup yet, so reference doesn't go anywhere.
+:::

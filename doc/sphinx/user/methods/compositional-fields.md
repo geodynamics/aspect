@@ -5,18 +5,18 @@ The last of the basic equations, {math:numref}`eq:compositional`, describes the 
 
 Compositional fields were originally intended to track what their name suggest, namely the chemical composition of the convecting medium. In this interpretation, the composition is a non-diffusive quantity that is simply advected along passively, i.e., it would satisfy the equation
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c = 0.
-\end{align}
+\end{aligned}
 ```
 However, the compositional fields may also participate in determining the values of the various coefficients as discussed in {ref}`sec:methods:coefficients`, and in this sense the equation above describes a composition that is *passively advected*, but an *active participant* in the equations.
 
 That said, over time compositional fields have shown to be a much more useful tool than originally intended.
 For example, they can be used to track where material comes from and goes to (see {ref}`sec:cookbooks:simple-setups:passive-active`) and, if one allows for a reaction rate $\mathfrak q$ on the right hand side,
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\partial \mathfrak c}{\partial t} + \mathbf u \cdot \nabla \mathfrak c = \mathfrak q,
-\end{align}
+\end{aligned}
 ```
 then one can also model interaction between species - for example to simulate phase changes where one compositional field, indicating a particular phase, transforms into another phase depending on pressure and temperature, or where several phases combine to other phases.
 Another example of using a right hand side - quite outside what the original term *compositional field* was supposed to indicate - is to track the accumulation of finite strain, see {ref}`sec:cookbooks:simple-setups:tracking-finite-strain`.
@@ -29,9 +29,9 @@ Implementations often approximate this as $\triangle t \cdot \mathfrak q(t)$, or
 A second application for only providing integrated right hand sides comes from the fact that modeling reactions between different compositional fields often involves finding an equilibrium state between different fields because chemical reactions happen on a much faster time scale than transport.
 In other words, one then often assumes that there is a $\mathfrak c^\ast(p,T)$ so that
 ```{math}
-\begin{align}
+\begin{aligned}
   \mathfrak q(p,T,\varepsilon(\mathbf u),\mathfrak c^\ast(p,T)) = 0.
-\end{align}
+\end{aligned}
 ```
 Consequently, the material model methods that deal with source terms for the compositional fields need to compute an *increment* $\Delta\mathfrak c$ to the previous value of the compositional fields so that the sum of the previous values and the increment equals $\mathfrak c^\ast$.
 This corresponds to an *impulse change* in the compositions at every time step, as opposed to the usual approach of evaluating the right hand side term $\mathfrak q$ as a continuous function in time, which corresponds to a *rate*.
@@ -42,15 +42,15 @@ If the strain rate is high, then the grain size decreases as the rocks break.
 If the temperature is high enough, then grains heal and their size increases again.
 Such "damage models" would then introduce a quantity $c(t)$ describing the "damage" to the material (here assumed to be described by a single scalar field) that satisfies an equation of the form
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\partial c}{\partial t} + \mathbf u \cdot \nabla c = q(T,c),
-\end{align}
+\end{aligned}
 ```
 where in the simplest case (much simplified from real models) one could postulate
 ```{math}
-\begin{align}
+\begin{aligned}
   q(T,c) =  A \dot\varepsilon - B \max\{T-T_{\text{healing}},0\} c.
-\end{align}
+\end{aligned}
 ```
 Here, $\dot\varepsilon$ is the strain rate that causes damage; the first term then leads to growth of damage as strain continues to accumulate on the material.
 The second term *decreases* the damage if the temperature is high enough.

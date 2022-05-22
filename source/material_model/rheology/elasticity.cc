@@ -249,26 +249,20 @@ namespace aspect
         if (force_out == nullptr)
           return;
 
-        if (in.current_cell.state() == IteratorState::valid && in.requests_property(MaterialProperties::reaction_terms))
+        for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
           {
+            // Get old stresses from compositional fields
+            SymmetricTensor<2,dim> stress_old;
+            for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
+              stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
 
-            for (unsigned int i=0; i < in.n_evaluation_points(); ++i)
-              {
-                // Get old stresses from compositional fields
-                SymmetricTensor<2,dim> stress_old;
-                for (unsigned int j=0; j < SymmetricTensor<2,dim>::n_independent_components; ++j)
-                  stress_old[SymmetricTensor<2,dim>::unrolled_to_component_indices(j)] = in.composition[i][j];
+            // Average viscoelastic viscosity
+            const double average_viscoelastic_viscosity = out.viscosities[i];
 
-                // Average viscoelastic viscosity
-                const double average_viscoelastic_viscosity = out.viscosities[i];
+            // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
+            force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
 
-                // Fill elastic force outputs (See equation 30 in Moresi et al., 2003, J. Comp. Phys.)
-                force_out->elastic_force[i] = -1. * ( average_viscoelastic_viscosity / calculate_elastic_viscosity(average_elastic_shear_moduli[i]) * stress_old );
-
-              }
           }
-        else
-          std::fill(force_out->elastic_force.begin(), force_out->elastic_force.end(), 0.0);
       }
 
 

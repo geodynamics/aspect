@@ -11,11 +11,11 @@ For these cases ASPECT can optionally include a generalized, fourth-order tensor
 and the shear heating term in equation {math:numref}`eq:temperature` to
 ```{math}
 :label: eq:temperature-anisotropic
-\begin{align}
+\begin{aligned}
   \dots  \notag
   \\ + 2 \eta \left(C \varepsilon(\mathbf u) - \frac{1}{3}(tr(C \varepsilon(\mathbf u)))\mathbf 1\right)  : \left(\varepsilon(\mathbf u) - \frac{1}{3}(\nabla \cdot \mathbf u)\mathbf 1\right)
   \\ \dots \notag
-\end{align}
+\end{aligned}
 ```
 where $C = C_{ijkl}$ is defined by the material model.
 For physical reasons, $C$ needs to be a symmetric rank-4 tensor: i.e., when multiplied by a symmetric (strain rate) tensor of rank 2 it needs to return another symmetric tensor of rank 2.

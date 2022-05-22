@@ -4,13 +4,13 @@
 The *anelastic liquid approximation (ALA)* is based on two assumptions.
 First, that the density variations relative to the adiabatic reference state at any given depth $\rho(p,T)-\bar\rho (z)$ are small and in particular can be accurately described by a Taylor expansion in pressure and temperature {cite}`schubert:etal:2001`:
 ```{math}
-\begin{align}
+\begin{aligned}
   \rho(p,T) &\approx  \bar\rho
   + \left( \frac{\partial \rho(\bar p,\bar T)}{\partial T} \right)_{p} T'
   + \left( \frac{\partial \rho(\bar p,\bar T)}{\partial P} \right)_{T} p' \\
   \left( \frac{\partial \rho(\bar p,\bar T)}{\partial T} \right)_{p} &= -\bar \alpha \bar \rho(\bar p,\bar T) \\
   \left( \frac{\partial \rho(\bar p,\bar T)}{\partial P} \right)_{T} &= \bar \beta_T \bar \rho(\bar p,\bar T)
-\end{align}
+\end{aligned}
 ```
 where $\bar \alpha$ is the thermal expansion coefficient ($\alpha = -\frac{1}{\rho}\left(\frac{\partial \rho}{\partial T}\right)_p$) and $\bar \beta_T$ is the isothermal compressibility ($\beta_T = \frac{1}{\rho}\left(\frac{\partial \rho}{\partial p}\right)_T$), both on the adiabatic reference curve.
 The subscripts ($p$ or $T$) indicate the variable that is held fixed. The second assumption is that the variation of the density from the reference density can be neglected in the mass balance and temperature equations.

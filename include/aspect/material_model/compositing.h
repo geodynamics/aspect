@@ -101,13 +101,6 @@ namespace aspect
          */
         bool is_compressible () const override;
 
-        /**
-         * @copydoc MaterialModel::Interface::reference_viscosity()
-         *
-         * Taken from the material model providing viscosities
-         */
-        double reference_viscosity () const override;
-
 
 
       private:

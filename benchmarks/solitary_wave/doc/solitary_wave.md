@@ -1,4 +1,5 @@
-#### The solitary wave benchmark
+(sec:benchmarks:solitary_wave)=
+# The solitary wave benchmark
 
 *This section was contributed by Juliane Dannberg and is based on a section in
 (Dannberg and Heister 2016) by Juliane Dannberg and Timo Heister.*

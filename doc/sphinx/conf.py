@@ -22,7 +22,8 @@ copyright = '2022'
 author = 'Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmöller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff; with contributions by: Jacqueline Austermann, Magali Billen, Markus B{\"u}rg, Thomas Clevenger, Samuel Cox, William Durkin, Grant Euen, Thomas Geenen, Ryan Grove, Eric Heien, Ludovic Jeanniot, Louise Kellogg, Scott King, Martin Kronbichler, Marine Lasbleis, Haoyuan Li, Shangxin Liu, Hannah Mark, Elvira Mulyukova, Bart Niday, Jonathan Perry-Houts, Elbridge Gerry Puckett, Tahiry Rajaonarison, Fred Richards, Jonathan Robey, Ian Rose, Max Rudolph, Stephanie Sparks, D.~Sarah Stamps, Cedric Thieulot, Wanying Wang, Iris van Zelst, Siqi Zhang'
 
 # The full version, including alpha/beta/rc tags
-release = '2.4.0-pre'
+with open('../../VERSION', 'r') as file:
+    release = file.read().replace('\n','')
 
 # -- General configuration ---------------------------------------------------
 
@@ -32,6 +33,7 @@ release = '2.4.0-pre'
 extensions = [
     "myst_parser",
     "sphinxcontrib.bibtex",
+    "sphinxcontrib.tikz"
 ]
 myst_enable_extensions = [
     "colon_fence",
@@ -42,6 +44,7 @@ myst_enable_extensions = [
     "amsmath",
 ]
 
+tikz_proc_suite = "GhostScript"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -57,12 +60,15 @@ exclude_patterns = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_logo = "../logo/unlabeled_logo_small.png"
-html_theme = 'pydata_sphinx_theme'
+html_logo = "_static/images/aspect_logo.png"
+html_title = "ASPECT " + release
+html_theme = 'sphinx_book_theme'
 html_theme_options = {
     "collapse_navigation": True,
     "navigation_depth": 3,
     "show_toc_level": 3,
+    "repository_url": "https://github.com/geodynamics/aspect/",
+    "repository_branch": "main",
     "icon_links": [
         {
             "name": "GitHub",
@@ -70,13 +76,14 @@ html_theme_options = {
             "icon": "fab fa-github-square",
         },
     ],
-    "navbar_start": ["navbar-logo"],
-    "footer_items": ["last-updated"],
+    "show_navbar_depth": 2,
+    "use_repository_button": True,
     "use_edit_page_button": True,
+    "use_issues_button": True,
+    "extra_navbar": "<p><img src='/_static/images/cig_logo_dots.png' alt=\"CIG Logo\" height=\"80px\"  style=\"padding: 5px;\"/></p>",
+    "home_page_in_toc": True,
 }
-html_sidebars = {
-    "**": ["search-field", "sidebar-nav-bs", "sidebar-ethical-ads", "sidebar-cig"]
-}
+
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "alpha"
 bibtex_reference_style = "author_year"

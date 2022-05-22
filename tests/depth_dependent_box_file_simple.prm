@@ -121,6 +121,7 @@ subsection Material model
     set Depth dependence method = File
     set Data directory = $ASPECT_SOURCE_DIR/data/material-model/depth-dependent/
     set Viscosity depth file = visc_depth.txt
+    set Reference viscosity = 1e25
   end
   subsection Simple model
     set Reference density             = 3300.0

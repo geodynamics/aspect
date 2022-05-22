@@ -1,7 +1,5 @@
 # Adjusting solver tolerances
 
-#### Adjusting solver tolerances
-
 At the heart of every time step lies the solution of linear systems for the
 Stokes equations, the temperature field, and possibly for compositional
 fields. In essence, each of these steps requires us to solve a linear system
@@ -21,10 +19,14 @@ with a smaller tolerance. The default value of these tolerances are chosen so
 that the approximation is typically sufficient. You can make
 ASPECT run faster if you choose these tolerances
 larger. The parameters you can adjust are all listed in
-{ref}`parameters:Solver_20parameters`64] and are located in the
+{ref}`parameters:Solver_20parameters` and are located in the
 `Solver parameters` subsection of the input file. In particular, the
 parameters you want to look at are `Linear solver tolerance`,
 `Temperature solver tolerance` and `Composition solver tolerance`.
+
+:::{admonition} TODO
+{ref}`parameters:Solver_20parameters` links to a file that has not yet been set up.
+:::
 
 All this said, it is important to understand the consequences of choosing
 tolerances larger. In particular, if you choose tolerances too large, then the

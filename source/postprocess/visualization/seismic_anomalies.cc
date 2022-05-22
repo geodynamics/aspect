@@ -34,6 +34,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      SeismicVsAnomaly<dim>::
+      SeismicVsAnomaly ()
+        :
+        CellDataVectorCreator<dim>("")  // no physical units
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       SeismicVsAnomaly<dim>::execute() const
       {
@@ -165,6 +174,14 @@ namespace aspect
           }
         return return_value;
       }
+
+
+      template <int dim>
+      SeismicVpAnomaly<dim>::
+      SeismicVpAnomaly ()
+        :
+        CellDataVectorCreator<dim>("")   // no physical units
+      {}
 
 
 
@@ -515,7 +532,10 @@ namespace aspect
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
                                                   "finite element mesh. Note that this plugin requires a "
-                                                  "material model that provides seismic velocities.")
+                                                  "material model that provides seismic velocities."
+                                                  "\n\n"
+                                                  "Physical units: None, the quantity being output is a "
+                                                  "fractional change provided as a percentage.")
 
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(SeismicVpAnomaly,
                                                   "Vp anomaly",
@@ -538,7 +558,10 @@ namespace aspect
                                                   "maintain a reasonable number of evaluation points per slice. "
                                                   "Bear in mind that lateral averaging subsamples the "
                                                   "finite element mesh. Note that this plugin requires a "
-                                                  "material model that provides seismic velocities.")
+                                                  "material model that provides seismic velocities."
+                                                  "\n\n"
+                                                  "Physical units: None, the quantity being output is a "
+                                                  "fractional change provided as a percentage.")
     }
   }
 }

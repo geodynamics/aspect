@@ -42,6 +42,11 @@ namespace aspect
       {
         public:
           /**
+           * Constructor.
+           */
+          ErrorIndicator();
+
+          /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, Vector<float> *>

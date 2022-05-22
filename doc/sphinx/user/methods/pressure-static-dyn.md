@@ -5,23 +5,23 @@ One could reformulate equation {math:numref}`eq:stokes-1` somewhat.
 To this end, let us say that we would want to represent the pressure $p$ as the sum of two parts that we will call static and dynamic, $p=p_s+p_d$.
 If we assume that $p_s$ is already given, then we can replace {math:numref}`eq:stokes-1` by
 ```{math}
-\begin{gather}
+\begin{aligned}
   -\nabla \cdot 2\eta \nabla \mathbf u + \nabla p_d = \rho\mathbf g - \nabla p_s.
-\end{gather}
+\end{aligned}
 ```
 One typically chooses $p_s$ as the pressure one would get if the whole medium were at rest - i.e., as the hydrostatic pressure.
 This pressure can be computed noting that {math:numref}`eq:stokes-1` reduces to
 ```{math}
-\begin{gather}
+\begin{aligned}
   \nabla p_s = \rho(p_s,T_s,\mathbf x)\mathbf g = \bar\rho \mathbf g
-\end{gather}
+\end{aligned}
 ```
 in the absence of any motion where $T_s$ is some static temperature field (see also {ref}`sec:methods:initial-conditions`).
 This, our rewritten version of {math:numref}`eq:stokes-1` would look like this:
 ```{math}
-\begin{gather}
+\begin{aligned}
   -\nabla \cdot 2\eta   \nabla \mathbf u + \nabla p_d = \left[\rho(p,T,\mathbf x)-\rho(p_s,T_s,\mathbf x)\right]\mathbf g.
-\end{gather}
+\end{aligned}
 ```
 In this formulation, it is clear that the quantity that drives the fluid flow is in fact the *buoyancy* caused by the *variation* of densities, not the density itself.
 

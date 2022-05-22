@@ -53,6 +53,10 @@ namespace aspect
       class ISARotationTimescale: public CellDataVectorCreator<dim>, public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          ISARotationTimescale();
 
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()

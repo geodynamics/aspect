@@ -8,6 +8,9 @@ If what you are looking for is not here, please see the PDF version.
 :::
 
 :::{toctree}
+---
+maxdepth: 2
+---
 intro.md
 methods/index.md
 install/index.md
@@ -16,5 +19,4 @@ cookbooks/index.md
 benchmarks/index.md
 extending/index.md
 answers.md
-Run-time input parameters <https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>
 :::

@@ -32,7 +32,8 @@ namespace aspect
       DynamicTopography ()
         :
         DataPostprocessorScalar<dim> ("dynamic_topography",
-                                      update_quadrature_points)
+                                      update_quadrature_points),
+        Interface<dim>("m")
       {}
 
 
@@ -148,7 +149,9 @@ namespace aspect
                                                   "Alternatively, consider using the "
                                                   "\"surface dynamic topography\" visualization postprocessor "
                                                   "to only output the dynamic topography at the boundary of "
-                                                  "the domain.")
+                                                  "the domain."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\meter}.")
     }
   }
 }

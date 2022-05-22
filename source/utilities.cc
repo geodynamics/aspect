@@ -48,9 +48,14 @@
 #include <locale>
 #include <string>
 #include <sys/stat.h>
+#include <iostream>
+#include <regex>
 
 #include <boost/math/special_functions/spherical_harmonic.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/copy.hpp>
 
 namespace aspect
 {
@@ -1351,7 +1356,12 @@ namespace aspect
             }
           else
             {
-              std::ifstream filestream(filename.c_str());
+              std::ifstream filestream;
+              const bool filename_ends_in_gz = std::regex_search(filename, std::regex("\\.gz$"));
+              if (filename_ends_in_gz == true)
+                filestream.open(filename.c_str(), std::ios_base::in | std::ios_base::binary);
+              else
+                filestream.open(filename.c_str());
 
               if (!filestream)
                 {
@@ -1363,21 +1373,26 @@ namespace aspect
                                ExcMessage (std::string("Could not open file <") + filename + ">."));
                 }
 
-
               // Read data from disk
               std::stringstream datastream;
-              filestream >> datastream.rdbuf();
 
-              if (!filestream.eof())
+              try
+                {
+                  boost::iostreams::filtering_istreambuf in;
+                  if (filename_ends_in_gz == true)
+                    in.push(boost::iostreams::gzip_decompressor());
+
+                  in.push(filestream);
+                  boost::iostreams::copy(in, datastream);
+                }
+              catch (const std::ios::failure &)
                 {
                   // broadcast failure state, then throw
                   std::size_t invalid_filesize = numbers::invalid_size_type;
                   const int ierr = MPI_Bcast(&invalid_filesize, 1, Utilities::internal::MPI::mpi_type_id(&filesize), 0, comm);
                   AssertThrowMPI(ierr);
                   AssertThrow (false,
-                               ExcMessage (std::string("Reading of file ") + filename + " finished " +
-                                           "before the end of file was reached. Is the file corrupted or "
-                                           "too large for the input buffer?"));
+                               ExcMessage (std::string("Could not read file content from <") + filename + ">."));
                 }
 
               data_string = datastream.str();

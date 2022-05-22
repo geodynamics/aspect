@@ -36,8 +36,10 @@ namespace aspect
       NamedAdditionalOutputs<dim>::
       NamedAdditionalOutputs ()
         :
-        DataPostprocessor<dim> ()
+        DataPostprocessor<dim> (),
+        Interface<dim>("")  // physical units depend on run-time parameters
       {}
+
 
 
       template <int dim>
@@ -174,7 +176,9 @@ namespace aspect
                                                   "This visualization postprocessor outputs whatever quantities the "
                                                   "material model can compute. What quantities these are is specific "
                                                   "to the material model in use for a simulation, and for many models "
-                                                  "in fact does not contain any named outputs at all.")
+                                                  "in fact does not contain any named outputs at all."
+                                                  "\n\n"
+                                                  "Physical units: Various, depending on what is being output.")
     }
   }
 }

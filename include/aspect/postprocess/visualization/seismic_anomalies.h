@@ -44,6 +44,11 @@ namespace aspect
       {
         public:
           /**
+           * Constructor.
+           */
+          SeismicVsAnomaly();
+
+          /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, Vector<float> *>
@@ -98,6 +103,11 @@ namespace aspect
         public SimulatorAccess<dim>
       {
         public:
+          /**
+           * Constructor.
+           */
+          SeismicVpAnomaly();
+
           /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */

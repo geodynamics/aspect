@@ -33,6 +33,15 @@ namespace aspect
     namespace VisualizationPostprocessors
     {
       template <int dim>
+      ParticleCount<dim>::
+      ParticleCount ()
+        :
+        CellDataVectorCreator<dim>("")  // no physical units
+      {}
+
+
+
+      template <int dim>
       std::pair<std::string, Vector<float> *>
       ParticleCount<dim>::execute() const
       {
@@ -79,7 +88,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(ParticleCount,
                                                   "particle count",
                                                   "A visualization output object that generates output "
-                                                  "about the number of particles per cell.")
+                                                  "about the number of particles per cell."
+                                                  "\n\n"
+                                                  "Physical units: None.")
     }
   }
 }

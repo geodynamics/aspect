@@ -29,9 +29,9 @@ Hence, we have to provide the directory and file name of the data to be used in 
 
 The viscosity in this model is computed as the product of a profile $\eta_r(z)$, where $z$ corresponds to the depth direction of the chosen geometry model, and a term that describes the dependence on temperature:
 ```{math}
-\begin{align}
+\begin{aligned}
 \eta(z,T) = \eta_r(z) \eta_0 \exp\left(-A \frac{T - T_{\text{adi}}}{T_{\text{adi}}}\right),
-\end{align}
+\end{aligned}
 ```
 where $A$ and $\eta_0$ are constants determined in the input file via the parameters `Viscosity` and `Thermal viscosity exponent`, and $\eta_r(z)$ is a stepwise constant function that determines the viscosity profile.
 This function can be specified by providing a list of `Viscosity prefactors` and a list of depths that describe in which depth range each prefactor should be applied, in other words, at which depth the viscosity changes. By default, it is set to viscosity jumps at 150 km depth, between upper mantle and transition zone, and between transition zone and lower mantle). The prefactors used here lead to a low-viscosity asthenosphere, and high viscosities in the lower mantle.
@@ -62,7 +62,7 @@ In addition, the density derivative in the mass conservation equation (see {ref}
 ## Visualizing the model output
 
 If we look at the output of our model (for example in `ParaView`), we can see how cold, highly viscous slabs are subducted and hot plumes rise from the core-mantle boundary.
-The final time step of the model is shown in {numref}`fig:burnman-conversion`, and the full model evolution can be found at <https://youtu.be/nRBOpw5kp-4>.
+The final time step of the model is shown in {numref}`fig:burnman-convection`, and the full model evolution can be found at <https://youtu.be/nRBOpw5kp-4>.
 Visualizing material properties such as density, thermal expansivity or specific heat shows how they change with depth, and reveals abrupt jumps at the phase transitions, where properties change from one mineral phase to the next.
 We can also visualize the gravity and the adiabatic profile, to ensure that the data we provided in the `data/adiabatic-conditions/ascii-data/isentrope_properties.txt` file is used in our model.
 

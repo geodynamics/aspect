@@ -1,7 +1,5 @@
 # Installing parameter-GUI
 
-#### Installing parameter-GUI
-
 The deal.II parameter-GUI program can be
 downloaded at <https://github.com/dealii/parameter_gui>, and is compiled using
 the `cmake` program just like ASPECT itself.
@@ -23,7 +21,7 @@ Example steps for installing the parameter-gui could look as follows:
     allow ASPECT to automatically enable the
     GUI during configuration.
 
-##### Installing on macOS
+## Installing on macOS
 
 On a mac machine with recent macOS Sierra 10.12.4, Qt development libraries of
 version 4.x.x at the libraries' official website

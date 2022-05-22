@@ -33,7 +33,8 @@ namespace aspect
       StrainRateTensor ()
         :
         DataPostprocessorTensor<dim> ("strain_rate_tensor",
-                                      update_gradients | update_quadrature_points)
+                                      update_gradients | update_quadrature_points),
+        Interface<dim>("1/s")
       {}
 
 
@@ -96,7 +97,9 @@ namespace aspect
                                                   "in the incompressible case and "
                                                   "$\\varepsilon(\\mathbf u)-"
                                                   "\\tfrac 13(\\textrm{tr}\\;\\varepsilon(\\mathbf u))\\mathbf I$ "
-                                                  "in the compressible case.")
+                                                  "in the compressible case."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\per\\second}.")
     }
   }
 }

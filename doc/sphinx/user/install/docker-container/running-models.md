@@ -1,8 +1,6 @@
 
 # Running ASPECT models
 
-#### Running ASPECT models
-
 Although it is possible to use the downloaded
 ASPECT docker image in a number of different ways, we
 recommend the following workflow:
@@ -12,7 +10,7 @@ recommend the following workflow:
     by your model) and navigate in a terminal into that directory.
 
 2.  Run the docker image and mount the current directory as a read-only volume
-    into the docker container[5]. This is accomplished by specifying the -v
+    into the docker container[^footnote1]. This is accomplished by specifying the -v
     flag followed by the absolute path on the host machine, colon, absolute
     path within the docker container, colon, and specifying read-only
     permissions as in the example below.
@@ -22,7 +20,7 @@ recommend the following workflow:
     you have started the container run the aspect model inside the container.
     Note that there are two ASPECT executables
     in the work directory of the container: `aspect` and `aspect-release`. For
-    a discussion of the different versions see {ref}`4.4][], in
+    a discussion of the different versions see {ref}`sec:run-aspect:debug-mode`, in
     essence: You should run `aspect` first to check your model for errors,
     then run `aspect-release` for a faster model run.
 
@@ -62,9 +60,10 @@ recommend the following workflow:
     `docker container prune` command that removes any container that is not
     longer running.
 
-    <div class="center">
-
-    </div>
+    :::{note}
+    If you own other finished containers that you want to keep, use `docker container
+    rm CONTAINER_NAME` to only remove the container named `CONTAINER_NAME`.
+    :::
 
     To remove all finished containers use the following command:
 
@@ -80,3 +79,7 @@ recommend the following workflow:
 
 You are all set. Repeat steps 1-4 of this process as necessary when updating
 your model parameters.
+
+[^footnote1]: Note that it is possible to mount a directory as writeable into the container. However, this is often associated with file
+permission conflicts between the host system and the container. Therefore, we recommend this slightly more cumbersome, but
+also more reliable workflow.

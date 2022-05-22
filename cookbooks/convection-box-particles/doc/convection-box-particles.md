@@ -1,4 +1,5 @@
-#### Running a geodynamic model
+(sec:cookbooks:convection-box-particles)=
+# Running a geodynamic model
 
 *This section was contributed by Juliane Dannberg.*
 

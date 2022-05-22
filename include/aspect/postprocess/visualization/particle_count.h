@@ -47,6 +47,11 @@ namespace aspect
       {
         public:
           /**
+           * Constructor.
+           */
+          ParticleCount();
+
+          /**
            * @copydoc CellDataVectorCreator<dim>::execute()
            */
           std::pair<std::string, Vector<float> *>

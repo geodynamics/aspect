@@ -34,7 +34,8 @@ namespace aspect
       NonadiabaticTemperature ()
         :
         DataPostprocessorScalar<dim> ("nonadiabatic_temperature",
-                                      update_values | update_quadrature_points)
+                                      update_values | update_quadrature_points),
+        Interface<dim>("K")
       {}
 
 
@@ -72,7 +73,9 @@ namespace aspect
       ASPECT_REGISTER_VISUALIZATION_POSTPROCESSOR(NonadiabaticTemperature,
                                                   "nonadiabatic temperature",
                                                   "A visualization output object that generates output "
-                                                  "for the non-adiabatic component of the temperature.")
+                                                  "for the non-adiabatic component of the temperature."
+                                                  "\n\n"
+                                                  "Physical units: \\si{\\kelvin}.")
     }
   }
 }

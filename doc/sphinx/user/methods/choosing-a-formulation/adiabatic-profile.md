@@ -5,11 +5,11 @@ The reference temperature profile $\bar{T}$, reference density profile $\bar{\rh
 By default, these fields satisfy adiabatic conditions (if adiabatic heating is included in the model, see {ref}`parameters:Heating_20model/Adiabatic_20heating`):
 
 ```{math}
-\begin{align}
+\begin{aligned}
   \frac{\textrm{d} \bar{T}(z)}{\textrm{d}z}  &=  \frac{\alpha \bar{T}(z) g_z}{C_p}, \\
   \frac{\textrm{d} \bar{p}(z)}{\textrm{d}z} &= \bar\rho g_z,\\
   \bar{\rho} &= \bar\rho (\bar{p}, \bar{T}, z) \qquad \text{(as defined by the material model)},
-\end{align}
+\end{aligned}
 ```
 where strictly speaking $g_z$ is the magnitude of the vertical component of the gravity vector field, but in practice we take the magnitude of the entire gravity vector.
 If there is no adiabatic heating in the model, $\bar{T}$ is constant by default and set to the adiabatic surface temperature.

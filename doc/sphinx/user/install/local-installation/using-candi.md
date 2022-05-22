@@ -1,8 +1,6 @@
 
 # Using candi to compile dependencies
 
-#### Using candi to compile dependencies
-
 In its default configuration `candi` downloads and compiles a <span
 class="smallcaps">deal.II</span> configuration that is able to run
 ASPECT, but it also contains a number of packages
@@ -11,9 +9,9 @@ during the installation). We require at least the packages <span
 class="smallcaps">p4est</span>, Trilinos, and
 finally deal.II.
 
-At the time of this writing `candi` will install <span
-class="smallcaps">p4est</span> 2.2, Trilinos
-12.18.1, and deal.II 9.3.0. We strive to keep
+At the time of this writing (2022), `candi` will install
+p4est 2.3.2, Trilinos 12.18.1, and deal.II 9.3.3.
+We strive to keep
 the development version of ASPECT compatible
 with the latest release of deal.II and the
 current deal.II development version at any
@@ -47,7 +45,7 @@ class="smallcaps">p4est</span> and Trilinos.
 3.  You may now want to configure your environment to make it aware of the
     newly installed packages. This can be achieved by adding the line
     `source INSTALL_PATH/configuration/enable.sh` to the file responsible for
-    setting up your shell environment[6] (again we assume you replace
+    setting up your shell environment[^footnote1] (again we assume you replace
     `INSTALL_PATH` by the patch chosen in the previous step). Then close the
     terminal and open it again to activate the change.
 
@@ -58,3 +56,5 @@ class="smallcaps">p4est</span> and Trilinos.
 
 Congratulations, you are now set up for compiling
 ASPECT itself.
+
+[^footnote1]: For bash this would be the file `˜/.bashrc.`

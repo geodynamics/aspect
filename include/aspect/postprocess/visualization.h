@@ -125,6 +125,27 @@ namespace aspect
       {
         public:
           /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes. The empty string, "", refers to an unknown
+           * or nonexistent unit.
+           *
+           * If a visualization postprocessor generates more than one
+           * output component, and if the different components have different
+           * physical units, then they should be separated by commas. If
+           * the different components have the same physical units, these units
+           * need to be specified only once and will apply to all components.
+           *
+           * There are cases where the physical units can only be determined
+           * at a time later than when this constructor is called. An example
+           * is when a velocity is output as either `m/s` or `m/year`,
+           * depending on some run-time parameter. In those cases, derived
+           * classes should simply pass in an empty string to this constructor
+           * and instead overload the get_physical_units() function.
+           */
+          explicit Interface (const std::string &physical_units = "");
+
+          /**
            * Destructor. Does nothing but is virtual so that derived classes
            * destructors are also virtual.
            */
@@ -139,6 +160,21 @@ namespace aspect
            * Update any temporary information needed by the visualization postprocessor.
            */
           virtual void update();
+
+          /**
+           * Return the string representation of the physical units that a
+           * derived class has provided to the constructor of this class.
+           *
+           * As mentioned in the documentation of the constructor, there are
+           * cases where a derived class doesn't know the physical units yet
+           * that correspond to what is being output at the time the
+           * constructor is called. In that case, the derived class can
+           * overload this function and return the correct units when the
+           * visualization postprocessor is executed.
+           */
+          virtual
+          std::string
+          get_physical_units () const;
 
           /**
            * Declare the parameters this class takes through input files.
@@ -185,7 +221,6 @@ namespace aspect
           std::list<std::string>
           required_other_postprocessors () const;
 
-
           /**
            * Save the state of this object to the argument given to this
            * function. This function is in support of checkpoint/restart
@@ -223,6 +258,12 @@ namespace aspect
            */
           virtual
           void load (const std::map<std::string, std::string> &status_strings);
+
+        private:
+          /**
+           * The physical units encoded by this visualization postprocessor.
+           */
+          const std::string physical_units;
       };
 
 
@@ -243,6 +284,13 @@ namespace aspect
       class CellDataVectorCreator : public Interface<dim>
       {
         public:
+          /**
+           * Constructor. The constructor takes as argument the physical
+           * units of the quantity (scalar or vector-valued) computed by
+           * derived classes.
+           */
+          explicit CellDataVectorCreator (const std::string &physical_units = "");
+
           /**
            * Destructor.
            */
@@ -558,8 +606,8 @@ namespace aspect
          * writing data is still continuing.
          */
         static
-        void writer (const std::string filename,
-                     const std::string temporary_filename,
+        void writer (const std::string &filename,
+                     const std::string &temporary_filename,
                      const std::string &file_contents);
 
         /**
@@ -687,7 +735,8 @@ namespace aspect
          */
         template <typename DataOutType>
         std::string write_data_out_data(DataOutType   &data_out,
-                                        OutputHistory &output_history) const;
+                                        OutputHistory &output_history,
+                                        const std::map<std::string,std::string> &visualization_field_names_and_units) const;
     };
   }
 

@@ -1,8 +1,6 @@
 
 # System prerequisites
 
-#### System prerequisites
-
 `candi` will show system specific instructions on startup, but its
 prerequisites are relatively widely used and packaged for most operating
 systems. You will need compilers for C, C++ and Fortran, the GNU make system,
