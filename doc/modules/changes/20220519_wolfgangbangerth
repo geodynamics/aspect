@@ -1,0 +1,5 @@
+New: Visualization postprocessors now record the physical units of the
+quantity they compute, and this information is also output into visualization
+files with a sufficiently new version of deal.II.
+<br>
+(Wolfgang Bangerth, 2022/05/19)
