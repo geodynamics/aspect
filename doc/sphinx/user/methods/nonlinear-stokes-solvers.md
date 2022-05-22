@@ -264,7 +264,7 @@ Now that we have a general understanding of how the Newton solver works, let's a
     \draw [blue, thick, ->] (0.539987,0.5) -- (0.539987,0.475140);
     \draw [red, thick] (0.539987,0.475140) -- (0.576478,0.5);
     \draw [red, thick, ->] (0.576478,0.5) -- (0.576478,0.499433);
-    \draw[red] (576478,0.499433) circle (0.05);
+    \draw[red] (0.576478,0.499433) circle (0.05);
 
 ```
 
