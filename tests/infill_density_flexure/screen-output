@@ -1,16 +1,12 @@
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 
 Loading shared library <./libinfill_density_flexure.so>
 
 
-   Loading Ascii data boundary file /Users/danieldouglas/software/aspect/benchmarks/infill_density/data/box_2d_top.0.txt.
+   Loading Ascii data boundary file ASPECT_DIR/benchmarks/infill_density/data/box_2d_top.0.txt.
 
 
-   Also loading next Ascii data boundary file /Users/danieldouglas/software/aspect/benchmarks/infill_density/data/box_2d_top.1.txt.
+   Also loading next Ascii data boundary file ASPECT_DIR/benchmarks/infill_density/data/box_2d_top.1.txt.
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
 Number of active cells: 7,200 (on 3 levels)
 Number of degrees of freedom: 346,503 (58,322+21,600+7,381+64,800+64,800+64,800+64,800)
 
@@ -40,9 +36,4 @@ Number of mesh deformation degrees of freedom: 12072
 Termination requested by criterion: end time
 
 
-+----------------------------------------------+------------+------------+
-+----------------------------------+-----------+------------+------------+
-+----------------------------------+-----------+------------+------------+
 
------------------------------------------------------------------------------
------------------------------------------------------------------------------
