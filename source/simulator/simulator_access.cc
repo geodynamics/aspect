@@ -408,23 +408,6 @@ namespace aspect
 
 
   template <int dim>
-  void
-  SimulatorAccess<dim>::compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                                             const FEValuesBase<dim,dim>                                 &input_finite_element_values,
-                                                             const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                                             const bool                                                   compute_strainrate,
-                                                             MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const
-  {
-    simulator->compute_material_model_input_values(input_solution,
-                                                   input_finite_element_values,
-                                                   cell,
-                                                   compute_strainrate,
-                                                   material_model_inputs);
-  }
-
-
-
-  template <int dim>
   const std::map<types::boundary_id,std::unique_ptr<BoundaryTraction::Interface<dim>>> &
   SimulatorAccess<dim>::get_boundary_traction () const
   {

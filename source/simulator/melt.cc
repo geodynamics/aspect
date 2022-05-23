@@ -1854,11 +1854,11 @@ namespace aspect
 
             scratch.face_finite_element_values.reinit(cell, face_no);
 
-            this->compute_material_model_input_values (this->get_solution(),
-                                                       scratch.face_finite_element_values,
-                                                       cell,
-                                                       true,
-                                                       scratch.face_material_model_inputs);
+            scratch.face_material_model_inputs.reinit  (scratch.face_finite_element_values,
+                                                        cell,
+                                                        this->introspection(),
+                                                        this->get_solution(),
+                                                        true);
 
             this->get_material_model().evaluate(scratch.face_material_model_inputs, scratch.face_material_model_outputs);
 

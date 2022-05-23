@@ -1661,41 +1661,6 @@ namespace aspect
                                         double                             &conductivity) const;
 
       /**
-       * Extract the values of temperature, pressure, composition and optional
-       * strain rate for the current linearization point. These values are
-       * stored as input arguments for the material model. The compositional
-       * fields are extracted with the individual compositional fields as
-       * outer vectors and the values at each quadrature point as inner
-       * vectors, but the material model needs it the other way round. Hence,
-       * this vector of vectors is transposed.
-       *
-       * @param[in] input_solution A solution vector (or linear combination of
-       * such vectors) with as many entries as there are degrees of freedom in
-       * the mesh. It will be evaluated on the cell with which the FEValues
-       * object was last re-initialized.
-       * @param[in] input_finite_element_values The FEValues object that
-       * describes the finite element space in use and that is used to
-       * evaluate the solution values at the quadrature points of the current
-       * cell.
-       * @param[in] cell The cell on which we are currently evaluating
-       * the material model.
-       * @param[in] compute_strainrate A flag determining whether the strain
-       * rate should be computed or not in the output structure.
-       * @param[out] material_model_inputs The output structure that contains
-       * the solution values evaluated at the quadrature points.
-       *
-       * This function is implemented in
-       * <code>source/simulator/assembly.cc</code>.
-       */
-      void
-      compute_material_model_input_values (const LinearAlgebra::BlockVector                            &input_solution,
-                                           const FEValuesBase<dim,dim>                                 &input_finite_element_values,
-                                           const typename DoFHandler<dim>::active_cell_iterator        &cell,
-                                           const bool                                                   compute_strainrate,
-                                           MaterialModel::MaterialModelInputs<dim> &material_model_inputs) const;
-
-
-      /**
        * Return whether the Stokes matrix depends on the values of the
        * solution at the previous time step. This is the case is the
        * coefficients that appear in the matrix (i.e., the viscosity and, in
