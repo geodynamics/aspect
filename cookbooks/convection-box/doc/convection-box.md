@@ -81,8 +81,7 @@ the following way (see {ref}`parameters` for a description
 of all of the parameters that appear in the following input file, and the
 indices at the end of this manual if you want to find a particular parameter;
 you can find the input file to run this cookbook example in
-[cookbooks/convection-box.prm]
-((https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm)):
+[cookbooks/convection-box.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm):
 
 ```{literalinclude} convection-box.prm
 ```
@@ -288,7 +287,7 @@ the Stokes and temperature equations in each time step.}
 
 After showing you results for the input file as it can be found in
 [cookbooks/convection-box.prm]
-((https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm),
+(https://github.com/geodynamics/aspect/blob/main/cookbooks/convection-box/convection-box.prm),
 let us end this section with a few ideas on
 how to play with it and what to explore. The first direction one could take
 this example is certainly to consider different Rayleigh numbers. As mentioned
@@ -519,6 +518,3 @@ on the mesh this data is computed on.
 [^footnote2]: The statistics file gives this value to more digits: 4.89008498. However,
 these are clearly more digits than the result is accurate.
 
-:::{admonition} TODO
-Add references in parameter
-:::
