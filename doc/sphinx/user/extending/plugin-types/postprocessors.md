@@ -19,7 +19,7 @@ solution. Examples for already existing postprocessors are:
 -   Generating output in file formats that are understood by visualization
     programs. This is facilitated by the
     `aspect::Postprocess::Visualization` class and a separate class of
-    visualization postprocessors, see {ref}`sec:extending:plugin-types:viz-postprocessors`.
+    visualization postprocessors, see {ref}`sec:extending:vis-postprocessors`.
 
 -   Computing statistics about the velocity field (e.g., computing minimal,
     maximal, and average velocities), temperature field (minimal, maximal, and
@@ -158,7 +158,7 @@ the `aspect::Postprocess::Interface` class. While the first one is
 responsible for evaluating the solution at the end of a time step, the
 `save/load` functions are used in checkpointing the program and restarting it
 at a previously saved point during the simulation. The first of these
-functions therefore needs to store the status of the object as a string under
+functions therefore, needs to store the status of the object as a string under
 a unique key in the database described by the argument, while the latter
 function restores the same state as before by looking up the status string
 under the same key. The default implementation of these functions is to do
