@@ -98,6 +98,12 @@ namespace aspect
          * choices are depth, cartesian and spherical.
          */
         Utilities::Coordinates::CoordinateSystem coordinate_system;
+
+        /**
+         * Whether to specify traction in x, y, z components, or
+         * r, phi, theta components.
+         */
+        bool use_spherical_unit_vectors;
     };
   }
 }
