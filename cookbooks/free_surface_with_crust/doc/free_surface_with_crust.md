@@ -52,7 +52,7 @@ Additional changes make the new parameters `Jump height`, `Lower viscosity`,
 and `Upper viscosity` available to the input parameter file, and corresponding
 variables available in the class and used in the code snippet above. The
 entire code can be found in
-[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc][]. Refer to
+[cookbooks/free_surface_with_crust/plugin/simpler_with_crust.cc]. Refer to
 Section&nbsp;[\[sec:plugins\]][1] for more information about writing and
 running plugins.
 
@@ -76,14 +76,14 @@ crust:
     of 170km implies a depth of 30km.
 
 The entire parameter file is located in
-[cookbooks/free_surface_with_crust/free_surface_with_crust.prm][].
+[cookbooks/free_surface_with_crust/free_surface_with_crust.prm].
 
 Running this input file generates a crust that is 30 km thick and 1000 times
-as viscous as the lower layer. Figure&nbsp;[2][] shows that adding a crust to
+as viscous as the lower layer. Figure&nbsp;[2] shows that adding a crust to
 the model causes the maximum topography to both decrease and occur at a later
 time. Heat flows through the system primarily by advection until the
 temperature anomaly reaches the base of the crustal layer (approximately at
-the time for which Fig&nbsp;[2][] shows the temperature profile). The
+the time for which Fig&nbsp;[2] shows the temperature profile). The
 crust&rsquo;s high viscosity reduces the temperature anomaly&rsquo;s velocity
 substantially, causing it to affect the surface topography at a later time.
 Just as the cookbook shown in Section&nbsp;[\[sec:cookbooks-freesurface\]][2],

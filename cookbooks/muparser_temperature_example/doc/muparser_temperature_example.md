@@ -63,7 +63,7 @@ T-ov is the function for the temperature of the overriding plate.
 Notice also that the boundary conditions for the temperature are defined in a
 separate subsection and depend on the geometry. The boundary conditions are
 insulating (zero flux) side-walls and fixed temperature at the top and bottom.
-Figure [1][] shows the initial temperature on the full domain.
+Figure [1] shows the initial temperature on the full domain.
 
 <figure>
 <img src="cookbooks/muparser_temperature_example/doc/initial_temperature.png" id="lazy-expression-tempic" style="width:80.0%" alt="Initial temperature condition for the lazy-expression syntax cookbook. [lazy-expression-tempic]" /><figcaption aria-hidden="true"><em>Initial temperature condition for the lazy-expression syntax cookbook. <span id="lazy-expression-tempic" label="lazy-expression-tempic">[lazy-expression-tempic]</span></em></figcaption>
@@ -94,7 +94,7 @@ statement (i.e., 7 here) and the value of initial global refinement in the
 ``` prmfile
 ```
 
-Figure [2][] zooms in on the region where the two plates meet and shows the
+Figure [2] zooms in on the region where the two plates meet and shows the
 temperature on a wireframe highlighting the element size refinement. Notice
 that the mesh refinement algorithm automatically adjusts the element size
 between the region that is specific to be a level 7 and the region at level 3

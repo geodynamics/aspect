@@ -20,7 +20,7 @@ boundary conditions are imposed at the top and bottom.
 </figure>
 
 Two materials are present in the domain: the lithosphere and the mantle as
-shown in Figure&nbsp;[1][]. The gravity acceleration is Earth-like with
+shown in Figure&nbsp;[1]. The gravity acceleration is Earth-like with
 $g=9.81 \si{m}\si{s}^2$. The overriding plate is $80\si{km}$ thick and is
 placed at the top of the domain. The already subducted lithosphere extends
 vertically into the mantle for $250 \si{km}$. This slab has a density

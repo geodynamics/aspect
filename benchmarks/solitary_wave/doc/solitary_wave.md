@@ -39,7 +39,7 @@ x(\phi) &= \pm (A + 0.5)
 \ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]\end{aligned}$$
 and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$.
 This is only valid in the limit of small porosity $\phi_0 \ll 1$.
-Figure&nbsp;[1][] illustrates the model setup.
+Figure&nbsp;[1] illustrates the model setup.
 
 <div class="center">
 
@@ -50,8 +50,8 @@ Figure&nbsp;[1][] illustrates the model setup.
 </div>
 
 The parameter file and material model for this setup can be found in
-[benchmarks/solitary_wave/solitary_wave.prm][] and
-[benchmarks/solitary_wave/solitary_wave.cc][]. The most relevant sections are
+[benchmarks/solitary_wave/solitary_wave.prm] and
+[benchmarks/solitary_wave/solitary_wave.cc]. The most relevant sections are
 shown in the following paragraph.
 
 ``` prmfile

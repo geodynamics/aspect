@@ -10,7 +10,7 @@ the top and the bottom of the box. Fluid 1 $(\rho_1,\eta_1)$ of thickness
 $h_1$ overlays fluid 2 $(\rho_2,\eta_2)$ of thickness $h_2$ (with
 $h_1+h_2=L_y$). An initial sinusoidal disturbance of the interface between
 these layers is introduced and is characterised by an amplitude $\Delta$ and a
-wavelength $\lambda=L_x/2$ as shown in Figure&nbsp;[1][].
+wavelength $\lambda=L_x/2$ as shown in Figure&nbsp;[1].
 
 <figure>
 <img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/setup.*" id="fig:RTi_setup" style="width:40.0%" alt="Setup of the Rayleigh-Taylor instability benchmark (taken from (Thieulot 2011))" /><figcaption aria-hidden="true"><em>Setup of the Rayleigh-Taylor instability benchmark (taken from <span class="citation" data-cites="thie11">(Thieulot 2011)</span>)</em></figcaption>
@@ -38,7 +38,7 @@ $\rho_1=\SI{3300}{kg/m^3}$, $\rho_2=\SI{3000}{kg/m^3}$,
 $\eta_1=\SI{1e21}{Pa.s}$. $\eta_2$ is varied between $10^{20}$ and $10^{23}$
 and 3 values of $\lambda$ (64, 128, and 256km) are used. Adaptive mesh
 refinement based on density is used to capture the interface between the two
-fluids, as shown in Figure&nbsp;[3][]. This translates as follows in the input
+fluids, as shown in Figure&nbsp;[3]. This translates as follows in the input
 file:
 
     subsection Mesh refinement
@@ -51,7 +51,7 @@ file:
 <img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid.*" title="fig:" id="fig:RTi_grids" style="width:44.0%" alt="Left: grid with initial global refinement 4 and adaptive refinement 6; Right: density field with detail of the mesh." />
 <img src="cookbooks/benchmarks/rayleigh_taylor_instability/doc/grid2.*" title="fig:" id="fig:RTi_grids" style="width:52.0%" alt="Left: grid with initial global refinement 4 and adaptive refinement 6; Right: density field with detail of the mesh." />
 
-The maximum vertical velocity is plotted against $\phi_1$ in Figure&nbsp;[4][]
+The maximum vertical velocity is plotted against $\phi_1$ in Figure&nbsp;[4]
 and is found to match analytical results.
 
 <figure>

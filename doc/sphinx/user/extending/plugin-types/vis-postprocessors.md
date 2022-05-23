@@ -121,7 +121,7 @@ Visualization plugins can come in two flavors:
 -   *Plugins that compute things from the solution in a cell-wise way:* The
     second possibility is for a class to not derive from
     `dealii::DataPostprocessor` but instead from the
-    [aspect::Postprocess::VisualizationPostprocessors::CellDataVectorCreator][]
+    [aspect::Postprocess::VisualizationPostprocessors::CellDataVectorCreator]
     class. In this case, a visualization postprocessor would generate and
     return a vector that consists of one element per cell. The intent of this
     option is to output quantities that are not point-wise functions of the

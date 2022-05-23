@@ -67,19 +67,19 @@ through the different parts of this file in more detail:
     The last parameter of this section, `Pressure normalization`, is set in
     such a way that the pressure is chosen so that its *domain* average is
     zero, rather than the pressure along the surface, see
-    Section [](sec:methods:pressure-norm).
+    Section (sec:methods:pressure-norm).
 
 -   The next part of the input file describes the setup of the benchmark.
     Specifically, we have to say how the geometry should look like (a box of
     size $1\times 1$) and what the velocity boundary conditions shall be
     (tangential flow all around - the box geometry defines four boundary
     indicators for the left, right, bottom and top boundaries, see also
-    [](parameters:Geometry_20model)). This is followed by
+    (parameters:Geometry_20model)). This is followed by
     subsections choosing the material model (where we choose a particular
     model implemented in that describes the spatially variable density and
     viscosity fields, along with the size of the viscosity jump) and finally
     the chosen gravity model (a gravity field that is the constant vector
-    $(0,-1)^T$, see [](parameters:Gravity_20model)).
+    $(0,-1)^T$, see (parameters:Gravity_20model)).
 
 -   The part that follows this describes the boundary and initial values for
     the temperature. While we are not interested in the evolution of the
@@ -88,7 +88,7 @@ through the different parts of this file in more detail:
 
 -   The second-to-last part sets discretization parameters. Specifically, it
     determines what kind of Stokes element to choose (see
-    [](parameters:Discretization) and the extensive
+    (parameters:Discretization) and the extensive
     discussion in {cite}`kronbichler:etal:2012`). We do not
     adaptively refine the mesh but only do four global refinement steps at the
     very beginning. This is obviously a parameter worth playing with.

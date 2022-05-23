@@ -11,7 +11,7 @@ situations are surprisingly easy to replicate and visualize using simple
 &ldquo;sand box&rdquo; experiments in which one fills a volume with layers of
 differently-colored sand and compresses or stretches the volume. Examples of
 the patterns one can then observe in these do-it-yourself models are shown in
-Fig.&nbsp;[2][].
+Fig.&nbsp;[2].
 
 <img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-1.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
 <img src="cookbooks/benchmarks/buiter_et_al_2016_jsg/doc/real-sandbox-2.jpg" title="fig:" id="fig:sandbox-images" style="width:45.0%" alt="Examples of deformation patterns of &#x201C;sand box&#x201D; experiments in which alternating layers of differently-colored sand undergo deformation. Pictures courtesy of the lab of Dennis Harry at Colorado State University." />
@@ -21,7 +21,7 @@ between these kinds of analogue and numerical models to investigate this kind
 of brittle thrust wedge behavior. The benchmark here aims to verify that the
 wedge models using follows other numerical results and the analytical wedge
 theory shown in this paper. In particular, input files
-([benchmarks/buiter_et_al_2016_jsg][]) are provided for reproducing the
+([benchmarks/buiter_et_al_2016_jsg]) are provided for reproducing the
 numerical simulations of stable wedge experiment 1 and unstable wedge
 experiment 2 with the same model setups.
 
@@ -66,7 +66,7 @@ The relevant parameters are shown here:
 taper theory remain stable when translated horizontally. A quartz sand wedge
 with a horizontal base and a surface slope of 20 degrees is pushed 4 cm
 horizontally by inward movement of a mobile wall at the right boundary with a
-velocity of 2.5 cm/hour (Figure&nbsp;[3][]). The basal angle is zero
+velocity of 2.5 cm/hour (Figure&nbsp;[3]). The basal angle is zero
 (horizontal), a thin layer separates the sand and boundary to ensure minimum
 coupling between the wedge and bounding box during translation, and a sticky
 air layer is used above the wedge. Further, the purely plastic material should
@@ -83,7 +83,7 @@ not undergo any deformation during translation.
 *Experiment 2* tests how an unstable subcritical wedge deforms to reach the
 critical taper solution. In this experiment, horizontal layers of sand undergo
 10 cm shortening by inward movement of a mobile wall with a velocity of 2.5
-cm/hour (Figure&nbsp;[4][]). Model results show thrust wedge generation near
+cm/hour (Figure&nbsp;[4]). Model results show thrust wedge generation near
 the mobile wall through a combination of mainly in-sequence forward and
 backward thrusting. The strain field highlights several incipient shear zones
 that do not always accumulate enough offset to become visible in the material

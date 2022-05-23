@@ -24,8 +24,8 @@ perturbed by a random noise of amplitude $\pm 0.001~\si{m}$. Since fluid 3 is
 lighter than fluid 2 and fluid 2 is lighter than fluid 1, both interfaces are
 unstable. We observe that interface 2-3 deforms first, produces domes which
 are subsequently incorporated in the domes being generated at the interface
-1-2, as shown in Figure&nbsp;[4][]. The root mean square velocity
-(Figure&nbsp;[5][]) shows two slopes in the early stages ($t<50~\si{\second}$)
+1-2, as shown in Figure&nbsp;[4]. The root mean square velocity
+(Figure&nbsp;[5]) shows two slopes in the early stages ($t<50~\si{\second}$)
 corresponding to the two different growth rates of the interfaces, as
 explained by linear stability analysis (Weinberg and Schmeling 1992; Ramberg
 1981).

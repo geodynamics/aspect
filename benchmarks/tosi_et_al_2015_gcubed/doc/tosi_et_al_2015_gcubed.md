@@ -14,10 +14,10 @@ dimensions with free slip boundary conditions. The initial temperature
 distribution considers a linear depth profile with a slight perturbation to
 start convection. Top and bottom boundaries are set to a fixed temperature
 value. The parameters shared between the benchmark cases can be found in
-[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm][]. The other input files
+[benchmarks/tosi_et_al_2015_gcubed/Tosi_base.prm]. The other input files
 describe the variations on this base model, which pertain to the rheological
 description. The specific rheologies used are implemented in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] and describe a linear and a
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc] and describe a linear and a
 plastic component of the viscosity: $$\begin{aligned}
   \eta_\text{linear}(T,z) &= \exp(-\ln(\eta_T) T + \ln(\eta_Z) z)
   \label{eq:tosi-benchmark-lin-visc} \\
@@ -36,7 +36,7 @@ average temperature, the Nusselt number at the top and bottom of the domain,
 the RMS velocity at the top boundary and in the whole domain, and the maximum
 velocity at the surface. These quantities can be queried by using several of
 the postprocessors, but the additional postprocessor in
-[benchmarks/tosi_et_al_2015_gcubed/tosi.cc][] is needed to compute the average
+[benchmarks/tosi_et_al_2015_gcubed/tosi.cc] is needed to compute the average
 rate of work done against gravity, the average rate of viscous dissipation,
 and the error between them. Differences between these diagnostic quantities of
 the 11 codes that participated in the benchmark effort are smaller than 5% for
@@ -66,7 +66,7 @@ is varied to investigate the transitions from mobile-lid to periodic to
 stagnant-lid convection regimes. The input files referenced above implement
 these specific cases. As mentioned before, the results are presented in (Tosi
 et al. 2015) together with the results of several other finite element, finite
-volume, and spectral codes. Figure&nbsp;[3][] shows one example of the
+volume, and spectral codes. Figure&nbsp;[3] shows one example of the
 resolved temperature and viscosity fields for case 1.
 
 <div class="center">

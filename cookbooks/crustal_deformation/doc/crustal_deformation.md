@@ -66,7 +66,7 @@ We also make use of the strain rate-based mesh refinement plugin:
 ```
 
 Setting `set Initial adaptive refinement = 4` yields a series of meshes as
-shown in Fig. ([1][]), all produced during the first timestep. As expected, we
+shown in Fig. ([1]), all produced during the first timestep. As expected, we
 see that the location of the highest mesh refinement corresponds to the
 location of a set of conjugated shear bands.
 
@@ -75,7 +75,7 @@ If we now set this parameter to 1 and allow the simulation to evolve for
 conditions) develops and deepens/thickens over time, nicely showcasing the
 unique capabilities of the code to handle free surface large deformation,
 localised strain rates through visco-plasticity and adaptive mesh refinement
-as shown in Fig. ([2][]).
+as shown in Fig. ([2]).
 
 <figure>
 <img src="cookbooks/crustal_deformation/doc/grids.png" id="fig:meshes" style="width:70.0%" alt="Mesh evolution during the first timestep (refinement is based on strain rate)." /><figcaption aria-hidden="true"><em>Mesh evolution during the first timestep (refinement is based on strain rate).</em></figcaption>
@@ -95,7 +95,7 @@ Arthur angle (Kaus 2010; Buiter 2012).
 We can easily modify the previous input file to produce `crustal_model_3D.prm`
 which implements a similar setup, with the additional constraint that the
 position of the velocity discontinuity varies with the $y$-coordinate, as
-shown in Fig. ([3][]). The domain is now $128\times96\times16$km and the
+shown in Fig. ([3]). The domain is now $128\times96\times16$km and the
 boundary conditions are implemented as follows:
 
 ``` prmfile
@@ -109,7 +109,7 @@ to a transform fault which connects them.
 </figure>
 
 The Finite Element mesh, the velocity, viscosity and strain rate fields are
-shown in Fig. ([4][]) at the end of the first time steps. The reader is
+shown in Fig. ([4]) at the end of the first time steps. The reader is
 encouraged to run this setup in time to look at how the two grabens interact
 as a function of their initial offset (Allken, Huismans, and Thieulot 2011,
 2012; Allken et al. 2013).

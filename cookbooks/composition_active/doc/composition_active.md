@@ -32,7 +32,7 @@ the surrounding material.[1]
 This setup of the problem can be described using an input file that is almost
 completely unchanged from the passive case. The only difference is the use of
 the following section (the complete input file can be found in
-[cookbooks/composition_active/composition_active.prm][]:
+[cookbooks/composition_active/composition_active.prm]:
 
 ``` prmfile
 ```
@@ -61,7 +61,7 @@ postprocessing section, using the `density` visualization plugin:
 <img src="cookbooks/composition_active/doc/visit0006.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />
 
-Results of this model are visualized in Figs.&nbsp;[3][] and [9][]. What is
+Results of this model are visualized in Figs.&nbsp;[3] and [9]. What is
 visible is that over the course of the simulation, the material that starts at
 the bottom of the domain remains there. This can only happen if the
 circulation is significantly affected by the high density material once the

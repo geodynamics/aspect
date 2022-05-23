@@ -22,7 +22,7 @@ the lateral resolution is
 $(4\pi R\textsubscript{outer}^2/(12\times 16^2))^{1/2} \simeq 400~\si{km}$ at
 the surface and
 $(4\pi R\textsubscript{inner}^2/(12\times 16^2))^{1/2} \simeq 220~\si{km}$ at
-the CMB. The mesh and the density field are shown in Fig.&nbsp;[3][]. The
+the CMB. The mesh and the density field are shown in Fig.&nbsp;[3]. The
 temperature anomaly ranges from approximately $-342~\si{\kelvin}$ to
 approximately $+331~\si{\kelvin}$ and geodynamical features such as the
 mid-oceanic ridge or the Afar region are visible in the form of positive
@@ -56,7 +56,7 @@ python3 convert_gravity_ascii_to_vtu_map.py gravity-00000 181 91
 The first argument is the ascii file, while the following two arguments are
 the number of longitude and latitude points as specified in the `prm` file.
 The resulting `gravity-00000_map.vtu` file is then visualised with ParaView
-and is shown in Fig.&nbsp;[5][]. Note that on a modern laptop the calculations
+and is shown in Fig.&nbsp;[5]. Note that on a modern laptop the calculations
 resulting from running the provided `prm` file in the cookbook folder takes a
 bit less than 2 hours on a single thread: about 1250&nbsp;s are spent in the
 setup phase (using the spherical harmonics coefficients to compute the

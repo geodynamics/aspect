@@ -29,7 +29,7 @@ By limiting the strength of the lithosphere at low temperature, this rheology
 allows one to more realistically model processes like lithospheric
 delamination and foundering in the presence of weak crustal layers. A similar
 model setup to the one described in (Morency and Doin 2004) can be reproduced
-with the files in the directory [cookbooks/morency_doin_2004][]. In
+with the files in the directory [cookbooks/morency_doin_2004]. In
 particular, the following sections of the input file are important to
 reproduce the setup:
 

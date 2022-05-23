@@ -106,7 +106,7 @@ pressure).
 ##### The look-up table format.
 
 The format of these look-up tables is described in the documentation of the
-[aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup][] class.
+[aspect::MaterialModel::MaterialUtilities::Lookup::MaterialLookup] class.
 Two different formats are currently supported: Perple_X and HeFESTo. The
 format needs to be selected in the input file, and each format has a specific
 header and needs to be structured in a specific way. The paragraph below
@@ -224,13 +224,13 @@ the temperature in the model, which is why we choose it for this cookbook.
 
 The default data directory already contains two radial viscosity files, one
 for each of these cases. The file
-[data/material-model/steinberger/radial-visc.txt][] is the original
+[data/material-model/steinberger/radial-visc.txt] is the original
 Steinberger and Calderwood (Steinberger and Calderwood 2006) profile (with an
 interpolation between the original discrete layers) and for use with the
 laterally averaged temperature. The file
-[data/material-model/steinberger/radial-visc-simple.txt][] is for use with the
+[data/material-model/steinberger/radial-visc-simple.txt] is for use with the
 adiabatic profile. To illustrate the difference, the content of both files is
-plotted in Figure&nbsp;[2][].
+plotted in Figure&nbsp;[2].
 
 <embed src="cookbooks/steinberger/doc/radial-visc.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
 <embed src="cookbooks/steinberger/doc/radial-visc-simple.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
@@ -286,7 +286,7 @@ provides the values that should be interpolated onto the field.
 ```
 
 The complete input file can be found in
-[cookbooks/steinberger/doc/steinberger.prm][].
+[cookbooks/steinberger/doc/steinberger.prm].
 
 ##### Results.
 
@@ -294,7 +294,7 @@ We run the model for 300 million years. Over the time of the model evolution,
 some plumes rise and spread beneath the base of the lithosphere, and some cold
 downwellings detach from the base of the lithosphere. The temperature at the
 end of the model run and some of the material properties are shown in
-Figure&nbsp;[6][].
+Figure&nbsp;[6].
 
 <img src="cookbooks/steinberger/doc/temperature.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
 <img src="cookbooks/steinberger/doc/viscosity.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />

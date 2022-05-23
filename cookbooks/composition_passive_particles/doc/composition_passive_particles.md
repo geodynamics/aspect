@@ -1,9 +1,9 @@
 In order to advect particles along with the flow field, one just needs to add
 the `particles` postprocessor to the list of postprocessors and specify a few
 parameters. We do so in the
-[cookbooks/composition_passive_particles/composition_passive_particles.prm][]
+[cookbooks/composition_passive_particles/composition_passive_particles.prm]
 input file, which is otherwise just a minor variation of the
-[cookbooks/composition_passive/composition_passive.prm][] case discussed in
+[cookbooks/composition_passive/composition_passive.prm] case discussed in
 the previous Section&nbsp;[\[sec:cookbooks-composition\]][1]. In particular,
 the postprocess section now looks like this:
 
@@ -51,7 +51,7 @@ correspond to particles (for example, `output/solution.visit` and
 `output/particles.visit`) and using a pseudo-color plot for the particles,
 selecting the &ldquo;id&rdquo; of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
-results in a plot like the one shown in Fig.&nbsp;[1][].
+results in a plot like the one shown in Fig.&nbsp;[1].
 
 <figure>
 <img src="cookbooks/composition_passive_particles/doc/solution-00072.png" id="fig:composition_passive_particles" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." /><figcaption aria-hidden="true"><em>Passively advected quantities visualized through both a <span id="fig:composition_passive_particles" label="fig:composition_passive_particles">[fig:composition_passive_particles]</span> compositional field and a set of 1,000 particles, at <span class="math inline"><em>t</em>&#x2004;=&#x2004;7.2</span>.</em></figcaption>
@@ -84,7 +84,7 @@ a defined particle path (like the pressure-temperature evolution of a certain
 piece of rock), or by integrating a quantity along a particle path (like the
 integrated strain a certain domain has experienced). We illustrate these
 properties in the cookbook
-[cookbooks/composition_passive_particles/composition_passive_particles_properties.prm][],
+[cookbooks/composition_passive_particles/composition_passive_particles_properties.prm],
 in which we add the following lines to the `Particles` subsection (we also
 increase the number of particles compared to the previous section to make the
 visualizations below more obvious):
@@ -165,7 +165,7 @@ following:
 <img src="cookbooks/composition_passive_particles/doc/initial-position-00199.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
 
 The results of all of these properties can of course be visualized.
-Fig.&nbsp;[5][] shows some of the pictures one can create with particles. The
+Fig.&nbsp;[5] shows some of the pictures one can create with particles. The
 top row shows both the composition field $C_1$ (along with the mesh on which
 it is defined) and the corresponding &ldquo;initial $C_1$&rdquo; particle
 property, at $t=7.2$. Because the compositional field does not undergo any

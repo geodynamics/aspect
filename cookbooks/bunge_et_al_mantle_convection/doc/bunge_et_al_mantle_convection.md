@@ -13,7 +13,7 @@ the &lsquo;simple&rsquo; material model to reproduce the set-up in (Bunge,
 Richards, and Baumgardner 1996), which reported that even modest increases in
 mantle viscosity with depth could have a marked effect on the style of mantle
 convection. The prm file corresponding to this cookbook can be found at
-[cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm][].
+[cookbooks/bunge_et_al_mantle_convection/bunge_et_al.prm].
 
 Although the original article showcases results obtained in a 3D hollow
 sphere, we here run the models in an annular domain of inner radius
@@ -49,7 +49,7 @@ profiles:
 
 Separate ascii files `visc_depth_X.txt` with `X={a,b,c,d}` contain each of
 these viscosity profiles. The resulting temperature fields after 5 billion
-years of convection are shown in Fig.&nbsp;[1][]. Similar to the results
+years of convection are shown in Fig.&nbsp;[1]. Similar to the results
 obtained by (Bunge, Richards, and Baumgardner 1996), models in which the lower
 mantle is more viscous than the upper mantle are distinctly colder than their
 isoviscous equivalents, with more clearly defined upwellings. You can find a

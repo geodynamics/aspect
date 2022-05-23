@@ -81,7 +81,7 @@ advection. The reactions for exponential decay $$\begin{aligned}
   \mathfrak{c}_0 e^{\lambda t} \text{ with } \lambda = - \log(2)/t_{1/2},\end{aligned}$$
 where $\mathfrak{c}_0$ is the initial composition and $t_{1/2}$ is the half
 life, are implemented in a shared library
-([benchmarks/operator_splitting/exponential_decay/exponential_decay.cc][]). As
+([benchmarks/operator_splitting/exponential_decay/exponential_decay.cc]). As
 we split the time-stepping of advection and reactions, there are now two
 different time steps in the model: We control the advection time step using
 the &lsquo;Maximum time step&rsquo; parameter (as the velocity is essentially
@@ -103,9 +103,9 @@ also set $t_{1/2}=10$, which is implemented as a parameter in the
 ```
 
 The complete parameter file for this setup can be found in
-[benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm][].
+[benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm].
 
-Figure&nbsp;[1][] shows the convergence behavior of these models: As there is
+Figure&nbsp;[1] shows the convergence behavior of these models: As there is
 no advection, the advection time step does not influence the error (blue data
 points). As we use a first-order operator split, the error is expected to
 converge linearly with the reaction time step $\Delta t_R$, which is indeed
@@ -132,7 +132,7 @@ now $$\begin{aligned}
   \sin (2\pi(x-t v_0)) \, \mathfrak{c}_0 e^{\lambda z t}.\end{aligned}$$ $v_0$
 is the constant velocity, which we set to 0.01 m/s. The parameter file for
 this setup can be found in
-[benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm][].
+[benchmarks/operator_splitting/advection_reaction/advection_reaction.base.prm].
 
 <div class="center">
 
@@ -141,7 +141,7 @@ this setup can be found in
 
 </div>
 
-Figure&nbsp;[3][] shows the convergence behavior in this second set of models:
+Figure&nbsp;[3] shows the convergence behavior in this second set of models:
 If we choose the same resolution as in the previous example (left panel), for
 large advection time steps $\Delta t_A > 0.1$ the error is dominated by
 advection, and converges with decreasing advection time step size (blue data

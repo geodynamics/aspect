@@ -56,7 +56,7 @@ The gravity postprocessor in can be used to calculate the radial components of
 gravity ($g_r$ and $U$) at arbitrary points using the sampling scheme
 &lsquo;*list of points*.&rsquo; For this benchmark we calculate points along a
 line from the center of the planet to a distant point, $r=0$ to
-$r=10,000~\si{\km}$ (Figure [2][]). Arbitrarily, the latitude and longitude
+$r=10,000~\si{\km}$ (Figure [2]). Arbitrarily, the latitude and longitude
 are both set to $13\si{\degree}$ so as to avoid potential measurement
 artifacts due to symmetry. The list of radii is defined as follows:
 
@@ -64,7 +64,7 @@ artifacts due to symmetry. The list of radii is defined as follows:
 ```
 
 The resulting measurements obtained for a mesh composed of 12 caps of $32^3$
-cells (i.e., 393,216 total mesh cells) are shown in Fig.&nbsp;([2][]) and are
+cells (i.e., 393,216 total mesh cells) are shown in Fig.&nbsp;([2]) and are
 in good agreement with the analytical profiles.
 
 <embed src="cookbooks/benchmarks/gravity_thick_shell/doc/gravity_g.pdf" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />

@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/heat_flow/heat-flow.prm][]
+[cookbooks/heat_flow/heat-flow.prm]
 
 The model is loosely based on the cookbook describing how to model convection
 in a box with prescribed, variable velocity boundary conditions
@@ -23,15 +23,15 @@ a cold thermal boundary develops over time at the top model boundary.
 
 An example that shows how this model can be used to visualize lithospheric
 thickness and how it changes over time and in dependence of the spreading rate
-can be found in [this presentation][].
+can be found in [this presentation].
 
 ##### Shear heating and radiogenic heating
 
 The model can also be modified to include radiogenic heat production and shear
 heating. The corresponding input file is located at
-[cookbooks/heat_flow/heat-flow-terms.prm][], and it switches on postprocessors
+[cookbooks/heat_flow/heat-flow-terms.prm], and it switches on postprocessors
 that generate graphical output for the different heating terms. An example
-exercise is described in [this presentation (last slide)][].
+exercise is described in [this presentation (last slide)].
 
 ##### Example assignment: Heat flux
 
@@ -49,11 +49,11 @@ data from elsewhere, but you will need to reference these in your report.
 Analyze the heat flux close to mid-ocean ridges.
 
 In order to do that, use the mid-ocean ridge model, which is located in the
-folder [cookbooks/heat_flow/][]. Run the model and use ParaView to compute and
+folder [cookbooks/heat_flow/]. Run the model and use ParaView to compute and
 visualize the conductive and convective heat flux in vertical direction. Hint:
 You can use the Calculator filter in ParaView to compute the convective and
 conductive heat flux, using the equations on slides 5 and 6 of [this
-presentation][]. Be careful to make sure that the units are the same; the
+presentation]. Be careful to make sure that the units are the same; the
 velocity in ParaView is given in m/yr, while all other properties are given in
 SI units:
 
@@ -95,7 +95,7 @@ Next, describe the model results. Include a plot of convective/conductive heat
 flux and discuss it: Respectively, where are convection and conduction
 dominant? Qualitatively, describe how the temperature profile compares to the
 profiles computed with Wolfram Alpha (as described on slide 7 of [this
-presentation][]) under the assumption that the temperature follows a
+presentation]) under the assumption that the temperature follows a
 conductive (linear) profile going downwards from the surface, and then remains
 constant once it reaches 1600 K (in the region where convection is dominant)?
 What causes the similarities/differences?
@@ -112,7 +112,7 @@ In order to do that, pick your favourite ocean island from the list below.
 Find out on what tectonic plate the island is located on, and how old the
 ocean floor is where the hot spot is located.
 
-Use the input file [cookbooks/heat_flow/heat-flow-plume.prm][]. The model is
+Use the input file [cookbooks/heat_flow/heat-flow-plume.prm]. The model is
 very similar to the mid-ocean ridge model you analyzed above, but the oceanic
 plate does not move (so by default, there is no convective heat flux), and
 extension in the vertical direction is larger to allow for older (and,

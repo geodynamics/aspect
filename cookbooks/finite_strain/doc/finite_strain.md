@@ -61,8 +61,8 @@ amount of relative stretching at every point by the ratio
 $\ln(\lambda_1/\lambda_2)$, called the *natural strain* (Ribe 1992).
 
 The full plugin implementing the integration of $\mathbf F$ can be found in
-[cookbooks/finite_strain/finite_strain.cc][] and can be compiled with
-`cmake . && make` in the [cookbooks/finite_strain][] directory. It can be
+[cookbooks/finite_strain/finite_strain.cc] and can be compiled with
+`cmake . && make` in the [cookbooks/finite_strain] directory. It can be
 loaded in a parameter file as an &ldquo;Additional shared library,&rdquo; and
 selected as material model. As it is derived from the &ldquo;simple&rdquo;
 material model, all input parameters for the material properties are read in
@@ -77,11 +77,11 @@ from the subsection `Simple model`.
 
 The plugin was tested against analytical solutions for the deformation
 gradient tensor in simple and pure shear as described in
-[benchmarks/finite_strain/pure_shear.prm][] and
-[benchmarks/finite_strain/simple_shear.prm][].
+[benchmarks/finite_strain/pure_shear.prm] and
+[benchmarks/finite_strain/simple_shear.prm].
 
 We will demonstrate its use at the example of a 2D Cartesian convection model
-(Figure&nbsp;[1][]): Heating from the bottom leads to the ascent of plumes
+(Figure&nbsp;[1]): Heating from the bottom leads to the ascent of plumes
 from the boundary layer (top panel), and the amount of stretching is visible
 in the distribution of natural strain (color in lower panel). Additionally,
 the black crosses show the direction of stretching and compression (the

@@ -21,7 +21,7 @@ way around for a plume head). The block densities can then vary from a few
 units to several hundreds of $\si{\kg\per\cubic\meter}$ and the viscosities by
 several orders of magnitude to represent a wide array of scenarios. The
 velocity field obtained for $\eta_2=10^{27}~\si{\pascal\second}$ and
-$\delta\rho=32~\si{\kg\per\cubic\meter}$ is shown in Figure&nbsp;[1][].
+$\delta\rho=32~\si{\kg\per\cubic\meter}$ is shown in Figure&nbsp;[1].
 
 As shown in (Thieulot 2011) one can independently vary $\eta_1$, $\rho_2$,
 $\eta_2$, and measure $|v_z|$ for each combination: the quantity
@@ -31,7 +31,7 @@ collapse onto a single line. The shell script *run_benchmark* in the folder
 runs the experiment for values
 $\eta_2\in [10^{17},10^{26}]~\si{\pascal\second}$ and
 $\delta\rho=8,32,128~\si{\kg\per\cubic\meter}$. Results are shown in
-Figure&nbsp;[2][] and we indeed recover the expected trend with all data
+Figure&nbsp;[2] and we indeed recover the expected trend with all data
 points forming a single smooth line.
 
 <figure>

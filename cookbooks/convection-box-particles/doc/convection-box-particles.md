@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/convection-box-particles/convection-box-particles.prm][].
+[cookbooks/convection-box-particles/convection-box-particles.prm].
 
 This model is a modification of the Convection in a 2d box cookbook described
 in section [\[sec:cookbooks-simple-box\]][1]. It is changed to a lower
@@ -18,10 +18,10 @@ computer, and to demonstrate how to visualize models results.
 .
 
 Slides that demonstrate how to run the model from inside a virtual machine,
-and how to use ParaView to look at the model output can be found [here][]. The
+and how to use ParaView to look at the model output can be found [here]. The
 model can also be used to show how the thermal conductivity (or other physical
 parameters that change the Rayleigh number) control the vigor of convection.
-An example for this is given in [this presentation (last slide)][].
+An example for this is given in [this presentation (last slide)].
 
   [cookbooks/convection-box-particles/convection-box-particles.prm]: cookbooks/convection-box-particles/convection-box-particles.prm
   [1]: #sec:cookbooks-simple-box

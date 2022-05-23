@@ -98,10 +98,10 @@ crust and mantle.
 As noted above, the initial zone of randomized plastic strain within the model
 center and strain softening of the friction and cohesion produces an initial
 pattern of distributed and unlocalized deformation across the zone of initial
-plastic strain (Fig.&nbsp;[1][]). After 5 million years of extension,
+plastic strain (Fig.&nbsp;[1]). After 5 million years of extension,
 distributed faulting is clearly evident in both the active and finite
 deformation fields and surface topography over an approximately 100 km wide
-region (Fig.&nbsp;[2][]). While deformation is distributed within this region,
+region (Fig.&nbsp;[2]). While deformation is distributed within this region,
 the fault system is clearly asymmetric as the rate of deformation and
 accumulated brittle strain varies between faults. Localization onto the two
 conjugate rift-bounding border faults is evident from the active deformation

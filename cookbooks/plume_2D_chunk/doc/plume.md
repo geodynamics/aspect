@@ -78,7 +78,7 @@ it is unlikely that any Mars-sized, or larger, planetary body is in steady
 state. These calculations mainly serve as a guide, allowing us to determine
 the relationship between surface observations and internal parameters.&rdquo;
 
-Steady-state fields are shown in Fig.&nbsp;[9][]. We find that the velocity
+Steady-state fields are shown in Fig.&nbsp;[9]. We find that the velocity
 fields are similar between the isoviscous and weakly temperature-dependent
 cases, where the convection cell occupies most of the domain. In contrast, the
 strongly temperature-dependent experiment showcases a large viscosity zone a
@@ -99,7 +99,7 @@ raising the temperature within it.
 Obtaining a steady state is contingent on the narrow angular opening. We find
 that simply increasing the angular opening from $\pi/8$ to $\pi/4$ yields only
 a statistical steady state, as multiple downwellings occur near the side but
-the system never stabilizes (see Fig.&nbsp;[12][]). Also, decreasing $\eta_0$
+the system never stabilizes (see Fig.&nbsp;[12]). Also, decreasing $\eta_0$
 by a factor 10 would yield $Ra=10^7$. In this case, too, a statistical steady
 state is reached (not shown here).
 
@@ -107,7 +107,7 @@ state is reached (not shown here).
 <img src="cookbooks/plume_2D_chunk/doc/exp1_45.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Plume in a 2D chunk: Temperature at the end of the run. From left to right: Angular opening of \pi/8, \pi/4 and \pi/2. The first two have reached a steady state while the third one has not." />
 <img src="cookbooks/plume_2D_chunk/doc/exp1_90.*" title="fig:" id="fig:plume-angular-opening" style="width:5cm" alt="Plume in a 2D chunk: Temperature at the end of the run. From left to right: Angular opening of \pi/8, \pi/4 and \pi/2. The first two have reached a steady state while the third one has not." />
 
-Fig.&nbsp;[13][] shows the time evolution of the root mean square velocity as
+Fig.&nbsp;[13] shows the time evolution of the root mean square velocity as
 a function of time. As mentioned above, no active planet is at steady state so
 the time on the horizontal axis is not really meaningful. Also, it is easy to
 show that the path to steady state (if at all attained) is vastly influenced

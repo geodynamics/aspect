@@ -11,7 +11,7 @@ The first benchmark involves a high viscosity lid sitting on top of a lower
 viscosity mantle. There is an initial sinusoidal topography which is then
 allowed to relax. This benchmark has a semi-analytical solution (which is
 exact for infinitesimally small topography). Details for the benchmark setup
-are in Figure&nbsp;[1][].
+are in Figure&nbsp;[1].
 
 <div class="center">
 
@@ -22,7 +22,7 @@ are in Figure&nbsp;[1][].
 </div>
 
 The complete parameter file for this benchmark can be found in
-[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm][], the most relevant
+[benchmarks/crameri_et_al/case_1/crameri_benchmark_1.prm], the most relevant
 parts of which are excerpted here:
 
 ``` prmfile
@@ -42,7 +42,7 @@ described further in Section&nbsp;[\[sec:freesurface\]][2]. Some sort of
 stabilization is required to take large timesteps. In this benchmark, however,
 we are interested in the relaxation timescale, so we are free to take very
 small timesteps (in this case, 0.01 times the CFL number). As can be seen in
-Figure&nbsp;[2][], the results of all the codes which are included in this
+Figure&nbsp;[2], the results of all the codes which are included in this
 comparison are basically indistinguishable.
 
 <div class="center">
@@ -59,7 +59,7 @@ Case two is more complicated. Unlike the case one, it occurs over mantle
 convection timescales. In this benchmark there is the same high viscosity lid
 over a lower viscosity mantle. However, now there is a blob of buoyant
 material rising in the center of the domain, causing dynamic topography at the
-surface. The details for the setup are in the caption of Figure&nbsp;[3][].
+surface. The details for the setup are in the caption of Figure&nbsp;[3].
 
 <div class="center">
 
@@ -83,7 +83,7 @@ $\sim 800$ meters.
 
 Again, we excerpt the most relevant parts of the parameter file for this
 benchmark, with the full thing available in
-[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm][]. Here we use the
+[benchmarks/crameri_et_al/case_2/crameri_benchmark_2.prm]. Here we use the
 &ldquo;Multicomponent&rdquo; material model, which allows us to easily set up
 a number of compositional fields with different material properties. The first
 compositional field corresponds to background mantle, the second corresponds
@@ -101,12 +101,12 @@ solution to compare against. Furthermore, the time integration for this
 benchmark is much longer, allowing for errors to accumulate. As such, there is
 considerably more scatter between the participating codes. does, however, fall
 within the range of the other results, and the curve is somewhat less wiggly.
-The results for maximum topography versus time are shown in&nbsp;[4][]
+The results for maximum topography versus time are shown in&nbsp;[4]
 
 The precise values for topography at a given time are quite dependent on the
 resolution and timestepping parameters. Following (Crameri et al. 2012) we
 investigate the convergence of the maximum topography at 3 Ma as a function of
-CFL number and mesh resolution. The results are shown in figure&nbsp;[5][].
+CFL number and mesh resolution. The results are shown in figure&nbsp;[5].
 
 <div class="center">
 

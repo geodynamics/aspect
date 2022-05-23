@@ -71,7 +71,7 @@ field that is one inside and zero outside the sphere, and assigning a
 compositional dependence to the viscosity and density. We run only a single
 time step for this benchmark. This is all modeled in the following input file
 that can also be found in
-[cookbooks/sinker-with-averaging/sinker-with-averaging.prm][]:
+[cookbooks/sinker-with-averaging/sinker-with-averaging.prm]:
 
 ``` prmfile
 ```
@@ -83,7 +83,7 @@ file:
 ```
 
 For the various different averaging options, and for different levels of mesh
-refinement, Fig.&nbsp;[12][] shows pressure plots that illustrate the problem
+refinement, Fig.&nbsp;[12] shows pressure plots that illustrate the problem
 with oscillations of the discrete pressure. The important part of these plots
 is not that the solution looks discontinuous &ndash; in fact, the exact
 solution is discontinuous at the edge of the circle[1] &ndash; but the spikes
@@ -97,7 +97,7 @@ question can also be found in (Schmeling et al. 2008; Deubelbeiss and Kaus
 2008; Duretz et al. 2011; Thielmann, May, and Kaus 2014)).
 
 A very pleasant side effect of averaging is that not only does the solution
-become better, but it also becomes cheaper to compute. Table&nbsp;[1][] shows
+become better, but it also becomes cheaper to compute. Table&nbsp;[1] shows
 the number of outer GMRES iterations when solving the Stokes
 equations&nbsp;[\[eq:stokes-1\]][2]&ndash;[\[eq:stokes-2\]][3].[2] The
 implication of these results is that the averaging gives us a solution that
@@ -180,8 +180,8 @@ needs to add the following piece to the input file:
 
 Disappointingly, however, this makes no real difference: the pressure
 oscillations are no better (maybe even worse) than for the standard Stokes
-element we use, as shown in Fig.&nbsp;[24][] and Table&nbsp;[2][].
-Furthermore, as shown in Table&nbsp;[3][], the iteration numbers are also
+element we use, as shown in Fig.&nbsp;[24] and Table&nbsp;[2].
+Furthermore, as shown in Table&nbsp;[3], the iteration numbers are also
 largely unaffected if any kind of averaging is used &ndash; though they are
 far worse using the locally conservative discretization if no averaging has
 been selected. On the positive side, the visualization of the discontinuous
@@ -231,7 +231,7 @@ pressure is in fact discontinuous along the edge of the circle.
 
 *Maximal pressure values for the &ldquo;sinker&rdquo; benchmark, using the
 locally conservative, enriched Stokes element. The corresponding pressure
-solutions are shown in Fig.&nbsp;[24][].*
+solutions are shown in Fig.&nbsp;[24].*
 
 </div>
 
@@ -247,7 +247,7 @@ solutions are shown in Fig.&nbsp;[24][].*
 |        7         |   30+1319    |   30+27    |   30+28   |   30+26   |  30+28  |  30+28   |
 |        8         |   30+1507    |   30+28    |   30+27   |   30+28   |  30+28  |  30+29   |
 
-*Like Table&nbsp;[1][], but using the locally conservative, enriched Stokes
+*Like Table&nbsp;[1], but using the locally conservative, enriched Stokes
 element.*
 
 </div>
@@ -317,7 +317,7 @@ solving a linear system with the elliptic operator
 $-\nabla \cdot 2 \eta \varepsilon(\cdot)$. For highly heterogeneous models,
 such as the one discussed in the current section, this may require a lot of
 Conjugate Gradient iterations. For example, for 8 global refinement steps, the
-30+188 outer iterations without averaging shown in Table&nbsp;[1][] require a
+30+188 outer iterations without averaging shown in Table&nbsp;[1] require a
 total of 22,096 inner CG iterations for the elliptic block (and a total of 837
 for the approximate Schur complement). Using harmonic averaging, the 30+26
 outer iterations require only 1258 iterations on the elliptic block (and 84 on

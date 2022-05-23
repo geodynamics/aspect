@@ -6,7 +6,7 @@
 Free surfaces are numerically challenging but can be useful for self
 consistently tracking dynamic topography and may be quite important as a
 boundary condition for tectonic processes like subduction. The parameter file
-[cookbooks/free_surface/free_surface.prm][] provides a simple example of how
+[cookbooks/free_surface/free_surface.prm] provides a simple example of how
 to set up a model with a free surface, as well as demonstrates some of the
 challenges associated with doing so.
 
@@ -44,12 +44,12 @@ the first few time steps.
 
 Following are the sections in the input file specific to this testcase. The
 full parameter file may be found at
-[cookbooks/free_surface/free_surface.prm][].
+[cookbooks/free_surface/free_surface.prm].
 
 ``` prmfile
 ```
 
-Running this input file will produce results like those in Figure&nbsp;[2][].
+Running this input file will produce results like those in Figure&nbsp;[2].
 The model starts with a single hot blob of rock which rises in the domain. As
 it rises, it pushes up the free surface in the middle, creating a topographic
 high there. This is similar to the kind of dynamic topography that you might

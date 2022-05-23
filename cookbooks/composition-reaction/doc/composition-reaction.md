@@ -30,7 +30,7 @@ those two fields. In the input file, the user defines a depth and above this
 `reaction depth` the first compositional fields is converted to the second
 field. This can be done by changing the following section (the complete input
 file can be found in
-[cookbooks/composition-reaction/composition-reaction.prm][]).
+[cookbooks/composition-reaction/composition-reaction.prm]).
 
 ``` prmfile
 ```
@@ -48,7 +48,7 @@ file can be found in
 <img src="cookbooks/composition-reaction/doc/20.png" title="fig:" id="fig:composition-reaction" style="width:30.0%" alt="Reaction between compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the material starting at the bottom and the white line is the isocontour line c_2(\mathbf x,t)=0.5 delineating the position of the material that is created by the reaction." />
 
-Results of this model are visualized in Fig&nbsp;[6][]. What is visible is
+Results of this model are visualized in Fig&nbsp;[6]. What is visible is
 that over the course of the simulation, the material that starts at the bottom
 of the domain ascends, reaches the reaction depth and gets converted to the
 second material, which starts to sink down.

@@ -73,7 +73,7 @@ and average values of both the potential and the acceleration are printed in
 the statistics file while measurements at all the desired points are written
 in the `output_gravity` folder inside the output folder. We ran the input file
 for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results
-are presented in Table&nbsp;[1][] alongside the analytical values.
+are presented in Table&nbsp;[1] alongside the analytical values.
 
 <div id="tab:thin_shell_gravity_benchmark">
 

@@ -85,7 +85,7 @@ the signed distance function $\phi$. The modifications to the parameter file
 that are necessary in order to draw the reconstructed boundary as a contour
 are shown immediately below. The full configuration file for this version of
 the benchmark problem can be found at
-[cookbooks/van-keken-vof/van-keken-vof.prm][].
+[cookbooks/van-keken-vof/van-keken-vof.prm].
 
 ``` prmfile
 ```
@@ -94,14 +94,14 @@ We made a number of computations of the van Keken problem with the VOF method
 in order to compare the wall clock times with computations using a DG
 compositional field. We ran both on the same cluster at global refinements
 5&ndash;8 using one node with four CPUs and refinements 9 and 10 using two
-nodes with 16 CPUs. Our results are shown in Table&nbsp;[1][]. In all of the
-computations shown in Table&nbsp;[1][] we used a CFL number of $\sigma=0.5$.
+nodes with 16 CPUs. Our results are shown in Table&nbsp;[1]. In all of the
+computations shown in Table&nbsp;[1] we used a CFL number of $\sigma=0.5$.
 Due to the change in the CFL number from $\sigma = 1.0$ in
-Table&nbsp;[\[tab:runtime-table\]][2] to $\sigma = 0.5$ in Table&nbsp;[1][]
+Table&nbsp;[\[tab:runtime-table\]][2] to $\sigma = 0.5$ in Table&nbsp;[1]
 and the difference between HPC clusters on which the computational results
 shown in the two tables were made, we can&rsquo;t make a direct quantitative
 comparison between the data in Tables&nbsp;[\[tab:runtime-table\]][2]
-and&nbsp;[1][].
+and&nbsp;[1].
 
 However, we can compare the required run time for a VOF computation to that
 for a DG computation. We note that the use of the VOF advection algorithm
@@ -114,11 +114,11 @@ velocities for $6$, $7$, $8$, $9$ and $10$ levels of refinement in
 Figure&nbsp;[1][3] are nearly indistinguishable.
 
 Upon examining the solution at the final time, we note that the general
-structure of the solution shown in Figure&nbsp;[2][] matches the form and the
+structure of the solution shown in Figure&nbsp;[2] matches the form and the
 general structure found in other versions of this benchmark such as the fourth
 image on the right in Figure&nbsp;[\[fig:vk-1\]][4]. We also note that the
 differences in the shape of the interface based on a single refinement as
-shown in Figure&nbsp;[2][] are minor, although still slightly visible. This is
+shown in Figure&nbsp;[2] are minor, although still slightly visible. This is
 to be expected as refinement is a perturbation of the initial condition at a
 smaller wave length.
 
@@ -170,7 +170,7 @@ the cosine function in the initial conditions, as shown below.
 In these computations we vary the value of $a$ from its usual value of
 $a = 0.02$ to $5\% = 0.001$ below its usual value to $5\%$ above its usual
 value in increments of $0.01$. In other words, we compare the values for
-$a =0.019$, $0.020$, and $0.021$. Upon examination of Figure&nbsp;[3][], we
+$a =0.019$, $0.020$, and $0.021$. Upon examination of Figure&nbsp;[3], we
 see a visible variation in the location of the second peak, although the
 overall shape of the curve remains consistent with the curves in
 Figure&nbsp;[1][3]. The size of this variation in the initial conditions

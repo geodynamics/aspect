@@ -6,13 +6,13 @@ up, as well as the material that started in the top 20%. For the moment, let
 us assume that there is no material between the materials at the bottom, the
 top, and the middle. The way to describe this situation is to simply add the
 following block of definitions to the parameter file (you can find the full
-parameter file in [cookbooks/composition_passive/composition_passive.prm][]:
+parameter file in [cookbooks/composition_passive/composition_passive.prm]:
 
 ``` prmfile
 ```
 
 Running this simulation yields results such as the ones shown in
-Fig.&nbsp;[6][] where we show the values of the functions $c_1(\mathbf x,t)$
+Fig.&nbsp;[6] where we show the values of the functions $c_1(\mathbf x,t)$
 and $c_2(\mathbf x,t)$ at various times in the simulation. Because these
 fields were one only inside the lowermost and uppermost parts of the domain,
 zero everywhere else, and because they have simply been advected along with
@@ -29,13 +29,13 @@ material has been transported to so far.[1]
 <img src="cookbooks/composition_passive/doc/visit0015.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Passive compositional fields: A later image of the simulation corresponding to the sequence shown in Fig.&#xA0;6 (left) and zoom-in on the center, also showing the mesh (right)." />
 <img src="cookbooks/composition_passive/doc/visit0017.png" title="fig:" id="fig:compositional-passive-zoom" style="height:30.0%" alt="Passive compositional fields: A later image of the simulation corresponding to the sequence shown in Fig.&#xA0;6 (left) and zoom-in on the center, also showing the mesh (right)." />
 
-Fig.&nbsp;[6][] shows one aspect of compositional fields that occasionally
+Fig.&nbsp;[6] shows one aspect of compositional fields that occasionally
 makes them difficult to use for very long time computations. The simulation
 shown here runs for 20 time units, where every cycle of the spreading center
 at the top moving left and right takes 4 time units, for a total of 5 such
 cycles. While this is certainly no short-term simulation, it is obviously
 visible in the figure that the interface between the materials has diffused
-over time. Fig.&nbsp;[8][] shows a zoom into the center of the domain at the
+over time. Fig.&nbsp;[8] shows a zoom into the center of the domain at the
 final time of the simulation. The figure only shows values that are larger
 than 0.5, and it looks like the transition from red or blue to the edge of the
 shown region is no wider than 3 cells. This means that the computation is not
@@ -60,7 +60,7 @@ While the scheme we use to advect the compositional fields is not strictly
 conservative, it is almost perfectly so in practice. For example, in the
 computations shown in this section (using two additional global mesh
 refinements over the settings in the parameter file
-[cookbooks/composition_passive/composition_passive.prm][]), Fig.&nbsp;[9][]
+[cookbooks/composition_passive/composition_passive.prm]), Fig.&nbsp;[9]
 shows the maximal and minimal values of the first compositional fields over
 time, along with the mass $m_1(t)$ (these are all tabulated in columns of the
 statistics file, see Sections&nbsp;[\[sec:running-overview\]][1] and

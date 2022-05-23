@@ -84,12 +84,12 @@ GPlates `*.gpml` format, which is based on XML and can be read by . In case of
 a time-range the user needs to add a pattern specifier to the name to create a
 series of files. The `%u` flag is especially suited for the interaction with ,
 since it can easily be replaced by a calculated file index (see also
-[0.0.1.5][]).
+[0.0.1.5]).
 
 ##### Setting up the model.
 
 For this cookbook we will use the parameter file provided in
-[cookbooks/gplates/gplates_2d.prm][] which uses the 2d shell geometry
+[cookbooks/gplates/gplates_2d.prm] which uses the 2d shell geometry
 previously discussed in Section&nbsp;[\[sec:shell-simple-2d\]][1]. &rsquo;s
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
@@ -129,10 +129,10 @@ that define the 2D plane.
 The implementation of plate velocities in both two- and three-dimensional
 model setups allows for an easy comparison and test for common sources of
 error in the interpretation of model results. The left top figure in
-Fig.&nbsp;[1][] shows a modification of the above presented parameter file by
+Fig.&nbsp;[1] shows a modification of the above presented parameter file by
 setting &ldquo;`Dimension = 3`&rdquo; and
 &ldquo;`Initial global refinement = 3`.&rdquo; The top right plot of
-Fig.&nbsp;[1][] shows an example of three independent two-dimensional
+Fig.&nbsp;[1] shows an example of three independent two-dimensional
 computations of the same reduced resolution. The models were prescribed to be
 orthogonal slices by setting:
 
@@ -148,8 +148,8 @@ The results of these models are plotted simultaneously in a single
 three-dimensional figure in their respective model planes. The necessary
 information to rotate the 2D models to their respective planes (rotation axis
 and angle) is provided by the GPlates plugin in the beginning of the model
-output. The bottom plot of Fig.&nbsp;[1][] finally shows the results of the
-original [cookbooks/gplates/gplates_2d.prm][] also in the three mentioned
+output. The bottom plot of Fig.&nbsp;[1] finally shows the results of the
+original [cookbooks/gplates/gplates_2d.prm] also in the three mentioned
 planes.
 
 Now that we have model output for otherwise identical 2D and 3D models with
@@ -157,7 +157,7 @@ equal resolution and additional 2D output for a higher resolution an
 interesting question to ask would be: What additional information can be
 created by either using three-dimensional geometry or higher resolution in
 mantle convection models with prescribed boundary velocities. As one can see
-in the comparison between the top right and bottom plot in Fig.&nbsp;[1][]
+in the comparison between the top right and bottom plot in Fig.&nbsp;[1]
 additional resolution clearly improves the geometry of small scale features
 like the shape of up- and downwellings as well as the maximal temperature
 deviation from the background mantle. However, the limitation to two

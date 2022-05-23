@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/magnetic_stripes/magnetic_stripes.prm][].
+[cookbooks/magnetic_stripes/magnetic_stripes.prm].
 
 This is a model of a mid-ocean ridge that shows how magnetic lineations are
 created on the sea floor as the magnetic field changes its orientation over
@@ -27,7 +27,7 @@ Section&nbsp;[\[sec:benchmark-run\]][2]). To illustrate the stripes forming on
 the sea floor, a high resolution is necessary, which means that this cookbook
 needs longer to run than some of the others, and it may not always be feasible
 to run it on student laptops, or at least not during class. An animation can
-be found [here][]. Slides with an introduction to the Earth&rsquo;s magnetic
+be found [here]. Slides with an introduction to the Earth&rsquo;s magnetic
 field can be found [here][3].
 
 .

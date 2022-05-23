@@ -108,7 +108,7 @@ ensure that the solver can solve the system accurately enough to make sure
 that the iteration error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in
-Table&nbsp;[1][] and can be deduced from equations
+Table&nbsp;[1] and can be deduced from equations
 [\[eq:burstedde-velocity\]][1] and [\[eq:burstedde-pressure\]][2].
 Figure&nbsp;[\[fig:burstedde-benchmark\]][6] shows that the analytical
 solution is indeed retrieved by the model.

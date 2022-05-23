@@ -10,7 +10,7 @@ isoviscous Rayleigh-Taylor case (&ldquo;case 1a&rdquo;) published by van Keken
 *et al.* in (Keken et al. 1997). The benchmark considers a 2d situation where
 a lighter fluid underlies a heavier one with a non-horizontal interface
 between the two of them. This unstable layering causes the lighter fluid to
-start rising at the point where the interface is highest. Fig.&nbsp;[4][]
+start rising at the point where the interface is highest. Fig.&nbsp;[4]
 shows a time series of images to illustrate this.
 
 <img src="cookbooks/benchmarks/van-keken/doc/movie0000.png" title="fig:" id="fig:vk-1" style="width:23.0%" alt="Van Keken benchmark (using a smoothed out interface, see the main text): Compositional field at times t=0, 300, 900, 1800." />
@@ -23,7 +23,7 @@ thermochemical convection, the part we examine here can equally be considered
 as thermal or chemical convection; all that is necessary is that we describe
 the fluid&rsquo;s density. We can do that by using an inhomogeneous initial
 temperature field, or an inhomogeneous initial composition field. We will use
-the input file in [cookbooks/van-keken/van-keken-discontinuous.prm][] as
+the input file in [cookbooks/van-keken/van-keken-discontinuous.prm] as
 input, the central piece of which is as follows (go to the actual input file
 to see the remainder of the input parameters):
 
@@ -39,7 +39,7 @@ above a line describes by a cosine and 1 below it. Because the dependence of
 the density on the compositional field is negative, this means that a lighter
 fluid underlies a heavier one.
 
-The dynamics of the resulting flow have already been shown in Fig.&nbsp;[4][].
+The dynamics of the resulting flow have already been shown in Fig.&nbsp;[4].
 The measure commonly considered in papers comparing different methods is the
 root mean square of the velocity, which we can get using the following block
 in the input file (the actual input file also enables other postprocessors):
@@ -48,7 +48,7 @@ in the input file (the actual input file also enables other postprocessors):
 ```
 
 Using this, we can plot the evolution of the fluid&rsquo;s average velocity
-over time, as shown in the left panel of Fig.&nbsp;[6][]. Looking at this
+over time, as shown in the left panel of Fig.&nbsp;[6]. Looking at this
 graph, we find that both the timing and the height of the first peak is
 already well converged on a simple $32\times 32$ mesh (5 global refinements)
 and is very consistent (to better than 1% accuracy) with the results in the
@@ -83,11 +83,11 @@ shape functions to begin with. In other words, we may *input* the initial
 conditions as a discontinuous functions of zero and one in the parameter file,
 but the initial conditions used in the program are in fact different: they are
 the *interpolated* values of this discontinuous function on a finite element
-mesh. This is shown in Fig.&nbsp;[7][]. It is obvious that these initial
+mesh. This is shown in Fig.&nbsp;[7]. It is obvious that these initial
 conditions agree on the large scale (the determinant of the first plume), but
 not in the steps that may (and do, in fact) determine when and where the
 second plume will rise. The evolution of the resulting compositional field is
-shown in Fig.&nbsp;[8][] and it is obvious that the second, smaller plume
+shown in Fig.&nbsp;[8] and it is obvious that the second, smaller plume
 starts to rise from a completely different location &ndash; no wonder the
 second peak in the root mean square velocity plot is in a different location
 and with different height!
@@ -113,14 +113,14 @@ mesh-independent is to replace the original discontinuous initial condition
 with a smoothed out version; of course, we can still not represent it exactly
 on any given mesh, but we can at least get closer to it than for discontinuous
 variables. Consequently, let us use the following initial conditions instead
-(see also the file [cookbooks/van-keken/van-keken-smooth.prm][]):
+(see also the file [cookbooks/van-keken/van-keken-smooth.prm]):
 
 ``` prmfile
 ```
 
 This replaces the discontinuous initial conditions with a smoothed out version
 with a half width of around 0.01. Using this, the root mean square plot now
-looks as shown in the right panel of Fig.&nbsp;[6][]. Here, the second peak
+looks as shown in the right panel of Fig.&nbsp;[6]. Here, the second peak
 also converges quickly, as hoped for.
 
 The exact location and height of the two peaks is in good agreement with those
@@ -152,7 +152,7 @@ runtimes were produced by the BlueRidge cluster of the Advanced Research
 Computing (ARC) program at Virginia Tech. BlueRidge is a 408-node Cray CS-300
 cluster; each node outfitted with two octa-core Intel Sandy Bridge CPUs and 64
 GB of memory. Average runtimes for global refinements 5 through 10 using one
-node can be seen in Table&nbsp;[1][]. For 7 global refinements
+node can be seen in Table&nbsp;[1]. For 7 global refinements
 (128$\times$<!-- -->128 mesh size), the size of the mesh is 0.0078
 corresponding to a half width parameter of 0.0039. The smooth model allows for
 much better convergence of the secondary plumes, although they are still more
@@ -184,7 +184,7 @@ how much of the problem is smoothed over. As the parameter is increased the
 smoothed boundary grows; as the smoothed boundary shrinks it becomes sharper
 until the original discontinuous behavior is revealed. As the boundary grows,
 the two distinct layers eventually become one large, transitioning layer.
-These effects can be seen in Fig.&nbsp;[9][]. The overall effect is that the
+These effects can be seen in Fig.&nbsp;[9]. The overall effect is that the
 secondary rise is at different times based on these conditions. In general, as
 the smoothing parameter is decreased the smoothed boundary shrinks, and the
 plumes rise more quickly. As it is increased the boundary grows, and the
@@ -195,7 +195,7 @@ convergence from the secondary plumes.
 <img src="cookbooks/benchmarks/van-keken/doc/smoothing-parameter.png" id="fig:vk-5" style="width:60.0%" alt="Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time t=0 using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624." /><figcaption aria-hidden="true"><em>Van Keken Benchmark using smoothed out interface at 7 global refinements: compositional field at time <span class="math inline"><em>t</em>&#x2004;=&#x2004;0</span> using smoothing parameter size: a) 0.0039, b) 0.0078, c) 0.0156, d) 0.0234, e) 0.0312, f) 0.0390, g) 0.0468, h) 0.0546, i) 0.0624.</em></figcaption>
 </figure>
 
-The evolution in time of the resulting compositional fields (Fig.&nbsp;[10][])
+The evolution in time of the resulting compositional fields (Fig.&nbsp;[10])
 shows that the first peak converges as the smoothed interface decreases. There
 is a good agreement for the first peak for all smoothing parameters. As the
 width of the discontinuity increases, the second peak rises more slowly and
@@ -216,7 +216,7 @@ $\frac{\eta_{t}}{\eta_{b}}=0.1, 0.01$, meaning the viscosity of the upper,
 heavier layer is still 1$\times10^{2}$ Pa&nbsp;s, but the viscosity of the
 lower, lighter layer is now either 10 or 1 Pa&nbsp;s, respectively. The
 viscosity profiles of the discontinuous and smooth models are shown in
-Fig.&nbsp;[11][].
+Fig.&nbsp;[11].
 
 <figure>
 <img src="cookbooks/benchmarks/van-keken/doc/contrast_viscosity.png" id="fig:vk-7" style="width:70.0%" alt="Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth. Both are shown at t=0." /><figcaption aria-hidden="true"><em>Van Keken benchmark using different-viscosity layers. The left image is the discontinuous case, while right is the smooth. Both are shown at <span class="math inline"><em>t</em>&#x2004;=&#x2004;0</span>.</em></figcaption>
@@ -224,7 +224,7 @@ Fig.&nbsp;[11][].
 
 For both cases, discontinuous and smooth, and both viscosity proportions, 0.1
 and 0.01, the results are shown at the end time step number, $t=2000$, in
-Fig.&nbsp;[12][]. This was generated using the original input parameter file,
+Fig.&nbsp;[12]. This was generated using the original input parameter file,
 running the cases with 8 global refinements, and also adding the two-layer
 viscosity model.
 
@@ -237,7 +237,7 @@ domain, the plumes rise faster when adding the two-layer viscosity. Also, the
 larger the viscosity difference is the earlier the plumes appear, and the
 faster their ascent. To further reveal the effect of the two-layer viscosity
 model, we also plot the evolution of the fluids&rsquo; root mean square
-velocity over time, as shown in Fig.&nbsp;[13][].
+velocity over time, as shown in Fig.&nbsp;[13].
 
 <figure>
 <img src="cookbooks/benchmarks/van-keken/doc/2viscosities-velocity.png" id="fig:vk-9" style="width:40.0%" alt="Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models." /><figcaption aria-hidden="true"><em>Van Keken benchmark: Evolution of the root mean square velocity as a function of time for different viscosity contrast proportions (0.1/0.01) for both discontinuous and smooth models.</em></figcaption>

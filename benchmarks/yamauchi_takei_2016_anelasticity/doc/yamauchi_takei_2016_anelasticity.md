@@ -15,7 +15,7 @@ $V_S$-to-temperature conversion accurately accounts for the strongly
 non-linear temperature dependence of $V_S$ at near-solidus conditions and is
 therefore especially useful for initializing models with accurate temperature
 structure in the upper $\sim$&nbsp;400 km of the mantle. This benchmark is
-located in the folder [benchmarks/yamauchi_takei_2016_anelasticity][].
+located in the folder [benchmarks/yamauchi_takei_2016_anelasticity].
 
 <div class="center">
 
@@ -107,17 +107,17 @@ $\eta_r = 6.22 \times 10^{21}~\si{Pa . s}$, $E_a = 452.5~\si{kJ . mol}^{-1}$,
 $V_a = 7.913 \times 10^{-6}~\si{m}^{3}~\si{mol}^{-1}$ and
 $\frac{\partial T_s}{\partial z} = 1.018~\si{K . km}^{-1}$. As $V_S$ is a
 complex function of temperature, a Brent minimization algorithm is used to
-find optimal values. Fig.&nbsp;[1][] shows that the implementation of this
+find optimal values. Fig.&nbsp;[1] shows that the implementation of this
 parameterization can accurately recreate the results shown by Yamauchi &
 Takei&nbsp;(Yamauchi and Takei 2016) in their Fig. 20.
 
 The parameter file and initial temperature model for this benchmark can be
 found at
-[benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm][]
+[benchmarks/yamauchi_takei_2016_anelasticity/yamauchi_takei_2016_anelasticity.prm]
 and
-[benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc][].
-Code to recreate Fig.&nbsp;[1][] is provided in
-[benchmarks/yamauchi_takei_2016_anelasticity/plot_output][].
+[benchmarks/yamauchi_takei_2016_anelasticity/anelasticity_temperature.cc].
+Code to recreate Fig.&nbsp;[1] is provided in
+[benchmarks/yamauchi_takei_2016_anelasticity/plot_output].
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

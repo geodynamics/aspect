@@ -8,7 +8,7 @@ a viscosity contrast at location $y=y_0$ whose amplitude and width can be
 controlled. The viscosity is defined as
 $$\eta(y)=\frac{1}{\frac{1}{\pi} \tan^{-1} (\frac{y-y_0}{\beta} ) + 1/2 + \epsilon}$$
 where $\beta$ and $\epsilon$ are chosen by the user. Viscosity profiles for
-different values of $\beta$ and $\epsilon$ are shown in Fig.&nbsp;[2][]. The
+different values of $\beta$ and $\epsilon$ are shown in Fig.&nbsp;[2]. The
 set up of this benchmark allows testing how discretizations deal with abrupt
 changes in the viscosity (if $\beta$ is small) as well as large changes in the
 viscosity (if $\epsilon$ is small).
@@ -36,7 +36,7 @@ C_1 &=& 2\pi \Bigl[
  &&\qquad\qquad
 -\beta  \log [\beta^2 + (1-z_0)^2]  +  2(1-z_0) \tan^{-1} \frac{1-z_0}{\beta} + 2\pi (1+2\epsilon)   \Bigr]^{-1},\\
 C_2 &=& \left[ \beta  \log [\beta^2 + (1+z_0)^2]  -  2(1+z_0) \tan^{-1} \frac{1+z_0}{\beta} + \pi(1+2\epsilon) \right]C_1.\end{aligned}$$
-The viscosity and velocity fields are shown in Fig.&nbsp;[4][] for
+The viscosity and velocity fields are shown in Fig.&nbsp;[4] for
 $\beta=0.01$ and $\epsilon=0.05$.
 
 <div class="center">

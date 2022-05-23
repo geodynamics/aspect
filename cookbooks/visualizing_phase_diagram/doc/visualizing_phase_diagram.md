@@ -21,7 +21,7 @@ well as a lookup table in the Steinberger material model.
 ##### The input file.
 
 You can find the input file to run this cookbook example in
-[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm][]. For
+[cookbooks/visualizing_phase_diagram/visualizing_phase_diagram.prm]. For
 this first case, phase transitions are prescribed manually in terms of their
 depth, Clapeyron slope, and other key parameters.
 
@@ -51,7 +51,7 @@ model are listed here:
 ##### Results.
 
 Visualization of the model results yields a phase diagram of a pyrolitic
-mantle (Figure [1][]). The field shown here has the reference densities of the
+mantle (Figure [1]). The field shown here has the reference densities of the
 pyrolite phases, though settings of phase transitions are over-simplified. One
 may notice that three transitions (i.e., one in the olivine system, two in the
 spinel system) are included for the 660 interfaces, and they need to be
@@ -59,7 +59,7 @@ modified at a higher temperature. In spite of the complexities of mantle
 phases, the focus of this first example is to simply illustrate this approach
 of visualizing it. Beyond showing the diagram, We have also used the
 &ldquo;lineout&rdquo; feature in VisIt to export the data along two vertical
-lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2][]). The figure
+lines at $T = \SI{1173}{K}$ and $T = \SI{1673}{K}$ (Figure [2]). The figure
 for $T = \SI{1173}{K}$ illustrates the buoyancy forces felt by a descending
 cold slab within the mantle transition zone.
 
@@ -71,10 +71,10 @@ needed:
 ```
 
 With this change, we can also visualize the phase diagram of harzburgite in
-Figure [1][].
+Figure [1].
 
 Moreover, We tested the pyrolitic lookup table used in the Steinberg material
-model (Figure [3][]). The same setup of the initial condition is applied as in
+model (Figure [3]). The same setup of the initial condition is applied as in
 the previous case. The densities, however, are not assigned to the heat
 capacity anymore. Thus the vertical axis would deviate from the axis of
 pressure a little bit. This second setup serves the goal of illustrating a

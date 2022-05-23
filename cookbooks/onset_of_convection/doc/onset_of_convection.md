@@ -4,7 +4,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The input file for this model can be found at
-[cookbooks/onset_of_convection/onset_of_convection.prm][].
+[cookbooks/onset_of_convection/onset_of_convection.prm].
 
 This model is a copy of the onset of convection benchmark described in
 Section&nbsp;[\[sec:benchmark-onset-of-convection\]][1], with the difference
@@ -13,7 +13,7 @@ through an ipython notebook). The setup is based on a linear stability
 analysis for the onset of convection given in Turcotte and Schubert (Turcotte
 and Schubert 2014) (section 6.19). The parameters being used here are
 reasonable for the Earth&rsquo;s mantle. The cookbook folder contains a script
-[cookbooks/onset_of_convection/run.sh][] that can be used to run several
+[cookbooks/onset_of_convection/run.sh] that can be used to run several
 models with small parameter variations. More details can be found in the
 example assignment below.
 
@@ -22,7 +22,7 @@ example assignment below.
 .
 
 Slides that describe the different forces controling convective motion (which
-is related to one of the questions in the assignment) can be found [here][].
+is related to one of the questions in the assignment) can be found [here].
 
 ##### Example assignment: Onset of convection in celestial bodies
 
@@ -80,10 +80,10 @@ are m/s<sup>2</sup>.
 
 ###### Prepare the model runs.
 
-You can find a file called `run.sh` in the [cookbooks/onset_of_convection/][]
+You can find a file called `run.sh` in the [cookbooks/onset_of_convection/]
 folder. This file is not a model input file, but it is a bash script than can
 run a set of models rather than just one model. It uses the input file
-[cookbooks/onset_of_convection/onset_of_convection.prm][], modifies some of
+[cookbooks/onset_of_convection/onset_of_convection.prm], modifies some of
 the parameter values, and then runs it with ASPECT. To see what is in the
 file, you can open it with leafpad.
 
@@ -129,7 +129,7 @@ To run the script, you need to type
 `../../build/aspect` by that path.)
 
 This will create a subfolder with the visualization output of each model run
-in the [cookbooks/onset_of_convection/][] folder, and it will also create the
+in the [cookbooks/onset_of_convection/] folder, and it will also create the
 file `onset-convection-data.csv`. This file contains a line for each model run
 that provides the viscosity (first column), the temperature difference between
 top and bottom of the model (second column), the average velocity of the
@@ -145,7 +145,7 @@ decrease.
 
 You can plot the `onset-convection-data.csv` file using gnuplot (or a
 different plotting program, if there&rsquo;s one you like better). The
-[cookbooks/onset_of_convection/][] folder should also contain a file
+[cookbooks/onset_of_convection/] folder should also contain a file
 `plot.plt`. This is a small script for gnuplot that will generate a plot from
 your data and write it into an output file called `convection.png`, using
 logarithmic scales for the x and y axes. The script is already set up in a way
@@ -161,7 +161,7 @@ You can run the script by typing
 
     gnuplot plot.plt
 
-You can open [cookbooks/onset_of_convection/plot.plt][] with leafpad to see
+You can open [cookbooks/onset_of_convection/plot.plt] with leafpad to see
 what&rsquo;s in there, and you can also run each of these lines as a separate
 command interactively in gnuplot. In order to do that, type `gnuplot` in the
 terminal, and then just copy or type any of the commands in the terminal
@@ -183,7 +183,7 @@ that is an order of magnitude lower than `value1`, and a viscosity that is two
 orders of magnitude lower than `value1` (keeping the temperature the same).
 
 In order to do that, you can modify the file `run.sh` in the
-[cookbooks/onset_of_convection/][] folder in the following way:
+[cookbooks/onset_of_convection/] folder in the following way:
 
     for viscosity in "value1" "value2" "value3"
     do

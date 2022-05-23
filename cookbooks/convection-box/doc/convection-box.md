@@ -236,7 +236,7 @@ discussion):
 
       plot "output-convection-box/statistics" using 2:11 with lines
 
-Fig.&nbsp;[4][] shows clearly that the simulation enters a steady state after
+Fig.&nbsp;[4] shows clearly that the simulation enters a steady state after
 about $t\approx 0.1$ and then changes very little. This can also be observed
 using the graphical output files from which we have generated Fig.{ref}`fig:convection-box-fields`.
 One can look further into this data to find that the flux through the top and

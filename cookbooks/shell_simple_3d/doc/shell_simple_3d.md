@@ -4,7 +4,7 @@ The setup from the previous section can of course be extended to 3d shell
 geometries as well &ndash; though at significant computational cost. In fact,
 the number of modifications necessary is relatively small, as we will discuss
 below. To show an example up front, a picture of the temperature field one
-gets from such a simulation is shown in Fig.&nbsp;[1][]. The corresponding
+gets from such a simulation is shown in Fig.&nbsp;[1]. The corresponding
 movie can be found at <http://youtu.be/j63MkEc0RRw>.
 
 <figure>
@@ -18,7 +18,7 @@ changes is relatively small. However, when taking into account the various
 discussions about which parts of the model were or were not realistic, they go
 throughout the input file, so we reproduce it here in its entirety,
 interspersed with comments (the full input file can also be found in
-[cookbooks/shell_simple_3d/shell_simple_3d.prm][]). Let us start from the top
+[cookbooks/shell_simple_3d/shell_simple_3d.prm]). Let us start from the top
 where everything looks the same except that we set the dimension to 3:
 
 ``` prmfile
@@ -102,7 +102,7 @@ are also a number of things that are already order of magnitude correct here.
 
 For example, if we look at the heat flux this model produces, we find that the
 convection here produces approximately the correct number. Wikipedia&rsquo;s
-article on [Earth&rsquo;s internal heat budget][][1] states that the overall
+article on [Earth&rsquo;s internal heat budget][1] states that the overall
 heat flux through the Earth surface is about $\num{47e12}$ W (i.e., 47
 terawatts) of which an estimated 12&ndash;30 TW are primordial heat released
 from cooling the Earth and 15&ndash;41 TW from radiogenic heating.[2] Our
@@ -110,7 +110,7 @@ model does not include radiogenic heating (though has a number of
 `Heating models` to switch this on, see
 Section&nbsp;[\[parameters:Heating_20model\]][3]) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
-our shell geometry. This is shown in the left panel of Fig.&nbsp;[3][] where
+our shell geometry. This is shown in the left panel of Fig.&nbsp;[3] where
 we plot the heat flux through boundaries zero and one, corresponding to the
 core-mantle boundary and Earth&rsquo;s surface. always computes heat fluxes in
 outward direction, so the flux through boundary zero will be negative,
@@ -128,7 +128,7 @@ boundary, and an estimated heat loss due to cooling of the mantle of
 
 A second measure of whether these results make sense is to compare velocities
 in the mantle with what is known from observations. As shown in the right
-panel of Fig.&nbsp;[3][], the maximal velocities settle to values on the order
+panel of Fig.&nbsp;[3], the maximal velocities settle to values on the order
 of 3 cm/year (each of the peaks in the line for the maximal velocity
 corresponds to a particularly large plume rising or falling). This is, again,
 at least not very far from what we know to be correct and we should expect

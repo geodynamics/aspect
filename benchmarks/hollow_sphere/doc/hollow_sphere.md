@@ -22,9 +22,9 @@ $$\rho(r,\theta)=  \left(   \frac{\alpha}{r^4}  (8 \ln r -6) +  \frac{8\beta}{3r
 We set $R_1=0.5$, $R_2=1$ and $\gamma=-1$. The pressure is zero on both
 surfaces so that the surface pressure normalization is used. The boundary
 conditions that are used are simply the analytical velocity prescribed on both
-boundaries. The velocity and pressure fields are shown in Fig.&nbsp;[3][].
+boundaries. The velocity and pressure fields are shown in Fig.&nbsp;[3].
 
-Fig.&nbsp;[4][] shows the velocity and pressure errors in the $L_2$-norm as a
+Fig.&nbsp;[4] shows the velocity and pressure errors in the $L_2$-norm as a
 function of the mesh size $h$ (taken in this case as the radial extent of the
 elements). As expected we recover a third-order convergence rate for the
 velocity and a second-order convergence rate for the pressure.

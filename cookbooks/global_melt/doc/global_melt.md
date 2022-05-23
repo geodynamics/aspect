@@ -8,12 +8,12 @@ coupled magma/mantle dynamics (see Section&nbsp;[\[sec:melt_transport\]][1])
 to set up a model of mantle convection that also includes melting and freezing
 of mantle rock, and the transport of melt according to the two-phase flow
 equations. The model setup is described in detail in (Dannberg and Heister
-2016), which can be found [here][], and in the following we will go over a
+2016), which can be found [here], and in the following we will go over a
 slightly simplified version in lower resolution. We will start by looking at a
 global mantle convection without melt migration, and will then discuss how the
 input file has to be modified in order to add melt transport. A movie that
 compares the evolution of the temperature field and the amount of melt present
-in both models in higher resolution can be found [online][].
+in both models in higher resolution can be found [online].
 
 The model setup is a 2D box with dimensions of $2900 \times 8700$&#8198;km,
 and it is heated from the bottom and cooled from the top. A full description
@@ -28,7 +28,7 @@ to the solid. This also means that because melt is not extracted, the bulk
 composition of the material always stays the same, and melt only freezes again
 once advection or conduction causes the temperature of the solid rock to be
 below the solidus. The following input file (which can be found in
-[cookbooks/global_melt/global_no_melt.prm][]) contains a detailed description
+[cookbooks/global_melt/global_no_melt.prm]) contains a detailed description
 of the different options required to set up such a model:
 
 ``` prmfile
@@ -55,7 +55,7 @@ Moreover, there are additional material properties that describe how easily
 melt can move through the host rock, such as the `permeability`, or properties
 of the melt itself, such as the `fluid viscosity`. The following input file (a
 complete version of which can be found in
-[cookbooks/global_melt/global_melt.prm][]) details the changes we have to make
+[cookbooks/global_melt/global_melt.prm]) details the changes we have to make
 from the first model to set up a model with melt migration:
 
 ``` prmfile
@@ -81,7 +81,7 @@ over time in comparison to the model without melt migration.
 <embed src="cookbooks/global_melt/doc/model_evolution.pdf" id="fig:global-melt" style="width:90.0%" /><figcaption aria-hidden="true"><em>Evolution of the model without (left) and with (right) melt migration.</em></figcaption>
 </figure>
 
-Figure&nbsp;[1][] shows the time evolution of both models. A more complete
+Figure&nbsp;[1] shows the time evolution of both models. A more complete
 comparison of the two models can be found in Section&nbsp;4.7 &ldquo;Influence
 of melt migration on a global-scale convection model&rdquo; in (Dannberg and
 Heister 2016).
