@@ -2,7 +2,7 @@
 # Boundary heat flux model
 
 
-## **Parameters in section** Boundary heat flux model
+## **Subsection:** Boundary heat flux model
 
 
 (parameters:Boundary_20heat_20flux_20model/Fixed_20heat_20flux_20boundary_20indicators)=
@@ -32,7 +32,7 @@ The formula you describe in the mentioned section is a scalar value for the heat
 The symbol $t$ indicating time that may appear in the formulas for the prescribed heat flux is interpreted as having units seconds unless the global parameter ``Use years in output instead of seconds'' has been set.
 
 (parameters:Boundary_20heat_20flux_20model/Function)=
-## **Parameters in section** Boundary heat flux model/Function
+## **Subsection:** Boundary heat flux model / Function
 (parameters:Boundary_20heat_20flux_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian

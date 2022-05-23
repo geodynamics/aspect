@@ -18,7 +18,7 @@ the `cookbooks` directory, corresponding to the examples discussed in
 {ref}`cha:cookbooks`, and input files for some of the benchmarks discussed in
 {ref}`cha:benchmarks` are located in the
 `benchmarks` directory. A full description of all parameters one can specify
-in these files is given in <https://aspect.geodynamics.org/doc/parameter_view/parameters.xml>.
+in these files is given in {ref}`sec:parameter-documentation-home`.
 
 Running ASPECT with an input file[^footnote2] will
 produce output that will look something like this (numbers will all be
@@ -297,10 +297,6 @@ advecting along particles (see {ref}`sec:methods:particles`), then visualization
 information for these particles will also appear in this file. See
 {ref}`sec:cookbooks:using-particles` for an example of how this looks like.
 
-:::{admonition} TODO
-`parameters:Postprocess`, `parameters:Geometry_20model`, and `parameters:Geometry_20model/Spherical_20shell`, as well as the reference to A.165 in footnote [^footnote5] and {ref}`parameters:Postprocess/Depth_20average` from the figure caption are dead references as these files are not set up.
-:::
-
 [^footnote1]: As a special case, if you call ASPECT with an argument that consists of two dashes, “`--`”, then the arguments will be read
 from the standard input stream of the program. In other words, you could type the input parameters into your shell window
 in this case (though that would be cumbersome, ASPECT would seem to hang until you finish typing all of your input into
@@ -325,7 +321,7 @@ amount of disk space.
 
 [^footnote5]: The underlying deal.II package actually supports output in around a dozen different formats, but most of them are not
 very useful for large-scale, 3d, parallel simulations. If you need a different format than VTK, you can select this using the
-run-time parameters discussed in Section A.165.
+run-time parameters discussed in {ref}`parameters:Postprocess/Visualization`.
 
 [^footnote6]: At the time of writing this, current versions of Visit (starting with version 2.5.1) actually have a bug that prevents them
 from successfully reading the `output/solution.visit` or `output/solution/solution-XXXXX.visit` files – Visit believes that

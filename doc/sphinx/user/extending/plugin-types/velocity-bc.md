@@ -13,7 +13,8 @@ needs a model in which one needs to be able to evaluate the velocity at
 individual points at the boundary. This can be implemented via plugins.
 
 To implement a new boundary velocity model, you need to overload the
-[aspect::VelocityBoundaryConditions::Interface][] class and use the
+[aspect::VelocityBoundaryConditions::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryVelocity_1_1Interface.html)
+class and use the
 `ASPECT_REGISTER_VELOCITY_BOUNDARY_CONDITIONS` macro to register your new
 class. The implementation of the new class should be in namespace
 `aspect::VelocityBoundaryConditions`.
@@ -54,9 +55,10 @@ at the beginning of each time step. Examples are models that need to call an
 external program to obtain plate velocities for the current time, or from
 historical records, in which case it is far cheaper to do so only once at the
 beginning of the time step than for every boundary point separately. See, for
-example, the [aspect::VelocityBoundaryConditions::GPlates][] class.
+example, the `aspect::VelocityBoundaryConditions::GPlates` class.
 
 The remaining functions are obvious, and are also discussed in the
 documentation of this interface class at
-[aspect::VelocityBoundaryConditions::Interface][]. The purpose of the last two
+[aspect::VelocityBoundaryConditions::Interface](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1BoundaryVelocity_1_1Interface.html).
+The purpose of the last two
 functions has been discussed in the general overview of plugins above.

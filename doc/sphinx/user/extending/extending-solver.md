@@ -1,9 +1,11 @@
+(sec:extending:solver)=
 # Extending the basic solver
 
 The core functionality of the code, i.e., that part of the code that
 implements the time stepping, assembles matrices, solves linear and nonlinear
 systems, etc., is in the `aspect::Simulator` class (see the [doxygen
-documentation of this class][aspect::Simulator class]). Since the
+documentation of this class](https://aspect.geodynamics.org/doc/doxygen/classaspect_1_1Simulator.html)).
+Since the
 implementation of this class has more than 3,000 lines of code, it is split
 into several files that are all located in the `source/simulator` directory.
 Specifically, functionality is split into the following files:
@@ -36,8 +38,8 @@ Specifically, functionality is split into the following files:
 
 Obviously, if you want to extend this core functionality, it is useful to
 first understand the numerical methods this class implements. To this end,
-take a look at the paper that describes these methods, see (Kronbichler,
-Heister, and Bangerth 2012). Further, there are two predecessor programs whose
+take a look at the paper that describes these methods, see
+{cite:t}`kronbichler:etal:2012`. Further, there are two predecessor programs whose
 extensive documentation is at a much higher level than the one typically found
 inside ASPECT itself, since they are meant to
 teach the basic components of convection simulators as part of the <span
@@ -62,6 +64,9 @@ ASPECT, but that was also not the goal in creating
 them. They will, however, serve as good introductions to the general approach
 for solving thermal convection problems.
 
-<div class="center">
-
-</div>
+:::{note}
+Neither this manual, nor the documentation in ASPECT makes much of an attempt at
+teaching how to use the deal.II library upon which ASPECT is built. Nevertheless, you will
+likely have to know at least the basics of deal.II to successfully work on the ASPECT code. We
+refer to the resources listed at the beginning of this section as well as references {cite}`bangerth:etal:2007,bangerth:etal:2012`.
+:::

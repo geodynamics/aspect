@@ -1,7 +1,7 @@
 # Heating models
 
 The heating model is responsible for describing the various terms in the
-energy equation&nbsp;{math:numref}`eq:temperature`3], using the coefficients provided
+energy equation&nbsp;{math:numref}`eq:temperature`, using the coefficients provided
 by the material model. These can be source terms such as radiogenic heat
 production or shear heating, they can be terms on the left-hand side of the
 equation, such as part of the latent heating terms, or they can be heating
@@ -17,8 +17,8 @@ When the equations are assembled and solved, the heating terms from all
 heating models used in the computation are added up.
 
 To implement a new heating model, you need to overload the
-[aspect::HeatingModel::Interface][] class and use the
-`ASPECT_REGISTER_HEATING_MODEL` macro to register your new class. The
+[aspect::HeatingModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1HeatingModel.html)
+class and use the `ASPECT_REGISTER_HEATING_MODEL` macro to register your new class. The
 implementation of the new class should be in namespace `aspect::HeatingModel`.
 
 Specifically, your new class needs to implement the following basic interface:
@@ -82,11 +82,11 @@ struct HeatingModelOutputs
 
 Heating source terms are terms on the right-hand side of the equations, such
 as the adiabatic heating $\alpha T \left( \mathbf u \cdot \nabla p \right)$ in
-equation {math:numref}`eq:temperature`3]. An example for a left-hand side heating term
+equation {math:numref}`eq:temperature`. An example for a left-hand side heating term
 is the temperature-derivative term
 $\rho T \Delta S \frac{\partial X}{\partial T}$ that is part of latent heat
-production (see equation {math:numref}`eq:temperature-reformulated`19]).[4] Rates of
-temperature change[5] are used when the heating term is related to a reaction
+production (see equation {math:numref}`eq:temperature-reformulated`).[^footnote1] Rates of
+temperature change[^footnote2] are used when the heating term is related to a reaction
 process, happening on a faster time scale than the temperature advection. All
 of these terms can depend on any of the material model inputs or outputs.
 Implementations of `evaluate()` may of course choose to ignore dependencies on
@@ -94,8 +94,8 @@ any of these arguments.
 
 The remaining functions are used in postprocessing as well as handling
 run-time parameters. The exact meaning of these member functions is documented
-in the [aspect::HeatingModel::Interface class
-documentation][aspect::HeatingModel::Interface]. Note that some of the
+in the [aspect::HeatingModel::Interface](https://aspect.geodynamics.org/doc/doxygen/namespaceaspect_1_1HeatingModel.html)
+class documentation. Note that some of the
 functions listed above have a default implementation, as discussed on the
 documentation page just mentioned.
 
@@ -106,3 +106,11 @@ is called once during the initialization of
 ASPECT and can be used to allocate memory for the
 heating model, initialize state, or read information from an external file.
 The function `update()` is called at the beginning of every time step.
+
+[^footnote1]: Whether a term should go on the left or right hand side of the equation is, in some sense, a choice one can make. Putting
+a term onto the right hand side makes it an explicit term as far as time stepping is concerned, and so may imply a time step
+restriction if its dynamics are too fast. On the other hand, it does not introduce a nonlinearity if it depends on more than just
+a multiple of the temperature (such as the term $\alpha T\left( \textbf{u}\cdot  \nabla p\right)$). In practice, whether one wants to put a specific term on one side
+or the other may be a judgment call based on experience with numerical methods.
+
+[^footnote2]: Or, more correctly: Rates of *thermal energy change*

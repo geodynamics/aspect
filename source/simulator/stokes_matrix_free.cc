@@ -1366,12 +1366,6 @@ namespace aspect
     parse_parameters(prm);
     CitationInfo::add("mf");
 
-    AssertThrow(!(sim.parameters.mesh_deformation_enabled
-                  && !sim.mesh_deformation->get_free_surface_boundary_indicators().empty()
-                  && sim.parameters.enable_elasticity),
-                ExcMessage("The matrix-free Stokes solver does not support free surface boundaries + GMG + elasticity."));
-
-
 #if !DEAL_II_VERSION_GTE(9,3,2)
     AssertThrow(!sim.parameters.mesh_deformation_enabled,
                 ExcMessage("Mesh deformation with the GMG solver requires deal.II 9.3.2 or newer."));
