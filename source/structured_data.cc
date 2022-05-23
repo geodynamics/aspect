@@ -214,8 +214,8 @@ namespace aspect
           maximum_component_value = std::vector<double>(components,-std::numeric_limits<double>::max());
           for (unsigned int c=0; c<components; ++c)
             {
-              const unsigned int n_elements = data_table[c].n_elements();
-              for (unsigned int idx=0; idx<n_elements; ++idx)
+              const std::size_t n_elements = data_table[c].n_elements();
+              for (std::size_t idx=0; idx<n_elements; ++idx)
                 maximum_component_value[c] = std::max(maximum_component_value[c], data_table[c](
                                                         compute_table_indices(table_points, idx)));
             }
@@ -508,12 +508,12 @@ namespace aspect
           in.seekg (position);
 
           // Finally read data lines:
-          unsigned int read_data_entries = 0;
+          std::size_t read_data_entries = 0;
           do
             {
               // what row and column of the file are we in?
-              const unsigned int column_num = read_data_entries%(components+dim);
-              const unsigned int row_num = read_data_entries/(components+dim);
+              const std::size_t column_num = read_data_entries%(components+dim);
+              const std::size_t row_num = read_data_entries/(components+dim);
               const TableIndices<dim> idx = compute_table_indices(new_table_points, row_num);
 
               if (column_num < dim)
@@ -551,7 +551,7 @@ namespace aspect
                                   "Please check for malformed data values (e.g. NaN) or superfluous "
                                   "lines at the end of the data file."));
 
-          const unsigned int n_expected_data_entries = (components + dim) * data_table.n_elements();
+          const std::size_t n_expected_data_entries = (components + dim) * data_table.n_elements();
           AssertThrow(read_data_entries == n_expected_data_entries,
                       ExcMessage ("While reading the data file '" + filename + "' the ascii data "
                                   "plugin has reached the end of the file, but has not found the "
@@ -624,16 +624,16 @@ namespace aspect
 
     template <int dim>
     TableIndices<dim>
-    StructuredDataLookup<dim>::compute_table_indices(const TableIndices<dim> &sizes, const unsigned int i) const
+    StructuredDataLookup<dim>::compute_table_indices(const TableIndices<dim> &sizes, const std::size_t idx) const
     {
-      TableIndices<dim> idx;
-      idx[0] = i % sizes[0];
+      TableIndices<dim> result;
+      result[0] = idx % sizes[0];
       if (dim >= 2)
-        idx[1] = (i / sizes[0]) % sizes[1];
+        result[1] = (idx / sizes[0]) % sizes[1];
       if (dim == 3)
-        idx[2] = i / (sizes[0] * sizes[1]);
+        result[2] = idx / (sizes[0] * sizes[1]);
 
-      return idx;
+      return result;
     }
 
 
