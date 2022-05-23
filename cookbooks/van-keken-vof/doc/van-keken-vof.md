@@ -31,17 +31,17 @@ interface, rather than in the entire computational domain.
 
 As noted above, when the interface is discontinuous, the van Keken problem is
 a version of the Rayleigh-Taylor problem, which is unstable to perturbations
-of all wavelengths[1] (e.g. see&nbsp;(Chandrasekhar 1961)). Therefore, it is
+of all wavelengths[1] (e.g. see (Chandrasekhar 1961)). Therefore, it is
 extremely sensitive to the initial conditions. In order to address this
 sensitivity, we do not use the default approach of computing the initial
 material volume fractions using a composition quadrature. Instead we compute
 the initial volume fractions using a signed distance function $\phi$ as
-follows&nbsp;(Robey 2019; Robey and Puckett 2019).
+follows (Robey 2019; Robey and Puckett 2019).
 
 First we create the function $\phi$, which has the following two properties:
 1) it is positive in the region that contains one of the fluids, which we will
-refer to as fluid&nbsp;1, and negative in the complement of this region, which
-we will refer to as fluid&nbsp;2, and 2) at each point in the domain the
+refer to as fluid 1, and negative in the complement of this region, which
+we will refer to as fluid 2, and 2) at each point in the domain the
 magnitude $| \phi |$ of $\phi$ is the distance to the boundary between the two
 fluids or materials. In the computations shown here, we use an approximation
 $\tilde{\phi}$ to $\phi$ such that the difference between $\tilde{\phi}$ and
@@ -68,7 +68,7 @@ $16 \times 16$ subcells and the distance to the given initial interface
 $f(\mathbf x)$, provided in `Function expression`, is computed in each of the
 256 subcells. We then use this information to compute a piecewise linear
 interface approximation to $f(\mathbf x)$. The volume fraction in each subcell
-is then found in the manner described in&nbsp;(Robey 2019; Robey and Puckett
+is then found in the manner described in (Robey 2019; Robey and Puckett
 2019). This initialization procedure provides a much finer and thus, more
 accurate, initial condition than the standard VOF initialization procedure
 described above.
@@ -78,8 +78,8 @@ sufficient for most purposes, when using the VOF method one has the ability to
 see the division between the fluids reconstructed by the VOF algorithm in each
 cell. This is accomplished by plotting the zero contour of a field
 $\tilde\psi$ that is generated to be $0$ on the reconstructed interface,
-positive in the region with fluid&nbsp;1, and negative in the region with
-fluid&nbsp;2. However $\tilde{\psi}$ does not satisfy the requirement that the
+positive in the region with fluid 1, and negative in the region with
+fluid 2. However $\tilde{\psi}$ does not satisfy the requirement that the
 magnitude is equal to the distance to the interface as would be required for
 the signed distance function $\phi$. The modifications to the parameter file
 that are necessary in order to draw the reconstructed boundary as a contour
@@ -94,31 +94,31 @@ We made a number of computations of the van Keken problem with the VOF method
 in order to compare the wall clock times with computations using a DG
 compositional field. We ran both on the same cluster at global refinements
 5&ndash;8 using one node with four CPUs and refinements 9 and 10 using two
-nodes with 16 CPUs. Our results are shown in Table&nbsp;[1]. In all of the
-computations shown in Table&nbsp;[1] we used a CFL number of $\sigma=0.5$.
+nodes with 16 CPUs. Our results are shown in Table [1]. In all of the
+computations shown in Table [1] we used a CFL number of $\sigma=0.5$.
 Due to the change in the CFL number from $\sigma = 1.0$ in
-Table&nbsp;[\[tab:runtime-table\]][2] to $\sigma = 0.5$ in Table&nbsp;[1]
+Table [\[tab:runtime-table\]][2] to $\sigma = 0.5$ in Table [1]
 and the difference between HPC clusters on which the computational results
 shown in the two tables were made, we can&rsquo;t make a direct quantitative
-comparison between the data in Tables&nbsp;[\[tab:runtime-table\]][2]
-and&nbsp;[1].
+comparison between the data in Tables [\[tab:runtime-table\]][2]
+and [1].
 
 However, we can compare the required run time for a VOF computation to that
 for a DG computation. We note that the use of the VOF advection algorithm
 significantly reduces the required computation time in all cases, frequently
 requiring less than half the time required by the DG compositional field.
 
-We now examine the RMS velocity data shown in Figure&nbsp;[1][3]. Other than
+We now examine the RMS velocity data shown in Figure [1][3]. Other than
 for the case of 5 levels of uniform global refinement, the curves for the RMS
 velocities for $6$, $7$, $8$, $9$ and $10$ levels of refinement in
-Figure&nbsp;[1][3] are nearly indistinguishable.
+Figure [1][3] are nearly indistinguishable.
 
 Upon examining the solution at the final time, we note that the general
-structure of the solution shown in Figure&nbsp;[2] matches the form and the
+structure of the solution shown in Figure [2] matches the form and the
 general structure found in other versions of this benchmark such as the fourth
-image on the right in Figure&nbsp;[\[fig:vk-1\]][4]. We also note that the
+image on the right in Figure [\[fig:vk-1\]][4]. We also note that the
 differences in the shape of the interface based on a single refinement as
-shown in Figure&nbsp;[2] are minor, although still slightly visible. This is
+shown in Figure [2] are minor, although still slightly visible. This is
 to be expected as refinement is a perturbation of the initial condition at a
 smaller wave length.
 
@@ -135,14 +135,14 @@ smaller wave length.
 
 *Comparison of runtimes for the van Keken problem with VOF and a DG
 compositional field, in which the initial conditions for DG smoothed are as
-described in section&nbsp;[\[paragraph:van-keken
+described in section [\[paragraph:van-keken
             compositional fields\]][5] above. The times shown are for the full
 computation, ending at $t_\text{end} = 2000$ with a CFL number of $\sigma=0.5$
 in both cases. All of these computations were made with ASPECT version
 2.2.0-pre (master, commit `ef542ecc2`) in release mode on the Peloton2 cluster
-at U.C.&nbsp;Davis. We note that the change in the CFL number $\sigma$ and the
+at U.C. Davis. We note that the change in the CFL number $\sigma$ and the
 differing choice of cluster makes a direct quantitative comparison between
-this table and Table&nbsp;[\[tab:runtime-table\]][2] invalid due to too many
+this table and Table [\[tab:runtime-table\]][2] invalid due to too many
 confounding factors.*
 
 </div>
@@ -170,10 +170,10 @@ the cosine function in the initial conditions, as shown below.
 In these computations we vary the value of $a$ from its usual value of
 $a = 0.02$ to $5\% = 0.001$ below its usual value to $5\%$ above its usual
 value in increments of $0.01$. In other words, we compare the values for
-$a =0.019$, $0.020$, and $0.021$. Upon examination of Figure&nbsp;[3], we
+$a =0.019$, $0.020$, and $0.021$. Upon examination of Figure [3], we
 see a visible variation in the location of the second peak, although the
 overall shape of the curve remains consistent with the curves in
-Figure&nbsp;[1][3]. The size of this variation in the initial conditions
+Figure [1][3]. The size of this variation in the initial conditions
 cannot be expected to be reproduced using the standard compositional
 quadrature initialization procedure for VOF unless the cell size is on the
 scale of the change in the value of $a$; i.e.,
@@ -182,7 +182,7 @@ parameter which would produce a $10^{-3}\leq C \leq 1 - 10^{-3}$ band on the
 order of the same size as the amplitude variation shown here, would be
 approximately $2.8 \cdot 10^{-4}$. This perturbation is much smaller than any
 of the changes in width of the smoothed regions in the computations shown in
-Figure&nbsp;[\[fig:vk-6\]][6]. In summary, these results demonstrate the
+Figure [\[fig:vk-6\]][6]. In summary, these results demonstrate the
 sensitivity of the discontinuous version of the van Keken problem to even
 extremely small variations in the initial conditions.
 

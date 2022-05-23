@@ -12,7 +12,7 @@ show subsequently can be found at [cookbooks/convection_box_3d.prm](https://gith
 The first set of changes has to do with the geometry: it is three-dimensional,
 and we will have to address the fact that a box in 3d has 6 sides, not the 4
 we had previously. The documentation of the &ldquo;box&rdquo; geometry (see
-Section&nbsp;{ref}`parameters:Geometry_20model`) states that these sides are
+Section {ref}`parameters:Geometry_20model`) states that these sides are
 numbered as follows: *&ldquo;in 3d, boundary indicators 0 through 5 indicate
 left, right, front, back, bottom and top boundaries.&rdquo;* Recalling that we
 want tangential flow all around and want to fix the temperature to known
@@ -69,7 +69,7 @@ periodically checkpointing the state of the computation:
 If the computation does crash (or if a computation runs out of the time limit
 imposed by a scheduling system), then it can be restarted from such
 checkpointing files (see the parameter `Resume computation` in
-Section&nbsp;{ref}`parameters:Global`).
+Section {ref}`parameters:Global`).
 
 Running with this input file requires a bit of patience[^footnote1] since the number of
 degrees of freedom is just so large: it starts with a bit over 330,000&mldr;
@@ -172,7 +172,7 @@ Convection in a 3d box: Upward heat flux through the bottom and top boundaries a
 
 [^footnote1]: For computations of this size, one should test a few time steps in debug
 mode but then, of course, switch to running the actual computation in
-optimized mode &ndash; see Section&nbsp;{ref}`sec:run-aspect:debug-mode`.
+optimized mode &ndash; see Section {ref}`sec:run-aspect:debug-mode`.
 
 [^footnote2]: Note that the statistics file actually contains the *outward* heat flux
 for each of the six boundaries, which corresponds to the *negative* of upward

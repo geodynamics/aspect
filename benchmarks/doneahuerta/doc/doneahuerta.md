@@ -16,7 +16,7 @@ u(x,y) &=& x^2(1- x)^2 (2y - 6y^2 + 4y^3)  \nonumber\\
 v(x,y) &=& -y^2 (1 - y)^2 (2x - 6x^2 + 4x^3) \nonumber\\
 p(x,y) &=& x(1 -x) -1/6.\end{aligned}$$ Note that the pressure satisfies
 $\int_{\Omega} p \; \text{d}x = 0$. The gravity, pressure and velocity fields
-are shown in Fig.&nbsp;[\[fig:doneahuerta-benchmark\]][1].
+are shown in Fig. [\[fig:doneahuerta-benchmark\]][1].
 
 The convergence of the numerical error of this benchmark has been analyzed by
 changing the mesh refinement level in the input file, and results show that
@@ -24,7 +24,7 @@ the velocity shows cubic error convergence, while the pressure shows quadratic
 convergence in the $L_2$ norm, as expected when using the $Q_2\times Q_1$
 element.
 
-&nbsp; &nbsp;
+   
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 

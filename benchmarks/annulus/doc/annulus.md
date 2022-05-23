@@ -24,13 +24,13 @@ velocity is tangential to both inner and outer surfaces. The gravity vector is
 radial and of unit length.
 
 The parameter $k$ controls the number of convection cells present in the
-domain, as shown in Fig.&nbsp;[3].
+domain, as shown in Fig. [3].
 
 <img src="cookbooks/benchmarks/annulus/doc/pressures.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
 <img src="cookbooks/benchmarks/annulus/doc/density.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
 <img src="cookbooks/benchmarks/annulus/doc/velocities2.png" title="fig:" id="fig:annulus-vp" alt="Pressure, density and velocity fields for k=0,1,2,3 for the 2D annulus benchmark." />
 
-In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. Fig.&nbsp;[4] shows
+In the present case, we set $R_1=1$, $R_2=2$ and $C=-1$. Fig. [4] shows
 the velocity and pressure errors in the $L_2$-norm as a function of the mesh
 size $h$ (taken in this case as the radial extent of the elements). As
 expected we recover a third-order convergence rate for the velocity and a

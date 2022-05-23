@@ -4,7 +4,7 @@
 (Dannberg and Heister 2016) by Juliane Dannberg and Timo Heister.*
 
 The following cookbook will explain how to use &rsquo;s implementation of
-coupled magma/mantle dynamics (see Section&nbsp;[\[sec:melt_transport\]][1])
+coupled magma/mantle dynamics (see Section [\[sec:melt_transport\]][1])
 to set up a model of mantle convection that also includes melting and freezing
 of mantle rock, and the transport of melt according to the two-phase flow
 equations. The model setup is described in detail in (Dannberg and Heister
@@ -17,7 +17,7 @@ in both models in higher resolution can be found [online].
 
 The model setup is a 2D box with dimensions of $2900 \times 8700$&#8198;km,
 and it is heated from the bottom and cooled from the top. A full description
-can be found in Section&nbsp;4.7 &ldquo;Influence of melt migration on a
+can be found in Section 4.7 &ldquo;Influence of melt migration on a
 global-scale convection model&rdquo; in (Dannberg and Heister 2016). In the
 first model we will look at, melting and freezing is only included passively:
 We use the `melt fraction` visualization postprocessor to compute how much
@@ -81,8 +81,8 @@ over time in comparison to the model without melt migration.
 <embed src="cookbooks/global_melt/doc/model_evolution.pdf" id="fig:global-melt" style="width:90.0%" /><figcaption aria-hidden="true"><em>Evolution of the model without (left) and with (right) melt migration.</em></figcaption>
 </figure>
 
-Figure&nbsp;[1] shows the time evolution of both models. A more complete
-comparison of the two models can be found in Section&nbsp;4.7 &ldquo;Influence
+Figure [1] shows the time evolution of both models. A more complete
+comparison of the two models can be found in Section 4.7 &ldquo;Influence
 of melt migration on a global-scale convection model&rdquo; in (Dannberg and
 Heister 2016).
 

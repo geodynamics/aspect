@@ -3,7 +3,7 @@
 *This section was contributed by William Durkin and Wolfgang Bangerth.*
 
 All of the benchmarks presented so far take place in a Cartesian domain.
-Davies et al.&nbsp;describe a benchmark (in a paper that is currently still
+Davies et al. describe a benchmark (in a paper that is currently still
 being written) for a 2D spherical Earth that is nondimensionalized such that
 
 <div class="table*">
@@ -38,7 +38,7 @@ $${Nu}_{T} = \frac{-Q_{T}\ln(f)}{2\pi{r_{\max}}(1-f)k}$$ and similarly
 $${Nu}_{B} = \frac{-Q_{B}f\ln(f)}{2\pi{r_{\min}}(1-f)k}.$$ $Q_T$ and $Q_B$ are
 heat fluxes that can readily compute through the `heat flux statistics`
 postprocessor (see
-Section&nbsp;[\[parameters:Postprocess/List of postprocessors\]][2]). For
+Section [\[parameters:Postprocess/List of postprocessors\]][2]). For
 further details on the nondimensionalization and equations used for each
 approximation, refer to Davies et al.
 
@@ -66,7 +66,7 @@ is important here though is that the system evolve to four convective cells
 since we are only interested in the long term, steady state behavior.
 
 The model is relatively straightforward to set up, basing the input file on
-that discussed in Section&nbsp;[\[sec:shell-simple-2d\]][3]. The full input
+that discussed in Section [\[sec:shell-simple-2d\]][3]. The full input
 file can be found at [benchmarks/davies_et_al/case-1.1.prm], with the
 interesting parts excerpted as follows:
 
@@ -74,7 +74,7 @@ interesting parts excerpted as follows:
 ```
 
 We use the same trick here as in
-Section&nbsp;[\[sec:cookbooks-simple-box\]][4] to produce a model in which the
+Section [\[sec:cookbooks-simple-box\]][4] to produce a model in which the
 density $\rho(T)$ in the temperature equation [\[eq:temperature\]][5] is
 almost constant (namely, by choosing a very small thermal expansion
 coefficient) as required by the benchmark, and instead prescribe the desired
@@ -101,7 +101,7 @@ of the entire system satisfies the Stokes equations with their boundary
 conditions. In other words, the solution of the problem is not unique: given a
 solution, adding a solid body rotation yields another solution. We select
 arbitrarily the one that has no net rotation (see
-Section&nbsp;[\[parameters:Nullspace_20removal\]][6]). The section in the
+Section [\[parameters:Nullspace_20removal\]][6]). The section in the
 input file that is relevant is then as follows (the full input file resides at
 [benchmarks/davies_et_al/case-2.1.prm]):
 
@@ -128,7 +128,7 @@ In other words, we have an increased Rayleigh number and begin with the final
 steady state of case 2.1. To start the model where case 2.1 left off, the
 input file of case 2.1, [benchmarks/davies_et_al/case-2.1.prm], instructs to
 checkpoint itself every few time steps (see
-Section&nbsp;[\[sec:checkpoint-restart\]][7]). If case 2.2 uses the same
+Section [\[sec:checkpoint-restart\]][7]). If case 2.2 uses the same
 output directory, we can then resume the computations from this checkpoint
 with an input file that prescribes a different Rayleigh number and a later
 input time:
@@ -159,9 +159,9 @@ The Rayleigh number is smaller here (and is selected using the gravity
 parameter in the input file, as before), but the more important change is that
 the viscosity is now a function of temperature. At the time of writing, there
 is no material model that would implement such a viscosity, so we create a
-plugin that does so for us (see Sections&nbsp;[\[sec:extending\]][8] and
+plugin that does so for us (see Sections [\[sec:extending\]][8] and
 [\[sec:write-plugin\]][9] in general, and
-Section&nbsp;[\[sec:material-models\]][10] for material models in particular).
+Section [\[sec:material-models\]][10] for material models in particular).
 The code for it is located in
 [benchmarks/davies_et_al/case-2.3-plugin/VoT.cc] (where &ldquo;VoT&rdquo; is
 short for &ldquo;viscosity as a function of temperature&rdquo;) and is
@@ -188,7 +188,7 @@ evaluate(const typename Interface<dim>::MaterialModelInputs &in,
 }
 ```
 
-Using the method described in Sections&nbsp;[\[sec:benchmark-run\]][11] and
+Using the method described in Sections [\[sec:benchmark-run\]][11] and
 [\[sec:write-plugin\]][9], and the files in the
 `benchmarks/davies_et_al/case-2.3-plugin`, we can compile our new material
 model into a shared library that we can then reference from the input file.
@@ -203,7 +203,7 @@ following parts:
 
 In the following, let us discuss some of the results of the benchmark setups
 discussed above. First, the final steady state temperature fields are shown in
-Fig.&nbsp;[\[fig:davies-2DcylinderFSS\]][12]. It is immediately obvious how
+Fig. [\[fig:davies-2DcylinderFSS\]][12]. It is immediately obvious how
 the different Rayleigh numbers affect the width of the plumes. If one imagines
 a setup with constant gravity, constant inner and outer temperatures and
 constant thermal expansion coefficient (this is not how we describe it in the
@@ -213,7 +213,7 @@ proportional to the viscosity &ndash; and it is immediately clear that larger
 Rayleigh numbers (corresponding to lower viscosities) then lead to thinner
 plumes. This is nicely reflected in the visualizations.
 
-Secondly, Fig.&nbsp;[\[fig:davies-2DcylinderVrms\]][13] shows the root mean
+Secondly, Fig. [\[fig:davies-2DcylinderVrms\]][13] shows the root mean
 square velocity as a function of time for the various cases. It is obvious
 that they all converge to steady state solutions. However, there is an initial
 transient stage and, in cases 2.2 and 2.3, a sudden jolt to the system at the
@@ -225,7 +225,7 @@ different models used after that.
 These runs also produce quantitative data that will be published along with
 the concise descriptions of the benchmarks and a comparison with other codes.
 In particular, some of the criteria listed above to judge the accuracy of
-results are listed in Table&nbsp;[1].[1]
+results are listed in Table [1].[1]
 
 <div id="tab:davies-et-al-results">
 

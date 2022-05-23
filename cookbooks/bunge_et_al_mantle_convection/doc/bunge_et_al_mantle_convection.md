@@ -1,4 +1,4 @@
-#### The Bunge et al.&nbsp;mantle convection experiments
+#### The Bunge et al. mantle convection experiments
 
 *This section was contributed by Cedric Thieulot and Bob Myhill.*
 
@@ -21,35 +21,35 @@ $R\textsubscript{inner} = 3480~\si{\km}$ and outer radius
 $R\textsubscript{outer} = 6370~\si{\km}$. The surface temperature is set to
 $T{\textsubscript{surf}}$ = 1060 K and the bottom temperature to
 $T{\textsubscript{cmb}} = 3450$ K. The gravity vector is radial and its
-magnitude is $g = 10$ m&nbsp;s<sup>&minus;2</sup>.
+magnitude is $g = 10$ m s<sup>&minus;2</sup>.
 
 There is a single incompressible fluid in the domain, characterized by
-$\rho_0 = 4500$ kg&nbsp;m<sup>&minus;3</sup>, $\alpha = 2.5\cdot10^{-5}$
-&nbsp;K, $k = 4$ W&nbsp;m&nbsp;K<sup>&minus;&minus;1</sup>, $C_p = 1000$
-J&nbsp;kg&nbsp;K<sup>&minus;&minus;1</sup> and its internal heating rate is
-$Q{\textsubscript{int}} = 1\cdot10^{-12}$ W&nbsp;kg<sup>&minus;1</sup>. The
+$\rho_0 = 4500$ kg m<sup>&minus;3</sup>, $\alpha = 2.5\cdot10^{-5}$
+ K, $k = 4$ W m K<sup>&minus;&minus;1</sup>, $C_p = 1000$
+J kg K<sup>&minus;&minus;1</sup> and its internal heating rate is
+$Q{\textsubscript{int}} = 1\cdot10^{-12}$ W kg<sup>&minus;1</sup>. The
 interface between the upper mantle (viscosity $\eta\textsubscript{um}$) and
 the lower mantle (viscosity $\eta\textsubscript{lm}$) is fixed at 670 km
 depth. As in the article we consider four time-independent radial viscosity
 profiles:
 
 -   Isoviscous mantle:
-    $\eta\textsubscript{um}=\eta\textsubscript{lm}=1.7\cdot 10^{24}$ Pa&nbsp;s
+    $\eta\textsubscript{um}=\eta\textsubscript{lm}=1.7\cdot 10^{24}$ Pa s
 
 -   Mantle with step change in viscosity:
-    $\eta\textsubscript{um}=5.8\cdot 10^{22}$ Pa&nbsp;s,
+    $\eta\textsubscript{um}=5.8\cdot 10^{22}$ Pa s,
     $\eta\textsubscript{lm}=30\eta\textsubscript{um}$
 
 -   Isoviscous mantle:
-    $\eta\textsubscript{um}=\eta\textsubscript{lm}=5.8\cdot 10^{22}$ Pa&nbsp;s
+    $\eta\textsubscript{um}=\eta\textsubscript{lm}=5.8\cdot 10^{22}$ Pa s
 
 -   Mantle with step change in viscosity:
-    $\eta\textsubscript{um}=7\cdot 10^{21}$ Pa&nbsp;s,
+    $\eta\textsubscript{um}=7\cdot 10^{21}$ Pa s,
     $\eta\textsubscript{lm}=30\eta\textsubscript{um}$
 
 Separate ascii files `visc_depth_X.txt` with `X={a,b,c,d}` contain each of
 these viscosity profiles. The resulting temperature fields after 5 billion
-years of convection are shown in Fig.&nbsp;[1]. Similar to the results
+years of convection are shown in Fig. [1]. Similar to the results
 obtained by (Bunge, Richards, and Baumgardner 1996), models in which the lower
 mantle is more viscous than the upper mantle are distinctly colder than their
 isoviscous equivalents, with more clearly defined upwellings. You can find a
@@ -66,7 +66,7 @@ movie of how the temperature evolves over this time period at
 
 Berg, Arie P van den, Peter E van Keken, and David A Yuen. 1993. &ldquo;The
 Effects of a Composite Non-Newtonian and Newtonian Rheology on Mantle
-Convection.&rdquo; *Geophy.&nbsp;J.&nbsp;Int.* 115 (1): 62&ndash;78.
+Convection.&rdquo; *Geophy. J. Int.* 115 (1): 62&ndash;78.
 
 </div>
 
@@ -91,7 +91,7 @@ convection</span>.&rdquo; *Nature* 379: 436&ndash;38.
 &mdash;&mdash;&mdash;. 1997. &ldquo;<span class="nocase">A sensitivity study
 of three-dimensional spherical mantle convection at $10^8$ Rayleigh number:
 Effects of depth-dependent viscosity, heating mode, and endothermic phase
-change</span>.&rdquo; *J.&nbsp;Geophys.&nbsp;Res.* 102 (B6): 11, 991&ndash;12,
+change</span>.&rdquo; *J. Geophys. Res.* 102 (B6): 11, 991&ndash;12,
 007. <https://doi.org/10.1029/96JB03806>.
 
 </div>
@@ -115,7 +115,7 @@ Fluid Dynamics* 75: 39&ndash;59.
 <div id="ref-buss79" class="csl-entry">
 
 Busse, FH. 1979. &ldquo;High Prandtl Number Convection.&rdquo;
-*Phys.&nbsp;Earth.&nbsp;Planet.&nbsp;Inter.* 19 (2): 149&ndash;57.
+*Phys. Earth. Planet. Inter.* 19 (2): 149&ndash;57.
 
 </div>
 

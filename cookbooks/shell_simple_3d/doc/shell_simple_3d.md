@@ -4,7 +4,7 @@ The setup from the previous section can of course be extended to 3d shell
 geometries as well &ndash; though at significant computational cost. In fact,
 the number of modifications necessary is relatively small, as we will discuss
 below. To show an example up front, a picture of the temperature field one
-gets from such a simulation is shown in Fig.&nbsp;[1]. The corresponding
+gets from such a simulation is shown in Fig. [1]. The corresponding
 movie can be found at <http://youtu.be/j63MkEc0RRw>.
 
 <figure>
@@ -73,7 +73,7 @@ unknowns:
 Second to last, we specify what we want to do with the solutions it computes.
 Here, we compute the same statistics as before, and we again generate
 graphical output every million years. Computations of this size typically run
-with &nbsp;1000 MPI processes, and it is not efficient to let every one of
+with  1000 MPI processes, and it is not efficient to let every one of
 them write their own file to disk every time we generate graphical output;
 rather, we group all of these into a single file to keep file systems
 reasonably happy. Likewise, to accommodate the large amount of data, we output
@@ -87,7 +87,7 @@ go down or the scheduler aborts programs because they ran out of time. With
 computations this big, we cannot afford to just lose the results, so we
 checkpoint the computations every 50 time steps and can then resume it at the
 last saved state if necessary (see
-Section&nbsp;[\[sec:checkpoint-restart\]][2]):
+Section [\[sec:checkpoint-restart\]][2]):
 
 ``` prmfile
 ```
@@ -108,9 +108,9 @@ terawatts) of which an estimated 12&ndash;30 TW are primordial heat released
 from cooling the Earth and 15&ndash;41 TW from radiogenic heating.[2] Our
 model does not include radiogenic heating (though has a number of
 `Heating models` to switch this on, see
-Section&nbsp;[\[parameters:Heating_20model\]][3]) but we can compare what the
+Section [\[parameters:Heating_20model\]][3]) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
-our shell geometry. This is shown in the left panel of Fig.&nbsp;[3] where
+our shell geometry. This is shown in the left panel of Fig. [3] where
 we plot the heat flux through boundaries zero and one, corresponding to the
 core-mantle boundary and Earth&rsquo;s surface. always computes heat fluxes in
 outward direction, so the flux through boundary zero will be negative,
@@ -128,7 +128,7 @@ boundary, and an estimated heat loss due to cooling of the mantle of
 
 A second measure of whether these results make sense is to compare velocities
 in the mantle with what is known from observations. As shown in the right
-panel of Fig.&nbsp;[3], the maximal velocities settle to values on the order
+panel of Fig. [3], the maximal velocities settle to values on the order
 of 3 cm/year (each of the peaks in the line for the maximal velocity
 corresponds to a particularly large plume rising or falling). This is, again,
 at least not very far from what we know to be correct and we should expect

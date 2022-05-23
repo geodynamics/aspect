@@ -1,7 +1,7 @@
 # Heating models
 
 The heating model is responsible for describing the various terms in the
-energy equation&nbsp;{math:numref}`eq:temperature`, using the coefficients provided
+energy equation {math:numref}`eq:temperature`, using the coefficients provided
 by the material model. These can be source terms such as radiogenic heat
 production or shear heating, they can be terms on the left-hand side of the
 equation, such as part of the latent heating terms, or they can be heating

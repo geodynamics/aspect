@@ -11,7 +11,7 @@ to set up a model with a free surface, as well as demonstrates some of the
 challenges associated with doing so.
 
 supports models with a free surface using an Arbitrary Lagrangian-Eulerian
-framework (see Section&nbsp;[\[sec:freesurface\]][1]). Most of this is done
+framework (see Section [\[sec:freesurface\]][1]). Most of this is done
 internally, so you do not need to worry about the details to run this
 cookbook. Here we demonstrate the evolution of surface topography that results
 when a blob of hot material rises in the mantle, pushing up the free surface
@@ -49,7 +49,7 @@ full parameter file may be found at
 ``` prmfile
 ```
 
-Running this input file will produce results like those in Figure&nbsp;[2].
+Running this input file will produce results like those in Figure [2].
 The model starts with a single hot blob of rock which rises in the domain. As
 it rises, it pushes up the free surface in the middle, creating a topographic
 high there. This is similar to the kind of dynamic topography that you might

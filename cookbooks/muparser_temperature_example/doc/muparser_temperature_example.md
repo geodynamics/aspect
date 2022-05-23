@@ -10,7 +10,7 @@ converge). For this model we define a simple 2D box, which is
 $5000 \times 1000$ km, with free-slip velocity boundary conditions. The
 material parameters are constant within the box (set using the
 &ldquo;simple&rdquo; material model). The initial thermal structure has two
-parts divided at $xtr=2200$&nbsp;km. The temperature in each region is defined
+parts divided at $xtr=2200$ km. The temperature in each region is defined
 using the equation for a half-space cooling model:
 $$T(x,y) = T_s + (T_m  - T_s) \erf{(\frac{y}{2\sqrt{\kappa x/v}})}$$ where
 $\erf$ is the error function, $T_m$ is the mantle temperature, $T_s$ is the
@@ -20,9 +20,9 @@ given by $x/v$. Note that the equation for the half-space cooling model is not
 defined at $x=0$ (because there is a divide by zero inside the error
 function): at $x=0$, $T=T_m$. For $(x \le xtr)$ and $(x>0)$ the age of the
 plate increases from zero at the boundary according to a fixed plate velocity
-$v_\text{sub}=7.927\times10^{-10}$&nbsp;m/s ($2.5$&nbsp;cm/yr). This is the
+$v_\text{sub}=7.927\times10^{-10}$ m/s ($2.5$ cm/yr). This is the
 subducting plate. For $x > xtr$, there is a fixed plate age of
-$age_{op}=9.46\times10^{14}$&nbsp;s ($30$&nbsp;my); this is the overriding
+$age_{op}=9.46\times10^{14}$ s ($30$ my); this is the overriding
 plate. In order to resolve the temperature structure, we also define some
 initial refinement of the mesh for the top 150 km of the mesh. Both the mesh
 refinement and the temperature structure are defined using lazy-expression
@@ -85,7 +85,7 @@ aspect ratio of the sub-region. In this case, we refine the elements in each
 subregion 3 more times. We then use the `minimum refinement function` strategy
 and use the `if-then-else` statement in the function expression to refine 4
 more times to a refinement level of 7, but only where the depth is less than
-150&nbsp;km. Appropriate values of the minimum refinement level in this
+150 km. Appropriate values of the minimum refinement level in this
 function expression could be the sum of initial global refinement level (3)
 and initial adaptive refinement level (4) in the &lsquo;`then`&rsquo;
 statement (i.e., 7 here) and the value of initial global refinement in the

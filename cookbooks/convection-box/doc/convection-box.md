@@ -90,7 +90,7 @@ you can find the input file to run this cookbook example in
 ##### Running the program.
 
 When you run this program for the first time, you are probably still running
-in debug mode (see Section&nbsp;{ref}`sec:debug-mode`) and you will get
+in debug mode (see Section {ref}`sec:debug-mode`) and you will get
 output like the following:
 
 ``` ksh
@@ -178,7 +178,7 @@ the same.
 Having run the program, we now want to visualize the numerical results we got.
 ASPECT can generate graphical output in formats understood by pretty much any
 visualization program (see the parameters described in
-Section&nbsp;{ref}`parameters:Postprocess/Visualization`) but we will here
+Section {ref}`parameters:Postprocess/Visualization`) but we will here
 follow the discussion in {ref}`sec:run-aspect:visualizing-results` and use the default VTU
 output format to visualize using the Visit program.
 
@@ -236,7 +236,7 @@ discussion):
 
       plot "output-convection-box/statistics" using 2:11 with lines
 
-Fig.&nbsp;[4] shows clearly that the simulation enters a steady state after
+Fig. [4] shows clearly that the simulation enters a steady state after
 about $t\approx 0.1$ and then changes very little. This can also be observed
 using the graphical output files from which we have generated Fig.{ref}`fig:convection-box-fields`.
 One can look further into this data to find that the flux through the top and

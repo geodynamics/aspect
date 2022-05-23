@@ -19,7 +19,7 @@ output is as follows:
 ```
 
 This initial condition results in distinct flow cells that cause local up- and
-downwellings (Figure&nbsp;[1]). This flow deflects the top and bottom
+downwellings (Figure [1]). This flow deflects the top and bottom
 boundaries of the mantle away from their reference height, a process known as
 dynamic topography. The deflection of the surfaces and density perturbations
 within the mantle also cause a perturbation in the gravitational field of the
@@ -37,7 +37,7 @@ the deformation of the upper surface. Dynamic topography can be outputted in
 text format (which writes the Euclidean coordinates followed by the
 corresponding topography value) or as part of the visualization. The upwelling
 and downwelling flow along the equator causes alternating topography high and
-lows at the top and bottom surface (Figure&nbsp;[1]). In Figure&nbsp;[1]
+lows at the top and bottom surface (Figure [1]). In Figure [1]
 c, d we have subtracted the mean dynamic topography from the output field as a
 postprocessing step outside of . Since mass is conserved within the Earth, the
 mean dynamic topography should always be zero, however, the outputted values

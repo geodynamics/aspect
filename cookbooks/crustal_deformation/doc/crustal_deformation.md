@@ -133,7 +133,7 @@ case study of the Canyonlands grabens, Utah</span>.&rdquo; *Basin Research*
 
 Allken, V., R. Huismans, and C. Thieulot. 2011. &ldquo;Three Dimensional
 Numerical Modelling of Upper Crustal Extensional Systems.&rdquo;
-*J.&nbsp;Geophys.&nbsp;Res.* 116: B10409.
+*J. Geophys. Res.* 116: B10409.
 
 </div>
 
@@ -141,7 +141,7 @@ Numerical Modelling of Upper Crustal Extensional Systems.&rdquo;
 
 &mdash;&mdash;&mdash;. 2012. &ldquo;Factors Controlling the Mode of Rift
 Interaction in Brittle-Ductile Coupled Systems: A 3d Numerical Study.&rdquo;
-*Geochem.&nbsp;Geophys.&nbsp;Geosyst.* 13 (5): Q05010.
+*Geochem. Geophys. Geosyst.* 13 (5): Q05010.
 
 </div>
 

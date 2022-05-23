@@ -92,7 +92,7 @@ the `benchmarks/burstedde/burstedde.cc` file that accompanies this benchmark.
 
 We will use the input file `benchmarks/burstedde/burstedde.prm` as input,
 which is very similar to the input file `benchmarks/inclusion/adaptive.prm`
-discussed above in Section&nbsp;[\[sec:benchmark-inclusion\]][5]. The major
+discussed above in Section [\[sec:benchmark-inclusion\]][5]. The major
 changes for the 3D polynomial Stokes benchmark are listed below:
 
 ``` prmfile
@@ -108,9 +108,9 @@ ensure that the solver can solve the system accurately enough to make sure
 that the iteration error is smaller than the discretization error.
 
 Expected analytical solutions at two locations are summarised in
-Table&nbsp;[1] and can be deduced from equations
+Table [1] and can be deduced from equations
 [\[eq:burstedde-velocity\]][1] and [\[eq:burstedde-pressure\]][2].
-Figure&nbsp;[\[fig:burstedde-benchmark\]][6] shows that the analytical
+Figure [\[fig:burstedde-benchmark\]][6] shows that the analytical
 solution is indeed retrieved by the model.
 
 <div id="tab:burstedde-table">
@@ -126,12 +126,12 @@ label="tab:burstedde-table">\[tab:burstedde-table\]</span>*
 
 </div>
 
-&nbsp;
-&nbsp;
+ 
+ 
 
 The convergence of the numerical error of this benchmark has been analysed by
 playing with the mesh refinement level in the input file, and results can be
-found in Figure&nbsp;[1][7]. The velocity shows cubic error convergence, while
+found in Figure [1][7]. The velocity shows cubic error convergence, while
 the pressure shows quadratic convergence in the $L_1$ and $L_2$ norms, as one
 would hope for using $Q_2$ elements for the velocity and $Q_1$ elements for
 the pressure.

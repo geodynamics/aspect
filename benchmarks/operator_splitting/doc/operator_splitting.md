@@ -25,7 +25,7 @@ considered as a reaction between different compositional fields.
 
 This can cause accuracy problems in geodynamic simulations: The way the
 equations are formulated (see
-Equations&nbsp;[\[eq:stokes-1\]][1]&ndash;[\[eq:compositional\]][2]), ideally
+Equations [\[eq:stokes-1\]][1]&ndash;[\[eq:compositional\]][2]), ideally
 we would need to know reaction rates (the $q_i$) between the different
 components instead of the equilibrium value (which would then have to be
 compared with some sort of &ldquo;old solution&rdquo; of the compositional
@@ -105,7 +105,7 @@ also set $t_{1/2}=10$, which is implemented as a parameter in the
 The complete parameter file for this setup can be found in
 [benchmarks/operator_splitting/exponential_decay/exponential_decay.base.prm].
 
-Figure&nbsp;[1] shows the convergence behavior of these models: As there is
+Figure [1] shows the convergence behavior of these models: As there is
 no advection, the advection time step does not influence the error (blue data
 points). As we use a first-order operator split, the error is expected to
 converge linearly with the reaction time step $\Delta t_R$, which is indeed
@@ -141,7 +141,7 @@ this setup can be found in
 
 </div>
 
-Figure&nbsp;[3] shows the convergence behavior in this second set of models:
+Figure [3] shows the convergence behavior in this second set of models:
 If we choose the same resolution as in the previous example (left panel), for
 large advection time steps $\Delta t_A > 0.1$ the error is dominated by
 advection, and converges with decreasing advection time step size (blue data

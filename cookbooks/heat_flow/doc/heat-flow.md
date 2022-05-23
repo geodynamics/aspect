@@ -8,10 +8,10 @@ The input file for this model can be found at
 
 The model is loosely based on the cookbook describing how to model convection
 in a box with prescribed, variable velocity boundary conditions
-(Section&nbsp;[\[sec:cookbooks-platelike\]][1]).
+(Section [\[sec:cookbooks-platelike\]][1]).
 
 The model features the spreading of plates at a mid-ocean ridge, with the
-ridge being in the center of the model. Its vertical extent is 100&nbsp;km and
+ridge being in the center of the model. Its vertical extent is 100 km and
 material flows in from the bottom, and then leaves the domain at the sides.
 The initial temperature is the adiabatic temperature of the mantle, which
 corresponds to a plate age of 0, and temperature is fixed at the top, so that

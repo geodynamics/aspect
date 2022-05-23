@@ -63,9 +63,9 @@ reduce the number of mesh refinement steps to make things run more quickly.)
 Using this input file, let us try to evaluate the results of the current
 computations for the settling velocity of the sphere. You can visualize the
 output in different ways, one of it being ParaView and shown in
-Fig.&nbsp;[2] (an alternative is to use Visit as described in
-Section&nbsp;[\[sec:viz\]][1]; 3d images of this simulation using Visit are
-shown in Fig.&nbsp;[5]). Here, ParaView has the advantage that you can
+Fig. [2] (an alternative is to use Visit as described in
+Section [\[sec:viz\]][1]; 3d images of this simulation using Visit are
+shown in Fig. [5]). Here, ParaView has the advantage that you can
 calculate the average velocity of the sphere using the following filters:
 
 1.  Threshold (Scalars: C_1, Lower Threshold 0.5, Upper Threshold 1),

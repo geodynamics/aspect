@@ -77,7 +77,7 @@ with the normal vector $\mathbf n$.
 
 This phase change term is added to the matrix in the
 [cookbooks/inner_core_convection/inner_core_assembly.cc] plugin by using a
-signal (as described in Section&nbsp;[\[sec:extending-signals\]][1]). The
+signal (as described in Section [\[sec:extending-signals\]][1]). The
 signal connects the function `set_assemblers_phase_boundary`, which is only
 called once at the beginning of the model run. It creates the new assembler
 `PhaseBoundaryAssembler` for the boundary faces of the Stokes system and adds
@@ -90,14 +90,14 @@ material model, and adds the surface integral given above to the matrix:
 ```
 
 Instructions for how to compile and run models with a shared library are given
-in Section&nbsp;[\[sec:benchmark-run\]][2].
+in Section [\[sec:benchmark-run\]][2].
 
 **Governing parameters.** Analyzing
-Equations&nbsp;[\[eq:inner-core-1\]][3]&ndash;[\[eq:inner-core-3\]][4], two
+Equations [\[eq:inner-core-1\]][3]&ndash;[\[eq:inner-core-3\]][4], two
 parameters determine the dynamics of convection in the inner core: the
 Rayleigh number $Ra$ and the phase change number $\mathcal{P}$. Three main
 areas can be distinguished: the stable area, the plume convection area and the
-translation mode of convection area (Figure&nbsp;[1]). For low Rayleigh
+translation mode of convection area (Figure [1]). For low Rayleigh
 numbers (below the critical value $Ra_c$), there is no convection and thermal
 diffusion dominates the heat transport. However, if the inner core is
 convectively unstable ($Ra$\>$Ra_c$), the convection regime depends mostly on
@@ -133,7 +133,7 @@ function that can depend on the spatial coordinates and/or on time:
 ``` prmfile
 ```
 
-Figure&nbsp;[10] shows examples of the three regimes with
+Figure [10] shows examples of the three regimes with
 $Ra=3000, \mathcal{P}=1000$ (plume convection), $Ra=10^5, \mathcal{P}=0.01$
 (translation), $Ra=10, \mathcal{P}=30$ (no convection).
 
@@ -177,7 +177,7 @@ $v_0=\frac{175}{2}\sqrt{\frac{6}{5}\frac{Ra}{\mathcal{P}}}$ going towards
 higher values of $\frac{Ra}{\mathcal{P}}$. In the same way, translation
 velocities will decrease from $v_0$ with increasing $\mathcal{P}$, with
 translation transitioning to plume convection at $\mathcal{P}\sim29$. Both
-trends are shown in Figure&nbsp;[12] and can be compared to Figure&nbsp;8
+trends are shown in Figure [12] and can be compared to Figure 8
 and 9 in (Deguen, Alboussi&egrave;re, and Cardin 2013).
 
 <embed src="cookbooks/inner_core_convection/doc/translation_over_Ra_P.pdf" title="fig:" id="fig:inner-core-trends" style="width:49.0%" />

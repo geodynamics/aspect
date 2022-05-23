@@ -39,7 +39,7 @@ x(\phi) &= \pm (A + 0.5)
 \ln \frac{\sqrt{A-1} - \sqrt{A-\phi}}{\sqrt{A-1} + \sqrt{A-\phi}} \right]\end{aligned}$$
 and the phase speed $c$, scaled back to physical units, is $c = u_0 (2A+1)$.
 This is only valid in the limit of small porosity $\phi_0 \ll 1$.
-Figure&nbsp;[1] illustrates the model setup.
+Figure [1] illustrates the model setup.
 
 <div class="center">
 

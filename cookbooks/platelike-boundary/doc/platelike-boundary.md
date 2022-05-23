@@ -13,7 +13,7 @@ this. To make it slightly more interesting, we choose a $2\times 1$ domain in
 
 Like for many other things, has a set of plugins for prescribed velocity
 boundary values (see
-Sections&nbsp;{ref}`parameters:Boundary_20velocity_20model` and
+Sections {ref}`parameters:Boundary_20velocity_20model` and
 {ref}`sec:extending:plugin-types:velocity-bc`). These plugins allow one
 to write sophisticated models for the boundary velocity on parts or all of the
 boundary, but there is also one simple implementation that just takes a

@@ -7,7 +7,7 @@ Standard finite element discretizations of advection-diffusion equations
 introduce unphysical oscillations around steep gradients. Therefore,
 stabilization must be added to the discrete formulation to obtain correct
 solutions. In ASPECT, we use the Entropy Viscosity scheme developed by
-Guermond et al.&nbsp;in the paper {cite:t}`guer11`.
+Guermond et al. in the paper {cite:t}`guer11`.
 In this scheme, an artificial viscosity is calculated on
 every cell and used to try to combat these oscillations that cause unwanted
 overshoot and undershoot. More information about how does this is located at
@@ -40,7 +40,7 @@ existing file
 ```
 
 it is possible to produce pictures of the simple convection in a quarter of a
-2d annulus such as the ones visualized in Figure&nbsp;{numref}`fig:smoothing`.
+2d annulus such as the ones visualized in Figure {numref}`fig:smoothing`.
 
 ```{figure-md} fig:smoothing
 <img src="artificial_viscosity_smoothing.*" style="width:100.0%" />

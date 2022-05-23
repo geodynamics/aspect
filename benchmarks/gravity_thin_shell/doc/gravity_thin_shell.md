@@ -7,7 +7,7 @@ postprocessor: the domain is a thin shell of constant density somewhere in the
 Earth mantle and we wish to compute the resulting gravity field and potential
 at satellite height.
 
-The domain is a spherical shell of 10&nbsp;km radius centered at a depth $D$,
+The domain is a spherical shell of 10 km radius centered at a depth $D$,
 i.e. the inner radius is $R\textsubscript{inner}=6371-D-5~\si{\km}$ and the
 outer radius $R\textsubscript{outer}=6371-D+5~ \si{\km}$. It is filled with a
 fluid of constant density $\rho_0=3300~\si{\kg\per\cubic\meter}$ with total
@@ -73,13 +73,13 @@ and average values of both the potential and the acceleration are printed in
 the statistics file while measurements at all the desired points are written
 in the `output_gravity` folder inside the output folder. We ran the input file
 for $I\in \{-1,0,1,2\}$ for $D=0,100,500,1500,3000~\si{\km}$ and the results
-are presented in Table&nbsp;[1] alongside the analytical values.
+are presented in Table [1] alongside the analytical values.
 
 <div id="tab:thin_shell_gravity_benchmark">
 
 |      |      |       |           |              |           |              |                                    |              |
 |:----:|:----:|:-----:|:---------:|:------------:|:---------:|:------------:|:----------------------------------:|:------------:|
-|  D   | $I$  | $n_q$ |           | $g_r$ (mGal) |           |              | $U$ (J&nbsp;kg<sup>&minus;1</sup>) |              |
+|  D   | $I$  | $n_q$ |           | $g_r$ (mGal) |           |              | $U$ (J kg<sup>&minus;1</sup>) |              |
 | (km) |      |       |   avrg.   |     min      |    max    |    avrg.     |                min                 |     max      |
 |  0   |  -1  | $1^3$ | 2563.6541 |  2530.6859   | 2607.5210 | -169764.4978 |            -169832.3647            | -169744.3149 |
 |      |  0   | $2^3$ | 2562.8680 |  2553.5683   | 2571.9157 | -169676.4060 |            -169681.1065            | -169671.6199 |
@@ -117,7 +117,7 @@ points per cell. &lsquo;a.v.&rsquo; stands for analytical value.*
 
 The accuracy of the calculations increases with $I$ but so does the time spent
 in the postprocessor: for $I\in\{-1,0,1,2\}$ this time was about 18, 132, 440
-and 1040&nbsp;s respectively. This is easily explained when one realizes that
+and 1040 s respectively. This is easily explained when one realizes that
 increasing $I$ from 0 to 1 means that the number of GLQ points per cell goes
 from $2^3=8$ to $3^3=27$, i.e. a $3.375$ increase in operations for the same
 number of cells and measurement points. The time spent in the postprocessor
@@ -128,7 +128,7 @@ density so that the projection of the density from the nodes onto the
 quadrature points is exact and it does not introduce any smoothing of data
 which might occur in the presence of density discontinuities (e.g. air-water,
 water-crust, moho, etc.) inside a cell. $I=1$ seems to be the best compromise
-between accuracy (gravity acceleration errors are less than 0.01&nbsp;mGal for
+between accuracy (gravity acceleration errors are less than 0.01 mGal for
 all shells) and compute time for this experiment.
 
 <div id="refs" class="references csl-bib-body hanging-indent">

@@ -46,11 +46,11 @@ geometry, keeping the depth $b$ constant and varying the domain width
 $\lambda$. If the vertical velocity increases from the first to the second
 timestep, the system is unstable to convection. Otherwise, it is stable and
 convection will not occur. Each calculation is terminated after the second
-timestep. Fig.&nbsp;[2] shows the numerically-determined threshold for the
+timestep. Fig. [2] shows the numerically-determined threshold for the
 onset of convection, which can be compared directly with the theoretical
-prediction (green curve) and Fig.&nbsp;6.39 of (Turcotte and Schubert 2014).
+prediction (green curve) and Fig. 6.39 of (Turcotte and Schubert 2014).
 The relative error between the numerically-determined value of $Ra_c$ and the
-analytic solution are shown in the right panel of Fig.&nbsp;[2].
+analytic solution are shown in the right panel of Fig. [2].
 
 <img src="cookbooks/benchmarks/onset-of-convection/doc/racr.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Left: Comparison of numerically-determined and theoretical values for Ra_c. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of Ra_c. The dashed red line indicates the error tolerance used in bisection procedure." />
 <img src="cookbooks/benchmarks/onset-of-convection/doc/racr_error.png" title="fig:" id="fig:onset-1" style="width:49.0%" alt="Left: Comparison of numerically-determined and theoretical values for Ra_c. Red circles indicate numerical simulations unstable to convection, black circles indicate simulations that are stable. The green dashed curve indicates the theoretical prediction. Right: Relative error in determination of Ra_c. The dashed red line indicates the error tolerance used in bisection procedure." />

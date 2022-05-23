@@ -1,10 +1,10 @@
-#### The Tosi et al.&nbsp;benchmarks
+#### The Tosi et al. benchmarks
 
 *This section was contributed by Anne Glerum.*
 
 This section discusses the viscoplastic thermal convection benchmarks
-described by Tosi et al.&nbsp;(Tosi et al. 2015). The five benchmarks extend
-those of Blankenbach et al.&nbsp;(Blankenbach et al. 1989) with temperature-,
+described by Tosi et al. (Tosi et al. 2015). The five benchmarks extend
+those of Blankenbach et al. (Blankenbach et al. 1989) with temperature-,
 pressure- and strain rate-dependent rheology. As the results are published in
 the original paper, we limit ourselves to a brief description of the setup and
 results of the first 2 benchmark cases.
@@ -66,7 +66,7 @@ is varied to investigate the transitions from mobile-lid to periodic to
 stagnant-lid convection regimes. The input files referenced above implement
 these specific cases. As mentioned before, the results are presented in (Tosi
 et al. 2015) together with the results of several other finite element, finite
-volume, and spectral codes. Figure&nbsp;[3] shows one example of the
+volume, and spectral codes. Figure [3] shows one example of the
 resolved temperature and viscosity fields for case 1.
 
 <div class="center">
@@ -91,7 +91,7 @@ Codes.&rdquo; *Geophys. J. Int.* 98: 23&ndash;38.
 
 Tosi, N., C. Stein, L. Noack, C. H&uuml;ttig, P. Maierova, H. Samual, D. R.
 Davies, et al. 2015. &ldquo;A Community Benchmark for Viscoplastic Thermal
-Convection in a 2-d Square Box.&rdquo; *Geochem.&nbsp;Geophys.&nbsp;Geosyst.*
+Convection in a 2-d Square Box.&rdquo; *Geochem. Geophys. Geosyst.*
 16: 2175&ndash;96.
 
 </div>

@@ -20,7 +20,7 @@ boundary conditions are imposed at the top and bottom.
 </figure>
 
 Two materials are present in the domain: the lithosphere and the mantle as
-shown in Figure&nbsp;[1]. The gravity acceleration is Earth-like with
+shown in Figure [1]. The gravity acceleration is Earth-like with
 $g=9.81 \si{m}\si{s}^2$. The overriding plate is $80\si{km}$ thick and is
 placed at the top of the domain. The already subducted lithosphere extends
 vertically into the mantle for $250 \si{km}$. This slab has a density
@@ -31,7 +31,7 @@ $$\eta_{eff} = \eta_0 \, \dot\varepsilon^{1/n-1}$$ with $n=4$ and
 $\eta_0=\SI{4.75e11}{Pa . s}$. The mantle occupies the rest of the domain and
 has a constant viscosity $\eta_m=\SI{1e21}{Pa . s}$ and a density
 $\rho_m=\SI{3150}{kg/m^3}$. Viscosity is capped between $\SI{1e21}{Pa . s}$
-and $\SI{1e25}{Pa . s}$. Figure&nbsp;[\[fig:slab_detachment_evolution\]][2]
+and $\SI{1e25}{Pa . s}$. Figure [\[fig:slab_detachment_evolution\]][2]
 shows the various fields and their evolution through time. As shown in
 (Schmalholz 2011; Glerum et al. 2018) the hanging slab necks, helped by the
 localizing effect of the nonlinear rheology. Model results were shown to
@@ -72,7 +72,7 @@ Multi-Material Flows and Earth&rsquo;s Free Surface.&rdquo; *Solid Earth* 5
 
 Schmalholz, S. M. 2011. &ldquo;<span class="nocase">A simple analytical
 solution for slab detachment</span>.&rdquo;
-*Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 304: 45&ndash;54.
+*Earth Planet. Sci. Lett.* 304: 45&ndash;54.
 
 </div>
 
@@ -80,7 +80,7 @@ solution for slab detachment</span>.&rdquo;
 
 van Hunen, J., and M. B. Allen. 2011. &ldquo;<span class="nocase">Continental
 collision and slab break-off: A comparison of 3-D numerical models with
-observations</span>.&rdquo; *Earth&nbsp;Planet.&nbsp;Sci.&nbsp;Lett.* 302:
+observations</span>.&rdquo; *Earth Planet. Sci. Lett.* 302:
 27&ndash;37.
 
 </div>

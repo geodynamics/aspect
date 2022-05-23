@@ -30,8 +30,8 @@ In addition, this cookbook shows the use of periodic boundary conditions.
 ##### Geometry and periodic boundaries.
 
 The model setup is a quarter spherical shell with periodic side boundaries.
-The inner and outer radius are 3481&nbsp;km and 6371&nbsp;km, respectively, so
-that the mantle is 2900&nbsp;km deep. In the same section of the input file,
+The inner and outer radius are 3481 km and 6371 km, respectively, so
+that the mantle is 2900 km deep. In the same section of the input file,
 we also need to specify that the model should have periodic boundaries in
 angular ($\phi$) direction:
 
@@ -42,13 +42,13 @@ Both the top and bottom boundaries allow for free slip. Because the model has
 periodic side boundary conditions and free slip boundaries at top and bottom,
 the amount of rigid-body rotation in $\phi$ direction is not constrained. In
 other words: There is no unique solution. can remove this nullspace from the
-model (see Section&nbsp;[\[sec:nullspace\]][1]). Here, we do this by setting
+model (see Section [\[sec:nullspace\]][1]). Here, we do this by setting
 the net rotation to zero:
 
 ``` prmfile
 ```
 
-The temperature is fixed to 273&nbsp;K at the top and 3773&nbsp;K at the
+The temperature is fixed to 273 K at the top and 3773 K at the
 bottom boundary. The initial temperature model consists of an adiabatic
 profile, thermal boundary layers at the surface and the core-mantle boundary,
 and a small harmonic perturbation to initiate convection. The gravity profile
@@ -190,7 +190,7 @@ a derivation, see (Steinberger and Calderwood 2006).
 
 Other rheology models can be used by reading in different files. The
 formatting of these files is the following: The radial viscosity file contains
-two columns, where the first is the viscosity in Pa&nbsp;s, and the second is
+two columns, where the first is the viscosity in Pa s, and the second is
 the depth in km (note that this is an exception to the usual convention of
 using SI units). The lateral viscosity file also contains two columns, the
 first being the activation enthalpy divided by the gas constant and the
@@ -230,7 +230,7 @@ interpolation between the original discrete layers) and for use with the
 laterally averaged temperature. The file
 [data/material-model/steinberger/radial-visc-simple.txt] is for use with the
 adiabatic profile. To illustrate the difference, the content of both files is
-plotted in Figure&nbsp;[2].
+plotted in Figure [2].
 
 <embed src="cookbooks/steinberger/doc/radial-visc.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
 <embed src="cookbooks/steinberger/doc/radial-visc-simple.pdf" title="fig:" id="fig:steinberger-viscosity" style="width:48.0%" />
@@ -240,7 +240,7 @@ parameters that allow it to limit the viscosity variations. Because of the
 resolution in this cookbook we limit the lateral viscosity variations to three
 orders of magnitude in both directions (for a total of six orders of
 magnitude), and we additionally limit the overall viscosity between
-$10^{20}$&nbsp;Pa&nbsp;s and $5 \times 10^{23}$&nbsp;Pa&nbsp;s. This allows
+$10^{20}$ Pa s and $5 \times 10^{23}$ Pa s. This allows
 the features of the flow field to be resolved.
 
 ``` prmfile
@@ -294,7 +294,7 @@ We run the model for 300 million years. Over the time of the model evolution,
 some plumes rise and spread beneath the base of the lithosphere, and some cold
 downwellings detach from the base of the lithosphere. The temperature at the
 end of the model run and some of the material properties are shown in
-Figure&nbsp;[6].
+Figure [6].
 
 <img src="cookbooks/steinberger/doc/temperature.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
 <img src="cookbooks/steinberger/doc/viscosity.png" title="fig:" id="fig:steinberger-end-state" style="width:48.0%" alt="End state of the model. From left to right and top to bottom: Temperature, viscosity, density, and specific heat capacity." />
@@ -344,7 +344,7 @@ Discontinuity: Implications for Mantle Dynamics and Differentiation.&rdquo;
 Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
 class="nocase">Models of large-scale viscous flow in the Earth&rsquo;s mantle
 with constraints from mineral physics and surface observations</span>.&rdquo;
-*Geophy.&nbsp;J.&nbsp;Int.* 167: 1461&ndash;81.
+*Geophy. J. Int.* 167: 1461&ndash;81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.
 
 </div>

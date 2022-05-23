@@ -4,7 +4,7 @@
 
 The following cookbook will explain how to set up a model of a mid-ocean ridge
 that uses &rsquo;s implementation of coupled magma/mantle dynamics (see
-Section&nbsp;[\[sec:melt_transport\]][1]) and melting and freezing of mantle
+Section [\[sec:melt_transport\]][1]) and melting and freezing of mantle
 rock. In particular, it will outline
 
 1.  how to use operator splitting to accurately compute melting and freezing
@@ -105,7 +105,7 @@ The complete input file is located at
 </figure>
 
 When we look at the visualization output of this model (see also
-Figure&nbsp;[1]), we can see how the hot material flowing in from the bottom
+Figure [1]), we can see how the hot material flowing in from the bottom
 starts to melt as it reaches lower and lower pressures and crosses the
 solidus. Simultaneously, melting makes the residual solid rock more depleted
 (as indicated by the positive values of the compositional field called
@@ -123,7 +123,7 @@ ridge shows two distinct layers: The top $\approx 7$ km are enriched material,
 and form the basaltic crust (negative peridotite field), and the $\approx 50$
 km below are depleted material, and form the lithosphere (positive peridotite
 field). A vertical profile at a distance of 80 km from the ridge axis showing
-this composition can be found in Figure&nbsp;[2].
+this composition can be found in Figure [2].
 
 <figure>
 <embed src="cookbooks/mid_ocean_ridge/doc/depletion_profile.pdf" id="fig:mid-ocean-ridge-profile" style="width:35.0%" /><figcaption aria-hidden="true"><em>Vertical profile through the model domain at a distance of 80 km from the ridge axis at the end of the model run, showing the distribution of depletion and enrichment as indicated by the peridotite field.</em></figcaption>
@@ -141,7 +141,7 @@ length. This can be done in the mesh refinement section of the input file:
 This will lead to a higher resolution particularly in regions with low (but
 not zero) porosity, and can be useful to resolve the strong gradients in the
 melt velocity and compaction pressure that are to be expected in these places
-(see Figure&nbsp;[3]). Of course it is also possible to combine both methods
+(see Figure [3]). Of course it is also possible to combine both methods
 for refining the mesh.
 
 <figure>

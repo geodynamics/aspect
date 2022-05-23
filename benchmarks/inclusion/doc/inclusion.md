@@ -8,7 +8,7 @@ aligns to cell boundaries, leading to much larger difficulties in obtaining an
 accurate representation of the pressure. Specifically, the almost
 discontinuous pressure along this interface leads to oscillations in the
 numerical solution. This can be seen in the visualizations shown in
-Fig.&nbsp;[2]. As before, for details we refer to (Duretz et al. 2011). The
+Fig. [2]. As before, for details we refer to (Duretz et al. 2011). The
 analytic solution against which we compare is given in (Schmid and
 Podladchikov 2003). An extensive discussion of convergence properties is given
 in (Kronbichler, Heister, and Bangerth 2012).

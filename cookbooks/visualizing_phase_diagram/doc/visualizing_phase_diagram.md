@@ -26,7 +26,7 @@ this first case, phase transitions are prescribed manually in terms of their
 depth, Clapeyron slope, and other key parameters.
 
 The model domain is 800 km by 800 km box. Initial temperature increases from
-273&nbsp;K on the left side to 2273&nbsp;K on the right side. Pressure, on the
+273 K on the left side to 2273 K on the right side. Pressure, on the
 other hand, increases from the top of the box to the bottom with a constant
 gradient. This is assured by assigning a constant density with zero
 expansivity. It differs from a classic phase diagram only in the direction of
@@ -37,7 +37,7 @@ each run, only one composition is assigned to the whole domain in order to
 visualize the diagrams of these two separately.
 
 The material model is then set up to mimic mantle phase transitions at 410,
-520, and 660&nbsp;km. Details of phase transitions are taken from (Billen and
+520, and 660 km. Details of phase transitions are taken from (Billen and
 Arredondo 2018). A trick is needed to make this work: we assign the values of
 the density to the field of heat capacity in the input file. To do this, We
 use the phase inputs implemented in the visco plastic plug-in. This serves the

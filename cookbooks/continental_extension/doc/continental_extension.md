@@ -20,7 +20,7 @@ using the following set of input parameters:
 
 This cookbook provides one such example where the continental lithosphere
 undergoes extension. Notably, the model design follows that of numerous
-previously published continental extension studies&nbsp;(Huismans and Beaumont
+previously published continental extension studies (Huismans and Beaumont
 2011; Brune et al. 2014; Naliboff and Buiter 2015, and references therein).
 
 ##### Continental Extension
@@ -30,7 +30,7 @@ element grid with 1.25 and 2.5 km grid spacing, respectively, above and below
 50 km depth. This variation in grid spacing is achieved with a single initial
 adaptive refinement step using the minimum refinement function strategy.
 Unlike the crustal deformation cookbook (see
-Section&nbsp;[\[sec:cookbooks-crustal-deformation\]][1], the mesh is not
+Section [\[sec:cookbooks-crustal-deformation\]][1], the mesh is not
 refined with time.
 
 ``` prmfile
@@ -89,8 +89,8 @@ For a layer thickness $\Delta z$, the basal temperature ($T_B$) and heat flux
   \label{eq:continental-geotherm-3}
   q_B &= q_T - A \Delta z.\end{aligned}$$
 
-In this example, specifying the top (273&nbsp;K) temperature, surface heat
-flow (55&nbsp;mW&nbsp;m<sup>&minus;2</sup>), and thermal conductivity and
+In this example, specifying the top (273 K) temperature, surface heat
+flow (55 mW m<sup>&minus;2</sup>), and thermal conductivity and
 radiogenic heat production of each layer provides enough constraints to
 successively solve for the temperature and heat flux at the top of the lower
 crust and mantle.
@@ -98,10 +98,10 @@ crust and mantle.
 As noted above, the initial zone of randomized plastic strain within the model
 center and strain softening of the friction and cohesion produces an initial
 pattern of distributed and unlocalized deformation across the zone of initial
-plastic strain (Fig.&nbsp;[1]). After 5 million years of extension,
+plastic strain (Fig. [1]). After 5 million years of extension,
 distributed faulting is clearly evident in both the active and finite
 deformation fields and surface topography over an approximately 100 km wide
-region (Fig.&nbsp;[2]). While deformation is distributed within this region,
+region (Fig. [2]). While deformation is distributed within this region,
 the fault system is clearly asymmetric as the rate of deformation and
 accumulated brittle strain varies between faults. Localization onto the two
 conjugate rift-bounding border faults is evident from the active deformation

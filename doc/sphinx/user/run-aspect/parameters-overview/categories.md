@@ -42,23 +42,23 @@ categorized into the following groups:
     which their parameters are declared, are the following:
 
     -   The material model:
-        Sections&nbsp;{ref}`parameters:Material_20model` and following.
+        Sections {ref}`parameters:Material_20model` and following.
 
-    -   The geometry: Sections&nbsp;{ref}`parameters:Geometry_20model` and
+    -   The geometry: Sections {ref}`parameters:Geometry_20model` and
         following.
 
     -   The gravity description:
-        Sections&nbsp;{ref}`parameters:Gravity_20model` and following.
+        Sections {ref}`parameters:Gravity_20model` and following.
 
     -   Initial conditions for the temperature:
-        Sections&nbsp;{ref}`parameters:Initial_20temperature_20model` and
+        Sections {ref}`parameters:Initial_20temperature_20model` and
         following.
 
     -   Temperature boundary conditions:
-        Sections&nbsp;{ref}`parameters:Boundary_20temperature_20model` and
+        Sections {ref}`parameters:Boundary_20temperature_20model` and
         following.
 
-    -   Postprocessors: Sections&nbsp;{ref}`parameters:Postprocess` and
+    -   Postprocessors: Sections {ref}`parameters:Postprocess` and
         following for most postprocessors, section
         {ref}`parameters:Postprocess/Visualization` and following for
         postprocessors related to visualization.

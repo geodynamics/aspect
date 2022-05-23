@@ -43,7 +43,7 @@ $$U(r)=-\frac{GM}{r} +D,$$ where $D$ is an integration constant which has to
 be zero since we require the potential to vanish for $r\rightarrow \infty$.
 The potential within the shell,
 $R\textsubscript{inner}\leq r \leq R\textsubscript{outer}$, is found by
-integrating Eq.&nbsp;[\[eqgin\]][3]:
+integrating Eq. [\[eqgin\]][3]:
 $$U(r)= \frac{4 \pi}{3} G \rho_0 \left(\frac{r^2}{2} + \frac{R\textsubscript{inner}^3}{r} \right)  + E,$$
 where $E$ is a constant. Continuity of the potential at
 $r=R\textsubscript{outer}$ requires that
@@ -64,7 +64,7 @@ artifacts due to symmetry. The list of radii is defined as follows:
 ```
 
 The resulting measurements obtained for a mesh composed of 12 caps of $32^3$
-cells (i.e., 393,216 total mesh cells) are shown in Fig.&nbsp;([2]) and are
+cells (i.e., 393,216 total mesh cells) are shown in Fig. ([2]) and are
 in good agreement with the analytical profiles.
 
 <embed src="cookbooks/benchmarks/gravity_thick_shell/doc/gravity_g.pdf" title="fig:" id="fig:grav-thick-shell" style="width:8cm" />

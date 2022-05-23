@@ -13,7 +13,7 @@ guide users to an informed decision about the best option for their purpose.
 |             Feature             | Compile & Install |      Virtual Machine       | Docker Container |
 |:-------------------------------:|:-----------------:|:--------------------------:|:----------------:|
 |         Speed overhead          |        0%         |            30%             |    0-5%    |
-|          Disk overhead          |     0&nbsp;GB     |         1&nbsp;GB          |   200&nbsp;MB    |
+|          Disk overhead          |     0 GB     |         1 GB          |   200 MB    |
 |       Knowledge required        |       Much        |        Very Little         |      Little      |
 |    Root privileges required     |        No         | No (installed VM software) |    Partially     |
 | Embedded in native environment  |        Yes        |             No             |    Partially     |
@@ -35,7 +35,7 @@ The available options can be best presented in form of typical use cases:
     tutorial participants can work in a unified environment, thus minimizing
     installation time and technical problems. Due to the overhead of
     virtualizing a full operating system this installation typically needs
-    more space, and is approximately 30&nbsp;% slower than a native
+    more space, and is approximately 30 % slower than a native
     installation. Additionally working in a virtual machine
     &lsquo;feels' differently from working in your usual desktop
     environment. The virtual machine can be run on all host operating systems

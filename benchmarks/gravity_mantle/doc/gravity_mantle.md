@@ -3,7 +3,7 @@
 *This section was contributed by C. Thieulot and L. Jeanniot.*
 
 The gravity postprocessor has been benchmarked in
-Section&nbsp;[\[sec:benchmark-thin-shell-gravity\]][1] and
+Section [\[sec:benchmark-thin-shell-gravity\]][1] and
 [\[sec:benchmark-thick-shell-gravity\]][2]. We use it here in an Earth-like
 context: the tomography model S40RTS (Ritsema et al. 2011) is used and scaled
 so as to provide temperature anomalies, which themselves incorporated in the
@@ -13,7 +13,7 @@ $R\textsubscript{inner} \leq r \leq R\textsubscript{outer}$ with
 $R\textsubscript{inner}=3480~\si{\km}$ and
 $R\textsubscript{outer}=6251~\si{\km}$. The use of the S20RTS/S40RTS
 tomography model and its parameterization is detailed in
-Section&nbsp;[\[sec:cookbooks-S20RTS\]][3].
+Section [\[sec:cookbooks-S20RTS\]][3].
 
 We set the global refinement to 3 so that the mesh counts
 $12\times 16^3=49,152$ cells. This means that the radial resolution is
@@ -22,7 +22,7 @@ the lateral resolution is
 $(4\pi R\textsubscript{outer}^2/(12\times 16^2))^{1/2} \simeq 400~\si{km}$ at
 the surface and
 $(4\pi R\textsubscript{inner}^2/(12\times 16^2))^{1/2} \simeq 220~\si{km}$ at
-the CMB. The mesh and the density field are shown in Fig.&nbsp;[3]. The
+the CMB. The mesh and the density field are shown in Fig. [3]. The
 temperature anomaly ranges from approximately $-342~\si{\kelvin}$ to
 approximately $+331~\si{\kelvin}$ and geodynamical features such as the
 mid-oceanic ridge or the Afar region are visible in the form of positive
@@ -41,7 +41,7 @@ The gravity postprocessor computes the gravitational potential, acceleration
 vector and gradient at a given radius (here chosen to be
 $6371+250=6621~\si{\km}$) on a regular $2\si{\degree}$-latitude-longitude grid
 (see also the cookbook of
-Section&nbsp;[\[sec:benchmark-thin-shell-gravity\]][1]) and returns the
+Section [\[sec:benchmark-thin-shell-gravity\]][1]) and returns the
 results in the `gravity-00000` file to be found in the `output-gravity` folder
 inside the regular output folder.
 
@@ -56,11 +56,11 @@ python3 convert_gravity_ascii_to_vtu_map.py gravity-00000 181 91
 The first argument is the ascii file, while the following two arguments are
 the number of longitude and latitude points as specified in the `prm` file.
 The resulting `gravity-00000_map.vtu` file is then visualised with ParaView
-and is shown in Fig.&nbsp;[5]. Note that on a modern laptop the calculations
+and is shown in Fig. [5]. Note that on a modern laptop the calculations
 resulting from running the provided `prm` file in the cookbook folder takes a
-bit less than 2 hours on a single thread: about 1250&nbsp;s are spent in the
+bit less than 2 hours on a single thread: about 1250 s are spent in the
 setup phase (using the spherical harmonics coefficients to compute the
-temperature field on the mesh nodes) and about 4700&nbsp;s in the gravity
+temperature field on the mesh nodes) and about 4700 s in the gravity
 postprocessor itself. This time can be substantially decreased by running in
 parallel on $n$ threads: the processor can then make use of the domain
 decomposition and is almost $n$ times faster.

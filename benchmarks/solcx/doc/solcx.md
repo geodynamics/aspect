@@ -95,7 +95,7 @@ through the different parts of this file in more detail:
 -   The final section on postprocessors determines what to do with the
     solution once computed. Here, we do two things: we ask to compute the
     error in the solution using the setup described in the Duretz et
-    al.&nbsp;paper {cite}`DMGT11`, and we request that output files for
+    al. paper {cite}`DMGT11`, and we request that output files for
     later visualization are generated and placed in the output directory. The
     functions that compute the error automatically query which kind of
     material model had been chosen, i.e., they can know whether we are solving

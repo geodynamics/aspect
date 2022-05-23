@@ -101,19 +101,19 @@ approximate thermal boundary layers.
 ##### Visualizing 3D models.
 
 In this cookbook we calculate the instantaneous solution to examine the flow
-field. Figures&nbsp;[1] and [2] show some of the output for a resolution
+field. Figures [1] and [2] show some of the output for a resolution
 of 2 global refinement steps ([1]c and [2]a, c, e) as used in the
 cookbook, as well as 4 global refinement steps (other panels in these
 figures). Computations with 4 global refinements are expensive, and
 consequently this is not the default for this cookbook. For example, as of
 2017, it takes 64 cores approximately 2 hours of walltime to finish this
-cookbook with 4 global refinements. Figure&nbsp;[1]a and b shows the density
+cookbook with 4 global refinements. Figure [1]a and b shows the density
 variation that has been obtained from scaling S20RTS in the way described
 above. One can see the two large low shear wave velocity provinces underneath
 Africa and the Pacific that lead to upwelling if they are assumed to be
 buoyant (as is done in this case). One can also see the subducting slabs
 underneath South America and the Philippine region that lead to local
-downwelling. Figure&nbsp;[1]c and d shows the heat flux density at the
+downwelling. Figure [1]c and d shows the heat flux density at the
 surface for 2 refinement steps (c, colorbar ranges from 13 to 19 mW/$m^2$) and
 for 4 refinement steps (d, colorbar ranges from 35 to 95 mW/$m^2$). A first
 order correlation with upper mantle features such as high heat flow at mid
@@ -126,21 +126,21 @@ surface topography due to the downward flow, while regions such as Iceland,
 Hawaii, or mid ocean ridges are elevated due to (deep and) shallow upward
 flow. The core mantle boundary topography shows that the upwelling large low
 shear wave velocity provinces deflect the core mantle boundary up.
-Figure&nbsp;[2]e and f shows geoid perturbations for 2 and 4 global
+Figure [2]e and f shows geoid perturbations for 2 and 4 global
 refinement steps, respectively. The geoid anomalies show a strong correlation
 with the surface dynamic topography. This is in part expected given that the
 geoid anomalies are driven by the deflection of the upper and lower surface as
 well as internal density variations. The relative importance of these
 different contributors is dictated by the Earth&rsquo;s viscosity profile. Due
 to the isoviscous assumption in this cookbook, we don&rsquo;t properly recover
-patterns of the observed geoid. Lastly, Figure&nbsp;[2]g and h shows geoid
+patterns of the observed geoid. Lastly, Figure [2]g and h shows geoid
 perturbations for 2 and 4 global refinement steps, respectively.
 
 As discussed in the previous cookbook, dynamic topography does not necessarily
 average to zero if the resolution is not high enough. While one can simply
 subtract the mean as a postprocessing step this should be done with caution
 since a non-zero mean indicates that the refinement is not sufficiently high
-to resolve the convective flow. In Figure&nbsp;[2]a-d we refrained from
+to resolve the convective flow. In Figure [2]a-d we refrained from
 subtracting the mean but indicated it at the bottom left of each panel. The
 mean dynamic topography approaches zero for increasing refinement.
 Furthermore, the mean bottom dynamic topography is closer to zero than the

@@ -12,11 +12,11 @@ the benchmarks implemented:
 -   Dropping box (`benchmarks/drop_*.prm`): This is a simple 2d box with a
     prescribed, constant, vertical velocity. An initial condition creates a
     square box with a high temperature, which is advected vertically. See
-    Figure&nbsp;[1].
+    Figure [1].
 
 -   Rotating Shapes: `benchmarks/rotate_shape_*.prm`: A collection of shapes
     in a 2d box rotated by 360 degrees by a prescribed velocity. See
-    Figure&nbsp;[2].
+    Figure [2].
 
 Both benchmarks have the identical setup in the temperature and a
 compositional field. The only difference is that the temperature equation

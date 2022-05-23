@@ -81,7 +81,7 @@ gradient tensor in simple and pure shear as described in
 [benchmarks/finite_strain/simple_shear.prm].
 
 We will demonstrate its use at the example of a 2D Cartesian convection model
-(Figure&nbsp;[1]): Heating from the bottom leads to the ascent of plumes
+(Figure [1]): Heating from the bottom leads to the ascent of plumes
 from the boundary layer (top panel), and the amount of stretching is visible
 in the distribution of natural strain (color in lower panel). Additionally,
 the black crosses show the direction of stretching and compression (the

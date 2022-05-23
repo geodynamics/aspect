@@ -4,7 +4,7 @@ parameters. We do so in the
 [cookbooks/composition_passive_particles/composition_passive_particles.prm]
 input file, which is otherwise just a minor variation of the
 [cookbooks/composition_passive/composition_passive.prm] case discussed in
-the previous Section&nbsp;[\[sec:cookbooks-composition\]][1]. In particular,
+the previous Section [\[sec:cookbooks-composition\]][1]. In particular,
 the postprocess section now looks like this:
 
 ``` prmfile
@@ -14,11 +14,11 @@ The 1000 particles we are asking here are initially uniformly distributed
 throughout the domain and are, at the end of each time step, advected along
 with the velocity field just computed. (There are a number of options to
 decide which method to use for advecting particles, see
-Section&nbsp;[\[parameters:Postprocess/Particles\]][2].)
+Section [\[parameters:Postprocess/Particles\]][2].)
 
 If you run this cookbook, information about all particles will be written into
 the output directory selected in the input file (as discussed in
-Section&nbsp;[\[sec:running-overview\]][3]). In the current case, in addition
+Section [\[sec:running-overview\]][3]). In the current case, in addition
 to the files already discussed there, a directory listing at the end of a run
 will show several particle related files:
 
@@ -41,7 +41,7 @@ drwxr-xr-x 2 bangerth bangerth   4096 Dec 11 10:08 solution
 Here, the `particles.pvd` and `particles.visit` files contain a list of all
 visualization files from all processors and time steps. These files can be
 loaded in much the same way as the `solution.pvd` and `solution.visit` files
-that were discussed in Section&nbsp;[\[sec:viz\]][4]. The actual data files
+that were discussed in Section [\[sec:viz\]][4]. The actual data files
 &ndash; possibly a large number, but not of much immediate interest to users
 &ndash; are located in the `particles` subdirectory.
 
@@ -51,7 +51,7 @@ correspond to particles (for example, `output/solution.visit` and
 `output/particles.visit`) and using a pseudo-color plot for the particles,
 selecting the &ldquo;id&rdquo; of particles to color each particle. By going
 to, for example, the output from the 72nd visualization output, this then
-results in a plot like the one shown in Fig.&nbsp;[1].
+results in a plot like the one shown in Fig. [1].
 
 <figure>
 <img src="cookbooks/composition_passive_particles/doc/solution-00072.png" id="fig:composition_passive_particles" style="width:50.0%" alt="Passively advected quantities visualized through both a [fig:composition_passive_particles] compositional field and a set of 1,000 particles, at t=7.2." /><figcaption aria-hidden="true"><em>Passively advected quantities visualized through both a <span id="fig:composition_passive_particles" label="fig:composition_passive_particles">[fig:composition_passive_particles]</span> compositional field and a set of 1,000 particles, at <span class="math inline"><em>t</em>&#x2004;=&#x2004;7.2</span>.</em></figcaption>
@@ -97,9 +97,9 @@ properties (`function`, `pT path`, `initial position` and
 `initial composition`), some of which may be scalars and others can have
 multiple components. (A full list of particle properties that can currently be
 selected can be found in
-Section&nbsp;[\[parameters:Postprocess/Particles\]][2], and new particle
+Section [\[parameters:Postprocess/Particles\]][2], and new particle
 properties can be added as plugins as described in
-Section&nbsp;[\[sec:write-plugin\]][5].) The properties selected above do the
+Section [\[sec:write-plugin\]][5].) The properties selected above do the
 following:
 
 -   `initial position:` This particle property simply stores the initial
@@ -119,7 +119,7 @@ following:
     compositional fields. Using this, it stores the compositional field
     initialization values at the location where the particle started, and
     again never changes them. This is useful in the same context as shown for
-    the field-based example in Section&nbsp;[\[sec:cookbooks-composition\]][1]
+    the field-based example in Section [\[sec:cookbooks-composition\]][1]
     where we would like to figure where materials ends up. In this case, one
     would set the initial composition to an indicator function for certain
     parts of the domain, and then set the initial composition property for the
@@ -130,7 +130,7 @@ following:
     &ldquo;initial composition&rdquo; property can also be useful to compare
     the final composition of a particle with its initial composition and
     therefore determine which regions underwent reactions such as those
-    described in Section&nbsp;[\[sec:cookbooks-composition\]][1], and where
+    described in Section [\[sec:cookbooks-composition\]][1], and where
     the material that underwent this reaction got transported to.
 
 -   `function:` This particle property can be used to assign to each particle
@@ -140,7 +140,7 @@ following:
     copy these values via the &ldquo;initial composition&rdquo; property to
     particles. In the example above, we use the same function as for the
     compositional initial composition of field number one in
-    Section&nbsp;[\[sec:cookbooks-composition\]][1]. Therefore, this property
+    Section [\[sec:cookbooks-composition\]][1]. Therefore, this property
     should behave identical to the compositional field (except that the
     compositional field may have a reaction term that this particle property
     does not), although the two are of course advected using very different
@@ -165,7 +165,7 @@ following:
 <img src="cookbooks/composition_passive_particles/doc/initial-position-00199.png" title="fig:" id="fig:composition_passive_particles_properties" style="width:45.0%" alt="Passively advected particle properties visualized. Top row: Composition C_1 and particle property &#x201C;initial C_1.&#x201D; The blue line in both figures is the 0.5-isocontour for the C_1 field. Bottom row: Norm of the &#x201C;initial position&#x201D; of particles at t=0 and t=20." />
 
 The results of all of these properties can of course be visualized.
-Fig.&nbsp;[5] shows some of the pictures one can create with particles. The
+Fig. [5] shows some of the pictures one can create with particles. The
 top row shows both the composition field $C_1$ (along with the mesh on which
 it is defined) and the corresponding &ldquo;initial $C_1$&rdquo; particle
 property, at $t=7.2$. Because the compositional field does not undergo any

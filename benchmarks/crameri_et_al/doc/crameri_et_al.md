@@ -1,4 +1,4 @@
-#### The Crameri et al.&nbsp;benchmarks
+#### The Crameri et al. benchmarks
 
 *This section was contributed by Ian Rose.*
 
@@ -11,7 +11,7 @@ The first benchmark involves a high viscosity lid sitting on top of a lower
 viscosity mantle. There is an initial sinusoidal topography which is then
 allowed to relax. This benchmark has a semi-analytical solution (which is
 exact for infinitesimally small topography). Details for the benchmark setup
-are in Figure&nbsp;[1].
+are in Figure [1].
 
 <div class="center">
 
@@ -38,11 +38,11 @@ in the `ReboundBox` subsection.
 The characteristic timescales of topography relaxation are significantly
 smaller than those of mantle convection. Taking timesteps larger than this
 relaxation timescale tends to cause sloshing instabilities, which are
-described further in Section&nbsp;[\[sec:freesurface\]][2]. Some sort of
+described further in Section [\[sec:freesurface\]][2]. Some sort of
 stabilization is required to take large timesteps. In this benchmark, however,
 we are interested in the relaxation timescale, so we are free to take very
 small timesteps (in this case, 0.01 times the CFL number). As can be seen in
-Figure&nbsp;[2], the results of all the codes which are included in this
+Figure [2], the results of all the codes which are included in this
 comparison are basically indistinguishable.
 
 <div class="center">
@@ -59,7 +59,7 @@ Case two is more complicated. Unlike the case one, it occurs over mantle
 convection timescales. In this benchmark there is the same high viscosity lid
 over a lower viscosity mantle. However, now there is a blob of buoyant
 material rising in the center of the domain, causing dynamic topography at the
-surface. The details for the setup are in the caption of Figure&nbsp;[3].
+surface. The details for the setup are in the caption of Figure [3].
 
 <div class="center">
 
@@ -101,12 +101,12 @@ solution to compare against. Furthermore, the time integration for this
 benchmark is much longer, allowing for errors to accumulate. As such, there is
 considerably more scatter between the participating codes. does, however, fall
 within the range of the other results, and the curve is somewhat less wiggly.
-The results for maximum topography versus time are shown in&nbsp;[4]
+The results for maximum topography versus time are shown in [4]
 
 The precise values for topography at a given time are quite dependent on the
 resolution and timestepping parameters. Following (Crameri et al. 2012) we
 investigate the convergence of the maximum topography at 3 Ma as a function of
-CFL number and mesh resolution. The results are shown in figure&nbsp;[5].
+CFL number and mesh resolution. The results are shown in figure [5].
 
 <div class="center">
 

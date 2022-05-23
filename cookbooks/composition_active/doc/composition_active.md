@@ -8,7 +8,7 @@ where the density, viscosity, and other parameters depend on the composition,
 taking into account what the compositional fields actually denote (e.g., if
 they simply indicate the origin of material, or the concentration of things
 like olivine, perovskite, &mldr;). The construction of material models is
-discussed in much greater detail in Section&nbsp;[\[sec:material-models\]][1];
+discussed in much greater detail in Section [\[sec:material-models\]][1];
 we do not want to revisit this issue here and instead choose &ndash; once
 again &ndash; the simplest material model that is implemented in : the
 `simple` model.
@@ -61,7 +61,7 @@ postprocessing section, using the `density` visualization plugin:
 <img src="cookbooks/composition_active/doc/visit0006.png" title="fig:" id="fig:composition-active-temperature" style="width:30.0%" alt="Active compositional fields: Temperature fields at t=0, 2, 4, 8,
   12, 20. The black line is the isocontour line c_1(\mathbf x,t)=0.5 delineating the position of the dense material at the bottom." />
 
-Results of this model are visualized in Figs.&nbsp;[3] and [9]. What is
+Results of this model are visualized in Figs. [3] and [9]. What is
 visible is that over the course of the simulation, the material that starts at
 the bottom of the domain remains there. This can only happen if the
 circulation is significantly affected by the high density material once the

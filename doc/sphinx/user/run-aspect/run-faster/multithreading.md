@@ -18,7 +18,7 @@ ASPECT will create exactly one thread per MPI
 process, i.e. multithreading is disabled. Appending the parameter allows
 ASPECT to spawn several threads per MPI process. Note
 that the internally used TBB library will determine the number of threads
-based on the number of available cores, i.e., if you start 2&nbsp;MPI
+based on the number of available cores, i.e., if you start 2 MPI
 processes on a quadcore machine with hyperthreading (8 logical cores),
 ASPECT will spawn 4 threads on each MPI process. Also
 note that there is no guarantee that the final number of threads will exactly
