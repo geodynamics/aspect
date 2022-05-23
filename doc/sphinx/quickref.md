@@ -35,7 +35,7 @@ becomes:
 
 All standalone .md files must start with a level 1 header, regardless of whether it is a chapter, section, or subsection. Subheaders within the same file can start with ## and so on.
 
-To refer to a section, place this header tag before it:
+For a section to be referenced, it must have a header tag like so:
 
 ```md
 (sec:myst-quickref)=
@@ -176,7 +176,7 @@ Term 1
 Term 2
 : Definition of term 2
 
-
+(sec:quickref:code-blocks)=
 ## Code blocks
 
 ### C++
@@ -306,6 +306,7 @@ ksp_rtol = 1.0e-3
 
 Captions are optional.
 
+(sec:quickref:external-code-blocks)=
 ### Codeblocks from external files
 
 ````md
@@ -376,7 +377,7 @@ to get this:
 
 This is the figure caption.
 ```
-Put the filename in "img src", but leave the file extension as .* instead of .pdf or .png or whatever.
+Put the filename and relative path in "img src", but leave the file extension as `.*` instead of .png or whatever. Allowable formats for figures include SVGs, PNGs, and JPGs, but not PDFs unfortunately.
 
 Refer to it like:
 
@@ -388,6 +389,8 @@ Please see {numref}`fig:quickref`.
 
 Figure labels cannot contain more than one dash, so we use colons instead.
 This is likely a bug.
+
+Sphinx does not support the use of subfigures. Combine any sub-figures you want to include into one file. We recommend inkscape for this purpose.
 
 ## Parameter file referencing
 
@@ -407,6 +410,10 @@ Inline math works just like in latex. Use dollar signs to put stuff like $\eta_r
 ```md
 Use dollar signs to put stuff like $\eta_r(z)$ in a sentence.
 ```
+
+Be aware that not all latex packages are known by Sphinx, so some commands will need to be reformatted (i.e., \num{4e5} needs to be rewritten as 4\times 10^{5}.)
+
+For math blocks:
 
 ````md
 ```{math}
@@ -493,13 +500,23 @@ becomes:
 
 ```md
 Traditional citation {cite}`kronbichler:etal:2012`.
-Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister:etal:2017`.
+Citation as noun {cite:t}`kronbichler:etal:2012`.
+Use a comma for multiple, like {cite:t}`kronbichler:etal:2012,heister:etal:2017`.
 ```
 
 becomes
 
 Traditional citation {cite}`kronbichler:etal:2012`.
-Citation as noun {cite:t}`kronbichler:etal:2012` or for multiple {cite:t}`kronbichler:etal:2012,heister:etal:2017`.
+Citation as noun {cite:t}`kronbichler:etal:2012`.
+Use a comma for multiple, like {cite:t}`kronbichler:etal:2012,dannberg:heister:2016`.
+
+If the paper you wish to cite is not already in [references.bib](https://github.com/geodynamics/aspect/blob/main/doc/sphinx/references.bib), you will need to add its bibtex entry. Please format the citation tag as:
+
+- `firstauthor:year` for one author
+- `firstauthor:secondauthor:year` for two authors
+- `firstauthor:etal:year` for more than two authors
+
+where `firstauthor` and `secondauthor` refer to the *last* names of the authors.
 
 ## Footnotes
 ```md
