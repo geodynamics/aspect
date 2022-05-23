@@ -16,9 +16,12 @@ def escape_doc_string(text) :
            .replace("'", "&rsquo;")
     )
 
-    # Then also deal with italics:
+    # Then also deal with italics and boldface:
     tmp = re.sub(r'\\textit\{(.*?)\}',
                  r'*\1*',
+                 tmp)
+    tmp = re.sub(r'\\textbf\{(.*?)\}',
+                 r'**\1**',
                  tmp)
 
     return tmp;

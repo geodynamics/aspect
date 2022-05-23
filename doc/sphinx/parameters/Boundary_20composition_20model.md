@@ -91,7 +91,7 @@ Because this class simply takes what the initial composition had described, this
 
 &lsquo;spherical constant&rsquo;: A model in which the composition is chosen constant on the inner and outer boundaries of a surface, spherical shell, chunk or ellipsoidal chunk. Parameters are read from subsection &rsquo;Spherical constant&rsquo;.
 
-\textbf{Warning}: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+**Warning**: This parameter provides an old and deprecated way of specifying boundary composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
 (parameters:Boundary_20composition_20model/Ascii_20data_20model)=
 ## **Subsection:** Boundary composition model / Ascii data model

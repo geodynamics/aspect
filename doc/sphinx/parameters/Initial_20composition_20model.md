@@ -55,7 +55,7 @@ The following composition models are available:
 
 &lsquo;world builder&rsquo;: Specify the initial composition through the World Builder. More information on the World Builder can be found at \url{https://geodynamicworldbuilder.github.io}. Make sure to specify the location of the World Builder file in the parameter &rsquo;World builder file&rsquo;. It is possible to use the World Builder only for selected compositional fields by specifying the parameter &rsquo;List of relevant compositions&rsquo;.
 
-\textbf{Warning}: This parameter provides an old and deprecated way of specifying initial composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
+**Warning**: This parameter provides an old and deprecated way of specifying initial composition models and shouldn&rsquo;t be used. Please use &rsquo;List of model names&rsquo; instead.
 
 (parameters:Initial_20composition_20model/Volume_20of_20fluid_20initialization_20type)=
 ### __Parameter name:__ Volume of fluid initialization type
