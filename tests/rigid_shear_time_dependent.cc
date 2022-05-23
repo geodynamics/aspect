@@ -1,1 +1,1 @@
-#include <../benchmarks/rigid_shear/plugin/rigid_shear.cc>
+#include "../benchmarks/rigid_shear/plugin/rigid_shear.cc"
