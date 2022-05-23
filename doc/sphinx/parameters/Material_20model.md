@@ -717,18 +717,6 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Documentation:** For calculating density by thermal expansivity. Units: \si{\kelvin}.
 
-(parameters:Material_20model/Diffusion_20dislocation/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
-**Default value:** 1e22
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The reference viscosity that is used for pressure scaling. To understand how pressure scaling works, take a look at \cite{KHB12}. In particular, the value of this parameter would not affect the solution computed by \aspect{} if we could do arithmetic exactly; however, computers do arithmetic in finite precision, and consequently we need to scale quantities in ways so that their magnitudes are roughly the same. As explained in \cite{KHB12}, we scale the pressure during some computations (never visible by users) by a factor that involves a reference viscosity. This parameter describes this reference viscosity.
-
-For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
-
-Units: \si{\pascal\second}.
-
 (parameters:Material_20model/Diffusion_20dislocation/Strain_20rate_20residual_20tolerance)=
 ### __Parameter name:__ Strain rate residual tolerance
 **Default value:** 1e-22
@@ -802,18 +790,6 @@ Units: \si{\pascal\second}.
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. The reference temperature is used in the density calculation. Units: \si{\kelvin}.
-
-(parameters:Material_20model/Drucker_20Prager/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
-**Default value:** 1e22
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The reference viscosity that is used for pressure scaling. To understand how pressure scaling works, take a look at \cite{KHB12}. In particular, the value of this parameter would not affect the solution computed by \aspect{} if we could do arithmetic exactly; however, computers do arithmetic in finite precision, and consequently we need to scale quantities in ways so that their magnitudes are roughly the same. As explained in \cite{KHB12}, we scale the pressure during some computations (never visible by users) by a factor that involves a reference viscosity. This parameter describes this reference viscosity.
-
-For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
-
-Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Drucker_20Prager/Thermal_20conductivity)=
 ### __Parameter name:__ Thermal conductivity
@@ -2959,18 +2935,6 @@ A typical example would be to set this runtime parameter to `pi=3.1415926536' an
 
 **Documentation:** A list of base values of the thermal conductivity for each of the horizontal layers in the 'p-T-dependent' Thermal conductivity formulation. Pressure- and temperature-dependence will be appliedon top of this base value, according to the parameters 'Pressure dependencies of thermal conductivity' and 'Reference temperatures for thermal conductivity'. Units: \si{\watt\per\meter\per\kelvin}
 
-(parameters:Material_20model/Steinberger_20model/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
-**Default value:** 1e23
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** The reference viscosity that is used for pressure scaling. To understand how pressure scaling works, take a look at \cite{KHB12}. In particular, the value of this parameter would not affect the solution computed by \aspect{} if we could do arithmetic exactly; however, computers do arithmetic in finite precision, and consequently we need to scale quantities in ways so that their magnitudes are roughly the same. As explained in \cite{KHB12}, we scale the pressure during some computations (never visible by users) by a factor that involves a reference viscosity. This parameter describes this reference viscosity.
-
-For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
-
-Units: \si{\pascal\second}.
-
 (parameters:Material_20model/Steinberger_20model/Saturation_20prefactors)=
 ### __Parameter name:__ Saturation prefactors
 **Default value:** 0, 0, 0, 1
@@ -3474,18 +3438,6 @@ Units: \si{\pascal\second}.
 **Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
 
 **Documentation:** The reference temperature $T_0$. Units: \si{\kelvin}.
-
-(parameters:Material_20model/Visco_20Plastic/Reference_20viscosity)=
-### __Parameter name:__ Reference viscosity
-**Default value:** 1e22
-
-**Pattern:** [Double 0...MAX_DOUBLE (inclusive)]
-
-**Documentation:** Reference viscosity for nondimensionalization. To understand how pressure scaling works, take a look at \cite{KHB12}. In particular, the value of this parameter would not affect the solution computed by \aspect{} if we could do arithmetic exactly; however, computers do arithmetic in finite precision, and consequently we need to scale quantities in ways so that their magnitudes are roughly the same. As explained in \cite{KHB12}, we scale the pressure during some computations (never visible by users) by a factor that involves a reference viscosity. This parameter describes this reference viscosity.
-
-For problems with a constant viscosity, you will generally want to choose the reference viscosity equal to the actual viscosity. For problems with a variable viscosity, the reference viscosity should be a value that adequately represents the order of magnitude of the viscosities that appear, such as an average value or the value one would use to compute a Rayleigh number.
-
-Units: \si{\pascal\second}.
 
 (parameters:Material_20model/Visco_20Plastic/Specific_20heats)=
 ### __Parameter name__: Specific heats
