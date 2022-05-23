@@ -11,7 +11,7 @@ currently supported:
 
 -   "`# EXPECT FAILURE`": Indicates that this test should fail.
     The test passes if the run fails, and the test fails, if the run passes.
-    This is useful to check if error checks (e.g. assertions) are correctly
+    This is useful to check if error checks (e.g., assertions) are correctly
     executed.
 
 -   "`# DEPENDS-ON: x`": Indicates that this test depends on the
