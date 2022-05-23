@@ -1,0 +1,154 @@
+# This is a cookbook demonstrating an application of fixing the temperature
+# in a compositional field. The model simulates 2D subduction of an arbitrary slab
+# generated using the Geodynamic WorldBuilder (Fraters et al. 2019), where the
+# temperature within the slab is fixed to the temperature it was initialized with.
+# The model runs for 15 Myr which allows for the slab to maintain its thermal state
+# while the mantle wedge convects and reaches a more dynamic thermal state.
+
+# Load additional library
+set Additional shared libraries            = ./libprescribed_temperature_in_field.so
+set World builder file                     = 2D_slab.wb
+set Use years in output instead of seconds = true
+set Output directory                       = output-longrun
+set Nonlinear solver scheme                = single Advection, iterated defect correction Stokes
+set Adiabatic surface temperature          = 600
+set Dimension                              = 2
+set End time                               = 50e6
+set Maximum time step                      = 2e6
+set Nonlinear solver tolerance             = 1e-5
+set Max nonlinear iterations               = 2
+set Max nonlinear iterations in pre-refinement = 10
+
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent = 3000e3
+    set Y extent = 2000e3
+  end
+end
+
+# Solver parameters
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Number of cheap Stokes solver steps = 0
+    set Use full A block as preconditioner = true
+    set Linear solver tolerance = 1e-7
+  end
+  subsection Newton solver parameters
+    set SPD safety factor = 0.1
+    set Maximum linear Stokes solver tolerance = 1e-3
+    set Use Eisenstat Walker method for Picard iterations = true
+  end
+end
+
+# Refine the mesh between 300 - 1500 K temperature isosurfaces
+# This ensures that the slab has very high mesh refinement, while
+# the much hotter mantle beneath is much coarser.
+subsection Mesh refinement
+  set Initial global refinement = 2
+  set Strategy = isosurfaces
+  set Minimum refinement level = 2
+  set Initial adaptive refinement = 8
+  set Skip solvers on initial refinement = true
+  set Refinement fraction  = 0.95
+  set Coarsening fraction = 0.05
+  set Skip setup initial conditions on initial refinement = false
+  subsection Isosurfaces
+    set Isosurfaces = 8, 8, Temperature: 300|1500
+  end
+end
+
+subsection Gravity model
+  set Model name = vertical
+  subsection Vertical
+    set Magnitude = 10
+  end
+end
+
+subsection Boundary velocity model
+  set Tangential velocity boundary indicators = top, right, bottom, left
+end
+
+# Temperature field is initialzed by WorldBuilder
+subsection Initial temperature model
+  set Model name = world builder
+end
+
+# Set desired compositional fields to have their temperature fixed at their
+# initial values
+subsection Prescribed internal temperature model
+  set Prescribe internal temperature = true
+  set Names of compositional fields with fixed temperature = Subducting_Lithosphere, Crust, Overriding_Lithosphere
+end
+
+# Compositional fields are initialized by WorldBuilder
+subsection Initial composition model
+  set List of model names = world builder
+end
+
+# Name the compositional fields loaded by WorldBuilder, ensure that
+# the fields which have fixed temperatures are static
+subsection Compositional fields
+  set Number of fields = 4
+  set Names of fields = Subducting_Lithosphere, Crust, Overriding_Lithosphere, Mantle
+  set Compositional field methods = static, static, static, field
+end
+
+subsection Material model
+  set Model name = visco plastic
+  subsection Visco Plastic
+    set Viscous flow law                          = composite
+    set Viscosity averaging scheme                = harmonic
+
+# Diffusion Creep, parameters set based on Hirth & Kohlstedt 2004 experiments
+# on dry olivine
+    set Stress exponents for diffusion creep      = 1
+    set Prefactors for diffusion creep            = 1.5e-15
+    set Activation energies for diffusion creep   = 375e3
+    set Activation volumes for diffusion creep    = 10e-6
+    set Grain size                                = 1e-3
+    set Grain size exponents for diffusion creep  = 3
+
+# Dislocation Creep, parameters set based on Hirth & Kohlstedt 2004 experiments
+# on dry olivine
+    set Stress exponents for dislocation creep    = 3.5
+    set Prefactors for dislocation creep          = 1.1e-26
+    set Activation energies for dislocation creep = 530e3
+    set Activation volumes for dislocation creep  = 14e-6
+
+# Peierls Creep, parameters are set based on olivine experiments from
+# Mei et al. 2016. We also use the `viscosity approximation` form and not
+# the `exact` form of Peierls creep since this mechanism is not expected to be
+# the dominating mechanism at mantle wedge temperatures.
+    set Include Peierls creep                     = true
+    set Peierls creep flow law                    = viscosity approximation
+    set Peierls glide parameters p                = 0.5
+    set Peierls fitting parameters                = 0.15
+    set Stress exponents for Peierls creep        = 2.0
+    set Peierls glide parameters q                = 1.0
+    set Peierls stresses                          = 5.9e9
+    set Prefactors for Peierls creep              = 1.4e-19
+    set Activation energies for Peierls creep     = 320e3
+    set Activation volumes for Peierls creep      = 0.0
+    set Peierls strain rate residual tolerance    = 1e-22
+    set Maximum Peierls strain rate iterations    = 40
+
+# Specify a lower cohesion for the `Crust` rheology since this acts as a weak
+# interface between the subducting and overriding plates, encouraging subduction.
+    set Cohesions                                 = 5e7, 5e7, 5e6, 5e7, 5e7
+    set Maximum yield stress                      = 1e12
+    set Angles of internal friction               = 0
+    set Maximum viscosity                         = 1e23
+    set Minimum viscosity                         = 1e19
+  end
+end
+
+# Postprocessing
+subsection Postprocess
+  set List of postprocessors = temperature statistics, velocity statistics, visualization
+  subsection Visualization
+    set Interpolate output = true
+    set List of output variables = viscosity, density, strain rate, shear stress
+    set Time between graphical output = 2.5e6
+  end
+end

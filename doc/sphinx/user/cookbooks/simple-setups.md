@@ -13,6 +13,7 @@ cookbooks/free_surface_with_crust/doc/free_surface_with_crust.md
 cookbooks/sinker-with-averaging/doc/sinker-with-averaging.md
 cookbooks/prescribed_velocity/doc/prescribed_velocity.md
 cookbooks/prescribed_velocity_ascii_data/doc/prescribed_velocity_ascii_data.md
+cookbooks/fixed_slab_temperature/doc/fixed_slab_temperature.md
 cookbooks/shell_simple_2d_smoothing/doc/shell_simple_2d_smoothing.md
 cookbooks/finite_strain/doc/finite_strain.md
 cookbooks/geomio/doc/geomio.md

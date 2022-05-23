@@ -1,0 +1,28 @@
+{
+  "version":"0.4",
+  "cross section":[[0, 0], [100, 0]],
+  "features":
+  [
+    {"model":"oceanic plate", "name":"oceanic plate", "min depth":0, "max depth":10000000000.0, "coordinates":[[-1000.0, -1000.0], [1000000.0, -1000.0], [1000000.0, 1000.0], [-1000.0, 1000.0]],
+        "temperature models":[{"model":"plate model", "max depth":95000.0, "min depth":0, "top temperature":300, "bottom temperature":1600, "spreading velocity":0.005, "ridge coordinates":[[-1000.0, -1000.0], [-1000.0, 1000.0]]}],
+    "composition models":[{"model":"uniform", "compositions":[0], "max depth":95000.0, "min depth":10000.0}],
+    "composition models":[{"model":"uniform", "compositions":[1], "max depth":10000.0, "min depth":0.0}]}, 
+
+    {"model":"continental plate", "name":"continental plate", "min depth":0, "max depth":10000000000.0, "coordinates":[[1000000.0, -1000.0], [3001000.0, -1000.0], [3001000.0, 1000.0], [1000000.0, 1000.0]],
+        "temperature models":[{"model":"linear", "max depth":120000.0, "min depth":0, "top temperature":300, "bottom temperature":1600}],
+    "composition models":[{"model":"uniform", "compositions":[2], "max depth":120000.0, "min depth":0}]},
+
+    {"model":"mantle layer", "name":"upper mantle", "min depth":95000.0, "max depth":2000000.0, "coordinates":[[-1000.0, -1000.0], [3001000.0, -1000.0], [3001000.0, 1000.0], [-1000.0, 1000.0]],
+        "temperature models":[{"model":"linear", "max depth":2000000.0, "min depth":95000.0, "top temperature":1600, "bottom temperature":2000}],
+    "composition models":[{"model":"uniform", "compositions":[3], "max depth":2000000.0, "min depth":95000.0}]},
+
+    {"model":"subducting plate", "name":"Subducting plate", "coordinates":[[1000000.0, -1000.0], [1000000.0, 1000.0]], "dip point":[2000000.0, 0],
+    "segments":[{"length":200000.0, "thickness":[95000.0], "angle":[0, 45]},
+                {"length":200000.0, "thickness":[95000.0], "angle":[45,60]},
+                {"length":200000.0, "thickness":[95000.0], "angle":[60,45]},
+                {"length":300000.0, "thickness":[95000.0], "angle":[45,20]}],
+    "temperature models":[{"model":"plate model", "density":3300, "plate velocity":0.01, "adiabatic heating":false}],
+    "composition models":[{"model":"uniform", "compositions":[1], "max distance slab top":10000.0, "min distance slab top":0},
+{"model":"uniform", "compositions":[0], "max distance slab top":95000.0, "min distance slab top":10000.0}]}
+  ]
+}
