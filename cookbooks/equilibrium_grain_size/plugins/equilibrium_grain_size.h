@@ -71,7 +71,7 @@ namespace aspect
         /**
          * Compute the laterally averaged viscosity
          */
-        void 
+        void
         update() override;
 
         /**
@@ -102,10 +102,10 @@ namespace aspect
         /**
          * Return whether the model is compressible or not.
          */
-        bool 
+        bool
         is_compressible () const override;
 
-        void 
+        void
         evaluate(const typename Interface<dim>::MaterialModelInputs &in,
                  typename Interface<dim>::MaterialModelOutputs &out) const override;
 
@@ -315,14 +315,14 @@ namespace aspect
                         const Point<dim> &position) const;
 
         /**
-		 * A reference profile for density and seismic velocities.
-		 */
-		Utilities::AsciiDataProfile<dim> reference_profile;
+        * A reference profile for density and seismic velocities.
+        */
+        Utilities::AsciiDataProfile<dim> reference_profile;
 
-		/**
-		 * The column indices of the density column in the reference profile file.
-		 */
-		unsigned int density_index;
+        /**
+         * The column indices of the density column in the reference profile file.
+         */
+        unsigned int density_index;
 
         double compressibility (const double temperature,
                                 const double pressure,
