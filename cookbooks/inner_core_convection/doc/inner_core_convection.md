@@ -86,7 +86,8 @@ contains the function `phase_change_boundary_conditions` that loops over all
 faces at the model boundary, queries the value of $\mathcal{P}$ from the
 material model, and adds the surface integral given above to the matrix:
 
-```{literalinclude} inner_core_assembly.cc
+```{literalinclude} ../inner_core_assembly.cc
+   :language: c++
 ```
 
 Instructions for how to compile and run models with a shared library are given
