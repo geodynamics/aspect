@@ -73,7 +73,7 @@ floating point precision is concerned (e.g., for heat fluxes or other things
 we compute via postprocessors) as well as for integers such as the number of
 iterations that is printed in the screen output.[^footnote1] Unfortunately, systems
 almost always differ by compiler version, processor type and version, system
-libraries, etc, that can all lead to small changes in output &ndash; generally
+libraries, etc., that can all lead to small changes in output &ndash; generally
 (and hopefully!) not large enough to produce *qualitatively* different
 results, but *quantitatively* large enough to change the number of iterations
 necessary to reach a specific tolerance, or to change the computed heat flux
@@ -105,7 +105,7 @@ This command executes the shell script `cmake/compile_and_update_tests.sh`
 *inside* the docker container that contains the official
 ASPECT test system. Note that by mounting your
 ASPECT folder into the container you are actually
-updating the reference test results on the host system (i.e. your computer).
+updating the reference test results on the host system (i.e., your computer).
 
 [^footnote1]: This is not actually completely true. Rather, if `cmake` finds a program called `numdiff` on your system, it uses `numdiff` to
 compare the output of a test run against the saved output, and calls two files the same if all numbers differ by no more than
