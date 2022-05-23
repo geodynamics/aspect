@@ -18,7 +18,7 @@ Simple convection in a quarter of an annulus: Snapshots of the temperature field
 ```
 
 Let us just start by showing the input file (which you can find in
-`cookbooks/shell_simple_2d/shell_simple_2d.prm`):
+[cookbooks/shell_simple_2d/shell_simple_2d.prm](https://github.com/geodynamics/aspect/blob/main/cookbooks/shell_simple_2d/shell_simple_2d.prm)):
 
 ```{literalinclude} ../shell_simple_2d.prm
 ```
