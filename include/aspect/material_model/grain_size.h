@@ -56,6 +56,13 @@ namespace aspect
         std::vector<double> dislocation_viscosities;
 
         /**
+         * Diffusion viscosities at the evaluation points passed to
+         * the instance of MaterialModel::Interface::evaluate() that fills
+         * the current object.
+         */
+        std::vector<double> diffusion_viscosities;
+
+        /**
          * This contains the fraction of the deformation work that is
          * converted to surface energy of grains instead of thermal energy.
          * It is used to reduce the shear heating by this fraction. If it
