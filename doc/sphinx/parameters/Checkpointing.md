@@ -2,7 +2,7 @@
 # Checkpointing
 
 
-## **Parameters in section** Checkpointing
+## **Subsection:** Checkpointing
 
 
 (parameters:Checkpointing/Steps_20between_20checkpoint)=

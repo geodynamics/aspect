@@ -2,7 +2,7 @@
 # Adiabatic conditions model
 
 
-## **Parameters in section** Adiabatic conditions model
+## **Subsection:** Adiabatic conditions model
 
 
 (parameters:Adiabatic_20conditions_20model/Model_20name)=
@@ -20,7 +20,7 @@
 `function': A model in which the adiabatic profile is specified by a user defined function. The supplied function has to contain temperature, pressure, and density as a function of depth in this order.
 
 (parameters:Adiabatic_20conditions_20model/Ascii_20data_20model)=
-## **Parameters in section** Adiabatic conditions model/Ascii data model
+## **Subsection:** Adiabatic conditions model / Ascii data model
 (parameters:Adiabatic_20conditions_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/tests/adiabatic-conditions/ascii-data/test/
@@ -46,7 +46,7 @@
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile)=
-## **Parameters in section** Adiabatic conditions model/Compute profile
+## **Subsection:** Adiabatic conditions model / Compute profile
 (parameters:Adiabatic_20conditions_20model/Compute_20profile/Composition_20reference_20profile)=
 ### __Parameter name:__ Composition reference profile
 **Default value:** initial composition
@@ -100,7 +100,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function)=
-## **Parameters in section** Adiabatic conditions model/Compute profile/Surface condition function
+## **Subsection:** Adiabatic conditions model / Compute profile / Surface condition function
 (parameters:Adiabatic_20conditions_20model/Compute_20profile/Surface_20condition_20function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**
@@ -130,7 +130,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Adiabatic_20conditions_20model/Function)=
-## **Parameters in section** Adiabatic conditions model/Function
+## **Subsection:** Adiabatic conditions model / Function
 (parameters:Adiabatic_20conditions_20model/Function/Function_20constants)=
 ### __Parameter name:__ Function constants
 **Default value:**

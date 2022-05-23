@@ -2,7 +2,7 @@
 # Geometry model
 
 
-## **Parameters in section** Geometry model
+## **Subsection:** Geometry model
 
 
 (parameters:Geometry_20model/Model_20name)=
@@ -52,7 +52,7 @@ The model assigns boundary indicators as follows: In 2d, inner and outer boundar
 In 3d, inner and outer indicators are treated as in 2d. If the opening angle is chosen as 90 degrees, i.e., the domain is the intersection of a spherical shell and the first octant, then indicator 2 is at the face $x=0$, 3 at $y=0$, and 4 at $z=0$. These last three boundaries can then also be referred to as `east', `west' and `south' symbolically in input files.
 
 (parameters:Geometry_20model/Box)=
-## **Parameters in section** Geometry model/Box
+## **Subsection:** Geometry model / Box
 (parameters:Geometry_20model/Box/Box_20origin_20X_20coordinate)=
 ### __Parameter name:__ Box origin X coordinate
 **Default value:** 0.
@@ -150,7 +150,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in Z direction.
 
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Geometry model/Box with lithosphere boundary indicators
+## **Subsection:** Geometry model / Box with lithosphere boundary indicators
 (parameters:Geometry_20model/Box_20with_20lithosphere_20boundary_20indicators/Box_20origin_20X_20coordinate)=
 ### __Parameter name:__ Box origin X coordinate
 **Default value:** 0.
@@ -288,7 +288,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in Z direction in the lithosphere. This value is ignored if the simulation is in 2d.
 
 (parameters:Geometry_20model/Chunk)=
-## **Parameters in section** Geometry model/Chunk
+## **Subsection:** Geometry model / Chunk
 (parameters:Geometry_20model/Chunk/Chunk_20inner_20radius)=
 ### __Parameter name:__ Chunk inner radius
 **Default value:** 0.
@@ -362,7 +362,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in radius.
 
 (parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators)=
-## **Parameters in section** Geometry model/Chunk with lithosphere boundary indicators
+## **Subsection:** Geometry model / Chunk with lithosphere boundary indicators
 (parameters:Geometry_20model/Chunk_20with_20lithosphere_20boundary_20indicators/Chunk_20inner_20radius)=
 ### __Parameter name:__ Chunk inner radius
 **Default value:** 0.
@@ -452,7 +452,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Number of cells in radial direction for the upper chunk.
 
 (parameters:Geometry_20model/Ellipsoidal_20chunk)=
-## **Parameters in section** Geometry model/Ellipsoidal chunk
+## **Subsection:** Geometry model / Ellipsoidal chunk
 (parameters:Geometry_20model/Ellipsoidal_20chunk/Depth)=
 ### __Parameter name:__ Depth
 **Default value:** 500000.0
@@ -534,7 +534,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** The semi-major axis (a) of an ellipsoid. This is the radius for a sphere (eccentricity=0). Default WGS84 semi-major axis.
 
 (parameters:Geometry_20model/Initial_20topography_20model)=
-## **Parameters in section** Geometry model/Initial topography model
+## **Subsection:** Geometry model / Initial topography model
 (parameters:Geometry_20model/Initial_20topography_20model/Model_20name)=
 ### __Parameter name:__ Model name
 **Default value:** zero topography
@@ -552,7 +552,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 `zero topography': Implementation of a model in which the initial topography is zero.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model)=
-## **Parameters in section** Geometry model/Initial topography model/Ascii data model
+## **Subsection:** Geometry model / Initial topography model / Ascii data model
 (parameters:Geometry_20model/Initial_20topography_20model/Ascii_20data_20model/Data_20directory)=
 ### __Parameter name:__ Data directory
 **Default value:** $ASPECT_SOURCE_DIR/data/geometry-model/initial-topography-model/ascii-data/test/
@@ -578,7 +578,7 @@ In 3d, inner and outer indicators are treated as in 2d. If the opening angle is 
 **Documentation:** Scalar factor, which is applied to the model data. You might want to use this to scale the input to a reference model. Another way to use this factor is to convert units of the input files. For instance, if you provide velocities in cm/yr set this factor to 0.01.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Function)=
-## **Parameters in section** Geometry model/Initial topography model/Function
+## **Subsection:** Geometry model / Initial topography model / Function
 (parameters:Geometry_20model/Initial_20topography_20model/Function/Coordinate_20system)=
 ### __Parameter name:__ Coordinate system
 **Default value:** cartesian
@@ -624,7 +624,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** The names of the variables as they will be used in the function, separated by commas. By default, the names of variables at which the function will be evaluated are `x' (in 1d), `x,y' (in 2d) or `x,y,z' (in 3d) for spatial coordinates and `t' for time. You can then use these variable names in your function expression and they will be replaced by the values of these variables at which the function is currently evaluated. However, you can also choose a different set of names for the independent variables at which to evaluate your function expression. For example, if you work in spherical coordinates, you may wish to set this input parameter to `r,phi,theta,t' and then use these variable names in your function expression.
 
 (parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon)=
-## **Parameters in section** Geometry model/Initial topography model/Prm polygon
+## **Subsection:** Geometry model / Initial topography model / Prm polygon
 (parameters:Geometry_20model/Initial_20topography_20model/Prm_20polygon/Topography_20parameters)=
 ### __Parameter name:__ Topography parameters
 **Default value:**
@@ -634,7 +634,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Set the topography height and the polygon which should be set to that height. The format is : "The topography height   extgreater The point list describing a polygon \& The next topography height   extgreater the next point list describing a polygon." The format for the point list describing the polygon is "x1,y1;x2,y2". For example for two triangular areas of 100 and -100 meters high set: '100   extgreater 0,0;5,5;0,10 \& -100   extgreater 10,10;10,15;20,15'. Units of the height are always in meters. The units of the coordinates are dependent on the geometry model. In the box model they are in meters, in the chunks they are in degrees, etc. Please refer to the manual of the individual geometry model to so see how the topography is implemented.
 
 (parameters:Geometry_20model/Sphere)=
-## **Parameters in section** Geometry model/Sphere
+## **Subsection:** Geometry model / Sphere
 (parameters:Geometry_20model/Sphere/Radius)=
 ### __Parameter name:__ Radius
 **Default value:** 6371000.
@@ -644,7 +644,7 @@ If the function you are describing represents a vector-valued function with mult
 **Documentation:** Radius of the sphere. Units: \si{\meter}.
 
 (parameters:Geometry_20model/Spherical_20shell)=
-## **Parameters in section** Geometry model/Spherical shell
+## **Subsection:** Geometry model / Spherical shell
 (parameters:Geometry_20model/Spherical_20shell/Cells_20along_20circumference)=
 ### __Parameter name:__ Cells along circumference
 **Default value:** 0
