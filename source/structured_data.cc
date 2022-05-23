@@ -732,9 +732,9 @@ namespace aspect
 
             status = nc_inq_var (ncid, varid, name, &xtype, &ndims, dimids,
                                  &natts);
-            AssertThrow(ndims == 1, ExcMessage("a variable of a dimension should have only one dimension."));
+            AssertThrow(ndims == 1, ExcMessage("A variable of a dimension should have only one dimension."));
 
-            AssertThrow(xtype == NC_DOUBLE, ExcMessage("we only support doubles for now"));
+            AssertThrow(xtype == NC_DOUBLE || xtype == NC_FLOAT, ExcMessage("We only support float or double data."));
 
             coordinate_values[d].resize(new_table_points[d]);
             status = nc_get_var_double(ncid, varid, coordinate_values[d].data());
