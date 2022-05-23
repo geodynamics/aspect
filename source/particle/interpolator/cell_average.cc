@@ -98,7 +98,7 @@ namespace aspect
             for (unsigned int i=0; i<neighbors.size(); ++i)
               {
                 // Only recursively evaluate with cells whose particles can be accessed safely.
-                if (neighbors[i]->is_locally_owned())
+                if (!neighbors[i]->is_locally_owned())
                   continue;
                 // Only recursively call this function if the neighbor cell contains
                 // particles (else we end up in an endless recursion)
