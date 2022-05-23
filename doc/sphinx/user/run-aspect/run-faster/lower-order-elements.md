@@ -15,10 +15,6 @@ the input file, see {ref}`parameters:Discretization`, in
 particular by `Temperature polynomial degree` and
 `Composition polynomial degree`.
 
-:::{admonition} TODO
-{ref}`parameters:Discretization` links to a file that is not yet set up
-:::
-
 As with the other parameters discussed above and below, it is worthwhile
 comparing the results you get with different values of these parameters when
 making a decision whether you want to save on accuracy in order to reduce

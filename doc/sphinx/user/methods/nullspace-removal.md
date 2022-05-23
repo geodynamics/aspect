@@ -56,9 +56,3 @@ The user can flag the nullspace for removal by setting the `Remove nullspace` op
 
 Example of nullspace removal. On the left the nullspace (a rigid rotation) is removed, and the velocity vectors accurately show the mantle flow. On the right there is a significant clockwise rotation to the velocity solution which is making the more interesting flow features difficult to see.
 ```
-
-:::{admonition} TODO
-:class: error
-
-{ref}`parameters:Nullspace_20removal` not setup yet so reference doesn't go anywhere
-:::

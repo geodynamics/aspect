@@ -16,7 +16,3 @@ graphical output, see
 {ref}`parameters:Postprocess/Visualization` - also allow
 you to run them only once every once in a while, rather than at every time
 step.
-
-:::{admonition} TODO
-{ref}`parameters:Postprocess` and {ref}`parameters:Postprocess/Visualization` refer to files that are not yet set up.
-:::

@@ -177,13 +177,9 @@ get help on the `plot` command.
 
 [^footnote1]: With input files that ask for initial adaptive refinement, the first time step may appear twice because we solve on a mesh that
 is globally refined and we then start the entire computation over again on a once adaptively refined mesh (see the parameters
-in Section `A.127` for how to do that).
+in {ref}`parameters:Mesh_20refinement` for how to do that).
 [^footnote2]: In my own work, I usually save the ASPECT input file, the statistics output file and the Gnuplot script along with the
 actual figure I want to include in a paper. This way, it is easy to either re-run an entire simulation, or just tweak the graphic
 at a later time. Speaking from experience, you will not believe how often one wants to tweak a figure long after it was first
 created. In such situations it is outstandingly helpful if one still has both the actual data as well as the script that generated
 the graphic.
-
-:::{admonition} TODO
-Footnote: reference to A.127; parameter sections not set up so this reference does not make sense.
-:::

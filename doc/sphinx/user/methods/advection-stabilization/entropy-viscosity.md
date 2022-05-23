@@ -60,9 +60,3 @@ v_h^\text{max} \vert_K = \alpha_\text{max} h \|\lvert\mathbf u\rvert + \gamma h_
 ```
 where $\gamma\geq 0$ is the aforementioned parameter in front of the strain
 rate.
-
-:::{admonition} TODO
-:class: error
-
-{ref}`parameters:Discretization/Stabilization_20parameters/gamma` not setup yet, so reference doesn't go anywhere.
-:::

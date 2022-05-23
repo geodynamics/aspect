@@ -48,9 +48,3 @@ To this end, see in particular {ref}`sec:cookbooks:using-particles`. All particl
 input parameters are listed in
 {ref}`parameters:Postprocess/Particles`. The implementation of
 particles is discussed in great detail in {cite:t}`gassmoller:etal:2018`.
-
-:::{admonition} TODO
-:class: error
-
-{ref}`parameters:Postprocess/Particles` not setup yet, so reference doesn't go anywhere
-:::
