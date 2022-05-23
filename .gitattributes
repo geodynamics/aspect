@@ -7,3 +7,13 @@ doc/release-tasklist export-ignore
 doc/update_parameters.sh export-ignore
 Jenkinsfile export-ignore
 .zenodo.json export-ignore
+
+# Documentation shouldn't count as part of the language percentages.
+**/doc/** linguist-documentation
+
+# All of these gnuplot files are generated, and not code. They shouldn't count towards the percent
+tests/**/*.gnuplot linguist-generated
+
+# The world builder code shouldnt' be counted to ASPECT.
+contrib/world_builder/** linguist-vendored
+
