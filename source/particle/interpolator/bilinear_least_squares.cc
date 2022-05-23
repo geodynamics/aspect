@@ -170,7 +170,7 @@ namespace aspect
                       {
                         const unsigned int opposing_face_id = GeometryInfo<dim>::opposite_face[face_id];
                         const auto &opposing_cell = found_cell->neighbor(opposing_face_id);
-                        if (opposing_cell.state() == IteratorState::IteratorStates::valid && opposing_cell->is_active() && opposing_cell->is_artificial())
+                        if (opposing_cell.state() == IteratorState::IteratorStates::valid && opposing_cell->is_active() && opposing_cell->is_artificial() == false)
                           {
                             const auto neighbor_cell_average = fallback_interpolator.properties_at_points(particle_handler, {positions[0]}, selected_properties, opposing_cell)[0];
                             for (unsigned int property_index = 0; property_index < n_particle_properties; ++property_index)
