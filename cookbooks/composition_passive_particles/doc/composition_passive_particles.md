@@ -135,8 +135,8 @@ following:
 
 -   `function:` This particle property can be used to assign to each particle
     values that are described based on a function of space. It provides an
-    alternative way to set initial values if you don&rsquo;t want to first set
-    a compositional field&rsquo;s initial values based on a function, and then
+    alternative way to set initial values if you don't want to first set
+    a compositional field's initial values based on a function, and then
     copy these values via the &ldquo;initial composition&rdquo; property to
     particles. In the example above, we use the same function as for the
     compositional initial composition of field number one in
@@ -148,8 +148,8 @@ following:
     numerical diffusion of the compositional field.
 
 -   `pT path:` This property is interesting in that the particle
-    property&rsquo;s values always exactly mirror the pressure and temperature
-    at the particle&rsquo;s current location. This does not seem to be very
+    property's values always exactly mirror the pressure and temperature
+    at the particle's current location. This does not seem to be very
     useful since the information is already available. However, because each
     particle has a unique id, one can select a particular particle and output
     its properties (including pressure and temperature based on the `pT path`

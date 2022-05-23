@@ -141,7 +141,7 @@ compositional fields.
 Crameri, F., H. Schmeling, G. J. Golabek, T. Duretz, R. Orendt, S. J. H.
 Buiter, D. A. May, B. J. P. Kaus, T. V. Gerya, and P. J. Tackley. 2012.
 &ldquo;A Comparison of Numerical Surface Topography Calculations in Geodynamic
-Modelling: An Evaluation of the &lsquo;Sticky Air&rsquo; Method.&rdquo;
+Modelling: An Evaluation of the 'Sticky Air' Method.&rdquo;
 *Geophysical Journal International* 189 (1): 38&ndash;54.
 
 </div>

@@ -51,7 +51,7 @@ Cambridge: Cambridge University Press.
 
 <div id="ref-ramb81" class="csl-entry">
 
-Ramberg, H. 1981. *Gravity, Deformation, and the Earth&rsquo;s Crust: In
+Ramberg, H. 1981. *Gravity, Deformation, and the Earth's Crust: In
 Theory, Experiments and Geological Application*. Academic Press, London,
 214pp.
 

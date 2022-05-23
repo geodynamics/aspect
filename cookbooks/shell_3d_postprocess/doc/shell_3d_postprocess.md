@@ -53,7 +53,7 @@ the surface and core mantle boundary. The geoid anomalies are calculated using
 a spherical harmonic expansion of the respective fields. The user has the
 option to specify the minimum and maximum degree of this expansion. By
 default, the minimum degree is 2, which conserves the mass of the Earth (by
-removing degree 0) and chooses the Earth&rsquo;s center of mass as reference
+removing degree 0) and chooses the Earth's center of mass as reference
 frame (by removing degree 1). In this model, downwellings coincide with lows
 in the geoid anomaly. That means the mass deficit caused by the depression at
 the surface is not fully compensated by the high density material below the

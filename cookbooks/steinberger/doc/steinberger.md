@@ -259,8 +259,8 @@ account plastic yielding (so that the lithosphere can break).
 ##### The projected density approximation.
 
 Since our model is compressible, the most accurate way to solve the mass
-conservation equation implemented in is to use the &lsquo;projected density
-approximation.&rsquo; This way, will compute the density gradients in the mass
+conservation equation implemented in is to use the 'projected density
+approximation.' This way, will compute the density gradients in the mass
 conservation directly from the density field (interpolated onto the finite
 element grid) rather than approximating it with a reference profile or
 temperature/pressure derivatives of the density.
@@ -268,18 +268,18 @@ temperature/pressure derivatives of the density.
 To use the projected density approximation, we need to specify it as the form
 of the equations we want to use, and we need to provide a field that the
 density values can be interpolated on. The first part is handled in the
-&lsquo;Formulation&rsquo; section of the input file. This is where we can
+'Formulation' section of the input file. This is where we can
 select the projected density approximation as the formulation we want to use
 for the mass conservation equation. The temperature equation uses the real
 density (rather than a reference profile) as well.
 
 To allow for the interpolation, we create a compositional field that we call
-&lsquo;density_field.&rsquo; We assign the field the type
-&lsquo;density,&rsquo; so that knows that this is the field it should use to
+'density_field.' We assign the field the type
+'density,' so that knows that this is the field it should use to
 compute the density gradient required to solve the equations. does not need to
 solve an equation for this field, it only needs to interpolate the density
 values onto it. This is covered by the compositional field method
-&lsquo;prescribed field.&rsquo; For fields of this type, the material model
+'prescribed field.' For fields of this type, the material model
 provides the values that should be interpolated onto the field.
 
 ``` prmfile
@@ -326,7 +326,7 @@ Convection.&rdquo; *Geophysical Journal International* 221 (2): 1264&ndash;80.
 Nakagawa, Takashi, Paul J Tackley, Frederic Deschamps, and James AD Connolly.
 2009. &ldquo;Incorporating Self-Consistently Calculated Mineral Physics into
 Thermochemical Mantle Convection Simulations in a 3-d Spherical Shell and Its
-Influence on Seismic Anomalies in Earth&rsquo;s Mantle.&rdquo; *Geochemistry,
+Influence on Seismic Anomalies in Earth's Mantle.&rdquo; *Geochemistry,
 Geophysics, Geosystems* 10 (3).
 
 </div>
@@ -342,7 +342,7 @@ Discontinuity: Implications for Mantle Dynamics and Differentiation.&rdquo;
 <div id="ref-stca06" class="csl-entry">
 
 Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
-class="nocase">Models of large-scale viscous flow in the Earth&rsquo;s mantle
+class="nocase">Models of large-scale viscous flow in the Earth's mantle
 with constraints from mineral physics and surface observations</span>.&rdquo;
 *Geophy. J. Int.* 167: 1461&ndash;81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.

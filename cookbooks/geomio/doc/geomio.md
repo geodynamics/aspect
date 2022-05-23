@@ -25,8 +25,8 @@ source folders to your MATLAB path by running the file located in
 `/path/to/geomio/installation/InstallGeomIO.m`. An extensive documentation for
 how to use geomIO can be found [here][1]. Among other things, it explains [how
 to generate drawings in Inkscape] that can be read in by geomIO, which
-involves assigning new attributes to paths in Inkscape&rsquo;s XML editor. In
-particular, a new property &lsquo;phase&rsquo; has to be added to each path,
+involves assigning new attributes to paths in Inkscape's XML editor. In
+particular, a new property 'phase' has to be added to each path,
 and set to a value corresponding to the index of the material that should be
 present in this region in the initial condition of the geodynamic model.
 
@@ -61,14 +61,14 @@ and all phases are assigned correctly (Figure [2]).
 <img src="cookbooks/geomio/doc/jelly.png" id="fig:jelly-plot" style="width:45.0%" alt="Plot of the Phase variable in MATLAB." /><figcaption aria-hidden="true"><em>Plot of the <code>Phase</code> variable in MATLAB.</em></figcaption>
 </figure>
 
-Finally, we want to write output in a format that can be read in by &rsquo;s
+Finally, we want to write output in a format that can be read in by 's
 `ascii data` compositional initial conditions plugin. We write the data into
 the file `jelly.txt`:
 
 ``` matlab
 ```
 
-To read in the file we just created (a copy is located in &rsquo;s data
+To read in the file we just created (a copy is located in 's data
 directory), we set up a model with a box geometry with the same extents we
 specified for the drawing in px and one compositional field. We choose the
 `ascii data` compositional initial conditions and specify that we want to read

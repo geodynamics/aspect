@@ -9,7 +9,7 @@ number, the heating mode or the temperature dependence of the viscosity on
 temperature, pressure and/or strain rate (Young 1974; F. H. Busse 1975; FH
 Busse 1979; Blankenbach et al. 1989; F. Busse et al. 1993; Berg, Keken, and
 Yuen 1993; Bunge, Richards, and Baumgardner 1997). In this cookbook, we use
-the &lsquo;simple&rsquo; material model to reproduce the set-up in (Bunge,
+the 'simple' material model to reproduce the set-up in (Bunge,
 Richards, and Baumgardner 1996), which reported that even modest increases in
 mantle viscosity with depth could have a marked effect on the style of mantle
 convection. The prm file corresponding to this cookbook can be found at

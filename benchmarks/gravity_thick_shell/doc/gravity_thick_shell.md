@@ -54,7 +54,7 @@ $$U(r)=2\pi G \rho_0 (R\textsubscript{inner}^2-R\textsubscript{outer}^2).$$
 
 The gravity postprocessor in can be used to calculate the radial components of
 gravity ($g_r$ and $U$) at arbitrary points using the sampling scheme
-&lsquo;*list of points*.&rsquo; For this benchmark we calculate points along a
+'*list of points*.' For this benchmark we calculate points along a
 line from the center of the planet to a distant point, $r=0$ to
 $r=10,000~\si{\km}$ (Figure [2]). Arbitrarily, the latitude and longitude
 are both set to $13\si{\degree}$ so as to avoid potential measurement

@@ -21,7 +21,7 @@ Both the Stokes and energy equations solve are bypassed:
 
 We make use of the Custom mesh subdivision option to generate a mesh where a
 single cell is used in the radial direction (parameterized with the number of
-&lsquo;slices&rsquo;) while 6 blocks (default value) of $2^5\times 2^5$ cells
+'slices') while 6 blocks (default value) of $2^5\times 2^5$ cells
 are used in the lateral direction. This gives a total of 6,144 mesh cells. For
 $D=100~\si{\km}$ the parameterization of the mesh is then as follows:
 
@@ -109,7 +109,7 @@ are presented in Table [1] alongside the analytical values.
 
 *Thin shell gravity benchmark:
 $1\si{mGal}=10^{-5}\si{\meter\per\square\second}$. $n_q$ is the number of GLQ
-points per cell. &lsquo;a.v.&rsquo; stands for analytical value.*
+points per cell. 'a.v.' stands for analytical value.*
 
 </div>
 

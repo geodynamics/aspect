@@ -84,7 +84,7 @@ the model causes the maximum topography to both decrease and occur at a later
 time. Heat flows through the system primarily by advection until the
 temperature anomaly reaches the base of the crustal layer (approximately at
 the time for which Fig [2] shows the temperature profile). The
-crust&rsquo;s high viscosity reduces the temperature anomaly&rsquo;s velocity
+crust's high viscosity reduces the temperature anomaly's velocity
 substantially, causing it to affect the surface topography at a later time.
 Just as the cookbook shown in Section [\[sec:cookbooks-freesurface\]][2],
 the topography returns to zero after some time.

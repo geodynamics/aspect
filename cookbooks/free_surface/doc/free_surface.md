@@ -26,8 +26,8 @@ of rock in the center of the domain.
 
 The main addition is the `Mesh deformation` subsection. In this subsection you
 need to give a comma separated list of the boundary indicators where the
-&lsquo;free surface&rsquo; deformation should be applied. In this case, we are
-dealing with the &lsquo;top&rsquo; boundary of a box in 2D. There is another
+'free surface' deformation should be applied. In this case, we are
+dealing with the 'top' boundary of a box in 2D. There is another
 significant parameter that needs to be set here: the value for the
 stabilization parameter &ldquo;theta.&rdquo; If this parameter is zero, then
 there is no stabilization, and you are likely to see instabilities develop in

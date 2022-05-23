@@ -134,7 +134,7 @@ Termination requested by criterion: end time
 +---------------------------------+-----------+------------+------------+
 ```
 
-If you&rsquo;ve read up on the difference between debug and optimized mode
+If you've read up on the difference between debug and optimized mode
 (and you should before you switch!) then consider disabling debug mode. If you
 run the program again, every number should look exactly the same (and it does,
 in fact, as I am writing this) except for the timing information printed every
@@ -272,7 +272,7 @@ still changes significant from time step to time step. However, after some
 time, the solution remains mostly the same and solvers then only need 9 or 10
 iterations for the temperature equation and 4 or 5 iterations for the Stokes
 equations because the starting guess for the linear solver &ndash; the
-previous time step&rsquo;s solution &ndash; is already pretty good. If you
+previous time step's solution &ndash; is already pretty good. If you
 look at any of the more complex cookbooks, you will find that one needs many
 more iterations to solve these equations.
 
@@ -295,7 +295,7 @@ this example is certainly to consider different Rayleigh numbers. As mentioned
 above, for the value $Ra=10^4$ for which the results above have been produced,
 one gets a stable convection pattern. On the other hand, for values
 $Ra<Ra_c\approx 780$, any movement of the fluid dies down exponentially and we
-end up with a situation where the fluid doesn&rsquo;t move and heat is
+end up with a situation where the fluid doesn't move and heat is
 transported from the bottom to the top only through heat conduction. This can
 be explained by considering that the Rayleigh number in a box is defined as
 $Ra=\frac{\rho_0 g\alpha\Delta T h^3}{\eta k}$. A small Rayleigh number below
@@ -372,7 +372,7 @@ this part of the simulation (remember that each refinement results in four
 times as many cells in 2d and a time step half as long, making reaching a
 particular time at least 8 times as expensive, assuming that all solvers in
 scale perfectly with the number of cells). Rather, we can use a parameter in
-the input file that let&rsquo;s us increase the mesh resolution at later
+the input file that let's us increase the mesh resolution at later
 times. To this end, let us use the following snippet for the input file:
 
 ```{literalinclude} refine2.part.prm

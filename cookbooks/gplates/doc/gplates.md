@@ -7,7 +7,7 @@ boundary condition that prescribes the velocity according to a specific
 geologic reconstruction. The purpose of this kind of models is often to test a
 proposed geologic model and compare characteristic convection results to
 present-day observables in order to gain information about the initially
-assumed geologic input. In this cookbook we present &rsquo;s interface to the
+assumed geologic input. In this cookbook we present 's interface to the
 widely used plate reconstruction software GPlates, and the steps to go from a
 geologic plate reconstruction to a geodynamic model incorporating these
 velocities as boundary condition.
@@ -90,7 +90,7 @@ since it can easily be replaced by a calculated file index (see also
 
 For this cookbook we will use the parameter file provided in
 [cookbooks/gplates/gplates_2d.prm] which uses the 2d shell geometry
-previously discussed in Section [\[sec:shell-simple-2d\]][1]. &rsquo;s
+previously discussed in Section [\[sec:shell-simple-2d\]][1]. 's
 GPlates plugin allows for the use of two- and three-dimensional models
 incorporating the GPlates velocities. Since the output by GPlates is
 three-dimensional in any case, internally handles the 2D model by rotating the
@@ -186,7 +186,7 @@ The example presented above uses a constant velocity boundary field that
 equals the present day plate movements. For a number of purposes one may want
 to use a prescribed velocity boundary condition that changes over time, for
 example to investigate the effect of trench migration on subduction. Therefore
-&rsquo;s GPlates plugin is able to read in multiple velocity files and
+'s GPlates plugin is able to read in multiple velocity files and
 linearly interpolate between pairs of files to the current model time. To
 achieve this, one needs to use the `%d` wildcard in the velocity file name,
 which represents the current velocity file index (e.g.

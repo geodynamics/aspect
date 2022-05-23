@@ -55,7 +55,7 @@ $$\eta(T,\epsilon,z) = 2 \left(\frac{1}{\eta_\text{linear}}+\frac{1}{\eta_\text{
 ```
 
 This rheology leads to mobile-lid convection, with the descending cold lid
-cooling the cell&rsquo;s interior (Fig. 2 of (Tosi et al. 2015)).
+cooling the cell's interior (Fig. 2 of (Tosi et al. 2015)).
 
 By changing the input parameters shown in the code snippet, we obtain the
 other benchmark cases. Case 3 includes a depth-dependent component for the

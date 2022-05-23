@@ -101,8 +101,8 @@ viscosity and its neglect for adiabatic heating and compressibility. But there
 are also a number of things that are already order of magnitude correct here.
 
 For example, if we look at the heat flux this model produces, we find that the
-convection here produces approximately the correct number. Wikipedia&rsquo;s
-article on [Earth&rsquo;s internal heat budget][1] states that the overall
+convection here produces approximately the correct number. Wikipedia's
+article on [Earth's internal heat budget][1] states that the overall
 heat flux through the Earth surface is about $\num{47e12}$ W (i.e., 47
 terawatts) of which an estimated 12&ndash;30 TW are primordial heat released
 from cooling the Earth and 15&ndash;41 TW from radiogenic heating.[2] Our
@@ -112,7 +112,7 @@ Section [\[parameters:Heating_20model\]][3]) but we can compare what the
 model gives us in terms of heat flux through the inner and outer boundaries of
 our shell geometry. This is shown in the left panel of Fig. [3] where
 we plot the heat flux through boundaries zero and one, corresponding to the
-core-mantle boundary and Earth&rsquo;s surface. always computes heat fluxes in
+core-mantle boundary and Earth's surface. always computes heat fluxes in
 outward direction, so the flux through boundary zero will be negative,
 indicating the we have a net flux *into* the mantle as expected. The figure
 indicates that after some initial jitters, heat flux from the core to the
@@ -148,6 +148,6 @@ envelope calculation lies within the uncertain range stated above.
   [1]: #fig:simple-shell-3d
   [cookbooks/shell_simple_3d/shell_simple_3d.prm]: cookbooks/shell_simple_3d/shell_simple_3d.prm
   [2]: #sec:checkpoint-restart
-  [Earth&rsquo;s internal heat budget]: http://en.wikipedia.org/wiki/Earth's_internal_heat_budget
+  [Earth's internal heat budget]: http://en.wikipedia.org/wiki/Earth's_internal_heat_budget
   [3]: #parameters:Heating_20model
   [3]: #fig:shell-simple-3d-eval

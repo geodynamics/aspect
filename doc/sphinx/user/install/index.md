@@ -37,7 +37,7 @@ The available options can be best presented in form of typical use cases:
     virtualizing a full operating system this installation typically needs
     more space, and is approximately 30 % slower than a native
     installation. Additionally working in a virtual machine
-    &lsquo;feels' differently from working in your usual desktop
+    'feels' differently from working in your usual desktop
     environment. The virtual machine can be run on all host operating systems
     that can run a virtualization software like VirtualBox (e.g. Linux, Apple
     MacOS, Microsoft Windows).

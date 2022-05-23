@@ -3,9 +3,9 @@
 *This section was contributed by Jacqueline Austermann*
 
 For any model run with we have to choose an initial condition for the
-temperature field. If we want to model convection in the Earth&rsquo;s mantle
+temperature field. If we want to model convection in the Earth's mantle
 we want to choose an initial temperature distribution that captures the
-Earth&rsquo;s buoyancy structure. In this cookbook we present how to use
+Earth's buoyancy structure. In this cookbook we present how to use
 temperature perturbations based on the shear wave velocity model S20RTS
 (Ritsema and Heijst 2000) to initialize a mantle convection calculation.
 
@@ -75,12 +75,12 @@ The next input parameters describe the scaling from the shear wave velocity
 perturbation to the final temperature field. The shear wave velocity
 perturbation $\delta v_s / v_s$ (that is provided by S20RTS) is scaled into a
 density perturbation $\delta \rho / \rho$ with a constant that is specified in
-the initial condition section of the input parameter file as &lsquo;Vs to
-density scaling.&rsquo; Here we choose a constant scaling of 0.15. This
+the initial condition section of the input parameter file as 'Vs to
+density scaling.' Here we choose a constant scaling of 0.15. This
 perturbation is further translated into a temperature difference $\Delta T$ by
 multiplying it by the negative inverse of thermal expansion, which is also
-specified in this section of the parameter file as &lsquo;Thermal expansion
-coefficient in initial temperature scaling.&rsquo; This temperature difference
+specified in this section of the parameter file as 'Thermal expansion
+coefficient in initial temperature scaling.' This temperature difference
 is then added to the background temperature, which is the adiabatic
 temperature for a compressible model or the reference temperature (as
 specified in this section of the parameter file) for an incompressible model.
@@ -88,9 +88,9 @@ Features in the upper mantle such as cratons might be chemically buoyant and
 therefore isostatically compensated, in which case their shear wave
 perturbation would not contribute buoyancy variations. We therefore included
 an additional option to zero out temperature perturbations within a certain
-depth, however, in this example we don&rsquo;t make use of this functionality.
+depth, however, in this example we don't make use of this functionality.
 The chemical variation within the mantle might require a more sophisticated
-&lsquo;Vs to density&rsquo; scaling that varies for example with depth or as a
+'Vs to density' scaling that varies for example with depth or as a
 function of the perturbation itself, which is not captured in this model. The
 described procedure provides an absolute temperature for every point, which
 will only be adjusted at the boundaries if indicated in the Boundary
@@ -131,8 +131,8 @@ refinement steps, respectively. The geoid anomalies show a strong correlation
 with the surface dynamic topography. This is in part expected given that the
 geoid anomalies are driven by the deflection of the upper and lower surface as
 well as internal density variations. The relative importance of these
-different contributors is dictated by the Earth&rsquo;s viscosity profile. Due
-to the isoviscous assumption in this cookbook, we don&rsquo;t properly recover
+different contributors is dictated by the Earth's viscosity profile. Due
+to the isoviscous assumption in this cookbook, we don't properly recover
 patterns of the observed geoid. Lastly, Figure [2]g and h shows geoid
 perturbations for 2 and 4 global refinement steps, respectively.
 
@@ -182,7 +182,7 @@ Function Measurements.&rdquo; *Geophysical Journal International* 184:
 <div id="ref-S20RTS" class="csl-entry">
 
 Ritsema, J., and H. J. van Heijst. 2000. &ldquo;Seismic Imaging of Structural
-Heterogeneity in Earth&rsquo;s Mantle: Evidence for Large-Scale Mantle
+Heterogeneity in Earth's Mantle: Evidence for Large-Scale Mantle
 Flow.&rdquo; *Sci. Progr.* 83: 243&ndash;59.
 
 </div>

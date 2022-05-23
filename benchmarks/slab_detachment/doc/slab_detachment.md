@@ -63,7 +63,7 @@ Benchmarking and Applications to Subduction.&rdquo; *Solid Earth* 9 (2):
 
 Hillebrand, B., C. Thieulot, T. Geenen, A. P. van den Berg, and W. Spakman.
 2014. &ldquo;Using the Level Set Method in Geodynamical Modeling of
-Multi-Material Flows and Earth&rsquo;s Free Surface.&rdquo; *Solid Earth* 5
+Multi-Material Flows and Earth's Free Surface.&rdquo; *Solid Earth* 5
 (2): 1087&ndash;98. <https://doi.org/10.5194/se-5-1087-2014>.
 
 </div>

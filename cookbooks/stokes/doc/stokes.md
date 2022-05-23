@@ -1,8 +1,8 @@
-#### The &ldquo;Stokes&rsquo; law&rdquo; benchmark
+#### The &ldquo;Stokes' law&rdquo; benchmark
 
 *This section was contributed by Juliane Dannberg.*
 
-Stokes&rsquo; law was derived by George Gabriel Stokes in 1851 and describes
+Stokes' law was derived by George Gabriel Stokes in 1851 and describes
 the frictional force a sphere with a density different than the surrounding
 fluid experiences in a laminar flowing viscous medium. A setup for testing
 this law is a sphere with the radius $r$ falling in a highly viscous fluid
@@ -41,7 +41,7 @@ situation. In principle, what we need to do is to describe a spherical object
 with a density that is larger than the surrounding material. There are
 multiple ways of doing this. For example, we could simply set the initial
 temperature of the material in the sphere to a lower value, yielding a higher
-density with any of the common material models. Or, we could use &rsquo;s
+density with any of the common material models. Or, we could use 's
 facilities to advect along what are called &ldquo;compositional fields&rdquo;
 and make the density dependent on these fields.
 
@@ -88,8 +88,8 @@ postprocessor we have selected above also provides us with a maximal velocity
 that is on the same order of magnitude. The difference between the analytical
 and the numerical values can be explained by different at least the following
 three points: (i) In our case the sphere is viscous and not rigid as assumed
-in Stokes&rsquo; initial model, leading to a velocity field that varies inside
-the sphere rather than being constant. (ii) Stokes&rsquo; law is derived using
+in Stokes' initial model, leading to a velocity field that varies inside
+the sphere rather than being constant. (ii) Stokes' law is derived using
 an infinite domain but we have a finite box instead. (iii) The mesh may not
 yet fine enough to provide a fully converges solution. Nevertheless, the fact
 that we get a result that is accurate to less than 2% is a good indication

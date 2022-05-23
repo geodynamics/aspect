@@ -141,7 +141,7 @@ However, this is not what the analytic solution predicted. The reason for this
 difference is the width of the phase transition with which we smooth out the
 Dirac delta function that results from differentiating the $X(y)$ we would
 have liked to use in an ideal world. (In reality, however, for the
-Earth&rsquo;s mantle we also expect phase transitions that are distributed
+Earth's mantle we also expect phase transitions that are distributed
 over a certain depth range and so the smoothed out approach may not be a bad
 approximation.) Of course, the results shown above result from an the
 analytical approach that is only correct if the phase transition is

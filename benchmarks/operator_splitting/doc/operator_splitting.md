@@ -84,9 +84,9 @@ life, are implemented in a shared library
 ([benchmarks/operator_splitting/exponential_decay/exponential_decay.cc]). As
 we split the time-stepping of advection and reactions, there are now two
 different time steps in the model: We control the advection time step using
-the &lsquo;Maximum time step&rsquo; parameter (as the velocity is essentially
+the 'Maximum time step' parameter (as the velocity is essentially
 0, we can not use the CFL number), and we set the reaction time step using the
-&lsquo;Reaction time step&rsquo; parameter.
+'Reaction time step' parameter.
 
 ``` prmfile
 ```

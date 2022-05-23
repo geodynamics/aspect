@@ -5,7 +5,7 @@ Let us start this sequence of cookbooks using a simpler situation: convection
 in a quarter of a 2d shell. We choose this setup because 2d domains allow for
 much faster computations (in turn allowing for more experimentation) and
 because using a quarter of a shell avoids a pitfall with boundary conditions
-we will discuss in the next section. Because it&rsquo;s simpler to explain
+we will discuss in the next section. Because it's simpler to explain
 what we want to describe in pictures than in words, {numref}`fig:simple-shell-2d` shows the
 domain and the temperature field at a few time steps. In addition, you can
 find a movie of how the temperature evolves over this time period at
@@ -102,7 +102,7 @@ Either way, accepting results uncritically is, more often than not, a way to sci
 
 The model we have chosen has a number of inadequacies that make it not very
 realistic (some of those happened more as an accident while playing with the
-input file and weren&rsquo;t a purposeful experiment, but we left them in
+input file and weren't a purposeful experiment, but we left them in
 because they make for good examples to discuss below). Let us discuss these
 issues in the following.
 

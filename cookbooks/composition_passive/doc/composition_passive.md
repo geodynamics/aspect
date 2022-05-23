@@ -68,7 +68,7 @@ statistics file, see Sections [\[sec:running-overview\]][1] and
 to the instability of the finite element method in resolving discontinuous
 functions, the mass appears stable at a value of 0.403646 (the exact value,
 namely the area that was initially filled by each material, is 0.4; the
-difference is a result of the fact that we can&rsquo;t exactly represent the
+difference is a result of the fact that we can't exactly represent the
 step function on our mesh with the finite element space). In fact, the maximal
 difference in this value between time steps 1 and 500 is only $\num{1.1e-6}$.
 In other words, these numbers show that the compositional field approach is

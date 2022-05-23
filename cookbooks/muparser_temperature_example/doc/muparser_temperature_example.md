@@ -87,9 +87,9 @@ and use the `if-then-else` statement in the function expression to refine 4
 more times to a refinement level of 7, but only where the depth is less than
 150 km. Appropriate values of the minimum refinement level in this
 function expression could be the sum of initial global refinement level (3)
-and initial adaptive refinement level (4) in the &lsquo;`then`&rsquo;
+and initial adaptive refinement level (4) in the '`then`'
 statement (i.e., 7 here) and the value of initial global refinement in the
-&lsquo;`else`&rsquo; statement.
+'`else`' statement.
 
 ``` prmfile
 ```

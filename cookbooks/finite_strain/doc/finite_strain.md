@@ -106,7 +106,7 @@ model outputs such as the viscosity.
 <div id="ref-Becker2003" class="csl-entry">
 
 Becker, Thorsten W., James B. Kellogg, G&ouml;ran Ekstr&ouml;m, and Richard J.
-O&rsquo;Connell. 2003. &ldquo;<span class="nocase">Comparison of azimuthal
+O'Connell. 2003. &ldquo;<span class="nocase">Comparison of azimuthal
 seismic anisotropy from surface waves and finite strain from global
 mantle-circulation models</span>.&rdquo; *Geophysical Journal International*
 155 (2): 696&ndash;714. <https://doi.org/10.1046/j.1365-246X.2003.02085.x>.

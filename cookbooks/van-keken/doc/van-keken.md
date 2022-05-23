@@ -18,10 +18,10 @@ shows a time series of images to illustrate this.
 <img src="cookbooks/benchmarks/van-keken/doc/movie0009.png" title="fig:" id="fig:vk-1" style="width:23.0%" alt="Van Keken benchmark (using a smoothed out interface, see the main text): Compositional field at times t=0, 300, 900, 1800." />
 <img src="cookbooks/benchmarks/van-keken/doc/movie0018.png" title="fig:" id="fig:vk-1" style="width:23.0%" alt="Van Keken benchmark (using a smoothed out interface, see the main text): Compositional field at times t=0, 300, 900, 1800." />
 
-Although van Keken&rsquo;s paper title suggests that the paper is really about
+Although van Keken's paper title suggests that the paper is really about
 thermochemical convection, the part we examine here can equally be considered
 as thermal or chemical convection; all that is necessary is that we describe
-the fluid&rsquo;s density. We can do that by using an inhomogeneous initial
+the fluid's density. We can do that by using an inhomogeneous initial
 temperature field, or an inhomogeneous initial composition field. We will use
 the input file in [cookbooks/van-keken/van-keken-discontinuous.prm] as
 input, the central piece of which is as follows (go to the actual input file
@@ -34,7 +34,7 @@ The first part of this selects the `simple` material model and sets the
 thermal expansion to zero (resulting in a density that does not depend on the
 temperature, making the temperature a passively advected field) and instead
 makes the density depend on the first compositional field. The second section
-prescribes that the first compositional field&rsquo;s initial conditions are 0
+prescribes that the first compositional field's initial conditions are 0
 above a line describes by a cosine and 1 below it. Because the dependence of
 the density on the compositional field is negative, this means that a lighter
 fluid underlies a heavier one.
@@ -47,7 +47,7 @@ in the input file (the actual input file also enables other postprocessors):
 ``` prmfile
 ```
 
-Using this, we can plot the evolution of the fluid&rsquo;s average velocity
+Using this, we can plot the evolution of the fluid's average velocity
 over time, as shown in the left panel of Fig. [6]. Looking at this
 graph, we find that both the timing and the height of the first peak is
 already well converged on a simple $32\times 32$ mesh (5 global refinements)
@@ -102,7 +102,7 @@ and with different height!
 
 The conclusion one can draw from this is that if the outcome of a
 computational experiment depends so critically on very small details like the
-steps of an initial condition, then it&rsquo;s probably not a particularly
+steps of an initial condition, then it's probably not a particularly
 good measure to look at in a benchmark. That said, the benchmark is what it
 is, and so we should try to come up with ways to look at the benchmark in a
 way that allows us to reproduce what van Keken *et al.* had agreed upon. To
@@ -208,7 +208,7 @@ later in the run.
 Now let us further add a two-layer viscosity model to the domain. This is done
 to recreate the two nonisoviscous Rayleigh-Taylor instability cases
 (&ldquo;cases 1b and 1c&rdquo;) published in van Keken *et al.* in (Keken et
-al. 1997). Let&rsquo;s assume the viscosity value of the upper, heavier layer
+al. 1997). Let's assume the viscosity value of the upper, heavier layer
 is $\eta_{t}$ and the viscosity value of the lower, lighter layer is
 $\eta_{b}$. Based on the initial constant viscosity value 1$\times10^{2}$
 Pa s, we set the viscosity proportion
@@ -236,7 +236,7 @@ Compared to the results of the models using constant viscosity throughout the
 domain, the plumes rise faster when adding the two-layer viscosity. Also, the
 larger the viscosity difference is the earlier the plumes appear, and the
 faster their ascent. To further reveal the effect of the two-layer viscosity
-model, we also plot the evolution of the fluids&rsquo; root mean square
+model, we also plot the evolution of the fluids' root mean square
 velocity over time, as shown in Fig. [13].
 
 <figure>

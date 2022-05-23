@@ -13,7 +13,7 @@ every cell and used to try to combat these oscillations that cause unwanted
 overshoot and undershoot. More information about how does this is located at
 <https://dealii.org/developer/doxygen/deal.II/step_31.html>.
 
-Instead of just looking at an individual cell&rsquo;s artificial viscosity,
+Instead of just looking at an individual cell's artificial viscosity,
 improvements in the minimizing of the oscillations can be made by smoothing.
 Smoothing is the act of finding the maximum artificial viscosity taken over a
 cell $T$ and the neighboring cells across the faces of $T$, i.e.,

@@ -27,8 +27,8 @@ along the whole boundary, instead: $T\textsubscript{surf}=0\si{\celsius}$,
 $\Delta T=3000\si{\celsius}$, and $T\textsubscript{cmb}=2750\si{\celsius}$
 (see for instance Steinberger & Calderwood (Steinberger and Calderwood 2006)).
 
-The domain contains a single fluid described by the &lsquo;visco
-plastic&rsquo; material model, with thermal expansion
+The domain contains a single fluid described by the 'visco
+plastic' material model, with thermal expansion
 $\alpha=3\times 10^{-5}~\si{\per\kelvin}$, heat capacity
 $C_p=1250~\si{\joule\per\kg\per\kelvin}$, thermal diffusivity
 $\kappa=5.5\times 10^{-7}~\si{\square\meter\per\second}$ (corresponding to the
@@ -164,7 +164,7 @@ Lithospheric Support Models.&rdquo; *Journal of Geophysical Research: Planets*
 <div id="ref-stca06" class="csl-entry">
 
 Steinberger, B., and A. R. Calderwood. 2006. &ldquo;<span
-class="nocase">Models of large-scale viscous flow in the Earth&rsquo;s mantle
+class="nocase">Models of large-scale viscous flow in the Earth's mantle
 with constraints from mineral physics and surface observations</span>.&rdquo;
 *Geophy. J. Int.* 167: 1461&ndash;81.
 <https://doi.org/10.1111/j.1365-246X.2006.03131.x>.

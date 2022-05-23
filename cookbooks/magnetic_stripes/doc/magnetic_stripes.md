@@ -20,14 +20,14 @@ visible.
 This functionality is implemented through a new material model called magnetic
 stripes. This material model allows it to add a list of reversal times to the
 input file, that will then be used during the simulation. The input file used
-here contains the Earth&rsquo;s reversal history of the last 83 million years.
+here contains the Earth's reversal history of the last 83 million years.
 
 Before the model can be run, the plugin needs to be compiled (see
 Section [\[sec:benchmark-run\]][2]). To illustrate the stripes forming on
 the sea floor, a high resolution is necessary, which means that this cookbook
 needs longer to run than some of the others, and it may not always be feasible
 to run it on student laptops, or at least not during class. An animation can
-be found [here]. Slides with an introduction to the Earth&rsquo;s magnetic
+be found [here]. Slides with an introduction to the Earth's magnetic
 field can be found [here][3].
 
 .

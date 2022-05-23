@@ -99,7 +99,7 @@ computations shown in Table [1] we used a CFL number of $\sigma=0.5$.
 Due to the change in the CFL number from $\sigma = 1.0$ in
 Table [\[tab:runtime-table\]][2] to $\sigma = 0.5$ in Table [1]
 and the difference between HPC clusters on which the computational results
-shown in the two tables were made, we can&rsquo;t make a direct quantitative
+shown in the two tables were made, we can't make a direct quantitative
 comparison between the data in Tables [\[tab:runtime-table\]][2]
 and [1].
 
@@ -199,7 +199,7 @@ Dover.
 
 Robey, Jonathan M. 2019. &ldquo;On the Design, Implementation, and Use of a
 Volume-of-Fluid Interface Tracking Algorithm for Modeling Convection and Other
-Processes in the Earth&rsquo;s Mantle.&rdquo; Applied Mathematics, University
+Processes in the Earth's Mantle.&rdquo; Applied Mathematics, University
 of California, Davis.
 
 </div>
@@ -208,7 +208,7 @@ of California, Davis.
 
 Robey, Jonathan M., and Elbridge Gerry Puckett. 2019. &ldquo;Implementation of
 a Volume-of-Fluid Method in a Finite Element Code with Applications to
-Thermochemical Convection in a Density Stratified Fluid in the Earth&rsquo;s
+Thermochemical Convection in a Density Stratified Fluid in the Earth's
 Mantle.&rdquo; *Computers & Fluids* 190 (2): 217&ndash;53.
 https://doi.org/<https://doi.org/10.1016/j.compfluid.2019.05.015>.
 

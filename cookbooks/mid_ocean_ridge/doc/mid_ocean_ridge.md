@@ -3,7 +3,7 @@
 *This section was contributed by Juliane Dannberg.*
 
 The following cookbook will explain how to set up a model of a mid-ocean ridge
-that uses &rsquo;s implementation of coupled magma/mantle dynamics (see
+that uses 's implementation of coupled magma/mantle dynamics (see
 Section [\[sec:melt_transport\]][1]) and melting and freezing of mantle
 rock. In particular, it will outline
 
@@ -109,11 +109,11 @@ Figure [1]), we can see how the hot material flowing in from the bottom
 starts to melt as it reaches lower and lower pressures and crosses the
 solidus. Simultaneously, melting makes the residual solid rock more depleted
 (as indicated by the positive values of the compositional field called
-&lsquo;peridotite&rsquo;). Once material approaches the surface, it is cooled
+'peridotite'). Once material approaches the surface, it is cooled
 from the cold boundary layer above, and melt starts to crystallize again,
-generating &lsquo;enriched&rsquo; basaltic crust where is freezes (as
+generating 'enriched' basaltic crust where is freezes (as
 indicated by the negative values of the compositional field called
-&lsquo;peridotite&rsquo;). As the temperature gradients are much sharper close
+'peridotite'). As the temperature gradients are much sharper close
 to the surface, this transition from melt to solid rock is much sharper than
 in the melting region. Once material crystallizes, it is transported away from
 the ridge axis due to the flow field induced by the prescribed plate velocity
