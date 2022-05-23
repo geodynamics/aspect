@@ -39,76 +39,83 @@ namespace aspect
 {
   namespace MaterialModel
   {
-    /**
-     * Additional output fields for the viscosity prior to scaling to be added to
-     * the MaterialModel::MaterialModelOutputs structure and filled in the
-     * MaterialModel::Interface::evaluate() function.
-     */
-    template <int dim>
-    class UnscaledViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+    namespace
     {
-      public:
-        UnscaledViscosityAdditionalOutputs(const unsigned int n_points)
-          : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "unscaled_viscosity"),
-                                                n_points)
-        {}
-    };
+      /**
+       * Additional output fields for the viscosity prior to scaling to be added to
+       * the MaterialModel::MaterialModelOutputs structure and filled in the
+       * MaterialModel::Interface::evaluate() function.
+       */
+      template <int dim>
+      class UnscaledViscosityAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+      {
+        public:
+          UnscaledViscosityAdditionalOutputs(const unsigned int n_points)
+            : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "unscaled_viscosity"),
+                                                  n_points)
+          {}
+      };
 
-    /**
-     * Additional output fields for the the material type, decribing if we are in the
-     * crust/lithosphere/asthenosphere/lower mantle.
-     */
-    template <int dim>
-    class MaterialTypeAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
-    {
-      public:
-        MaterialTypeAdditionalOutputs(const unsigned int n_points)
-          : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "material_type"),
-                                                n_points)
-        {}
-    };
+      /**
+       * Additional output fields for the the material type, decribing if we are in the
+       * crust/lithosphere/asthenosphere/lower mantle.
+       */
+      template <int dim>
+      class MaterialTypeAdditionalOutputs : public NamedAdditionalMaterialOutputs<dim>
+      {
+        public:
+          MaterialTypeAdditionalOutputs(const unsigned int n_points)
+            : NamedAdditionalMaterialOutputs<dim>(std::vector<std::string>(1, "material_type"),
+                                                  n_points)
+          {}
+      };
+    }
   }
+
 
   namespace internal
   {
-    template <int dim>
-    class FunctorDepthAverageUnscaledViscosity: public internal::FunctorBase<dim>
+    namespace
     {
-      public:
-        FunctorDepthAverageUnscaledViscosity()
-        {}
+      template <int dim>
+      class FunctorDepthAverageUnscaledViscosity: public internal::FunctorBase<dim>
+      {
+        public:
+          FunctorDepthAverageUnscaledViscosity()
+          {}
 
-        bool need_material_properties() const override
-        {
-          return true;
-        }
+          bool need_material_properties() const override
+          {
+            return true;
+          }
 
-        void
-        create_additional_material_model_outputs (const unsigned int n_points,
-                                                  MaterialModel::MaterialModelOutputs<dim> &outputs) const override
-        {
-          if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
-            {
-              outputs.additional_outputs.push_back(
-                std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
-            }
-        }
+          void
+          create_additional_material_model_outputs (const unsigned int n_points,
+                                                    MaterialModel::MaterialModelOutputs<dim> &outputs) const override
+          {
+            if (outputs.template get_additional_output<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>() == nullptr)
+              {
+                outputs.additional_outputs.push_back(
+                  std::make_unique<MaterialModel::UnscaledViscosityAdditionalOutputs<dim>> (n_points));
+              }
+          }
 
-        void operator()(const MaterialModel::MaterialModelInputs<dim> &,
-                        const MaterialModel::MaterialModelOutputs<dim> &out,
-                        const FEValues<dim> &,
-                        const LinearAlgebra::BlockVector &,
-                        std::vector<double> &output) override
-        {
-          const MaterialModel::UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_outputs
-            = out.template get_additional_output<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
+          void operator()(const MaterialModel::MaterialModelInputs<dim> &,
+                          const MaterialModel::MaterialModelOutputs<dim> &out,
+                          const FEValues<dim> &,
+                          const LinearAlgebra::BlockVector &,
+                          std::vector<double> &output) override
+          {
+            const MaterialModel::UnscaledViscosityAdditionalOutputs<dim> *unscaled_viscosity_outputs
+              = out.template get_additional_output<const MaterialModel::UnscaledViscosityAdditionalOutputs<dim>>();
 
-          Assert(unscaled_viscosity_outputs != nullptr,ExcInternalError());
+            Assert(unscaled_viscosity_outputs != nullptr,ExcInternalError());
 
-          for (unsigned int q=0; q<output.size(); ++q)
-            output[q] = unscaled_viscosity_outputs->output_values[0][q];
-        }
-    };
+            for (unsigned int q=0; q<output.size(); ++q)
+              output[q] = unscaled_viscosity_outputs->output_values[0][q];
+          }
+      };
+    }
   }
 
   namespace MaterialModel
@@ -151,6 +158,8 @@ namespace aspect
       surface_boundary_set.insert(this->get_geometry_model().translate_symbolic_boundary_name_to_id("top"));
       crustal_boundary_depth.initialize(surface_boundary_set, 1);
 
+      // We need to update our lateral averages after the Stokes solver because in the first iteration,
+      // our temperature filed is not prescribed leading to incorrect lateral averages and scaling of viscosities.
       this->get_signals().post_stokes_solver.connect([&](const SimulatorAccess<dim> &,
                                                          const unsigned int ,
                                                          const unsigned int ,
@@ -196,13 +205,13 @@ namespace aspect
       if (use_depth_dependent_viscosity)
         {
           std::vector<std::unique_ptr<internal::FunctorBase<dim>>> lateral_averaging_properties;
-          lateral_averaging_properties.push_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
+          lateral_averaging_properties.emplace_back(std::make_unique<internal::FunctorDepthAverageUnscaledViscosity<dim>>());
 
           std::vector<std::vector<double>> averages =
             this->get_lateral_averaging().compute_lateral_averages(reference_viscosity_coordinates,
                                                                    lateral_averaging_properties);
 
-          average_viscosity_profile.swap(averages[0]);
+          average_viscosity_profile = std::move(averages[0]);
 
           for (const auto &lateral_viscosity_average: average_viscosity_profile)
             AssertThrow(numbers::is_finite(lateral_viscosity_average),
@@ -246,7 +255,7 @@ namespace aspect
                                                        depth));
         }
       if (depth_index > 0)
-        depth_index -= 1;
+        --depth_index;
 
       // When evaluating reference viscosity, evaluate at the next lower depth that is stored
       // in the reference profile instead of the actual depth. This makes the profile piecewise
@@ -254,23 +263,13 @@ namespace aspect
       // the largest depth in the profile).
       double reference_viscosity = reference_viscosity_profile->compute_viscosity(reference_viscosity_coordinates.at(depth_index));
 
-      // This parameter is only because we change the asthenosphere viscosity in our models.
-      // By default, it is set to the value in the reference profile.
+      // By default, ashtenosphere_viscosity is set to the value in the reference profile.
       if (depth_index == 1)
         reference_viscosity = asthenosphere_viscosity;
 
       return std::make_pair (reference_viscosity, depth_index);
-
     }
 
-
-
-    template <int dim>
-    double
-    EquilibriumGrainSize<dim>::get_uppermost_mantle_thickness () const
-    {
-      return uppermost_mantle_thickness;
-    }
 
 
 
@@ -387,7 +386,7 @@ namespace aspect
                   const double diff_viscosity = diffusion_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i]);
                   const double disl_viscosity = dislocation_viscosity(in.temperature[i], pressure, composition, in.strain_rate[i], in.position[i], diff_viscosity);
 
-                  if (disl_viscosities_out != NULL)
+                  if (disl_viscosities_out != nullptr)
                     {
                       disl_viscosities_out->dislocation_viscosities[i] = std::min(std::max(min_eta,disl_viscosity),1e30);
                       disl_viscosities_out->boundary_area_change_work_fractions[i] =
@@ -500,7 +499,6 @@ namespace aspect
           if (this->get_nonlinear_iteration() == 0 && use_depth_dependent_viscosity)
             out.viscosities[i] = get_reference_viscosity(depth).first;
         }
-      return;
     }
 
 
@@ -761,15 +759,15 @@ namespace aspect
       AssertThrow ((reference_compressibility != 0.0) || use_table_properties,
                    ExcMessage("Currently only compressible models are supported."));
 
-      double vp = 0.0;
       if (n_material_data == 1)
-        vp = material_lookup[0]->seismic_Vp(temperature,pressure);
+        return material_lookup[0]->seismic_Vp(temperature,pressure);
       else
         {
+          double vp = 0.0;
           for (unsigned i = 0; i < n_material_data; i++)
             vp += compositional_fields[i] * material_lookup[i]->seismic_Vp(temperature,pressure);
+          return vp;
         }
-      return vp;
     }
 
 
@@ -785,15 +783,15 @@ namespace aspect
       AssertThrow ((reference_compressibility != 0.0) || use_table_properties,
                    ExcMessage("Currently only compressible models are supported."));
 
-      double vs = 0.0;
       if (n_material_data == 1)
-        vs = material_lookup[0]->seismic_Vs(temperature,pressure);
+        return material_lookup[0]->seismic_Vs(temperature,pressure);
       else
         {
+          double vs = 0.0;
           for (unsigned i = 0; i < n_material_data; i++)
             vs += compositional_fields[i] * material_lookup[i]->seismic_Vs(temperature,pressure);
+          return vs;
         }
-      return vs;
     }
 
 
@@ -809,15 +807,14 @@ namespace aspect
       double rho = 0.0;
       if (n_material_data == 1)
         {
-          rho = material_lookup[0]->density(temperature,pressure);
+          return material_lookup[0]->density(temperature,pressure);
         }
       else
         {
           for (unsigned i = 0; i < n_material_data; i++)
             rho += compositional_fields[i] * material_lookup[i]->density(temperature,pressure);
+          return rho;
         }
-
-      return rho;
     }
 
 
@@ -863,15 +860,15 @@ namespace aspect
                          const std::vector<double> &compositional_fields,
                          const Point<dim> &) const
     {
-      double alpha = 0.0;
       if (n_material_data == 1)
-        alpha = material_lookup[0]->thermal_expansivity(temperature,pressure);
+        return material_lookup[0]->thermal_expansivity(temperature,pressure);
       else
         {
+          double alpha = 0.0;
           for (unsigned i = 0; i < n_material_data; i++)
             alpha += compositional_fields[i] * material_lookup[i]->thermal_expansivity(temperature,pressure);
+          return alpha;
         }
-      return alpha;
     }
 
 
@@ -956,7 +953,7 @@ namespace aspect
                 }
 
               const double sigmoid_width = 2.e4;
-              const double sigmoid = 1.0 / (1.0 + std::exp( (uppermost_mantle_thickness - depth)/sigmoid_width));
+              const double sigmoid = 1.0 / (1.0 + std::exp( (depth_to_base_of_uppermost_mantle - depth)/sigmoid_width));
 
               new_temperature = initial_temperature + (mantle_temperature - initial_temperature) * sigmoid;
             }
@@ -1019,7 +1016,7 @@ namespace aspect
                                          out.densities[i] * (1. - in.composition[i][craton_index]);
                     }
                 }
-              else if (depth > lithosphere_thickness && depth <= uppermost_mantle_thickness)
+              else if (depth > lithosphere_thickness && depth <= depth_to_base_of_uppermost_mantle)
                 {
                   out.thermal_expansion_coefficients[i] = 3.e-5;
                   out.compressibilities[i] = 1./12.2e10;
@@ -1382,18 +1379,23 @@ namespace aspect
           Rheology::AsciiDepthProfile<dim>::declare_parameters(prm);
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "rho_vs_scaling.txt", "Density velocity scaling");
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "rho_vs_scaling.txt",
+                                                            "Density velocity scaling");
 
           // Depth-dependent density scaling parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "dT_vs_scaling.txt", "Temperature velocity scaling");
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "dT_vs_scaling.txt",
+                                                            "Temperature velocity scaling");
 
           // Depth-dependent thermal expansivity parameters
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/", "thermal_expansivity_steinberger_calderwood.txt", "Thermal expansivity profile");
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/",
+                                                            "thermal_expansivity_steinberger_calderwood.txt", "Thermal expansivity profile");
 
           // Crustal boundary depths parameters
-          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/", "crustal_structure.txt", "Crustal depths");
+          Utilities::AsciiDataBoundary<dim>::declare_parameters(prm,  "../../input_data/",
+                                                                "crustal_structure.txt", "Crustal depths");
 
-          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/1D_reference_profiles/", "prem.txt", "Reference profile");
+          Utilities::AsciiDataBase<dim>::declare_parameters(prm, "../../input_data/1D_reference_profiles/",
+                                                            "prem.txt", "Reference profile");
         }
         prm.leave_subsection();
       }
@@ -1554,7 +1556,7 @@ namespace aspect
           use_depth_dependent_rho_vs              = prm.get_bool ("Use depth dependent density scaling");
           use_depth_dependent_dT_vs               = prm.get_bool ("Use depth dependent temperature scaling");
           use_depth_dependent_thermal_expansivity = prm.get_bool ("Use thermal expansivity profile");
-          uppermost_mantle_thickness              = prm.get_double ("Uppermost mantle thickness");
+          depth_to_base_of_uppermost_mantle       = prm.get_double ("Uppermost mantle thickness");
           fault_viscosity                         = prm.get_double ("Fault viscosity");
           asthenosphere_viscosity                 = prm.get_double ("Asthenosphere viscosity");
           use_varying_fault_viscosity             = prm.get_bool ("Use varying fault viscosity");
@@ -1727,19 +1729,12 @@ namespace aspect
                                    "named 'grain_size' is present. "
                                    "In the diffusion creep regime, the viscosity depends "
                                    "on this grain size field. "
-                                   "We use the grain size evolution laws described in Behn "
-                                   "et al., 2009. Implications of grain size evolution on the "
-                                   "seismic structure of the oceanic upper mantle, "
-                                   "Earth Planet. Sci. Letters, 282, 178–189. "
+                                   "We use the grain size evolution laws described in \\cite{Behn2009}. "
                                    "Other material parameters are either prescribed similar "
                                    "to the 'simple' material model, or read from data files "
                                    "that were generated by the Perplex or Hefesto software. "
-                                   "This material model "
-                                   "is described in more detail in Dannberg, J., Z. Eilon, "
-                                   "U. Faul, R. Gassmoeller, P. Moulik, and R. Myhill (2017), "
-                                   "The importance of grain size to mantle dynamics and "
-                                   "seismological observations, Geochem. Geophys. Geosyst., "
-                                   "18, 3034–3061, doi:10.1002/2017GC006944.")
+                                   "This material model is described in more detail in "
+                                   "\\citet{dannberg2017}.")
   }
 }
 
@@ -1748,11 +1743,14 @@ namespace aspect
 {
   namespace MaterialModel
   {
+    namespace
+    {
 
 #define INSTANTIATE(dim) \
   template class UnscaledViscosityAdditionalOutputs<dim>;
 
-    ASPECT_INSTANTIATE(INSTANTIATE)
+      ASPECT_INSTANTIATE(INSTANTIATE)
 #undef INSTANTIATE
+    }
   }
 }

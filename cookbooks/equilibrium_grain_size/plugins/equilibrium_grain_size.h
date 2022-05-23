@@ -85,14 +85,6 @@ namespace aspect
         get_reference_viscosity (const double depth) const;
 
         /**
-         * Return the depth of the base of the uppermost mantle. Below that depth,
-         * material properties are based on seismic tomography. Above that depth, material
-         * properties are computed based on the model of Tutu et al., 2018.
-         */
-        double
-        get_uppermost_mantle_thickness () const;
-
-        /**
          * Compute the scaling factors for each depth layer such that the laterally
          * averaged viscosiy in that layer is the same as the reference vicosity.
          */
@@ -474,7 +466,7 @@ namespace aspect
         /**
          * Parameter used to decribe the uppermost mantle based on Tutu (2018).
          */
-        double uppermost_mantle_thickness;
+        double depth_to_base_of_uppermost_mantle;
 
         /**
          * The format of the provided material files. Currently we support
